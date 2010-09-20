@@ -291,8 +291,8 @@
 	6675B1AF11E17E5B00ACE0CB /* COStore.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {960, 700}}";
-			sepNavSelRange = "{392, 0}";
-			sepNavVisRange = "{0, 980}";
+			sepNavSelRange = "{621, 0}";
+			sepNavVisRange = "{0, 1018}";
 		};
 	};
 	6675B1B011E17E5B00ACE0CB /* COStore.m */ = {
@@ -362,14 +362,14 @@
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {960, 1722}}";
 			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{1832, 1259}";
+			sepNavVisRange = "{754, 891}";
 		};
 	};
 	669963D0115FE67D00359BE6 /* COObject.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {960, 5950}}";
+			sepNavIntBoundsRect = "{{0, 0}, {960, 6132}}";
 			sepNavSelRange = "{411, 0}";
-			sepNavVisRange = "{0, 660}";
+			sepNavVisRange = "{1944, 840}";
 		};
 	};
 	669963EB11600FD500359BE6 /* LICENSE */ = {
@@ -425,14 +425,14 @@
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {960, 728}}";
 			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{148, 598}";
+			sepNavVisRange = "{0, 663}";
 		};
 	};
 	6699651F11629A7200359BE6 /* NSData+sha1.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {960, 1554}}";
-			sepNavSelRange = "{269, 0}";
-			sepNavVisRange = "{0, 961}";
+			sepNavSelRange = "{784, 0}";
+			sepNavVisRange = "{0, 963}";
 		};
 	};
 	6699661A11632D3300359BE6 /* DESIGN */ = {
@@ -460,7 +460,7 @@
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {960, 1148}}";
 			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{1978, 802}";
+			sepNavVisRange = "{1514, 1266}";
 		};
 	};
 	792D7CFE12441553008215E6 /* COChangeset.m */ = {
@@ -468,6 +468,13 @@
 			sepNavIntBoundsRect = "{{0, 0}, {960, 2450}}";
 			sepNavSelRange = "{0, 0}";
 			sepNavVisRange = "{0, 1194}";
+		};
+	};
+	79858AC61242DE34008FD5BA /* README-MIDDLEAPI */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {960, 938}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 762}";
 		};
 	};
 	8D1107260486CEB800E47090 /* ObjectMerging */ = {

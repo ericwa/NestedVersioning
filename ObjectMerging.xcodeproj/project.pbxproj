@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		6600AEE5112E748D00C525BB /* EtoileFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6600AEDF112E746F00C525BB /* EtoileFoundation.framework */; };
+		66708E0B12480ED300E65F00 /* CORepository.m in Sources */ = {isa = PBXBuildFile; fileRef = 66708E0A12480ED300E65F00 /* CORepository.m */; };
 		6675B1B111E17E5B00ACE0CB /* COStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 6675B1B011E17E5B00ACE0CB /* COStore.m */; };
 		6695E4B911A1604800CDD7CF /* ObjectMergingAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* ObjectMergingAppDelegate.m */; };
 		6695E4BA11A1604800CDD7CF /* COObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 669963D0115FE67D00359BE6 /* COObject.m */; };
@@ -73,6 +74,8 @@
 		6601B90611D7119E00110623 /* diff.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = diff.hh; sourceTree = "<group>"; };
 		666B277D117D0F7F004AC6E7 /* COFetchRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COFetchRequest.h; sourceTree = "<group>"; };
 		666B277E117D0F7F004AC6E7 /* COFetchRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COFetchRequest.m; sourceTree = "<group>"; };
+		66708E0912480ED300E65F00 /* CORepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CORepository.h; sourceTree = "<group>"; };
+		66708E0A12480ED300E65F00 /* CORepository.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CORepository.m; sourceTree = "<group>"; };
 		6675B1AF11E17E5B00ACE0CB /* COStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COStore.h; sourceTree = "<group>"; };
 		6675B1B011E17E5B00ACE0CB /* COStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COStore.m; sourceTree = "<group>"; };
 		6695E2001199532D00CDD7CF /* COObjectGraphDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COObjectGraphDiff.h; sourceTree = "<group>"; };
@@ -311,6 +314,8 @@
 				6675B1B011E17E5B00ACE0CB /* COStore.m */,
 				6695E2001199532D00CDD7CF /* COObjectGraphDiff.h */,
 				6695E2011199532D00CDD7CF /* COObjectGraphDiff.m */,
+				66708E0912480ED300E65F00 /* CORepository.h */,
+				66708E0A12480ED300E65F00 /* CORepository.m */,
 			);
 			name = "Middle API";
 			sourceTree = "<group>";
@@ -419,6 +424,7 @@
 				6698293A11EB01AD007154CD /* COSetDiff.m in Sources */,
 				66983DB411F267D0007154CD /* COSequenceDiff.m in Sources */,
 				792D7CFF12441553008215E6 /* COChangeset.m in Sources */,
+				66708E0B12480ED300E65F00 /* CORepository.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
