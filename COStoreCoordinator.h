@@ -1,75 +1,90 @@
 #import <EtoileFoundation/EtoileFoundation.h>
 #import "COHistoryGraphNode.h"
 #import "COObjectGraphDiff.h"
-#import "COStore.h"
+#import "COStoreBackend.h"
 
 @class COHistoryGraphNode;
 @class COObjectGraphDiff;
 @class COObjectContext;
 
+@protocol COStoreDelegate
+
+@optional
+- (void) store: (COStoreCoordinator*)store didCommitChangeset: (COHistoryGraphNode*)node;
+
+@end
+
+
+
 /**
  * High-level interface to the storage layer. Creates and manages HistoryGraphNodes.
- *
- * Will probably also handle things like network collaboration, generating notifications
- * when the underlying store is modified by another process, and presenting
- * several stores (i.e. on-disk object bundle directories) together as one.
  */
 @interface COStoreCoordinator : NSObject
 {
-  COStore *_store;
+  COStoreBackend *_store;
   NSMutableDictionary *_historyGraphNodes;
+  id<COStoreDelegate> _delegate;
 }
+
+- (id<COStoreDelegate>)delegate;
+- (void)setDelegate: (id<COStoreDelegate>)aDelegate;
 
 - (id)initWithURL: (NSURL*)url;
 
-/**
- * most recently changed head history node (from mercurial terminology)
- */
-- (COHistoryGraphNode *)tip;
 
-//- (NSArray*)rootHistoryGraphNodes;
+- (void)permanentlyDeleteObjectsWithUUIDs: (NSArray*)objects;
 
-/**
- * Creates a new history graph node afer the given node which is a branch.
- * Returns the new node.
- */
-- (COHistoryGraphNode *) createBranchOfNode: (COHistoryGraphNode*)node;
-/**
- * Creates a new history graph node merging two existing nodes.
- * Returns the new node.
- */
-- (COHistoryGraphNode *) createMergeOfNode: (COHistoryGraphNode*)node1 andNode: (COHistoryGraphNode*)node2;
-/**
- * Commits the changes in the given object context as a new history graph node
- * Returns the new node
- */
-- (COHistoryGraphNode *) commitChangesInObjectContext: (COObjectContext *)ctx  afterNode: (COHistoryGraphNode*)node;
-/**
- * Commits some changed objects as a new history graph 
- * Returns the new node
- */
-- (COHistoryGraphNode *) commitChangesInObjects: (NSArray *)objects afterNode: (COHistoryGraphNode*)node;
+- (NSDictionary*) propertyListForObjectWithUUID: (ETUUID*)uuid atHistoryGraphNode: (COHistoryGraphNode *)node;
+
 
 @end
+
+@interface COStoreCoordinator (History)
+
+// URL here is the path at which the object is serialized.
+
+- (ETUUID *) UUIDForURL: (NSURL *)url; // read it in the info.plist of the bundle
+- (NSURL *) URLForUUID: (ETUUID *)uuid; // lookup in the db
+- (void) setURL: (NSURL *)url forUUID: (ETUUID *)uuid;
+- (void) setURL: (NSURL *)url forUUID: (ETUUID *)uuid
+	withObjectVersion: (int)objectVersion 
+	             type: (NSString *)objectType 
+	          isGroup: (BOOL)isGroup
+	        timestamp: (NSDate *)recordTimestamp
+	    inContextUUID: (ETUUID *)contextUUID;
+- (void) removeURLForUUID: (ETUUID *)uuid;
+- (void) updateUUID: (ETUUID *)uuid 
+    toObjectVersion: (int)objectVersion
+          timestamp: (NSDate *)recordTimestamp;
+- (int) objectVersionForUUID: (ETUUID *)anUUID;
+- (NSDictionary *) faultDescriptionForUUID: (ETUUID *)aUUID;
+
+- (NSURL *) storeURL;
+- (NSMutableDictionary *) configurationDictionary;
+// TODO: Should we support exporting the metadata DB as a plist?
+//- (NSDictionary *) propertyList;
+
+- (ETUUID*) createChangesetWithParentChangesetIdentifiers:
+                      objectUUIDToHashMappings: 
+                              metadataPropertyList:
+                              date:;
+- (id)metadataForChangesetIdentifier:;
+- (NSArray*)parentChangesetIdentifers:
+- (NSArray*)childChangesetIdentifers:;
+- (NSArray*)changesetsModifyingObjectsInSet:
+              beforeDate:
+              afterDate:;
+
+
+@end
+
+
 
 /**
  * Interface used in the implementation of COObject/COObjectContext
  */
 @interface COStoreCoordinator (Private)
 
-/**
- * Returns the internal data dictionary for the given object UUID,
- * in the state it was in at the given history graph node.
- *
- * If the object with that UUID was not modified in the given hist. node,
- * This would handle finding the nearest anestor node where it was modified
- * and then fetch that particular version of the object from the underlying
- * store.
- *
- * Note: not cached
- * Note: caller's responsibility to modify output to have actualy COObject references
- */
-- (NSDictionary*) dataForObjectWithUUID: (ETUUID*)uuid atHistoryGraphNode: (COHistoryGraphNode *)node;
 
 - (COHistoryGraphNode *) historyGraphNodeForUUID: (ETUUID*)uuid;
 - (void) commitHistoryGraphNode: (COHistoryGraphNode *)node;

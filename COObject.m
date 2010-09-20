@@ -2,15 +2,12 @@
 #import "COObject.h"
 #import "NSData+sha1.h"
 
-NSString const *kCONamespacePublic = @"kCONamespacePublic";
-NSString const *kCONamespaceInternal = @"kCONamespaceInternal";
-
 @implementation COObject
 
 - (id) initWithContext: (COObjectContext*)ctx
 {
   SUPERINIT;
-  _ctx = ctx;
+  _ctx = [ctx retain];
   _uuid = [[ETUUID alloc] init];
   _data = nil;
   [_ctx recordObject: self forUUID: [self uuid]];
@@ -19,6 +16,7 @@ NSString const *kCONamespaceInternal = @"kCONamespaceInternal";
 
 - (void) dealloc
 {
+  DESTROY(_ctx);
   DESTROY(_uuid);
   DESTROY(_data);
   [super dealloc];
@@ -62,7 +60,8 @@ NSString const *kCONamespaceInternal = @"kCONamespaceInternal";
 
 - (NSArray *)properties
 {
-  return [self propertiesInNamespace: kCONamespacePublic];
+  [self loadIfNeeded];
+  return [_data allKeys];
 }
 
 /**
@@ -71,17 +70,88 @@ NSString const *kCONamespaceInternal = @"kCONamespaceInternal";
  */
 - (id)_mutableValueForProperty: (NSString*)key
 {
-  return [self _mutableValueForProperty: key inNamespace: kCONamespacePublic];
+  [self loadIfNeeded];
+  return [_data valueForKey: key];
 }
 
 - (id) valueForProperty:(NSString *)key
 {
-  return [self valueForProperty: key inNamespace: kCONamespacePublic];
+  id obj = [self _mutableValueForProperty: key];
+  
+  // Make sure we return an immutable collection
+  if ([obj isKindOfClass: [NSArray class]])
+  {
+    return [NSArray arrayWithArray: obj];
+  }
+  if ([obj isKindOfClass: [NSSet class]])
+  {
+    return [NSSet setWithSet: obj];
+  }
+  else
+  {
+    return obj;
+  }
+}
+
++ (BOOL) isPrimitiveCoreObjectValue: (id)value
+{
+  return [value isKindOfClass: [NSNumber class]] ||
+    [value isKindOfClass: [NSValue class]] ||
+    [value isKindOfClass: [NSDate class]] ||
+    [value isKindOfClass: [NSData class]] ||
+    [value isKindOfClass: [NSString class]] ||
+    [value isKindOfClass: [COObject class]];
+}
+
++ (BOOL) isCoreObjectValue: (id)value
+{
+  if ([value isKindOfClass: [NSArray class]] ||
+      [value isKindOfClass: [NSSet class]])
+  {
+    for (id subvalue in value)
+    {
+      if (![COObject isPrimitiveCoreObjectValue: subvalue])
+      {
+        return NO;
+      }
+    }
+    return YES;
+  }
+  else 
+  {
+    return [COObject isPrimitiveCoreObjectValue: value];
+  }
 }
 
 - (void) setValue:(id)value forProperty:(NSString*)key
 {
-  [self setValue:value forProperty:key inNamespace: kCONamespacePublic];
+  [self loadIfNeeded];
+  
+  if (value == nil)
+  {
+    [_data removeObjectForKey: key];
+  }
+  else
+  {
+    if ([COObject isCoreObjectValue: value])
+    {
+      if ([value isKindOfClass: [NSArray class]]
+          || [value isKindOfClass: [NSSet class]])
+      {
+        // Collections must be mutable
+        value = [[value mutableCopy] autorelease];
+      }
+      
+      [_data setValue: value
+               forKey: key];
+    }
+    else
+    {
+      [NSException raise: NSInvalidArgumentException format: @"Invalid property type"];
+    }
+  }
+
+  [self setModified];
 }
 
 - (NSString*)description
@@ -125,8 +195,7 @@ NSString const *kCONamespaceInternal = @"kCONamespaceInternal";
   if (nil == _data)
   {
     [self setData: [[_ctx storeCoordinator] dataForObjectWithUUID: _uuid
-                                               atHistoryGraphNode: [_ctx baseHistoryGraphNode]]];
-    NSLog(@"Load if needed: %@", _data);
+                                           atHistoryGraphNode: [_ctx baseHistoryGraphNode]]];
   }
 }
 
@@ -134,103 +203,6 @@ NSString const *kCONamespaceInternal = @"kCONamespaceInternal";
 {
   [_data release];
   _data = nil;
-}
-
-+ (BOOL) isPrimitiveCoreObjectValue: (id)value
-{
-  return [value isKindOfClass: [NSNumber class]] ||
-    [value isKindOfClass: [NSValue class]] ||
-    [value isKindOfClass: [NSDate class]] ||
-    [value isKindOfClass: [NSData class]] ||
-    [value isKindOfClass: [NSString class]] ||
-    [value isKindOfClass: [COObject class]];
-}
-
-+ (BOOL) isCoreObjectValue: (id)value
-{
-  if ([value isKindOfClass: [NSArray class]] ||
-      [value isKindOfClass: [NSSet class]])
-  {
-    for (id subvalue in value)
-    {
-      if (![COObject isPrimitiveCoreObjectValue: subvalue])
-      {
-        return NO;
-      }
-    }
-    return YES;
-  }
-  else 
-  {
-    return [COObject isPrimitiveCoreObjectValue: value];
-  }
-}
-
-- (NSArray *)propertiesInNamespace: (NSString *)ns
-{
-  [self loadIfNeeded];
-  return [[_data valueForKey: ns] allKeys];
-}
-
-/**
- * If the returned value is an array/set, if it is modified, the context
- * must be notified.
- */
-- (id)_mutableValueForProperty: (NSString*)key inNamespace: (NSString *)ns
-{
-  [self loadIfNeeded];
-  return [[_data valueForKey: ns] valueForKey: key];
-}
-
-- (id) valueForProperty:(NSString *)key inNamespace: (NSString *)ns
-{
-  id obj = [self _mutableValueForProperty: key inNamespace: (NSString *)ns];
-  
-  // Make sure we return an immutable collection
-  if ([obj isKindOfClass: [NSArray class]])
-  {
-    return [NSArray arrayWithArray: obj];
-  }
-  if ([obj isKindOfClass: [NSSet class]])
-  {
-    return [NSSet setWithSet: obj];
-  }
-  else
-  {
-    return obj;
-  }
-}
-
-
-- (void) setValue:(id)value forProperty:(NSString*)key inNamespace: (NSString *)ns
-{
-  [self loadIfNeeded];
-  
-  if (value == nil)
-  {
-    [[_data valueForKey: ns] removeObjectForKey: key];
-  }
-  else
-  {
-    if ([COObject isCoreObjectValue: value])
-    {
-      if ([value isKindOfClass: [NSArray class]]
-          || [value isKindOfClass: [NSSet class]])
-      {
-        // Collections must be mutable
-        value = [[value mutableCopy] autorelease];
-      }
-      
-      [[_data valueForKey: ns] setValue: value
-                                 forKey: key];
-    }
-    else
-    {
-      [NSException raise: NSInvalidArgumentException format: @"Invalid property type"];
-    }
-  }
-
-  [self setModified];
 }
 
 /**
@@ -442,28 +414,12 @@ NSString const *kCONamespaceInternal = @"kCONamespaceInternal";
  */
 - (void)setData: (NSDictionary*)data
 {
-  if (data == nil)
-  {
-    _data = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
-      [NSMutableDictionary dictionary], kCONamespacePublic,
-      [NSMutableDictionary dictionary], kCONamespaceInternal,
-      nil];
-  }
-  else
-  {
-    ASSIGN(_data, [NSMutableDictionary dictionaryWithDictionary: [data valueForKey: @"keysAndValues"]]);  
+  ASSIGN(_data, [NSMutableDictionary dictionaryWithDictionary: [data valueForKey: @"keysAndValues"]]);
   
-    for (NSString *ns in [_data allKeys])
-    {
-      NSMutableDictionary *nsDict = [[_data valueForKey: ns] mutableCopy];
-      for (NSString *key in [nsDict allKeys])
-      {
-        [nsDict setValue: [self parsePropertyList: [nsDict objectForKey: key]]
-                forKey: key];
-      }
-      [_data setValue: nsDict forKey: ns];
-      [nsDict release];
-    }
+  for (NSString *key in [_data allKeys])
+  {
+    [_data setValue: [self parsePropertyList: [_data objectForKey: key]]
+            forKey: key];
   }
   
   [self didAwaken];

@@ -1,5 +1,4 @@
 #import "COStoreCoordinator.h"
-#import "COSerializer.h"
 #import "NSData+sha1.h"
 
 @implementation COStoreCoordinator
@@ -7,7 +6,7 @@
 - (id)initWithURL: (NSURL*)url
 {
   SUPERINIT;
-  _store = [[COStore alloc] initWithURL: url];
+  _store = [[COStoreBackend alloc] initWithURL: url];
   _historyGraphNodes = [[NSMutableDictionary alloc] init];
 
   return self;
@@ -28,7 +27,7 @@
 - (COHistoryGraphNode *)tip
 {
   return [self historyGraphNodeForUUID:
-    [ETUUID UUIDWithString: [COSerializer unserializeData: [_store dataForKey: @"tip"]]]];
+    [ETUUID UUIDWithString: [_store propertyListForKey: @"tip"]]];
 }
 
 - (COHistoryGraphNode *) createBranchOfNode: (COHistoryGraphNode*)node
@@ -65,7 +64,7 @@
   {
     NSData *hash = [obj sha1Hash];
     
-    [_store setData: [COSerializer serializeObject: [obj propertyList]]
+    [_store setPropertyList: [obj propertyList]
            forKey: [hash hexString]];
            
     [mapping setObject: hash forKey: [obj uuid]];
@@ -107,7 +106,7 @@
     node = [[node parents] objectAtIndex: 0];
   }
   
-  NSDictionary *data = [COSerializer unserializeData: [_store dataForKey: [hash hexString]]];
+  NSDictionary *data = [_store propertyListForKey: [hash hexString]];
   if (nil == data)
   {
     [NSException raise: NSInternalInconsistencyException format: @"Object %@ data missing", uuid];
@@ -121,7 +120,7 @@
   COHistoryGraphNode *node = [_historyGraphNodes objectForKey: uuid];
   if (nil == node)
   {
-    NSDictionary *nodePlist = [COSerializer unserializeData: [_store dataForKey: [uuid stringValue]]];
+    NSDictionary *nodePlist = [_store propertyListForKey: [uuid stringValue]];
     if (nodePlist)
     {
       node = [[[COHistoryGraphNode alloc] initWithPropertyList: nodePlist storeCoordinator: self] autorelease];
@@ -142,12 +141,12 @@
   //FIXME: ugly
   [_historyGraphNodes setObject: node forKey: [node uuid]];
 
-  [_store setData: [COSerializer serializeObject: [node propertyList]]
+  [_store setPropertyList: [node propertyList]
            forKey: [[node uuid] stringValue]];
 
   {
     NSLog(@"Marking %@ as tip", node);
-    [_store setData: [COSerializer serializeObject: [[node uuid] stringValue]]
+    [_store setPropertyList: [[node uuid] stringValue]
              forKey: @"tip"];
   }
 

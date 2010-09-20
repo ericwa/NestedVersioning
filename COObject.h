@@ -4,10 +4,6 @@
 
 @class COObjectContext;
 
-extern NSString const *kCONamespacePublic;
-extern NSString const *kCONamespaceInternal;
-
-
 /**
  * 'Working copy' of an object.
  * Owned by an Object Context.
@@ -50,6 +46,7 @@ extern NSString const *kCONamespaceInternal;
  * framework.
  */
 - (void) didAwaken;
+- (void) didTurnIntoFault;
 
 - (NSArray *)properties;
 - (id) valueForProperty:(NSString *)key;
@@ -67,10 +64,6 @@ extern NSString const *kCONamespaceInternal;
 - (void)loadIfNeeded;
 - (id)_mutableValueForProperty: (NSString*)key;
 - (void) setModified;
-
-- (NSArray *)propertiesInNamespace: (NSString *)ns;
-- (id) valueForProperty:(NSString *)key inNamespace: (NSString *)ns;
-- (void) setValue:(id)value forProperty:(NSString*)key inNamespace: (NSString *)ns;
 
 @end
 
