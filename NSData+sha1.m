@@ -2,13 +2,13 @@
 #import "NSData+sha1.h"
 #include "stdio.h"
 
-@implementation NSData (sha1)
+@implementation NSData (sha256)
 
 - (NSData *)sha1Hash
 {
-  unsigned char digest[SHA_DIGEST_LENGTH];
-  SHA1([self bytes], [self length], digest);
-  return [NSData dataWithBytes: digest length: SHA_DIGEST_LENGTH];
+  unsigned char digest[SHA512_DIGEST_LENGTH];
+  SHA512([self bytes], [self length], digest);
+  return [NSData dataWithBytes: digest length: SHA512_DIGEST_LENGTH];
 }
 
 - (NSString *)sha1HashHexString

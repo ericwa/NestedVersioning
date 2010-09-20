@@ -1,70 +1,156 @@
-#import "COStore.h"
-#import <Foundation/Foundation.h>
+#import "COStoreCoordinator.h"
+#import "NSData+sha1.h"
 
-@implementation COStore
+@implementation COStoreCoordinator
 
-- (id) initWithURL: (NSURL *)url
+- (id)initWithURL: (NSURL*)url
 {
-  self = [super init];
-  _url = [url retain];
+  SUPERINIT;
+  _store = [[COStoreBackend alloc] initWithURL: url];
+  _historyGraphNodes = [[NSMutableDictionary alloc] init];
+
+  return self;
+}
+
+- (void) dealloc
+{
+  DESTROY(_store);
+  DESTROY(_historyGraphNodes);
+  [super dealloc];
+}
+
+- (NSArray*)rootHistoryGraphNodes
+{
+  return nil;
+}
+
+- (COHistoryGraphNode *)tip
+{
+  return [self historyGraphNodeForUUID:
+    [ETUUID UUIDWithString: [_store propertyListForKey: @"tip"]]];
+}
+
+- (COHistoryGraphNode *) createBranchOfNode: (COHistoryGraphNode*)node
+{
+  COHistoryGraphNode *newNode = [[[COHistoryGraphNode alloc] initWithUUID: [ETUUID UUID]
+           storeCoordinator: self
+            properties: nil
+            parentNodeUUIDs: [NSArray arrayWithObject:node]
+            childNodeUUIDs: nil
+          uuidToObjectVersionMaping: nil] autorelease];
+  [node addChildNodeUUID: [newNode uuid]];
   
-  BOOL isDirectory;
-  BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath: [_url path] isDirectory: &isDirectory];
+  // FIXME: these should be atomic together
+  [self commitHistoryGraphNode: node];
+  [self commitHistoryGraphNode: newNode];
+  return newNode;
+}
+- (COHistoryGraphNode *) createMergeOfNode: (COHistoryGraphNode*)node1 andNode: (COHistoryGraphNode*)node2
+{
+  COHistoryGraphNode *newNode = nil;
   
-  if (!exists)
+  return newNode;
+}
+- (COHistoryGraphNode *) commitChangesInObjectContext: (COObjectContext *)ctx  afterNode: (COHistoryGraphNode*)node
+{
+  return [self commitChangesInObjects: [ctx changedObjects] afterNode: node];
+}
+
+- (COHistoryGraphNode *) commitChangesInObjects: (NSArray *)objects  afterNode: (COHistoryGraphNode*)node
+{
+  NSMutableDictionary *mapping = [NSMutableDictionary dictionaryWithCapacity: [objects count]];
+  
+  for (COObject *obj in objects)
   {
-    if ([[NSFileManager defaultManager] createDirectoryAtPath:[_url path]
-                                        withIntermediateDirectories: NO
-                                                          attributes: nil
-                                                              error: NULL])
+    NSData *hash = [obj sha1Hash];
+    
+    [_store setPropertyList: [obj propertyList]
+           forKey: [hash hexString]];
+           
+    [mapping setObject: hash forKey: [obj uuid]];
+  }
+
+  COHistoryGraphNode *newNode = [[[COHistoryGraphNode alloc] initWithUUID: [ETUUID UUID]
+           storeCoordinator: self
+            properties: nil
+            parentNodeUUIDs: node ? [NSArray arrayWithObject: node] : nil
+             childNodeUUIDs: nil
+          uuidToObjectVersionMaping: mapping] autorelease];
+  
+  if (node)
+  {
+    [node addChildNodeUUID: [newNode uuid]];
+  
+    // FIXME: these next two lines should be atomic together
+    [self commitHistoryGraphNode: node];
+  }
+  [self commitHistoryGraphNode: newNode];
+  return newNode;
+}
+
+@end
+
+@implementation COStoreCoordinator (Private)
+
+- (NSDictionary*) dataForObjectWithUUID: (ETUUID*)uuid atHistoryGraphNode: (COHistoryGraphNode *)node
+{
+  // Find the node in which the given object UUID was last modified
+  NSData *hash = nil;
+  while ((hash = [[node uuidToObjectVersionMaping] objectForKey: uuid]) == nil)
+  {
+    if ([[node parents] count] != 1)
     {
-      NSLog(@"Success creating directory %@", [_url path]);
+      NSLog(@"Warning: requested UUID %@ not found.", uuid);
+      return nil;
+    }
+    node = [[node parents] objectAtIndex: 0];
+  }
+  
+  NSDictionary *data = [_store propertyListForKey: [hash hexString]];
+  if (nil == data)
+  {
+    [NSException raise: NSInternalInconsistencyException format: @"Object %@ data missing", uuid];
+  }
+  
+  return data;
+}
+
+- (COHistoryGraphNode *) historyGraphNodeForUUID: (ETUUID*)uuid
+{
+  COHistoryGraphNode *node = [_historyGraphNodes objectForKey: uuid];
+  if (nil == node)
+  {
+    NSDictionary *nodePlist = [_store propertyListForKey: [uuid stringValue]];
+    if (nodePlist)
+    {
+      node = [[[COHistoryGraphNode alloc] initWithPropertyList: nodePlist storeCoordinator: self] autorelease];
+      NSLog(@"Read history node %@", [node uuid]);
+      [_historyGraphNodes setObject: node forKey: [node uuid]];
     }
     else
     {
-      NSLog(@"Error creating directory %@", [_url path]);
-      [self release];
-      return nil;
+      NSLog(@"WARNING: Requested node %@ not in store", uuid);
     }
   }
-  else if (exists && !isDirectory)
-  {
-    NSLog(@"Error, store path %@ is a file.", [_url path]);
-    [self release];
-    return nil;
-  }
-  
-  return self;
-}
-+ (COStore *)storeWithURL: (NSURL *)url
-{
-  return [[[COStore alloc] initWithURL: url] autorelease];
+
+  return node;
 }
 
+- (void) commitHistoryGraphNode: (COHistoryGraphNode *)node
+{
+  //FIXME: ugly
+  [_historyGraphNodes setObject: node forKey: [node uuid]];
 
-- (NSData *)dataForKey: (NSString *)key;
-{
-  return [NSData dataWithContentsOfFile:
-    [[_url path] stringByAppendingPathComponent: key]]; // zlibDecompressed];
-}
-- (BOOL)setData: (NSData *)data forKey: (NSString *)key;
-{
-  NSString *path = [[_url path] stringByAppendingPathComponent: key];
-  NSLog(@"Saving in '%@'", path);
-  
-  [data writeToFile: path atomically: YES]; // zlibCompressed]
-  return YES;
-}
-- (void)removeDataForKey: (NSString *)key
-{
-  if (![[NSFileManager defaultManager]
-   removeItemAtPath: [[_url path] stringByAppendingPathComponent: key]
-     error: NULL])
+  [_store setPropertyList: [node propertyList]
+           forKey: [[node uuid] stringValue]];
+
   {
-    NSLog(@"Removing %@ failed!", key);
-  } else {
-    NSLog(@"Removed %@", key);
+    NSLog(@"Marking %@ as tip", node);
+    [_store setPropertyList: [[node uuid] stringValue]
+             forKey: @"tip"];
   }
+
+  NSLog(@"History graph node %@ committed.", [node uuid]);
 }
 
 @end

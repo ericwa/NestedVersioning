@@ -1,23 +1,49 @@
 #import <EtoileFoundation/ETUUID.h>
+#import "COHistoryGraphNode.h"
+#import "COObjectGraphDiff.h"
+#import "COStoreBackend.h"
 
-/**
- * COStore is a very simple wrapper around a directory which lets
- * you create/read files using dataForKey: and setData:forKey:.
- *
- * It could transparently compress the data (currently disabled for testing)
- * In the future I will implement something like mercurial revlogs or
- * git packed store to keep the size down.
- */
+
+@protocol COStoreDelegate
+
+@optional
+- (void) store: (COStoreCoordinator*)store willCommitChangeset: (COChangeset*)cs;
+- (void) store: (COStoreCoordinator*)store didCommitChangeset: (COChangeset*)cs;
+
+@end
+
+
 @interface COStore : NSObject
 {
-  NSURL *_url;
-  
+  COStoreBackend *_backend;
+  id<COStoreDelegate> _delegate;
 }
-- (id) initWithURL: (NSURL *)url;
-+ (COStore *)storeWithURL: (NSURL *)url;
 
-- (NSData *)dataForKey: (NSString *)key;
-- (BOOL)setData: (NSData *)data forKey: (NSString*)key;
-- (void)removeDataForKey: (NSString *)key;
++ (COStore*)storeWithURL: (NSURL*)url;
+
+- (id<COStoreDelegate>)delegate;
+- (void)setDelegate: (id<COStoreDelegate>)aDelegate;
+
+
+
+- (void)permanentlyDeleteObjectsWithUUIDs: (NSArray*)objects;
+
+- (NSDictionary*) propertyListForObjectWithUUID: (ETUUID*)uuid atHistoryGraphNode: (COHistoryGraphNode *)node;
+
+
+@end
+
+@interface COStoreCoordinator (History)
+
+- (ETUUID*) createChangesetWithParentChangesetIdentifiers:
+                      objectUUIDToHashMappings: 
+                              metadataPropertyList:
+                              date:;
+- (id)metadataForChangesetIdentifier:;
+- (NSArray*)parentChangesetIdentifers:
+- (NSArray*)childChangesetIdentifers:;
+- (NSArray*)changesetsModifyingObjectsInSet:
+              beforeDate:
+              afterDate:;
 
 @end

@@ -22,22 +22,6 @@
   [super dealloc];
 }
 
-/**
- * Note, two objects are considered equal if they have the same UUID
- * (even if the instances represent different versions.)
- *
- * This will make diffing just work, but maybe doesn't make sense?
- */
-- (BOOL) isEqual: (id)otherObject
-{
-  if ([otherObject isKindOfClass: [COObject class]])
-  {
-    COObject *otherCOObject = (COObject*)otherObject;
-    return [[otherCOObject uuid] isEqual: _uuid];
-  }
-  return NO;
-}
-
 - (ETUUID*) uuid
 {
   return _uuid;
