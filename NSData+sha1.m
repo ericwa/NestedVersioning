@@ -57,7 +57,7 @@
 
 - (NSData *)sha1Hash
 {
-  return [[self dataUsingEncoding: NSUTF8StringEncoding] sha1Hash];
+  return [[self dataUsingEncoding: NSUTF16BigEndianStringEncoding] sha1Hash];
 }
 
 @end
@@ -76,6 +76,7 @@
 - (NSData *)sha1Hash
 {
   NSMutableData *result = [NSMutableData data];
+  [result appendData: [@"NSArray" dataUsingEncoding: NSUTF16BigEndianStringEncoding]];
   for (id obj in self)
   {
     [result appendData: [obj sha1Hash]];
@@ -90,6 +91,7 @@
 - (NSData *)sha1Hash
 {
   NSMutableData *result = [NSMutableData data];
+  [result appendData: [@"NSSet" dataUsingEncoding: NSUTF16BigEndianStringEncoding]];
   for (id obj in self)
   {
     [result appendData: [obj sha1Hash]];
@@ -113,6 +115,7 @@
 - (NSData *)sha1Hash
 {
   NSMutableData *result = [NSMutableData data];
+  [result appendData: [@"NSDictionary" dataUsingEncoding: NSUTF16BigEndianStringEncoding]];
   for (NSString *key in [self allKeys])
   {
     [result appendData: [key sha1Hash]];

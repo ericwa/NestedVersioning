@@ -21,6 +21,7 @@
 @interface COObject : NSObject
 {
 @private
+  ETEntityDescription *_description;
   NSMutableDictionary *_data;
   COObjectContext *_ctx;
   ETUUID *_uuid;
@@ -67,43 +68,6 @@
 
 @end
 
-
-/**
- * History related manipulations to the working copy. (to one specific object)
- */
-@interface COObject (Rollback)
-
-/**
- * Reverts back to the last saved version
- */
-- (void) revert;
-
-/**
- * Commit changes made to jst this object?
- */
-- (void) commit;
-
-/**
- * Rolls back this object to the state it was in at the given revision, discarding all current changes
- */
-- (void) rollbackToRevision: (COHistoryGraphNode *)ver;
-
-/**
- * Replaces the reciever with the result of doing a three-way merge with it an otherObj,
- * using baseObj as the base revision.
- *
- * Note that otherObj and baseObj will likely be COObject instances represeting the
- * same UUID as the reciever from other (temporary) object contexts
- * constructed just for doing the merge.
- *
- * Note that nothing is committed.
- */
-- (void) threeWayMergeWithObject: (COObject*)otherObj base: (COObject *)baseObj;
-- (void) twoWayMergeWithObject: (COObject *)otherObj;
-
-- (void) selectiveUndoChangesMadeInRevision: (COHistoryGraphNode *)ver;
-
-@end
 
 // FIXME: these are a bit of a mess
 @interface COObject (PropertyListImportExport)

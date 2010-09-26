@@ -18,7 +18,6 @@ Every user operation goes into a persistent log.
 Undo tracks.
 
 Not all commits should result in undo log.
-
 e.g. a download finishing. Things not the result of user actions.
 
 permanently deleting something:

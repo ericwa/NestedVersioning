@@ -8,8 +8,22 @@
 
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
-		6600AEE5112E748D00C525BB /* EtoileFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6600AEDF112E746F00C525BB /* EtoileFoundation.framework */; };
+		663A186212493F9B00E61006 /* OutlineInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 663A186112493F9B00E61006 /* OutlineInspector.m */; };
 		66708E0B12480ED300E65F00 /* CORepository.m in Sources */ = {isa = PBXBuildFile; fileRef = 66708E0A12480ED300E65F00 /* CORepository.m */; };
+		66708F7312486CD300E65F00 /* OutlineDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 66708F7212486CD300E65F00 /* OutlineDocument.m */; };
+		66708F9512486E9D00E65F00 /* OutlineDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 66708F9412486E9D00E65F00 /* OutlineDocument.xib */; };
+		66708F9B12486F0400E65F00 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
+		66708F9C12486F0400E65F00 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
+		66708F9D12486F0400E65F00 /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = 66982A1F11EBC2A0007154CD /* TODO */; };
+		66708F9E12486F0400E65F00 /* README-MIDDLEAPI in Resources */ = {isa = PBXBuildFile; fileRef = 79858AC61242DE34008FD5BA /* README-MIDDLEAPI */; };
+		66708F9F12486F0400E65F00 /* OutlineDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 66708F9412486E9D00E65F00 /* OutlineDocument.xib */; };
+		66708FAB12486F0400E65F00 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
+		66708FB312486F0400E65F00 /* OutlineDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 66708F7212486CD300E65F00 /* OutlineDocument.m */; };
+		66708FB612486F0400E65F00 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		66708FB712486F0400E65F00 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 669965351162E17500359BE6 /* libz.dylib */; };
+		66708FB812486F0400E65F00 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6699653F1162E1C000359BE6 /* libcrypto.dylib */; };
+		66708FF51248719400E65F00 /* HistoryInspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = 66708FF41248719400E65F00 /* HistoryInspector.xib */; };
+		667090011248726900E65F00 /* OutlineInspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = 667090001248726900E65F00 /* OutlineInspector.xib */; };
 		6675B1B111E17E5B00ACE0CB /* COStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 6675B1B011E17E5B00ACE0CB /* COStore.m */; };
 		6695E4B911A1604800CDD7CF /* ObjectMergingAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* ObjectMergingAppDelegate.m */; };
 		6695E4BA11A1604800CDD7CF /* COObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 669963D0115FE67D00359BE6 /* COObject.m */; };
@@ -36,25 +50,25 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		6600AEDC112E746F00C525BB /* PBXContainerItemProxy */ = {
+		792BF919124FBAD00040BF68 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6600AED3112E746F00C525BB /* EtoileFoundation.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 60073EAD10074D26007272E6;
+			remoteGlobalIDString = 60073EAD10074D26007272E6 /* EtoileXML.framework */;
 			remoteInfo = EtoileXML;
 		};
-		6600AEDE112E746F00C525BB /* PBXContainerItemProxy */ = {
+		792BF91B124FBAD00040BF68 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6600AED3112E746F00C525BB /* EtoileFoundation.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 603647AC0E409244003377E0;
+			remoteGlobalIDString = 603647AC0E409244003377E0 /* EtoileFoundation.framework */;
 			remoteInfo = EtoileFoundation;
 		};
-		6600AEE0112E746F00C525BB /* PBXContainerItemProxy */ = {
+		792BF91D124FBAD00040BF68 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6600AED3112E746F00C525BB /* EtoileFoundation.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 609B66D70FEE80CE0007F842;
+			remoteGlobalIDString = 609B66D70FEE80CE0007F842 /* TestEtoileFoundation.bundle */;
 			remoteInfo = TestEtoileFoundation;
 		};
 /* End PBXContainerItemProxy section */
@@ -70,12 +84,20 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		6600AED3112E746F00C525BB /* EtoileFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = EtoileFoundation.xcodeproj; path = ../../../trunk/Etoile/Frameworks/EtoileFoundation/EtoileFoundation.xcodeproj; sourceTree = SOURCE_ROOT; };
+		6600AED3112E746F00C525BB /* EtoileFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = EtoileFoundation.xcodeproj; path = EtoileFoundation/EtoileFoundation.xcodeproj; sourceTree = "<group>"; };
 		6601B90611D7119E00110623 /* diff.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = diff.hh; sourceTree = "<group>"; };
+		663A186012493F9B00E61006 /* OutlineInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutlineInspector.h; sourceTree = "<group>"; };
+		663A186112493F9B00E61006 /* OutlineInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OutlineInspector.m; sourceTree = "<group>"; };
 		666B277D117D0F7F004AC6E7 /* COFetchRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COFetchRequest.h; sourceTree = "<group>"; };
 		666B277E117D0F7F004AC6E7 /* COFetchRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COFetchRequest.m; sourceTree = "<group>"; };
 		66708E0912480ED300E65F00 /* CORepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CORepository.h; sourceTree = "<group>"; };
 		66708E0A12480ED300E65F00 /* CORepository.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CORepository.m; sourceTree = "<group>"; };
+		66708F7112486CD300E65F00 /* OutlineDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutlineDocument.h; sourceTree = "<group>"; };
+		66708F7212486CD300E65F00 /* OutlineDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OutlineDocument.m; sourceTree = "<group>"; };
+		66708F9412486E9D00E65F00 /* OutlineDocument.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OutlineDocument.xib; sourceTree = "<group>"; };
+		66708FBC12486F0600E65F00 /* Outliner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Outliner.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		66708FF41248719400E65F00 /* HistoryInspector.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HistoryInspector.xib; sourceTree = "<group>"; };
+		667090001248726900E65F00 /* OutlineInspector.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OutlineInspector.xib; sourceTree = "<group>"; };
 		6675B1AF11E17E5B00ACE0CB /* COStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COStore.h; sourceTree = "<group>"; };
 		6675B1B011E17E5B00ACE0CB /* COStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COStore.m; sourceTree = "<group>"; };
 		6695E2001199532D00CDD7CF /* COObjectGraphDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COObjectGraphDiff.h; sourceTree = "<group>"; };
@@ -111,16 +133,25 @@
 		792D7CFD12441553008215E6 /* COChangeset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COChangeset.h; sourceTree = "<group>"; };
 		792D7CFE12441553008215E6 /* COChangeset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COChangeset.m; sourceTree = "<group>"; };
 		79858AC61242DE34008FD5BA /* README-MIDDLEAPI */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "README-MIDDLEAPI"; sourceTree = "<group>"; };
-		8D1107310486CEB800E47090 /* ObjectMerging-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ObjectMerging-Info.plist"; sourceTree = "<group>"; };
+		8D1107310486CEB800E47090 /* Outliner-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Outliner-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* ObjectMerging.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ObjectMerging.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		66708FB412486F0400E65F00 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				66708FB612486F0400E65F00 /* Cocoa.framework in Frameworks */,
+				66708FB712486F0400E65F00 /* libz.dylib in Frameworks */,
+				66708FB812486F0400E65F00 /* libcrypto.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D11072E0486CEB800E47090 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6600AEE5112E748D00C525BB /* EtoileFoundation.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				669965361162E17500359BE6 /* libz.dylib in Frameworks */,
 				669965401162E1C000359BE6 /* libcrypto.dylib in Frameworks */,
@@ -166,6 +197,7 @@
 			isa = PBXGroup;
 			children = (
 				8D1107320486CEB800E47090 /* ObjectMerging.app */,
+				66708FBC12486F0600E65F00 /* Outliner.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -174,6 +206,7 @@
 			isa = PBXGroup;
 			children = (
 				6600AED3112E746F00C525BB /* EtoileFoundation.xcodeproj */,
+				66708FEF124870CB00E65F00 /* Outliner App */,
 				6699633B115F0C4200359BE6 /* Documentation */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -188,7 +221,6 @@
 			isa = PBXGroup;
 			children = (
 				256AC3F00F4B6AF500CF3369 /* ObjectMerging_Prefix.pch */,
-				29B97316FDCFA39411CA2CEA /* main.m */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -196,9 +228,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				8D1107310486CEB800E47090 /* ObjectMerging-Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
-				1DDD58140DA1D0A300B32029 /* MainMenu.xib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -212,14 +242,21 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		6600AED4112E746F00C525BB /* Products */ = {
+		66708FEF124870CB00E65F00 /* Outliner App */ = {
 			isa = PBXGroup;
 			children = (
-				6600AEDD112E746F00C525BB /* EtoileXML.framework */,
-				6600AEDF112E746F00C525BB /* EtoileFoundation.framework */,
-				6600AEE1112E746F00C525BB /* TestEtoileFoundation.bundle */,
+				1DDD58140DA1D0A300B32029 /* MainMenu.xib */,
+				66708F9412486E9D00E65F00 /* OutlineDocument.xib */,
+				66708FF41248719400E65F00 /* HistoryInspector.xib */,
+				667090001248726900E65F00 /* OutlineInspector.xib */,
+				8D1107310486CEB800E47090 /* Outliner-Info.plist */,
+				66708F7112486CD300E65F00 /* OutlineDocument.h */,
+				66708F7212486CD300E65F00 /* OutlineDocument.m */,
+				29B97316FDCFA39411CA2CEA /* main.m */,
+				663A186012493F9B00E61006 /* OutlineInspector.h */,
+				663A186112493F9B00E61006 /* OutlineInspector.m */,
 			);
-			name = Products;
+			name = "Outliner App";
 			sourceTree = "<group>";
 		};
 		66996323115F0A7500359BE6 /* Low level Differencing & Merging */ = {
@@ -304,6 +341,16 @@
 			name = Utilities;
 			sourceTree = "<group>";
 		};
+		792BF914124FBAD00040BF68 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				792BF91A124FBAD00040BF68 /* EtoileXML.framework */,
+				792BF91C124FBAD00040BF68 /* EtoileFoundation.framework */,
+				792BF91E124FBAD00040BF68 /* TestEtoileFoundation.bundle */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		79858AC51242DDD3008FD5BA /* Middle API */ = {
 			isa = PBXGroup;
 			children = (
@@ -323,9 +370,27 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8D1107260486CEB800E47090 /* ObjectMerging */ = {
+		66708F9912486F0400E65F00 /* Outliner */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "ObjectMerging" */;
+			buildConfigurationList = 66708FB912486F0400E65F00 /* Build configuration list for PBXNativeTarget "Outliner" */;
+			buildPhases = (
+				66708F9A12486F0400E65F00 /* Resources */,
+				66708FA012486F0400E65F00 /* Sources */,
+				66708FB412486F0400E65F00 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Outliner;
+			productInstallPath = "$(HOME)/Applications";
+			productName = ObjectMerging;
+			productReference = 66708FBC12486F0600E65F00 /* Outliner.app */;
+			productType = "com.apple.product-type.application";
+		};
+		8D1107260486CEB800E47090 /* Test */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Test" */;
 			buildPhases = (
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
@@ -335,7 +400,7 @@
 			);
 			dependencies = (
 			);
-			name = ObjectMerging;
+			name = Test;
 			productInstallPath = "$(HOME)/Applications";
 			productName = ObjectMerging;
 			productReference = 8D1107320486CEB800E47090 /* ObjectMerging.app */;
@@ -353,42 +418,57 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 6600AED4112E746F00C525BB /* Products */;
+					ProductGroup = 792BF914124FBAD00040BF68 /* Products */;
 					ProjectRef = 6600AED3112E746F00C525BB /* EtoileFoundation.xcodeproj */;
 				},
 			);
 			projectRoot = "";
 			targets = (
-				8D1107260486CEB800E47090 /* ObjectMerging */,
+				8D1107260486CEB800E47090 /* Test */,
+				66708F9912486F0400E65F00 /* Outliner */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		6600AEDD112E746F00C525BB /* EtoileXML.framework */ = {
+		792BF91A124FBAD00040BF68 /* EtoileXML.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = EtoileXML.framework;
-			remoteRef = 6600AEDC112E746F00C525BB /* PBXContainerItemProxy */;
+			remoteRef = 792BF919124FBAD00040BF68 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		6600AEDF112E746F00C525BB /* EtoileFoundation.framework */ = {
+		792BF91C124FBAD00040BF68 /* EtoileFoundation.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = EtoileFoundation.framework;
-			remoteRef = 6600AEDE112E746F00C525BB /* PBXContainerItemProxy */;
+			remoteRef = 792BF91B124FBAD00040BF68 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		6600AEE1112E746F00C525BB /* TestEtoileFoundation.bundle */ = {
+		792BF91E124FBAD00040BF68 /* TestEtoileFoundation.bundle */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = TestEtoileFoundation.bundle;
-			remoteRef = 6600AEE0112E746F00C525BB /* PBXContainerItemProxy */;
+			remoteRef = 792BF91D124FBAD00040BF68 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
+		66708F9A12486F0400E65F00 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				66708F9B12486F0400E65F00 /* InfoPlist.strings in Resources */,
+				66708F9C12486F0400E65F00 /* MainMenu.xib in Resources */,
+				66708F9D12486F0400E65F00 /* TODO in Resources */,
+				66708F9E12486F0400E65F00 /* README-MIDDLEAPI in Resources */,
+				66708F9F12486F0400E65F00 /* OutlineDocument.xib in Resources */,
+				66708FF51248719400E65F00 /* HistoryInspector.xib in Resources */,
+				667090011248726900E65F00 /* OutlineInspector.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D1107290486CEB800E47090 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -397,12 +477,23 @@
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
 				66982A2011EBC2A0007154CD /* TODO in Resources */,
 				79858AC71242DE34008FD5BA /* README-MIDDLEAPI in Resources */,
+				66708F9512486E9D00E65F00 /* OutlineDocument.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		66708FA012486F0400E65F00 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				66708FAB12486F0400E65F00 /* main.m in Sources */,
+				66708FB312486F0400E65F00 /* OutlineDocument.m in Sources */,
+				663A186212493F9B00E61006 /* OutlineInspector.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D11072C0486CEB800E47090 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -425,6 +516,7 @@
 				66983DB411F267D0007154CD /* COSequenceDiff.m in Sources */,
 				792D7CFF12441553008215E6 /* COChangeset.m in Sources */,
 				66708E0B12480ED300E65F00 /* CORepository.m in Sources */,
+				66708F7312486CD300E65F00 /* OutlineDocument.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -450,6 +542,55 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		66708FBA12486F0400E65F00 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\\\"$(SRCROOT)/../../../trunk/Etoile/Frameworks/CoreObject/build/Release\\\"",
+					"\\\"$(SRCROOT)/../../../trunk/Etoile/Frameworks/EtoileFoundation/build/Release\\\"",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INFOPLIST_FILE = "Outliner-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\\\"$(SRCROOT)/../../../trunk/Etoile/Frameworks/CoreObject/build/CoreObject.build/Release/CoreObject.build/Objects-normal/i386\\\"",
+					"\\\"$(SRCROOT)/../../../trunk/Etoile/Frameworks/CoreObject/build/CoreObject.build/Release/CoreObject.build/Objects-normal/x86_64\\\"",
+				);
+				PRODUCT_NAME = Outliner;
+			};
+			name = Debug;
+		};
+		66708FBB12486F0400E65F00 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\\\"$(SRCROOT)/../../../trunk/Etoile/Frameworks/CoreObject/build/Release\\\"",
+					"\\\"$(SRCROOT)/../../../trunk/Etoile/Frameworks/EtoileFoundation/build/Release\\\"",
+				);
+				GCC_MODEL_TUNING = G5;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INFOPLIST_FILE = "Outliner-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\\\"$(SRCROOT)/../../../trunk/Etoile/Frameworks/CoreObject/build/CoreObject.build/Release/CoreObject.build/Objects-normal/i386\\\"",
+					"\\\"$(SRCROOT)/../../../trunk/Etoile/Frameworks/CoreObject/build/CoreObject.build/Release/CoreObject.build/Objects-normal/x86_64\\\"",
+				);
+				PRODUCT_NAME = Outliner;
+			};
+			name = Release;
+		};
 		C01FCF4B08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -467,7 +608,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ObjectMerging_Prefix.pch;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "ObjectMerging-Info.plist";
+				INFOPLIST_FILE = "Outliner-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -492,7 +633,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ObjectMerging_Prefix.pch;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "ObjectMerging-Info.plist";
+				INFOPLIST_FILE = "Outliner-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -533,7 +674,16 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "ObjectMerging" */ = {
+		66708FB912486F0400E65F00 /* Build configuration list for PBXNativeTarget "Outliner" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				66708FBA12486F0400E65F00 /* Debug */,
+				66708FBB12486F0400E65F00 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Test" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4B08A954540054247B /* Debug */,
