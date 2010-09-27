@@ -1,10 +1,10 @@
 #import <Cocoa/Cocoa.h>
 
-@protocol COStoreDelegate
+@protocol CORepositoryDelegate
 
 @optional
-- (void) store: (COStoreCoordinator*)store willCommitChangeset: (COChangeset*)cs;
-- (void) store: (COStoreCoordinator*)store didCommitChangeset: (COChangeset*)cs;
+- (void) store: (CORepository*)store willCommitChangeset: (COChangeset*)cs;
+- (void) store: (CORepository*)store didCommitChangeset: (COChangeset*)cs;
 
 @end
 
@@ -12,13 +12,13 @@
 @interface CORepository : NSObject
 {
   COStoreBackend *_backend;
-  id<COStoreDelegate> _delegate;
+  id<CORepositoryDelegate> _delegate;
 }
 
-+ (COStore*)storeWithURL: (NSURL*)url;
++ (CORepository*)storeWithURL: (NSURL*)url;
 
-- (id<COStoreDelegate>)delegate;
-- (void)setDelegate: (id<COStoreDelegate>)aDelegate;
+- (id<CORepositoryDelegate>)delegate;
+- (void)setDelegate: (id<CORepositoryDelegate>)aDelegate;
 
 
 
