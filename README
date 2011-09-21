@@ -1,66 +1,15 @@
-ObjectMerging / CoreObject rewrite
-====================================
+NestedVersioning
+================
 
 Author: Eric Wasylishen
-License: MIT X11
+E-Mail: ewasylishen@gmail.com
+License: http://www.opensource.org/licenses/mit-license.php
 
-This is my work-in-progress rewrite of CoreObject.
+The goal of NestedVersioning is a revision control system with the following features:
 
-Primary goals:
----------------
-- Be a storage framework that could be used in a GNUstep/Cocoa app 
-  which gives your app revision control for free. i.e., the app's document
-  format would be an "object bundle" directory containing the document's
-  history graph and all of the versions of objects (delta compressed
-  for space efficiency).
-  
-- Similar spirit as CoreData, except adding revision control, and objects 
-  don't need to follow a schema.
-
-Capabilities
-------------
-
-- Manages persistence and versioning of an object graph composed of COObject or subclasses.
-These are premitted to have property-list type (..) values for properties, and are 
-identified by a UUID.
-
-
-Not handled in the core, but would be built on top
---------------------------------------------------
-
-- meta-level information about objects (i.e. which properties are "strong"/containment
-or "weak"/association links). All object references in CO are "weak", so for example
-rolling back one object to an older version doesn't modify any of the objects its
-properties refer to.
-
-
-
-
-
-Changes vs. the original CoreObject implemenation:
---------------------------------------------------
-
-- More restricted object contents: no serialization of existing ObjC objects;
- it is not possible to incorporate normal ObjC classes into the CoreObject
- graph. (you could use keyed archiving and then store the resulting
- NSData as a property of an object, though)
- 
-- Does not use message-based persistency
-
-- Any multivalued property can contain COObjects
-
-- My COObjectContext has a different role (it may be confusing to use the same name)
-
-- (planned) full support for revision control features (diff, merge, branching)
- as well as selective undo.
-
-
-Inspired by these papers:
---------------------------
-- "Difference and Union of Models" by M. Alanen and I. Porres.
-- "A flexible object merging framework" by J. P. Munson and P. Dewan.
- This paper has a lot of nice examples of collaboration scenarios with merging
-
-
-Currently this is in a pretty early stage..
-
+* Designed to be embedded in applications
+    - For building applications with a persistent undo/redo stack, and capability for branching undo/redo
+* Diff/merge on structured data
+    - Rather than doing diff/merge on lines of text files
+* Nested repositories
+    - As in, what you would achieve by storing a git repository (the working copy and the .git directory) inside a mercurial repository, and committing to the hg repo after each commit to the git repo–the hg repo would provide a “safety net” allowing you to undo a version-control operation on the git repo that didn’t work out
