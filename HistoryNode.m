@@ -29,7 +29,7 @@
 + (HistoryNode*) historyNodeWithParentHistoryNode: (HistoryNode*)parentHistoryNode
                                 childHistoryNodes: (NSArray*)childHistoryNodes
                               historyNodeMetadata: (NSDictionary*)historyNodeMetadata
-                              childEmbeddedObject: (EmbeddedObject*)childEmbeddedObject
+                              childEmbeddedObject: (BaseObject*)childEmbeddedObject
 {
     HistoryNode *obj = [[self alloc] init];
     obj.parentHistoryNode = parentHistoryNode;

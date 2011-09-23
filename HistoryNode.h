@@ -18,18 +18,18 @@
     /**
      * actual contents
      */
-    EmbeddedObject *childEmbeddedObject; // strong
+    BaseObject *childEmbeddedObject; // strong
 }
 
 @property (readwrite, nonatomic, assign) HistoryNode *parentHistoryNode;
 @property (readwrite, nonatomic, retain) NSArray *childHistoryNodes;
 @property (readwrite, nonatomic, copy) NSDictionary *historyNodeMetadata;
-@property (readwrite, nonatomic, retain) EmbeddedObject *childEmbeddedObject;
+@property (readwrite, nonatomic, retain) BaseObject *childEmbeddedObject;
 
 - (id) copyWithZone:(NSZone *)zone;
 + (HistoryNode*) historyNodeWithParentHistoryNode: (HistoryNode*)parentHistoryNode
                                 childHistoryNodes: (NSArray*)childHistoryNodes
                               historyNodeMetadata: (NSDictionary*)historyNodeMetadata
-                              childEmbeddedObject: (EmbeddedObject*)childEmbeddedObject;
+                              childEmbeddedObject: (BaseObject*)childEmbeddedObject;
 
 @end

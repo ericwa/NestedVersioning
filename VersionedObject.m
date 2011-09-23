@@ -87,7 +87,7 @@
 {
     return [[self currentUndoNode] currentHistoryNode];
 }
-- (EmbeddedObject *) currentEmbeddedObject
+- (BaseObject *) currentEmbeddedObject
 {
     return [self currentHistoryNode].childEmbeddedObject;
 }
