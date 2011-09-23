@@ -23,4 +23,8 @@
 + (Repository*) repositoryWithEmbeddedObject: (EmbeddedObject*)emb
                     firstHistoryNodeMetadata: (NSDictionary *)historyNodeMetadata;
 
+// access
+
+- (VersionedObject *) rootObject;
+
 @end

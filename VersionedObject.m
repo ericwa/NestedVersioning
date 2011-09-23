@@ -48,4 +48,48 @@
     return nil;
 }
 
+// manipulation
+
+- (void)commitNewVersionOfEmbeddedObject: (EmbeddedObject*)object
+                      withCommitMetadata: (NSDictionary*)metadata
+{
+    //??
+}
+
+- (void)_navigateToUndoNodeAtIndex: (NSUInteger)index
+{
+    self.currentNodeIndex = index;
+}
+
+- (void)navigateToUndoNode: (UndoNode*)node
+{
+    NSUInteger i = 0;
+    for (UndoNode *n in undoNodes)
+    {
+        if (n == node)
+        {
+            [self _navigateToUndoNodeAtIndex: i];
+        }
+        i++;
+    }
+    [NSException raise: NSInvalidArgumentException
+                format: @"-[%@ %@]: Node not found",
+                        NSStringFromClass([self class]), NSStringFromSelector(_cmd)];
+}
+
+// access
+
+- (UndoNode *) currentUndoNode
+{
+    return [undoNodes objectAtIndex: currentNodeIndex];
+}
+- (HistoryNode *) currentHistoryNode
+{
+    return [[self currentUndoNode] currentHistoryNode];
+}
+- (EmbeddedObject *) currentEmbeddedObject
+{
+    return [self currentHistoryNode].childEmbeddedObject;
+}
+
 @end

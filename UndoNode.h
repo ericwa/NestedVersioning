@@ -1,6 +1,9 @@
 #import <Foundation/Foundation.h>
 #import "Common.h"
 
+@class NamedBranch;
+@class HistoryNode;
+
 /**
  * A node making up the undo tree for an undo track
  */
@@ -39,4 +42,10 @@
                             namedBranches: (NSArray *)namedBranches
                        currentBranchIndex: (NSUInteger)currentBranchIndex
                              historyNodes: (NSArray*)historyNodes;
+
+// access
+
+- (NamedBranch *) currentBranch;
+- (HistoryNode *) currentHistoryNode;
+
 @end

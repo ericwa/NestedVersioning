@@ -2,6 +2,8 @@
 #import "Common.h"
 
 @class EmbeddedObject;
+@class UndoNode;
+@class HistoryNode;
 
 /**
  * VersionedObject - outer wrapper containing
@@ -52,5 +54,21 @@
  * makes an embedded object versioned.
  */
 + (VersionedObject *) versionedObjectWrappingEmbeddedObject: (EmbeddedObject *)object;
+
+
+
+// manipulation
+
+- (void)commitNewVersionOfEmbeddedObject: (EmbeddedObject*)object
+                      withCommitMetadata: (NSDictionary*)metadata;
+
+- (void)navigateToUndoNode: (UndoNode*)node;
+
+
+// access
+
+- (UndoNode *) currentUndoNode;
+- (HistoryNode *) currentHistoryNode;
+- (EmbeddedObject *) currentEmbeddedObject;
 
 @end

@@ -68,4 +68,15 @@
                                         historyNodes: newHistoryNodes] retain];
 }
 
+// access
+
+- (NamedBranch *) currentBranch
+{
+    return [namedBranches objectAtIndex: currentBranchIndex];
+}
+- (HistoryNode *) currentHistoryNode
+{
+    return [historyNodes objectAtIndex: [self currentBranch].currentHistoryNodeIndex];
+}
+
 @end
