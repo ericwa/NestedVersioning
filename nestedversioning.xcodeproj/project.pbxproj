@@ -49,6 +49,7 @@
 		66DFAECC142A726100623060 /* BaseObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseObject.m; sourceTree = "<group>"; };
 		66DFAECD142A726100623060 /* BaseObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseObject.h; sourceTree = "<group>"; };
 		66DFAECE142A726100623060 /* NamedBranch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NamedBranch.m; sourceTree = "<group>"; };
+		66DFAEDB142AD0F700623060 /* README */ = {isa = PBXFileReference; lastKnownFileType = text; name = README; path = ../../../dev/NestedVersioning/README; sourceTree = "<group>"; };
 		66E22EC61421D47100C00A98 /* nestedversioning */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = nestedversioning; sourceTree = BUILT_PRODUCTS_DIR; };
 		66E22EC81421D47100C00A98 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -68,24 +69,25 @@
 		662811EB13F8B5000075BBC2 = {
 			isa = PBXGroup;
 			children = (
+				66DFAEDB142AD0F700623060 /* README */,
+				66DFAEBF142A726100623060 /* main.m */,
+				66DFAECA142A726100623060 /* test-Prefix.pch */,
+				66DFAEC4142A726100623060 /* Common.h */,
+				66DFAEC0142A726100623060 /* Repository.h */,
+				66DFAEC3142A726100623060 /* Repository.m */,
+				66DFAECD142A726100623060 /* BaseObject.h */,
+				66DFAECC142A726100623060 /* BaseObject.m */,
+				66DFAEC2142A726100623060 /* EmbeddedObject.h */,
+				66DFAEC7142A726100623060 /* EmbeddedObject.m */,
 				66DFAEBD142A726100623060 /* VersionedObject.h */,
 				66DFAEBE142A726100623060 /* VersionedObject.m */,
-				66DFAEBF142A726100623060 /* main.m */,
-				66DFAEC0142A726100623060 /* Repository.h */,
 				66DFAEC1142A726100623060 /* UndoNode.h */,
-				66DFAEC2142A726100623060 /* EmbeddedObject.h */,
-				66DFAEC3142A726100623060 /* Repository.m */,
-				66DFAEC4142A726100623060 /* Common.h */,
 				66DFAEC5142A726100623060 /* UndoNode.m */,
-				66DFAEC6142A726100623060 /* HistoryNode.m */,
-				66DFAEC7142A726100623060 /* EmbeddedObject.m */,
-				66DFAEC8142A726100623060 /* HistoryNode.h */,
 				66DFAEC9142A726100623060 /* NamedBranch.h */,
-				66DFAECA142A726100623060 /* test-Prefix.pch */,
-				66DFAECB142A726100623060 /* test.1 */,
-				66DFAECC142A726100623060 /* BaseObject.m */,
-				66DFAECD142A726100623060 /* BaseObject.h */,
 				66DFAECE142A726100623060 /* NamedBranch.m */,
+				66DFAEC8142A726100623060 /* HistoryNode.h */,
+				66DFAEC6142A726100623060 /* HistoryNode.m */,
+				66DFAECB142A726100623060 /* test.1 */,
 				662811F913F8B5010075BBC2 /* Frameworks */,
 				662811F713F8B5010075BBC2 /* Products */,
 			);
