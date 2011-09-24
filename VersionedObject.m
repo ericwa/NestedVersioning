@@ -19,7 +19,7 @@
                     currentNodeIndex: (NSUInteger)currentNodeIndex
 {
     VersionedObject *obj = [[self alloc] init];
-    obj.undoNodes = undoNodes;
+    obj.undoNodes = [NSMutableArray arrayWithArray: undoNodes];
     obj.currentNodeIndex = currentNodeIndex;
     
     // Check types and set parent pointers of objects in undoNodes
@@ -50,10 +50,36 @@
 
 // manipulation
 
-- (void)commitNewVersionOfEmbeddedObject: (EmbeddedObject*)object
+- (void)commitNewVersionOfEmbeddedObject: (BaseObject*)object
                       withCommitMetadata: (NSDictionary*)metadata
 {
-    //??
+    /**
+     * summary:
+     *  - create a new undo node, branching off of the current one,
+     *    containing a copy of the history graph
+     *  - create a new hisory node in the copied undo node's history graph,
+     *    branching off of the current history node
+     *  - set the embedded object of the new history node to the given one,
+     *    and set the commit metadata
+     */
+    
+    UndoNode *oldUndoNode = [self currentUndoNode];
+    
+    UndoNode *newUndoNode = [oldUndoNode copy]; // deep-copies the contained history graph
+    
+    [oldUndoNode.childUndoNodes addObject: newUndoNode];
+    newUndoNode.parentUndoNode = oldUndoNode;
+    [newUndoNode.childUndoNodes removeAllObjects];
+    
+    HistoryNode *oldHistoryNodeInNewUndoNode = [newUndoNode currentHistoryNode];
+    HistoryNode *newHistoryNode = [oldHistoryNodeInNewUndoNode copy]; // another deep copy
+    [newHistoryNode setParentHistoryNode: oldHistoryNodeInNewUndoNode];
+    [oldHistoryNodeInNewUndoNode.childHistoryNodes addObject: newHistoryNode];
+    
+    [newHistoryNode setChildEmbeddedObject: object];
+    
+    [newUndoNode release];
+    [newHistoryNode release];
 }
 
 - (void)_navigateToUndoNodeAtIndex: (NSUInteger)index

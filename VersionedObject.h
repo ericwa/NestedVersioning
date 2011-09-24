@@ -32,12 +32,12 @@
      *  we'd have to traverse the graph, build a list of objects to copy,
      *  build a mapping from old to new objects, etc, etc!)
      */
-    NSArray *undoNodes; // strong
+    NSMutableArray *undoNodes; // strong
     
     NSUInteger currentNodeIndex;
 }
 
-@property (readwrite, nonatomic, retain) NSArray *undoNodes;
+@property (readwrite, nonatomic, retain) NSMutableArray *undoNodes;
 @property (readwrite, nonatomic, assign) NSUInteger currentNodeIndex;
 
 - (id) copyWithZone:(NSZone *)zone;
@@ -59,7 +59,7 @@
 
 // manipulation
 
-- (void)commitNewVersionOfEmbeddedObject: (EmbeddedObject*)object
+- (void)commitNewVersionOfEmbeddedObject: (BaseObject*)object
                       withCommitMetadata: (NSDictionary*)metadata;
 
 - (void)navigateToUndoNode: (UndoNode*)node;

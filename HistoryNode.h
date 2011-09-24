@@ -8,7 +8,7 @@
     // parent (inherited from BaseObject) is a NamedBranch
     
     HistoryNode *parentHistoryNode; //weak
-    NSArray *childHistoryNodes; //strong
+    NSMutableArray *childHistoryNodes; //strong
 
     /**
      * commit log message, date, etc.
@@ -22,7 +22,7 @@
 }
 
 @property (readwrite, nonatomic, assign) HistoryNode *parentHistoryNode;
-@property (readwrite, nonatomic, retain) NSArray *childHistoryNodes;
+@property (readwrite, nonatomic, retain) NSMutableArray *childHistoryNodes;
 @property (readwrite, nonatomic, copy) NSDictionary *historyNodeMetadata;
 @property (readwrite, nonatomic, retain) BaseObject *childEmbeddedObject;
 

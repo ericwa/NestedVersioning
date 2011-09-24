@@ -8,11 +8,11 @@
 @interface EmbeddedObject : BaseObject
 {
     // parent (inherited from BaseObject) is an EmbeddedObject or HistoryNode
-    NSArray *contents; // array of BaseObject's
+    NSMutableArray *contents; // array of BaseObject's
     NSDictionary *metadata;
 }
 
-@property (readwrite, nonatomic, retain) NSArray *contents;
+@property (readwrite, nonatomic, retain) NSMutableArray *contents;
 @property (readwrite, nonatomic, copy) NSDictionary *metadata;
 
 - (id)copyWithZone:(NSZone *)zone;

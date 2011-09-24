@@ -33,7 +33,7 @@
 {
     HistoryNode *obj = [[self alloc] init];
     obj.parentHistoryNode = parentHistoryNode;
-    obj.childHistoryNodes = childHistoryNodes;
+    obj.childHistoryNodes = [NSMutableArray arrayWithArray: childHistoryNodes];
     obj.historyNodeMetadata = historyNodeMetadata;
     obj.childEmbeddedObject = childEmbeddedObject;
     

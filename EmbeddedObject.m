@@ -18,7 +18,7 @@
                                metadata: (NSDictionary*)metadata
 {
     EmbeddedObject *obj = [[self alloc] init];
-    obj.contents = contents;
+    obj.contents = [NSMutableArray arrayWithArray: contents];
     obj.metadata = metadata;
     
     // Check types and set parent pointers of objects in contents

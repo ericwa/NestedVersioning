@@ -25,11 +25,11 @@
 {
     UndoNode *obj = [[self alloc] init];
     obj.parentUndoNode = parentUndoNode;
-    obj.childUndoNodes = childUndoNodes;
-    obj.namedBranches = namedBranches;
+    obj.childUndoNodes = [NSMutableArray arrayWithArray: childUndoNodes];
+    obj.namedBranches = [NSMutableArray arrayWithArray: namedBranches];
     obj.currentBranchIndex = currentBranchIndex;
-    obj.historyNodes = historyNodes;
-    
+    obj.historyNodes = [NSMutableArray arrayWithArray: historyNodes];
+   
     // Check types and set parent pointers of objects in namedBranches
     for (NamedBranch *branch in obj.namedBranches)
     {

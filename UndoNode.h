@@ -14,26 +14,26 @@
     // The undo graph
     
     UndoNode *parentUndoNode; //weak
-    NSArray *childUndoNodes; //strong
+    NSMutableArray *childUndoNodes; //strong
     
     // The versioned object, underneath the outer undo layer
     
-    NSArray *namedBranches; // strong
+    NSMutableArray *namedBranches; // strong
     NSUInteger currentBranchIndex;
     
     /**
      * see comment in VersionedObject.h
      */
-    NSArray *historyNodes; // strong
+    NSMutableArray *historyNodes; // strong
     
     // note: the index of the current history node is stored in the current branch
 }
 
 @property (readwrite, nonatomic, assign) UndoNode *parentUndoNode;
-@property (readwrite, nonatomic, retain) NSArray *childUndoNodes;
-@property (readwrite, nonatomic, retain) NSArray *namedBranches;
+@property (readwrite, nonatomic, retain) NSMutableArray *childUndoNodes;
+@property (readwrite, nonatomic, retain) NSMutableArray *namedBranches;
 @property (readwrite, nonatomic, assign) NSUInteger currentBranchIndex;
-@property (readwrite, nonatomic, retain) NSArray *historyNodes;
+@property (readwrite, nonatomic, retain) NSMutableArray *historyNodes;
 
 - (id) copyWithZone:(NSZone *)zone;
 
