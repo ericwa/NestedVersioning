@@ -26,7 +26,7 @@ int main (int argc, const char * argv[])
                                        withCommitMetadata: [NSDictionary dictionaryWithObjectsAndKeys: @"first commit", @"message",
                                                             nil]];
     
-    NSLog(@"Versioned Object after commit: %@", rootVersionedObject);
+    NSLog(@"Versioned Object after commit:\n%@", edit1);
     
     [pool drain];
     return 0;

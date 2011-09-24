@@ -42,4 +42,16 @@
                                       metadata: self.metadata] retain];
 }
 
+- (NSString *) logWithIndent: (unsigned int)i
+{
+    NSMutableString *res = [NSMutableString string];
+    [res appendFormat: @"%@{embedded addr=%p metadata=%@\n", [LogIndent indent: i], self, [LogIndent logDictionary: self.metadata]];
+    for (BaseObject *obj in self.contents)
+    {
+        [res appendFormat: @"%@\n", [obj logWithIndent: i+1]];
+    }
+    [res appendFormat: @"%@}", [LogIndent indent: i]];
+    return res;        
+}
+
 @end

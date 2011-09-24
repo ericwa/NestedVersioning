@@ -79,4 +79,14 @@
     return [historyNodes objectAtIndex: [self currentBranch].currentHistoryNodeIndex];
 }
 
+// debug
+
+- (NSString *) logWithIndent: (unsigned int)i
+{
+    NSMutableString *res = [NSMutableString string];
+    [res appendFormat: @"%@{undonode=%p\n", [LogIndent indent: i], self];
+    [res appendFormat: @"%@}", [LogIndent indent: i]];
+    return res;        
+}
+
 @end

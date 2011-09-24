@@ -11,4 +11,6 @@
 
 @property (readwrite, nonatomic, assign) BaseObject *parent;
 
+- (NSString *) logWithIndent: (unsigned int)i;
+
 @end

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		66436A1B142E944B000C14B4 /* LogIndent.m in Sources */ = {isa = PBXBuildFile; fileRef = 66436A1A142E944B000C14B4 /* LogIndent.m */; };
 		66DFAECF142A726100623060 /* VersionedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DFAEBE142A726100623060 /* VersionedObject.m */; };
 		66DFAED0142A726100623060 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DFAEBF142A726100623060 /* main.m */; };
 		66DFAED1142A726100623060 /* Repository.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DFAEC3142A726100623060 /* Repository.m */; };
@@ -32,6 +33,8 @@
 
 /* Begin PBXFileReference section */
 		66416D20142D3EE20016501D /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		66436A19142E944B000C14B4 /* LogIndent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogIndent.h; sourceTree = "<group>"; };
+		66436A1A142E944B000C14B4 /* LogIndent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogIndent.m; sourceTree = "<group>"; };
 		66DFAEBD142A726100623060 /* VersionedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VersionedObject.h; sourceTree = "<group>"; };
 		66DFAEBE142A726100623060 /* VersionedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VersionedObject.m; sourceTree = "<group>"; };
 		66DFAEBF142A726100623060 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -72,6 +75,8 @@
 				66416D20142D3EE20016501D /* README */,
 				66DFAEBF142A726100623060 /* main.m */,
 				66DFAECA142A726100623060 /* test-Prefix.pch */,
+				66436A19142E944B000C14B4 /* LogIndent.h */,
+				66436A1A142E944B000C14B4 /* LogIndent.m */,
 				66DFAEC4142A726100623060 /* Common.h */,
 				66DFAEC0142A726100623060 /* Repository.h */,
 				66DFAEC3142A726100623060 /* Repository.m */,
@@ -164,6 +169,7 @@
 				66DFAED4142A726100623060 /* EmbeddedObject.m in Sources */,
 				66DFAED5142A726100623060 /* BaseObject.m in Sources */,
 				66DFAED6142A726100623060 /* NamedBranch.m in Sources */,
+				66436A1B142E944B000C14B4 /* LogIndent.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
