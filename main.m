@@ -21,8 +21,12 @@ int main (int argc, const char * argv[])
     edit1.metadata = [NSDictionary dictionaryWithObjectsAndKeys: @"Hello world", @"name",
                       nil];
     
+    VersionedObject *rootVersionedObject = [repo rootObject];
+    [rootVersionedObject commitNewVersionOfEmbeddedObject: edit1
+                                       withCommitMetadata: [NSDictionary dictionaryWithObjectsAndKeys: @"first commit", @"message",
+                                                            nil]];
     
-    //...
+    NSLog(@"Versioned Object after commit: %@", rootVersionedObject);
     
     [pool drain];
     return 0;

@@ -63,6 +63,10 @@
      *    and set the commit metadata
      */
     
+    // NOTE: this code completely violates encapsulation, and setting up the
+    // graph relationships is quite messy and error-prone. It's probably a 
+    // good idea to refactor this logic.
+    
     UndoNode *oldUndoNode = [self currentUndoNode];
     
     UndoNode *newUndoNode = [oldUndoNode copy]; // deep-copies the contained history graph
@@ -71,15 +75,23 @@
     newUndoNode.parentUndoNode = oldUndoNode;
     [newUndoNode.childUndoNodes removeAllObjects];
     
+    [self.undoNodes addObject: newUndoNode];
+    [newUndoNode release];
+    newUndoNode.parent = self;
+    self.currentNodeIndex = [self.undoNodes count] - 1; // index of new node
+    
+    
     HistoryNode *oldHistoryNodeInNewUndoNode = [newUndoNode currentHistoryNode];
     HistoryNode *newHistoryNode = [oldHistoryNodeInNewUndoNode copy]; // another deep copy
     [newHistoryNode setParentHistoryNode: oldHistoryNodeInNewUndoNode];
     [oldHistoryNodeInNewUndoNode.childHistoryNodes addObject: newHistoryNode];
     
-    [newHistoryNode setChildEmbeddedObject: object];
-    
-    [newUndoNode release];
+    [newUndoNode.historyNodes addObject: newHistoryNode];
     [newHistoryNode release];
+    newHistoryNode.parent = newUndoNode;
+    [newUndoNode currentBranch].currentHistoryNodeIndex = [newUndoNode.historyNodes count] - 1;
+    
+    [newHistoryNode setChildEmbeddedObject: object];
 }
 
 - (void)_navigateToUndoNodeAtIndex: (NSUInteger)index
