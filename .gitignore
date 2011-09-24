@@ -4,3 +4,14 @@
 *.pbxuser
 *.dia~
 nestedversioning.xcodeproj/project.xcworkspace/xcuserdata/
+*~
+!default.pbxuser
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+*.xcworkspace
+!default.xcworkspace
+xcuserdata
+build
