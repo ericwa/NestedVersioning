@@ -4,3 +4,5 @@
 *.pbxuser
 xcuserdata/
 *.dia~
+
+nestedversioning.xcodeproj/project.xcworkspace/xcuserdata/ericw.xcuserdatad/UserInterfaceState.xcuserstate
