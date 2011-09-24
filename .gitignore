@@ -2,7 +2,5 @@
 *.DS_Store
 *.mode1v3
 *.pbxuser
-xcuserdata/
 *.dia~
-
-nestedversioning.xcodeproj/project.xcworkspace/xcuserdata/ericw.xcuserdatad/UserInterfaceState.xcuserstate
+nestedversioning.xcodeproj/project.xcworkspace/xcuserdata/
