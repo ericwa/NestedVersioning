@@ -138,8 +138,8 @@
     [res appendFormat: @"%@{versioned addr=%p\n", [LogIndent indent: i], self];
     for (NSUInteger j=0; j<[self.undoNodes count]; j++)        
     {
-        if (j==currentNodeIndex) [res appendFormat: @"*"];
-        [res appendFormat: @"%@", [[self.undoNodes objectAtIndex: j] logWithIndent: i + 1]];
+        if (j==currentNodeIndex) [res appendFormat: @">"];
+        [res appendFormat: @"%@\n", [[self.undoNodes objectAtIndex: j] logWithIndent: i + 1]];
     }
     [res appendFormat: @"%@}", [LogIndent indent: i]];
     return res;        

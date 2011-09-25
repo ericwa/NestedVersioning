@@ -84,7 +84,16 @@
 - (NSString *) logWithIndent: (unsigned int)i
 {
     NSMutableString *res = [NSMutableString string];
-    [res appendFormat: @"%@{undonode=%p\n", [LogIndent indent: i], self];
+    [res appendFormat: @"%@{undonode=%p parent=%p children=(", [LogIndent indent: i], self, parentUndoNode];
+    
+    for (NSUInteger j=0; j<[self.childUndoNodes count]; j++)        
+    {
+        [res appendFormat: @"%p", [self.childUndoNodes objectAtIndex: j]];
+        if (j < [self.childUndoNodes count] - 1)
+            [res appendFormat: @", "];
+    }
+    [res appendFormat: @")\n"];
+    
     [res appendFormat: @"%@}", [LogIndent indent: i]];
     return res;        
 }

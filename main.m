@@ -22,11 +22,14 @@ int main (int argc, const char * argv[])
                       nil];
     
     VersionedObject *rootVersionedObject = [repo rootObject];
+    
+        NSLog(@"Versioned Object before commit:\n%@", rootVersionedObject);
+    
     [rootVersionedObject commitNewVersionOfEmbeddedObject: edit1
                                        withCommitMetadata: [NSDictionary dictionaryWithObjectsAndKeys: @"first commit", @"message",
                                                             nil]];
     
-    NSLog(@"Versioned Object after commit:\n%@", edit1);
+    NSLog(@"Versioned Object after commit:\n%@", rootVersionedObject);
     
     [pool drain];
     return 0;
