@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6628FB9B142FA65D0072767A /* EWTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6628FB9A142FA65D0072767A /* EWTest.m */; };
 		66436A1B142E944B000C14B4 /* LogIndent.m in Sources */ = {isa = PBXBuildFile; fileRef = 66436A1A142E944B000C14B4 /* LogIndent.m */; };
 		66DFAECF142A726100623060 /* VersionedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DFAEBE142A726100623060 /* VersionedObject.m */; };
 		66DFAED0142A726100623060 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DFAEBF142A726100623060 /* main.m */; };
@@ -32,6 +33,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		6628FB99142FA65D0072767A /* EWTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWTest.h; sourceTree = "<group>"; };
+		6628FB9A142FA65D0072767A /* EWTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWTest.m; sourceTree = "<group>"; };
 		66416D20142D3EE20016501D /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		66436A19142E944B000C14B4 /* LogIndent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogIndent.h; sourceTree = "<group>"; };
 		66436A1A142E944B000C14B4 /* LogIndent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogIndent.m; sourceTree = "<group>"; };
@@ -92,6 +95,8 @@
 				66DFAECE142A726100623060 /* NamedBranch.m */,
 				66DFAEC8142A726100623060 /* HistoryNode.h */,
 				66DFAEC6142A726100623060 /* HistoryNode.m */,
+				6628FB99142FA65D0072767A /* EWTest.h */,
+				6628FB9A142FA65D0072767A /* EWTest.m */,
 				66DFAECB142A726100623060 /* test.1 */,
 				662811F913F8B5010075BBC2 /* Frameworks */,
 				662811F713F8B5010075BBC2 /* Products */,
@@ -170,6 +175,7 @@
 				66DFAED5142A726100623060 /* BaseObject.m in Sources */,
 				66DFAED6142A726100623060 /* NamedBranch.m in Sources */,
 				66436A1B142E944B000C14B4 /* LogIndent.m in Sources */,
+				6628FB9B142FA65D0072767A /* EWTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
