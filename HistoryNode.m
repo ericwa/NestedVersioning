@@ -37,8 +37,6 @@
     obj.historyNodeMetadata = historyNodeMetadata;
     obj.childEmbeddedObject = childEmbeddedObject;
     
-    // set parent pointer
-    obj.childEmbeddedObject.parent = obj;
     return [obj autorelease];
 }
 

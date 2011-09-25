@@ -38,7 +38,6 @@
             [NSException raise: NSInvalidArgumentException
                         format: @"%@ not a NamedBranch", branch];
         }
-        branch.parent = obj;
     }
     
     // Check types and set parent pointers of objects in historyNodes
@@ -49,7 +48,6 @@
             [NSException raise: NSInvalidArgumentException
                         format: @"%@ not a HistoryNode", node];
         }
-        node.parent = obj;
     }
     
     return [obj autorelease];

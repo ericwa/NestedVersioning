@@ -30,7 +30,6 @@
             [NSException raise: NSInvalidArgumentException
                         format: @"%@ not a UndoNode", node];
         }
-        node.parent = obj;
     }
     
     return [obj autorelease];
@@ -77,7 +76,6 @@
     
     [self.undoNodes addObject: newUndoNode];
     [newUndoNode release];
-    newUndoNode.parent = self;
     self.currentNodeIndex = [self.undoNodes count] - 1; // index of new node
     
     
@@ -88,7 +86,6 @@
     
     [newUndoNode.historyNodes addObject: newHistoryNode];
     [newHistoryNode release];
-    newHistoryNode.parent = newUndoNode;
     [newUndoNode currentBranch].currentHistoryNodeIndex = [newUndoNode.historyNodes count] - 1;
     
     [newHistoryNode setChildEmbeddedObject: object];

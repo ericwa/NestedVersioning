@@ -29,7 +29,6 @@
             [NSException raise: NSInvalidArgumentException
                         format: @"%@ not a BaseObject", subObject];
         }
-        subObject.parent = obj;
     }
     
     return [obj autorelease];
