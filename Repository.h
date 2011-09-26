@@ -15,13 +15,9 @@
 @property (readwrite, nonatomic, retain) VersionedObject *rootObject;
 
 /**
- * initialize a new repository by creating a versioned object wrapper
- * around the give embedded object.
- * historyNodeMetadata is the metadata attached to the initial commit
- * which should be populated with date, author, log message, etc.
+ * create a new repository
  */
-+ (Repository*) repositoryWithEmbeddedObject: (EmbeddedObject*)emb
-                    firstHistoryNodeMetadata: (NSDictionary *)historyNodeMetadata;
++ (Repository*) repositoryWithVersionedObject: (VersionedObject*)obj;
 
 // access
 

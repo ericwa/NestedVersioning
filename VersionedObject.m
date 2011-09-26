@@ -33,7 +33,21 @@
 
 + (VersionedObject *) versionedObjectWrappingEmbeddedObject: (EmbeddedObject*)object
 {
-    return nil;
+    HistoryNode *firstHistoryNode = [HistoryNode historyNodeWithParentHistoryNodeIndices: [NSIndexSet indexSet]                                     
+                                                                     historyNodeMetadata: [NSDictionary dictionary]
+                                                                     childEmbeddedObject: object];
+    
+    NamedBranch *defaultBranch = [NamedBranch namedBranchWithName: @"Default Branch"                                                     
+                                          currentHistoryNodeIndex: 0];
+    
+    UndoNode *firstUndoNode = [UndoNode undoNodeWithParentUndoNodeIndices: [NSIndexSet indexSet]
+                                                            namedBranches: [NSArray arrayWithObject: defaultBranch]
+                                                       currentBranchIndex: 0
+                                                             historyNodes: [NSArray arrayWithObject: firstHistoryNode]];
+    
+    VersionedObject *versionedobject = [VersionedObject objectWithUndoNodes: [NSArray arrayWithObject: firstUndoNode]
+                                                           currentNodeIndex: 0];    
+    return versionedobject;
 }
 
 // manipulation by returning modified copies (side-effect free)

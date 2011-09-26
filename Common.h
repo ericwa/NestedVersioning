@@ -6,3 +6,4 @@
 #import "HistoryNode.h"
 #import "Repository.h"
 #import "LogIndent.h"
+#import "EWTest.h"

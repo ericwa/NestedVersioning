@@ -50,12 +50,15 @@
 
 // convenience constructor
 
+
 /**
  * makes an embedded object versioned.
  */
 + (VersionedObject *) versionedObjectWrappingEmbeddedObject: (EmbeddedObject *)object;
 
-// manipulation
+
+// manipulation by returning modified copies (side-effect free)
+
 
 - (VersionedObject *) versionedObjectNavigatedToUndoNodeAtIndex: (NSUInteger)index;
 
@@ -66,7 +69,9 @@
 - (VersionedObject *) versionedObjectWithNewVersionOfEmbeddedObject: (BaseObject*)object
                                                  withCommitMetadata: (NSDictionary*)metadata;
 
+
 // access
+
 
 - (UndoNode *) currentUndoNode;
 - (HistoryNode *) currentHistoryNode;

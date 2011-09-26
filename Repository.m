@@ -10,30 +10,14 @@
     if (self)
     {
     }
-    
     return self;
 }
 
-+ (Repository*) repositoryWithEmbeddedObject: (EmbeddedObject*)emb
-                    firstHistoryNodeMetadata: (NSDictionary *)historyNodeMetadata
++ (Repository*) repositoryWithVersionedObject: (VersionedObject*)obj
 {
-    HistoryNode *firstHistoryNode = [HistoryNode historyNodeWithParentHistoryNodeIndices: [NSIndexSet indexSet]                                     
-                                                                     historyNodeMetadata: historyNodeMetadata
-                                                                     childEmbeddedObject: emb];
-    
-    NamedBranch *defaultBranch = [NamedBranch namedBranchWithName: @"Default Branch"                                                     
-                                          currentHistoryNodeIndex: 0];
-    
-    UndoNode *firstUndoNode = [UndoNode undoNodeWithParentUndoNodeIndices: [NSIndexSet indexSet]
-                                                            namedBranches: [NSArray arrayWithObject: defaultBranch]
-                                                       currentBranchIndex: 0
-                                                             historyNodes: [NSArray arrayWithObject: firstHistoryNode]];
-    
-    VersionedObject *versionedobject = [VersionedObject objectWithUndoNodes: [NSArray arrayWithObject: firstUndoNode]
-                                            currentNodeIndex: 0];    
-    Repository *obj = [[self alloc] init];
-    obj.rootObject = versionedobject;
-    return [obj autorelease];
+    Repository *repository = [[self alloc] init];
+    repository.rootObject = obj;
+    return [repository autorelease];
 }
 
 // debug
