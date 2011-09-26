@@ -70,9 +70,7 @@
     
     UndoNode *newUndoNode = [oldUndoNode copy]; // deep-copies the contained history graph
     
-    [oldUndoNode.childUndoNodes addObject: newUndoNode];
-    newUndoNode.parentUndoNode = oldUndoNode;
-    [newUndoNode.childUndoNodes removeAllObjects];
+    [newUndoNode setParentUndoNodeIndices: [NSIndexSet indexSetWithIndex: currentNodeIndex]];
     
     [self.undoNodes addObject: newUndoNode];
     [newUndoNode release];
@@ -81,9 +79,8 @@
     
     HistoryNode *oldHistoryNodeInNewUndoNode = [newUndoNode currentHistoryNode];
     HistoryNode *newHistoryNode = [oldHistoryNodeInNewUndoNode copy]; // another deep copy
-    [newHistoryNode setParentHistoryNode: oldHistoryNodeInNewUndoNode];
-    [oldHistoryNodeInNewUndoNode.childHistoryNodes addObject: newHistoryNode];
-    
+    [newHistoryNode setParentHistoryNodeIndices: [NSIndexSet indexSetWithIndex: 
+                                                  [newUndoNode currentBranch].currentHistoryNodeIndex]];
     [newUndoNode.historyNodes addObject: newHistoryNode];
     [newHistoryNode release];
     [newUndoNode currentBranch].currentHistoryNodeIndex = [newUndoNode.historyNodes count] - 1;

@@ -32,4 +32,20 @@
     return res;   
 }
 
++ (NSString *) logIndexSet: (NSIndexSet*)set
+{
+    NSMutableString *res = [NSMutableString string];
+    [res appendFormat: @"<"];
+    BOOL needsComma = NO;
+    for (NSUInteger index = [set firstIndex]; index != NSNotFound; index = [set indexGreaterThanIndex: index])
+    {
+        if (needsComma)
+            [res appendFormat: @","]; 
+        [res appendFormat: @"%d", (int)index]; 
+        needsComma = YES;
+    }
+    [res appendFormat: @">"];    
+    return res;   
+}
+
 @end

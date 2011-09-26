@@ -13,8 +13,11 @@
 {    
     // The undo graph
     
-    UndoNode *parentUndoNode; //weak
-    NSMutableArray *childUndoNodes; //strong
+    /**
+     * the indices in this index set refer to indices in the
+     * undo nodes array in the VersionedObject which owns this undo node
+     */
+    NSMutableIndexSet *parentUndoNodeIndices;
     
     // The versioned object, underneath the outer undo layer
     
@@ -29,19 +32,17 @@
     // note: the index of the current history node is stored in the current branch
 }
 
-@property (readwrite, nonatomic, assign) UndoNode *parentUndoNode;
-@property (readwrite, nonatomic, retain) NSMutableArray *childUndoNodes;
+@property (readwrite, nonatomic, retain) NSMutableIndexSet *parentUndoNodeIndices;
 @property (readwrite, nonatomic, retain) NSMutableArray *namedBranches;
 @property (readwrite, nonatomic, assign) NSUInteger currentBranchIndex;
 @property (readwrite, nonatomic, retain) NSMutableArray *historyNodes;
 
 - (id) copyWithZone:(NSZone *)zone;
 
-+ (UndoNode *) undoNodeWithParentUndoNode: (UndoNode *)parentUndoNode
-                           childUndoNodes: (NSArray *)childUndoNodes
-                            namedBranches: (NSArray *)namedBranches
-                       currentBranchIndex: (NSUInteger)currentBranchIndex
-                             historyNodes: (NSArray*)historyNodes;
++ (UndoNode *) undoNodeWithParentUndoNodeIndices: (NSIndexSet *)parentUndoNodeIndices
+                                   namedBranches: (NSArray *)namedBranches
+                              currentBranchIndex: (NSUInteger)currentBranchIndex
+                                    historyNodes: (NSArray*)historyNodes;
 
 // access
 

@@ -8,8 +8,7 @@
  */
 @interface HistoryNode : BaseObject 
 {
-    HistoryNode *parentHistoryNode; //weak
-    NSMutableArray *childHistoryNodes; //strong
+    NSMutableIndexSet *parentHistoryNodeIndices;
 
     /**
      * commit log message, date, etc.
@@ -22,15 +21,13 @@
     BaseObject *childEmbeddedObject; // strong
 }
 
-@property (readwrite, nonatomic, assign) HistoryNode *parentHistoryNode;
-@property (readwrite, nonatomic, retain) NSMutableArray *childHistoryNodes;
+@property (readwrite, nonatomic, retain) NSMutableIndexSet *parentHistoryNodeIndices;
 @property (readwrite, nonatomic, copy) NSDictionary *historyNodeMetadata;
 @property (readwrite, nonatomic, retain) BaseObject *childEmbeddedObject;
 
 - (id) copyWithZone:(NSZone *)zone;
-+ (HistoryNode*) historyNodeWithParentHistoryNode: (HistoryNode*)parentHistoryNode
-                                childHistoryNodes: (NSArray*)childHistoryNodes
-                              historyNodeMetadata: (NSDictionary*)historyNodeMetadata
-                              childEmbeddedObject: (BaseObject*)childEmbeddedObject;
++ (HistoryNode*) historyNodeWithParentHistoryNodeIndices: (NSIndexSet*)parentHistoryNodeIndices
+                                     historyNodeMetadata: (NSDictionary*)historyNodeMetadata
+                                     childEmbeddedObject: (BaseObject*)childEmbeddedObject;
 
 @end
