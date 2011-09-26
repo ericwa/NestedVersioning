@@ -26,7 +26,7 @@
 
 - (id) copyWithZone:(NSZone *)zone;
 {
-    NSArray *newUndoNodes = [[undoNodes copyWithZone: zone] autorelease];
+    NSArray *newUndoNodes = [[[NSArray alloc] initWithArray: undoNodes copyItems: YES] autorelease];
     return [[[self class] objectWithUndoNodes: newUndoNodes
                              currentNodeIndex: self.currentNodeIndex] retain];
 }

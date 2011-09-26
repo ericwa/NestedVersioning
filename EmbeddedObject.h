@@ -9,7 +9,7 @@
  */
 @interface EmbeddedObject : BaseObject
 {
-    NSMutableArray *contents; // array of BaseObject's
+    NSMutableArray *contents; // array of BaseObject's - should do a deep copy.
     NSDictionary *metadata;
 }
 

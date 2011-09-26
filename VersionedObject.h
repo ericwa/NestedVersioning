@@ -32,7 +32,7 @@
      *  we'd have to traverse the graph, build a list of objects to copy,
      *  build a mapping from old to new objects, etc, etc!)
      */
-    NSMutableArray *undoNodes; // strong
+    NSMutableArray *undoNodes; // strong - should do a deep copy
     
     NSUInteger currentNodeIndex;
 }

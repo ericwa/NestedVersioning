@@ -21,13 +21,13 @@
     
     // The versioned object, underneath the outer undo layer
     
-    NSMutableArray *namedBranches; // strong
+    NSMutableArray *namedBranches; // strong - should do a deep copy
     NSUInteger currentBranchIndex;
     
     /**
      * see comment in VersionedObject.h
      */
-    NSMutableArray *historyNodes; // strong
+    NSMutableArray *historyNodes; // strong - should do a deep copy
     
     // note: the index of the current history node is stored in the current branch
 }

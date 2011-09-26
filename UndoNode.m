@@ -52,8 +52,8 @@
 
 - (id) copyWithZone:(NSZone *)zone;
 {
-    NSArray *newNamedBranches = [[self.namedBranches copyWithZone: zone] autorelease];
-    NSArray *newHistoryNodes = [[self.historyNodes copyWithZone: zone] autorelease];    
+    NSArray *newNamedBranches = [[[NSArray alloc] initWithArray: self.namedBranches copyItems: YES] autorelease];
+    NSArray *newHistoryNodes = [[[NSArray alloc] initWithArray: self.historyNodes copyItems: YES] autorelease];    
 
     return [[[self class] undoNodeWithParentUndoNodeIndices: self.parentUndoNodeIndices
                                               namedBranches: newNamedBranches

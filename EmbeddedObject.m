@@ -36,7 +36,7 @@
 
 - (id)copyWithZone:(NSZone *)zone;
 {
-    NSArray *newContents = [[contents copyWithZone: zone] autorelease];
+    NSArray *newContents = [[[NSArray alloc] initWithArray: contents copyItems: YES] autorelease];
     return [[EmbeddedObject objectWithContents: newContents // will update parent pointer of copied contents
                                       metadata: self.metadata] retain];
 }
