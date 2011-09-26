@@ -18,7 +18,6 @@
 		66DFAED5142A726100623060 /* BaseObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DFAECC142A726100623060 /* BaseObject.m */; };
 		66DFAED6142A726100623060 /* NamedBranch.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DFAECE142A726100623060 /* NamedBranch.m */; };
 		66E22EC91421D47100C00A98 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E22EC81421D47100C00A98 /* Foundation.framework */; };
-		66E874C11431067500900283 /* Name.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E874C01431067500900283 /* Name.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -71,8 +70,6 @@
 		66E22EC61421D47100C00A98 /* nestedversioning */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = nestedversioning; sourceTree = BUILT_PRODUCTS_DIR; };
 		66E22EC81421D47100C00A98 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		66E2A3031430569C00487419 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
-		66E874BF1431067500900283 /* Name.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Name.h; sourceTree = "<group>"; };
-		66E874C01431067500900283 /* Name.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Name.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,7 +96,6 @@
 				66DFAEC4142A726100623060 /* Common.h */,
 				6628FB99142FA65D0072767A /* EWTest.h */,
 				6628FB9A142FA65D0072767A /* EWTest.m */,
-				66E874BD1431066100900283 /* accessory */,
 				66E2A305143057A100487419 /* Model Objects / Store Objects */,
 				6628FB9D142FA7840072767A /* OldTests */,
 				66DFAECB142A726100623060 /* test.1 */,
@@ -163,15 +159,6 @@
 			name = "Model Objects / Store Objects";
 			sourceTree = "<group>";
 		};
-		66E874BD1431066100900283 /* accessory */ = {
-			isa = PBXGroup;
-			children = (
-				66E874BF1431067500900283 /* Name.h */,
-				66E874C01431067500900283 /* Name.m */,
-			);
-			name = accessory;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -229,7 +216,6 @@
 				66DFAED6142A726100623060 /* NamedBranch.m in Sources */,
 				66436A1B142E944B000C14B4 /* LogIndent.m in Sources */,
 				6628FB9B142FA65D0072767A /* EWTest.m in Sources */,
-				66E874C11431067500900283 /* Name.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
