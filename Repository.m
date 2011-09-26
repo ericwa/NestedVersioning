@@ -36,4 +36,11 @@
     return [obj autorelease];
 }
 
+// debug
+
+- (void)checkSanity
+{
+    [rootObject checkSanityWithOwner: nil];
+}
+
 @end

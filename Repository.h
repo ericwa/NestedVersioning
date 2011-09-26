@@ -27,4 +27,8 @@
 
 - (VersionedObject *) rootObject;
 
+// debug
+
+- (void)checkSanity;
+
 @end

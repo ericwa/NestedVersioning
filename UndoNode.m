@@ -98,4 +98,42 @@
     return res;        
 }
 
+- (void) checkSanityWithOwner: (BaseObject*)owner
+{
+    for (NSUInteger index = [parentUndoNodeIndices firstIndex]; index != NSNotFound; index = [parentUndoNodeIndices indexGreaterThanIndex: index])
+    {
+        if (index >= [((VersionedObject*)owner).undoNodes count])
+        {
+            [NSException raise: NSInternalInconsistencyException
+                        format: @"index in parentUndoNodeIndices out of bounds"];
+        }
+    }
+    
+    if (self.currentBranchIndex >= [namedBranches count])
+    {
+        [NSException raise: NSInternalInconsistencyException
+                    format: @"currentBranchIndex out of bounds"];
+    }
+    
+    for (NamedBranch *branch in namedBranches)
+    {
+        if (![branch isKindOfClass: [NamedBranch class]])
+        {
+            [NSException raise: NSInternalInconsistencyException
+                        format: @"%@ not a NamedBranch", branch];
+        }
+        [branch checkSanityWithOwner: self];
+    }
+    
+    for (HistoryNode *node in historyNodes)
+    {
+        if (![node isKindOfClass: [HistoryNode class]])
+        {
+            [NSException raise: NSInternalInconsistencyException
+                        format: @"%@ not a HistoryNode", node];
+        }
+        [node checkSanityWithOwner: self];
+    }
+}
+
 @end

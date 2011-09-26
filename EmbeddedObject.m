@@ -53,4 +53,12 @@
     return res;        
 }
 
+- (void) checkSanityWithOwner: (BaseObject*)owner
+{
+    for (BaseObject *obj in contents)
+    {
+        [obj checkSanityWithOwner: self];
+    }
+}
+
 @end

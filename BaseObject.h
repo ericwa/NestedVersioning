@@ -9,4 +9,6 @@
 
 - (NSString *) logWithIndent: (unsigned int)i;
 
+- (void) checkSanityWithOwner: (BaseObject*)owner;
+
 @end

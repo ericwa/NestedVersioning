@@ -8,15 +8,22 @@
     return nil;
 }
 
+- (NSString *) description
+{
+    return [self logWithIndent: 0];
+}
+
+// debug
+
 - (NSString *) logWithIndent: (unsigned int)i
 {
     [self doesNotRecognizeSelector: _cmd];
     return nil;
 }
 
-- (NSString *) description
+- (void) checkSanityWithOwner: (BaseObject*)owner
 {
-    return [self logWithIndent: 0];
+    [self doesNotRecognizeSelector: _cmd];
 }
 
 @end

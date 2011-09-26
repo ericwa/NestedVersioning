@@ -25,11 +25,15 @@ int main (int argc, const char * argv[])
     
         NSLog(@"Versioned Object before commit:\n%@", rootVersionedObject);
     
+    [rootVersionedObject checkSanityWithOwner: nil];
+    
     [rootVersionedObject commitNewVersionOfEmbeddedObject: edit1
                                        withCommitMetadata: [NSDictionary dictionaryWithObjectsAndKeys: @"first commit", @"message",
                                                             nil]];
     
     NSLog(@"Versioned Object after commit:\n%@", rootVersionedObject);
+
+    [rootVersionedObject checkSanityWithOwner: nil];
     
     [pool drain];
     return 0;

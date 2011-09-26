@@ -50,4 +50,18 @@
     return res;        
 }
 
+- (void) checkSanityWithOwner: (BaseObject*)owner
+{
+    for (NSUInteger index = [parentHistoryNodeIndices firstIndex]; index != NSNotFound; index = [parentHistoryNodeIndices indexGreaterThanIndex: index])
+    {
+        if (index >= [((UndoNode*)owner).historyNodes count])
+        {
+            [NSException raise: NSInternalInconsistencyException
+                        format: @"index in parentHistoryNodeIndices out of bounds"];
+        }
+    }
+    
+    [childEmbeddedObject checkSanityWithOwner: self];
+}
+
 @end

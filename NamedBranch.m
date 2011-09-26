@@ -38,4 +38,13 @@
     return res;        
 }
 
+- (void) checkSanityWithOwner: (BaseObject*)owner
+{
+    if (currentHistoryNodeIndex >= [((UndoNode*)owner).historyNodes count])
+    {
+        [NSException raise: NSInternalInconsistencyException
+                    format: @"currentHistoryNodeIndex out of bounds"];
+    }
+}
+
 @end

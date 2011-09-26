@@ -21,17 +21,6 @@
     VersionedObject *obj = [[self alloc] init];
     obj.undoNodes = [NSMutableArray arrayWithArray: undoNodes];
     obj.currentNodeIndex = currentNodeIndex;
-    
-    // Check types and set parent pointers of objects in undoNodes
-    for (UndoNode *node in obj.undoNodes)
-    {
-        if (![node isKindOfClass: [UndoNode class]])
-        {
-            [NSException raise: NSInvalidArgumentException
-                        format: @"%@ not a UndoNode", node];
-        }
-    }
-    
     return [obj autorelease];
 }
 
@@ -137,6 +126,29 @@
     }
     [res appendFormat: @"%@}", [LogIndent indent: i]];
     return res;        
+}
+
+- (void) checkSanityWithOwner: (BaseObject*)owner
+{
+    if ([undoNodes count] == 0)
+    {
+        [NSException raise: NSInternalInconsistencyException
+                    format: @"VersionedObject must have at least one undo node"];
+    }
+    if (self.currentNodeIndex >= [undoNodes count])
+    {
+        [NSException raise: NSInternalInconsistencyException
+                    format: @"currentNodeIndex out of bounds"];
+    }
+    for (UndoNode *node in undoNodes)
+    {
+        if (![node isKindOfClass: [UndoNode class]])
+        {
+            [NSException raise: NSInternalInconsistencyException
+                        format: @"%@ not a UndoNode", node];
+        }
+        [node checkSanityWithOwner: self];
+    }
 }
 
 @end
