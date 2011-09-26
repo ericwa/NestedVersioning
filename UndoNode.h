@@ -6,11 +6,11 @@
 
 /**
  * A node making up the undo tree for an undo track
+ *
+ * Will be in a VersionedObject
  */
 @interface UndoNode : BaseObject
-{
-    // parent (inherited from BaseObject) is a VersionedObject
-    
+{    
     // The undo graph
     
     UndoNode *parentUndoNode; //weak

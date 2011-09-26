@@ -4,10 +4,11 @@
 /**
  * Basic storage object - no versioning built in.
  * Can be used on its own or wrapped in a VersionedObject to provide versioning
+ *
+ * will be inside an EmbeddedObject or a HistoryNode
  */
 @interface EmbeddedObject : BaseObject
 {
-    // parent (inherited from BaseObject) is an EmbeddedObject or HistoryNode
     NSMutableArray *contents; // array of BaseObject's
     NSDictionary *metadata;
 }

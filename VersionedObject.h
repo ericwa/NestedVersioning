@@ -16,11 +16,11 @@
  * A versioned object won't usually be mutated,
  * but the top level one in a repository isn't itself versioned, so
  * it will be mutated when new undo nodes are added.
+ *
+ * Will be inside an EmbeddedObject or a Repository
  */
 @interface VersionedObject : BaseObject
-{
-    // parent (inherited from BaseObject) is an EmbeddedObject (or nil?)    
-    
+{    
     /**
      * Array of nodes making up the undo graph.
      * The order is insignificant except that

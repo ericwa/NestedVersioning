@@ -3,10 +3,11 @@
 
 @class EmbeddedObject;
 
+/**
+ * Will be inside a NamedBranch
+ */
 @interface HistoryNode : BaseObject 
 {
-    // parent (inherited from BaseObject) is a NamedBranch
-    
     HistoryNode *parentHistoryNode; //weak
     NSMutableArray *childHistoryNodes; //strong
 

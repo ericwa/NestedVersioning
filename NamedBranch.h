@@ -1,9 +1,11 @@
 #import <Foundation/Foundation.h>
 #import "Common.h"
 
+/**
+ * Will be inside an UndoNode
+ */
 @interface NamedBranch : BaseObject
 {
-    // parent (inherited from BaseObject) is an UndoNode
     
     NSString *name;
 
