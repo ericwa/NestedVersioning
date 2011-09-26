@@ -18,12 +18,12 @@
     /**
      * actual contents
      */
-    BaseObject *childEmbeddedObject; // strong
+    EmbeddedObject *childEmbeddedObject; // strong
 }
 
 @property (readwrite, nonatomic, retain) NSMutableIndexSet *parentHistoryNodeIndices;
 @property (readwrite, nonatomic, copy) NSDictionary *historyNodeMetadata;
-@property (readwrite, nonatomic, retain) BaseObject *childEmbeddedObject;
+@property (readwrite, nonatomic, retain) EmbeddedObject *childEmbeddedObject;
 
 - (id) copyWithZone:(NSZone *)zone;
 + (HistoryNode*) historyNodeWithParentHistoryNodeIndices: (NSIndexSet*)parentHistoryNodeIndices

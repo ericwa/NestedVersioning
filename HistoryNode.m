@@ -25,7 +25,7 @@
 
 + (HistoryNode*) historyNodeWithParentHistoryNodeIndices: (NSIndexSet*)parentHistoryNodeIndices
                                      historyNodeMetadata: (NSDictionary*)historyNodeMetadata
-                                     childEmbeddedObject: (BaseObject*)childEmbeddedObject
+                                     childEmbeddedObject: (EmbeddedObject*)childEmbeddedObject
 {
     HistoryNode *obj = [[self alloc] init];
     obj.parentHistoryNodeIndices = [[[NSMutableIndexSet alloc] initWithIndexSet: parentHistoryNodeIndices] autorelease];;
@@ -59,6 +59,12 @@
             [NSException raise: NSInternalInconsistencyException
                         format: @"index in parentHistoryNodeIndices out of bounds"];
         }
+    }
+    
+    if (![childEmbeddedObject isKindOfClass: [EmbeddedObject class]])
+    {
+        [NSException raise: NSInternalInconsistencyException
+                    format: @"childEmbeddedObject must be EmbeddedObject"];
     }
     
     [childEmbeddedObject checkSanityWithOwner: self];
