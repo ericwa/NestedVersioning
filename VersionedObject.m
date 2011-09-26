@@ -59,7 +59,7 @@
     return copy;
 }
 
-- (VersionedObject *) versionedObjectWithNewVersionOfEmbeddedObject: (BaseObject*)object
+- (VersionedObject *) versionedObjectWithNewVersionOfEmbeddedObject: (EmbeddedObject*)object
                                                  withCommitMetadata: (NSDictionary*)metadata
 {
     VersionedObject *copy = [[self copy] autorelease];

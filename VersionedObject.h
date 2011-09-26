@@ -66,7 +66,7 @@
  * Returns a copy of the receiver with a new commit added.
  * Side-effect free.
  */
-- (VersionedObject *) versionedObjectWithNewVersionOfEmbeddedObject: (BaseObject*)object
+- (VersionedObject *) versionedObjectWithNewVersionOfEmbeddedObject: (EmbeddedObject*)object
                                                  withCommitMetadata: (NSDictionary*)metadata;
 
 
