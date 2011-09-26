@@ -55,15 +55,16 @@
  */
 + (VersionedObject *) versionedObjectWrappingEmbeddedObject: (EmbeddedObject *)object;
 
-
-
 // manipulation
 
-- (void)commitNewVersionOfEmbeddedObject: (BaseObject*)object
-                      withCommitMetadata: (NSDictionary*)metadata;
+- (VersionedObject *) versionedObjectNavigatedToUndoNodeAtIndex: (NSUInteger)index;
 
-- (void)navigateToUndoNode: (UndoNode*)node;
-
+/**
+ * Returns a copy of the receiver with a new commit added.
+ * Side-effect free.
+ */
+- (VersionedObject *) versionedObjectWithNewVersionOfEmbeddedObject: (BaseObject*)object
+                                                 withCommitMetadata: (NSDictionary*)metadata;
 
 // access
 

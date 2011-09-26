@@ -36,11 +36,20 @@
     return nil;
 }
 
-// manipulation
+// manipulation by returning modified copies (side-effect free)
 
-- (void)commitNewVersionOfEmbeddedObject: (BaseObject*)object
-                      withCommitMetadata: (NSDictionary*)metadata
+- (VersionedObject *) versionedObjectNavigatedToUndoNodeAtIndex: (NSUInteger)index
 {
+    VersionedObject *copy = [[self copy] autorelease];
+    copy.currentNodeIndex = index;
+    return copy;
+}
+
+- (VersionedObject *) versionedObjectWithNewVersionOfEmbeddedObject: (BaseObject*)object
+                                                 withCommitMetadata: (NSDictionary*)metadata
+{
+    VersionedObject *copy = [[self copy] autorelease];
+    
     /**
      * summary:
      *  - create a new undo node, branching off of the current one,
@@ -55,15 +64,15 @@
     // graph relationships is quite messy and error-prone. It's probably a 
     // good idea to refactor this logic.
     
-    UndoNode *oldUndoNode = [self currentUndoNode];
+    UndoNode *oldUndoNode = [copy currentUndoNode];
     
     UndoNode *newUndoNode = [oldUndoNode copy]; // deep-copies the contained history graph
     
     [newUndoNode setParentUndoNodeIndices: [NSIndexSet indexSetWithIndex: currentNodeIndex]];
     
-    [self.undoNodes addObject: newUndoNode];
+    [copy.undoNodes addObject: newUndoNode];
     [newUndoNode release];
-    self.currentNodeIndex = [self.undoNodes count] - 1; // index of new node
+    copy.currentNodeIndex = [copy.undoNodes count] - 1; // index of new node
     
     
     HistoryNode *oldHistoryNodeInNewUndoNode = [newUndoNode currentHistoryNode];
@@ -74,29 +83,11 @@
     [newHistoryNode release];
     [newUndoNode currentBranch].currentHistoryNodeIndex = [newUndoNode.historyNodes count] - 1;
     
-    [newHistoryNode setChildEmbeddedObject: object];
+    [newHistoryNode setChildEmbeddedObject: object];    
+    
+    return copy;
 }
 
-- (void)_navigateToUndoNodeAtIndex: (NSUInteger)index
-{
-    self.currentNodeIndex = index;
-}
-
-- (void)navigateToUndoNode: (UndoNode*)node
-{
-    NSUInteger i = 0;
-    for (UndoNode *n in undoNodes)
-    {
-        if (n == node)
-        {
-            [self _navigateToUndoNodeAtIndex: i];
-        }
-        i++;
-    }
-    [NSException raise: NSInvalidArgumentException
-                format: @"-[%@ %@]: Node not found",
-                        NSStringFromClass([self class]), NSStringFromSelector(_cmd)];
-}
 
 // access
 

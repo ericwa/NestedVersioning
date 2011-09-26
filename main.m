@@ -11,7 +11,7 @@ int main (int argc, const char * argv[])
     Repository *repo = [Repository repositoryWithEmbeddedObject:embtest
                                        firstHistoryNodeMetadata:[NSDictionary dictionary]];
     
-    NSLog(@"repo %@", repo);
+    //NSLog(@"repo %@", repo);
     
     
     // simplest test:
@@ -27,13 +27,13 @@ int main (int argc, const char * argv[])
     
     [rootVersionedObject checkSanityWithOwner: nil];
     
-    [rootVersionedObject commitNewVersionOfEmbeddedObject: edit1
-                                       withCommitMetadata: [NSDictionary dictionaryWithObjectsAndKeys: @"first commit", @"message",
+    VersionedObject *rootWithCommit = [rootVersionedObject versionedObjectWithNewVersionOfEmbeddedObject:edit1
+                                                    withCommitMetadata: [NSDictionary dictionaryWithObjectsAndKeys: @"first commit", @"message",
                                                             nil]];
     
-    NSLog(@"Versioned Object after commit:\n%@", rootVersionedObject);
+    NSLog(@"Versioned Object after commit:\n%@", rootWithCommit);
 
-    [rootVersionedObject checkSanityWithOwner: nil];
+    [rootWithCommit checkSanityWithOwner: nil];
     
     [pool drain];
     return 0;
