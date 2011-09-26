@@ -29,4 +29,13 @@
     return [obj autorelease];
 }
 
+// debug
+
+- (NSString *) logWithIndent: (unsigned int)i
+{
+    NSMutableString *res = [NSMutableString string];
+    [res appendFormat: @"%@{branch addr=%p name='%@' historynodeindex=%d}", [LogIndent indent: i], self, self.name, (int)self.currentHistoryNodeIndex];
+    return res;        
+}
+
 @end

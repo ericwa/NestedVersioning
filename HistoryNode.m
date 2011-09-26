@@ -40,4 +40,29 @@
     return [obj autorelease];
 }
 
+// debug
+
+- (NSString *) logWithIndent: (unsigned int)i
+{
+    NSMutableString *res = [NSMutableString string];
+    [res appendFormat: @"%@{historynode=%p parent=%p children=(", [LogIndent indent: i], self, parentHistoryNode];
+    
+    // print the children (connections in the history node graph)
+    
+    for (NSUInteger j=0; j<[self.childHistoryNodes count]; j++)        
+    {
+        [res appendFormat: @"%p", [self.childHistoryNodes objectAtIndex: j]];
+        if (j < [self.childHistoryNodes count] - 1)
+            [res appendFormat: @", "];
+    }
+    
+    [res appendFormat: @") metadata: %@\n",
+        [LogIndent logDictionary: historyNodeMetadata]];
+    
+    [res appendFormat: @"%@\n", [childEmbeddedObject logWithIndent: i + 1]];
+    
+    [res appendFormat: @"%@}", [LogIndent indent: i]];
+    return res;        
+}
+
 @end

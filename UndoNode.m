@@ -84,13 +84,31 @@
     NSMutableString *res = [NSMutableString string];
     [res appendFormat: @"%@{undonode=%p parent=%p children=(", [LogIndent indent: i], self, parentUndoNode];
     
+    // print the children (connections in the undo node graph)
+    
     for (NSUInteger j=0; j<[self.childUndoNodes count]; j++)        
     {
         [res appendFormat: @"%p", [self.childUndoNodes objectAtIndex: j]];
         if (j < [self.childUndoNodes count] - 1)
             [res appendFormat: @", "];
     }
+    
     [res appendFormat: @")\n"];
+    
+    [res appendFormat: @"%@named branches:\n", [LogIndent indent: i]];
+
+    for (NSUInteger j=0; j<[self.namedBranches count]; j++)        
+    {
+        if (j==currentBranchIndex) [res appendFormat: @">"];
+        [res appendFormat: @"%@\n", [[self.namedBranches objectAtIndex: j] logWithIndent: i + 1]];
+    }
+    
+    [res appendFormat: @"%@history node graph:\n", [LogIndent indent: i]];
+    
+    for (NSUInteger j=0; j<[self.historyNodes count]; j++)        
+    {
+        [res appendFormat: @"%@\n", [[self.historyNodes objectAtIndex: j] logWithIndent: i + 1]];
+    }
     
     [res appendFormat: @"%@}", [LogIndent indent: i]];
     return res;        
