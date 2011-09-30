@@ -49,6 +49,7 @@
 		66416D20142D3EE20016501D /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		66436A19142E944B000C14B4 /* LogIndent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogIndent.h; sourceTree = "<group>"; };
 		66436A1A142E944B000C14B4 /* LogIndent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogIndent.m; sourceTree = "<group>"; };
+		66DE70B6143619CF00333FA3 /* NOTES */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NOTES; sourceTree = "<group>"; };
 		66DFAEBD142A726100623060 /* VersionedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VersionedObject.h; sourceTree = "<group>"; };
 		66DFAEBE142A726100623060 /* VersionedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VersionedObject.m; sourceTree = "<group>"; };
 		66DFAEBF142A726100623060 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -70,6 +71,7 @@
 		66E22EC61421D47100C00A98 /* nestedversioning */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = nestedversioning; sourceTree = BUILT_PRODUCTS_DIR; };
 		66E22EC81421D47100C00A98 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		66E2A3031430569C00487419 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
+		66E2E22D14352DE700CEEC8C /* TestPhotoLibrary.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestPhotoLibrary.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +89,7 @@
 		662811EB13F8B5000075BBC2 = {
 			isa = PBXGroup;
 			children = (
+				66DE70B6143619CF00333FA3 /* NOTES */,
 				66416D20142D3EE20016501D /* README */,
 				66E2A3031430569C00487419 /* TODO */,
 				66DFAEBF142A726100623060 /* main.m */,
@@ -134,6 +137,7 @@
 				6628FBA6142FA7840072767A /* TestStore.m */,
 				6628FBA7142FA7840072767A /* TestSynchronization.m */,
 				6628FBA8142FA7840072767A /* TestUtilities.m */,
+				66E2E22D14352DE700CEEC8C /* TestPhotoLibrary.m */,
 			);
 			path = OldTests;
 			sourceTree = "<group>";
