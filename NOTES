@@ -1,0 +1,21 @@
+Random notes: (30 sept 2011)
+
+think about:
+- gc to delete unreachable objects
+- paths
+- search results - the problem is, without parent pointers, we get an inner object as a result of a query and we don't know what the path is. (same problem as having the inode of a file on posix, but not knowing the path(s) to that file?)
+- if we need gc, "strong" object refs need to be parsed by the framework
+- how do the design requirements change if we are "space inefficient" - i.e. forget about cheap copies?
+- how do we handle relationships (one-to-many/many-to-many) aside from the parent-child relationship used for versioning?
+
+ideas for the search problem:
+- index { "text content" : oid } using the full-text-search engine
+- keep a lookup table of { oid : object path } for the current versions / current branches only. e.g. { 123 : /workspace1/undonode1/branch1/version1/photolibrary/photos/foo } could be an entry.
+- alternative: each object keeps track of the parents who reference it. This isn't without its problems either.
+
+considering the design when using a "space-inefficent" store - i.e. the entire repository is an array of bytes, and for every commit a new copy of the byte array is saved:
+- how do we represent many-to-many relationships? (not obvious because the objects aren't segmented into small pieces)
+- supporting versioning = supporting copy, so we the representaion of many-to-many relatinships needs to be copy-able.
+- idea: to implement cheap copy, we make an object's name [name of parent]\[new UUID] where \ is a path separator. This stragegy isn't depending on any versioning scheme, it would work for the simple scenario of copying a file to make backups.
+
+
