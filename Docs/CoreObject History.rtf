@@ -1,0 +1,99 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\margb1800\margt1800\vieww10800\viewh11160\viewkind0
+\deftab720
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural
+
+\f0\b\fs36 \cf0 \expnd0\expndtw0\kerning0
+History and Future\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural
+
+\b0\fs24 \cf0 \expnd0\expndtw0\kerning0
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural
+
+\b \cf0 \expnd0\expndtw0\kerning0
+2008 - (Quentin\'92s) CoreObject
+\b0 \expnd0\expndtw0\kerning0
+\
+persistent object context and objects. attempted to record and playback messages. ability to roll back a context to an earlier state.\
+\
+
+\b \expnd0\expndtw0\kerning0
+2010 - ObjectMerging
+\b0 \expnd0\expndtw0\kerning0
+\
+Attempt to build a git-like revision control system. The store simply holds a \{ key : blob \} dictionary.\
+Like git there are commit objects (COHistoryGraphNode) that map a set of UUID\'92s to a set of keys representing that version of the object with that UUID.\
+\
+Like git, there is exactly one DAG of history graph nodes representing the entire repository; and there is a tag saved with the repo specifying which history graph node represents the current repository state, so the entire repo can be rolled back to a previous/later version, or switch to a branch, by editing the value of this tag\
+\
+Also implemented was a rudimentary object graph diff and merge algorithm. By diffing and merging various repository states, we could perform selective undo of changes.\
+\
+ObjectMerging 2-4 were essentially bugfixes and refinements on this, switching to a SQLite store, fixing bugs in the front-end model classes, adding support for the EtoileFoundation metamodel code.\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural
+
+\i \cf0 \expnd0\expndtw0\kerning0
+\'93Formal\'94 Description of OM1 model
+\i0 \expnd0\expndtw0\kerning0
+\
+\
+A world 
+\i \expnd0\expndtw0\kerning0
+W 
+\i0 \expnd0\expndtw0\kerning0
+is a mapping of all accessible UUID\'92s to the encodings of their state. Making a commit entails creating a copy of the world 
+\i \expnd0\expndtw0\kerning0
+W
+\fs16 \expnd0\expndtw0\kerning0
+\super 1 
+\i0\fs24 \expnd0\expndtw0\kerning0
+\nosupersub with the required changes.\
+\
+
+\i \expnd0\expndtw0\kerning0
+Solved problems\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural
+
+\i0 \cf0 \expnd0\expndtw0\kerning0
+\
+One of the main problems that arose which is largely solved is understanding the impact of compositional (one-to-many) vs \'93weak\'94 (many-to-many) relationships, and in particular that moving a sub-object from one document to another needs to create a copy by default.\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural
+
+\i \cf0 \expnd0\expndtw0\kerning0
+Problems Encountered
+\i0 \expnd0\expndtw0\kerning0
+\
+\
+The metamodel also was problematic. Expecting the library user to provide metamodel objects which are compatible with (all versions of) the objects in the repository is too much to ask. I decided the objects in the repo should be self-describing and not contain explicit references to ObjC class names - they\'92re 
+\i \expnd0\expndtw0\kerning0
+data 
+\i0 \expnd0\expndtw0\kerning0
+and not necessarily serialized objects.\
+\
+One of the main roadblocks was trying to figure out how to add per-document linear undo to ObjectMerging 4, and branching of portions of the repository. e.g If we can branch folders containing documents which themselves have branches, are all of the document\'92s branches themselves branched again? Seems the only consistent answer is \'93yes\'94.\
+\
+A second roadblock was realizing that repository-level operations like create branch, delete branch, revert object to previous version, etc. must be undoable for usability\'92s sake. The ObjectMerging model wasn\'92t really conducive to making these undoable.\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural
+
+\b \cf0 \expnd0\expndtw0\kerning0
+2011 - Nested Versioning
+\b0 \expnd0\expndtw0\kerning0
+\
+
+\b \expnd0\expndtw0\kerning0
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural
+
+\b0 \cf0 \expnd0\expndtw0\kerning0
+rationale
+\b \expnd0\expndtw0\kerning0
+: 
+\b0 \expnd0\expndtw0\kerning0
+Branching shouldn\'92t be given special, \'93toplevel\'94 treatment. Why? Branching-like scenarios will arise naturally (e.g. variations of a photo in a photo manager with the ability to switch which variation is \'93preferred\'94 and have references to the group of variations show the preferred photo). If we have both top-level support and \'91home-baked\'92 mid-tree support, it will be a mess.\
+\
+}
