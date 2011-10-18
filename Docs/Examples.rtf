@@ -1,0 +1,108 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fmodern\fcharset0 Courier;\f2\fmodern\fcharset0 CourierNewPSMT;
+}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww15380\viewh13740\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\f0\fs24 \cf0 Tricky cases for nested versioning:\
+\
+- project containing 2 composite documents, which have embedded links to each other\
+\
+	
+\f1 proj/doc1
+\f0 \
+	
+\f1 proj/doc2\
+\
+	If we maintain this big \'93\'91uuid\'92=>current path in store / inode\'94 table,\
+	the embedded links can just be uuid\'92s, and we can do the table lookup to\
+	get the current version of the link target.\
+\
+	Potential problems: copying both doc1 and doc2 (together) to another project,\
+	could cause the inter-document links to break unless we fix them when copying\
+	(beacause doc1 and doc2 will be assigned new uuids.)\
+\
+	In general when copying an arbitrary subtree, since we have to rename every\
+	object, we can update update all references to the old name within the tree\
+	to the new name (but not references to the old objects coming from elsewhere\
+	in the universe).\
+\
+	one of my concerns here is the distinction between a \'93user-copy\'94 action and a \'93system copy\'94 action.\
+	a user initiated copy renames all of the copied objects (the motivation for that was avoiding\
+	the \'93paradoxes\'94 we identified when working on ObjectMerging). and also, we don\'92t want to have\
+	multiple objects with the same uuid.\
+	a \'93system copy\'94 is just a copy without renaming..\
+
+\f0 \
+- composite document containing a versioned sub-document which appears multiple times.\
+\
+	
+\f1 same problem as above basically; when a user-copy is made of the outer document, and\
+	the sub-document is renamed, all references to it in the outer document need\
+	to be updated.
+\f0 \
+\
+- project containing 2 documents: \'93figure\'94 and \'93cover page\'94. \'93cover page\'94 has a link to figure.\
+\
+
+\f1 	the special thing about this case is that \'93cover page\'94 has a dependency on \'93figure\'94; \
+	much like an MS Word document with a link to a photo store by reference (pathname).\
+	Documents that do that are a pain to work with in general, (and probably scenarios like\
+	this gave composite documents a bad reputation) but there may not be anything\
+	special we can do except encouraging the user to work with the container rather than the\
+	\'93cover page\'94. If they copy the container, then the uuids are updated properly.
+\f0 \
+\
+- photo library containing a tag hierarchy\
+\
+	
+\f1 see above
+\f0 \
+\
+- pdf library using the user\'92s tag hierarchy.\
+\
+	
+\f1 should work fine. the pdf documents can have uuids of tags that are applied to that\
+	document. If the user deletes a tag, there will be dangling references to it, but that\
+	is OK. Same with sharing the document 
+\f0 \
+\
+- workspaces with documents drawn from different repositories (i.e. the documents can be in multiple workspaces)\
+\
+
+\f2 user/tags/places/northamerica\
+user/tags/places/southamerica\
+user/tags/photosubject/landscape\
+user/tags/photosubject/portrait\
+user/workspaces/magazinecover\
+user/workspaces/webdesignproject\
+user/projects/magazinecover/reusedlogo\
+user/projects/magazinecover/coverdesign1 
+\f0 has a link to the current branch and latest version of ../reusedlogo 
+\fs22 \super *
+\f2\fs24 \nosupersub \
+user/projects/magazinecover/coverdesign2 
+\f0 has a link to the current branch and latest version of ../reusedlogo \super *
+\f2 \nosupersub \
+user/projects/magazinecover/coverdesign3 
+\f0 has a link to the current branch and latest version of ../reusedlogo 
+\fs22 \super *
+\fs24 \nosupersub \
+
+\f2 user/photolibrary/trips/bc/ 
+\f0 we really want to use the hierarchy, but have photos in both trips/bc and best (i.e. only 
+\f2 photolibrary 
+\f0 is versioned)\
+
+\f2 user/photolibrary/best/\
+
+\f0 \
+
+\b * 
+\b0 - we don\'92t care where the object 
+\i is
+\i0 . So, it should be a uuid table lookup. \
+\
+- comment \'93references\'94/cross-document linking is inherently at odds with versioning. e.g., when you copy a document, references to the document still point to the old version. So following/dereferencing these cross-document references will require application logic\
+}
