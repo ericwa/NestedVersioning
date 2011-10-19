@@ -15,7 +15,7 @@
 	
 \f1 proj/doc2\
 \
-	If we maintain this big \'93\'91uuid\'92=>current path in store / inode\'94 table,\
+	If we maintain this big \'93uuid => current path in store / inode\'94 table,\
 	the embedded links can just be uuid\'92s, and we can do the table lookup to\
 	get the current version of the link target.\
 \
@@ -33,6 +33,19 @@
 	the \'93paradoxes\'94 we identified when working on ObjectMerging). and also, we don\'92t want to have\
 	multiple objects with the same uuid.\
 	a \'93system copy\'94 is just a copy without renaming..\
+\
+	this relates to how we update the uuid->oid table, how we enforce one uuid = one object\
+	(and what constitutes a version of an object vs a different object).\
+\
+	one of the goals of nested versioning was that users could cook-their-own version control\
+	if they want: they could make a series of copies/snapshots/tags of a subtree, and still get\
+	benefits like the ability to merge, cheap storage. the problem, though, is if we relabel/rename\
+	the copy, \
+	  - merging is no longer possible (or at least, no longer easy)\
+	  - may interfere with a basic implementation of cheap storage (not a big deal, probably)\
+	  - we lose the ability to have other objects refer to the \'91latest\'92 version of this object,\
+		because the latest version is only known by the user and not the system.\
+\
 
 \f0 \
 - composite document containing a versioned sub-document which appears multiple times.\
