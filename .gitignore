@@ -16,3 +16,4 @@ nestedversioning.xcodeproj/project.xcworkspace/xcuserdata/
 xcuserdata
 build
 *.xcuserstate
+*.~lock.*
