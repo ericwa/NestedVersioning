@@ -32,7 +32,10 @@
 	a user initiated copy renames all of the copied objects (the motivation for that was avoiding\
 	the \'93paradoxes\'94 we identified when working on ObjectMerging). and also, we don\'92t want to have\
 	multiple objects with the same uuid.\
-	a \'93system copy\'94 is just a copy without renaming..\
+	a \'93system copy\'94 is just a copy without renaming.. so the current assumption has been that\
+	system copies take place inside the \'93persistent root\'94 data structure, so the outer wrapper\
+	keeps the same uuid, as do the content uuids stay the same, but the objects themselves\
+	may change. (in this way we simulate state change).\
 \
 	this relates to how we update the uuid->oid table, how we enforce one uuid = one object\
 	(and what constitutes a version of an object vs a different object).\
@@ -45,6 +48,11 @@
 	  - may interfere with a basic implementation of cheap storage (not a big deal, probably)\
 	  - we lose the ability to have other objects refer to the \'91latest\'92 version of this object,\
 		because the latest version is only known by the user and not the system.\
+\
+	this sounds like an issue of end users vs library users (developers).\
+	the uuid->oid table, the notion of what constitutes a version of an object vs a different object\
+	is an end-user concern. so end users must be prevented from violating one uuid=one object, but\
+	developers may have to be careful themselves.\
 \
 
 \f0 \
