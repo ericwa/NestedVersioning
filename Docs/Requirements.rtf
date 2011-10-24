@@ -29,6 +29,40 @@
 6. same uuid = different versions of conceptually the \'93same thing\'94 (identity), different uuid = different thing (different identity). copy creates new identity.\
 \
 \
+
+\b types of copy\
+\
+\pard\pardeftab720
+
+\b0 \cf0 For an embedded object, I can think of two\
+- return an independent copy of the embedded object, with no relabelling\
+- return an independent copy of the embedded object, with relabelling every object to a new uuid and updating any references inside the copy which refer to old uuids to new uuids.\
+\
+For a persistent root, I can think of a lot more:\
+- 
+\i "copy history graph"
+\i0 : return an independent copy of the entire history graph (like doing "cp -r some_git_repository new_copy". This is what I was thinking of doing in nested versioning -upon ever commit, all nested persistent roots inside an outer persistent root would be copied in this way.)\
+- 
+\i "create branch"
+\i0 : create a new branch off of the current state of the persistent root, and return a link which tracks the latest version of the persistent root on the new branch (interestingly, this is the only one that performs a _mutable_ change to the persistent root)\
+- "
+\i non-versioned copy":
+\i0  return a non-versioned (embedded object) copy of the current version of the persistent root, without any relabelling. \
+- 
+\i "non-versioned relabelled copy":
+\i0  return a non-versioned (embedded object) copy of the current version of the persistent root, with relabelling every object to a new uuid and updating any references inside the copy which refer to old uuids to new uuids.\
+- 
+\i "link":
+\i0  (not really copying) return a link to the persistent root which will continue to track further changes \'a0(i.e., just the persistent root's uuid)\
+- "
+\i link to version
+\i0 ": (not really copying) return a link to the current version of the \'a0persistent root which will not track further changes (i.e. a string "uuid:version")\
+- "
+\i new persistent root"
+\i0 : create a new persistent root with an empty history graph, and insert as its contents the "non-versioned relabelled copy"\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \
+\
 \
 
 \b Comments
@@ -133,11 +167,21 @@ I hope the \'91relative reference\'92 requirement can be satisfied\'85 because w
 \
 	1. branch data is kept at the site where it is embedded (i.e., in the versioned, \'93data\'94 namespace)\
 		=> This will screw up undo. i.e. for a document embedded in a project, moving the \'91current version\'92 pointer of the inner document will cause commits in the project (non-semantically-meaningful commits?) -> then undo in the project will have to navigate over the commits which undo/redo changes in the inner document\
+\
 	2. branch data is kept in the history graph data structure (i.e., in the non-versioned, mutable \'93history\'94 namespace\'94\
 \
 \
 \
 Sounds like 2 is the way to go.\
+\
+\ul supposing we use design #2:\ulnone \
+\
+-suppose b is embedded in a\
+=>create the branch data in the history graph, and create the pointer to the branch data at the embedding site\
+\
+-to clone b (new uuid) => clone the documents embdedded in b. update the uudis where the sub-documents of b are embedded in b. history can be discareded.\
+\
+-to branch a, b and all other embedded root objects need to be branched also.\
 \
 \
 }
