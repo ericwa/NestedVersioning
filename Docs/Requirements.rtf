@@ -1,6 +1,6 @@
 {\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fmodern\fcharset0 Courier;\f2\fmodern\fcharset0 Courier-Bold;
-}
+\f3\fmodern\fcharset0 Courier-Oblique;}
 {\colortbl;\red255\green255\blue255;}
 \margl1440\margr1440\vieww10760\viewh13740\viewkind0
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
@@ -98,16 +98,18 @@ what exactly is the difference between copy and link?\
 when an object is committed to, its parent needs to be updated without a commit\
 \
 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
-\f2\b problem with nested versioning:\
+\f2\b \cf0 problem with nested versioning:\
  - 
 \f1\b0 branching a container should totally copy the history graph of the inner object\
 \
 
 \f2\b new design example:\
 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
-\f1\b0 persistent roots:\
+\f1\b0 \cf0 persistent roots:\
 1. photomontage\
 	contains copy of 2 at version A\
 2. photo\
@@ -150,8 +152,9 @@ copies of the object which are new objects are given new uuids\'92, ie they\'92r
 still not sure about \'93current branch\'94/\'93current version.\
 \
 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
-\f2\b\fs30 \'91relative reference\'92 requirement:
+\f2\b\fs30 \cf0 \'91relative reference\'92 requirement:
 \f1\b0\fs24 \
 \'93suppose B is embdedded in A.\
 if a commit to B does not cause a synthetic commit in A,\
@@ -168,7 +171,7 @@ I hope the \'91relative reference\'92 requirement can be satisfied\'85 because w
 	1. branch data is kept at the site where it is embedded (i.e., in the versioned, \'93data\'94 namespace)\
 		=> This will screw up undo. i.e. for a document embedded in a project, moving the \'91current version\'92 pointer of the inner document will cause commits in the project (non-semantically-meaningful commits?) -> then undo in the project will have to navigate over the commits which undo/redo changes in the inner document\
 \
-	2. branch data is kept in the history graph data structure (i.e., in the non-versioned, mutable \'93history\'94 namespace\'94\
+	2. branch data is kept in the history graph data structure (i.e., in the non-versioned, mutable \'93history\'94 namespace\'94) - but current branch is kept in the versioned contents\
 \
 \
 \
@@ -177,11 +180,51 @@ Sounds like 2 is the way to go.\
 \ul supposing we use design #2:\ulnone \
 \
 -suppose b is embedded in a\
-=>create the branch data in the history graph, and create the pointer to the branch data at the embedding site\
+=>create the branch data in the history graph, and create the pointer to the branch data (which branch) at the embedding site\
 \
 -to clone b (new uuid) => clone the documents embdedded in b. update the uudis where the sub-documents of b are embedded in b. history can be discareded.\
 \
 -to branch a, b and all other embedded root objects need to be branched also.\
 \
 \
-}
+
+\f2\b will accumulation of \'93garbage\'94 branches be a problem?
+\f1\b0  well, if we\
+-embed a peristent root (creating a branch)\
+-delete it\
+-undo\
+-redo\
+-embed it againg (creating another branch)\
+\
+should be ok.\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\f3\i \cf0 seems like we actually lose nothing without nested versioning.
+\f1\i0  we can undo branch switch, since the current branch pointer is versioned. we can undo merge since it\'92s a normal commit. the history graph will just get a bit \'91overgrown\'92 after a while, but that\'92s necessary for undo, and we can always prune it.?\
+\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\f2\b \cf0 can we get away without \'91default\'92 current branch? (this implies, \'93can we get away without \'91default\'92 current revision since current revision is stored in current branch)
+\f1\b0 \
+\
+suppose we just store the current branch of the \'93root\'94 (\'91/\'91) persistent root. this lists the current branches of all contained objects, etc, etc, so in this way, we have defined the current branch and current revision of every object.\
+\
+\
+
+\f2\b how will the object context api look with all of this?\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\f1\b0 \cf0 - the branch of embedded objects is determined by versionable data in the current editing context.\
+\
+seems like an object context should contain objects all from the same root object. it also needs to contain a reference to a version in that persistent root to base the changes on. 
+\f2\b AND\'85 it needs to know what to update when it does a commit. i.e, what branch is it editing on. 
+\f1\b0 \
+\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\f2\b \cf0 with this new model, the side effect of taking a subtree of embedded objects and putting them in a new persistent root 
+\f1\b0 is changes in the new persistent root no longer register undo actions in the old persistent root (but this is what we want - the defining property of persistent roots is that they are isolated from each other). However, the action of deleting the subtree and putting in an embedded reference can be undone as normal, leaving the new persistent root behind as garbage.}
