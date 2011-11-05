@@ -2,14 +2,20 @@
 
 @implementation COPath
 
-- (id)init
++ (COPath *) pathWithUUIDs: (NSArray*)uuids
 {
-    self = [super init];
-    if (self) {
-        // Initialization code here.
-    }
-    
-    return self;
+	COPath *p = [[COPath alloc] init];
+	p->array = [[NSArray alloc] initWithArray: uuids];
+	return [p autorelease];
+}
+- (NSArray *) UUIDs
+{
+	return array;
+}
+- (void)dealloc
+{
+	[array release];
+	[super dealloc];
 }
 
 @end

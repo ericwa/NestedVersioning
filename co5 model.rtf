@@ -4,7 +4,7 @@
 \margl1440\margr1440\vieww8880\viewh11740\viewkind0
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
-\f0\fs24 \cf0 co5 conceptual model\
+\f0\fs24 \cf0 \ul \ulc0 co5 conceptual model\ulnone \
 \
 a 
 \b version
@@ -12,18 +12,15 @@ a
 	-uuid identifying it\
 	-uuids of parent versions to create a history graph\
 	-list of \ul all\ulnone  embedded object uuids which can be accessed in that version and links to immutable 
-\b blobs
+\b embedded objects
 \b0  containing their state.\
 \
 there is a special type of 
-\b blob
+\b embedded objects
 \b0  called a 
 \b persistent root
-\b0 . a 
-\b persistent root 
-\b0 is basically a branch selector - it has a list of uuids of 
-\b branches
-\b0  and a marker indicating which one is current.\
+\b0 . a persistent root has a pointer to a branch. it is also a normal embedded object\
+so it can have fields like name, etc.\
 \
 a 
 \b branch
@@ -34,17 +31,41 @@ a
 that\'92s it; we just need to work out some details.\
 ________________________________________________________\
 \
-interpretation:\
+\ul interpretation\ulnone :\
 \
 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
-\f1 	
-\f0\b \cf2 Extreme:
-\f1\b0  we want to be able to refer to branches that are inside other persistent roots for the purposes of tracking foreign objects. How can we do this given that another branch can have been in different states? e.g. we have the photo montage, and want to set it to track the original branch in the photo library. the photo library has been copied and screwed with. the main copy of the photo library has several branches, each which add different branches to the target photo. It should be possible to show \'93all branches ever made of this object\'94
+\f1 \cf0 	\cf2  we want to be able to refer to branches that are inside other persistent roots for the purposes of tracking foreign objects. How can we do this given that another branch can have been in different states? e.g. we have the photo montage, and want to set it to track the original branch in the photo library. the photo library has been copied and screwed with. the main copy of the photo library has several branches, each which add different branches to the target photo. It should be possible to show \'93all branches ever made of this object\'94
 \fs22 \cf0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
-\f0\fs24 \
+\f0\fs24 \cf0 \
 some thoughts on object identity: all persistent roots with the same uuid are related. so for the \
+\
+naming and access:\
+\
+e.g. \
+\
+folder_for_contract_project / photomontage / photo (same uuid as photolibrary photo?)\
+folder_for_contract_project / photomontage 2 / .. 
+\b the photo from above is moved here later.. new uuid?
+\b0 \
+\
+photolibrary / photo\
+photolibrary (alt branch) / photo (same uuid as regular branch photo)\
+\
+\
+well, we need to formalize the rules for copy.\
+copied by user: new uuid otherwise, no new uuid?\
+\
+
+\b if we do not rename sub-embedded-persistent-roots on every commit/branch/copy of the parent, we need to use "persistent root paths" to refer to the inner persistent roots. \
+\
+
+\b0 is keeping the same name after moving worthwhile? it may be impossible... it turns  into the same problem as the "inconsistencies" i identified in om1. i.e., if you move an object from one persistent root to another, then undo at the move source, your name now refers to two different persistent roots.\
+\
+\
 \
 \
 implementation:\

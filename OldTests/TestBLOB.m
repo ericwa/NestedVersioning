@@ -1,15 +1,11 @@
-#import "TestBLOB.h"
+#import <Foundation/Foundation.h>
 
-@implementation TestBLOB
 
-- (id)init
+
+void test()
 {
-    self = [super init];
-    if (self) {
-        // Initialization code here.
-    }
-    
-    return self;
-}
+	NSData *blob = [@"Hello world" dataUsingEncoding: NSUTF8StringEncoding];
+	
 
-@end
+
+}
