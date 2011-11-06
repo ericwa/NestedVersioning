@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+#import "ETUUID.h"
 
 /**
  * simply an array of uuid's

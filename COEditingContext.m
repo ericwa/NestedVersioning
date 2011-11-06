@@ -1,6 +1,6 @@
-#import "COObjectContext.h"
+#import "COEditingContext.h"
 
-@implementation COObjectContext
+@implementation COEditingContext
 
 - (id)init
 {
