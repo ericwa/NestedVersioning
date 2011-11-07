@@ -57,10 +57,9 @@
 }
 
 - (ETUUID*) addCommitWithParent: (ETUUID*)parent
-                       metadata: (NSData*)metadata
-				   UUIDsAndData: (NSDictionary*)objects // ETUUID : NSData
+                       metadata: (id)metadataPlist
+				 UUIDsAndPlists: (NSDictionary*)objects
 {
-	NILARG_EXCEPTION_TEST(metadata);
 	NILARG_EXCEPTION_TEST(objects);
 	
 	ETUUID *commitUUID = [ETUUID UUID];
@@ -69,22 +68,20 @@
 	{
 		for (ETUUID *uuid in objects)
 		{
-			NSData *data = [objects objectForKey: uuid];
-			if (![data isKindOfClass: [NSData class]])
-			{
-				[NSException raise: NSInvalidArgumentException
-							format: @"UUIDsAndData: parameter must contain NSData values"];
-			}
-			[objectsWithStringUUID setObject: data
+			[objectsWithStringUUID setObject: [objects objectForKey: uuid]
 									  forKey: [uuid stringValue]];
 		}
 	}
 	
 	NSMutableDictionary *plist = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 							   [commitUUID stringValue], @"uuid",
-							   metadata, @"metadata",
 							   objectsWithStringUUID, @"objects",
 							   nil];
+	
+	if (metadataPlist != nil)
+	{
+		[plist setObject:metadataPlist forKey: @"metadata"];
+	}
 	
 	if (parent != nil)
 	{
@@ -98,7 +95,7 @@
 				 atomically: YES])
 	{
 		[NSException raise: NSInternalInconsistencyException
-					format: @"Failed to save commit. Perhaps the store is not writable/valid?"];
+					format: @"Failed to save commit %@.", plist];
 	}
 	
 	return commitUUID;			
@@ -150,11 +147,11 @@
 {
 	return [[self plistForCommit: commit] objectForKey: @"parent"];
 }
-- (NSData *) metadataForCommit: (ETUUID*)commit
+- (id) metadataForCommit: (ETUUID*)commit
 {
 	return [[self plistForCommit: commit] objectForKey: @"metadata"];	
 }
-- (NSDictionary *) UUIDsAndDataForCommit: (ETUUID*)commit
+- (NSDictionary *) UUIDsAndPlistsForCommit: (ETUUID*)commit
 {
 	return [[self plistForCommit: commit] objectForKey: @"objects"];	
 }

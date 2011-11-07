@@ -10,18 +10,20 @@ static void testStore()
 	COStore *store = [[COStore alloc] initWithURL: [NSURL fileURLWithPath: path]];
 	
 	NSDictionary *uuidsanddata = [NSDictionary dictionaryWithObjectsAndKeys:
-								  [NSData dataWithBytes:"abc" length:3], [ETUUID UUID],
+								  @"Hello world", [ETUUID UUID],
 								  nil];
 	
+	NSDictionary *md = [NSDictionary dictionaryWithObjectsAndKeys: @"today", @"date", nil];
+	
 	ETUUID *uuid = [store addCommitWithParent: nil
-					  metadata: [NSData dataWithBytes:"hi" length:2]
-				  UUIDsAndData: uuidsanddata];
+									 metadata: md
+							   UUIDsAndPlists: uuidsanddata];
 	
 	EWTestTrue(uuid != nil);
 	EWTestEqual([NSArray arrayWithObject: uuid], [store allCommitUUIDs]);
 	EWTestEqual(nil, [store parentForCommit: uuid]);
-	EWTestEqual([NSData dataWithBytes:"hi" length:2], [store metadataForCommit: uuid]);
-	EWTestEqual(uuidsanddata, [store UUIDsAndDataForCommit: uuid]);
+	EWTestEqual(md, [store metadataForCommit: uuid]);
+	EWTestEqual(uuidsanddata, [store UUIDsAndPlistsForCommit: uuid]);
 	
 	[store setRootVersion: uuid];
 	EWTestEqual(uuid, [store rootVersion]);

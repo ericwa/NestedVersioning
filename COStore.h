@@ -23,14 +23,14 @@
 /** @taskunit commits */
 
 - (ETUUID*) addCommitWithParent: (ETUUID*)parent
-                       metadata: (NSData*)metadata
-				   UUIDsAndData: (NSDictionary*)objects; // ETUUID : NSData
+                       metadata: (id)metadataPlist
+				 UUIDsAndPlists: (NSDictionary*)objects; // ETUUID : plist
 
 - (NSArray*) allCommitUUIDs;
 
 - (ETUUID *) parentForCommit: (ETUUID*)commit;
-- (NSData *) metadataForCommit: (ETUUID*)commit;
-- (NSDictionary *) UUIDsAndDataForCommit: (ETUUID*)commit;
+- (id) metadataForCommit: (ETUUID*)commit;
+- (NSDictionary *) UUIDsAndPlistsForCommit: (ETUUID*)commit;
 
 
 - (ETUUID *) rootVersion;
