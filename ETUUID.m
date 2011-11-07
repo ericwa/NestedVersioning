@@ -61,11 +61,7 @@
 
 - (id) initWithString: (NSString *)aString
 {
-	if (aString == nil)
-    {
-        [NSException raise: NSInvalidArgumentException
-                    format: @"aString must be non-nil"];
-    }
+	NILARG_EXCEPTION_TEST(aString);
     SUPERINIT;
 
 	const char *data = [aString UTF8String];
@@ -111,23 +107,8 @@
  */
 - (NSUInteger) hash
 {
-    if (sizeof(NSUInteger) == 8)
-    {
-        return *((uint64_t *)uuid) ^ *((uint64_t *)&uuid[8]);
-    }
-    else 
-    {
-        /* uuid is 128 bits long. Hence to compute the hash, we simply divide it in 
-         four parts of 32 bits, we xor the two left parts, then the two right 
-         parts . Finally we xor the two previous xor results. */
-        uint32_t part1 = *((uint32_t *)&uuid[0]);
-        uint32_t part2 = *((uint32_t *)&uuid[4]);
-        uint32_t part3 = *((uint32_t *)&uuid[8]);
-        uint32_t part4 = *((uint32_t *)&uuid[12]);
-        uint32_t hash = ((part1 ^ part2) ^ (part3 ^ part4));
-        //NSLog(@"part1 %u part2 %u part3 %u part4 %u : %u", part1, part2, part3, part4, hash);
-        return hash;
-    }
+	// XOR the two 64-bit halves
+	return *((uint64_t *)uuid) ^ *((uint64_t *)&uuid[8]);
 }
 
 - (BOOL) isEqual: (id)anObject
