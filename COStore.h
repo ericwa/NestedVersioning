@@ -32,10 +32,9 @@
 - (NSData *) metadataForCommit: (ETUUID*)commit;
 - (NSDictionary *) UUIDsAndDataForCommit: (ETUUID*)commit;
 
-/** @taskunit persistent roots */
 
-- (NSArray *) persistentRootUUIDs;
-
+- (ETUUID *) rootVersion;
+- (void) setRootVersion: (ETUUID*)version;
 
 
 /** @taskunit one-to-many/many-to-many relationship caching */

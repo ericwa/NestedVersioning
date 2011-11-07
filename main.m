@@ -23,6 +23,9 @@ static void testStore()
 	EWTestEqual([NSData dataWithBytes:"hi" length:2], [store metadataForCommit: uuid]);
 	EWTestEqual(uuidsanddata, [store UUIDsAndDataForCommit: uuid]);
 	
+	[store setRootVersion: uuid];
+	EWTestEqual(uuid, [store rootVersion]);
+	
 }
 
 int main (int argc, const char * argv[])

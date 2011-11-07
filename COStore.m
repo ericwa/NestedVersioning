@@ -8,9 +8,9 @@
 
 @implementation COStore
 
-- (NSString *) persistentRootsDirectory
+- (NSString *) rootVersionFile
 {
-	return [[url path] stringByAppendingPathComponent: @"persistentRoots"];
+	return [[url path] stringByAppendingPathComponent: @"rootVersion"];
 }
 
 - (NSString *) commitsDirectory
@@ -32,11 +32,7 @@
 		if (![[NSFileManager defaultManager] createDirectoryAtPath: [self commitsDirectory]
 									  withIntermediateDirectories: YES
 													   attributes: nil
-															error: NULL] ||
-			![[NSFileManager defaultManager] createDirectoryAtPath: [self persistentRootsDirectory]
-									   withIntermediateDirectories: YES
-														attributes: nil
-															 error: NULL])
+															error: NULL])
 		{
 			[self release];
 			[NSException raise: NSGenericException
@@ -162,5 +158,22 @@
 {
 	return [[self plistForCommit: commit] objectForKey: @"objects"];	
 }
+
+- (ETUUID *) rootVersion
+{
+	return [ETUUID UUIDWithString:
+				[NSString stringWithContentsOfFile: [self rootVersionFile] 
+										  encoding: NSUTF8StringEncoding
+											 error: NULL]];
+}
+- (void) setRootVersion: (ETUUID*)version
+{
+	NILARG_EXCEPTION_TEST(version);
+	[[version stringValue] writeToFile: [self rootVersionFile] 
+							atomically: YES
+							  encoding: NSUTF8StringEncoding
+								 error: NULL];
+}
+
 
 @end
