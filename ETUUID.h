@@ -68,5 +68,3 @@ ETUUID does not have a designated initializer. */
 - (const unsigned char *) UUIDValue;
 
 @end
-
-#define ETUUIDSize (36 * sizeof(char))
