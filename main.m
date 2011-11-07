@@ -4,7 +4,10 @@
 
 static void testStore()
 {
-	COStore *store = [[COStore alloc] initWithURL: [NSURL fileURLWithPath: [@"~/om5teststore" stringByExpandingTildeInPath]]];
+	NSString *path = [@"~/om5teststore" stringByExpandingTildeInPath];
+	
+	[[NSFileManager defaultManager] removeItemAtPath: path error: NULL];
+	COStore *store = [[COStore alloc] initWithURL: [NSURL fileURLWithPath: path]];
 	
 	NSDictionary *uuidsanddata = [NSDictionary dictionaryWithObjectsAndKeys:
 								  [NSData dataWithBytes:"abc" length:3], [ETUUID UUID],

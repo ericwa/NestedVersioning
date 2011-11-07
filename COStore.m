@@ -87,7 +87,7 @@
 	NSMutableDictionary *plist = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 							   [commitUUID stringValue], @"uuid",
 							   metadata, @"metadata",
-							   objectsWithStringUUID, @"obects",
+							   objectsWithStringUUID, @"objects",
 							   nil];
 	
 	if (parent != nil)
@@ -143,9 +143,11 @@
 	 
 	assert([[plist objectForKey: @"uuid"] isEqualToString: [commit stringValue]]);
 
-	[plist setObject: [ETUUID UUIDWithString: [plist objectForKey: @"parent"]]
-			  forKey: @"parent"];
-	
+	if ([plist objectForKey: @"parent"] != nil)
+	{
+		[plist setObject: [ETUUID UUIDWithString: [plist objectForKey: @"parent"]]
+				  forKey: @"parent"];
+	}
 	return plist;
 }
 - (ETUUID *) parentForCommit: (ETUUID*)commit
