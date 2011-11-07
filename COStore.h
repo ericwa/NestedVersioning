@@ -32,7 +32,9 @@
 - (id) metadataForCommit: (ETUUID*)commit;
 - (NSDictionary *) UUIDsAndPlistsForCommit: (ETUUID*)commit;
 
-
+/**
+ * This is a primitive/easy way of implementing the mutable part of the store
+ */
 - (ETUUID *) rootVersion;
 - (void) setRootVersion: (ETUUID*)version;
 
