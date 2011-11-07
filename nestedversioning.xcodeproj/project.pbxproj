@@ -13,6 +13,7 @@
 		66E0189C146455C8000EB1E0 /* TestPhotoMontage.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E0189B146455C8000EB1E0 /* TestPhotoMontage.m */; };
 		66E0189F146468F6000EB1E0 /* TestBLOB.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E0189E146468F6000EB1E0 /* TestBLOB.m */; };
 		66E22EC91421D47100C00A98 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E22EC81421D47100C00A98 /* Foundation.framework */; };
+		66E313B1146857FF00B5E109 /* COStoreController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E313B0146857FF00B5E109 /* COStoreController.m */; };
 		66E59CCA1465F38500E16AD5 /* COPersistentRootDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E59CC91465F38400E16AD5 /* COPersistentRootDiff.m */; };
 		66E59CCE146650AA00E16AD5 /* COObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E59CCD146650AA00E16AD5 /* COObject.m */; };
 		66E877571455F0CB006CBE7E /* COStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E877561455F0CB006CBE7E /* COStore.m */; };
@@ -44,7 +45,7 @@
 		6628FB9E142FA7840072767A /* TestArrayDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestArrayDiff.m; sourceTree = "<group>"; };
 		6628FB9F142FA7840072767A /* TestCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestCommon.h; sourceTree = "<group>"; };
 		6628FBA0142FA7840072767A /* TestCommon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCommon.m; sourceTree = "<group>"; };
-		6628FBA1142FA7840072767A /* TestCopyEmbeddedObjects.m */ = {isa = PBXFileReference; fileEncoding = 4; path = TestCopyEmbeddedObjects.m; sourceTree = "<group>"; };
+		6628FBA1142FA7840072767A /* TestCopyEmbeddedObjects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCopyEmbeddedObjects.m; sourceTree = "<group>"; };
 		6628FBA2142FA7840072767A /* TestEditingContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestEditingContext.m; sourceTree = "<group>"; };
 		6628FBA3142FA7840072767A /* TestHistoryTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestHistoryTrack.m; sourceTree = "<group>"; };
 		6628FBA4142FA7840072767A /* TestPerformance.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestPerformance.m; sourceTree = "<group>"; };
@@ -64,6 +65,8 @@
 		66E22EC61421D47100C00A98 /* nestedversioning */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = nestedversioning; sourceTree = BUILT_PRODUCTS_DIR; };
 		66E22EC81421D47100C00A98 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		66E2A3031430569C00487419 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
+		66E313AF146857FF00B5E109 /* COStoreController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COStoreController.h; sourceTree = "<group>"; };
+		66E313B0146857FF00B5E109 /* COStoreController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COStoreController.m; sourceTree = "<group>"; };
 		66E59CC81465F38400E16AD5 /* COPersistentRootDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPersistentRootDiff.h; sourceTree = "<group>"; };
 		66E59CC91465F38400E16AD5 /* COPersistentRootDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COPersistentRootDiff.m; sourceTree = "<group>"; };
 		66E59CCC146650AA00E16AD5 /* COObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COObject.h; sourceTree = "<group>"; };
@@ -80,7 +83,7 @@
 		66E877631455FDDE006CBE7E /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMResultSet.m; sourceTree = "<group>"; };
 		66E877691455FE5B006CBE7E /* ETUUID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETUUID.h; sourceTree = "<group>"; };
 		66E8776A1455FE67006CBE7E /* ETUUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETUUID.m; sourceTree = "<group>"; };
-		66EE5D34146355A6008AA95B /* COEditingContext.h */ = {isa = PBXFileReference; fileEncoding = 4; path = COEditingContext.h; sourceTree = "<group>"; };
+		66EE5D34146355A6008AA95B /* COEditingContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COEditingContext.h; sourceTree = "<group>"; };
 		66EE5D35146355A6008AA95B /* COEditingContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COEditingContext.m; sourceTree = "<group>"; };
 		66EE5D37146358F1008AA95B /* co5 model.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = "co5 model.rtf"; sourceTree = "<group>"; };
 		66EE5D3814637418008AA95B /* COPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPath.h; sourceTree = "<group>"; };
@@ -174,6 +177,8 @@
 			children = (
 				66E877551455F0CB006CBE7E /* COStore.h */,
 				66E877561455F0CB006CBE7E /* COStore.m */,
+				66E313AF146857FF00B5E109 /* COStoreController.h */,
+				66E313B0146857FF00B5E109 /* COStoreController.m */,
 			);
 			name = Store;
 			sourceTree = "<group>";
@@ -256,6 +261,7 @@
 				66E0189F146468F6000EB1E0 /* TestBLOB.m in Sources */,
 				66E59CCA1465F38500E16AD5 /* COPersistentRootDiff.m in Sources */,
 				66E59CCE146650AA00E16AD5 /* COObject.m in Sources */,
+				66E313B1146857FF00B5E109 /* COStoreController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

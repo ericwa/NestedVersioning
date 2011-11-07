@@ -2,15 +2,35 @@
 #import "ETUUID.h"
 
 /**
- * simply an array of uuid's
+ * Holds a path of the form
+ *
+ *   path := ""                                        // empty path
+ *         | "<path>/persistentRootUUID"               // current version of current branch of specified persistent root
+ *         | "<path>/persistentRootUUID:branchUUID"    // current version of specified branch of specified persistent root
+ *         | "<path>/persistentRootUUID@versionUUID"   // specified version of specified persistent root
+ *
  */
-@interface COPath : NSObject
+@interface COPath : NSObject <NSCopying>
 {
-	NSArray *array;
+	COPath *parent;
+	ETUUID *persistentRoot;
+	ETUUID *branch;
+	ETUUID *version;
 }
 
-+ (COPath *) pathWithParent: (COPath *)parent
-		 persistentRootUUID: (ETUUID *)aUUID
-				 branchUUID: (ETUUID *)aBranch;
+/**
+ * Returns an empty path
+ */
+
++ (COPath *) path;
+
+- (COPath *) pathByAppendingPathToCurrentVersionOfPersistentRoot: (ETUUID *)aPersistentRoot;
+
+- (COPath *) pathByAppendingPathToCurrentVersionOfPersistentRoot: (ETUUID *)aPersistentRoot
+													atBranchUUID: (ETUUID *)aBranch;
+
+- (COPath *) pathByAppendingPathToPersistentRoot: (ETUUID *)aPersistentRoot
+									   atVersion: (ETUUID *)aVersion;
+
 
 @end
