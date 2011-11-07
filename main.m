@@ -38,7 +38,7 @@ static void testStore()
 	
 }
 
-void testPath()
+static void testPath()
 {
 	ETUUID *u1 = [ETUUID UUIDWithString: @"cdf68e39-8f4b-4afa-9f81-ba2f7cdf50e6"];
 	ETUUID *u2 = [ETUUID UUIDWithString: @"8a099b84-09eb-4a3e-828d-9a897778e5e3"];
@@ -56,7 +56,7 @@ void testPath()
 	EWTestEqual(pathStr, [path stringValue]);
 }
 
-void testStoreController()
+static void testStoreController()
 {
 	COStore *store = setupStore();
 	COStoreController *sc = [[COStoreController alloc] initWithStore: store];
