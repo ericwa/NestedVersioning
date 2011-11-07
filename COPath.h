@@ -32,5 +32,6 @@
 - (COPath *) pathByAppendingPathToPersistentRoot: (ETUUID *)aPersistentRoot
 									   atVersion: (ETUUID *)aVersion;
 
+- (NSString *) stringValue;
 
 @end
