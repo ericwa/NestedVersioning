@@ -2,13 +2,20 @@
 #import "EWTest.h"
 #import "COStore.h"
 #import "COPath.h"
+#import "COStoreController.h"
+
+
+#define STOREPATH [@"~/om5teststore" stringByExpandingTildeInPath]
+
+static COStore *setupStore()
+{
+	[[NSFileManager defaultManager] removeItemAtPath: STOREPATH error: NULL];
+	return [[COStore alloc] initWithURL: [NSURL fileURLWithPath: STOREPATH]];
+}
 
 static void testStore()
 {
-	NSString *path = [@"~/om5teststore" stringByExpandingTildeInPath];
-	
-	[[NSFileManager defaultManager] removeItemAtPath: path error: NULL];
-	COStore *store = [[COStore alloc] initWithURL: [NSURL fileURLWithPath: path]];
+	COStore *store = setupStore();
 	
 	NSDictionary *uuidsanddata = [NSDictionary dictionaryWithObjectsAndKeys:
 								  @"Hello world", [ETUUID UUID],
@@ -49,12 +56,19 @@ void testPath()
 	EWTestEqual(pathStr, [path stringValue]);
 }
 
+void testStoreController()
+{
+	COStore *store = setupStore();
+	COStoreController *sc = [[COStoreController alloc] initWithStore: store];
+}
+
 int main (int argc, const char * argv[])
 {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 
 	testStore();
 	testPath();
+	testStoreController();
 	
     EWTestLog();
     
