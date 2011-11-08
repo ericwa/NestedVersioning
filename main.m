@@ -60,6 +60,17 @@ static void testStoreController()
 {
 	COStore *store = setupStore();
 	COStoreController *sc = [[COStoreController alloc] initWithStore: store];
+	
+	// create some persistent roots
+	
+	COPath *aRoot1 = [sc createEmptyPersistentRootInsidePath: [COPath path]];
+	COPath *aRoot2 = [sc createEmptyPersistentRootInsidePath: [COPath path]];
+	
+	COPath *aRoot1rootA = [sc createEmptyPersistentRootInsidePath: aRoot1];
+	COPath *aRoot1rootB = [sc createPersistentRootCopyInsidePath: aRoot2
+										  ofPersistentRootAtPath: aRoot1rootA];
+
+	
 }
 
 int main (int argc, const char * argv[])

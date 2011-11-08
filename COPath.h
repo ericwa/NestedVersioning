@@ -26,11 +26,19 @@
 
 - (COPath *) pathByAppendingPathToCurrentVersionOfPersistentRoot: (ETUUID *)aPersistentRoot;
 
-- (COPath *) pathByAppendingPathToCurrentVersionOfPersistentRoot: (ETUUID *)aPersistentRoot
-													atBranchUUID: (ETUUID *)aBranch;
 
-- (COPath *) pathByAppendingPathToPersistentRoot: (ETUUID *)aPersistentRoot
-									   atVersion: (ETUUID *)aVersion;
+// This makes no sense, because a branch is just a persistent root.
+// If you want to make a path to it, just make a direct path to the branch...
+
+//- (COPath *) pathByAppendingPathToCurrentVersionOfPersistentRoot: (ETUUID *)aPersistentRoot
+//													atBranchUUID: (ETUUID *)aBranch;
+
+// this also makes no sense..
+// if a persistent root is pointing at a specific version, then it is pointing at that version
+// if not, a path to that version going "through" the persistent root doesn't make a lot of sense.
+
+//- (COPath *) pathByAppendingPathToPersistentRoot: (ETUUID *)aPersistentRoot
+//									   atVersion: (ETUUID *)aVersion;
 
 - (NSString *) stringValue;
 

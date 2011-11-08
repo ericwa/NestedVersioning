@@ -1,6 +1,12 @@
 #import <Foundation/Foundation.h>
 #import "ETUUID.h"
 
+/**
+ * lowest level of access to store.. deals with commit tree/forest.
+ *
+ * Most likely in the final version, the editing context layer will use COStoreController
+ * and COStore will be a layer over SQLite (or COStoreController will use sqlite directly, maybe)
+ */
 @interface COStore : NSObject
 {
 @private
