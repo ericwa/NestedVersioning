@@ -12,9 +12,24 @@ void test()
 	 the photo is dragged into the montage creating a copy.
 	 it should not prompt the user with "which branch to copy" or anything.
 	 
+	   - default behaviour is to create copies of these branches,
+	     so we have: photolibrary-color, montage-color, photolibrary-b&w, montage-b&w,
+	     photolibrary-sepia, montage-sepia branches.
+	 
 	 the montage also has multiple branches already (layout A, layout B).
 	 currently the montage is set to branch "layout B".
 	 
+	 - what if we want a photo in "layout A" that links to whatever "layout B"'s photo
+	 is doing? simple.. just a proot that links to /artwork/montage-layout-b/photo-proot
+	 
+	 - what if we want a photo in "layout A" that links to a specific branch of "layout B"'s photo?
+	 just a proot that links to /artwork/montage-layout-b/photo-specific-branch
+	 
+	 - what if we want a photo in "layout A" that links to (whatever the current branch of the 
+	 montage is)'s current photo (yes, that is probably crazy and useless!)
+
+	 just a proot that links to /artwork/montage-proot/photo-proot
+
 	 
 	 Q: How should the photo in the montage "see" the branches of the other photo?
 	 How should it react if we want to track a branch in the other photo?

@@ -3,19 +3,37 @@
 /**
  detailed specification of persistent root plist object:
  
- "type" : "root" - 
-        : "branch" - determines how it is treated by the UI.
+ -note that a persistent root contains its branches.
+ -copying a persistent root copies the branches, and should probably
+  give the root and branches new uuid's.
+ -note that you can refer to the branch directly without the parent root's uuid.
  
- "parent-root" : "uuid-path" - if we are a branch, this is the proot
-                          we belong to. (we were copied from).
+ {
+ "type" : "root"
+ "name" : "the object's name"
+ "tracking" : one of the following:
+			  a) the uuid of one of the branches we own,
+              b) or a path to another persistent root,
+			  c) or a path to a branch owned by another persistent root,
+			  d) or a specific version.
  
- "version" : version-uuid ?
-  
- "tracking-dest" : uuid-path ?  - if we are a branch, we should have a version.
-								if we are a normal proot, we can either point directly to a version, 
-								or give a uuid path to another proot (which can
-								either be a branch or a root type of proot)
+  "branches" : (
+		 {
+			 "type" : "branch"
+			 "uuid" : "8a099b84-09eb-4a3e-828d-9a897778e5e3"
+			 "name" : "whatever you want to call it"
+			 "version" : version-uuid 
+		},
+		 {
+			 "type" : "branch"
+			 "uuid" : "cdf68e39-8f4b-4afa-9f81-ba2f7cdf50e6"
+			 "name" : "another branch"
+			 "version" : version-uuid 
+		 },
+	 )
+ }
  
+
  */
  
  
