@@ -8,39 +8,13 @@
 	return [[[COPath alloc] init] autorelease];
 }
 
-- (COPath *) pathByAppendingPathToCurrentVersionOfPersistentRoot: (ETUUID *)aPersistentRoot
+- (COPath *) pathByAppendingPersistentRoot: (ETUUID *)aPersistentRoot
 {
 	NILARG_EXCEPTION_TEST(aPersistentRoot);
 	
 	COPath *path = [COPath path];
 	ASSIGN(path->parent, self);
 	ASSIGN(path->persistentRoot, aPersistentRoot);
-	return path;
-}
-
-- (COPath *) pathByAppendingPathToCurrentVersionOfPersistentRoot: (ETUUID *)aPersistentRoot
-													atBranchUUID: (ETUUID *)aBranch
-{
-	NILARG_EXCEPTION_TEST(aPersistentRoot);
-	NILARG_EXCEPTION_TEST(aBranch);
-	
-	COPath *path = [COPath path];
-	ASSIGN(path->parent, self);
-	ASSIGN(path->persistentRoot, aPersistentRoot);
-	ASSIGN(path->branch, aBranch);
-	return path;
-}
-
-- (COPath *) pathByAppendingPathToPersistentRoot: (ETUUID *)aPersistentRoot
-									   atVersion: (ETUUID *)aVersion
-{
-	NILARG_EXCEPTION_TEST(aPersistentRoot);
-	NILARG_EXCEPTION_TEST(aVersion);
-	
-	COPath *path = [COPath path];
-	ASSIGN(path->parent, self);
-	ASSIGN(path->persistentRoot, aPersistentRoot);
-	ASSIGN(path->version, aVersion);
 	return path;
 }
 
@@ -59,23 +33,12 @@
 	}
 	else
 	{
-		assert(persistentRoot == nil && branch == nil && version == nil);
+		assert(persistentRoot == nil);
 		return @"";
 	}
-	
-	assert(branch == nil || version == nil);
 
 	[value appendFormat: @"/%@", [persistentRoot stringValue]];
-	
-	if (branch != nil)
-	{
-		[value appendFormat: @":%@", [branch stringValue]];
-	}
-	else if (version != nil)
-	{
-		[value appendFormat: @"@%@", [version stringValue]];
-	}
-	
+
 	return value;
 }
 
@@ -100,8 +63,6 @@
 {
 	[parent release];
 	[persistentRoot release];
-	[branch release];
-	[version release];
 	[super dealloc];
 }
 
