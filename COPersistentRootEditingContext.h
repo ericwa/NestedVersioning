@@ -7,7 +7,7 @@
  * committing to a persistent root nested several roots deep necessitates
  * commits in every parent.
  */
-@interface COEditingContext : NSObject
+@interface COPersistentRootEditingContext : NSObject
 {
 	
 }
@@ -18,7 +18,7 @@
  * other contexts already open on those roots might have to do a merge
  * to apply their changes (either a trivial merge, most likely, or a conflict)
  */
-+ (COEditingContext *)contextForEditingPersistentRootAtPath: (COPath *)aPath;
++ (COPersistentRootEditingContext *)contextForEditingPersistentRootAtPath: (COPath *)aPath;
 
 - (void) commit;
 

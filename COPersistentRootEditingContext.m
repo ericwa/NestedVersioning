@@ -1,6 +1,6 @@
 #import "COEditingContext.h"
 
-@implementation COEditingContext
+@implementation COPersistentRootEditingContext
 
 - (id)init
 {
