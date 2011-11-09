@@ -2,11 +2,16 @@
 #import "ETUUID.h"
 
 /**
- * Holds a path of the form
- *
- *   path := ""                                        // empty path
- *         | "<path>/persistentRootUUID"               // current version of current branch of specified persistent root
- *
+  Holds a path of the form
+ 
+    path := ""                                        // empty path
+          | "<path>/persistentRootUUID"               // current version of current branch of specified persistent root
+ 
+ the persistentRootUUIDs may be uuids of either branches, or persistent roots with no branches.
+ they can't be of persistent roots with branches, beacause if a persistent root has branches,
+ the branches are what is updated on commit.
+ 
+ 
  */
 @interface COPath : NSObject <NSCopying>
 {

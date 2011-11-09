@@ -12,5 +12,4 @@
 - (id)initWithStore: (COStore*)aStore;
 
 
-
 @end
