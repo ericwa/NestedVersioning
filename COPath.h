@@ -11,6 +11,7 @@
  they can't be of persistent roots with branches, beacause if a persistent root has branches,
  the branches are what is updated on commit.
  
+ note that you can always get the uuid of the root that owns a branch, because that is stored in the branch
  
  */
 @interface COPath : NSObject <NSCopying>
