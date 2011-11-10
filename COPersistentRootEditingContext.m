@@ -1,4 +1,4 @@
-#import "COEditingContext.h"
+#import "COPersistentRootEditingContext.h"
 
 @implementation COPersistentRootEditingContext
 

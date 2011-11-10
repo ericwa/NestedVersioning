@@ -6,6 +6,11 @@
  *
  * committing to a persistent root nested several roots deep necessitates
  * commits in every parent.
+ 
+ how to get rid of the cyclic nature of this class?
+ i.e. to commit changes to an embedded object requires knowing how to commit changes to its
+ parent persistent root.
+ 
  */
 @interface COPersistentRootEditingContext : NSObject
 {
