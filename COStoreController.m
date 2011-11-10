@@ -15,6 +15,8 @@
  */
 - (ETUUID*) currentVersionForPersistentRootAtPath: (COPath*)path
 {
+	// NOTE: If we want special handling for top-level persistent roots (children of /),
+	// this method is where we would do it
 	if ([path isEmpty])
 	{
 		return [store rootVersion];
