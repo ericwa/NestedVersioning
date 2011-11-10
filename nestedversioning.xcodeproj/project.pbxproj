@@ -15,6 +15,7 @@
 		66E22EC91421D47100C00A98 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E22EC81421D47100C00A98 /* Foundation.framework */; };
 		66E313B1146857FF00B5E109 /* COStoreController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E313B0146857FF00B5E109 /* COStoreController.m */; };
 		66E46D48146A3D490042123E /* TestDeletion.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E46D47146A3D490042123E /* TestDeletion.m */; };
+		66E552B5146B7799008FDFAF /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E552B4146B7799008FDFAF /* libcrypto.dylib */; };
 		66E59CCA1465F38500E16AD5 /* COPersistentRootDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E59CC91465F38400E16AD5 /* COPersistentRootDiff.m */; };
 		66E59CCE146650AA00E16AD5 /* COObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E59CCD146650AA00E16AD5 /* COObject.m */; };
 		66E877571455F0CB006CBE7E /* COStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E877561455F0CB006CBE7E /* COStore.m */; };
@@ -69,6 +70,7 @@
 		66E313AF146857FF00B5E109 /* COStoreController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COStoreController.h; sourceTree = "<group>"; };
 		66E313B0146857FF00B5E109 /* COStoreController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COStoreController.m; sourceTree = "<group>"; };
 		66E46D47146A3D490042123E /* TestDeletion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestDeletion.m; sourceTree = "<group>"; };
+		66E552B4146B7799008FDFAF /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = usr/lib/libcrypto.dylib; sourceTree = SDKROOT; };
 		66E59CC81465F38400E16AD5 /* COPersistentRootDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPersistentRootDiff.h; sourceTree = "<group>"; };
 		66E59CC91465F38400E16AD5 /* COPersistentRootDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COPersistentRootDiff.m; sourceTree = "<group>"; };
 		66E59CCC146650AA00E16AD5 /* COObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COObject.h; sourceTree = "<group>"; };
@@ -98,6 +100,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				66E552B5146B7799008FDFAF /* libcrypto.dylib in Frameworks */,
 				66E22EC91421D47100C00A98 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -108,6 +111,7 @@
 		662811EB13F8B5000075BBC2 = {
 			isa = PBXGroup;
 			children = (
+				66E552B4146B7799008FDFAF /* libcrypto.dylib */,
 				66416D20142D3EE20016501D /* README */,
 				66EE5D37146358F1008AA95B /* co5 model.rtf */,
 				66E2A3031430569C00487419 /* TODO */,

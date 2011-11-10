@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "Common.h"
 #import "ETUUID.h"
+#include <openssl/rand.h>
 
 #define TIME_LOW(uuid) (*(uint32_t*)(uuid))
 #define TIME_MID(uuid) (*(uint16_t*)(&(uuid)[4]))
@@ -16,6 +17,19 @@
 #define CLOCK_SEQ_HI_AND_RESERVED(uuid) (*(&(uuid)[8]))
 #define CLOCK_SEQ_LOW(uuid) (*(&(uuid)[9]))
 #define NODE(uuid) ((char*)(&(uuid)[10]))
+
+
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+static void ETUUIDGet16RandomBytes(unsigned char bytes[16])
+{
+	if (1 != RAND_pseudo_bytes(bytes, 16))
+	{
+		[NSException raise: NSGenericException
+					format: @"libcrypto can't automatically seed its random numer generator on your OS"];
+	}
+}
+#pragma GCC diagnostic warning "-Wdeprecated-declarations"
+
 
 @implementation ETUUID
 
@@ -33,11 +47,7 @@
 {
     SUPERINIT;
     
-	// Initialise with random data.
-	*((uint32_t*)&uuid[0]) = arc4random();
-	*((uint32_t*)&uuid[4]) = arc4random();
-	*((uint32_t*)&uuid[8]) = arc4random();
-	*((uint32_t*)&uuid[12]) = arc4random();
+	ETUUIDGet16RandomBytes(uuid);
 	
 	// Clear bits 6 and 7
 	CLOCK_SEQ_HI_AND_RESERVED(uuid) &= (unsigned char)63;
@@ -47,6 +57,7 @@
 	TIME_HI_AND_VERSION(uuid) &= 4095;
 	// Set the top 4 bits to the version
 	TIME_HI_AND_VERSION(uuid) |= 16384;
+	
 	return self;
 }
 
