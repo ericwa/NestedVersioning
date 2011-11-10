@@ -53,6 +53,17 @@ static void testPath()
 	
 	EWTestEqual([COPath path], [COPath path]);
 	EWTestEqual(@"", [[COPath path] stringValue]);
+	
+	EWTestEqual([[[COPath path]
+				  pathByAppendingPersistentRoot: u1]
+				 pathByAppendingPersistentRoot:u2], path);
+	
+	EWTestEqual(u2, [path lastPathComponent]);
+	EWTestEqual(u1, [[path pathByDeletingLastPathComponent] lastPathComponent]);
+	EWTestTrue(nil == [[[path pathByDeletingLastPathComponent] pathByDeletingLastPathComponent] lastPathComponent]);
+	EWTestEqual([COPath path], [[path pathByDeletingLastPathComponent] pathByDeletingLastPathComponent]);
+	
+	EWTestEqual(path, [COPath pathWithString: pathStr]);
 }
 
 static void testStoreController()

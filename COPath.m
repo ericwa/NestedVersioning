@@ -20,8 +20,17 @@
 
 + (COPath *) pathWithString: (NSString*) pathString
 {
+	if (nil == pathString ||
+		![pathString hasPrefix: @"/"] || 
+		[pathString hasSuffix: @"/"])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"malformed path '%@'", pathString]; 
+	}
+	
 	COPath *result = [COPath path];
-	NSArray *components = [pathString componentsSeparatedByString: @"/"];
+	NSArray *components = [[pathString substringFromIndex: 1] // strip off first slash
+								componentsSeparatedByString: @"/"];
 	for (NSString *uuidString in components)
 	{
 		// FIXME: too leniant
