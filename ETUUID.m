@@ -62,6 +62,13 @@
 - (id) initWithString: (NSString *)aString
 {
 	NILARG_EXCEPTION_TEST(aString);
+	
+	if ([aString length] != 36)
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"%@ not 36 characters in length", aString];
+	}
+	
     SUPERINIT;
 
 	const char *data = [aString UTF8String];
@@ -80,6 +87,7 @@
 
 	if (scanned != 11)
 	{
+		[self release];
 		[NSException raise: NSInvalidArgumentException
 					format: @"%@ not a well formed UUID", aString];
 	}
