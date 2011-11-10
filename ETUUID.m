@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "Common.h"
 #import "ETUUID.h"
-#include <openssl/rand.h>
+
 
 #define TIME_LOW(uuid) (*(uint32_t*)(uuid))
 #define TIME_MID(uuid) (*(uint16_t*)(&(uuid)[4]))
@@ -18,8 +18,16 @@
 #define CLOCK_SEQ_LOW(uuid) (*(&(uuid)[9]))
 #define NODE(uuid) ((char*)(&(uuid)[10]))
 
-
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#if defined(arc4random)
+static void ETUUIDGet16RandomBytes(unsigned char bytes[16])
+{
+	*((uint32_t*)&bytes[0]) = arc4random();
+	*((uint32_t*)&bytes[4]) = arc4random();
+	*((uint32_t*)&bytes[8]) = arc4random();
+	*((uint32_t*)&bytes[12]) = arc4random();
+}
+#else
+#include <openssl/rand.h>
 static void ETUUIDGet16RandomBytes(unsigned char bytes[16])
 {
 	if (1 != RAND_pseudo_bytes(bytes, 16))
@@ -28,7 +36,7 @@ static void ETUUIDGet16RandomBytes(unsigned char bytes[16])
 					format: @"libcrypto can't automatically seed its random numer generator on your OS"];
 	}
 }
-#pragma GCC diagnostic warning "-Wdeprecated-declarations"
+#endif
 
 
 @implementation ETUUID
