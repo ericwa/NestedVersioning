@@ -46,8 +46,29 @@ give the root and branches new uuid's.
 			  )
 }
  
+how do we add undo/redo to this?
+for branches/roots that track a specific version, they should also have 
+a key/value called "tip". (terminology stolen from mercurial)
+ 
+- every commit to that branch root should set both "tracking" and "tip"
+  to the same value.
 
-
+- to undo:
+  a) look up the version that "tracking" points to
+  b) get its parent (if it has none, can't undo)
+  c) set "tracking" to the parent, without modifying tip
+ 
+- to redo:
+	X = "tip"
+	if (X == "tracking") fail ("can't redo")
+	while (1) {
+      if (X.parent == "tracking") {
+		"tracking" = X;
+		finshed;
+	  }
+	  X = X.parent;
+   }
+ 
 **/
 
 @interface COStoreController : NSObject
@@ -120,5 +141,6 @@ give the root and branches new uuid's.
 - (void) writeUUIDsAndPlists: (NSDictionary*)objects // ETUUID : plist
 	forPersistentRootAtPath: (COPath*)path
 			    metadata: (id)metadataPlist;
+
 
 @end
