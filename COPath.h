@@ -23,8 +23,9 @@
 /**
  * Returns an empty path
  */
-
 + (COPath *) path;
+
++ (COPath *) pathWithString: (NSString*) pathString;
 
 - (COPath *) pathByAppendingPersistentRoot: (ETUUID *)aPersistentRoot;
 
@@ -43,5 +44,10 @@
 //									   atVersion: (ETUUID *)aVersion;
 
 - (NSString *) stringValue;
+
+- (BOOL) isEmpty;
+
+- (ETUUID *) lastPathComponent;
+- (COPath *) pathByDeletingLastPathComponent;
 
 @end

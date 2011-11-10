@@ -18,6 +18,19 @@
 	return path;
 }
 
++ (COPath *) pathWithString: (NSString*) pathString
+{
+	COPath *result = [COPath path];
+	NSArray *components = [pathString componentsSeparatedByString: @"/"];
+	for (NSString *uuidString in components)
+	{
+		// FIXME: too leniant
+		ETUUID *uuid = [ETUUID UUIDWithString: uuidString];
+		result = [result pathByAppendingPersistentRoot: uuid];
+	}
+	return result;
+}
+
 - (id) copyWithZone: (NSZone *)zone
 {
 	return [self retain];
@@ -53,6 +66,19 @@
 	[[self stringValue] isEqualToString: [anObject stringValue]];
 }
 
+- (BOOL) isEmpty
+{
+	return (parent == nil);
+}
+
+- (ETUUID *) lastPathComponent
+{
+	return persistentRoot;
+}
+- (COPath *) pathByDeletingLastPathComponent
+{
+	return parent;
+}
 
 - (NSString*) description
 {
