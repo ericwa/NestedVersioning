@@ -15,6 +15,14 @@
 @interface COPersistentRootEditingContext : NSObject
 {
 	COPath *path;
+	
+	// we need to keep track of what the store state was when this editing cotext was created
+	
+	COPath *absPath;
+	/**
+	 * for each element of absPath, the corresponding version UUID
+	 */
+	NSArray *versionUUIDs;
 }
 
 /**
