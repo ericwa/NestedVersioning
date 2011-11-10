@@ -3,7 +3,7 @@
 #import "COStore.h"
 #import "COPath.h"
 #import "COStoreController.h"
-
+#import "Common.h"
 
 #define STOREPATH [@"~/om5teststore" stringByExpandingTildeInPath]
 
@@ -73,6 +73,18 @@ static void testStoreController()
 	COStoreController *sc = [[COStoreController alloc] initWithStore: store];
 	
 	// create some persistent roots
+	
+	ETUUID *obj1UUID = [ETUUID UUID];
+	id obj1Plist = D(@"My First Object", @"name");
+	NSDictionary *objects = D(obj1Plist, obj1UUID);
+	NSDictionary *md = D(@"My first commit", @"message");
+	
+	[sc writeUUIDsAndPlists: objects
+forPersistentRootAtPath: [COPath path]
+				   metadata: md];
+	
+	EWTestEqual(obj1Plist, [sc plistForEmbeddedObject: obj1UUID atPath: [COPath path]]);
+	
 	/*
 	COPath *aRoot1 = [sc createEmptyPersistentRootInsidePath: [COPath path]];
 	COPath *aRoot2 = [sc createEmptyPersistentRootInsidePath: [COPath path]];

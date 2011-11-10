@@ -98,6 +98,13 @@ give the root and branches new uuid's.
 - (id) plistForEmbeddedObject: (ETUUID*)embeddedObject
 					 inCommit: (ETUUID*)aCommitUUID;
 
+/**
+ * simple wrapper around -currentVersionForPersistentRootAtPath:
+ * and -plistForEmbeddedObject:inCommit:
+ */
+- (id) plistForEmbeddedObject: (ETUUID*)embeddedObject
+				 atPath: (COPath*)aPath;
+
 /** @taskunit writing */
 
 /**

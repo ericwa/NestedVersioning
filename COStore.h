@@ -41,6 +41,10 @@
 /**
  * This is a primitive/easy way of implementing the mutable part of the store
  */
+
+/**
+ * may return nil on first use
+ */
 - (ETUUID *) rootVersion;
 - (void) setRootVersion: (ETUUID*)version;
 

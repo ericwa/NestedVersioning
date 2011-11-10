@@ -158,10 +158,17 @@
 
 - (ETUUID *) rootVersion
 {
-	return [ETUUID UUIDWithString:
-				[NSString stringWithContentsOfFile: [self rootVersionFile] 
-										  encoding: NSUTF8StringEncoding
-											 error: NULL]];
+	NSString *str = [NSString stringWithContentsOfFile: [self rootVersionFile] 
+											  encoding: NSUTF8StringEncoding
+												 error: NULL];
+	if (str != nil)
+	{
+		return [ETUUID UUIDWithString: str];
+	}
+	else
+	{
+		return nil;
+	}
 }
 - (void) setRootVersion: (ETUUID*)version
 {

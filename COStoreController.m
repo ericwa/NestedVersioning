@@ -96,6 +96,11 @@
 
 - (COPath *)absolutePathForPath: (COPath*)aPath
 {
+	if ([aPath isEmpty])
+	{
+		return aPath;
+	}
+	
 	COPath *absPath;
 	[self _currentVersionForPersistentRootAtPath: aPath
 						absolutePathOut: &absPath];
@@ -126,6 +131,16 @@
 	
 	return plist;
 }
+
+- (id) plistForEmbeddedObject: (ETUUID*)embeddedObject
+					   atPath: (COPath*)aPath
+{
+	ETUUID *version = [self currentVersionForPersistentRootAtPath: aPath];
+	id plist = [self plistForEmbeddedObject: embeddedObject inCommit: version];
+	
+	return plist;
+}
+
 
 // writing
 
@@ -159,6 +174,8 @@ forPersistentRootAtAbsolutePath: (COPath*)path
 	// ---------------------------------------------
 		
 	// we are going to make a commit with this as its parent
+	
+	// maybe nil if the store has never been used
 	ETUUID *baseVersion = [self currentVersionForPersistentRootAtPath: path];
 	
 	ETUUID *newVersion = [store addCommitWithParent: baseVersion

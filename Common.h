@@ -13,3 +13,7 @@ if (nil == arg) \
 "%s must not be nil", NSStringFromSelector(_cmd), #arg]; \
 } \
 } while(0);
+
+#define D(...) [NSDictionary dictionaryWithObjectsAndKeys:__VA_ARGS__ , nil]
+#define A(...) [NSArray arrayWithObjects:__VA_ARGS__ , nil]
+#define S(...) [NSSet setWithObjects:__VA_ARGS__ , nil]
