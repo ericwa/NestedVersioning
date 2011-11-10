@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		6628FB9B142FA65D0072767A /* EWTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6628FB9A142FA65D0072767A /* EWTest.m */; };
 		66436A1B142E944B000C14B4 /* LogIndent.m in Sources */ = {isa = PBXBuildFile; fileRef = 66436A1A142E944B000C14B4 /* LogIndent.m */; };
-		66D06E491468FA4F004BB5DE /* COPersistentRoot.m in Sources */ = {isa = PBXBuildFile; fileRef = 66D06E481468FA4F004BB5DE /* COPersistentRoot.m */; };
 		66DFAED0142A726100623060 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DFAEBF142A726100623060 /* main.m */; };
 		66E0189C146455C8000EB1E0 /* TestPhotoMontage.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E0189B146455C8000EB1E0 /* TestPhotoMontage.m */; };
 		66E0189F146468F6000EB1E0 /* TestBLOB.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E0189E146468F6000EB1E0 /* TestBLOB.m */; };
@@ -58,8 +57,6 @@
 		66416D20142D3EE20016501D /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		66436A19142E944B000C14B4 /* LogIndent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogIndent.h; sourceTree = "<group>"; };
 		66436A1A142E944B000C14B4 /* LogIndent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogIndent.m; sourceTree = "<group>"; };
-		66D06E471468FA4F004BB5DE /* COPersistentRoot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPersistentRoot.h; sourceTree = "<group>"; };
-		66D06E481468FA4F004BB5DE /* COPersistentRoot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COPersistentRoot.m; sourceTree = "<group>"; };
 		66DFAEBF142A726100623060 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		66DFAEC4142A726100623060 /* Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = "<group>"; };
 		66DFAECA142A726100623060 /* test-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "test-Prefix.pch"; sourceTree = "<group>"; };
@@ -122,8 +119,6 @@
 				66EE5D35146355A6008AA95B /* COPersistentRootEditingContext.m */,
 				66E59CC81465F38400E16AD5 /* COPersistentRootDiff.h */,
 				66E59CC91465F38400E16AD5 /* COPersistentRootDiff.m */,
-				66D06E471468FA4F004BB5DE /* COPersistentRoot.h */,
-				66D06E481468FA4F004BB5DE /* COPersistentRoot.m */,
 				66EE5D3814637418008AA95B /* COPath.h */,
 				66EE5D3914637418008AA95B /* COPath.m */,
 				66E877691455FE5B006CBE7E /* ETUUID.h */,
@@ -270,7 +265,6 @@
 				66E59CCA1465F38500E16AD5 /* COPersistentRootDiff.m in Sources */,
 				66E59CCE146650AA00E16AD5 /* COObject.m in Sources */,
 				66E313B1146857FF00B5E109 /* COStoreController.m in Sources */,
-				66D06E491468FA4F004BB5DE /* COPersistentRoot.m in Sources */,
 				66E46D48146A3D490042123E /* TestDeletion.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
