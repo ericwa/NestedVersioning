@@ -10,78 +10,103 @@
 	return self;
 }
 
+- (id) _trackedPathOrVersionForPlist: (id)embeddedObjectPlist
+					  atPath: (COPath *)path
+{
+	NSString *type = [embeddedObjectPlist objectForKey: @"type"];
+	if ([type isEqualToString: @"root"])
+	{
+		NSString *trackingType = [embeddedObjectPlist objectForKey: @"tracking-type"];
+		NSString *tracking = [embeddedObjectPlist objectForKey: @"tracking"];
+		if ([trackingType isEqualToString: @"owned-branch"])
+		{
+			return [path pathByAppendingPersistentRoot: [ETUUID UUIDWithString: tracking]];
+		}
+		else if ([trackingType isEqualToString: @"remote-root"] ||
+				 [trackingType isEqualToString: @"remote-branch"])
+		{
+			return [COPath pathWithString: tracking];
+		}
+		else if ([trackingType isEqualToString: @"version"])
+		{
+			return [ETUUID UUIDWithString: tracking];
+		}
+		
+		[NSException raise: NSInternalInconsistencyException
+					format: @"unsupported tracking type %@: %@", trackingType, tracking];
+	}
+	else if ([type isEqualToString: @"branch"])
+	{
+		return [ETUUID UUIDWithString:
+						[embeddedObjectPlist objectForKey: @"tracking"]];
+	}
+
+	[NSException raise: NSInternalInconsistencyException
+				format: @"unsupported object type %@: %@", type, embeddedObjectPlist];
+	
+	return nil;
+}
+
 /**
  * see comment in header
  */
-- (ETUUID*) currentVersionForPersistentRootAtPath: (COPath*)path
+- (ETUUID*) _currentVersionForPersistentRootAtPath: (COPath*)path
+					       absolutePathOut: (COPath **)absPath
 {
 	// NOTE: If we want special handling for top-level persistent roots (children of /),
 	// this method is where we would do it
 	if ([path isEmpty])
 	{
+		*absPath = [COPath path];
 		return [store rootVersion];
 	}
 	else
 	{
+		COPath *parentAbs;
 		COPath *parent = [path pathByDeletingLastPathComponent];
 		ETUUID *lastPathComponent = [path lastPathComponent];
 		
 		// recursive call to ourself to find the version containing the last
 		// path component.
-		ETUUID *parentCurrentVersion = [self currentVersionForPersistentRootAtPath: parent];
+		ETUUID *parentCurrentVersion = [self _currentVersionForPersistentRootAtPath: parent
+													absolutePathOut: &parentAbs];
 
 		id embeddedObjectPlist = [self plistForEmbeddedObject: lastPathComponent
 													 inCommit: parentCurrentVersion];
 		
+		id trackedPathOrVersion = [self _trackedPathOrVersionForPlist: embeddedObjectPlist
+  											  atPath: parent];
 		
-		NSString *type = [embeddedObjectPlist objectForKey: @"type"];
-		
-		if ([type isEqualToString: @"root"])
+		if ([trackedPathOrVersion isKindOfClass: [COPath class]])
 		{
-			NSString *trackingType = [embeddedObjectPlist objectForKey: @"tracking-type"];
-			NSString *tracking = [embeddedObjectPlist objectForKey: @"tracking"];
-			if ([trackingType isEqualToString: @"owned-branch"])
-			{
-				// tracking is a single UUID of the branch.
-				id branchPlist = [self plistForEmbeddedObject: [ETUUID UUIDWithString: tracking]
-													 inCommit: parentCurrentVersion];
-				
-				ETUUID *uuid = [ETUUID UUIDWithString:
-								[branchPlist objectForKey: @"version"]];
-				return uuid;
-			}
-			else if ([trackingType isEqualToString: @"remote-root"] ||
-					 [trackingType isEqualToString: @"remote-branch"])
-			{
-				// tracking is a full path to a branch/root in another persistent root
-				
-				COPath *trackingPath = [COPath pathWithString: tracking];
-				
-				// FIXME: could be an infinite loop if a root is tracking itself.
-				return [self currentVersionForPersistentRootAtPath: trackingPath];
-			}
-			else if ([trackingType isEqualToString: @"version"])
-			{
-				// tracking is a version, so effectively the persistent root is just a branch
-				
-				ETUUID *uuid = [ETUUID UUIDWithString: tracking];
-				return uuid;
-			}
-
-			[NSException raise: NSInternalInconsistencyException
-						format: @"unsupported tracking type %@: %@", trackingType, tracking];
+			return [self _currentVersionForPersistentRootAtPath: trackedPathOrVersion
+									   absolutePathOut: absPath];
 		}
-		else if ([type isEqualToString: @"branch"])
+		else if ([trackedPathOrVersion isKindOfClass: [ETUUID class]])
 		{
-			ETUUID *uuid = [ETUUID UUIDWithString:
-								[embeddedObjectPlist objectForKey: @"version"]];
-			return uuid;
+			*absPath = [parentAbs pathByAppendingPersistentRoot: lastPathComponent];
+			return (ETUUID*)trackedPathOrVersion;
 		}
 		
 		[NSException raise: NSInternalInconsistencyException
 					format: @"failed to parse %@", embeddedObjectPlist];
 		return nil;
 	}
+}
+
+- (COPath *)absolutePathForPath: (COPath*)aPath
+{
+	COPath *absPath;
+	[self _currentVersionForPersistentRootAtPath: aPath
+						absolutePathOut: &absPath];
+	return absPath;
+}
+
+- (ETUUID*) currentVersionForPersistentRootAtPath: (COPath*)path
+{
+	COPath *unused;
+	return [self _currentVersionForPersistentRootAtPath: path
+							   absolutePathOut: &unused];
 }
 
 - (id) plistForEmbeddedObject: (ETUUID*)embeddedObject
@@ -104,61 +129,25 @@
 
 // writing
 
-// helper method for modifying a persistent root plist
+// helper method for modifying a persistent root plist.
+//
+// we are guaranteed that it will be a "absolute" plist (it has a "tracking" field with a version UUID)
+// since  -writeUUIDsAndPlists:forPersistentRootAtPath:metadata:
+// created an absolute path
+//
+
 - (id) _updatePersistentRootPlist: (id)plist
 		toPointToNewVersion: (ETUUID*)newVersion
 {
-	NSString *type = [embeddedObjectPlist objectForKey: @"type"];
-	
-	if ([type isEqualToString: @"root"])
-	{
-		NSString *trackingType = [embeddedObjectPlist objectForKey: @"tracking-type"];
-		NSString *tracking = [embeddedObjectPlist objectForKey: @"tracking"];
-		if ([trackingType isEqualToString: @"owned-branch"])
-		{
-			// tracking is a single UUID of the branch.
-			id branchPlist = [self plistForEmbeddedObject: [ETUUID UUIDWithString: tracking]
-												 inCommit: parentCurrentVersion];
-			
-			ETUUID *uuid = [ETUUID UUIDWithString:
-							[branchPlist objectForKey: @"version"]];
-			return uuid;
-		}
-		else if ([trackingType isEqualToString: @"remote-root"] ||
-				 [trackingType isEqualToString: @"remote-branch"])
-		{
-			// tracking is a full path to a branch/root in another persistent root
-			
-			COPath *trackingPath = [COPath pathWithString: tracking];
-			
-			// FIXME: could be an infinite loop if a root is tracking itself.
-			return [self currentVersionForPersistentRootAtPath: trackingPath];
-		}
-		else if ([trackingType isEqualToString: @"version"])
-		{
-			// tracking is a version, so effectively the persistent root is just a branch
-			
-			ETUUID *uuid = [ETUUID UUIDWithString: tracking];
-			return uuid;
-		}
-		
-		[NSException raise: NSInternalInconsistencyException
-					format: @"unsupported tracking type %@: %@", trackingType, tracking];
-	}
-	else if ([type isEqualToString: @"branch"])
-	{
-		ETUUID *uuid = [ETUUID UUIDWithString:
-						[embeddedObjectPlist objectForKey: @"version"]];
-		return uuid;
-	}
-	
-	[NSException raise: NSInternalInconsistencyException
-				format: @"failed to parse %@", embeddedObjectPlist];
+	NSMutableDictionary *md = [NSMutableDictionary dictionaryWithDictionary: plist];
+	[md setObject: [newVersion stringValue]
+		   forKey: @"tracking"];
+	return md;
 }
 
 
-- (void) writeUUIDsAndPlists: (NSDictionary*)objects // ETUUID : plist
-	 forPersistentRootAtPath: (COPath*)path
+- (void) _writeUUIDsAndPlists: (NSDictionary*)objects // ETUUID : plist
+forPersistentRootAtAbsolutePath: (COPath*)path
 				metadata: (id)metadataPlist
 {
 	// FIXME: the set of commits made by this method and its
@@ -222,10 +211,22 @@
 		NSDictionary *md = [NSDictionary dictionaryWithObject: @"commit-in-child"
 										    forKey: @"type"];
 		
-		[self writeUUIDsAndPlists: parentCommitObjects
-		  forPersistentRootAtPath: parentPath
+		[self _writeUUIDsAndPlists: parentCommitObjects
+    forPersistentRootAtAbsolutePath: parentPath
 					 metadata: md];
 	}
+}
+
+- (void) writeUUIDsAndPlists: (NSDictionary*)objects // ETUUID : plist
+	 forPersistentRootAtPath: (COPath*)path
+				metadata: (id)metadataPlist
+{
+	// make an absolute path
+	COPath *absPath = [self absolutePathForPath: path];
+	
+	[self _writeUUIDsAndPlists: objects
+forPersistentRootAtAbsolutePath: absPath
+				metadata: metadataPlist];
 }
 
 @end

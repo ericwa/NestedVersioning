@@ -15,7 +15,6 @@
 @interface COPersistentRootEditingContext : NSObject
 {
 	COPath *path;
-	COStoreController *sc;
 }
 
 /**

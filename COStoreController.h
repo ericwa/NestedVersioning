@@ -34,17 +34,20 @@ give the root and branches new uuid's.
 					  "uuid" : "8a099b84-09eb-4a3e-828d-9a897778e5e3"
 					  "owning-root-uuid" : 0d7489b0-0a9d-11e1-be50-0800200c9a66 // the uuid of the enclosing root
 					  "name" : "whatever you want to call it"
-					  "version" : version-uuid 
+					  "tracking" : version-uuid 
 				  },
 				  {
 					  "type" : "branch"
 					  "uuid" : "cdf68e39-8f4b-4afa-9f81-ba2f7cdf50e6"
 					  "owning-root-uuid" : 0d7489b0-0a9d-11e1-be50-0800200c9a66 // the uuid of the enclosing root
 					  "name" : "another branch"
-					  "version" : version-uuid 
+					  "tracking" : version-uuid 
 				  },
-			)
-	}
+			  )
+}
+ 
+
+
 **/
 
 @interface COStoreController : NSObject
@@ -54,6 +57,23 @@ give the root and branches new uuid's.
 - (id)initWithStore: (COStore*)aStore;
 
 /** @taskunit reading */
+
+/**
+ * converts a path to an "absolute path".
+ 
+ a COPath can contain uuid's of roots that use any of the
+ tracking types ("owned-branch" or "remote-root" or "remote-branch" or "version")
+ 
+ however, roots with tracking types of "owned-branch" or "remote-root" or "remote-branch"
+ are don't point directly to a version, but delegate that to another root/branch. this
+ is analagous to a unix symlink.
+ 
+ when committing or reading from the DB we want to convert a path which 
+ may contain these "symlink" elements in it to a "real" path, i.e. one in which
+ every path element is either a branch or a root with tracking type "version".
+ that is an "absolute path"
+ */
+- (COPath *)absolutePathForPath: (COPath*)aPath;
 
 /**
  * this is the core/primitive method for navigating a path.
@@ -67,6 +87,8 @@ give the root and branches new uuid's.
  * note that the logic for parsing persistent roots should be refactored.
  *
  * note that it is recursive.
+ *
+ * in the unix filesystem analogy this is like the "inode for path" method
  */
 - (ETUUID*) currentVersionForPersistentRootAtPath: (COPath*)path;
 
