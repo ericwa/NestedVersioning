@@ -63,6 +63,10 @@ give the root and branches new uuid's.
  *
  * It returns the uuid of the current version which the path
  * points to.
+ *
+ * note that the logic for parsing persistent roots should be refactored.
+ *
+ * note that it is recursive.
  */
 - (ETUUID*) currentVersionForPersistentRootAtPath: (COPath*)path;
 
@@ -71,5 +75,21 @@ give the root and branches new uuid's.
  */
 - (id) plistForEmbeddedObject: (ETUUID*)embeddedObject
 					 inCommit: (ETUUID*)aCommitUUID;
+
+/** @taskunit writing */
+
+/**
+ * this is the primitive method for writing changes to the store.
+ * the objects parameter should contain _all_ objects in the persistent
+ * root (not just modified ones).
+ *
+ * it handles updating the chain of persistent roots/branches in a path.
+ *
+ * note that is is recursive.
+ *
+ */
+- (void) writeUUIDsAndPlists: (NSDictionary*)objects // ETUUID : plist
+	forPersistentRootAtPath: (COPath*)path
+			    metadata: (id)metadataPlist;
 
 @end

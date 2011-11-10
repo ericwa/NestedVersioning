@@ -12,4 +12,8 @@
     return self;
 }
 
+- (void) commit
+{
+}
+
 @end
