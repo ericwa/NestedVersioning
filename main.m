@@ -53,6 +53,7 @@ static void testPath()
 	
 	EWTestEqual([COPath path], [COPath path]);
 	EWTestEqual(@"", [[COPath path] stringValue]);
+	EWTestEqual([COPath path], [COPath pathWithString: @""]);
 	
 	EWTestEqual([[[COPath path]
 				  pathByAppendingPersistentRoot: u1]

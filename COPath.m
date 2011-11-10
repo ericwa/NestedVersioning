@@ -3,23 +3,42 @@
 
 @implementation COPath
 
+- (COPath *) initWithParent: (COPath *)aParent
+			 persistentRoot: (ETUUID *)aPersistentRoot
+{	
+	SUPERINIT;
+	ASSIGN(parent, aParent);
+	ASSIGN(persistentRoot, aPersistentRoot);
+	return self;
+}
+
 + (COPath *) path
 {
-	return [[[COPath alloc] init] autorelease];
+	static COPath *root;
+	if (nil == root)
+	{
+		root = [[COPath alloc] initWithParent: nil
+							   persistentRoot: nil];
+	}
+	return root;
 }
 
 - (COPath *) pathByAppendingPersistentRoot: (ETUUID *)aPersistentRoot
 {
 	NILARG_EXCEPTION_TEST(aPersistentRoot);
 	
-	COPath *path = [COPath path];
-	ASSIGN(path->parent, self);
-	ASSIGN(path->persistentRoot, aPersistentRoot);
+	COPath *path = [[[COPath alloc] initWithParent: self
+									persistentRoot: aPersistentRoot] autorelease];
 	return path;
 }
 
 + (COPath *) pathWithString: (NSString*) pathString
 {
+	if ([pathString isEqualToString: @""])
+	{
+		return [COPath path];
+	}
+	
 	if (nil == pathString ||
 		![pathString hasPrefix: @"/"] || 
 		[pathString hasSuffix: @"/"])

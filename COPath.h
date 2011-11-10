@@ -21,7 +21,7 @@
 }
 
 /**
- * Returns an empty path
+ * Returns the root path
  */
 + (COPath *) path;
 
