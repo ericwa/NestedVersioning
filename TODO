@@ -1,4 +1,4 @@
 TODO
 ====
 
-- figure out the recursive commit thing. If our model objects are immutable then every commit creates an entirely new repository tree (right up to the root), even if the commit is nested deep in the tree.
+DONE - figure out the recursive commit thing. If our model objects are immutable then every commit creates an entirely new repository tree (right up to the root), even if the commit is nested deep in the tree.
