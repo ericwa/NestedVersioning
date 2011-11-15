@@ -5,11 +5,4 @@ Author: Eric Wasylishen
 E-Mail: ewasylishen@gmail.com
 License: http://www.opensource.org/licenses/mit-license.php
 
-The goal of NestedVersioning is a revision control system with the following features:
-
-* Designed to be embedded in applications
-    - For building applications with a persistent undo/redo stack, and capability for branching undo/redo
-* Diff/merge on structured data
-    - Rather than doing diff/merge on lines of text files
-* Nested repositories
-    - As in, what you would achieve by storing a git repository (the working copy and the .git directory) inside a mercurial repository, and committing to the hg repo after each commit to the git repo–the hg repo would provide a “safety net” allowing you to undo a version-control operation on the git repo that didn’t work out
+FIXME: Rewrite introduction/goals

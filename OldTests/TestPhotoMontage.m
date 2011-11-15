@@ -101,6 +101,12 @@ void test()
 		link.) we just need to be able to detect when that happens, and then we can
 	    warn the user and offer possible fixes.
 	 
+	 - when a relationship is created with a "backwards" path (../../.. ...), 
+	   we can mark the proots which the path crosses as "unsafe to copy to
+	   a different place in the hierarchy" (if you duplicate one of these unsafe
+	   to copy proots, there should be no problem because the relative path still
+	   works.)
+	 
 	 **/
 	
 	

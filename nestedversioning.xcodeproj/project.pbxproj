@@ -20,6 +20,7 @@
 		66E59CCE146650AA00E16AD5 /* COObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E59CCD146650AA00E16AD5 /* COObject.m */; };
 		66E877571455F0CB006CBE7E /* COStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E877561455F0CB006CBE7E /* COStore.m */; };
 		66E8776B1455FE67006CBE7E /* ETUUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E8776A1455FE67006CBE7E /* ETUUID.m */; };
+		66EADD6514732AEE003181FC /* TestUndo.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EADD6414732AEE003181FC /* TestUndo.m */; };
 		66EE5D36146355A6008AA95B /* COPersistentRootEditingContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EE5D35146355A6008AA95B /* COPersistentRootEditingContext.m */; };
 		66EE5D3A14637418008AA95B /* COPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EE5D3914637418008AA95B /* COPath.m */; };
 		66EE5D4A1463AD68008AA95B /* TestBranchesAndCopies.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EE5D491463AD67008AA95B /* TestBranchesAndCopies.m */; };
@@ -75,6 +76,7 @@
 		66E877561455F0CB006CBE7E /* COStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COStore.m; sourceTree = "<group>"; };
 		66E877691455FE5B006CBE7E /* ETUUID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETUUID.h; sourceTree = "<group>"; };
 		66E8776A1455FE67006CBE7E /* ETUUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETUUID.m; sourceTree = "<group>"; };
+		66EADD6414732AEE003181FC /* TestUndo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestUndo.m; sourceTree = "<group>"; };
 		66EE5D34146355A6008AA95B /* COPersistentRootEditingContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPersistentRootEditingContext.h; sourceTree = "<group>"; };
 		66EE5D35146355A6008AA95B /* COPersistentRootEditingContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COPersistentRootEditingContext.m; sourceTree = "<group>"; };
 		66EE5D37146358F1008AA95B /* co5 model.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = "co5 model.rtf"; sourceTree = "<group>"; };
@@ -104,8 +106,8 @@
 				66EE5D37146358F1008AA95B /* co5 model.rtf */,
 				66E2A3031430569C00487419 /* TODO */,
 				66DFAEBF142A726100623060 /* main.m */,
-				66E59CCC146650AA00E16AD5 /* COObject.h */,
 				66E59CCD146650AA00E16AD5 /* COObject.m */,
+				66E59CCC146650AA00E16AD5 /* COObject.h */,
 				66EE5D34146355A6008AA95B /* COPersistentRootEditingContext.h */,
 				66EE5D35146355A6008AA95B /* COPersistentRootEditingContext.m */,
 				66E59CC81465F38400E16AD5 /* COPersistentRootDiff.h */,
@@ -162,6 +164,7 @@
 				66E0189B146455C8000EB1E0 /* TestPhotoMontage.m */,
 				66E0189E146468F6000EB1E0 /* TestBLOB.m */,
 				66E46D47146A3D490042123E /* TestDeletion.m */,
+				66EADD6414732AEE003181FC /* TestUndo.m */,
 			);
 			path = OldTests;
 			sourceTree = "<group>";
@@ -202,6 +205,9 @@
 /* Begin PBXProject section */
 		662811ED13F8B5000075BBC2 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
 			buildConfigurationList = 662811F013F8B5000075BBC2 /* Build configuration list for PBXProject "nestedversioning" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
@@ -238,6 +244,7 @@
 				66E59CCE146650AA00E16AD5 /* COObject.m in Sources */,
 				66E313B1146857FF00B5E109 /* COStoreController.m in Sources */,
 				66E46D48146A3D490042123E /* TestDeletion.m in Sources */,
+				66EADD6514732AEE003181FC /* TestUndo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
