@@ -21,27 +21,28 @@
 }
 
 /**
- * Returns the root path
+ * The unix path "./" (current directory)
  */
 + (COPath *) path;
 
 + (COPath *) pathWithString: (NSString*) pathString;
 
-- (COPath *) pathByAppendingPersistentRoot: (ETUUID *)aPersistentRoot;
+/**
+ * Appends "../" to a path
+ */
+- (COPath *) pathByAppendingPathToParent;
 
+- (COPath *) pathByAppendingPath: (COPath *)aPath;
 
-// This makes no sense, because a branch is just a persistent root.
-// If you want to make a path to it, just make a direct path to the branch...
+- (COPath *) pathByAppendingPathComponent: (ETUUID *)aPersistentRoot;
 
-//- (COPath *) pathByAppendingPathToCurrentVersionOfPersistentRoot: (ETUUID *)aPersistentRoot
-//													atBranchUUID: (ETUUID *)aBranch;
+/**
+ * Removes any non-leading ../ path elements.
+ *
+ * e.g. "../../projects/work/../fun/" is converted to "../../projects/fun"
+ */
+- (COPath *) normalizedPath;
 
-// this also makes no sense..
-// if a persistent root is pointing at a specific version, then it is pointing at that version
-// if not, a path to that version going "through" the persistent root doesn't make a lot of sense.
-
-//- (COPath *) pathByAppendingPathToPersistentRoot: (ETUUID *)aPersistentRoot
-//									   atVersion: (ETUUID *)aVersion;
 
 - (NSString *) stringValue;
 
