@@ -156,6 +156,18 @@
 	return [[self plistForCommit: commit] objectForKey: @"objects"];	
 }
 
+- (void) deleteCommitsWithUUIDs: (NSArray*)uuids
+{
+	for (ETUUID *commit in uuids)
+	{
+		NSString *commitFile = [[self commitsDirectory] stringByAppendingPathComponent:
+								[commit stringValue]];
+		BOOL removed = [[NSFileManager defaultManager]
+							removeItemAtPath: commitFile error: NULL];
+		assert(removed);
+	}
+}
+
 - (ETUUID *) rootVersion
 {
 	NSString *str = [NSString stringWithContentsOfFile: [self rootVersionFile] 

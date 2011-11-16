@@ -38,6 +38,22 @@
 - (id) metadataForCommit: (ETUUID*)commit;
 - (NSDictionary *) UUIDsAndPlistsForCommit: (ETUUID*)commit;
 
+/** @taskunit history cleaning */
+
+/**
+ * permanently delete the specified commits.
+ *
+ * this guarantees not to affect any other commits, besides the listed ones.
+ * (so, e.g., branches off of the listed commits will still work as before.)
+ *
+ * this will attempt to free disk space, but the amount freed
+ * depends on how much of the data in the given commits is reused.
+ * data not deleted now will be deleted later if it becomes garbage.
+ */
+- (void) deleteCommitsWithUUIDs: (NSArray*)uuids;
+
+
+
 /**
  * This is a primitive/easy way of implementing the mutable part of the store
  */
