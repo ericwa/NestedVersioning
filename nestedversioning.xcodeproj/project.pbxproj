@@ -19,11 +19,9 @@
 		66E59CCA1465F38500E16AD5 /* COPersistentRootDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E59CC91465F38400E16AD5 /* COPersistentRootDiff.m */; };
 		66E59CCE146650AA00E16AD5 /* COObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E59CCD146650AA00E16AD5 /* COObject.m */; };
 		66E877571455F0CB006CBE7E /* COStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E877561455F0CB006CBE7E /* COStore.m */; };
-		66E877641455FDDE006CBE7E /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 66E8775C1455FDDE006CBE7E /* sqlite3.c */; };
-		66E877651455FDDE006CBE7E /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E8775F1455FDDE006CBE7E /* FMDatabase.m */; };
-		66E877661455FDDE006CBE7E /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E877611455FDDE006CBE7E /* FMDatabaseAdditions.m */; };
-		66E877671455FDDE006CBE7E /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E877631455FDDE006CBE7E /* FMResultSet.m */; };
 		66E8776B1455FE67006CBE7E /* ETUUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E8776A1455FE67006CBE7E /* ETUUID.m */; };
+		66EADD6514732AEE003181FC /* TestUndo.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EADD6414732AEE003181FC /* TestUndo.m */; };
+		66EADD69147345B9003181FC /* COStoreItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EADD68147345B9003181FC /* COStoreItem.m */; };
 		66EE5D36146355A6008AA95B /* COPersistentRootEditingContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EE5D35146355A6008AA95B /* COPersistentRootEditingContext.m */; };
 		66EE5D3A14637418008AA95B /* COPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EE5D3914637418008AA95B /* COPath.m */; };
 		66EE5D4A1463AD68008AA95B /* TestBranchesAndCopies.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EE5D491463AD67008AA95B /* TestBranchesAndCopies.m */; };
@@ -77,16 +75,11 @@
 		66E59CCD146650AA00E16AD5 /* COObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COObject.m; sourceTree = "<group>"; };
 		66E877551455F0CB006CBE7E /* COStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COStore.h; sourceTree = "<group>"; };
 		66E877561455F0CB006CBE7E /* COStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COStore.m; sourceTree = "<group>"; };
-		66E8775C1455FDDE006CBE7E /* sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sqlite3.c; sourceTree = "<group>"; };
-		66E8775D1455FDDE006CBE7E /* sqlite3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sqlite3.h; sourceTree = "<group>"; };
-		66E8775E1455FDDE006CBE7E /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabase.h; sourceTree = "<group>"; };
-		66E8775F1455FDDE006CBE7E /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabase.m; sourceTree = "<group>"; };
-		66E877601455FDDE006CBE7E /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseAdditions.h; sourceTree = "<group>"; };
-		66E877611455FDDE006CBE7E /* FMDatabaseAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseAdditions.m; sourceTree = "<group>"; };
-		66E877621455FDDE006CBE7E /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMResultSet.h; sourceTree = "<group>"; };
-		66E877631455FDDE006CBE7E /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMResultSet.m; sourceTree = "<group>"; };
 		66E877691455FE5B006CBE7E /* ETUUID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETUUID.h; sourceTree = "<group>"; };
 		66E8776A1455FE67006CBE7E /* ETUUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETUUID.m; sourceTree = "<group>"; };
+		66EADD6414732AEE003181FC /* TestUndo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestUndo.m; sourceTree = "<group>"; };
+		66EADD67147345B9003181FC /* COStoreItem.h */ = {isa = PBXFileReference; fileEncoding = 4; path = COStoreItem.h; sourceTree = "<group>"; };
+		66EADD68147345B9003181FC /* COStoreItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COStoreItem.m; sourceTree = "<group>"; };
 		66EE5D34146355A6008AA95B /* COPersistentRootEditingContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPersistentRootEditingContext.h; sourceTree = "<group>"; };
 		66EE5D35146355A6008AA95B /* COPersistentRootEditingContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COPersistentRootEditingContext.m; sourceTree = "<group>"; };
 		66EE5D37146358F1008AA95B /* co5 model.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = "co5 model.rtf"; sourceTree = "<group>"; };
@@ -115,10 +108,9 @@
 				66416D20142D3EE20016501D /* README */,
 				66EE5D37146358F1008AA95B /* co5 model.rtf */,
 				66E2A3031430569C00487419 /* TODO */,
-				66E877681455FE2C006CBE7E /* fmdb */,
 				66DFAEBF142A726100623060 /* main.m */,
-				66E59CCC146650AA00E16AD5 /* COObject.h */,
 				66E59CCD146650AA00E16AD5 /* COObject.m */,
+				66E59CCC146650AA00E16AD5 /* COObject.h */,
 				66EE5D34146355A6008AA95B /* COPersistentRootEditingContext.h */,
 				66EE5D35146355A6008AA95B /* COPersistentRootEditingContext.m */,
 				66E59CC81465F38400E16AD5 /* COPersistentRootDiff.h */,
@@ -175,6 +167,7 @@
 				66E0189B146455C8000EB1E0 /* TestPhotoMontage.m */,
 				66E0189E146468F6000EB1E0 /* TestBLOB.m */,
 				66E46D47146A3D490042123E /* TestDeletion.m */,
+				66EADD6414732AEE003181FC /* TestUndo.m */,
 			);
 			path = OldTests;
 			sourceTree = "<group>";
@@ -186,23 +179,10 @@
 				66E877561455F0CB006CBE7E /* COStore.m */,
 				66E313AF146857FF00B5E109 /* COStoreController.h */,
 				66E313B0146857FF00B5E109 /* COStoreController.m */,
+				66EADD67147345B9003181FC /* COStoreItem.h */,
+				66EADD68147345B9003181FC /* COStoreItem.m */,
 			);
 			name = Store;
-			sourceTree = "<group>";
-		};
-		66E877681455FE2C006CBE7E /* fmdb */ = {
-			isa = PBXGroup;
-			children = (
-				66E8775C1455FDDE006CBE7E /* sqlite3.c */,
-				66E8775D1455FDDE006CBE7E /* sqlite3.h */,
-				66E8775E1455FDDE006CBE7E /* FMDatabase.h */,
-				66E8775F1455FDDE006CBE7E /* FMDatabase.m */,
-				66E877601455FDDE006CBE7E /* FMDatabaseAdditions.h */,
-				66E877611455FDDE006CBE7E /* FMDatabaseAdditions.m */,
-				66E877621455FDDE006CBE7E /* FMResultSet.h */,
-				66E877631455FDDE006CBE7E /* FMResultSet.m */,
-			);
-			name = fmdb;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -230,6 +210,9 @@
 /* Begin PBXProject section */
 		662811ED13F8B5000075BBC2 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
 			buildConfigurationList = 662811F013F8B5000075BBC2 /* Build configuration list for PBXProject "nestedversioning" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
@@ -256,10 +239,6 @@
 				66436A1B142E944B000C14B4 /* LogIndent.m in Sources */,
 				6628FB9B142FA65D0072767A /* EWTest.m in Sources */,
 				66E877571455F0CB006CBE7E /* COStore.m in Sources */,
-				66E877641455FDDE006CBE7E /* sqlite3.c in Sources */,
-				66E877651455FDDE006CBE7E /* FMDatabase.m in Sources */,
-				66E877661455FDDE006CBE7E /* FMDatabaseAdditions.m in Sources */,
-				66E877671455FDDE006CBE7E /* FMResultSet.m in Sources */,
 				66E8776B1455FE67006CBE7E /* ETUUID.m in Sources */,
 				66EE5D36146355A6008AA95B /* COPersistentRootEditingContext.m in Sources */,
 				66EE5D3A14637418008AA95B /* COPath.m in Sources */,
@@ -270,6 +249,8 @@
 				66E59CCE146650AA00E16AD5 /* COObject.m in Sources */,
 				66E313B1146857FF00B5E109 /* COStoreController.m in Sources */,
 				66E46D48146A3D490042123E /* TestDeletion.m in Sources */,
+				66EADD6514732AEE003181FC /* TestUndo.m in Sources */,
+				66EADD69147345B9003181FC /* COStoreItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

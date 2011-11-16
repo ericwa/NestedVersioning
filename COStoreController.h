@@ -35,6 +35,9 @@ give the root and branches new uuid's.
 					  "owning-root-uuid" : 0d7489b0-0a9d-11e1-be50-0800200c9a66 // the uuid of the enclosing root
 					  "name" : "whatever you want to call it"
 					  "tracking" : version-uuid 
+					  "main-object" : embedded-object-uuid in the version we are tracking.
+									  this is the embedded object that the persistent root is "wrapping" - 
+									  this is the object you would export if you exported the current version, etc.
 				  },
 				  {
 					  "type" : "branch"
@@ -42,6 +45,10 @@ give the root and branches new uuid's.
 					  "owning-root-uuid" : 0d7489b0-0a9d-11e1-be50-0800200c9a66 // the uuid of the enclosing root
 					  "name" : "another branch"
 					  "tracking" : version-uuid 
+					 "main-object" : embedded-object-uuid in the version we are tracking.
+									 this is the embedded object that the persistent root is "wrapping" - 
+									 this is the object you would export if you exported the current version, etc.
+
 				  },
 			  )
 }

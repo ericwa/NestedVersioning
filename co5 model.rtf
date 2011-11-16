@@ -1,10 +1,37 @@
 {\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fswiss\fcharset0 Helvetica-Light;}
-{\colortbl;\red255\green255\blue255;\red73\green0\blue0;}
+{\colortbl;\red255\green255\blue255;}
 \margl1440\margr1440\vieww8880\viewh11740\viewkind0
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
 
-\f0\fs24 \cf0 \ul \ulc0 co5 conceptual model\ulnone \
+\f0\fs24 \cf0 \
+\
+simple, jcr like.\
+fixed "children" property.\
+handful of datatypes (string, int)\
+reference to uuid for many-to-many\
+\
+multivalue properties: \
+- unordered/ordered\
+- allows duplicates/doesn't allow duplicates\
+\
+do we need weak reference vs strong reference?\
+strong ref = \
+\
+uml ref types = (association, aggregation, composition)\
+\
+\
+association \ul \ulc0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+\cf0 \ulnone \
+how many of these does the storage layer need to know about?\
+e.g. it doesn't need to know about ordered/unordered if it stores everything in order.\
+it doesn't need to know about allows duplicates, but merging _does_ (e.g. user 1 adds A at the start of a list, user 2 adds A at the end of the list. conflict or not?)\
+\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ul \
+co5 conceptual model\ulnone \
 \
 a 
 \b version
@@ -32,12 +59,9 @@ that\'92s it; we just need to work out some details.\
 ________________________________________________________\
 \
 \ul interpretation\ulnone :\
-\
-\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
-\f1 \cf0 	\cf2  we want to be able to refer to branches that are inside other persistent roots for the purposes of tracking foreign objects. How can we do this given that another branch can have been in different states? e.g. we have the photo montage, and want to set it to track the original branch in the photo library. the photo library has been copied and screwed with. the main copy of the photo library has several branches, each which add different branches to the target photo. It should be possible to show \'93all branches ever made of this object\'94
-\fs22 \cf0 \
+\f1\fs22 \cf0 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
 \f0\fs24 \cf0 \
@@ -58,17 +82,8 @@ photolibrary (alt branch) / photo (same uuid as regular branch photo)\
 \
 well, we need to formalize the rules for copy.\
 copied by user: new uuid otherwise, no new uuid?\
+\\\
 \
-
-\b if we do not rename sub-embedded-persistent-roots on every commit/branch/copy of the parent, we need to use "persistent root paths" to refer to the inner persistent roots. \
-\
-
-\b0 is keeping the same name after moving worthwhile? it may be impossible... it turns  into the same problem as the "inconsistencies" i identified in om1. i.e., if you move an object from one persistent root to another, then undo at the move source, your name now refers to two different persistent roots.\
-\
-\
-\
-\
-implementation:\
 \
 \
 }

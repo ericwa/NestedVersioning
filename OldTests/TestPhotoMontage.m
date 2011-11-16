@@ -35,6 +35,78 @@ void test()
 	 How should it react if we want to track a branch in the other photo?
 	 Should we have to delete our copy ("Make into Link") to track the other photo?
 	 
+	 
+	 
+	 -- long rambling investigation of problems that links can cause: --
+	 
+	 problem: we have a project like this:
+	 
+		 /art/project1/montageA - contains an embedded /art/project1/logo
+		 /art/project1/logo
+		 
+		 P1: suppose we copy project1:
+		 
+		 /art/project2/montageA - contains an embedded /art/project1/logo
+		 /art/project2/logo
+		 
+		 P2: and suppose we copy montageA into another project:
+	 
+		 /art/project3/montageAcopy
+		
+		 P3: suppose we copy montageA into the same project
+	 
+		 /art/project1/montageA - contains an embedded /art/project1/logo
+		 /art/project1/montageB - contains an embedded /art/project1/logo
+		 /art/project1/logo
+		 
+		 ======
+	 
+		 P1: BAD: the absolute paths will cause ugly results, because montage in project2 will change when
+	     the logo in project1 is updated; in other words, it was not a "true" copy.
+		
+		 P2: it's not at all clear what the result should be.
+	 
+		 P3: OK: the link should point to the same logo in project1. 
+	 
+	 what if we used a relative path:
+
+		 /art/project1/montageA - contains an embedded ../logo
+		 /art/project1/logo
+		 
+		 suppose we copy project1:
+		 
+		 /art/project2/montageA - contains an embedded ../logo
+		 /art/project2/logo
+
+		 the copy works properly now, but suppose we copy montageA into another project:
+		
+		 /art/project3/montageAcopy
+	 
+		 this would break the link to the logo.
+	 
+	 what if we used absolute paths, but when copying, check if there are absolute
+	 links within the subtree being copied, and if there are, update them. if they
+	 point outside of the tree being copied, leave them as-is.
+	 
+		this seems to be the optimal result, but breaks cheap copies...
+	 
+	 can we 'fix up' the relative paths to get the previous result?
+	 
+		yes.. we can detect, when copying, if any of the child proots/branches
+	    have relative links. this is expensive to do, but there's no other option i can see.
+	 
+	 
+	 summary: relative paths seem less wrong, as they work as expected unless you do a
+		"bad"/"dangerous" type of copy (copying a object in a way that would break the
+		link.) we just need to be able to detect when that happens, and then we can
+	    warn the user and offer possible fixes.
+	 
+	 - when a relationship is created with a "backwards" path (../../.. ...), 
+	   we can mark the proots which the path crosses as "unsafe to copy to
+	   a different place in the hierarchy" (if you duplicate one of these unsafe
+	   to copy proots, there should be no problem because the relative path still
+	   works.)
+	 
 	 **/
 	
 	
