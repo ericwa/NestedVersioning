@@ -15,6 +15,29 @@
 
 - (NSArray *) attributeNames;
 
+/**
+
+scalar types: 
+
+in64_t, double, string, blob,
+version,       // just a version uuid. prevents version from being GC'ed.
+holding-path,  // prevents destination from being GC'ed.        copied when parent is copied
+reference-path // doesn't prevent destination from being GC'ed. not copied when parent is copied
+
+collecion types:
+ 
+({scalar_type}, ordered={no/yes}, allows_duplicates={no/yes})
+ 
+
+*/
+
+
+
+
+
+// old:
+
+/*
 // scalar types
 
 - (void) setIntegerValue: (int64_t)anInt
@@ -50,5 +73,6 @@
 - (void) setArrayOfBlobs: (NSArray *)anArray
 		 forAttributeName: (NSString*)attributeName
 				 typeName: (NSString*)typeName;
+*/
 
 @end
