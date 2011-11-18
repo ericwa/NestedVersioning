@@ -24,8 +24,13 @@ NSString * const kCOPrimitiveTypeReferencePath;// doesn't prevent destination fr
 // if a type is a container type, it must have these two values set to either YES or NO
 // to specify the type of container.
 
+// NOTE: these will only really be used during merging and validation.
+// not sure if it would make sense to allow setting user-defined attributes/extensions
+// to types insteaad of hardcoding these
+
 NSString * const kCOContainerOrdered;
 NSString * const kCOContainerAllowsDuplicates;
+
 
 /**
 examples of type dictionaries:
