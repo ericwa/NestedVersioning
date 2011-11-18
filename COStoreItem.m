@@ -9,6 +9,7 @@ NSString * const kCOPrimitiveType = @"kCOPrimitiveType";
 NSString * const kCOPrimitiveTypeInt64 = @"kCOPrimitiveTypeInt64";
 NSString * const kCOPrimitiveTypeDouble = @"kCOPrimitiveTypeDouble";
 NSString * const kCOPrimitiveTypeString = @"kCOPrimitiveTypeString";
+NSString * const kCOPrimitiveTypeFullTextIndexableString = @"kCOPrimitiveTypeFullTextIndexableString";
 NSString * const kCOPrimitiveTypeBlob = @"kCOPrimitiveTypeBlob";
 NSString * const kCOPrimitiveTypeCommitUUID = @"kCOPrimitiveTypeCommitUUID";
 NSString * const kCOPrimitiveTypeHoldingPath = @"kCOPrimitiveTypeHoldingPath";

@@ -15,6 +15,7 @@ NSString * const kCOPrimitiveType;
 NSString * const kCOPrimitiveTypeInt64;
 NSString * const kCOPrimitiveTypeDouble;
 NSString * const kCOPrimitiveTypeString;
+NSString * const kCOPrimitiveTypeFullTextIndexableString; 
 NSString * const kCOPrimitiveTypeBlob;
 NSString * const kCOPrimitiveTypeCommitUUID; // just a version uuid. prevents version from being GC'ed.
 NSString * const kCOPrimitiveTypeHoldingPath; // prevents destination from being GC'ed.        copied when parent is copied
