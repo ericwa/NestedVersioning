@@ -32,6 +32,11 @@ NSString * const kCOContainerOrdered;
 NSString * const kCOContainerAllowsDuplicates;
 
 
+// Convenience types
+
+NSDictionary *COConvenienceTypeUnorderedHoldingPaths();
+
+
 /**
 examples of type dictionaries:
  
@@ -64,6 +69,13 @@ kCOContainerOrdered = YES, kCOContainerAllowsDuplicates = YES: NSArray
 
 
 /**
+ * this class is the model object for "embedded objects".
+ * 
+ * currently it supports reading and writing embededd objects
+ * to a simple plist format for debugging.
+ * 
+ * it will be changed to write the object to the sqlite db
+ * at some point.
  */
 @interface COStoreItem : NSObject
 {
@@ -86,4 +98,8 @@ kCOContainerOrdered = YES, kCOContainerAllowsDuplicates = YES: NSArray
 	 forAttribute: (NSString*)anAttribute
 			 type: (NSDictionary*)aType;
 
+/** @taskunit plist import/export */
+
+- (id)plist;
+- (id)initWithPlist: (id)aPlist;
 @end

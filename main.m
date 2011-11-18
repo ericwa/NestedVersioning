@@ -3,6 +3,7 @@
 #import "COStore.h"
 #import "COPath.h"
 #import "COStoreController.h"
+#import "COStoreItem.h"
 #import "Common.h"
 
 #define STOREPATH [@"~/om5teststore" stringByExpandingTildeInPath]
@@ -96,6 +97,22 @@ forPersistentRootAtPath: [COPath path]
 	*/
 }
 
+static void testStoreItem()
+{
+	COStoreItem *i1 = [[COStoreItem alloc] initWithUUID: [ETUUID UUID]];
+	ETUUID *u1 = [i1 uuid];
+	
+	COPath *p1 = [[[COPath path]
+						pathByAppendingPersistentRoot:[ETUUID UUIDWithString: @"cdf68e39-8f4b-4afa-9f81-ba2f7cdf50e6"]]
+						pathByAppendingPersistentRoot:[ETUUID UUIDWithString: @"8a099b84-09eb-4a3e-828d-9a897778e5e3"]];
+	
+	[i1 setValue: S(p1)
+	forAttribute: @"contents"
+			type: COConvenienceTypeUnorderedHoldingPaths()];
+	
+	NSLog(@"%@", [i1 plist]);
+}
+
 int main (int argc, const char * argv[])
 {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
@@ -103,6 +120,7 @@ int main (int argc, const char * argv[])
 	testStore();
 	testPath();
 	testStoreController();
+	testStoreItem();
 	
     EWTestLog();
     

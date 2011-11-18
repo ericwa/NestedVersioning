@@ -1,5 +1,6 @@
 #import "COStoreItem.h"
 #import "Common.h"
+#import "COPath.h"
 
 NSString * const kCOTypeKind = @"kCOTypeKind";
 NSString * const kCOPrimitiveTypeKind = @"kCOPrimitiveTypeKind";
@@ -17,6 +18,16 @@ NSString * const kCOPrimitiveTypeReferencePath = @"kCOPrimitiveTypeReferencePath
 
 NSString * const kCOContainerOrdered = @"kCOContainerOrdered";
 NSString * const kCOContainerAllowsDuplicates = @"kCOContainerAllowsDuplicates";
+
+// Convenience types
+
+NSDictionary *COConvenienceTypeUnorderedHoldingPaths()
+{
+	return D(kCOContainerTypeKind, kCOTypeKind,
+			kCOPrimitiveTypeHoldingPath, kCOPrimitiveType,
+														[NSNumber numberWithBool: NO], kCOContainerOrdered,
+														[NSNumber numberWithBool: NO], kCOContainerAllowsDuplicates);
+}
 
 @implementation COStoreItem
 
@@ -132,5 +143,130 @@ static void validate(id aValue, NSDictionary *aType)
 	[values setObject: aValue forKey: anAttribute];
 }
 
+
+/** @taskunit plist import/export */
+
+static id exportPrimitiveToPlist(id aValue, NSDictionary *aType)
+{
+	NSString *primitiveType = [aType objectForKey: kCOPrimitiveType];
+	
+	if ([primitiveType isEqualToString: kCOPrimitiveTypeCommitUUID] ||
+		[primitiveType isEqualToString: kCOPrimitiveTypeHoldingPath] ||
+		[primitiveType isEqualToString: kCOPrimitiveTypeReferencePath])
+	{
+		return [aValue stringValue];
+	}
+	return aValue;
+}
+
+static id importPrimitiveFromPlist(id aValue, NSDictionary *aType)
+{
+	NSString *primitiveType = [aType objectForKey: kCOPrimitiveType];
+	
+	if ([primitiveType isEqualToString: kCOPrimitiveTypeCommitUUID])
+	{
+		return [ETUUID UUIDWithString: aValue];
+	}
+	else if ([primitiveType isEqualToString: kCOPrimitiveTypeHoldingPath] ||
+			 [primitiveType isEqualToString: kCOPrimitiveTypeReferencePath])
+	{
+		return [COPath pathWithString: aValue];
+	}
+	return aValue;
+}
+
+
+static id exportToPlist(id aValue, NSDictionary *aType)
+{
+	NSString *typeKind = [aType objectForKey: kCOTypeKind];
+	if ([typeKind isEqualTo: kCOPrimitiveTypeKind])
+	{
+		return exportPrimitiveToPlist(aValue, aType);
+	}
+	else if ([typeKind isEqualTo: kCOContainerTypeKind])
+	{
+		NSMutableArray *result = [NSMutableArray array];
+		for (id obj in aValue)
+		{
+			[result addObject: exportPrimitiveToPlist(obj, D(kCOPrimitiveTypeKind, kCOTypeKind,
+															 [aType objectForKey: kCOPrimitiveType], kCOPrimitiveType))];
+		}
+		return result;
+	}
+	assert(0);
+}
+
+static id importFromPlist(id aValue, NSDictionary *aType)
+{
+	NSString *typeKind = [aType objectForKey: kCOTypeKind];
+	if ([typeKind isEqualTo: kCOPrimitiveTypeKind])
+	{
+		return importPrimitiveFromPlist(aValue, aType);
+	}
+	else if ([typeKind isEqualTo: kCOContainerTypeKind])
+	{
+		id collection;
+		BOOL ordered = [[aType objectForKey: kCOContainerOrdered] boolValue];
+		BOOL allowsDuplicates = [[aType objectForKey: kCOContainerAllowsDuplicates] boolValue];
+		
+		if (!ordered && !allowsDuplicates)
+		{
+			collection = [NSMutableSet set];		
+		}
+		else if (!ordered && allowsDuplicates)
+		{
+			collection = [NSCountedSet set];
+		}
+		else
+		{
+			collection = [NSMutableArray array];
+		}
+		
+		for (id obj in aValue)
+		{
+			[collection addObject: importPrimitiveFromPlist(obj, D(kCOPrimitiveTypeKind, kCOTypeKind,
+																   [aType objectForKey: kCOPrimitiveType], kCOPrimitiveType))];
+		}
+		return collection;
+	}
+	assert(0);
+}
+
+
+- (id)plist
+{
+	NSMutableDictionary *plistValues = [NSMutableDictionary dictionary];
+	
+	for (NSString *key in values)
+	{
+		id plistValue = exportToPlist([values objectForKey: key], [types objectForKey: key]);
+		[plistValues setObject: plistValue 
+						forKey: key];
+	}
+	
+	return [NSDictionary dictionaryWithObjectsAndKeys:
+			plistValues, @"values",
+			types, @"types",
+			[uuid stringValue], @"uuid",
+			nil];
+}
+
+- (id)initWithPlist: (id)aPlist
+{
+	SUPERINIT;
+	ASSIGN(uuid, [ETUUID UUIDWithString: [aPlist objectForKey: @"uuid"]]);
+	ASSIGN(types, [aPlist objectForKey: @"types"]);
+	
+	NSMutableDictionary *importedValues = [NSMutableDictionary dictionary];
+	for (NSString *key in [aPlist objectForKey: @"values"])
+	{
+		id importedValue = importFromPlist([[aPlist objectForKey: @"values"] objectForKey: key], [types objectForKey: key]);
+		[importedValues setObject: importedValue 
+						   forKey: key];
+	}
+	
+	ASSIGN(values, importedValues);
+	return self;
+}
 
 @end
