@@ -269,4 +269,20 @@ static id importFromPlist(id aValue, NSDictionary *aType)
 	return self;
 }
 
+/** @taskunit equality testing */
+
+- (BOOL) isEqual:(id)object
+{
+	if (![object isKindOfClass: [self class]])
+	{
+		return NO;
+	}
+	COStoreItem *otherItem = (COStoreItem*)object;
+	
+	if (![[otherItem uuid] isEqual: [self uuid]]) return NO;
+	if (![otherItem->types isEqual: types]) return NO;
+	if (![otherItem->values isEqual: values]) return NO;
+	return YES;
+}
+
 @end

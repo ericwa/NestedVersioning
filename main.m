@@ -111,6 +111,19 @@ static void testStoreItem()
 			type: COConvenienceTypeUnorderedHoldingPaths()];
 	
 	NSLog(@"%@", [i1 plist]);
+	
+	// test round trip to plist
+	{
+		id plist = [NSPropertyListSerialization propertyListFromData:
+			[NSPropertyListSerialization dataFromPropertyList: [i1 plist]
+														format:NSPropertyListXMLFormat_v1_0
+															   errorDescription:NULL]
+				 mutabilityOption: NSPropertyListMutableContainersAndLeaves
+			format: NULL
+			errorDescription:NULL];
+		COStoreItem *i1clone = [[[COStoreItem alloc] initWithPlist: plist] autorelease];
+		EWTestEqual(i1, i1clone);
+	}
 }
 
 int main (int argc, const char * argv[])
