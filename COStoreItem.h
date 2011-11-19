@@ -18,8 +18,14 @@ NSString * const kCOPrimitiveTypeString;
 NSString * const kCOPrimitiveTypeFullTextIndexableString; 
 NSString * const kCOPrimitiveTypeBlob;
 NSString * const kCOPrimitiveTypeCommitUUID; // just a version uuid. prevents version from being GC'ed.
-NSString * const kCOPrimitiveTypeHoldingPath; // prevents destination from being GC'ed.        copied when parent is copied
+
+// this division of 3 reference types was borrowed from WinFS...
+
 NSString * const kCOPrimitiveTypeReferencePath;// doesn't prevent destination from being GC'ed. not copied when parent is copied
+NSString * const kCOPrimitiveTypeHoldingPath; // prevents destination from being GC'ed.        copied when parent is copied
+NSString * const kCOPrimitiveTypeEmbeddedObject; // only for objects in the same persistent root.
+ 											 	 // within a persistent root, we will enforce that the embedded object has
+												 // only one parent;
 
 // if a type is a container type, it must have these two values set to either YES or NO
 // to specify the type of container.
@@ -55,9 +61,10 @@ kCOPrimitiveTypeDouble: NSNumber containing double
 kCOPrimitiveTypeString: NSString
 kCOPrimitiveTypeBlob: NSData
 kCOPrimitiveTypeCommitUUID: ETUUID
-kCOPrimitiveTypeHoldingPath: COPath
-kCOPrimitiveTypeReferencePath: COPath
 
+kCOPrimitiveTypeReferencePath: COPath
+kCOPrimitiveTypeHoldingPath: COPath
+kCOPrimitiveTypeEmbeddedObject: ETUUID
 for containers:
  
 kCOContainerOrdered = NO, kCOContainerAllowsDuplicates = NO: NSSet

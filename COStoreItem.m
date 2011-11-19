@@ -13,6 +13,7 @@ NSString * const kCOPrimitiveTypeString = @"kCOPrimitiveTypeString";
 NSString * const kCOPrimitiveTypeFullTextIndexableString = @"kCOPrimitiveTypeFullTextIndexableString";
 NSString * const kCOPrimitiveTypeBlob = @"kCOPrimitiveTypeBlob";
 NSString * const kCOPrimitiveTypeCommitUUID = @"kCOPrimitiveTypeCommitUUID";
+NSString * const kCOPrimitiveTypeEmbeddedObject = @"kCOPrimitiveTypeEmbeddedObject";
 NSString * const kCOPrimitiveTypeHoldingPath = @"kCOPrimitiveTypeHoldingPath";
 NSString * const kCOPrimitiveTypeReferencePath = @"kCOPrimitiveTypeReferencePath";
 
@@ -151,6 +152,7 @@ static id exportPrimitiveToPlist(id aValue, NSDictionary *aType)
 	NSString *primitiveType = [aType objectForKey: kCOPrimitiveType];
 	
 	if ([primitiveType isEqualToString: kCOPrimitiveTypeCommitUUID] ||
+		[primitiveType isEqualToString: kCOPrimitiveTypeEmbeddedObject] ||
 		[primitiveType isEqualToString: kCOPrimitiveTypeHoldingPath] ||
 		[primitiveType isEqualToString: kCOPrimitiveTypeReferencePath])
 	{
@@ -163,7 +165,8 @@ static id importPrimitiveFromPlist(id aValue, NSDictionary *aType)
 {
 	NSString *primitiveType = [aType objectForKey: kCOPrimitiveType];
 	
-	if ([primitiveType isEqualToString: kCOPrimitiveTypeCommitUUID])
+	if ([primitiveType isEqualToString: kCOPrimitiveTypeCommitUUID] ||
+		[primitiveType isEqualToString: kCOPrimitiveTypeEmbeddedObject])
 	{
 		return [ETUUID UUIDWithString: aValue];
 	}
