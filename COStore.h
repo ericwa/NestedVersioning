@@ -6,6 +6,19 @@
  *
  * Most likely in the final version, the editing context layer will use COStoreController
  * and COStore will be a layer over SQLite (or COStoreController will use sqlite directly, maybe)
+ 
+ comment on commit graph / merging:
+ 
+ we should be able to employ exactly the same type of stragegies as
+ e.g. git. Being able to store multiple parents for a commit
+ really is important.
+ 
+ see http://codicesoftware.blogspot.com/2010/11/live-to-merge-merge-to-live.html
+ quote:
+ "So, what’s the benefit of merge tracking? It will just merge the changes 
+ after the last merge happened, and you won’t have to solve the same manual 
+ conflict again."
+ 
  */
 @interface COStore : NSObject
 {
