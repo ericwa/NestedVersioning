@@ -23,6 +23,12 @@
 	 * for each element of absPath, the corresponding version UUID
 	 */
 	NSArray *versionUUIDs;
+	
+	/**
+	 * this is the commit we load our data from.
+	 * when we make a commit, the parent of the commit will be set to this
+	 */
+	ETUUID *baseCommit;
 }
 
 /**
@@ -34,7 +40,11 @@
 + (COPersistentRootEditingContext *)contextForEditingPersistentRootAtPath: (COPath *)aPath;
 
 - (void) commit;
-
+/**
+ * does a commit and records in the metadata
+ * these commit UUIDs as being additional parents
+ */
+- (void) commitWithMergedVersionUUIDs: (NSArray*)anArray;
 
 
 // maybe useful to have an API here which makes COObject unnecessary
@@ -46,7 +56,11 @@
 - (COStoreItem *)storeItemForUUID: (ETUUID*) aUUID;
 
 
-- (void) updateStoreItem: (COStoreItem *)anEditedItem;
+
+- (void) insertItem: (COStoreItem *)anItem;
+- (void) updateItem: (COStoreItem *)anEditedItem;
+- (void) deleteItemWithUUID: (ETUUID*)itemUUID;
+
 
 // FIXME: think about api for creating new persistent roots.
 // (copy existing (template?), or create blank/empty version/commit with
