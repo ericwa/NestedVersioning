@@ -23,7 +23,7 @@ NSString * const kCOPrimitiveTypeCommitUUID; // just a version uuid. prevents ve
 
 NSString * const kCOPrimitiveTypeReferencePath;// doesn't prevent destination from being GC'ed. not copied when parent is copied
 NSString * const kCOPrimitiveTypeHoldingPath; // prevents destination from being GC'ed.        copied when parent is copied
-NSString * const kCOPrimitiveTypeEmbeddedObject; // only for objects in the same persistent root.
+NSString * const kCOPrimitiveTypeEmbeddedItem; // only for objects in the same persistent root.
  											 	 // within a persistent root, we will enforce that the embedded object has
 												 // only one parent;
 
