@@ -41,6 +41,7 @@ NSString * const kCOContainerAllowsDuplicates;
 // Convenience types
 
 NSDictionary *COConvenienceTypeUnorderedHoldingPaths();
+NSDictionary *COConvenienceTypeUnorderedEmbeddedItem();
 
 
 /**

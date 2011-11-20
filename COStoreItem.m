@@ -13,7 +13,7 @@ NSString * const kCOPrimitiveTypeString = @"kCOPrimitiveTypeString";
 NSString * const kCOPrimitiveTypeFullTextIndexableString = @"kCOPrimitiveTypeFullTextIndexableString";
 NSString * const kCOPrimitiveTypeBlob = @"kCOPrimitiveTypeBlob";
 NSString * const kCOPrimitiveTypeCommitUUID = @"kCOPrimitiveTypeCommitUUID";
-NSString * const kCOPrimitiveTypeEmbeddedItem = @"kCOPrimitiveTypeEmbeddedObject";
+NSString * const kCOPrimitiveTypeEmbeddedItem = @"kCOPrimitiveTypeEmbeddedItem";
 NSString * const kCOPrimitiveTypeHoldingPath = @"kCOPrimitiveTypeHoldingPath";
 NSString * const kCOPrimitiveTypeReferencePath = @"kCOPrimitiveTypeReferencePath";
 
@@ -28,6 +28,14 @@ NSDictionary *COConvenienceTypeUnorderedHoldingPaths()
 			kCOPrimitiveTypeHoldingPath, kCOPrimitiveType,
 														[NSNumber numberWithBool: NO], kCOContainerOrdered,
 														[NSNumber numberWithBool: NO], kCOContainerAllowsDuplicates);
+}
+
+NSDictionary *COConvenienceTypeUnorderedEmbeddedItem()
+{
+	return D(kCOContainerTypeKind, kCOTypeKind,
+			 kCOPrimitiveTypeEmbeddedItem, kCOPrimitiveType,
+			 [NSNumber numberWithBool: NO], kCOContainerOrdered,
+			 [NSNumber numberWithBool: NO], kCOContainerAllowsDuplicates);
 }
 
 @implementation COStoreItem
