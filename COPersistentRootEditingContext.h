@@ -35,4 +35,22 @@
 
 - (void) commit;
 
+
+
+// maybe useful to have an API here which makes COObject unnecessary
+
+
+- (ETUUID *)rootEmbeddedObject;
+
+// read-only return value
+- (COStoreItem *)storeItemForUUID: (ETUUID*) aUUID;
+
+
+- (void) updateStoreItem: (COStoreItem *)anEditedItem;
+
+// FIXME: think about api for creating new persistent roots.
+// (copy existing (template?), or create blank/empty version/commit with
+//  no parents)
+
+
 @end
