@@ -95,6 +95,17 @@ kCOContainerOrdered = YES, kCOContainerAllowsDuplicates = YES: NSArray
 
 - (id) initWithUUID: (ETUUID*)aUUID;
 
+/**
+ * init with a new UUID
+ */
+- (id) init;
+
+/**
+ * new item with new UIID
+ */
++ (COStoreItem *) item;
+
+
 - (ETUUID *)uuid;
 
 - (NSArray *) attributeNames;

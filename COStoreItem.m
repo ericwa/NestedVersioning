@@ -49,6 +49,16 @@ NSDictionary *COConvenienceTypeUnorderedEmbeddedItem()
 	return self;
 }
 
+- (id) init
+{
+	return [self initWithUUID: [ETUUID UUID]];
+}
+
++ (COStoreItem *) item
+{
+	return [[[COStoreItem alloc] init] autorelease];
+}
+
 - (void) dealloc
 {
 	[types release];
