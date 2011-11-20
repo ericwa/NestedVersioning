@@ -120,17 +120,37 @@ void test()
 	 
 	 **/
 	
-	// set up the montage
 
-	layer_bg = [embeddedobject new];
-	layer_fg = [embeddedobject new];
 	
-	layers = [embeddedobject new];
+	/*
+	 root creation ideas:
+	 - the destination version/commit can be written before the
+	   update to the place where the reference is stored
+	   (not sure if useful).
+	 
+	 - api needs to handle copy vs new, blank slate
+	   (this determines the parent of the new commit
+	    for the roots contents - no parent, or parent pointing to copy src)
+	 
+	 
+	 
+	 
+	 */
+	montagePath = [montageParent createNewRootObject{[withInitialState:?}]; // does an implicit commit?
+	
+	COPersistentRootEditingContext *montageCtxt = [COPersistentRootEditingContext contextWithPath: montagePath];
+	
+	// set up the montage contents
+	
+	layer_bg = [montageCtxt addEmbeddedobject];
+	layer_fg = [montageCtxt addEmbeddedobject];
+	
+	layers = [montageCtxt addEmbeddedobject];
 	[layers addContained: layer_bg];
 	[layers addContained: layer_fg]; //FIXME: set as ordered
 	
-	montage = [rootobject new];
 	[montage addContained: layers];
+	
 	
 	montage_a = [montage newbranch];
 	montage_b = [montage newbranch];	
