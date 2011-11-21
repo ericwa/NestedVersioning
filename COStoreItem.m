@@ -76,6 +76,11 @@ NSDictionary *COPrimitiveType(NSString *aPrimitiveType)
 {
 	return uuid;
 }
+- (void) setUUID: (ETUUID *)aUUID
+{
+	NILARG_EXCEPTION_TEST(aUUID);
+	ASSIGN(uuid, aUUID);
+}
 
 - (NSArray *) attributeNames
 {
@@ -310,6 +315,14 @@ static id importFromPlist(id aValue, NSDictionary *aType)
 	if (![otherItem->types isEqual: types]) return NO;
 	if (![otherItem->values isEqual: values]) return NO;
 	return YES;
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+	COStoreItem *myCopy = [[[self class] alloc] initWithUUID: [self UUID]];
+	[myCopy->types setDictionary: types];
+	[myCopy->values setDictionary: values];
+	return myCopy;
 }
 
 @end

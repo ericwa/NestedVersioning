@@ -105,7 +105,7 @@ kCOContainerOrdered = YES, kCOContainerAllowsDuplicates = YES: NSArray
  * it will be changed to write the object to the sqlite db
  * at some point.
  */
-@interface COStoreItem : NSObject
+@interface COStoreItem : NSObject <NSCopying>
 {
 @private
 	ETUUID *uuid;
@@ -127,6 +127,7 @@ kCOContainerOrdered = YES, kCOContainerAllowsDuplicates = YES: NSArray
 
 
 - (ETUUID *)UUID;
+- (void) setUUID: (ETUUID *)aUUID;
 
 - (NSArray *) attributeNames;
 
@@ -141,4 +142,10 @@ kCOContainerOrdered = YES, kCOContainerAllowsDuplicates = YES: NSArray
 
 - (id)plist;
 - (id)initWithPlist: (id)aPlist;
+
+/**
+ * @returns a mutable copy
+ */
+- (id)copyWithZone:(NSZone *)zone;
+
 @end
