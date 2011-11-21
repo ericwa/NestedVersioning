@@ -85,6 +85,15 @@
 
 
 /**
+ * 1. commit a blank version/commit to the store with no parent and
+      no contents?
+   2. insert the persistent root wrapper (with a single, default branch?)
+   3. return the uuid of wrapper?
+ */
+- (ETUUID*) newEmpytPersistentRoot;
+
+
+/**
  * copies an embedded object from another context.
  
  detailed semantics:
