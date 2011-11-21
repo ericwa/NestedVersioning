@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "COPath.h"
-
+#import "COStoreController.h"
+#import "COStoreItem.h"
 /**
  * an object context handles the process of committing changes.
  *
