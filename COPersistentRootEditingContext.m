@@ -78,7 +78,7 @@
 {
 	assert([aUUID isKindOfClass: [ETUUID class]]);
 	
-	COStoreItem *result = [store storeItemForUUID: aUUID atVersion: baseCommit];
+	COStoreItem *result = [sc storeItemForEmbeddedObject: aUUID inCommit: baseCommit];
 	COStoreItem *localResult = [insertedOrUpdatedItems objectForKey: aUUID];
 	
 	assert(result != nil);
