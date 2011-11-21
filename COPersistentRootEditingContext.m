@@ -193,4 +193,31 @@
 	}
 }
 
+- (ETUUID *) copyEmbeddedObject: (ETUUID *)aUUID
+{
+	NILARG_EXCEPTION_TEST(aUUID);
+	
+	NSSet *sourceUUIDs = [self allEmbeddedObjectUUIDsForUUIDInclusive: aUUID];
+	NSMutableDictionary *mapping = [NSMutableDictionary dictionaryWithCapacity: [sourceUUIDs count]];
+	
+	for (ETUUID *sourceUUID in sourceUUIDs)
+	{
+		[mapping setObject: [ETUUID UUID]
+					forKey: sourceUUID];
+	}
+	
+	for (ETUUID *sourceUUID in sourceUUIDs)
+	{
+		COStoreItem *itemCopy = [[self storeItemForUUID: sourceUUID] mutableCopy];
+		for (NSString *key in [itemCopy attributeNames])
+		{
+			// FIXME:
+			// look up the value(s) for 'key' in 'mapping'; if found,
+			// replace with the mapped value.
+		}
+		[self insertItem: itemCopy];
+		[itemCopy release];
+	}
+}
+
 @end

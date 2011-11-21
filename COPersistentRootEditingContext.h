@@ -70,6 +70,12 @@
 - (NSSet *) allEmbeddedObjectUUIDsForUUID: (ETUUID*) aUUID;
 - (NSSet *) allEmbeddedObjectUUIDsForUUIDInclusive: (ETUUID*) aUUID;
 
+/** maybe we need: */
+//- (void) insertConsistentSetOfItems: (COSet <COStoreItem*>*) items;
+/* which checks for kCOPrimitiveTypeEmbeddedItem consistency 
+   after the insertion, and fixes up any inconsistencies? 
+ */
+
 - (void) insertItem: (COStoreItem *)anItem;
 - (void) updateItem: (COStoreItem *)anEditedItem;
 
@@ -77,20 +83,6 @@
 // what about external "holding" references?
 
 - (void) deleteItemWithUUID: (ETUUID*)itemUUID;
-
-
-// FIXME: think about api for creating new persistent roots.
-// (copy existing (template?), or create blank/empty version/commit with
-//  no parents)
-
-
-/**
- * 1. commit a blank version/commit to the store with no parent and
-      no contents?
-   2. insert the persistent root wrapper (with a single, default branch?)
-   3. return the uuid of wrapper?
- */
-- (ETUUID*) newEmpytPersistentRoot;
 
 
 /**
@@ -112,6 +104,26 @@
  */
 - (void) copyEmbeddedObject: (ETUUID*) aUUID
 				fromContext: (COPersistentRootEditingContext*) aCtxt;
+
+
+/**
+ * - copies an embedded object and assigns it a new UUID.
+ * - also copies all 'embedded' objects inside, and assigns
+ * them new uuids.
+ * - also updates all references in the copied subtree
+ * from the old UUIDs to the new UUDIs
+ * - this method only calls [self insertItem: ]
+ *
+ * @param aUUID the object to copy
+ * @return the uuid of the copy of aUUID
+ *
+ */
+- (ETUUID *) copyEmbeddedObject: (ETUUID *)aUUID;
+
+
+/* @taskunit persistent roots (TODO: move to class?) */
+
+- (ETUUID *) newEmpytPersistentRoot;
 
 
 @end
