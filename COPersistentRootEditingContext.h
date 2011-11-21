@@ -14,6 +14,8 @@
  */
 @interface COPersistentRootEditingContext : NSObject
 {
+	COStoreController *sc;
+	
 	COPath *path;
 	
 	// we need to keep track of what the store state was when this editing cotext was created
@@ -29,6 +31,10 @@
 	 * when we make a commit, the parent of the commit will be set to this
 	 */
 	ETUUID *baseCommit;
+	
+	
+	NSMutableDictionary *insertedOrUpdatedItems;
+	NSMutableSet *deletedItems;
 }
 
 /**
@@ -59,6 +65,10 @@
 
 - (void) insertItem: (COStoreItem *)anItem;
 - (void) updateItem: (COStoreItem *)anEditedItem;
+
+// delete contained objects?
+// what about external "holding" references?
+
 - (void) deleteItemWithUUID: (ETUUID*)itemUUID;
 
 
