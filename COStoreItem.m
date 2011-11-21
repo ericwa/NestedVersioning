@@ -38,6 +38,12 @@ NSDictionary *COConvenienceTypeUnorderedEmbeddedItem()
 			 [NSNumber numberWithBool: NO], kCOContainerAllowsDuplicates);
 }
 
+NSDictionary *COPrimitiveType(NSString *aPrimitiveType)
+{
+	return D(kCOPrimitiveTypeKind, kCOTypeKind,
+			 aPrimitiveType, kCOPrimitiveType);	
+}
+
 @implementation COStoreItem
 
 - (id) initWithUUID: (ETUUID*)aUUID
@@ -66,7 +72,7 @@ NSDictionary *COConvenienceTypeUnorderedEmbeddedItem()
 	[super dealloc];
 }
 
-- (ETUUID *)uuid
+- (ETUUID *)UUID
 {
 	return uuid;
 }
@@ -300,7 +306,7 @@ static id importFromPlist(id aValue, NSDictionary *aType)
 	}
 	COStoreItem *otherItem = (COStoreItem*)object;
 	
-	if (![[otherItem uuid] isEqual: [self uuid]]) return NO;
+	if (![[otherItem UUID] isEqual: [self UUID]]) return NO;
 	if (![otherItem->types isEqual: types]) return NO;
 	if (![otherItem->values isEqual: values]) return NO;
 	return YES;

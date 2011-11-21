@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "ETUUID.h"
+#import "COStoreItem.h"
 
 /**
  * lowest level of access to store.. deals with commit tree/forest.
@@ -43,13 +44,13 @@
 
 - (ETUUID*) addCommitWithParent: (ETUUID*)parent
                        metadata: (id)metadataPlist
-				 UUIDsAndPlists: (NSDictionary*)objects; // ETUUID : plist
+			 UUIDsAndStoreItems: (NSDictionary*)objects; // ETUUID : COStoreItem
 
 - (NSArray*) allCommitUUIDs;
 
 - (ETUUID *) parentForCommit: (ETUUID*)commit;
 - (id) metadataForCommit: (ETUUID*)commit;
-- (NSDictionary *) UUIDsAndPlistsForCommit: (ETUUID*)commit;
+- (NSDictionary *) UUIDsAndStoreItemsForCommit: (ETUUID*)commit;
 
 /** @taskunit history cleaning */
 

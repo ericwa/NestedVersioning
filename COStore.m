@@ -58,7 +58,7 @@
 
 - (ETUUID*) addCommitWithParent: (ETUUID*)parent
                        metadata: (id)metadataPlist
-				 UUIDsAndPlists: (NSDictionary*)objects
+			 UUIDsAndStoreItems: (NSDictionary*)objects
 {
 	NILARG_EXCEPTION_TEST(objects);
 	
@@ -68,7 +68,11 @@
 	{
 		for (ETUUID *uuid in objects)
 		{
-			[objectsWithStringUUID setObject: [objects objectForKey: uuid]
+			assert([[objects objectForKey: uuid] isKindOfClass: [COStoreItem class]]);
+			assert([[[objects objectForKey: uuid] UUID] isEqual: uuid]);
+			
+			id plist = [[objects objectForKey: uuid] plist];
+			[objectsWithStringUUID setObject: plist
 									  forKey: [uuid stringValue]];
 		}
 	}
@@ -116,7 +120,7 @@
 	return uuids;
 }
 
-- (NSDictionary *) plistForCommit: (ETUUID*)commit
+- (NSDictionary *) _plistForCommit: (ETUUID*)commit
 {
 	NSString *commitFile = [[self commitsDirectory] stringByAppendingPathComponent:
 							[commit stringValue]];
@@ -127,7 +131,9 @@
 	{
 		for (NSString *uuidString in [plist objectForKey: @"objects"])
 		{
-			[objectsWithUUID setObject: [[plist objectForKey: @"objects"] objectForKey: uuidString]
+			id objectPlist = [[plist objectForKey: @"objects"] objectForKey: uuidString];
+			COStoreItem *item = [[[COStoreItem alloc] initWithPlist: objectPlist] autorelease];
+			[objectsWithUUID setObject: item
 								forKey: [ETUUID UUIDWithString: uuidString]];
 		}
 	}
@@ -145,15 +151,15 @@
 }
 - (ETUUID *) parentForCommit: (ETUUID*)commit
 {
-	return [[self plistForCommit: commit] objectForKey: @"parent"];
+	return [[self _plistForCommit: commit] objectForKey: @"parent"];
 }
 - (id) metadataForCommit: (ETUUID*)commit
 {
-	return [[self plistForCommit: commit] objectForKey: @"metadata"];	
+	return [[self _plistForCommit: commit] objectForKey: @"metadata"];	
 }
-- (NSDictionary *) UUIDsAndPlistsForCommit: (ETUUID*)commit
+- (NSDictionary *) UUIDsAndStoreItemsForCommit: (ETUUID*)commit
 {
-	return [[self plistForCommit: commit] objectForKey: @"objects"];	
+	return [[self _plistForCommit: commit] objectForKey: @"objects"];	
 }
 
 - (void) deleteCommitsWithUUIDs: (NSArray*)uuids

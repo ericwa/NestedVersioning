@@ -38,10 +38,12 @@ NSString * const kCOContainerOrdered;
 NSString * const kCOContainerAllowsDuplicates;
 
 
-// Convenience types
+// Convenience type constructors
 
 NSDictionary *COConvenienceTypeUnorderedHoldingPaths();
 NSDictionary *COConvenienceTypeUnorderedEmbeddedItem();
+
+NSDictionary *COPrimitiveType(NSString *aPrimitiveType);
 
 
 /**
@@ -106,7 +108,7 @@ kCOContainerOrdered = YES, kCOContainerAllowsDuplicates = YES: NSArray
 + (COStoreItem *) item;
 
 
-- (ETUUID *)uuid;
+- (ETUUID *)UUID;
 
 - (NSArray *) attributeNames;
 
