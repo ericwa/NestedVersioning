@@ -1,37 +1,9 @@
-{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf230
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf360
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fswiss\fcharset0 Helvetica-Light;}
 {\colortbl;\red255\green255\blue255;}
-\margl1440\margr1440\vieww8880\viewh11740\viewkind0
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
 
-\f0\fs24 \cf0 \
-\
-simple, jcr like.\
-fixed "children" property.\
-handful of datatypes (string, int)\
-reference to uuid for many-to-many\
-\
-multivalue properties: \
-- unordered/ordered\
-- allows duplicates/doesn't allow duplicates\
-\
-do we need weak reference vs strong reference?\
-strong ref = \
-\
-uml ref types = (association, aggregation, composition)\
-\
-\
-association \ul \ulc0 \
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
-\cf0 \ulnone \
-how many of these does the storage layer need to know about?\
-e.g. it doesn't need to know about ordered/unordered if it stores everything in order.\
-it doesn't need to know about allows duplicates, but merging _does_ (e.g. user 1 adds A at the start of a list, user 2 adds A at the end of the list. conflict or not?)\
-\
-\
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 \ul \
-co5 conceptual model\ulnone \
+\f0\fs24 \cf0 \ul \ulc0 co5 conceptual model\ulnone \
 \
 a 
 \b version
@@ -59,10 +31,10 @@ that\'92s it; we just need to work out some details.\
 ________________________________________________________\
 \
 \ul interpretation\ulnone :\
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
 
 \f1\fs22 \cf0 \
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
 
 \f0\fs24 \cf0 \
 some thoughts on object identity: all persistent roots with the same uuid are related. so for the \
@@ -82,8 +54,4 @@ photolibrary (alt branch) / photo (same uuid as regular branch photo)\
 \
 well, we need to formalize the rules for copy.\
 copied by user: new uuid otherwise, no new uuid?\
-\\\
-\
-\
-\
 }
