@@ -92,6 +92,49 @@
 	return result;
 }
 
+- (NSSet *) allEmbeddedObjectUUIDsForUUID: (ETUUID*) aUUID
+{
+	NILARG_EXCEPTION_TEST(aUUID);
+	
+	NSMutableSet *result = [NSMutableSet set];
+	
+	COStoreItem *item = [self storeItemForUUID: aUUID];
+	for (NSString *key in [item attributeNames])
+	{
+		NSDictionary *type = [item typeForAttribute: key];
+		if ([[type objectForKey: kCOPrimitiveType] isEqual: kCOPrimitiveTypeEmbeddedItem])
+		{
+			if ([[type objectForKey: kCOTypeKind] isEqual: kCOPrimitiveTypeKind])
+			{
+				ETUUID *embedded = [item valueForAttribute: key];
+				[set addObject: embedded];
+				[set unionSet: [self allEmbeddedObjectUUIDsForUUID: embedded]];
+			}
+			else if ([[type objectForKey: kCOTypeKind] isEqual: kCOPrimitiveTypeKind])
+			{
+				for (ETUUID *embedded in [item valueForAttribute: key])
+				{
+					[set addObject: embedded];
+					[set unionSet: [self allEmbeddedObjectUUIDsForUUID: embedded]];
+				}
+			}
+			else
+			{
+				assert(0);
+			}
+		}
+	}
+	return result;
+}
+
+- (NSSet *) allEmbeddedObjectUUIDsForUUIDInclusive: (ETUUID*) aUUID
+{
+	NILARG_EXCEPTION_TEST(aUUID);
+	return [[self allEmbeddedObjectUUIDsForUUID: aUUID] setByAddingObject: aUUID];
+}
+
+
+
 - (void) insertItem: (COStoreItem *)anItem
 {
 	ETUUID *uuid = [anItem UUID];
@@ -124,6 +167,27 @@
 	assert([itemUUID isKindOfClass: [ETUUID class]]);
 	
 	[deletedItems addObject: itemUUID];
+}
+
+
+- (void) copyEmbeddedObject: (ETUUID*) aUUID
+				fromContext: (COPersistentRootEditingContext*) aCtxt
+{
+	NILARG_EXCEPTION_TEST(aUUID);
+	NILARG_EXCEPTION_TEST(aCtxt);
+	
+	NSSet *uuids = [self allEmbeddedObjectUUIDsForUUIDInclusive: aUUID];
+	for (ETUUID *uuid in uuids)
+	{
+		COStoreItem *item = [aCtxt storeItemForUUID: uuid];
+		
+		// FIXME: This assumes that -insertItem doens't check that
+		// kCOPrimitiveTypeEmbeddedItem constraints are enforced.
+		// Assuming the source context was consistent, our context will
+		// be consistent after this loop exits. Need to clarify the
+		// guarantees that we can give about kCOPrimitiveTypeEmbeddedItem
+		[self insertItem: item];
+	}
 }
 
 @end

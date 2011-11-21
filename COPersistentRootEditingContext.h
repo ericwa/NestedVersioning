@@ -65,7 +65,8 @@
 // read-only return value
 - (COStoreItem *)storeItemForUUID: (ETUUID*) aUUID;
 
-
+- (NSSet *) allEmbeddedObjectUUIDsForUUID: (ETUUID*) aUUID;
+- (NSSet *) allEmbeddedObjectUUIDsForUUIDInclusive: (ETUUID*) aUUID;
 
 - (void) insertItem: (COStoreItem *)anItem;
 - (void) updateItem: (COStoreItem *)anEditedItem;
@@ -79,6 +80,27 @@
 // FIXME: think about api for creating new persistent roots.
 // (copy existing (template?), or create blank/empty version/commit with
 //  no parents)
+
+
+/**
+ * copies an embedded object from another context.
+ 
+ detailed semantics:
+ - this is the method to use for copying a persistent root, 
+   as well as for normal embedded objects (it contains no special
+   handling for persistent roots, but just works. *although
+   we may want to add special handling for the relative paths
+   problem)
+ 
+ - uuids are not changed / remapped.
+ 
+ - referenced objects with reference type kCOPrimitiveTypeEmbeddedObject
+   are copied as well. their uuids stay the same
+ 
+ 
+ */
+- (void) copyEmbeddedObject: (ETUUID*) aUUID
+				fromContext: (COPersistentRootEditingContext*) aCtxt;
 
 
 @end
