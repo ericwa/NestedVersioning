@@ -46,9 +46,9 @@
 	
 	[ctx commit];
 	
-	// workspace
+	// workspace <<persistent root>>
 	//  |
-	//  |--document1
+	//  |--document1 <<persistent root>>
 	//  |   |
 	//  |   |-group1
 	//  |   |   |
@@ -60,7 +60,7 @@
 	//  |       |
 	//  |       \-leaf3
 	//  | 
-	//   \-document2	
+	//   \-document2 <<persistent root>>
 	
 	
 	// Now make some changes
@@ -75,9 +75,9 @@
 	
 	[group2 addObject: leaf2]; [ctx commit];
 	
-	// workspace
+	// workspace <<persistent root>>
 	//  |
-	//  |--document1
+	//  |--document1 <<persistent root>>
 	//  |   |
 	//  |   |-group1
 	//  |   |   |
@@ -89,20 +89,20 @@
 	//  |       |
 	//  |       \-leaf2
 	//  | 
-	//   \-document2
+	//   \-document2 <<persistent root>>
 	
 	
 	[document2 addObject: group2]; [ctx commit];
 	
-	// workspace
+	// workspace <<persistent root>>
 	//  |
-	//  |--document1
+	//  |--document1 <<persistent root>>
 	//  |   |
 	//  |   \-group1
 	//  |       |
 	//  |       \-leaf1	
 	//  | 
-	//   \-document2
+	//   \-document2 <<persistent root>>
 	//      |
 	//       \-group2
 	//          |
@@ -133,9 +133,9 @@
 
 	[group1 addObject: leaf4]; [ctx commit];
 	
-	// workspace
+	// workspace <<persistent root>>
 	//  |
-	//  |--document1
+	//  |--document1 <<persistent root>>
 	//  |   |
 	//  |   \-group1
 	//  |       |
@@ -143,7 +143,7 @@
 	//  |       |
 	//  |       \-leaf4
 	//  | 
-	//   \-document2
+	//   \-document2 <<persistent root>>
 	//      |
 	//       \-group2
 	//          |
@@ -155,9 +155,9 @@
 	
 	[group2 addObject: leaf5]; [ctx commit];
 
-	// workspace
+	// workspace <<persistent root>>
 	//  |
-	//  |--document1
+	//  |--document1 <<persistent root>>
 	//  |   |
 	//  |   \-group1
 	//  |       |
@@ -165,7 +165,7 @@
 	//  |       |
 	//  |       \-leaf4
 	//  | 
-	//   \-document2
+	//   \-document2 <<persistent root>>
 	//      |
 	//       \-group2
 	//          |
@@ -179,9 +179,9 @@
 	
 	[group2 addObject: leaf6]; [ctx commit];
 
-	// workspace
+	// workspace <<persistent root>>
 	//  |
-	//  |--document1
+	//  |--document1 <<persistent root>>
 	//  |   |
 	//  |   \-group1
 	//  |       |
@@ -189,7 +189,7 @@
 	//  |       |
 	//  |       \-leaf4
 	//  | 
-	//   \-document2
+	//   \-document2 <<persistent root>>
 	//      |
 	//       \-group2
 	//          |
