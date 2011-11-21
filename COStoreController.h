@@ -123,7 +123,7 @@ a key/value called "tip". (terminology stolen from mercurial)
 /**
  * simple wrapper around -[COStore UUIDsAndPlistsForCommit:]
  */
-- (id) plistForEmbeddedObject: (ETUUID*)embeddedObject
+- (id) storeItemForEmbeddedObject: (ETUUID*)embeddedObject
 					 inCommit: (ETUUID*)aCommitUUID;
 
 /**

@@ -71,7 +71,7 @@
 		ETUUID *parentCurrentVersion = [self _currentVersionForPersistentRootAtPath: parent
 													absolutePathOut: &parentAbs];
 
-		id embeddedObjectPlist = [self plistForEmbeddedObject: lastPathComponent
+		id embeddedObjectPlist = [self storeItemForEmbeddedObject: lastPathComponent
 													 inCommit: parentCurrentVersion];
 		
 		id trackedPathOrVersion = [self _trackedPathOrVersionForPlist: embeddedObjectPlist
@@ -114,7 +114,7 @@
 							   absolutePathOut: &unused];
 }
 
-- (id) plistForEmbeddedObject: (ETUUID*)embeddedObject
+- (id) storeItemForEmbeddedObject: (ETUUID*)embeddedObject
 					 inCommit: (ETUUID*)aCommitUUID
 {
 	NILARG_EXCEPTION_TEST(embeddedObject);
@@ -136,7 +136,7 @@
 					   atPath: (COPath*)aPath
 {
 	ETUUID *version = [self currentVersionForPersistentRootAtPath: aPath];
-	id plist = [self plistForEmbeddedObject: embeddedObject inCommit: version];
+	id plist = [self storeItemForEmbeddedObject: embeddedObject inCommit: version];
 	
 	return plist;
 }
