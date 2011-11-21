@@ -317,6 +317,20 @@ static id importFromPlist(id aValue, NSDictionary *aType)
 	return YES;
 }
 
+/** @taskunit convenience */
+
+- (void) addObject: (id)aValue
+	  forAttribute: (NSString*)anAttribute
+{
+	assert([[[types objectForKey: anAttribute] objectForKey: kCOTypeKind] isEqual: kCOContainerTypeKind]);
+	
+	id container = [[values objectForKey: anAttribute] mutableCopy];
+	[container addObject: aValue];
+	[values setObject: container forKey: anAttribute];
+	[container release];
+}
+
+
 - (id)copyWithZone:(NSZone *)zone
 {
 	COStoreItem *myCopy = [[[self class] alloc] initWithUUID: [self UUID]];

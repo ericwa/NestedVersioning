@@ -57,14 +57,8 @@ void test()
 	
 	{
 		COStoreItem *r1item = [ctx storeItemForUUID: r1];
-		
-		NSArray *newContents =  [[r1item valueForAttribute: @"contents"]
-								 arrayByAddingObjectsFromArray: [NSArray arrayWithObject: r2b3copy]];
-		
-		[r1item setValue: newContents
-			forAttribute: @"contents"
-					type: [r1item typeForAttribute: @"contents"]
-		
+		[r1item addObject: r2b3copy forAttribute: @"contents"];
+		[ctx updateItem: r1item];
 	}
 	
 	// merge branch c" and b' -> branch d, r' -> (a', b', c', c", d)

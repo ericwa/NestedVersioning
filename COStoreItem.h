@@ -143,6 +143,11 @@ kCOContainerOrdered = YES, kCOContainerAllowsDuplicates = YES: NSArray
 - (id)plist;
 - (id)initWithPlist: (id)aPlist;
 
+/** @taskunit convenience */
+
+- (void) addObject: (id)aValue
+	  forAttribute: (NSString*)anAttribute;
+
 /**
  * @returns a mutable copy
  */
