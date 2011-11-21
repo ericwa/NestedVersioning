@@ -64,7 +64,10 @@
 
 - (ETUUID *)rootEmbeddedObject;
 
-// read-only return value
+/**
+ * returns a mutable copy which can be freely edited
+ * without affecting anything.
+ */
 - (COStoreItem *)storeItemForUUID: (ETUUID*) aUUID;
 
 - (NSSet *) allEmbeddedObjectUUIDsForUUID: (ETUUID*) aUUID;

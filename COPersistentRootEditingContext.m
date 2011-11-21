@@ -78,8 +78,8 @@
 {
 	assert([aUUID isKindOfClass: [ETUUID class]]);
 	
-	COStoreItem *result = [sc storeItemForEmbeddedObject: aUUID inCommit: baseCommit];
-	COStoreItem *localResult = [insertedOrUpdatedItems objectForKey: aUUID];
+	COStoreItem *result = [[[sc storeItemForEmbeddedObject: aUUID inCommit: baseCommit] copy] autorelase];
+	COStoreItem *localResult = [[[insertedOrUpdatedItems objectForKey: aUUID] copy] autorelase];
 	
 	assert(result != nil);
 	

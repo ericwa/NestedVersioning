@@ -23,21 +23,53 @@ void test()
 	
 	// create a persistent root r with 3 branches: a, b, c; current branch: a
 	
+	COEditingContext *ctx = SetupTestContext();
+	
+	COStore *store = [ctx store];
+	
+	ETUUID *emptyVersion = [store addCommitWithParent: nil
+											 metadata: nil
+								   UUIDsAndStoreItems: [NSDictionary dictionary]];
+	
+	ETUUID *r1b1 = [ctx newBranchTrackingVersion: emptyVersion];
+	ETUUID *r1b2 = [ctx newBranchTrackingVersion: emptyVersion];
+	ETUUID *r1b3 = [ctx newBranchTrackingVersion: emptyVersion];
+	
+	ETUUID *r1 = [ctx newBranchGroupWithBranches: A(r1b1, r1b2, r1b3)];
+
+
 	
 	// copy r -> r' (a', b', c'), current branch: a'
+
+	ETUUID *r2 = [ctx copyEmbeddedObject: r1];
 	
 	
 	// copy branch c out of the r and edit it a bit -> c"
 	
+	ETUUID *r2b3 = [[[ctx storeItemForUUID: r2] valueForAttribute: @"contents"] objectAtIndex: 2];
+
+	ETUUID *r2b3copy = [ctx copyEmbeddedObject: r2b3];
+	
+	
+	// FIXME: edit it
 	
 	// add c" to r' -> (a', b', c', c")
 	
+	{
+		COStoreItem *r1item = [ctx storeItemForUUID: r1];
+		
+		NSArray *newContents =  [[r1item valueForAttribute: @"contents"]
+								 arrayByAddingObjectsFromArray: [NSArray arrayWithObject: r2b3copy]];
+		
+		[r1item setValue: newContents
+			forAttribute: @"contents"
+					type: [r1item typeForAttribute: @"contents"]
+		
+	}
 	
 	// merge branch c" and b' -> branch d, r' -> (a', b', c', c", d)
-	
-	
 
-	
+	// FIXME:
 	
 }
 
