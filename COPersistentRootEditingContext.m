@@ -107,15 +107,15 @@
 			if ([[type objectForKey: kCOTypeKind] isEqual: kCOPrimitiveTypeKind])
 			{
 				ETUUID *embedded = [item valueForAttribute: key];
-				[set addObject: embedded];
-				[set unionSet: [self allEmbeddedObjectUUIDsForUUID: embedded]];
+				[result addObject: embedded];
+				[result unionSet: [self allEmbeddedObjectUUIDsForUUID: embedded]];
 			}
 			else if ([[type objectForKey: kCOTypeKind] isEqual: kCOPrimitiveTypeKind])
 			{
 				for (ETUUID *embedded in [item valueForAttribute: key])
 				{
-					[set addObject: embedded];
-					[set unionSet: [self allEmbeddedObjectUUIDsForUUID: embedded]];
+					[result addObject: embedded];
+					[result unionSet: [self allEmbeddedObjectUUIDsForUUID: embedded]];
 				}
 			}
 			else
