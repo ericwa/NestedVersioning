@@ -36,6 +36,8 @@
 	 */
 	ETUUID *baseCommit;
 	
+	// -- in-memory mutable state which is "overlaid" on the 
+	// persistent state represented by baseCommit
 	
 	NSMutableDictionary *insertedOrUpdatedItems;
 	NSMutableSet *deletedItems;

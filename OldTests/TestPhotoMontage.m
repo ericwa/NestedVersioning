@@ -101,6 +101,10 @@ void test()
 		link.) we just need to be able to detect when that happens, and then we can
 	    warn the user and offer possible fixes.
 	 
+	 relative paths breaking examle: the paths from a document to its tags
+	 break when you copy the document to a different level of the
+	 hierarchy. 
+	 
 	 - when a relationship is created with a "backwards" path (../../.. ...), 
 	   we can mark the proots which the path crosses as "unsafe to copy to
 	   a different place in the hierarchy" (if you duplicate one of these unsafe

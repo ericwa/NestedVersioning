@@ -21,8 +21,26 @@ NSString * const kCOPrimitiveTypeCommitUUID; // just a version uuid. prevents ve
 
 // this division of 3 reference types was borrowed from WinFS...
 
-NSString * const kCOPrimitiveTypeReferencePath;// doesn't prevent destination from being GC'ed. not copied when parent is copied
-NSString * const kCOPrimitiveTypeHoldingPath; // prevents destination from being GC'ed.        copied when parent is copied
+
+// doesn't prevent destination from being GC'ed. not copied when parent is copied
+NSString * const kCOPrimitiveTypeReferencePath;
+
+
+// prevents destination from being GC'ed. ?
+// I had said "copied when parent is copied" but that doesn't really make sense;
+// since the link destination is likely in another persistent root, so the only
+// ways to copy would be:
+//  - modify the distant persistent root (not desirable)
+// or
+//  - copy the destination into the local persistent root
+//  (not desirable either)
+NSString * const kCOPrimitiveTypeHoldingPath;
+
+// FIXME: would there be a use for a 
+// local (current persistent root) reference 
+// which _is_ copied, but allows multiple parents
+// to reference the dest unlike kCOPrimitiveTypeEmbeddedItem?
+
 NSString * const kCOPrimitiveTypeEmbeddedItem; // only for objects in the same persistent root.
  											 	 // within a persistent root, we will enforce that the embedded object has
 												 // only one parent;
