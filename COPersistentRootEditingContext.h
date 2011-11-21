@@ -124,6 +124,12 @@
 /* @taskunit persistent roots (TODO: move to class?) */
 
 - (ETUUID *) newEmpytPersistentRoot;
-
+- (NSArray *) branchesOfPersistentRoot: (ETUUID *)aRoot;
+/*
+- setRootToOneOfItsBranches
+- setRootToRemoteBranchOrRoot
+- setRootToSpecificVersion
+...
+*/
 
 @end
