@@ -26,7 +26,7 @@
 	NSDictionary *baseUUIDsAndItems = [store UUIDsAndStoreItemsForCommit: baseCommit];
 	
 	NSSet *initialUUIDs = [NSSet setWithArray: [baseUUIDsAndItems allKeys]];
-	NSSet *insertedOrUpdatedUUIDs = [NSSet setWithArray: [insertedOrUpdatedUUIDs allKeys]];
+	NSSet *insertedOrUpdatedUUIDs = [NSSet setWithArray: [insertedOrUpdatedItems allKeys]];
 	
 	assert(![insertedOrUpdatedUUIDs intersectsSet: deletedItems]);
 	
