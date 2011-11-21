@@ -220,4 +220,14 @@
 	}
 }
 
+- (void) undoForPersistentRoot: (ETUUID*)aRoot
+{
+	
+}
+- (void) redoForPersistentRoot: (ETUUID*)aRoot
+{
+	
+}
+
+
 @end

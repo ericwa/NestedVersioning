@@ -123,7 +123,7 @@
 
 /* @taskunit persistent roots (TODO: move to class?) */
 
-- (ETUUID *) newEmpytPersistentRoot;
+- (ETUUID *) newPersistentRoot;
 - (NSArray *) branchesOfPersistentRoot: (ETUUID *)aRoot;
 /*
 - setRootToOneOfItsBranches
@@ -132,4 +132,6 @@
 ...
 */
 
+- (void) undoForPersistentRoot: (ETUUID*)aRoot;
+- (void) redoForPersistentRoot: (ETUUID*)aRoot;
 @end
