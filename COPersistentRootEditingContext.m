@@ -137,6 +137,9 @@
 
 - (void) insertItem: (COStoreItem *)anItem
 {
+	// FIXME: see comment in -copyEmbeddedObject:fromContext: about
+	// kCOPrimitiveTypeEmbeddedItem enforcement before changing.
+	
 	ETUUID *uuid = [anItem UUID];
 	if ([deletedItems containsObject: uuid])
 	{
