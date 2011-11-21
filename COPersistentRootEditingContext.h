@@ -2,6 +2,8 @@
 #import "COPath.h"
 #import "COStoreController.h"
 #import "COStoreItem.h"
+#import "COStore.h"
+
 /**
  * an object context handles the process of committing changes.
  *
@@ -16,6 +18,7 @@
 @interface COPersistentRootEditingContext : NSObject
 {
 	COStoreController *sc;
+	COStore *store;
 	
 	COPath *path;
 	
