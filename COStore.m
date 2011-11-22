@@ -198,4 +198,22 @@
 }
 
 
+- (COStoreItem *) storeItemForEmbeddedObject: (ETUUID*)embeddedObject
+									inCommit: (ETUUID*)aCommitUUID
+{
+	NILARG_EXCEPTION_TEST(embeddedObject);
+	NILARG_EXCEPTION_TEST(aCommitUUID);
+	
+	NSDictionary *dict = [self UUIDsAndStoreItemsForCommit: aCommitUUID];
+	COStoreItem *item = [dict objectForKey: embeddedObject];
+	
+	if (item == nil)
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"%@ not found in commit %@", embeddedObject, aCommitUUID];
+	}
+	
+	return item;
+}
+
 @end

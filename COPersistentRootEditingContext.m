@@ -338,23 +338,6 @@
 										absolutePathOut: &unused];
 }
 
-- (id) storeItemForEmbeddedObject: (ETUUID*)embeddedObject
-						 inCommit: (ETUUID*)aCommitUUID
-{
-	NILARG_EXCEPTION_TEST(embeddedObject);
-	NILARG_EXCEPTION_TEST(aCommitUUID);
-	
-	NSDictionary *dict = [store UUIDsAndPlistsForCommit: aCommitUUID];
-	id plist = [dict objectForKey: embeddedObject];
-	
-	if (plist == nil)
-	{
-		[NSException raise: NSInvalidArgumentException
-					format: @"%@ not found in commit %@", embeddedObject, aCommitUUID];
-	}
-	
-	return plist;
-}
 
 - (id) plistForEmbeddedObject: (ETUUID*)embeddedObject
 					   atPath: (COPath*)aPath

@@ -255,12 +255,6 @@
 - (ETUUID*) currentVersionForPersistentRootAtPath: (COPath*)path;
 
 /**
- * simple wrapper around -[COStore UUIDsAndPlistsForCommit:]
- */
-- (id) storeItemForEmbeddedObject: (ETUUID*)embeddedObject
-						 inCommit: (ETUUID*)aCommitUUID;
-
-/**
  * simple wrapper around -currentVersionForPersistentRootAtPath:
  * and -plistForEmbeddedObject:inCommit:
  */
