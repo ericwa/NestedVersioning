@@ -16,6 +16,7 @@
 		66E46D48146A3D490042123E /* TestDeletion.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E46D47146A3D490042123E /* TestDeletion.m */; };
 		66E552B5146B7799008FDFAF /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E552B4146B7799008FDFAF /* libcrypto.dylib */; };
 		66E59CCA1465F38500E16AD5 /* COPersistentRootDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E59CC91465F38400E16AD5 /* COPersistentRootDiff.m */; };
+		66E5CABC147B4E42002DE8FD /* TestPhotoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E5CABB147B4E42002DE8FD /* TestPhotoManager.m */; };
 		66E877571455F0CB006CBE7E /* COStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E877561455F0CB006CBE7E /* COStore.m */; };
 		66E8776B1455FE67006CBE7E /* ETUUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E8776A1455FE67006CBE7E /* ETUUID.m */; };
 		66EADD6514732AEE003181FC /* TestUndo.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EADD6414732AEE003181FC /* TestUndo.m */; };
@@ -67,6 +68,7 @@
 		66E552B4146B7799008FDFAF /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = usr/lib/libcrypto.dylib; sourceTree = SDKROOT; };
 		66E59CC81465F38400E16AD5 /* COPersistentRootDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPersistentRootDiff.h; sourceTree = "<group>"; };
 		66E59CC91465F38400E16AD5 /* COPersistentRootDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COPersistentRootDiff.m; sourceTree = "<group>"; };
+		66E5CABB147B4E42002DE8FD /* TestPhotoManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestPhotoManager.m; sourceTree = "<group>"; };
 		66E877551455F0CB006CBE7E /* COStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COStore.h; sourceTree = "<group>"; };
 		66E877561455F0CB006CBE7E /* COStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COStore.m; sourceTree = "<group>"; };
 		66E877691455FE5B006CBE7E /* ETUUID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETUUID.h; sourceTree = "<group>"; };
@@ -155,6 +157,7 @@
 				6628FBA8142FA7840072767A /* TestUtilities.m */,
 				66EE5D491463AD67008AA95B /* TestBranchesAndCopies.m */,
 				66E0189B146455C8000EB1E0 /* TestPhotoMontage.m */,
+				66E5CABB147B4E42002DE8FD /* TestPhotoManager.m */,
 				66E0189E146468F6000EB1E0 /* TestBLOB.m */,
 				66E46D47146A3D490042123E /* TestDeletion.m */,
 				66EADD6414732AEE003181FC /* TestUndo.m */,
@@ -239,6 +242,7 @@
 				66E46D48146A3D490042123E /* TestDeletion.m in Sources */,
 				66EADD6514732AEE003181FC /* TestUndo.m in Sources */,
 				66EADD69147345B9003181FC /* COStoreItem.m in Sources */,
+				66E5CABC147B4E42002DE8FD /* TestPhotoManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
