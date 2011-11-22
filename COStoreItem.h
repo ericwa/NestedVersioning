@@ -22,31 +22,17 @@ NSString * const kCOPrimitiveTypeCommitUUID; // just a version uuid. prevents ve
 // this division of 3 reference types was borrowed from WinFS...
 
 
-// doesn't prevent destination from being GC'ed. not copied when parent is copied
-NSString * const kCOPrimitiveTypeReferencePath;
+// doesn't prevent destination from being GC'ed.
+// not copied when parent is copied.
+// used for:
+//   - link from document to tag objects in same or different persistent root
+//   - link from photo album to photos in same or different persistent root
+NSString * const kCOPrimitiveTypePath;
 
-
-// prevents destination from being GC'ed. ?
-// I had said "copied when parent is copied" but that doesn't really make sense;
-// since the link destination is likely in another persistent root, so the only
-// ways to copy would be:
-//  - modify the distant persistent root (not desirable)
-// or
-//  - copy the destination into the local persistent root
-//  (not desirable either)
-//
-// NOTE: the lifetime of an object must be determined only by the persistent
-// root it is in.
-NSString * const kCOPrimitiveTypeHoldingPath;
-
-// FIXME: would there be a use for a 
-// local (current persistent root) reference 
-// which _is_ copied, but allows multiple parents
-// to reference the dest unlike kCOPrimitiveTypeEmbeddedItem?
-
-NSString * const kCOPrimitiveTypeEmbeddedItem; // only for objects in the same persistent root.
- 											 	 // within a persistent root, we will enforce that the embedded object has
-												 // only one parent;
+// only for objects in the same persistent root.
+// within a persistent root, we will enforce that the embedded object has
+// only one parent;
+NSString * const kCOPrimitiveTypeEmbeddedItem; 
 
 // if a type is a container type, it must have these two values set to either YES or NO
 // to specify the type of container.
@@ -55,14 +41,17 @@ NSString * const kCOPrimitiveTypeEmbeddedItem; // only for objects in the same p
 // not sure if it would make sense to allow setting user-defined attributes/extensions
 // to types insteaad of hardcoding these
 
+// NOTE: a container of kCOPrimitiveTypeEmbeddedItem can not have kCOContainerAllowsDuplicates
+
 NSString * const kCOContainerOrdered;
 NSString * const kCOContainerAllowsDuplicates;
 
 
 // Convenience type constructors
 
-NSDictionary *COConvenienceTypeUnorderedHoldingPaths();
-NSDictionary *COConvenienceTypeUnorderedEmbeddedItem();
+NSDictionary *COBagContainerType(NSString *aPrimitiveType); // unordered, duplicates allowed. aka multiset. (NSCountedSet)
+NSDictionary *COArrayContainerType(NSString *aPrimitiveType); // ordered, duplicates allowed. (NSArray)
+NSDictionary *COSetContainerType(NSString *aPrimitiveType); // unordered, no duplicates. (NSSet)
 
 NSDictionary *COPrimitiveType(NSString *aPrimitiveType);
 

@@ -113,7 +113,7 @@ static void testStoreItem()
 	
 	[i1 setValue: S(p1)
 	forAttribute: @"contents"
-			type: COConvenienceTypeUnorderedHoldingPaths()];
+			type: COSetContainerType(kCOPrimitiveTypePath)];
 	
 	NSLog(@"%@", [i1 plist]);
 	

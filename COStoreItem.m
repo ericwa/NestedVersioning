@@ -14,26 +14,35 @@ NSString * const kCOPrimitiveTypeFullTextIndexableString = @"kCOPrimitiveTypeFul
 NSString * const kCOPrimitiveTypeBlob = @"kCOPrimitiveTypeBlob";
 NSString * const kCOPrimitiveTypeCommitUUID = @"kCOPrimitiveTypeCommitUUID";
 NSString * const kCOPrimitiveTypeEmbeddedItem = @"kCOPrimitiveTypeEmbeddedItem";
-NSString * const kCOPrimitiveTypeHoldingPath = @"kCOPrimitiveTypeHoldingPath";
-NSString * const kCOPrimitiveTypeReferencePath = @"kCOPrimitiveTypeReferencePath";
+NSString * const kCOPrimitiveTypePath = @"kCOPrimitiveTypePath";
 
 NSString * const kCOContainerOrdered = @"kCOContainerOrdered";
 NSString * const kCOContainerAllowsDuplicates = @"kCOContainerAllowsDuplicates";
 
-// Convenience types
+// Convenience type constructors
 
-NSDictionary *COConvenienceTypeUnorderedHoldingPaths()
+NSDictionary *COBagContainerType(NSString *aPrimitiveType)
 {
+	assert(![kCOPrimitiveTypeEmbeddedItem isEqual: aPrimitiveType]);
+	
 	return D(kCOContainerTypeKind, kCOTypeKind,
-			kCOPrimitiveTypeHoldingPath, kCOPrimitiveType,
-														[NSNumber numberWithBool: NO], kCOContainerOrdered,
-														[NSNumber numberWithBool: NO], kCOContainerAllowsDuplicates);
+			 aPrimitiveType, kCOPrimitiveType,
+			 [NSNumber numberWithBool: NO], kCOContainerOrdered,
+			 [NSNumber numberWithBool: YES], kCOContainerAllowsDuplicates);
 }
-
-NSDictionary *COConvenienceTypeUnorderedEmbeddedItem()
+NSDictionary *COArrayContainerType(NSString *aPrimitiveType)
+{
+	assert(![kCOPrimitiveTypeEmbeddedItem isEqual: aPrimitiveType]);
+	
+	return D(kCOContainerTypeKind, kCOTypeKind,
+			 aPrimitiveType, kCOPrimitiveType,
+			 [NSNumber numberWithBool: YES], kCOContainerOrdered,
+			 [NSNumber numberWithBool: YES], kCOContainerAllowsDuplicates);
+}
+NSDictionary *COSetContainerType(NSString *aPrimitiveType)
 {
 	return D(kCOContainerTypeKind, kCOTypeKind,
-			 kCOPrimitiveTypeEmbeddedItem, kCOPrimitiveType,
+			 aPrimitiveType, kCOPrimitiveType,
 			 [NSNumber numberWithBool: NO], kCOContainerOrdered,
 			 [NSNumber numberWithBool: NO], kCOContainerAllowsDuplicates);
 }
@@ -182,8 +191,7 @@ static id exportPrimitiveToPlist(id aValue, NSDictionary *aType)
 	
 	if ([primitiveType isEqualToString: kCOPrimitiveTypeCommitUUID] ||
 		[primitiveType isEqualToString: kCOPrimitiveTypeEmbeddedItem] ||
-		[primitiveType isEqualToString: kCOPrimitiveTypeHoldingPath] ||
-		[primitiveType isEqualToString: kCOPrimitiveTypeReferencePath])
+		[primitiveType isEqualToString: kCOPrimitiveTypePath])
 	{
 		return [aValue stringValue];
 	}
@@ -199,8 +207,7 @@ static id importPrimitiveFromPlist(id aValue, NSDictionary *aType)
 	{
 		return [ETUUID UUIDWithString: aValue];
 	}
-	else if ([primitiveType isEqualToString: kCOPrimitiveTypeHoldingPath] ||
-			 [primitiveType isEqualToString: kCOPrimitiveTypeReferencePath])
+	else if ([primitiveType isEqualToString: kCOPrimitiveTypePath])
 	{
 		return [COPath pathWithString: aValue];
 	}
