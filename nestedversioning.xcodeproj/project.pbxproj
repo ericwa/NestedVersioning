@@ -24,6 +24,7 @@
 		66EE5D36146355A6008AA95B /* COPersistentRootEditingContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EE5D35146355A6008AA95B /* COPersistentRootEditingContext.m */; };
 		66EE5D3A14637418008AA95B /* COPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EE5D3914637418008AA95B /* COPath.m */; };
 		66EE5D4A1463AD68008AA95B /* TestBranchesAndCopies.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EE5D491463AD67008AA95B /* TestBranchesAndCopies.m */; };
+		66F4E316147C59F0004FC1BA /* TestTagging.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F4E315147C59F0004FC1BA /* TestTagging.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -82,6 +83,7 @@
 		66EE5D3814637418008AA95B /* COPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPath.h; sourceTree = "<group>"; };
 		66EE5D3914637418008AA95B /* COPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COPath.m; sourceTree = "<group>"; };
 		66EE5D491463AD67008AA95B /* TestBranchesAndCopies.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestBranchesAndCopies.m; sourceTree = "<group>"; };
+		66F4E315147C59F0004FC1BA /* TestTagging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestTagging.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,6 +163,7 @@
 				66E0189E146468F6000EB1E0 /* TestBLOB.m */,
 				66E46D47146A3D490042123E /* TestDeletion.m */,
 				66EADD6414732AEE003181FC /* TestUndo.m */,
+				66F4E315147C59F0004FC1BA /* TestTagging.m */,
 			);
 			path = OldTests;
 			sourceTree = "<group>";
@@ -243,6 +246,7 @@
 				66EADD6514732AEE003181FC /* TestUndo.m in Sources */,
 				66EADD69147345B9003181FC /* COStoreItem.m in Sources */,
 				66E5CABC147B4E42002DE8FD /* TestPhotoManager.m in Sources */,
+				66F4E316147C59F0004FC1BA /* TestTagging.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
