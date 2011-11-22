@@ -13,7 +13,6 @@
 		66E0189C146455C8000EB1E0 /* TestPhotoMontage.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E0189B146455C8000EB1E0 /* TestPhotoMontage.m */; };
 		66E0189F146468F6000EB1E0 /* TestBLOB.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E0189E146468F6000EB1E0 /* TestBLOB.m */; };
 		66E22EC91421D47100C00A98 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E22EC81421D47100C00A98 /* Foundation.framework */; };
-		66E313B1146857FF00B5E109 /* COStoreController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E313B0146857FF00B5E109 /* COStoreController.m */; };
 		66E46D48146A3D490042123E /* TestDeletion.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E46D47146A3D490042123E /* TestDeletion.m */; };
 		66E552B5146B7799008FDFAF /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E552B4146B7799008FDFAF /* libcrypto.dylib */; };
 		66E59CCA1465F38500E16AD5 /* COPersistentRootDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E59CC91465F38400E16AD5 /* COPersistentRootDiff.m */; };
@@ -64,8 +63,6 @@
 		66E22EC61421D47100C00A98 /* nestedversioning */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = nestedversioning; sourceTree = BUILT_PRODUCTS_DIR; };
 		66E22EC81421D47100C00A98 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		66E2A3031430569C00487419 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
-		66E313AF146857FF00B5E109 /* COStoreController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COStoreController.h; sourceTree = "<group>"; };
-		66E313B0146857FF00B5E109 /* COStoreController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COStoreController.m; sourceTree = "<group>"; };
 		66E46D47146A3D490042123E /* TestDeletion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestDeletion.m; sourceTree = "<group>"; };
 		66E552B4146B7799008FDFAF /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = usr/lib/libcrypto.dylib; sourceTree = SDKROOT; };
 		66E59CC81465F38400E16AD5 /* COPersistentRootDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPersistentRootDiff.h; sourceTree = "<group>"; };
@@ -106,8 +103,6 @@
 				66EE5D37146358F1008AA95B /* co5 model.rtf */,
 				66E2A3031430569C00487419 /* TODO */,
 				66DFAEBF142A726100623060 /* main.m */,
-				66EE5D34146355A6008AA95B /* COPersistentRootEditingContext.h */,
-				66EE5D35146355A6008AA95B /* COPersistentRootEditingContext.m */,
 				66E59CC81465F38400E16AD5 /* COPersistentRootDiff.h */,
 				66E59CC91465F38400E16AD5 /* COPersistentRootDiff.m */,
 				66EE5D3814637418008AA95B /* COPath.h */,
@@ -170,10 +165,10 @@
 		66E2A305143057A100487419 /* Store */ = {
 			isa = PBXGroup;
 			children = (
+				66EE5D34146355A6008AA95B /* COPersistentRootEditingContext.h */,
+				66EE5D35146355A6008AA95B /* COPersistentRootEditingContext.m */,
 				66E877551455F0CB006CBE7E /* COStore.h */,
 				66E877561455F0CB006CBE7E /* COStore.m */,
-				66E313AF146857FF00B5E109 /* COStoreController.h */,
-				66E313B0146857FF00B5E109 /* COStoreController.m */,
 				66EADD67147345B9003181FC /* COStoreItem.h */,
 				66EADD68147345B9003181FC /* COStoreItem.m */,
 			);
@@ -241,7 +236,6 @@
 				66E0189C146455C8000EB1E0 /* TestPhotoMontage.m in Sources */,
 				66E0189F146468F6000EB1E0 /* TestBLOB.m in Sources */,
 				66E59CCA1465F38500E16AD5 /* COPersistentRootDiff.m in Sources */,
-				66E313B1146857FF00B5E109 /* COStoreController.m in Sources */,
 				66E46D48146A3D490042123E /* TestDeletion.m in Sources */,
 				66EADD6514732AEE003181FC /* TestUndo.m in Sources */,
 				66EADD69147345B9003181FC /* COStoreItem.m in Sources */,

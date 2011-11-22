@@ -2,8 +2,8 @@
 #import "EWTest.h"
 #import "COStore.h"
 #import "COPath.h"
-#import "COStoreController.h"
 #import "COStoreItem.h"
+#import "COPersistentRootEditingContext.h"
 #import "Common.h"
 
 #define STOREPATH [@"~/om5teststore" stringByExpandingTildeInPath]
@@ -71,6 +71,7 @@ static void testPath()
 	EWTestEqual(path, [COPath pathWithString: pathStr]);
 }
 
+#if 0
 static void testStoreController()
 {
 	COStore *store = setupStore();
@@ -99,6 +100,7 @@ forPersistentRootAtPath: [COPath path]
 
 	*/
 }
+#endif
 
 static void testStoreItem()
 {
