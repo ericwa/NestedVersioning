@@ -34,6 +34,9 @@ NSString * const kCOPrimitiveTypeReferencePath;
 // or
 //  - copy the destination into the local persistent root
 //  (not desirable either)
+//
+// NOTE: the lifetime of an object must be determined only by the persistent
+// root it is in.
 NSString * const kCOPrimitiveTypeHoldingPath;
 
 // FIXME: would there be a use for a 

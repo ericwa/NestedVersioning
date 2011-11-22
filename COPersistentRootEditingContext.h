@@ -155,6 +155,7 @@
    after the insertion, and fixes up any inconsistencies? 
  */
 
+// FIXME: how do we handle delete?
 - (void) insertItem: (COStoreItem *)anItem;
 - (void) updateItem: (COStoreItem *)anEditedItem;
 
