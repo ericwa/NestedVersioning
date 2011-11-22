@@ -26,7 +26,7 @@ void test()
 	 -contained photos can be in multiple albums.
 	 */
 	
-	// library <<persistent root>>
+	// library1 <<persistent root>>
 	//  |
 	//  |--folder1
 	//  |   |
@@ -36,7 +36,9 @@ void test()
 	//  |   |
 	//  |   \-album1
 	//  |       |
-	//  |       \-link to photo1
+	//  |       |-link to photo1
+	//  |       |
+	//  |       \-link to library2/photo4 // cross-persistent-root link
 	//  | 
 	//   \-project2
 	//      |
@@ -49,7 +51,24 @@ void test()
 	//          |-link to photo1
 	//          |
 	//          \-link to photo2
-	
+	//
+	// library2 <<persistent root>>
+	//  |
+	//  \--project3
+	//      |
+	//      |-photo4 <<persistent root>> 
+	//      |
+	//      \-album1
+	//          |
+	//          |-link to photo4
+	//          |
+	//          |-link to library1/photo1  // cross-persistent-root link
+	//          |
+	//          |-link to photo3
+	//          |
+	//          |-link to photo2
+	//          |
+	//          \-link to photo4 // duplicates make sense in photo albums if you want to return to a photo
 	
 }
 
