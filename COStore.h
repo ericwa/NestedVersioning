@@ -81,7 +81,28 @@
  */
 
 /**
- * may return nil on first use
+ * may return nil on first use.
+ * 
+ * You can use the following algorithm to GC inaccessible commits:
+ *
+ * void markVersion(aVersion) {
+ *   if alreadyMarked(aVersion) {
+ *     return;
+ *   }
+ *   foreach parent of aVersion {
+ *     markVersion(parent);
+ *   }
+ *   foreach embeddedObject in aVersion {
+ *     foreach attribute of embeddedObject {
+ *       if attribute is a version reference {
+ *         markVersion(referenced version);
+ *       }
+ *     }
+ *   }
+ * }
+ * markVersion(rootVersion);
+ *
+ * -- now all unmarked versions can be permanently erased from disk.
  */
 - (ETUUID *) rootVersion;
 - (void) setRootVersion: (ETUUID*)version;
