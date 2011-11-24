@@ -149,21 +149,12 @@
 - (NSSet *) allEmbeddedObjectUUIDsForUUID: (ETUUID*) aUUID;
 - (NSSet *) allEmbeddedObjectUUIDsForUUIDInclusive: (ETUUID*) aUUID;
 
-/** maybe we need: */
-//- (void) insertConsistentSetOfItems: (COSet <COStoreItem*>*) items;
-/* which checks for kCOPrimitiveTypeEmbeddedItem consistency 
-   after the insertion, and fixes up any inconsistencies? 
+/**
+ * After calling, consistency of kCOPrimitiveTypeEmbeddedObject references
+ * is checked/enforced. inconsistency results in an exception being thrown.
+ * Unreachable objects after calling this are deleted.
  */
-
-// FIXME: how do we handle delete?
-- (void) insertItem: (COStoreItem *)anItem;
-- (void) updateItem: (COStoreItem *)anEditedItem;
-
-// delete contained objects?
-// what about external "holding" references?
-
-- (void) deleteItemWithUUID: (ETUUID*)itemUUID;
-
+- (void) insertOrUpdateItems: (NSArray *)items;
 
 /**
  * copies an embedded object from another context.
@@ -183,7 +174,15 @@
  
  */
 - (void) copyEmbeddedObject: (ETUUID*) aUUID
-				fromContext: (COPersistentRootEditingContext*) aCtxt;
+				fromContext: (COPersistentRootEditingContext*) aCtxt
+					toIndex: (NSUInteger)i
+			   ofCollection: (NSString*)attribute
+				   inObject: (ETUUID*)anObject;
+
+- (void) copyEmbeddedObject: (ETUUID*) aUUID
+				fromContext: (COPersistentRootEditingContext*) aCtxt
+	  toUnorderedCollection: (NSString*)attribute
+				   inObject: (ETUUID*)anObject;
 
 
 /**
@@ -198,7 +197,14 @@
  * @return the uuid of the copy of aUUID
  *
  */
-- (ETUUID *) copyEmbeddedObject: (ETUUID *)aUUID;
+- (ETUUID *) copyEmbeddedObject: (ETUUID*) aUUID
+						toIndex: (NSUInteger)i
+				   ofCollection: (NSString*)attribute
+					   inObject: (ETUUID*)anObject;
+
+- (ETUUID *) copyEmbeddedObject: (ETUUID*) aUUID
+		  toUnorderedCollection: (NSString*)attribute
+					   inObject: (ETUUID*)anObject;
 
 
 /* @taskunit persistent roots (TODO: move to class?) */
