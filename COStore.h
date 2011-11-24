@@ -12,7 +12,7 @@
  
  comment on commit graph / merging:
  
- we should be able to employ exactly the same type of stragegies as
+ we should be able to employ exactly the same type of strategies as
  e.g. git. Being able to store multiple parents for a commit
  really is important.
  
@@ -46,13 +46,15 @@
 
 - (ETUUID*) addCommitWithParent: (ETUUID*)parent
                        metadata: (id)metadataPlist
-			 UUIDsAndStoreItems: (NSDictionary*)objects; // ETUUID : COStoreItem
+			 UUIDsAndStoreItems: (NSDictionary*)objects // ETUUID : COStoreItem
+					   rootItem: (ETUUID*)root;
 
 - (NSArray*) allCommitUUIDs;
 
 - (ETUUID *) parentForCommit: (ETUUID*)commit;
 - (id) metadataForCommit: (ETUUID*)commit;
 - (NSDictionary *) UUIDsAndStoreItemsForCommit: (ETUUID*)commit;
+- (ETUUID *) rootItemForCommit: (ETUUID*)commit;
 
 - (COStoreItem *) storeItemForEmbeddedObject: (ETUUID*)embeddedObject
 									inCommit: (ETUUID*)aCommitUUID;

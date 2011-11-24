@@ -59,8 +59,11 @@
 - (ETUUID*) addCommitWithParent: (ETUUID*)parent
                        metadata: (id)metadataPlist
 			 UUIDsAndStoreItems: (NSDictionary*)objects
+					   rootItem: (ETUUID*)root;
 {
 	NILARG_EXCEPTION_TEST(objects);
+	NILARG_EXCEPTION_TEST(root);
+	assert([objects objectForKey: root] != nil);
 	
 	ETUUID *commitUUID = [ETUUID UUID];
 	
@@ -79,6 +82,7 @@
 	
 	NSMutableDictionary *plist = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 							   [commitUUID stringValue], @"uuid",
+							   [root stringValue], @"root",
 							   objectsWithStringUUID, @"objects",
 							   nil];
 	
@@ -147,6 +151,10 @@
 		[plist setObject: [ETUUID UUIDWithString: [plist objectForKey: @"parent"]]
 				  forKey: @"parent"];
 	}
+	
+	[plist setObject: [ETUUID UUIDWithString: [plist objectForKey: @"root"]]
+			  forKey: @"root"];
+	
 	return plist;
 }
 - (ETUUID *) parentForCommit: (ETUUID*)commit
@@ -160,6 +168,10 @@
 - (NSDictionary *) UUIDsAndStoreItemsForCommit: (ETUUID*)commit
 {
 	return [[self _plistForCommit: commit] objectForKey: @"objects"];	
+}
+- (ETUUID *) rootItemForCommit: (ETUUID*)commit
+{
+	return [[self _plistForCommit: commit] objectForKey: @"root"];	
 }
 
 - (void) deleteCommitsWithUUIDs: (NSArray*)uuids

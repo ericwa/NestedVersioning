@@ -29,13 +29,15 @@ static void testStore()
 	
 	ETUUID *uuid = [store addCommitWithParent: nil
 									 metadata: md
-							   UUIDsAndStoreItems: uuidsanditems];
+						   UUIDsAndStoreItems: uuidsanditems
+									 rootItem: [i1 UUID]];
 	
 	EWTestTrue(uuid != nil);
 	EWTestEqual([NSArray arrayWithObject: uuid], [store allCommitUUIDs]);
 	EWTestEqual(nil, [store parentForCommit: uuid]);
 	EWTestEqual(md, [store metadataForCommit: uuid]);
 	EWTestEqual(uuidsanditems, [store UUIDsAndStoreItemsForCommit: uuid]);
+	EWTestEqual([i1 UUID], [store rootItemForCommit: uuid]);
 	
 	[store setRootVersion: uuid];
 	EWTestEqual(uuid, [store rootVersion]);
