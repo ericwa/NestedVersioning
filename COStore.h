@@ -63,6 +63,8 @@
 
 /** @taskunit history cleaning */
 
+// ALL OF THESE SHOULD LOCK THE DB!
+
 /**
  * permanently delete the specified commits.
  *
@@ -74,6 +76,24 @@
  * data not deleted now will be deleted later if it becomes garbage.
  */
 - (void) deleteCommitsWithUUIDs: (NSArray*)uuids;
+
+/**
+ * implementing this will be non-trivial...
+ * e.g., we can have a new branch created off of a very old commit which
+ * is scheduled for deletion.
+ *
+ * x = scheduled for deletion
+ * Y = not scheduled for deletion.
+ *
+ *          /---Y---...
+ *         /
+ * x---x---x---x---x---x---x---Y---...
+ *
+ * We should still be able to merge the two Y branches after the history cleaning.
+ * Not sure what the algorithm for deciding what to delete should be.
+ */
+- (void) deleteParentsOfCommit: (ETUUID*)aCommit
+				 olderThanDate: (NSDate*)aDate;
 
 /**
  * searches for unreachable commits and deletes them.
