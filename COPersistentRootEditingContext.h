@@ -96,21 +96,25 @@
 {
 	COStore *store;
 	
-	COPath *path;
+	//COPath *path;
 	
 	// we need to keep track of what the store state was when this editing cotext was created
 	
-	COPath *absPath;
+	//COPath *absPath;
 	/**
 	 * for each element of absPath, the corresponding version UUID
 	 */
-	NSArray *versionUUIDs;
+	//NSArray *versionUUIDs;
 	
 	/**
 	 * this is the commit we load our data from.
 	 * when we make a commit, the parent of the commit will be set to this
 	 */
 	ETUUID *baseCommit;
+	
+	// -- persistent state
+	
+	NSMutableDictionary *existingItems;
 	
 	// -- in-memory mutable state which is "overlaid" on the 
 	// persistent state represented by baseCommit
@@ -125,7 +129,15 @@
  * other contexts already open on those roots might have to do a merge
  * to apply their changes (either a trivial merge, most likely, or a conflict)
  */
-+ (COPersistentRootEditingContext *)contextForEditingPersistentRootAtPath: (COPath *)aPath;
+//+ (COPersistentRootEditingContext *)contextForEditingPersistentRootAtPath: (COPath *)aPath;
+
+- (id)initWithStore: (COStore *)aStore
+		 commitUUID: (ETUUID*)aCommit; // if nil, creates a commit with no parent
+
+/**
+ * creates an empty context which will commit to a new version with no parent
+ */
+- (id)initWithStore: (COStore *)aStore;
 
 - (void) commit;
 /**
@@ -135,9 +147,12 @@
 - (void) commitWithMergedVersionUUIDs: (NSArray*)anArray;
 
 
-// maybe useful to have an API here which makes COObject unnecessary
-
-
+/**
+ * this embedded object defines object lifetime of all objects inside this
+ * persistent root. i.e., for embedded objects to belong to this persistent
+ * root they must be a child (or grand-child, etc.) of rootEmbeddedObject
+ * through a kCOPrimitiveTypeEmbeddedObject relationship.
+ */
 - (ETUUID *)rootEmbeddedObject;
 
 /**
@@ -154,8 +169,8 @@
  * is checked/enforced. inconsistency results in an exception being thrown.
  * Unreachable objects after calling this are deleted.
  */
-- (void) insertOrUpdateItems: (NSArray *)items;
-
+- (void) insertOrUpdateItems: (NSArray *)items
+	   newRootEmbeddedObject: (ETUUID*)newRoot;
 /**
  * copies an embedded object from another context.
  

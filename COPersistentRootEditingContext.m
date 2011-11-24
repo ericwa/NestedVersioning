@@ -3,32 +3,49 @@
 
 @implementation COPersistentRootEditingContext
 
-- (id)init
+- (id)initWithStore: (COStore *)aStore
+		 commitUUID: (ETUUID*)aCommit
 {
+	NILARG_EXCEPTION_TEST(aStore);
+	
     SUPERINIT;
-    
+	
 	insertedOrUpdatedItems = [[NSMutableDictionary alloc] init];
 	deletedItems = [[NSMutableSet alloc] init];
 	
+	ASSIGN(baseCommit, aCommit); // may be nil
+	ASSIGN(store, aStore);
+	
+	if (baseCommit != nil)
+	{
+		ASSIGN(existingItems, [store UUIDsAndStoreItemsForCommit: baseCommit]);
+	}
+	
     return self;
+}
+
+- (id)initWithStore: (COStore *)aStore
+{
+	return [self initWithStore: aStore commitUUID: nil];
 }
 
 - (void)dealloc
 {
 	[insertedOrUpdatedItems release];
 	[deletedItems release];
+	[baseCommit release];
+	[store release];
+	[existingItems release];
 	[super dealloc];
 }
 
 
 - (void) commit
 {
-	NSDictionary *baseUUIDsAndItems = [store UUIDsAndStoreItemsForCommit: baseCommit];
-	
-	NSSet *initialUUIDs = [NSSet setWithArray: [baseUUIDsAndItems allKeys]];
+	NSSet *initialUUIDs = [NSSet setWithArray: [existingItems allKeys]];
 	NSSet *insertedOrUpdatedUUIDs = [NSSet setWithArray: [insertedOrUpdatedItems allKeys]];
 	
-	assert(![insertedOrUpdatedUUIDs intersectsSet: deletedItems]);
+	assert(NO == [insertedOrUpdatedUUIDs intersectsSet: deletedItems]);
 	
 	// calculate final uuid set
 	NSMutableSet *finalUUIDSet = [NSMutableSet set];
@@ -49,7 +66,7 @@
 			if (item == nil)
 			{
 				// the object wasn't updated, so just take the old value.
-				item = [baseUUIDsAndItems objectForKey: uuid]; 
+				item = [existingItems objectForKey: uuid]; 
 			}
 			
 			[uuidsanditems setObject: item
@@ -60,9 +77,13 @@
 	// FIXME
 	NSDictionary *md = [NSDictionary dictionaryWithObjectsAndKeys: @"today", @"date", nil];
 	
+	ETUUID *root = [self rootEmbeddedObject];
+	assert (root != nil);
+	
 	ETUUID *uuid = [store addCommitWithParent: baseCommit
 									 metadata: md
-						   UUIDsAndStoreItems: uuidsanditems];
+						   UUIDsAndStoreItems: uuidsanditems
+									 rootItem: root];
 	
 	assert(uuid != nil);
 	
@@ -71,23 +92,40 @@
 	ASSIGN(baseCommit, uuid);
 	[deletedItems removeAllObjects];
 	[insertedOrUpdatedItems removeAllObjects];
+	ASSIGN(existingItems, [store UUIDsAndStoreItemsForCommit: baseCommit]);
 }
 
+- (void) commitWithMergedVersionUUIDs: (NSArray*)anArray
+{
+	assert(0); // unimplemented
+}
+
+- (ETUUID *)rootEmbeddedObject
+{
+	return nil;
+}
 
 - (COStoreItem *)storeItemForUUID: (ETUUID*) aUUID
 {
 	assert([aUUID isKindOfClass: [ETUUID class]]);
 	
-	COStoreItem *result = [[[store storeItemForEmbeddedObject: aUUID inCommit: baseCommit] copy] autorelase];
-	COStoreItem *localResult = [[[insertedOrUpdatedItems objectForKey: aUUID] copy] autorelase];
+	COStoreItem *result = nil;
 	
-	assert(result != nil);
+	if (baseCommit != nil)
+	{
+		result = [[[store storeItemForEmbeddedObject: aUUID inCommit: baseCommit] copy] autorelase];
+		assert(result != nil);
+	}
+		
+	COStoreItem *localResult = [[[insertedOrUpdatedItems objectForKey: aUUID] copy] autorelease];
 	
 	if (localResult != nil)
 	{
 		NSLog(@"overriding %@ with %@", result, localResult);
 		result = localResult;
 	}
+	
+	assert(result != nil); // either the store, or in memory, must have the value
 	
 	return result;
 }
@@ -133,6 +171,12 @@
 	return [[self allEmbeddedObjectUUIDsForUUID: aUUID] setByAddingObject: aUUID];
 }
 
+
+- (void) insertOrUpdateItems: (NSArray *)items
+	   newRootEmbeddedObject: (ETUUID*)newRoot
+{
+	// FIXME:
+}
 
 
 - (void) insertItem: (COStoreItem *)anItem

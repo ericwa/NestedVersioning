@@ -73,6 +73,20 @@ static void testPath()
 	EWTestEqual(path, [COPath pathWithString: pathStr]);
 }
 
+static void testEditingContextEmbeddedObjects()
+{
+	COStore *store = setupStore();
+	COPersistentRootEditingContext *ctx = [[COPersistentRootEditingContext alloc] initWithStore: store];
+	
+	// at this point the context is empty.
+	// in particular, it has no rootEmbeddedObject, which means it contains no embedded objets.
+	// this means we can't commit.
+	
+	
+	
+}
+
+
 #if 0
 static void testStoreController()
 {
@@ -140,6 +154,7 @@ int main (int argc, const char * argv[])
 	testStore();
 	testPath();
 	//testStoreController();
+	testEditingContextEmbeddedObjects();
 	testStoreItem();
 	
     EWTestLog();
