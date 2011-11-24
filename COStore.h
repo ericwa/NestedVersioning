@@ -51,6 +51,7 @@
 
 - (NSArray*) allCommitUUIDs;
 
+// FIXME: Should change to "parents"
 - (ETUUID *) parentForCommit: (ETUUID*)commit;
 - (id) metadataForCommit: (ETUUID*)commit;
 - (NSDictionary *) UUIDsAndStoreItemsForCommit: (ETUUID*)commit;
@@ -74,7 +75,13 @@
  */
 - (void) deleteCommitsWithUUIDs: (NSArray*)uuids;
 
-
+/**
+ * searches for unreachable commits and deletes them.
+ * typical usage would be:
+ *  1. permanently delete all commits on a persistent root older than a certain date
+ *  2. run gc to delete any other commits which are no longer accessible as a result of (1.)
+ */
+- (void) gc;
 
 /**
  * This is a primitive/easy way of implementing the mutable part of the store
@@ -82,27 +89,6 @@
 
 /**
  * may return nil on first use.
- * 
- * You can use the following algorithm to GC inaccessible commits:
- *
- * void markVersion(aVersion) {
- *   if alreadyMarked(aVersion) {
- *     return;
- *   }
- *   foreach parent of aVersion {
- *     markVersion(parent);
- *   }
- *   foreach embeddedObject in aVersion {
- *     foreach attribute of embeddedObject {
- *       if attribute is a version reference {
- *         markVersion(referenced version);
- *       }
- *     }
- *   }
- * }
- * markVersion(rootVersion);
- *
- * -- now all unmarked versions can be permanently erased from disk.
  */
 - (ETUUID *) rootVersion;
 - (void) setRootVersion: (ETUUID*)version;

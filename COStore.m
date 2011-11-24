@@ -174,7 +174,7 @@
 	return [[self _plistForCommit: commit] objectForKey: @"root"];	
 }
 
-- (void) deleteCommitsWithUUIDs: (NSArray*)uuids
+- (void) deleteCommitsWithUUIDs: (NSSet*)uuids
 {
 	for (ETUUID *commit in uuids)
 	{
@@ -184,6 +184,61 @@
 							removeItemAtPath: commitFile error: NULL];
 		assert(removed);
 	}
+}
+
+- (void) _gcMarkVersion: (ETUUID *)aVersion recordInSet: (NSMutableSet *)markedVersions
+{
+	if ([markedVersions containsObject: aVersion])
+	{
+		return;
+	}
+	else
+	{
+		[markedVersions addObject: aVersion];
+	}
+
+	ETUUID *parent = [self parentForCommit: aVersion];
+	if (parent != nil)
+	{
+		[self _gcMarkVersion: parent recordInSet: markedVersions];
+	}
+	
+	NSDictionary *embeddedObjects = [self UUIDsAndStoreItemsForCommit: aVersion];
+	for (COStoreItem *item in [embeddedObjects allValues])
+	{
+		for (NSString *attribute in [item attributeNames])
+		{
+			NSString *primitiveType = [[item typeForAttribute: attribute] objectForKey: kCOPrimitiveType];
+			if ([primitiveType isEqualToString: kCOPrimitiveTypeCommitUUID])
+			{
+				NSString *kind = [[item typeForAttribute: attribute] objectForKey: kCOTypeKind];
+				if ([kind isEqualToString: kCOPrimitiveTypeKind])
+				{
+					[self _gcMarkVersion: [item valueForAttribute: attribute] recordInSet: markedVersions];
+				}
+				else if ([kind isEqualToString: kCOContainerTypeKind])
+				{
+					for (ETUUID *aValue in [item valueForAttribute: attribute])
+					{
+						[self _gcMarkVersion: aValue recordInSet: markedVersions];
+					}
+				}
+			}
+		}
+	}
+}
+
+- (void) gc
+{
+	NSMutableSet *markedVersions = [NSMutableSet set];
+	[self _gcMarkVersion: [self rootVersion] recordInSet: markedVersions];
+	
+	NSMutableSet *unreachableVersions = [NSMutableSet setWithArray: [self allCommitUUIDs]];
+	[unreachableVersions minusSet: markedVersions];
+	
+	NSLog(@"GC found the following unreachable commits: %@", unreachableVersions);
+	
+	[self deleteCommitsWithUUIDs: unreachableVersions];
 }
 
 - (ETUUID *) rootVersion
