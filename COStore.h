@@ -90,7 +90,13 @@
  * x---x---x---x---x---x---x---Y---...
  *
  * We should still be able to merge the two Y branches after the history cleaning.
- * Not sure what the algorithm for deciding what to delete should be.
+ * 
+ * a simple, conservative algorithim could be:
+ * - delete all ancestors of aCommit that are older than aDate, and all of their
+ *   children are older than aDate.
+ * - when a commit is deleted update the children pointers in its ancestors to point
+ *   to the _deleted commit's children_.
+ *    
  */
 - (void) deleteParentsOfCommit: (ETUUID*)aCommit
 				 olderThanDate: (NSDate*)aDate;
