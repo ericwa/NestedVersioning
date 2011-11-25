@@ -143,11 +143,13 @@
 }
 
 
-- (void) insertOrUpdateItems: (NSArray *)items
+- (void) insertOrUpdateItems: (NSSet *)items
 	   newRootEmbeddedObject: (ETUUID*)aRoot
 {
 	NILARG_EXCEPTION_TEST(items);
 	NILARG_EXCEPTION_TEST(aRoot);
+	
+	assert([items isKindOfClass: [NSSet class]]);
 	
 	ASSIGN(rootItem, aRoot);
 	

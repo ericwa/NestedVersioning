@@ -169,7 +169,7 @@
  * is checked/enforced. inconsistency results in an exception being thrown.
  * Unreachable objects after calling this are deleted.
  */
-- (void) insertOrUpdateItems: (NSArray *)items
+- (void) insertOrUpdateItems: (NSSet *)items
 	   newRootEmbeddedObject: (ETUUID*)aRoot;
 /**
  * copies an embedded object from another context.

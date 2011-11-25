@@ -100,7 +100,7 @@ static void testEditingContextEmbeddedObjects()
 	forAttribute: @"name"
 			type: COPrimitiveType(kCOPrimitiveTypeString)];
 	
-	[ctx insertOrUpdateItems: A(i1, i2)
+	[ctx insertOrUpdateItems: S(i1, i2)
 	   newRootEmbeddedObject: [i1 UUID]];
 	
 	EWTestEqual([i1 UUID], [ctx rootEmbeddedObject]);
