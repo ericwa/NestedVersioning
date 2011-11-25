@@ -113,7 +113,7 @@
 	
 	if (baseCommit != nil)
 	{
-		result = [[[store storeItemForEmbeddedObject: aUUID inCommit: baseCommit] copy] autorelase];
+		result = [[[store storeItemForEmbeddedObject: aUUID inCommit: baseCommit] copy] autorelease];
 		assert(result != nil);
 	}
 		
