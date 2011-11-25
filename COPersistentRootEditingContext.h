@@ -121,6 +121,7 @@
 	
 	NSMutableDictionary *insertedOrUpdatedItems;
 	NSMutableSet *deletedItems;
+	ETUUID *rootItem;
 }
 
 /**
@@ -170,7 +171,7 @@
  * Unreachable objects after calling this are deleted.
  */
 - (void) insertOrUpdateItems: (NSArray *)items
-	   newRootEmbeddedObject: (ETUUID*)newRoot;
+	   newRootEmbeddedObject: (ETUUID*)aRoot;
 /**
  * copies an embedded object from another context.
  

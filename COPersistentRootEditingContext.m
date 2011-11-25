@@ -19,6 +19,7 @@
 	if (baseCommit != nil)
 	{
 		ASSIGN(existingItems, [store UUIDsAndStoreItemsForCommit: baseCommit]);
+		ASSIGN(rootItem, [store rootItemForCommit: baseCommit]);
 	}
 	
     return self;
@@ -36,6 +37,7 @@
 	[baseCommit release];
 	[store release];
 	[existingItems release];
+	[rootItem release];
 	[super dealloc];
 }
 
@@ -77,13 +79,12 @@
 	// FIXME
 	NSDictionary *md = [NSDictionary dictionaryWithObjectsAndKeys: @"today", @"date", nil];
 	
-	ETUUID *root = [self rootEmbeddedObject];
-	assert (root != nil);
+	assert(rootItem != nil);
 	
 	ETUUID *uuid = [store addCommitWithParent: baseCommit
 									 metadata: md
 						   UUIDsAndStoreItems: uuidsanditems
-									 rootItem: root];
+									 rootItem: rootItem];
 	
 	assert(uuid != nil);
 	
@@ -102,7 +103,7 @@
 
 - (ETUUID *)rootEmbeddedObject
 {
-	return nil;
+	return rootItem;
 }
 
 - (COStoreItem *)storeItemForUUID: (ETUUID*) aUUID
@@ -155,54 +156,64 @@
 - (NSSet *) allEmbeddedObjectUUIDsForUUIDInclusive: (ETUUID*) aUUID
 {
 	NILARG_EXCEPTION_TEST(aUUID);
+	
 	return [[self allEmbeddedObjectUUIDsForUUID: aUUID] setByAddingObject: aUUID];
 }
 
 
 - (void) insertOrUpdateItems: (NSArray *)items
-	   newRootEmbeddedObject: (ETUUID*)newRoot
+	   newRootEmbeddedObject: (ETUUID*)aRoot
 {
-	// FIXME:
-}
-
-
-- (void) insertItem: (COStoreItem *)anItem
-{
-	// FIXME: see comment in -copyEmbeddedObject:fromContext: about
-	// kCOPrimitiveTypeEmbeddedItem enforcement before changing.
+	NILARG_EXCEPTION_TEST(items);
+	NILARG_EXCEPTION_TEST(aRoot);
 	
-	ETUUID *uuid = [anItem UUID];
-	if ([deletedItems containsObject: uuid])
+	ASSIGN(rootItem, aRoot);
+	
+	for (COStoreItem *item in items)
 	{
-		[deletedItems removeObject: uuid];
+		[insertedOrUpdatedItems setObject: item forKey: [item UUID]];
 	}
 	
-	assert([insertedOrUpdatedItems objectForKey: uuid] == nil);
-	assert([uuid isKindOfClass: [ETUUID class]]);
-	
-	[insertedOrUpdatedItems setObject: anItem forKey: uuid];
-}
-- (void) updateItem: (COStoreItem *)anEditedItem
-{
-	ETUUID *uuid = [anEditedItem UUID];
-	assert(![deletedItems containsObject: uuid]);
-	assert([insertedOrUpdatedItems objectForKey: uuid] != nil);
-	assert([uuid isKindOfClass: [ETUUID class]]);
-	
-	[insertedOrUpdatedItems setObject: anEditedItem forKey: uuid];
-}
-- (void) deleteItemWithUUID: (ETUUID*)itemUUID
-{
-	if (nil != [insertedOrUpdatedItems objectForKey: itemUUID])
-	{
-		[insertedOrUpdatedItems removeObjectForKey: itemUUID];
-	}
-	
-	assert([itemUUID isKindOfClass: [ETUUID class]]);
-	
-	[deletedItems addObject: itemUUID];
+	// FIXME: validation
 }
 
+- (void) copyEmbeddedObject: (ETUUID*) aUUID
+				fromContext: (COPersistentRootEditingContext*) aCtxt
+					toIndex: (NSUInteger)i
+			   ofCollection: (NSString*)attribute
+				   inObject: (ETUUID*)anObject
+{
+	assert(0);
+}
+
+- (void) copyEmbeddedObject: (ETUUID*) aUUID
+				fromContext: (COPersistentRootEditingContext*) aCtxt
+	  toUnorderedCollection: (NSString*)attribute
+				   inObject: (ETUUID*)anObject
+{
+	assert(0);
+}
+
+
+- (ETUUID *) copyEmbeddedObject: (ETUUID*) aUUID
+						toIndex: (NSUInteger)i
+				   ofCollection: (NSString*)attribute
+					   inObject: (ETUUID*)anObject
+{
+	assert(0);
+	return nil;
+}
+
+- (ETUUID *) copyEmbeddedObject: (ETUUID*) aUUID
+		  toUnorderedCollection: (NSString*)attribute
+					   inObject: (ETUUID*)anObject
+{
+	assert(0);
+	return nil;
+}
+
+
+/*
 
 - (void) copyEmbeddedObject: (ETUUID*) aUUID
 				fromContext: (COPersistentRootEditingContext*) aCtxt
@@ -250,6 +261,7 @@
 		[itemCopy release];
 	}
 }
+*/
 
 - (void) undoForPersistentRoot: (ETUUID*)aRoot
 {
