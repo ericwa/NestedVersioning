@@ -140,6 +140,9 @@ kCOContainerOrdered = YES, kCOContainerAllowsDuplicates = YES: NSArray
 - (void) addObject: (id)aValue
 	  forAttribute: (NSString*)anAttribute;
 
+// allows treating primitive or container, unordered or ordered as NSArray
+- (NSArray*) allObjectsForAttribute: (NSString*)attribute;
+
 /**
  * @returns a mutable copy
  */

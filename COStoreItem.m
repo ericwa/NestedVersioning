@@ -337,6 +337,32 @@ static id importFromPlist(id aValue, NSDictionary *aType)
 	[container release];
 }
 
+- (NSArray*) allObjectsForAttribute: (NSString*)attribute
+{
+	NSString *kind = [[self typeForAttribute: attribute] objectForKey: kCOTypeKind];
+	id value = [self valueForAttribute: attribute];
+	
+	if ([kind isEqualToString: kCOPrimitiveTypeKind])
+	{
+		return [NSArray arrayWithObject: value];
+	}
+	else if ([kind isEqualToString: kCOContainerTypeKind])
+	{
+		if ([value isKindOfClass: [NSSet class]])
+		{
+			return [(NSSet *)value allObjects];
+		}
+		else if ([value isKindOfClass: [NSArray class]])
+		{
+			return value;
+		}
+		else assert(0);
+	}
+	else assert(0);
+	
+	return nil;
+}
+
 
 - (id)copyWithZone:(NSZone *)zone
 {

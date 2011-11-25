@@ -211,17 +211,9 @@
 			NSString *primitiveType = [[item typeForAttribute: attribute] objectForKey: kCOPrimitiveType];
 			if ([primitiveType isEqualToString: kCOPrimitiveTypeCommitUUID])
 			{
-				NSString *kind = [[item typeForAttribute: attribute] objectForKey: kCOTypeKind];
-				if ([kind isEqualToString: kCOPrimitiveTypeKind])
+				for (ETUUID *aValue in [item allObjectsForAttribute: attribute])
 				{
-					[self _gcMarkVersion: [item valueForAttribute: attribute] recordInSet: markedVersions];
-				}
-				else if ([kind isEqualToString: kCOContainerTypeKind])
-				{
-					for (ETUUID *aValue in [item valueForAttribute: attribute])
-					{
-						[self _gcMarkVersion: aValue recordInSet: markedVersions];
-					}
+					[self _gcMarkVersion: aValue recordInSet: markedVersions];
 				}
 			}
 		}
