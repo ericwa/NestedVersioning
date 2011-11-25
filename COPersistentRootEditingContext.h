@@ -156,6 +156,16 @@
 - (ETUUID *)rootEmbeddedObject;
 
 /**
+ * Returns the union of all embedded objects in the base version
+ * underlying this context, and any uncommitted in-memory objects added
+ * to the context.
+ */
+- (NSSet *)allItemUUIDs;
+/**
+ * Same as above but returns COStoreItem instances
+ */
+- (NSSet *)allItems;
+/**
  * returns a mutable copy which can be freely edited
  * without affecting anything.
  */
@@ -163,6 +173,7 @@
 
 - (NSSet *) allEmbeddedObjectUUIDsForUUID: (ETUUID*) aUUID;
 - (NSSet *) allEmbeddedObjectUUIDsForUUIDInclusive: (ETUUID*) aUUID;
+- (NSSet *) allEmbeddedItemsForUUIDInclusive: (ETUUID*) aUUID;
 
 /**
  * After calling, consistency of kCOPrimitiveTypeEmbeddedObject references
@@ -171,6 +182,9 @@
  */
 - (void) insertOrUpdateItems: (NSSet *)items
 	   newRootEmbeddedObject: (ETUUID*)aRoot;
+
+- (void) insertOrUpdateItems: (NSSet *)items;
+
 /**
  * copies an embedded object from another context.
  

@@ -73,7 +73,7 @@
 	
 	ASSIGN(baseCommit, uuid);
 	[insertedOrUpdatedItems removeAllObjects];
-	ASSIGN(existingItems, [store UUIDsAndStoreItemsForCommit: baseCommit]);
+	ASSIGN(existingItems, [NSDictionary dictionaryWithDictionary: [store UUIDsAndStoreItemsForCommit: baseCommit]]);
 	
 	return uuid;
 }
@@ -86,6 +86,20 @@
 - (ETUUID *)rootEmbeddedObject
 {
 	return rootItem;
+}
+
+- (NSSet *)allItemUUIDs
+{
+	return [NSSet setWithArray: [[existingItems allKeys] arrayByAddingObjectsFromArray: [insertedOrUpdatedItems allKeys]]];
+}
+- (NSSet *)allItems
+{
+	NSMutableSet *result = [NSMutableSet set];
+	for (ETUUID *uuid in [self allItemUUIDs])
+	{
+		[result addObject: [self storeItemForUUID: uuid]];
+	}
+	return result;
 }
 
 - (COStoreItem *)storeItemForUUID: (ETUUID*) aUUID
@@ -142,6 +156,16 @@
 	return [[self allEmbeddedObjectUUIDsForUUID: aUUID] setByAddingObject: aUUID];
 }
 
+- (NSSet *) allEmbeddedItemsForUUIDInclusive: (ETUUID*) aUUID
+{
+	NSSet *uuids = [self allEmbeddedObjectUUIDsForUUIDInclusive: aUUID];
+	NSMutableSet *result = [NSMutableSet setWithCapacity: [uuids count]];
+	for (ETUUID *uuid in uuids)
+	{
+		[result addObject: [self storeItemForUUID: uuid]];
+	}
+	return result;
+}
 
 - (void) insertOrUpdateItems: (NSSet *)items
 	   newRootEmbeddedObject: (ETUUID*)aRoot
@@ -161,13 +185,46 @@
 	// FIXME: validation
 }
 
+- (void) insertOrUpdateItems: (NSSet *)items
+{
+	[self insertOrUpdateItems: items
+		newRootEmbeddedObject: rootItem];
+}
+
 - (void) copyEmbeddedObject: (ETUUID*) aUUID
 				fromContext: (COPersistentRootEditingContext*) aCtxt
 					toIndex: (NSUInteger)i
 			   ofCollection: (NSString*)attribute
 				   inObject: (ETUUID*)anObject
 {
-	assert(0);
+	NILARG_EXCEPTION_TEST(aUUID);
+	NILARG_EXCEPTION_TEST(aCtxt);
+	
+	COStoreItem *dest = [self storeItemForUUID: anObject];
+	
+	assert([[dest attributeNames] containsObject: attribute]);
+	assert([[[dest typeForAttribute: attribute] objectForKey: kCOTypeKind] isEqual: kCOContainerTypeKind]);
+	
+	// FIXME: THis should be a UUID->COStoreItem dictionary
+	// so we guarantee that the set doesnt' contain multiple items with the same UUID.
+	NSMutableSet *updatesAndInserts = [NSMutableSet set];
+	[updatesAndInserts unionSet: [aCtxt allEmbeddedItemsForUUIDInclusive: aUUID]];
+	
+	// Not strictly necessary
+	{		
+		NSMutableSet *objectsToBeOverwrittenUUIDS = [NSMutableSet setWithSet: [self allItemUUIDs]];
+		[objectsToBeOverwrittenUUIDS intersectSet: [aCtxt allEmbeddedObjectUUIDsForUUIDInclusive: aUUID]];
+		NSLog(@"Overwriting %@ in copy", objectsToBeOverwrittenUUIDS);
+	}
+	
+	// Insert the new UUID into the destination item.
+	NSMutableArray *array = [NSMutableArray arrayWithArray: [dest valueForAttribute: attribute]];
+	[array insertObject: aUUID atIndex: i];
+	[dest setValue:array forAttribute: attribute];
+	
+	[updatesAndInserts addObject: dest];
+	
+	[self insertOrUpdateItems: updatesAndInserts];
 }
 
 - (void) copyEmbeddedObject: (ETUUID*) aUUID

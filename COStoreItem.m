@@ -324,6 +324,11 @@ static id importFromPlist(id aValue, NSDictionary *aType)
 	return YES;
 }
 
+- (NSUInteger) hash
+{
+	return [uuid hash] ^ [types hash] ^ [values hash] ^ 9014972660509684524LL;
+}
+
 /** @taskunit convenience */
 
 - (void) addObject: (id)aValue
@@ -363,6 +368,13 @@ static id importFromPlist(id aValue, NSDictionary *aType)
 	return nil;
 }
 
+- (void) setValue: (id)aValue
+	 forAttribute: (NSString*)anAttribute
+{
+	[self setValue: aValue 
+	  forAttribute: anAttribute
+			  type: [self typeForAttribute: anAttribute]];
+}
 
 - (id)copyWithZone:(NSZone *)zone
 {
