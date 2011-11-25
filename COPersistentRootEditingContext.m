@@ -204,6 +204,7 @@
 	
 	assert([[dest attributeNames] containsObject: attribute]);
 	assert([[[dest typeForAttribute: attribute] objectForKey: kCOTypeKind] isEqual: kCOContainerTypeKind]);
+	assert([[[dest typeForAttribute: attribute] objectForKey: kCOPrimitiveType] isEqual: kCOPrimitiveTypeEmbeddedItem]);
 	
 	// FIXME: THis should be a UUID->COStoreItem dictionary
 	// so we guarantee that the set doesnt' contain multiple items with the same UUID.
