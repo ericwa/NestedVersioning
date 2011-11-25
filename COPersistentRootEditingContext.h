@@ -139,7 +139,7 @@
  */
 - (id)initWithStore: (COStore *)aStore;
 
-- (void) commit;
+- (ETUUID *) commit;
 /**
  * does a commit and records in the metadata
  * these commit UUIDs as being additional parents

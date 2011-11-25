@@ -40,7 +40,7 @@
 }
 
 
-- (void) commit
+- (ETUUID *) commit
 {
 	// calculate final uuid set
 	assert(rootItem != nil);
@@ -74,6 +74,8 @@
 	ASSIGN(baseCommit, uuid);
 	[insertedOrUpdatedItems removeAllObjects];
 	ASSIGN(existingItems, [store UUIDsAndStoreItemsForCommit: baseCommit]);
+	
+	return uuid;
 }
 
 - (void) commitWithMergedVersionUUIDs: (NSArray*)anArray

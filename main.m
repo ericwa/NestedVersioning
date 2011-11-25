@@ -83,6 +83,7 @@ static void testEditingContextEmbeddedObjects()
 	// this means we can't commit.
 	
 	EWTestTrue(nil == [ctx rootEmbeddedObject]);
+	EWTestTrue(nil == [store rootVersion]);
 	
 	COStoreItem *i1 = [COStoreItem item];
 	COStoreItem *i2 = [COStoreItem item];
@@ -105,6 +106,9 @@ static void testEditingContextEmbeddedObjects()
 	EWTestEqual([i1 UUID], [ctx rootEmbeddedObject]);
 	EWTestEqual(S([i1 UUID], [i2 UUID]),
 				[ctx allEmbeddedObjectUUIDsForUUIDInclusive: [i1 UUID]]);	
+	
+	ETUUID *firstVersion = [ctx commit];
+	EWTestTrue(firstVersion != nil);
 }
 
 
