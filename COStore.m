@@ -56,6 +56,8 @@
 	return url;
 }
 
+/** @taskunit commits */
+
 - (ETUUID*) addCommitWithParent: (ETUUID*)parent
                        metadata: (id)metadataPlist
 			 UUIDsAndStoreItems: (NSDictionary*)objects
@@ -173,6 +175,25 @@
 {
 	return [[self _plistForCommit: commit] objectForKey: @"root"];	
 }
+- (COStoreItem *) storeItemForEmbeddedObject: (ETUUID*)embeddedObject
+									inCommit: (ETUUID*)aCommitUUID
+{
+	NILARG_EXCEPTION_TEST(embeddedObject);
+	NILARG_EXCEPTION_TEST(aCommitUUID);
+	
+	NSDictionary *dict = [self UUIDsAndStoreItemsForCommit: aCommitUUID];
+	COStoreItem *item = [dict objectForKey: embeddedObject];
+	
+	if (item == nil)
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"%@ not found in commit %@", embeddedObject, aCommitUUID];
+	}
+	
+	return item;
+}
+
+/** @taskunit history cleaning */
 
 - (void) deleteCommitsWithUUIDs: (NSSet*)uuids
 {
@@ -184,6 +205,12 @@
 							removeItemAtPath: commitFile error: NULL];
 		assert(removed);
 	}
+}
+
+- (void) deleteParentsOfCommit: (ETUUID*)aCommit
+				 olderThanDate: (NSDate*)aDate
+{
+	assert(0); // unimplemented
 }
 
 - (void) _gcMarkVersion: (ETUUID *)aVersion recordInSet: (NSMutableSet *)markedVersions
@@ -254,25 +281,6 @@
 							atomically: YES
 							  encoding: NSUTF8StringEncoding
 								 error: NULL];
-}
-
-
-- (COStoreItem *) storeItemForEmbeddedObject: (ETUUID*)embeddedObject
-									inCommit: (ETUUID*)aCommitUUID
-{
-	NILARG_EXCEPTION_TEST(embeddedObject);
-	NILARG_EXCEPTION_TEST(aCommitUUID);
-	
-	NSDictionary *dict = [self UUIDsAndStoreItemsForCommit: aCommitUUID];
-	COStoreItem *item = [dict objectForKey: embeddedObject];
-	
-	if (item == nil)
-	{
-		[NSException raise: NSInvalidArgumentException
-					format: @"%@ not found in commit %@", embeddedObject, aCommitUUID];
-	}
-	
-	return item;
 }
 
 @end

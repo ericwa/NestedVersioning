@@ -75,7 +75,7 @@
  * depends on how much of the data in the given commits is reused.
  * data not deleted now will be deleted later if it becomes garbage.
  */
-- (void) deleteCommitsWithUUIDs: (NSArray*)uuids;
+- (void) deleteCommitsWithUUIDs: (NSSet*)uuids;
 
 /**
  * implementing this will be non-trivial...
