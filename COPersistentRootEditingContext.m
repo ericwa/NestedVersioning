@@ -141,24 +141,11 @@
 	{
 		NSDictionary *type = [item typeForAttribute: key];
 		if ([[type objectForKey: kCOPrimitiveType] isEqual: kCOPrimitiveTypeEmbeddedItem])
-		{
-			if ([[type objectForKey: kCOTypeKind] isEqual: kCOPrimitiveTypeKind])
+		{		
+			for (ETUUID *embedded in [item allObjectsForAttribute: key])
 			{
-				ETUUID *embedded = [item valueForAttribute: key];
 				[result addObject: embedded];
 				[result unionSet: [self allEmbeddedObjectUUIDsForUUID: embedded]];
-			}
-			else if ([[type objectForKey: kCOTypeKind] isEqual: kCOPrimitiveTypeKind])
-			{
-				for (ETUUID *embedded in [item valueForAttribute: key])
-				{
-					[result addObject: embedded];
-					[result unionSet: [self allEmbeddedObjectUUIDsForUUID: embedded]];
-				}
-			}
-			else
-			{
-				assert(0);
 			}
 		}
 	}
