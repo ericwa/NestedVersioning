@@ -120,7 +120,6 @@
 	// persistent state represented by baseCommit
 	
 	NSMutableDictionary *insertedOrUpdatedItems;
-	NSMutableSet *deletedItems;
 	ETUUID *rootItem;
 }
 

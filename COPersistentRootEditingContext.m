@@ -11,7 +11,6 @@
     SUPERINIT;
 	
 	insertedOrUpdatedItems = [[NSMutableDictionary alloc] init];
-	deletedItems = [[NSMutableSet alloc] init];
 	
 	ASSIGN(baseCommit, aCommit); // may be nil
 	ASSIGN(store, aStore);
@@ -33,7 +32,6 @@
 - (void)dealloc
 {
 	[insertedOrUpdatedItems release];
-	[deletedItems release];
 	[baseCommit release];
 	[store release];
 	[existingItems release];
@@ -44,32 +42,16 @@
 
 - (void) commit
 {
-	NSSet *initialUUIDs = [NSSet setWithArray: [existingItems allKeys]];
-	NSSet *insertedOrUpdatedUUIDs = [NSSet setWithArray: [insertedOrUpdatedItems allKeys]];
-	
-	assert(NO == [insertedOrUpdatedUUIDs intersectsSet: deletedItems]);
-	
 	// calculate final uuid set
-	NSMutableSet *finalUUIDSet = [NSMutableSet set];
-	{
-		[finalUUIDSet unionSet: initialUUIDs];
-		[finalUUIDSet unionSet: insertedOrUpdatedUUIDs];
-		[finalUUIDSet minusSet: deletedItems];
-	}
+	assert(rootItem != nil);
+	NSSet *finalUUIDSet = [self allEmbeddedObjectUUIDsForUUIDInclusive: rootItem];
 	
 	// set up the commit dictionary
 	NSMutableDictionary *uuidsanditems = [NSMutableDictionary dictionary];
 	{
 		for (ETUUID *uuid in finalUUIDSet)
 		{
-			COStoreItem *item;
-			
-			item = [insertedOrUpdatedItems objectForKey: uuid];
-			if (item == nil)
-			{
-				// the object wasn't updated, so just take the old value.
-				item = [existingItems objectForKey: uuid]; 
-			}
+			COStoreItem *item = [self storeItemForUUID: uuid];
 			
 			[uuidsanditems setObject: item
 							  forKey: uuid];
@@ -79,8 +61,7 @@
 	// FIXME
 	NSDictionary *md = [NSDictionary dictionaryWithObjectsAndKeys: @"today", @"date", nil];
 	
-	assert(rootItem != nil);
-	
+
 	ETUUID *uuid = [store addCommitWithParent: baseCommit
 									 metadata: md
 						   UUIDsAndStoreItems: uuidsanditems
@@ -91,7 +72,6 @@
 	// FIXME
 	
 	ASSIGN(baseCommit, uuid);
-	[deletedItems removeAllObjects];
 	[insertedOrUpdatedItems removeAllObjects];
 	ASSIGN(existingItems, [store UUIDsAndStoreItemsForCommit: baseCommit]);
 }
