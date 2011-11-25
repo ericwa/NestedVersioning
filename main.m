@@ -82,8 +82,29 @@ static void testEditingContextEmbeddedObjects()
 	// in particular, it has no rootEmbeddedObject, which means it contains no embedded objets.
 	// this means we can't commit.
 	
+	EWTestTrue(nil == [ctx rootEmbeddedObject]);
 	
+	COStoreItem *i1 = [COStoreItem item];
+	COStoreItem *i2 = [COStoreItem item];
 	
+	[i1 setValue: @"hello"
+	forAttribute: @"name"
+			type: COPrimitiveType(kCOPrimitiveTypeString)];
+	
+	[i1 setValue: S([i2 UUID])
+	forAttribute: @"contents"
+			type: COSetContainerType(kCOPrimitiveTypeEmbeddedItem)];
+	
+	[i2 setValue: @"world"
+	forAttribute: @"name"
+			type: COPrimitiveType(kCOPrimitiveTypeString)];
+	
+	[ctx insertOrUpdateItems: A(i1, i2)
+	   newRootEmbeddedObject: [i1 UUID]];
+	
+	EWTestEqual([i1 UUID], [ctx rootEmbeddedObject]);
+	EWTestEqual(S([i1 UUID], [i2 UUID]),
+				[ctx allEmbeddedObjectUUIDsForUUIDInclusive: [i1 UUID]]);	
 }
 
 
