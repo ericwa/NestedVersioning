@@ -185,6 +185,18 @@
 
 - (void) insertOrUpdateItems: (NSSet *)items;
 
+- (void) insertItemWithUUID: (ETUUID *)aUUID
+					  items: (NSSet *)items
+					atIndex: (NSUInteger)i
+			   ofCollection: (NSString*)attribute
+				   inObject: (ETUUID*)anObject;
+
+- (void) insertItemWithUUID: (ETUUID *)aUUID
+					  items: (NSSet *)items
+			   inCollection: (NSString*)attribute
+				   inObject: (ETUUID*)anObject;
+
+
 /**
  * copies an embedded object from another context.
  

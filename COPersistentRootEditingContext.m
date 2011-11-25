@@ -197,6 +197,8 @@
 			   ofCollection: (NSString*)attribute
 				   inObject: (ETUUID*)anObject
 {
+	// FIXME: see comments in header.. implementation not complete/correct
+	
 	NILARG_EXCEPTION_TEST(aUUID);
 	NILARG_EXCEPTION_TEST(aCtxt);
 	
