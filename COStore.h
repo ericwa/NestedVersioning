@@ -92,10 +92,13 @@
  * We should still be able to merge the two Y branches after the history cleaning.
  * 
  * a simple, conservative algorithim could be:
- * - delete all ancestors of aCommit that are older than aDate, and all of their
- *   children are older than aDate.
- * - when a commit is deleted update the children pointers in its ancestors to point
- *   to the _deleted commit's children_.
+ * - delete all ancestors C of aCommit that satisfy all of:
+ *     1. C is older than aDate
+ *     2. all children of C are older than aDate
+ *     3. C is not referenced explicitly by any embedded object in any commit
+ *
+ * - when a commit is deleted it should probably be left as a 'sentinel':
+ *   this avoids mutating the history graph.
  *    
  */
 - (void) deleteParentsOfCommit: (ETUUID*)aCommit
