@@ -88,6 +88,17 @@ unorderedCollectionName: (NSString *)collection
 	[array release];
 }
 
+- (BOOL) isEqual:(id)object
+{
+	if (![object isKindOfClass: [self class]])
+		return NO;
+	
+	COItemPathToOrderedContainer *other = (COItemPathToOrderedContainer *)object;
+	return ([uuid isEqual: other->uuid] && 
+			[attribute isEqual: other->attribute] &&
+			index == other->index);
+}
+
 @end
 
 
@@ -103,6 +114,16 @@ unorderedCollectionName: (NSString *)collection
 	[set addObject: aValue];
 	[aStoreItem setValue: set forAttribute: attribute];
 	[set release];
+}
+
+- (BOOL) isEqual:(id)object
+{
+	if (![object isKindOfClass: [self class]])
+		return NO;
+	
+	COItemPathToUnorderedContainer *other = (COItemPathToUnorderedContainer *)object;
+	return ([uuid isEqual: other->uuid] &&
+			[attribute isEqual: other->attribute]);
 }
 
 @end
