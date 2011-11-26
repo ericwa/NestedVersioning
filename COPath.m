@@ -23,6 +23,11 @@
 	return root;
 }
 
++ (COPath *) pathWithPathComponent: (ETUUID*) aUUID
+{
+	return [[COPath path] pathByAppendingPathComponent: aUUID];
+}
+
 - (COPath *) pathByAppendingPersistentRoot: (ETUUID *)aPersistentRoot
 {
 	NILARG_EXCEPTION_TEST(aPersistentRoot);

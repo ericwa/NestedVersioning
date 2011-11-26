@@ -18,6 +18,8 @@
 
 + (COPath *) pathWithString: (NSString*) pathString;
 
++ (COPath *) pathWithPathComponent: (ETUUID*) aUUID;
+
 /**
  * Appends "../" to a path
  */
