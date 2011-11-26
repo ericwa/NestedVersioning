@@ -111,6 +111,7 @@ unorderedCollectionName: (NSString *)collection
 	assert([[[aStoreItem typeForAttribute: attribute] objectForKey: kCOContainerOrdered] isEqual: [NSNumber numberWithBool: NO]]);
 	
 	NSMutableSet *set = [[aStoreItem valueForAttribute: attribute] mutableCopy]; // may be NSMutableSet subclass NSCountedSet
+	assert([set isKindOfClass: [NSMutableSet class]]);
 	[set addObject: aValue];
 	[aStoreItem setValue: set forAttribute: attribute];
 	[set release];
