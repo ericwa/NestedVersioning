@@ -1,9 +1,11 @@
 #import <Foundation/Foundation.h>
 #import "ETUUID.h"
+#import "COStoreItem.h"
 
-@interface COItemPath : NSObject
+@interface COItemPath : NSObject <NSCopying>
 {
-
+	ETUUID *uuid;
+	NSString *attribute;
 }
 
 + (COItemPath *) pathWithItemUUID: (ETUUID *)aUUID
@@ -13,6 +15,7 @@
 						arrayName: (NSString *)collection
 							index: (NSUInteger)index;
 
-
+- (void) insertValue: (id)aValue
+		 inStoreItem: (COStoreItem *)aStoreItem;
 
 @end
