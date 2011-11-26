@@ -2,7 +2,7 @@
 #import "COPath.h"
 #import "COStoreItem.h"
 #import "COStore.h"
-
+#import "COItemPath.h"
 
 /**
  * a store api one level higher than COStore..
@@ -273,14 +273,18 @@
 
 /* @taskunit persistent roots (TODO: move to class?) */
 
-- (ETUUID *) newPersistentRoot;
+- (ETUUID *) newPersistentRootAtItemPath: (COItemPath*)aPath;
+
 - (NSArray *) branchesOfPersistentRoot: (ETUUID *)aRoot;
-/*
-- setRootToOneOfItsBranches
-- setRootToRemoteBranchOrRoot
-- setRootToSpecificVersion
-...
-*/
+
+- (void) setPersistentRoot: (ETUUID*)aUUID
+   toTrackOneOfItsBranches: (ETUUID*)aBranch;
+
+- (void)        setBranch: (ETUUID*)aBranch
+toTrackRemoteBranchOrRoot: (COPath*)aPath;
+
+- (void) setBranch: (ETUUID*)aBranch
+	toTrackVersion: (ETUUID*)aVersion;
 
 - (void) undoForPersistentRoot: (ETUUID*)aRoot;
 - (void) redoForPersistentRoot: (ETUUID*)aRoot;
