@@ -307,11 +307,89 @@
 }
 */
 
-- (void) undoForPersistentRoot: (ETUUID*)aRoot
+/* @taskunit persistent roots (TODO: move to class?) */
+
+- (ETUUID *) newPersistentRootAtItemPath: (COItemPath*)aPath
+{
+	COStoreItem *branch = [COStoreItem item];
+	COStoreItem *root = [COStoreItem item];
+	
+	[root setValue: S([branch UUID])
+	  forAttribute: @"branches"
+			  type: COSetContainerType(kCOPrimitiveTypeEmbeddedItem)];
+	
+	[root setValue: [COPath pathWithPathComponent:[branch UUID]]
+	  forAttribute: @"currentBranch"
+			  type: COPrimitiveType(kCOPrimitiveTypePath)];
+	
+	// FIXME: insert
+	
+	return [root UUID];
+}
+
+- (NSSet *) branchesOfPersistentRoot: (ETUUID *)aRoot
+{
+	COStoreItem *root = [self storeItemForUUID: aRoot];
+	NSSet *set = [root valueForAttribute: @"branches"];
+	
+	assert([set isKindOfClass: [NSSet class]]);
+	assert(![set isKindOfClass: [NSCountedSet class]]);
+	
+	return set;
+}
+- (ETUUID *) currentBranchOfPersistentRoot: (ETUUID *)aRoot
+{
+	COStoreItem *root = [self storeItemForUUID: aRoot];
+	COPath *path = [root valueForAttribute: @"currentBranch"];
+	
+	assert([path isKindOfClass: [COPath class]]);
+	// FIXME: check it is a single-element path
+	
+	return [path lastPathComponent];	
+}
+- (void) setCurrentBranch: (ETUUID*)aBranch
+		forPersistentRoot: (ETUUID*)aRoot
+{
+	COStoreItem *root = [self storeItemForUUID: aRoot];
+	[root setValue: [COPath pathWithPathComponent: aBranch]
+	  forAttribute: @"currentBranch"
+			  type: COPrimitiveType(kCOPrimitiveTypePath)];
+	
+	// FIXME: insert
+}
+
+
+- (void) setTrackRemoteBranchOrRoot: (COPath*)aPath
+						  forBranch: (ETUUID*)aBranch
+{
+	COStoreItem *branch = [self storeItemForUUID: aBranch];
+	
+	[branch setValue: [COPath pathWithPathComponent: aBranch]
+	  forAttribute: @"tracking"
+			  type: COPrimitiveType(kCOPrimitiveTypePath)];
+	
+	// FIXME: insert
+	
+}
+
+- (void) setTrackVersion: (ETUUID*)aVersion
+			   forBranch: (ETUUID*)aBranch
+{
+	COStoreItem *branch = [self storeItemForUUID: aBranch];
+	
+	[branch setValue: aVersion
+	  forAttribute: @"tracking"
+			  type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];
+	
+	// FIXME: insert
+	
+}
+
+- (void) undoPersistentRoot: (ETUUID*)aRoot
 {
 	
 }
-- (void) redoForPersistentRoot: (ETUUID*)aRoot
+- (void) redoPersistentRoot: (ETUUID*)aRoot
 {
 	
 }

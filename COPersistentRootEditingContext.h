@@ -9,50 +9,7 @@
  * probably this will become the real COStore api once we switch to sqlite again
  
  
- detailed specification of persistent root plist object:
- 
- -note that a persistent root contains its branches.
- -copying a persistent root copies the branches, and should probably
- give the root and branches new uuid's.
- -note that you can refer to the branch directly without the parent root's uuid.
- 
- {
- "type" : "root"
- "name" : "the object's name"
- "uuid" : 0d7489b0-0a9d-11e1-be50-0800200c9a66
- 
- "tracking-type" : "owned-branch" or "remote-root" or "remote-branch" or "version"
- "tracking" : one of the following:
- a) the uuid of one of the branches we own,
- b) or a path to another persistent root,
- c) or a path to a branch owned by another persistent root,
- d) or a specific version.
- 
- "branches" : (
- {
- "type" : "branch"
- "uuid" : "8a099b84-09eb-4a3e-828d-9a897778e5e3"
- "owning-root-uuid" : 0d7489b0-0a9d-11e1-be50-0800200c9a66 // the uuid of the enclosing root
- "name" : "whatever you want to call it"
- "tracking" : version-uuid 
- "main-object" : embedded-object-uuid in the version we are tracking.
- this is the embedded object that the persistent root is "wrapping" - 
- this is the object you would export if you exported the current version, etc.
- },
- {
- "type" : "branch"
- "uuid" : "cdf68e39-8f4b-4afa-9f81-ba2f7cdf50e6"
- "owning-root-uuid" : 0d7489b0-0a9d-11e1-be50-0800200c9a66 // the uuid of the enclosing root
- "name" : "another branch"
- "tracking" : version-uuid 
- "main-object" : embedded-object-uuid in the version we are tracking.
- this is the embedded object that the persistent root is "wrapping" - 
- this is the object you would export if you exported the current version, etc.
- 
- },
- )
- }
- 
+
  how do we add undo/redo to this?
  for branches/roots that track a specific version, they should also have 
  a key/value called "tip". (terminology stolen from mercurial)
@@ -275,19 +232,20 @@
 
 - (ETUUID *) newPersistentRootAtItemPath: (COItemPath*)aPath;
 
-- (NSArray *) branchesOfPersistentRoot: (ETUUID *)aRoot;
+- (NSSet *) branchesOfPersistentRoot: (ETUUID *)aRoot;
+- (ETUUID *) currentBranchOfPersistentRoot: (ETUUID *)aRoot;
+- (void) setCurrentBranch: (ETUUID*)aBranch
+		forPersistentRoot: (ETUUID*)aUUID;
 
-- (void) setPersistentRoot: (ETUUID*)aUUID
-   toTrackOneOfItsBranches: (ETUUID*)aBranch;
 
-- (void)        setBranch: (ETUUID*)aBranch
-toTrackRemoteBranchOrRoot: (COPath*)aPath;
+- (void) setTrackRemoteBranchOrRoot: (COPath*)aPath
+						  forBranch: (ETUUID*)aBranch;
 
-- (void) setBranch: (ETUUID*)aBranch
-	toTrackVersion: (ETUUID*)aVersion;
+- (void) setTrackVersion: (ETUUID*)aVersion
+			   forBranch: (ETUUID*)aBranch;
 
-- (void) undoForPersistentRoot: (ETUUID*)aRoot;
-- (void) redoForPersistentRoot: (ETUUID*)aRoot;
+- (void) undoPersistentRoot: (ETUUID*)aRoot;
+- (void) redoPersistentRoot: (ETUUID*)aRoot;
 
 
 // copied from costorecontroller
