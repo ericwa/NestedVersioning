@@ -113,7 +113,14 @@
 - (void) gc;
 
 /**
- * This is a primitive/easy way of implementing the mutable part of the store
+ * "rooting problem"
+ *
+ * 1. have a 'root version' for the store, which changes on every commit to any persistent
+ *    roots. toplevel persistent roots are just normal objects in the root version.
+ *    May actually be OK unless we run in to problems with it.
+ *    => this approach means the toplevel works just like deeper levels, except the top
+ *       level doesn't have a "persistent root embedded object"/branch pointing at it.
+ *    => this is equivelant to the top level version just being mutable.
  */
 
 /**

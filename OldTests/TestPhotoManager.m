@@ -70,6 +70,39 @@ void test()
 	//          |
 	//          \-link to photo4 // duplicates make sense in photo albums if you want to return to a photo
 	
+	/**
+	 * returns an editing context for the toplevel version
+	 * note changes made in this context are not undoable!
+	 */
+	ctxt = [store rootContext];
+	
+	// the root embedded object. It has a "contents" property with kCOPrimitiveTypeEmbeddedItem
+	// stores should have one automatically.
+	rootObj = [ctxt rootObject];
+	
+	// creates a new parentless version in the store *right now*
+	// (if the context doesn't get committed, the version will eventually get GC'ed)
+	ETUUID *library1 = [ctxt newPersistentRootAtItemPath: 
+								[COItemPath itemPathWithUUID: [rootObj UUID]
+									 unorderedCollectionName: @"contents"]];
+	ETUUID *library1currentBranch = [ctxt currentBranchForProot...]
+	[ctxt commit];
+	
+	// the library's context doesn't need full acccess to the root ctxt.
+	// in fact, it should _definately not_ have full access to the root ctxt.
+	// => to create a commit in the library context, we will need to commit a update in the
+	// root context _only_ to the _single_ embedded object in the root context that
+	// references the version for the library context.
+	//library1ctxt = [store contextForPath: [COPath pathWithPathComponent: library1currentBranch]];
+	
+	
+	// fixme: can we have a constructor that abstracts away what the persistent
+	// root is currently set to? like:
+	library1ctxt = [ctxt contextForEditingPersistentRoot: library1];
+	
+
+	
+	
 }
 
 #endif
