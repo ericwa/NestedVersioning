@@ -109,6 +109,9 @@
  * typical usage would be:
  *  1. permanently delete all commits on a persistent root older than a certain date
  *  2. run gc to delete any other commits which are no longer accessible as a result of (1.)
+ *
+ * note that parents of a commit are considered reachable, so if X is reachable,
+ * none of X's parents will be deleted.
  */
 - (void) gc;
 
@@ -127,6 +130,13 @@
  * may return nil on first use.
  */
 - (ETUUID *) rootVersion;
+/**
+ * The versions set as the root version should not have parent pointers set,
+ * because we don't keep history of the root version.
+ *
+ * If no parent version pointers are set, running gc will delete all but the
+ * rootVersion, which is what we want.
+ */
 - (void) setRootVersion: (ETUUID*)version;
 
 
