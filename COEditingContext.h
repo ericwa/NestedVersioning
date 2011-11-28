@@ -38,29 +38,14 @@
 
 - (void) updateItem: (COStoreItem*)anItem;
 
+/** 
+ * what should this do if the UUID's are already in use in this context?
+ * throw an exception?
+ */
 - (void) insertItemTree: (COStoreItemTree *)aTree
 			 atItemPath: (COItemPath*)anItemPath;
 
 - (void) removeItemTreeAtItemPath: (COItemPath*)anItemPath;
 
-
-/* @taskunit persistent roots (TODO: move to class?) */
-
-- (ETUUID *) newPersistentRootAtItemPath: (COItemPath*)aPath;
-
-- (NSSet *) branchesOfPersistentRoot: (ETUUID *)aRoot;
-- (ETUUID *) currentBranchOfPersistentRoot: (ETUUID *)aRoot;
-- (void) setCurrentBranch: (ETUUID*)aBranch
-		forPersistentRoot: (ETUUID*)aUUID;
-
-
-- (void) setTrackRemoteBranchOrRoot: (COPath*)aPath
-						  forBranch: (ETUUID*)aBranch;
-
-- (void) setTrackVersion: (ETUUID*)aVersion
-			   forBranch: (ETUUID*)aBranch;
-
-- (void) undoPersistentRoot: (ETUUID*)aRoot;
-- (void) redoPersistentRoot: (ETUUID*)aRoot;
 
 @end

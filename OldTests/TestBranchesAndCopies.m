@@ -23,48 +23,66 @@ void test()
 	
 	// create a persistent root r with 3 branches: a, b, c; current branch: a
 	
-	COEditingContext *ctx = SetupTestContext();
+	rootCtx = [store rootContext];
+	libUUID = [rootCtx insertNewPersistentRootWithRootItem: [factory newFolder: @"library"]];
+						// implict inContainer: [rootCtx rootItemUUID]
 	
-	COStore *store = [ctx store];
-	
-	ETUUID *emptyVersion = [store addCommitWithParent: nil
-											 metadata: nil
-								   UUIDsAndStoreItems: [NSDictionary dictionary]];
-	
-	ETUUID *r1b1 = [ctx newBranchTrackingVersion: emptyVersion];
-	ETUUID *r1b2 = [ctx newBranchTrackingVersion: emptyVersion];
-	ETUUID *r1b3 = [ctx newBranchTrackingVersion: emptyVersion];
-	
-	ETUUID *r1 = [ctx newBranchGroupWithBranches: A(r1b1, r1b2, r1b3)];
-
-
-	
-	// copy r -> r' (a', b', c'), current branch: a'
-
-	ETUUID *r2 = [ctx copyEmbeddedObject: r1];
-	
-	
-	// copy branch c out of the r and edit it a bit -> c"
-	
-	ETUUID *r2b3 = [[[ctx storeItemForUUID: r2] valueForAttribute: @"contents"] objectAtIndex: 2];
-
-	ETUUID *r2b3copy = [ctx copyEmbeddedObject: r2b3];
-	
-	
-	// FIXME: edit it
-	
-	// add c" to r' -> (a', b', c', c")
+	[rootCtx commit];
 	
 	{
-		COStoreItem *r1item = [ctx storeItemForUUID: r1];
-		[r1item addObject: r2b3copy forAttribute: @"contents"];
-		[ctx updateItem: r1item];
-	}
-	
-	// merge branch c" and b' -> branch d, r' -> (a', b', c', c", d)
+		libCtx = [rootCtx editingContextForEditingEmbdeddedPersistentRoot: libUUID];
+		
+		libFolder = [libCtx rootItemUUID];
+		
+		drawingUUID = [libCtx insertNewPersistentRootWithRootItem: [factory newFolder: @"drawing"]];
+		// implict inContainer: [libCtx rootItemUUID]
 
-	// FIXME:
+		ETUUID *drawing_b1 = [factory currentBranchForPersistentRoot: drawingUUID inContext: libCtx];
+		ETUUID *drawing_b2 = [factory createBranchForPersistentRoot: drawingUUID inContext: libCtx];
+		ETUUID *drawing_b3 = [factory createBranchForPersistentRoot: drawingUUID inContext: libCtx];
+		// current branch is still drawing_b1
+		
+		// copy r -> r' (a', b', c'), current branch: a'
+
+		ETUUID *drawing1 = [factory copyEmbeddedObject: r1
+										  insertInto: libFolder
+										   inContext: libCtx];
+		
+		// copy branch c out of the r and edit it a bit -> c"
+		
+		ETUUID *drawing1_b3 = [[[libCtx storeItemForUUID: drawing1] valueForAttribute: @"contents"] objectAtIndex: 2];
+
+		ETUUID *drawing1_b3copy = [factory newPersistentRootCopyingBranch: drawing1_b3
+												   insertInto: libFolder
+													inContext: libCtx];
+		
+		[libCtx commit];
+		
+		// open a context to edit the branch
+		{
+			drawing1_b3copyCtx = [libCtx editingContextForEditingEmbdeddedPersistentRoot: drawing1_b3copy];
+		
+			drawing1_b3copyCtx_drawing = [drawing1_b3copyCtx rootItemUUID];
+			
+			layer = [drawing1_b3copyCtx_drawing insertItem: [factory newFolderNamed: @"layer"]
+											   inContainer: [drawing1_b3copyCtx_drawing rootItem]];
+			
+			[drawing1_b3copyCtx commit];
+		}
 	
+	
+		// add c" to r' -> (a', b', c', c")
+		
+		{
+			COStoreItem *r1item = [ctx storeItemForUUID: r1];
+			[r1item addObject: r2b3copy forAttribute: @"contents"];
+			[ctx updateItem: r1item];
+		}
+		
+		// merge branch c" and b' -> branch d, r' -> (a', b', c', c", d)
+
+		// FIXME:
+	}
 }
 
 #endif

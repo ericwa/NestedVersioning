@@ -43,6 +43,9 @@ void test()
 	//          \--photo3 (tags: lighting/artificial, places/south america/brazil, subject/people)
 
 	
+	rootctx = [store rootContext];
+	taglibUUID = [rootCtx newPersistentRootWithRootItem: [factory newFolder: @"tag library"]];
+	
 	
 }
 
