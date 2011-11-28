@@ -1,3 +1,16 @@
+#if 0
+
+void test()
+{
+	// 
+	
+}
+
+#endif
+
+
+// Old code:
+
 #import <Foundation/Foundation.h>
 #import <UnitKit/UnitKit.h>
 #import "COEditingContext.h"

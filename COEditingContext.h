@@ -2,15 +2,9 @@
 
 @protocol COEditingContext <NSObject>
 
+- (id<COEditingContext>) editingContextForEditingEmbdeddedPersistentRoot: (ETUUID*)aRoot;
 
-
-- (ETUUID *) commit;
-/**
- * does a commit and records in the metadata
- * these commit UUIDs as being additional parents
- */
-- (void) commitWithMergedVersionUUIDs: (NSArray*)anArray;
-
+- (ETUUID *) commitWithMetadata: (COStoreItemTree *)aTree;
 
 /**
  * this embedded object defines object lifetime of all objects inside this
@@ -40,26 +34,14 @@
 - (NSSet *) allEmbeddedObjectUUIDsForUUIDInclusive: (ETUUID*) aUUID;
 - (NSSet *) allEmbeddedItemsForUUIDInclusive: (ETUUID*) aUUID;
 
-/**
- * After calling, consistency of kCOPrimitiveTypeEmbeddedObject references
- * is checked/enforced. inconsistency results in an exception being thrown.
- * Unreachable objects after calling this are deleted.
- */
-- (void) insertOrUpdateItems: (NSSet *)items
-	   newRootEmbeddedObject: (ETUUID*)aRoot;
+/* @taskunit editing methods */
 
-- (void) insertOrUpdateItems: (NSSet *)items;
+- (void) updateItem: (COStoreItem*)anItem;
 
-- (void) insertItemWithUUID: (ETUUID *)aUUID
-					  items: (NSSet *)items
-					atIndex: (NSUInteger)i
-			   ofCollection: (NSString*)attribute
-				   inObject: (ETUUID*)anObject;
+- (void) insertItemTree: (COStoreItemTree *)aTree
+			 atItemPath: (COItemPath*)anItemPath;
 
-- (void) insertItemWithUUID: (ETUUID *)aUUID
-					  items: (NSSet *)items
-			   inCollection: (NSString*)attribute
-				   inObject: (ETUUID*)anObject;
+- (void) removeItemTreeAtItemPath: (COItemPath*)anItemPath;
 
 
 /* @taskunit persistent roots (TODO: move to class?) */

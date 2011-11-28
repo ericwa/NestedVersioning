@@ -1,5 +1,14 @@
 #import <Foundation/Foundation.h>
 
-@interface COStoreItemTree : NSObject
+#import "COStoreItem.h"
+#import "ETUUID.h"
+
+@interface COStoreItemTree : NSObject <NSCopying>
+{
+	ETUUID *root;
+	NSMutableSet *items;
+}
+
++ (COStoreItemTree *)itemTreeWithItems: (NSSet*)items root: (ETUUID*)aRoot;
 
 @end
