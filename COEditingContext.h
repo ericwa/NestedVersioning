@@ -47,5 +47,6 @@
 
 - (void) removeItemTreeAtItemPath: (COItemPath*)anItemPath;
 
+- (void) moveItemAtPath: (COItemPath*)src toItemPath: (COItemPath*)dest;
 
 @end
