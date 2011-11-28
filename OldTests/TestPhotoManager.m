@@ -76,17 +76,14 @@ void test()
 	 */
 	ctxt = [store rootContext];
 	
-	// the root embedded object. It has a "contents" property with kCOPrimitiveTypeEmbeddedItem
-	// stores should have one automatically.
-	rootObj = [ctxt rootObject];
-	
 	// creates a new parentless version in the store *right now*
 	// (if the context doesn't get committed, the version will eventually get GC'ed)
 	ETUUID *library1 = [ctxt newPersistentRootAtItemPath: 
-								[COItemPath itemPathWithUUID: [rootObj UUID]
-									 unorderedCollectionName: @"contents"]];
-	ETUUID *library1currentBranch = [ctxt currentBranchForProot...]
+								[COItemPath itemPathWithUUID: [ctxt rootObject]
+									 unorderedCollectionName: @"contents"]
+												rootItem: [factory newFolderNamed: @"library1"]];
 	[ctxt commit];
+	
 	
 	// the library's context doesn't need full acccess to the root ctxt.
 	// in fact, it should _definately not_ have full access to the root ctxt.
@@ -96,12 +93,27 @@ void test()
 	//library1ctxt = [store contextForPath: [COPath pathWithPathComponent: library1currentBranch]];
 	
 	
-	// fixme: can we have a constructor that abstracts away what the persistent
-	// root is currently set to? like:
-	library1ctxt = [ctxt contextForEditingPersistentRoot: library1];
+	library1ctxt = [ctxt editingContextForEditingEmbdeddedPersistentRoot: library1];
 	
+	assert([[[library1ctxt storeItem: [library1ctxt rootItem]] valueForAttribute: @"name"] isEqual: @"library1"]);
+	
+	
+	
+	ETUUID *folder1 = [library1ctxt insertItem: [factory newFolderNamed: @"folder1"]
+								   inContainer: [library1ctxt rootItem]];
 
+	ETUUID *project2 = [library1ctxt insertItem: [factory newFolderNamed: @"project2"]
+								   inContainer: [library1ctxt rootItem]];
+
+	// before committing library1ctxt, try making a change in the root ctxt
 	
+	ETUUID *library2 = [ctxt newPersistentRootAtItemPath: 
+						[COItemPath itemPathWithUUID: [ctxt rootObject]
+							 unorderedCollectionName: @"contents"]
+												rootItem: [factory newFolderNamed: @"library2"]];
+	[ctxt commit];
+	
+	[library1ctxt commit]; // should still work
 	
 }
 
