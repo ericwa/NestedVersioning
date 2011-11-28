@@ -3,6 +3,7 @@
 #import "COStore.h"
 #import "COPath.h"
 #import "COStoreItem.h"
+#import "COStorePrivate.h"
 #import "COPersistentRootEditingContext.h"
 #import "Common.h"
 

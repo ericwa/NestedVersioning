@@ -1,5 +1,6 @@
 #import "COPersistentRootEditingContext.h"
 #import "Common.h"
+#import "COStorePrivate.h"
 
 @implementation COPersistentRootEditingContext
 

@@ -1,9 +1,6 @@
 #import "COStore.h"
 #import "Common.h"
-
-@interface COStore (Private)
-
-@end
+#import "COStorePrivate.h"
 
 
 @implementation COStore
