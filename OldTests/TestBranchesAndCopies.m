@@ -44,13 +44,16 @@ void test()
 		
 		// copy r -> r' (a', b', c'), current branch: a'
 
-		ETUUID *drawing1 = [factory copyEmbeddedObject: r1
+		ETUUID *drawing1 = [factory copyEmbeddedObject: drawingUUID
 										  insertInto: libFolder
 										   inContext: libCtx];
 		
 		// copy branch c out of the r and edit it a bit -> c"
 		
-		ETUUID *drawing1_b3 = [[[libCtx storeItemForUUID: drawing1] valueForAttribute: @"contents"] objectAtIndex: 2];
+		// FIXME!!!: We shouldn't use this hack.
+		// we need a way to get drawing1_b3 cleanly. The copy method should also return a mapping dictionary?
+		
+		//ETUUID *drawing1_b3 = [[[libCtx storeItemForUUID: drawing1] valueForAttribute: @"contents"] objectAtIndex: 2];
 
 		ETUUID *drawing1_b3copy = [factory newPersistentRootCopyingBranch: drawing1_b3
 												   insertInto: libFolder

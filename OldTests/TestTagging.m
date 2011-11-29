@@ -45,7 +45,78 @@ void test()
 	
 	rootctx = [store rootContext];
 	taglibUUID = [rootCtx newPersistentRootWithRootItem: [factory newFolder: @"tag library"]];
+	photolibUUID = [rootCtx newPersistentRootWithRootItem: [factory newFolder: @"photo library"]];
 	
+
+	[rootCtx commit];
+	
+	// set up some tags
+	{
+		taglibCtx = [rootCtx editingContextForEditingEmbdeddedPersistentRoot: taglibUUID];
+		
+		taglibFolder = [taglibCtx rootItemUUID];
+		
+
+		places = [taglibCtx insertItem: [factory newFolderNamed: @"places"]
+						   inContainer: taglibFolder];
+		northamerica = [taglibCtx insertItem: [factory newFolderNamed: @"north america"]
+								 inContainer: places];
+		canada = [taglibCtx insertItem: [factory newItemNamed: @"canada"]
+								 inContainer: northamerica];
+		southamerica = [taglibCtx insertItem: [factory newFolderNamed: @"south america"]
+								 inContainer: places];
+		brazil = [taglibCtx insertItem: [factory newItemNamed: @"brazil"]
+								 inContainer: southamerica];
+		
+		[taglibCtx commit];
+	}
+	
+	// create a photo library
+	{
+		photolibCtx = [rootCtx editingContextForEditingEmbdeddedPersistentRoot: photolibUUID];
+		
+		photolibFolder = [photolibCtx rootItemUUID];
+		
+		// set up some local tags
+		{
+			localtagFolder = [photolibCtx insertItem: [factory newFolderNamed: @"local tags"]
+										 inContainer: photolibFolder];
+			subject = [photolibCtx insertItem: [factory newFolderNamed: @"subject"]
+							   inContainer: localtagFolder];
+			landscape = [photolibCtx insertItem: [factory newFolderNamed: @"landscape"]
+									 inContainer: subject];
+			people = [photolibCtx insertItem: [factory newItemNamed: @"people"]
+							   inContainer: subject];
+			abstract = [photolibCtx insertItem: [factory newFolderNamed: @"abstract"]
+									 inContainer: subject];
+			lighting = [photolibCtx insertItem: [factory newItemNamed: @"lighting"]
+							   inContainer: localtagFolder];
+			sunlight = [photolibCtx insertItem: [factory newItemNamed: @"sunlight"]
+								   inContainer: lighting];
+			artificial = [photolibCtx insertItem: [factory newItemNamed: @"artificial"]
+								   inContainer: lighting];			
+		}
+		
+		// set up photo shoots folder
+		{
+			photoshootsFolder = [photolibCtx insertItem: [factory newFolderNamed: @"photo shoots"]
+											inContainer: photolibFolder];
+			shoot1 = [photolibCtx insertItem: [factory newFolderNamed: @"shoot1"]
+								 inContainer: photoshootsFolder];
+			
+			photo1 = [factory newPersistentRootWithRootItem: [factory newFolder: @"photo1"]
+												 insertInto: shoot1
+												  inContext: photolibCtx];
+			photo2 = [factory newPersistentRootWithRootItem: [factory newFolder: @"photo2"]
+												 insertInto: shoot1
+												  inContext: photolibCtx];			
+			photo3 = [factory newPersistentRootWithRootItem: [factory newFolder: @"photo3"]
+												 insertInto: shoot1
+												  inContext: photolibCtx];
+		}
+		
+		[photolibCtx commit];
+	}
 	
 }
 
