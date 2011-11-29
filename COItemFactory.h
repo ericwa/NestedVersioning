@@ -108,18 +108,16 @@
 					   inObject: (ETUUID*)anObject;
 
 
-/* @taskunit persistent roots (TODO: move to class?) */
+/* @taskunit persistent roots */
 
-- (ETUUID *) newPersistentRootAtItemPath: (COItemPath*)aPath;
+- (ETUUID *)newPersistentRootWithRootItem: (COStoreItem *)anItem
+							   insertInto: (ETUUID *)destContainer
+								inContext: (id<COEditingContext>)ctx;
 
 - (NSSet *) branchesOfPersistentRoot: (ETUUID *)aRoot;
 - (ETUUID *) currentBranchOfPersistentRoot: (ETUUID *)aRoot;
 - (void) setCurrentBranch: (ETUUID*)aBranch
 		forPersistentRoot: (ETUUID*)aUUID;
-
-
-- (void) setTrackRemoteBranchOrRoot: (COPath*)aPath
-						  forBranch: (ETUUID*)aBranch;
 
 - (void) setTrackVersion: (ETUUID*)aVersion
 			   forBranch: (ETUUID*)aBranch;
@@ -132,6 +130,13 @@
 - (ETUUID *)newPersistentRootCopyingBranch: (ETUUID *)srcBranch
 								insertInto: (ETUUID *)destContainer
 								 inContext: (id<COEditingContext>)ctx;
+
+/* @taskunit links */
+
+- (ETUUID *)newLinkTo: (COPath*)aPath
+		   insertInto: (ETUUID *)destContainer
+			inContext: (id<COEditingContext>)ctx;
+
 
 #endif
 
