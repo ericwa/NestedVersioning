@@ -116,6 +116,36 @@ void test()
 		}
 		
 		[photolibCtx commit];
+		
+		// set up tags on photo1
+		
+		// open a context to edit the branch
+		{
+			photo1Ctx = [photolibCtx editingContextForEditingEmbdeddedPersistentRoot: photo1];
+			
+			photo1Ctx_root = [photo1Ctx rootItemUUID];
+			
+			COPath *tag1 = [[[[[COPath path] 
+								pathByAppendingPathToParent]
+									pathByAppendingPathToParent]
+										pathByAppendingPathComponent: taglibUUID]
+											pathByAppendingPathComponent: canada];
+			
+			COPath *tag2 = [[[COPath path] pathByAppendingPathToParent]
+								pathByAppendingPathComponent: landscape];
+
+			COPath *tag3 = [[[COPath path] pathByAppendingPathToParent]
+								pathByAppendingPathComponent: abstract];
+			
+			COStoreItem *photo1Ctx_rootItem = [photo1Ctx storeItemForUUID:photo1Ctx_root];
+			[photo1Ctx_rootItem setValue: S(tag1, tag2, tag3)
+							forAttribute: @"tags"
+									type: COSetContainerType(kCOPrimitiveTypePath)
+			[photo1Ctx updateItem: photo1Ctx_rootItem];
+			
+			[photo1Ctx commit];
+		}
+		
 	}
 	
 }
