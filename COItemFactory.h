@@ -1,5 +1,7 @@
 #import <Cocoa/Cocoa.h>
 
+#import "ETUUID.h"
+
 /**
  * Factory for creating common objects
  */
