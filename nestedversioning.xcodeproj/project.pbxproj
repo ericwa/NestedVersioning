@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		6628FB9B142FA65D0072767A /* EWTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6628FB9A142FA65D0072767A /* EWTest.m */; };
-		66436A1B142E944B000C14B4 /* LogIndent.m in Sources */ = {isa = PBXBuildFile; fileRef = 66436A1A142E944B000C14B4 /* LogIndent.m */; };
 		66DFAED0142A726100623060 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DFAEBF142A726100623060 /* main.m */; };
 		66E0189C146455C8000EB1E0 /* TestPhotoMontage.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E0189B146455C8000EB1E0 /* TestPhotoMontage.m */; };
 		66E0189F146468F6000EB1E0 /* TestBLOB.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E0189E146468F6000EB1E0 /* TestBLOB.m */; };
@@ -59,8 +58,6 @@
 		6628FBA7142FA7840072767A /* TestSynchronization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSynchronization.m; sourceTree = "<group>"; };
 		6628FBA8142FA7840072767A /* TestUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestUtilities.m; sourceTree = "<group>"; };
 		66416D20142D3EE20016501D /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
-		66436A19142E944B000C14B4 /* LogIndent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogIndent.h; sourceTree = "<group>"; };
-		66436A1A142E944B000C14B4 /* LogIndent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogIndent.m; sourceTree = "<group>"; };
 		66DFAEBF142A726100623060 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		66DFAEC4142A726100623060 /* Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = "<group>"; };
 		66DFAECA142A726100623060 /* test-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "test-Prefix.pch"; sourceTree = "<group>"; };
@@ -129,8 +126,6 @@
 				66E877691455FE5B006CBE7E /* ETUUID.h */,
 				66E8776A1455FE67006CBE7E /* ETUUID.m */,
 				66DFAECA142A726100623060 /* test-Prefix.pch */,
-				66436A19142E944B000C14B4 /* LogIndent.h */,
-				66436A1A142E944B000C14B4 /* LogIndent.m */,
 				66DFAEC4142A726100623060 /* Common.h */,
 				6628FB99142FA65D0072767A /* EWTest.h */,
 				6628FB9A142FA65D0072767A /* EWTest.m */,
@@ -265,7 +260,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				66DFAED0142A726100623060 /* main.m in Sources */,
-				66436A1B142E944B000C14B4 /* LogIndent.m in Sources */,
 				6628FB9B142FA65D0072767A /* EWTest.m in Sources */,
 				66E877571455F0CB006CBE7E /* COStore.m in Sources */,
 				66E8776B1455FE67006CBE7E /* ETUUID.m in Sources */,

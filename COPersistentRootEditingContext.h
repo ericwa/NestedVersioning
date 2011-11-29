@@ -3,7 +3,7 @@
 #import "COStoreItem.h"
 #import "COStore.h"
 #import "COItemPath.h"
-
+#import "COEditingContext.h"
 /**
  * a store api one level higher than COStore..
  * probably this will become the real COStore api once we switch to sqlite again
@@ -49,15 +49,12 @@
  parent persistent root.
  
  */
-@interface COPersistentRootEditingContext : NSObject
+@interface COPersistentRootEditingContext : NSObject <COEditingContext>
 {
 	COStore *store;
 	
-	//COPath *path;
+	COPath *absPath;
 	
-	// we need to keep track of what the store state was when this editing cotext was created
-	
-	//COPath *absPath;
 	/**
 	 * for each element of absPath, the corresponding version UUID
 	 */
