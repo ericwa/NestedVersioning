@@ -132,11 +132,29 @@
 
 - (void) undoPersistentRoot: (ETUUID*)aRoot
 {
-	
+	/*
+	- to undo:
+	a) look up the version that "tracking" points to
+	b) get its parent (if it has none, can't undo)
+					   c) set "tracking" to the parent, without modifying tip
+					   
+*/					   
 }
 - (void) redoPersistentRoot: (ETUUID*)aRoot
 {
+	/*
+	- to redo:
+	X = "tip"
+	if (X == "tracking") fail ("can't redo")
+		while (1) {
+			if (X.parent == "tracking") {
+				"tracking" = X;
+				finshed;
+			}
+			X = X.parent;
+		}
 	
+	**/
 }
 
 

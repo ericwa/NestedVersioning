@@ -4,51 +4,7 @@
 #import "COStore.h"
 #import "COItemPath.h"
 #import "COEditingContext.h"
-/**
- * a store api one level higher than COStore..
- * probably this will become the real COStore api once we switch to sqlite again
- 
- 
 
- how do we add undo/redo to this?
- for branches/roots that track a specific version, they should also have 
- a key/value called "tip". (terminology stolen from mercurial)
- 
- - every commit to that branch root should set both "tracking" and "tip"
- to the same value.
- 
- - to undo:
- a) look up the version that "tracking" points to
- b) get its parent (if it has none, can't undo)
- c) set "tracking" to the parent, without modifying tip
- 
- - to redo:
- X = "tip"
- if (X == "tracking") fail ("can't redo")
- while (1) {
- if (X.parent == "tracking") {
- "tracking" = X;
- finshed;
- }
- X = X.parent;
- }
- 
- **/
-
-
-
-
-/**
- * an object context handles the process of committing changes.
- *
- * committing to a persistent root nested several roots deep necessitates
- * commits in every parent.
- 
- how to get rid of the cyclic nature of this class?
- i.e. to commit changes to an embedded object requires knowing how to commit changes to its
- parent persistent root.
- 
- */
 @interface COPersistentRootEditingContext : NSObject <COEditingContext>
 {
 	COStore *store;

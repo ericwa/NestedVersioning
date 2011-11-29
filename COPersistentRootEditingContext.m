@@ -43,6 +43,17 @@
 
 - (ETUUID *) commit
 {
+	/*
+FIXME:
+	how do we add undo/redo to this?
+		for branches/roots that track a specific version, they should also have 
+			a key/value called "tip". (terminology stolen from mercurial)
+			
+			- every commit to that branch root should set both "tracking" and "tip"
+			to the same value.
+			*/
+			
+	
 	// calculate final uuid set
 	assert(rootItem != nil);
 	NSSet *finalUUIDSet = [self allEmbeddedObjectUUIDsForUUIDInclusive: rootItem];
