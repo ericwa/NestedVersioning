@@ -39,8 +39,7 @@
 - (void) updateItem: (COStoreItem*)anItem;
 
 /** 
- * what should this do if the UUID's are already in use in this context?
- * throw an exception?
+ * throws an exception if any UUID's in aTree are already in use in this context
  */
 - (void) insertItemTree: (COStoreItemTree *)aTree
 			 atItemPath: (COItemPath*)anItemPath;
