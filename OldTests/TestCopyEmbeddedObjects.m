@@ -13,6 +13,96 @@
 
 @implementation TestCopy
 
+#if 0
+
+void test()
+{
+	/*
+	 the interesting sort of corner case to test is:
+	 */
+	
+	
+	 // outline doc 1 <<persistent root>>
+	 //  |
+	 //  \--item 1
+	 //      |
+	 //      \-item 1a
+	 //
+	 // outline doc 2 <<persistent root>>
+	
+	 
+	 /* Step 1: copy item 1 to outline doc 2 and make edits */
+	
+	
+	// outline doc 1 <<persistent root>>
+	//  |
+	//  \--item 1
+	//      |
+	//      \-item 1a
+	//
+	// outline doc 2 <<persistent root>>
+	//  |
+	//  \--item 1 (with edit X)
+	//      |
+	//      \-item 1a (with edit Y)
+	
+
+	/* Step 2: move and edit doc1.item1a within doc 1 */
+	
+	
+	// outline doc 1 <<persistent root>>
+	//  |
+	//  |--item 1
+	//  |
+	//  \-item 1a (with edit W)
+	//
+	// outline doc 2 <<persistent root>>
+	//  |
+	//  \--item 1 (with edit X)
+	//      |
+	//      \-item 1a (with edit Y)
+	
+	
+	/* Step 3: copy doc2.item1 to doc1.
+	 
+		It's not clear what exactly should happen.
+	 
+	   Note that uuid(doc1.item1) == uuid(doc2.item1) and
+	             uuid(doc1.item1a) == uuid(doc2.item1a).
+		
+		We should get the following tree. The only question is which item1a should be re-assigned a UUID.
+	    The one in the tree being copied from doc2, or the one in doc1 that was edited in step 2.
+	 
+	 */
+	
+	
+	// outline doc 1 <<persistent root>>
+	//  |
+	//  |--item 1 (with edit X)
+	//  |   |
+	//  |   \-item 1a (with edit Y)
+	//  |
+	//  \-item 1a (with edit W)
+	//
+	// outline doc 2 <<persistent root>>
+	//  |
+	//  \--item 1 (with edit X)
+	//      |
+	//      \-item 1a (with edit Y)
+	
+	
+	/* method to test is:
+	- (ETUUID *) copyEmbeddedObject: (ETUUID *)src
+fromContext: (id<COEditingContext>)srcCtx;
+insertInto: (ETUUID *)dest
+inContext: (id<COEditingContext>)destCtx
+	*/
+}
+
+#endif
+
+
+
 - (void)testBasic
 {
 	COEditingContext *ctx1 = [[COEditingContext alloc] init];
