@@ -2,6 +2,14 @@
 #import "Common.h"
 
 @interface COItemPathToUnorderedContainer : COItemPath
+{
+	ETUUID *UUIDInCollection;
+}
+
+- (id) initWithItemUUID: (ETUUID *)aUUID
+unorderedCollectionName: (NSString *)collection
+	   uuidInCollection: (ETUUID*)aUUIDInCollection;
+
 @end
 
 @interface COItemPathToOrderedContainer : COItemPath
@@ -19,20 +27,13 @@
 
 @implementation COItemPath
 
-- (id) initWithItemUUID: (ETUUID *)aUUID
-unorderedCollectionName: (NSString *)collection
-{
-	SUPERINIT
-	ASSIGN(uuid, aUUID);
-	ASSIGN(attribute, collection);
-	return self;
-}
-
 + (COItemPath *) pathWithItemUUID: (ETUUID *)aUUID
 		  unorderedCollectionName: (NSString *)collection
+				 uuidInCollection: (ETUUID*)aUUIDInCollection
 {
 	return [[[COItemPathToUnorderedContainer alloc] initWithItemUUID: aUUID
-											 unorderedCollectionName: collection] autorelease];
+											 unorderedCollectionName: collection
+													uuidInCollection: aUUIDInCollection] autorelease];
 }
 
 + (COItemPath *) pathWithItemUUID: (ETUUID *)aUUID
@@ -42,6 +43,13 @@ unorderedCollectionName: (NSString *)collection
 	return [[[COItemPathToOrderedContainer alloc] initWithItemUUID: aUUID
 														 arrayName: collection
 															 index: index] autorelease];	
+}
+
+- (void) dealloc
+{
+	[uuid realase];
+	[attribute release];
+	[super dealloc];
 }
 
 - (id)copyWithZone:(NSZone *)zone
@@ -66,13 +74,10 @@ unorderedCollectionName: (NSString *)collection
 			  arrayName: (NSString *)collection
 				  index: (NSUInteger)anIndex
 {
-	self = [super initWithItemUUID: aUUID
-		   unorderedCollectionName: collection];
-	if (self == nil)
-		return nil;
-	
+	SUPERINIT
+	ASSIGN(uuid, aUUID);
+	ASSIGN(attribute, collection);
 	index = anIndex;
-	
 	return self;
 }
 
@@ -104,6 +109,23 @@ unorderedCollectionName: (NSString *)collection
 
 @implementation COItemPathToUnorderedContainer
 
+- (id) initWithItemUUID: (ETUUID *)aUUID
+unorderedCollectionName: (NSString *)collection
+	   uuidInCollection: (ETUUID*)aUUIDInCollection
+{
+	SUPERINIT
+	ASSIGN(uuid, aUUID);
+	ASSIGN(attribute, collection);
+	ASSIGN(UUIDInCollection, aUUIDInCollection);
+	return self;
+}
+
+- (void) dealloc
+{
+	[UUIDInCollection release];
+	[super dealloc];
+}
+
 - (void) insertValue: (id)aValue
 		 inStoreItem: (COStoreItem *)aStoreItem
 {
@@ -124,7 +146,8 @@ unorderedCollectionName: (NSString *)collection
 	
 	COItemPathToUnorderedContainer *other = (COItemPathToUnorderedContainer *)object;
 	return ([uuid isEqual: other->uuid] &&
-			[attribute isEqual: other->attribute]);
+			[attribute isEqual: other->attribute] &&
+			[UUIDInCollection isEqual: other->UUIDInCollection]);
 }
 
 @end

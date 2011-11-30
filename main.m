@@ -103,7 +103,7 @@ static void testEditingContextEmbeddedObjects()
 	// at this point the context is empty.
 	// in particular, it has no rootEmbeddedObject, which means it contains no embedded objets.
 	// this means we can't commit.
-	
+#if 0	
 	EWTestTrue(nil == [ctx rootEmbeddedObject]);
 	EWTestTrue(nil == [store rootVersion]);
 	
@@ -136,6 +136,8 @@ static void testEditingContextEmbeddedObjects()
 	
 	EWTestEqual(i1, [ctx storeItemForUUID: [i1 UUID]]);
 	EWTestEqual(i2, [ctx storeItemForUUID: [i2 UUID]]);
+	
+#endif
 }
 
 static void testStoreItem()

@@ -31,16 +31,16 @@
  * provided subtree are already in use, or if the item tree root does
  * not already exist in the context.
  */
-- (void) updateItemTree: (COStoreItemTree*)anItemTree;
+//- (void) updateItemTree: (COStoreItemTree*)anItemTree;
 
 /** 
  * throws an exception if any UUID's in aTree are already in use in this context
  */
-- (void) insertItemTree: (COStoreItemTree *)aTree
-			 atItemPath: (COItemPath*)anItemPath;
+//- (void) insertItemTree: (COStoreItemTree *)aTree
+//			 atItemPath: (COItemPath*)anItemPath;
 
-- (void) removeItemTreeAtItemPath: (COItemPath*)anItemPath;
+//- (void) removeItemTreeAtItemPath: (COItemPath*)anItemPath;
 
-- (void) moveItemAtPath: (COItemPath*)src toItemPath: (COItemPath*)dest;
+//- (void) moveItemAtPath: (COItemPath*)src toItemPath: (COItemPath*)dest;
 
 @end

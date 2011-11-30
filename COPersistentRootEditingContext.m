@@ -282,22 +282,5 @@
 										 root: aUUID];
 }
 
-- (void) updateItemTree: (COStoreItemTree*)anItemTree
-{
-}
-
-- (void) insertItemTree: (COStoreItemTree *)aTree
-			 atItemPath: (COItemPath*)anItemPath
-{
-}
-
-- (void) removeItemTreeAtItemPath: (COItemPath*)anItemPath
-{
-}
-
-- (void) moveItemAtPath: (COItemPath*)src toItemPath: (COItemPath*)dest
-{
-	
-}
 
 @end

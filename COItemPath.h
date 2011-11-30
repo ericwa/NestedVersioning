@@ -9,8 +9,8 @@
 }
 
 + (COItemPath *) pathWithItemUUID: (ETUUID *)aUUID
-		  unorderedCollectionName: (NSString *)collection;
-
+		  unorderedCollectionName: (NSString *)collection
+				 uuidInCollection: (ETUUID*)aUUIDInCollection;
 + (COItemPath *) pathWithItemUUID: (ETUUID *)aUUID
 						arrayName: (NSString *)collection
 							index: (NSUInteger)index;
