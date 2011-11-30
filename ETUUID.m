@@ -134,8 +134,7 @@ static void ETUUIDGet16RandomBytes(unsigned char bytes[16])
  */
 - (NSUInteger) hash
 {
-	// XOR the two 64-bit halves
-	return *((uint64_t *)uuid) ^ *((uint64_t *)&uuid[8]);
+	return *((uint64_t *)uuid);
 }
 
 - (BOOL) isEqual: (id)anObject
