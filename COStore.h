@@ -92,6 +92,9 @@
 
 /** @taskunit accessing the root context */
 
+/**
+ * returns a new context every time
+ */
 - (COPersistentRootEditingContext *) rootContext;
 
 @end

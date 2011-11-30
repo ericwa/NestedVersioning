@@ -5,27 +5,26 @@
 #import "COItemPath.h"
 #import "COEditingContext.h"
 
-@interface COPersistentRootEditingContext : NSObject <COEditingContext>
+/**
+ * editing contexts should be lightweight/cheap objects
+ * which are created/destroyed when needed and not
+ * kept around.
+ */
+@interface COPersistentRootEditingContext : NSObject <COEditingContext, NSCopying>
 {
 	COStore *store;
 	
-	COPath *absPath;
-	
-	/**
-	 * for each element of absPath, the corresponding version UUID
-	 */
-	//NSArray *versionUUIDs;
+	COPath *path;
 	
 	/**
 	 * this is the commit we load our data from.
-	 * when we make a commit, the parent of the commit will be set to this
+	 * when we make a commit, the parent of the commit will be set to this.
+	 *
+	 * if the branch we are editing has been changed from this value,
+	 * we will need to do a merge
 	 */
 	ETUUID *baseCommit;
-	
-	// -- persistent state
-	
-	NSMutableDictionary *existingItems;
-	
+		
 	// -- in-memory mutable state which is "overlaid" on the 
 	// persistent state represented by baseCommit
 	
@@ -33,21 +32,29 @@
 	ETUUID *rootItem;
 }
 
-/**
- * note that this will create implict/hidden contexts for committing 
- * to all of the intermetiate roots in the path. This is ok, but it means
- * other contexts already open on those roots might have to do a merge
- * to apply their changes (either a trivial merge, most likely, or a conflict)
- */
-//+ (COPersistentRootEditingContext *)contextForEditingPersistentRootAtPath: (COPath *)aPath;
+/** @taskunit creation */
 
-- (id)initWithStore: (COStore *)aStore
-		 commitUUID: (ETUUID*)aCommit; // if nil, creates a commit with no parent
++ (COPersistentRootEditingContext *) editingContextForEditingPath: (COPath*)aPath
+														  inStore: (COStore *)aStore;
+
+- (COPersistentRootEditingContext *) editingContextForEditingEmbdeddedPersistentRoot: (ETUUID*)aRoot;
 
 /**
- * creates an empty context which will commit to a new version with no parent
+ * private method; public users should use -[COStore rootContext].
  */
-- (id)initWithStore: (COStore *)aStore;
++ (COPersistentRootEditingContext *) editingContextForEditingTopLevelOfStore: (COStore *)aStore;
+
+/**
+ * returns an independent copy.
+ * FIXME: would it be useful to have a copy without any local changes?
+ */
+- (id)copyWithZone:(NSZone *)zone;
+
+
+/** @taskunit  */
+
+- (COPath *) path;
+- (COStore *) store;
 
 - (ETUUID *) commit;
 /**

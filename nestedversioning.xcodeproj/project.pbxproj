@@ -27,6 +27,7 @@
 		66EE5D4A1463AD68008AA95B /* TestBranchesAndCopies.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EE5D491463AD67008AA95B /* TestBranchesAndCopies.m */; };
 		66F4E316147C59F0004FC1BA /* TestTagging.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F4E315147C59F0004FC1BA /* TestTagging.m */; };
 		66F4E31A147C606A004FC1BA /* TestGameEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F4E319147C606A004FC1BA /* TestGameEditor.m */; };
+		790B1AE91485B184001ED869 /* TestSimpleUseOfNestedPersistentRoots.m in Sources */ = {isa = PBXBuildFile; fileRef = 790B1AE81485B184001ED869 /* TestSimpleUseOfNestedPersistentRoots.m */; };
 		79156DBA1484BE4D00AB66B1 /* TestConcurrentContextModification.m in Sources */ = {isa = PBXBuildFile; fileRef = 79156DB91484BE4D00AB66B1 /* TestConcurrentContextModification.m */; };
 		7990AD7C148362FE00FD795B /* COItemFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 7990AD7B148362FE00FD795B /* COItemFactory.m */; };
 /* End PBXBuildFile section */
@@ -92,6 +93,7 @@
 		66EE5D491463AD67008AA95B /* TestBranchesAndCopies.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestBranchesAndCopies.m; sourceTree = "<group>"; };
 		66F4E315147C59F0004FC1BA /* TestTagging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestTagging.m; sourceTree = "<group>"; };
 		66F4E319147C606A004FC1BA /* TestGameEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestGameEditor.m; sourceTree = "<group>"; };
+		790B1AE81485B184001ED869 /* TestSimpleUseOfNestedPersistentRoots.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSimpleUseOfNestedPersistentRoots.m; sourceTree = "<group>"; };
 		79156DB91484BE4D00AB66B1 /* TestConcurrentContextModification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestConcurrentContextModification.m; sourceTree = "<group>"; };
 		7990AD7A148362FE00FD795B /* COItemFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COItemFactory.h; sourceTree = "<group>"; wrapsLines = 1; };
 		7990AD7B148362FE00FD795B /* COItemFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COItemFactory.m; sourceTree = "<group>"; };
@@ -174,6 +176,7 @@
 				66F4E319147C606A004FC1BA /* TestGameEditor.m */,
 				66F4E315147C59F0004FC1BA /* TestTagging.m */,
 				79156DB91484BE4D00AB66B1 /* TestConcurrentContextModification.m */,
+				790B1AE81485B184001ED869 /* TestSimpleUseOfNestedPersistentRoots.m */,
 			);
 			path = OldTests;
 			sourceTree = "<group>";
@@ -277,6 +280,7 @@
 				66E5CBAE1483199C00D01039 /* COStoreItemTree.m in Sources */,
 				7990AD7C148362FE00FD795B /* COItemFactory.m in Sources */,
 				79156DBA1484BE4D00AB66B1 /* TestConcurrentContextModification.m in Sources */,
+				790B1AE91485B184001ED869 /* TestSimpleUseOfNestedPersistentRoots.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

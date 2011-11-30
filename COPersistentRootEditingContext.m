@@ -4,17 +4,25 @@
 
 @implementation COPersistentRootEditingContext
 
-- (id)initWithStore: (COStore *)aStore
-		 commitUUID: (ETUUID*)aCommit
+/** @taskunit creation */
+
+/**
+ * Private init method
+ */
+- (id)initWithPath: (COPath *)aPath
+		   inStore: (COStore *)aStore
 {
+	NILARG_EXCEPTION_TEST(aPath);
 	NILARG_EXCEPTION_TEST(aStore);
 	
     SUPERINIT;
 	
 	insertedOrUpdatedItems = [[NSMutableDictionary alloc] init];
 	
-	ASSIGN(baseCommit, aCommit); // may be nil
+	ASSIGN(path, aPath);
 	ASSIGN(store, aStore);
+	
+	
 	
 	if (baseCommit != nil)
 	{
@@ -25,21 +33,46 @@
     return self;
 }
 
-- (id)initWithStore: (COStore *)aStore
++ (COPersistentRootEditingContext *) editingContextForEditingPath: (COPath*)aPath
+														  inStore: (COStore *)aStore
 {
-	return [self initWithStore: aStore commitUUID: nil];
+	return [[[self alloc] initWithPath: [COPath path]
+							   inStore: aStore] autorelease];}
+
+- (COPersistentRootEditingContext *) editingContextForEditingEmbdeddedPersistentRoot: (ETUUID*)aRoot
+{
+	return [[self class] editingContextForEditingPath: [[self path] pathByAppendingPathComponent: aRoot]
+											  inStore: [self store]];
+}
+
+/**
+ * private method; public users should use -[COStore rootContext].
+ */
++ (COPersistentRootEditingContext *) editingContextForEditingTopLevelOfStore: (COStore *)aStore
+{
+	return [[self class] editingContextForEditingPath: [COPath path]
+											  inStore: aStore];
 }
 
 - (void)dealloc
 {
-	[insertedOrUpdatedItems release];
-	[baseCommit release];
 	[store release];
-	[existingItems release];
+	[path release];
+	[baseCommit release];
+	[insertedOrUpdatedItems release];
 	[rootItem release];
 	[super dealloc];
 }
 
+
+- (COPath *) path
+{
+	return path;
+}
+- (COStore *) store
+{
+	return store;
+}
 
 - (ETUUID *) commit
 {
