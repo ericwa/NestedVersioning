@@ -61,7 +61,7 @@
 		66DFAEC4142A726100623060 /* Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = "<group>"; };
 		66DFAECA142A726100623060 /* test-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "test-Prefix.pch"; sourceTree = "<group>"; };
 		66DFAECB142A726100623060 /* test.1 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.man; path = test.1; sourceTree = "<group>"; };
-		66E0189B146455C8000EB1E0 /* TestPhotoMontage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestPhotoMontage.m; sourceTree = "<group>"; };
+		66E0189B146455C8000EB1E0 /* TestPhotoMontage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestPhotoMontage.m; path = OldTests/TestPhotoMontage.m; sourceTree = "<group>"; };
 		66E0189E146468F6000EB1E0 /* TestBLOB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestBLOB.m; sourceTree = "<group>"; };
 		66E22EC61421D47100C00A98 /* nestedversioning */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = nestedversioning; sourceTree = BUILT_PRODUCTS_DIR; };
 		66E22EC81421D47100C00A98 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -70,7 +70,7 @@
 		66E552B4146B7799008FDFAF /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = usr/lib/libcrypto.dylib; sourceTree = SDKROOT; };
 		66E59CC81465F38400E16AD5 /* COPersistentRootDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPersistentRootDiff.h; sourceTree = "<group>"; };
 		66E59CC91465F38400E16AD5 /* COPersistentRootDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COPersistentRootDiff.m; sourceTree = "<group>"; };
-		66E5CABB147B4E42002DE8FD /* TestPhotoManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestPhotoManager.m; sourceTree = "<group>"; };
+		66E5CABB147B4E42002DE8FD /* TestPhotoManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestPhotoManager.m; path = OldTests/TestPhotoManager.m; sourceTree = "<group>"; };
 		66E5CBA814830C5700D01039 /* COStorePrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COStorePrivate.h; sourceTree = "<group>"; };
 		66E5CBAA148310D200D01039 /* COEditingContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COEditingContext.h; sourceTree = "<group>"; };
 		66E5CBAC1483199C00D01039 /* COStoreItemTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COStoreItemTree.h; sourceTree = "<group>"; };
@@ -88,8 +88,8 @@
 		66EE5D35146355A6008AA95B /* COPersistentRootEditingContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COPersistentRootEditingContext.m; sourceTree = "<group>"; };
 		66EE5D3814637418008AA95B /* COPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPath.h; sourceTree = "<group>"; };
 		66EE5D3914637418008AA95B /* COPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COPath.m; sourceTree = "<group>"; };
-		66EE5D491463AD67008AA95B /* TestBranchesAndCopies.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestBranchesAndCopies.m; sourceTree = "<group>"; };
-		66F4E315147C59F0004FC1BA /* TestTagging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestTagging.m; sourceTree = "<group>"; };
+		66EE5D491463AD67008AA95B /* TestBranchesAndCopies.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestBranchesAndCopies.m; path = OldTests/TestBranchesAndCopies.m; sourceTree = "<group>"; };
+		66F4E315147C59F0004FC1BA /* TestTagging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestTagging.m; path = OldTests/TestTagging.m; sourceTree = "<group>"; };
 		66F4E319147C606A004FC1BA /* TestGameEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestGameEditor.m; sourceTree = "<group>"; };
 		790B1AE81485B184001ED869 /* TestSimpleUseOfNestedPersistentRoots.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSimpleUseOfNestedPersistentRoots.m; sourceTree = "<group>"; };
 		79156DB91484BE4D00AB66B1 /* TestConcurrentContextModification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestConcurrentContextModification.m; sourceTree = "<group>"; };
@@ -128,7 +128,9 @@
 				6628FB99142FA65D0072767A /* EWTest.h */,
 				6628FB9A142FA65D0072767A /* EWTest.m */,
 				66E2A305143057A100487419 /* Store */,
-				6628FB9D142FA7840072767A /* OldTests */,
+				79FB63BD1486ABEF00751E1E /* Tests - docs and code sketch */,
+				79FB63B81486ABC600751E1E /* Tests - documented only */,
+				6628FB9D142FA7840072767A /* Tests - old */,
 				66DFAECB142A726100623060 /* test.1 */,
 				662811F913F8B5010075BBC2 /* Frameworks */,
 				662811F713F8B5010075BBC2 /* Products */,
@@ -151,29 +153,18 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		6628FB9D142FA7840072767A /* OldTests */ = {
+		6628FB9D142FA7840072767A /* Tests - old */ = {
 			isa = PBXGroup;
 			children = (
 				6628FB9E142FA7840072767A /* TestArrayDiff.m */,
-				6628FBA1142FA7840072767A /* TestCopyEmbeddedObjects.m */,
 				6628FBA2142FA7840072767A /* TestEditingContext.m */,
-				6628FBA3142FA7840072767A /* TestHistoryTrack.m */,
 				6628FBA4142FA7840072767A /* TestPerformance.m */,
 				6628FBA5142FA7840072767A /* TestRelationshipIntegrity.m */,
 				6628FBA6142FA7840072767A /* TestStore.m */,
 				6628FBA7142FA7840072767A /* TestSynchronization.m */,
 				6628FBA8142FA7840072767A /* TestUtilities.m */,
-				66EE5D491463AD67008AA95B /* TestBranchesAndCopies.m */,
-				66E0189B146455C8000EB1E0 /* TestPhotoMontage.m */,
-				66E5CABB147B4E42002DE8FD /* TestPhotoManager.m */,
-				66E0189E146468F6000EB1E0 /* TestBLOB.m */,
-				66E46D47146A3D490042123E /* TestDeletion.m */,
-				66EADD6414732AEE003181FC /* TestUndo.m */,
-				66F4E319147C606A004FC1BA /* TestGameEditor.m */,
-				66F4E315147C59F0004FC1BA /* TestTagging.m */,
-				79156DB91484BE4D00AB66B1 /* TestConcurrentContextModification.m */,
-				790B1AE81485B184001ED869 /* TestSimpleUseOfNestedPersistentRoots.m */,
 			);
+			name = "Tests - old";
 			path = OldTests;
 			sourceTree = "<group>";
 		};
@@ -204,6 +195,33 @@
 				7990AD7B148362FE00FD795B /* COItemFactory.m */,
 			);
 			name = Private;
+			sourceTree = "<group>";
+		};
+		79FB63B81486ABC600751E1E /* Tests - documented only */ = {
+			isa = PBXGroup;
+			children = (
+				790B1AE81485B184001ED869 /* TestSimpleUseOfNestedPersistentRoots.m */,
+				6628FBA1142FA7840072767A /* TestCopyEmbeddedObjects.m */,
+				6628FBA3142FA7840072767A /* TestHistoryTrack.m */,
+				79156DB91484BE4D00AB66B1 /* TestConcurrentContextModification.m */,
+				66F4E319147C606A004FC1BA /* TestGameEditor.m */,
+				66EADD6414732AEE003181FC /* TestUndo.m */,
+				66E46D47146A3D490042123E /* TestDeletion.m */,
+				66E0189E146468F6000EB1E0 /* TestBLOB.m */,
+			);
+			name = "Tests - documented only";
+			path = OldTests;
+			sourceTree = "<group>";
+		};
+		79FB63BD1486ABEF00751E1E /* Tests - docs and code sketch */ = {
+			isa = PBXGroup;
+			children = (
+				66EE5D491463AD67008AA95B /* TestBranchesAndCopies.m */,
+				66E0189B146455C8000EB1E0 /* TestPhotoMontage.m */,
+				66E5CABB147B4E42002DE8FD /* TestPhotoManager.m */,
+				66F4E315147C59F0004FC1BA /* TestTagging.m */,
+			);
+			name = "Tests - docs and code sketch";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
