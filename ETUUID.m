@@ -143,15 +143,9 @@ static void ETUUIDGet16RandomBytes(unsigned char bytes[16])
 	{
 		return NO;
 	}
-	const unsigned char *other_uuid = [anObject UUIDValue];
-	for (unsigned i=0 ; i<16 ; i++)
-	{
-		if (uuid[i] != other_uuid[i])
-		{
-			return NO;
-		}
-	}
-	return YES;
+	ETUUID *aUUID = (ETUUID*)anObject;
+	const unsigned char *other_uuid = [aUUID UUIDValue];
+	return (0 == memcmp(uuid, other_uuid, 16));
 }
 
 - (NSString *) stringValue
