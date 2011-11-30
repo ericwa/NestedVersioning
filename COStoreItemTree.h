@@ -3,6 +3,9 @@
 #import "COStoreItem.h"
 #import "ETUUID.h"
 
+/**
+ * note: items retrieved from an item tree should be copied before being modified
+ */
 @interface COStoreItemTree : NSObject <NSCopying>
 {
 	ETUUID *root;
@@ -13,5 +16,8 @@
 
 - (NSSet *)items;
 - (ETUUID *)root;
+
+- (COStoreItem *)rootItem;
++ (COStoreItemTree *)itemTreeWithItem: (COStoreItem*)anItem;
 
 @end

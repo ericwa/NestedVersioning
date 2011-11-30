@@ -48,4 +48,24 @@
 										 root: root];
 }
 
+/* convenience */
+
+- (COStoreItem *)rootItem
+{
+	for (COStoreItem *item in items)
+	{
+		if ([[item UUID] isEqual: root])
+		{
+			return item;
+		}
+	}
+	[NSException raise: NSInternalInconsistencyException format: @"COStoreItemTree lacks root"];
+	return nil;
+}
+
++ (COStoreItemTree *)itemTreeWithItem: (COStoreItem*)anItem
+{
+	return [COStoreItemTree itemTreeWithItems: [NSSet setWithObject: anItem] root: [anItem UUID]];
+}
+
 @end
