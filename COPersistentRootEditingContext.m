@@ -6,6 +6,45 @@
 
 /** @taskunit creation */
 
++ (ETUUID *) _baseCommitForPath: (COPath*)aPath store: (COStore *)aStore
+{
+	if ([aPath isEmpty])
+	{
+		// may be nil
+		return [aStore rootVersion];
+	}
+	else
+	{
+		COPath *parentPath = [aPath pathByDeletingLastPathComponent];
+		ETUUID *lastPathComponent = [aPath lastPathComponent];
+		ETUUID *parentCommit = [self _baseCommitForPath: parentPath store: aStore];
+		COStoreItem *item = [store storeItemForEmbeddedObject: lastPathComponent
+													 inCommit: parentCommit];
+		
+		// FIXME: move to COItemFactory or another utility class for dealing with persistent root data structures.
+		
+		// item may be a persistent root or a branch.
+		
+		if ([[item valueForAttribute: @"type"] isEqual: @"persistentRoot"])
+		{
+			COPath *currentBranchPath = [item valueForAttribute: @"currentBranch"];
+			ETUUID *currentBranch = [currentBranchPath lastPathComponent];
+			assert([[currentBranchPath pathByDeletingLastPathComponent] isEmpty]);
+			
+			item = [store storeItemForEmbeddedObject: currentBranch
+											inCommit: parentCommit];
+		}
+		
+		assert ([[item valueForAttribute: @"type"] isEqual: @"branch"]);
+		assert([[item typeForAttribute: @"tracking"] isEqual: COPrimitiveType(kCOPrimitiveTypeCommitUUID)]);
+		
+		ETUUID *trackedVersion = [item valueForAttribute: @"tracking"];
+		assert(trackedVersion != nil);
+		
+		return trackedVersion;
+	}
+}
+
 /**
  * Private init method
  */
@@ -22,7 +61,9 @@
 	ASSIGN(path, aPath);
 	ASSIGN(store, aStore);
 	
-	
+	// this will be somewhat expensive, but needs to be done - we need to 
+	// know what version our context is based on.
+	ASSIGN(baseCommit, [[self class] _baseCommitForPath: aPath store: aStore]);
 	
 	if (baseCommit != nil)
 	{
