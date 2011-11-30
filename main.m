@@ -4,7 +4,7 @@
 #import "COPath.h"
 #import "COStoreItem.h"
 #import "COStorePrivate.h"
-#import "COPersistentRootEditingContext.h"
+#import "COEditingContext.h"
 #import "Common.h"
 
 #define STOREPATH [@"~/om5teststore" stringByExpandingTildeInPath]
@@ -77,7 +77,7 @@ static void testPath()
 static void testEditingContextEmbeddedObjects()
 {
 	COStore *store = setupStore();
-	COPersistentRootEditingContext *ctx = [[COPersistentRootEditingContext alloc] initWithStore: store];
+	id<COEditingContext> ctx = [store rootContext];
 	
 	// at this point the context is empty.
 	// in particular, it has no rootEmbeddedObject, which means it contains no embedded objets.
@@ -110,39 +110,12 @@ static void testEditingContextEmbeddedObjects()
 	
 	ETUUID *firstVersion = [ctx commit];
 	EWTestTrue(firstVersion != nil);
+	
+	// test reading back the items
+	
+	EWTestEqual(i1, [ctx storeItemForUUID: [i1 UUID]]);
+	EWTestEqual(i2, [ctx storeItemForUUID: [i2 UUID]]);
 }
-
-
-#if 0
-static void testStoreController()
-{
-	COStore *store = setupStore();
-	COStoreController *sc = [[COStoreController alloc] initWithStore: store];
-	
-	// create some persistent roots
-	
-	ETUUID *obj1UUID = [ETUUID UUID];
-	id obj1Plist = D(@"My First Object", @"name");
-	NSDictionary *objects = D(obj1Plist, obj1UUID);
-	NSDictionary *md = D(@"My first commit", @"message");
-	
-	[sc writeUUIDsAndPlists: objects
-forPersistentRootAtPath: [COPath path]
-				   metadata: md];
-	
-	EWTestEqual(obj1Plist, [sc plistForEmbeddedObject: obj1UUID atPath: [COPath path]]);
-	
-	/*
-	COPath *aRoot1 = [sc createEmptyPersistentRootInsidePath: [COPath path]];
-	COPath *aRoot2 = [sc createEmptyPersistentRootInsidePath: [COPath path]];
-	
-	COPath *aRoot1rootA = [sc createEmptyPersistentRootInsidePath: aRoot1];
-	COPath *aRoot1rootB = [sc createPersistentRootCopyInsidePath: aRoot2
-										  ofPersistentRootAtPath: aRoot1rootA];
-
-	*/
-}
-#endif
 
 static void testStoreItem()
 {

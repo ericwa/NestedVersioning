@@ -64,7 +64,12 @@
 	// this will be somewhat expensive, but needs to be done - we need to 
 	// know what version our context is based on.
 	ASSIGN(baseCommit, [[self class] _baseCommitForPath: aPath store: aStore]);
-	ASSIGN(rootItem, [store rootItemForCommit: baseCommit]);
+	
+	if (baseCommit != nil)
+	{
+		ASSIGN(rootItem, [store rootItemForCommit: baseCommit]);
+	}
+	// if there has never been a commit, rootItem is nil.	
 	
     return self;
 }

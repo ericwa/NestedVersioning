@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "ETUUID.h"
 #import "COStoreItem.h"
+#import "COEditingContext.h"
 
 @class COPersistentRootEditingContext;
 @class COStoreItem;
@@ -95,6 +96,6 @@
 /**
  * returns a new context every time
  */
-- (COPersistentRootEditingContext *) rootContext;
+- (id <COEditingContext>) rootContext;
 
 @end
