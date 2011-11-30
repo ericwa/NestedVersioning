@@ -68,4 +68,14 @@
 	return [COStoreItemTree itemTreeWithItems: [NSSet setWithObject: anItem] root: [anItem UUID]];
 }
 
+- (NSSet *)itemUUIDs
+{
+	NSMutableSet *result = [NSMutableSet set];
+	for (COStoreItem *item in items)
+	{
+		[result addObject: [item UUID]];
+	}
+	return [NSSet setWithSet: result];
+}
+
 @end

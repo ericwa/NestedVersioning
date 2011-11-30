@@ -17,6 +17,8 @@
 - (NSSet *)items;
 - (ETUUID *)root;
 
+- (NSSet *)itemUUIDs;
+
 - (COStoreItem *)rootItem;
 + (COStoreItemTree *)itemTreeWithItem: (COStoreItem*)anItem;
 
