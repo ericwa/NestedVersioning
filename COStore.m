@@ -280,4 +280,11 @@
 								 error: NULL];
 }
 
+/** @taskunit accessing the root context */
+
+- (COPersistentRootEditingContext *) rootContext
+{
+	return [COPersistentRootEditingContext editingContextForEditingTopLevelOfStore: self];
+}
+
 @end

@@ -64,12 +64,7 @@
 	// this will be somewhat expensive, but needs to be done - we need to 
 	// know what version our context is based on.
 	ASSIGN(baseCommit, [[self class] _baseCommitForPath: aPath store: aStore]);
-	
-	if (baseCommit != nil)
-	{
-		ASSIGN(existingItems, [store UUIDsAndStoreItemsForCommit: baseCommit]);
-		ASSIGN(rootItem, [store rootItemForCommit: baseCommit]);
-	}
+	ASSIGN(rootItem, [store rootItemForCommit: baseCommit]);
 	
     return self;
 }
@@ -159,8 +154,7 @@ FIXME:
 	
 	ASSIGN(baseCommit, uuid);
 	[insertedOrUpdatedItems removeAllObjects];
-	ASSIGN(existingItems, [NSDictionary dictionaryWithDictionary: [store UUIDsAndStoreItemsForCommit: baseCommit]]);
-	
+
 	return uuid;
 }
 
@@ -176,6 +170,8 @@ FIXME:
 
 - (NSSet *)allItemUUIDs
 {
+	NSDictionary *existingItems = [store UUIDsAndStoreItemsForCommit: baseCommit];
+	
 	return [NSSet setWithArray: [[existingItems allKeys] arrayByAddingObjectsFromArray: [insertedOrUpdatedItems allKeys]]];
 }
 - (NSSet *)allItems
