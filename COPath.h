@@ -1,14 +1,11 @@
 #import <Foundation/Foundation.h>
 #import "ETUUID.h"
 
-/**
-
- 
- */
 @interface COPath : NSObject <NSCopying>
 {
-	COPath *parent;
-	ETUUID *persistentRoot;
+@private
+	NSArray *elements;
+	NSUInteger leadingPathsToParent; // number of "../" at the start of the path
 }
 
 /**
@@ -20,6 +17,8 @@
 
 + (COPath *) pathWithPathComponent: (ETUUID*) aUUID;
 
++ (COPath *) pathToParent;
+
 /**
  * Appends "../" to a path
  */
@@ -29,17 +28,16 @@
 
 - (COPath *) pathByAppendingPathComponent: (ETUUID *)aPersistentRoot;
 
-/**
- * Removes any non-leading ../ path elements.
- *
- * e.g. "../../projects/work/../fun/" is converted to "../../projects/fun"
- */
-- (COPath *) normalizedPath;
-
-
 - (NSString *) stringValue;
 
 - (BOOL) isEmpty;
+
+- (BOOL) hasComponents;
+
+/**
+ * Path begins with one or more "../" elements
+ */
+- (BOOL) hasLeadingPathsToParent;
 
 - (ETUUID *) lastPathComponent;
 - (COPath *) pathByDeletingLastPathComponent;

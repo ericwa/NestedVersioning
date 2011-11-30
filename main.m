@@ -49,12 +49,13 @@ static void testPath()
 {
 	ETUUID *u1 = [ETUUID UUIDWithString: @"cdf68e39-8f4b-4afa-9f81-ba2f7cdf50e6"];
 	ETUUID *u2 = [ETUUID UUIDWithString: @"8a099b84-09eb-4a3e-828d-9a897778e5e3"];
-
-	NSString *pathStr = [NSString stringWithFormat: @"/%@/%@", u1, u2];
+	ETUUID *u3 = [ETUUID UUIDWithString: @"5764ce91-3061-4289-b7d8-7e9f4c1cd975"];
+	
+	NSString *pathStr = [NSString stringWithFormat: @"%@/%@", u1, u2];
 	
 	COPath *path = [[[COPath path]
-							pathByAppendingPersistentRoot: u1]
-								pathByAppendingPersistentRoot:u2];
+							pathByAppendingPathComponent: u1]
+								pathByAppendingPathComponent:u2];
 	
 	EWTestEqual(pathStr, [path stringValue]);
 	
@@ -63,8 +64,8 @@ static void testPath()
 	EWTestEqual([COPath path], [COPath pathWithString: @""]);
 	
 	EWTestEqual([[[COPath path]
-				  pathByAppendingPersistentRoot: u1]
-				 pathByAppendingPersistentRoot:u2], path);
+				  pathByAppendingPathComponent: u1]
+					pathByAppendingPathComponent:u2], path);
 	
 	EWTestEqual(u2, [path lastPathComponent]);
 	EWTestEqual(u1, [[path pathByDeletingLastPathComponent] lastPathComponent]);
@@ -72,6 +73,26 @@ static void testPath()
 	EWTestEqual([COPath path], [[path pathByDeletingLastPathComponent] pathByDeletingLastPathComponent]);
 	
 	EWTestEqual(path, [COPath pathWithString: pathStr]);
+	
+	// test pathToParent
+	
+	COPath *path2 = [[COPath path] pathByAppendingPathToParent];
+	COPath *path3a = [path2 pathByAppendingPath: path2];
+	COPath *path3b = [[[COPath path] pathByAppendingPathToParent] pathByAppendingPathToParent];
+	COPath *path4 = [[[[COPath path] pathByAppendingPathToParent] pathByAppendingPathToParent] pathByAppendingPathComponent: u3];
+	COPath *path5 = [[[COPath path] pathByAppendingPathToParent] pathByAppendingPathComponent: u3];
+	
+	EWTestEqual(path3b, path3a);
+	
+	EWTestTrue([path2 hasLeadingPathsToParent]);
+	EWTestTrue(![path2 isEmpty]);
+	EWTestTrue(![path2 hasComponents]);
+	
+	EWTestEqual([[COPath path] pathByAppendingPathComponent: u1], [path pathByAppendingPath: path2]);
+	EWTestEqual([COPath path], [path pathByAppendingPath: path3a]);
+	EWTestEqual([COPath path], [path pathByAppendingPath: path3b]);
+	EWTestEqual([COPath pathWithPathComponent: u3], [path pathByAppendingPath: path4]);
+	EWTestEqual([[COPath pathWithPathComponent: u1] pathByAppendingPathComponent: u3], [path pathByAppendingPath: path5]);	
 }
 
 static void testEditingContextEmbeddedObjects()
@@ -123,8 +144,8 @@ static void testStoreItem()
 	ETUUID *u1 = [i1 UUID];
 	
 	COPath *p1 = [[[COPath path]
-						pathByAppendingPersistentRoot:[ETUUID UUIDWithString: @"cdf68e39-8f4b-4afa-9f81-ba2f7cdf50e6"]]
-						pathByAppendingPersistentRoot:[ETUUID UUIDWithString: @"8a099b84-09eb-4a3e-828d-9a897778e5e3"]];
+						pathByAppendingPathComponent:[ETUUID UUIDWithString: @"cdf68e39-8f4b-4afa-9f81-ba2f7cdf50e6"]]
+						pathByAppendingPathComponent:[ETUUID UUIDWithString: @"8a099b84-09eb-4a3e-828d-9a897778e5e3"]];
 	
 	[i1 setValue: S(p1)
 	forAttribute: @"contents"
