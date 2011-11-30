@@ -1,6 +1,11 @@
 #import <Foundation/Foundation.h>
 #import "ETUUID.h"
 
+
+/**
+ * A path consists of zero or more "../"'s followed by a sequence of UUID's
+ * separated by forward slashes
+ */
 @interface COPath : NSObject <NSCopying>
 {
 @private
