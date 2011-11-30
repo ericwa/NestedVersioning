@@ -15,38 +15,21 @@
  * root they must be a child (or grand-child, etc.) of rootEmbeddedObject
  * through a kCOPrimitiveTypeEmbeddedObject relationship.
  */
-- (ETUUID *)rootEmbeddedObject;
+- (ETUUID *)rootUUID;
 
-/**
- * Returns the union of all embedded objects in the base version
- * underlying this context, and any uncommitted in-memory objects added
- * to the context.
- */
-- (NSSet *)allItemUUIDs;
-/**
- * Same as above but returns COStoreItem instances
- */
-- (NSSet *)allItems;
-/**
- * returns a mutable copy which can be freely edited
- * without affecting anything.
- */
-- (COStoreItem *)storeItemForUUID: (ETUUID*) aUUID;
+- (COStoreItemTree *)rootItemTree;
+
 /**
  * Returns an entire subtree
  */
 - (COStoreItemTree *)storeItemTreeForUUID: (ETUUID*) aUUID;
 
-- (NSSet *) allEmbeddedObjectUUIDsForUUID: (ETUUID*) aUUID;
-- (NSSet *) allEmbeddedObjectUUIDsForUUIDInclusive: (ETUUID*) aUUID;
-- (NSSet *) allEmbeddedItemsForUUIDInclusive: (ETUUID*) aUUID;
-
 /* @taskunit editing methods */
 
-- (void) updateItem: (COStoreItem*)anItem;
 /**
  * Updates an entire subtree. throws an exception if any uuids in the
- * provided subtree are already in use.
+ * provided subtree are already in use, or if the item tree root does
+ * not already exist in the context.
  */
 - (void) updateItemTree: (COStoreItemTree*)anItemTree;
 

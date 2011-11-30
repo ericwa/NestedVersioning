@@ -73,7 +73,7 @@
 	
 	if (baseCommit != nil)
 	{
-		ASSIGN(rootItem, [store rootItemForCommit: baseCommit]);
+		ASSIGN(rootItemUUID, [store rootItemForCommit: baseCommit]);
 	}
 	// if there has never been a commit, rootItem is nil.	
 	
@@ -84,13 +84,9 @@
 														  inStore: (COStore *)aStore
 {
 	return [[[self alloc] initWithPath: [COPath path]
-							   inStore: aStore] autorelease];}
-
-- (COPersistentRootEditingContext *) editingContextForEditingEmbdeddedPersistentRoot: (ETUUID*)aRoot
-{
-	return [[self class] editingContextForEditingPath: [[self path] pathByAppendingPathComponent: aRoot]
-											  inStore: [self store]];
+							   inStore: aStore] autorelease];
 }
+
 
 /**
  * private method; public users should use -[COStore rootContext].
@@ -107,7 +103,7 @@
 	[path release];
 	[baseCommit release];
 	[insertedOrUpdatedItems release];
-	[rootItem release];
+	[rootItemUUID release];
 	[super dealloc];
 }
 
@@ -121,18 +117,100 @@
 	return store;
 }
 
-- (ETUUID *) commit
+
+// =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-=
+// =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-=
+// 
+// Private methods
+//
+// =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-=
+// =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-=
+
+/**
+ * returns a copy
+ */
+- (COStoreItem *) _storeItemForUUID: (ETUUID*) aUUID
+{
+	assert([aUUID isKindOfClass: [ETUUID class]]);
+	
+	COStoreItem *result = nil;
+	
+	if (baseCommit != nil)
+	{
+		result = [[[store storeItemForEmbeddedObject: aUUID inCommit: baseCommit] copy] autorelease];
+		assert(result != nil);
+	}
+	
+	COStoreItem *localResult = [[[insertedOrUpdatedItems objectForKey: aUUID] copy] autorelease];
+	
+	if (localResult != nil)
+	{
+		NSLog(@"overriding %@ with %@", result, localResult);
+		result = localResult;
+	}
+	
+	assert(result != nil); // either the store, or in memory, must have the value
+	
+	return result;
+}
+
+- (NSSet *) _allEmbeddedObjectUUIDsForUUID: (ETUUID*) aUUID
+{
+	NILARG_EXCEPTION_TEST(aUUID);
+	
+	NSMutableSet *result = [NSMutableSet set];
+	
+	COStoreItem *item = [self _storeItemForUUID: aUUID];
+	for (NSString *key in [item attributeNames])
+	{
+		NSDictionary *type = [item typeForAttribute: key];
+		if ([[type objectForKey: kCOPrimitiveType] isEqual: kCOPrimitiveTypeEmbeddedItem])
+		{		
+			for (ETUUID *embedded in [item allObjectsForAttribute: key])
+			{
+				[result addObject: embedded];
+				[result unionSet: [self _allEmbeddedObjectUUIDsForUUID: embedded]];
+			}
+		}
+	}
+	return result;
+}
+
+
+
+
+
+
+// =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-=
+// =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-=
+// 
+// COEditingContext protocol
+//
+// =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-=
+// =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-=
+
+
+
+
+
+- (id<COEditingContext>) editingContextForEditingEmbdeddedPersistentRoot: (ETUUID*)aRoot
+{
+	return [[self class] editingContextForEditingPath: [[self path] pathByAppendingPathComponent: aRoot]
+											  inStore: [self store]];
+}
+
+- (ETUUID *) commitWithMetadata: (COStoreItemTree *)aTree
 {
 	/*
-FIXME:
-	how do we add undo/redo to this?
-		for branches/roots that track a specific version, they should also have 
-			a key/value called "tip". (terminology stolen from mercurial)
-			
-			- every commit to that branch root should set both "tracking" and "tip"
-			to the same value.
-			*/
-			
+	 FIXME:
+	 how do we add undo/redo to this?
+	 for branches/roots that track a specific version, they should also have 
+	 a key/value called "tip". (terminology stolen from mercurial)
+	 
+	 - every commit to that branch root should set both "tracking" and "tip"
+	 to the same value.
+	 */
+	
 	//
 	// we need to check if we need to merge, first.
 	
@@ -146,8 +224,8 @@ FIXME:
 	
 	
 	// calculate final uuid set
-	assert(rootItem != nil);
-	NSSet *finalUUIDSet = [self allEmbeddedObjectUUIDsForUUIDInclusive: rootItem];
+	assert(rootItemUUID != nil);
+	NSSet *finalUUIDSet = [self allEmbeddedObjectUUIDsForUUIDInclusive: rootItemUUID];
 	
 	// set up the commit dictionary
 	NSMutableDictionary *uuidsanditems = [NSMutableDictionary dictionary];
@@ -164,11 +242,11 @@ FIXME:
 	// FIXME
 	NSDictionary *md = [NSDictionary dictionaryWithObjectsAndKeys: @"today", @"date", nil];
 	
-
+	
 	ETUUID *uuid = [store addCommitWithParent: baseCommit
 									 metadata: md
 						   UUIDsAndStoreItems: uuidsanditems
-									 rootItem: rootItem];
+									 rootItem: rootItemUUID];
 	
 	assert(uuid != nil);
 	
@@ -176,123 +254,50 @@ FIXME:
 	
 	ASSIGN(baseCommit, uuid);
 	[insertedOrUpdatedItems removeAllObjects];
-
+	
 	return uuid;
 }
 
-- (void) commitWithMergedVersionUUIDs: (NSArray*)anArray
+- (ETUUID *)rootUUID
 {
-	assert(0); // unimplemented
+	return rootItemUUID;
 }
 
-- (ETUUID *)rootEmbeddedObject
+- (COStoreItemTree *)rootItemTree
 {
-	return rootItem;
+	return [self storeItemTreeForUUID: rootItemUUID];
 }
 
-- (NSSet *)allItemUUIDs
+- (COStoreItemTree *)storeItemTreeForUUID: (ETUUID*) aUUID
 {
-	NSDictionary *existingItems = [store UUIDsAndStoreItemsForCommit: baseCommit];
+	NSSet *uuids = [[self _allEmbeddedObjectUUIDsForUUID: aUUID] setByAddingObject: aUUID];
 	
-	return [NSSet setWithArray: [[existingItems allKeys] arrayByAddingObjectsFromArray: [insertedOrUpdatedItems allKeys]]];
-}
-- (NSSet *)allItems
-{
-	NSMutableSet *result = [NSMutableSet set];
-	for (ETUUID *uuid in [self allItemUUIDs])
-	{
-		[result addObject: [self storeItemForUUID: uuid]];
-	}
-	return result;
-}
-
-- (COStoreItem *)storeItemForUUID: (ETUUID*) aUUID
-{
-	assert([aUUID isKindOfClass: [ETUUID class]]);
-	
-	COStoreItem *result = nil;
-	
-	if (baseCommit != nil)
-	{
-		result = [[[store storeItemForEmbeddedObject: aUUID inCommit: baseCommit] copy] autorelease];
-		assert(result != nil);
-	}
-		
-	COStoreItem *localResult = [[[insertedOrUpdatedItems objectForKey: aUUID] copy] autorelease];
-	
-	if (localResult != nil)
-	{
-		NSLog(@"overriding %@ with %@", result, localResult);
-		result = localResult;
-	}
-	
-	assert(result != nil); // either the store, or in memory, must have the value
-	
-	return result;
-}
-
-- (NSSet *) allEmbeddedObjectUUIDsForUUID: (ETUUID*) aUUID
-{
-	NILARG_EXCEPTION_TEST(aUUID);
-	
-	NSMutableSet *result = [NSMutableSet set];
-	
-	COStoreItem *item = [self storeItemForUUID: aUUID];
-	for (NSString *key in [item attributeNames])
-	{
-		NSDictionary *type = [item typeForAttribute: key];
-		if ([[type objectForKey: kCOPrimitiveType] isEqual: kCOPrimitiveTypeEmbeddedItem])
-		{		
-			for (ETUUID *embedded in [item allObjectsForAttribute: key])
-			{
-				[result addObject: embedded];
-				[result unionSet: [self allEmbeddedObjectUUIDsForUUID: embedded]];
-			}
-		}
-	}
-	return result;
-}
-
-- (NSSet *) allEmbeddedObjectUUIDsForUUIDInclusive: (ETUUID*) aUUID
-{
-	NILARG_EXCEPTION_TEST(aUUID);
-	
-	return [[self allEmbeddedObjectUUIDsForUUID: aUUID] setByAddingObject: aUUID];
-}
-
-- (NSSet *) allEmbeddedItemsForUUIDInclusive: (ETUUID*) aUUID
-{
-	NSSet *uuids = [self allEmbeddedObjectUUIDsForUUIDInclusive: aUUID];
-	NSMutableSet *result = [NSMutableSet setWithCapacity: [uuids count]];
+	NSMutableSet *items = [NSMutableSet set];
 	for (ETUUID *uuid in uuids)
 	{
-		[result addObject: [self storeItemForUUID: uuid]];
+		[items addObject: [self _storeItemForUUID: aUUID]];
 	}
-	return result;
+		 
+	return [COStoreItemTree itemTreeWithItems: items
+										 root: aUUID];
 }
 
-- (void) insertOrUpdateItems: (NSSet *)items
-	   newRootEmbeddedObject: (ETUUID*)aRoot
+- (void) updateItemTree: (COStoreItemTree*)anItemTree
 {
-	NILARG_EXCEPTION_TEST(items);
-	NILARG_EXCEPTION_TEST(aRoot);
-	
-	assert([items isKindOfClass: [NSSet class]]);
-	
-	ASSIGN(rootItem, aRoot);
-	
-	for (COStoreItem *item in items)
-	{
-		[insertedOrUpdatedItems setObject: item forKey: [item UUID]];
-	}
-	
-	// FIXME: validation
 }
 
-- (void) insertOrUpdateItems: (NSSet *)items
+- (void) insertItemTree: (COStoreItemTree *)aTree
+			 atItemPath: (COItemPath*)anItemPath
 {
-	[self insertOrUpdateItems: items
-		newRootEmbeddedObject: rootItem];
+}
+
+- (void) removeItemTreeAtItemPath: (COItemPath*)anItemPath
+{
+}
+
+- (void) moveItemAtPath: (COItemPath*)src toItemPath: (COItemPath*)dest
+{
+	
 }
 
 @end
