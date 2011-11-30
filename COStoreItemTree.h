@@ -11,4 +11,7 @@
 
 + (COStoreItemTree *)itemTreeWithItems: (NSSet*)items root: (ETUUID*)aRoot;
 
+- (NSSet *)items;
+- (ETUUID *)root;
+
 @end
