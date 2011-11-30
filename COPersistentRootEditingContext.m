@@ -201,18 +201,13 @@
 
 - (ETUUID *) commitWithMetadata: (COStoreItemTree *)aTree
 {
-	/*
-	 FIXME:
-	 how do we add undo/redo to this?
-	 for branches/roots that track a specific version, they should also have 
-	 a key/value called "tip". (terminology stolen from mercurial)
-	 
-	 - every commit to that branch root should set both "tracking" and "tip"
-	 to the same value.
-	 */
-	
+
 	//
+	// <<<<<<<<<<<<<<<<<<<<< LOCK DB, BEGIN TRANSACTION <<<<<<<<<<<<<<<<<<<<<
+	//
+	
 	// we need to check if we need to merge, first.
+	
 	
 	ETUUID *newBase = [[self class] _baseCommitForPath: [self path] store: [self store]];
 	if (baseCommit != nil && 
@@ -225,14 +220,14 @@
 	
 	// calculate final uuid set
 	assert(rootItemUUID != nil);
-	NSSet *finalUUIDSet = [self allEmbeddedObjectUUIDsForUUIDInclusive: rootItemUUID];
+	NSSet *finalUUIDSet = [[self _allEmbeddedObjectUUIDsForUUID: rootItemUUID] setByAddingObject: rootItemUUID];
 	
 	// set up the commit dictionary
 	NSMutableDictionary *uuidsanditems = [NSMutableDictionary dictionary];
 	{
 		for (ETUUID *uuid in finalUUIDSet)
 		{
-			COStoreItem *item = [self storeItemForUUID: uuid];
+			COStoreItem *item = [self _storeItemForUUID: uuid];
 			
 			[uuidsanditems setObject: item
 							  forKey: uuid];
@@ -243,19 +238,80 @@
 	NSDictionary *md = [NSDictionary dictionaryWithObjectsAndKeys: @"today", @"date", nil];
 	
 	
-	ETUUID *uuid = [store addCommitWithParent: baseCommit
+	ETUUID *newCommitUUID = [store addCommitWithParent: baseCommit
 									 metadata: md
 						   UUIDsAndStoreItems: uuidsanditems
 									 rootItem: rootItemUUID];
 	
-	assert(uuid != nil);
 	
-	// FIXME
+	assert(newCommitUUID != nil);
+
+	if ([path isEmpty])
+	{
+		[store setRootVersion: newCommitUUID];
+	}
+	 
 	
-	ASSIGN(baseCommit, uuid);
-	[insertedOrUpdatedItems removeAllObjects];
+	//
+	// >>>>>>>>>>>>>>>>>>>>> UNLOCK DB, COMMIT TRANSACTION >>>>>>>>>>>>>>>>>>>>>
+	//
 	
-	return uuid;
+	// if anything in the transaction failed, we can bail out here.
+	
+	
+	
+
+	// now update our path's parent
+	
+	if (![path isEmpty])
+	{
+		COPath *parentPath = [path pathByDeletingLastPathComponent];
+		ETUUID *ourUUID = [path lastPathComponent];
+		
+		COPersistentRootEditingContext *parentCtx = [[[self class] alloc] initWithPath: parentPath
+																			   inStore: store];
+		
+		COStoreItem *item = [parentCtx _storeItemForUUID: ourUUID];
+		assert(item != nil);
+		
+		// FIXME: move to COItemFactory or another utility class for dealing with persistent root data structures.
+		
+		// item may be a persistent root or a branch.
+		
+		if ([[item valueForAttribute: @"type"] isEqual: @"persistentRoot"])
+		{
+			COPath *currentBranchPath = [item valueForAttribute: @"currentBranch"];
+			ETUUID *currentBranch = [currentBranchPath lastPathComponent];
+			assert([[currentBranchPath pathByDeletingLastPathComponent] isEmpty]);
+			
+			item = [parentCtx _storeItemForUUID: currentBranch];
+			assert(item != nil);
+		}
+		
+		assert ([[item valueForAttribute: @"type"] isEqual: @"branch"]);
+		assert([[item typeForAttribute: @"tracking"] isEqual: COPrimitiveType(kCOPrimitiveTypeCommitUUID)]);
+		
+		ETUUID *trackedVersion = [item valueForAttribute: @"tracking"];
+		assert([trackedVersion isEqual: baseCommit]); // we already checked this earlier
+		[item setValue: newCommitUUID forAttribute: @"tracking" type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];
+		[item setValue: newCommitUUID forAttribute: @"tip" type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];
+		
+		// FIXME: set the item in the context!
+		
+		ETUUID *resultUUID = [parentCtx commitWithMetadata: nil];
+		assert (resultUUID != nil);
+		
+		[parentCtx release];
+	}
+	
+	
+	 // update our internal state
+	 
+	 ASSIGN(baseCommit, newCommitUUID);
+	 [insertedOrUpdatedItems removeAllObjects];
+	 
+		 
+	return newCommitUUID;
 }
 
 - (ETUUID *)rootUUID
