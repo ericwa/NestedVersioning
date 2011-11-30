@@ -44,8 +44,8 @@
 	NSArray *copiedItems = [[[NSArray alloc] initWithArray: [items allObjects]
 												 copyItems: YES] autorelease];
 	
-	return [COStoreItemTree itemTreeWithItems: [NSSet setWithArray: copiedItems]
-										 root: root];
+	return [[COStoreItemTree alloc] initWithItems: [NSSet setWithArray: copiedItems]
+											 root: root];
 }
 
 /* convenience */

@@ -1,7 +1,7 @@
 #import "COStore.h"
 #import "Common.h"
 #import "COStorePrivate.h"
-
+#import "COPersistentRootEditingContext.h"
 
 @implementation COStore
 

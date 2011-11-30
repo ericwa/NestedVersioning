@@ -46,7 +46,7 @@ ETUUID does not have a designated initializer. */
 /**
  * Initializes the UUID object with a 128-bit binary value.
  */
-- (id) initWithUUID: (const unsigned char *)aUUID;
+- (id) initWithUUIDBytes: (const unsigned char *)aUUID;
 /**
  * Initializes the UUID object from a string representation.
  */

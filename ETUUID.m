@@ -69,7 +69,7 @@ static void ETUUIDGet16RandomBytes(unsigned char bytes[16])
 	return self;
 }
 
-- (id) initWithUUID: (const unsigned char *)aUUID
+- (id) initWithUUIDBytes: (const unsigned char *)aUUID
 {
     SUPERINIT;
 
