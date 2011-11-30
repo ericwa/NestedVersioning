@@ -1,5 +1,8 @@
 #import <Foundation/Foundation.h>
 
+#import "COStoreItemTree.h"
+#import "COItemPath.h"
+
 @protocol COEditingContext <NSObject>
 
 - (id<COEditingContext>) editingContextForEditingEmbdeddedPersistentRoot: (ETUUID*)aRoot;

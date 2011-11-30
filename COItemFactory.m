@@ -1,13 +1,18 @@
 #import "COItemFactory.h"
-
+#import "COEditingContext.h"
+#import "COItemPath.h"
+#import "COPath.h"
+#import "COPersistentRootEditingContext.h"
+#import "Common.h"
 
 @implementation COItemFactory
 
 - (ETUUID *) copyEmbeddedObject: (ETUUID *)src
-					fromContext: (id<COEditingContext>)srcCtx;
+					fromContext: (id<COEditingContext>)srcCtx
 					insertInto: (ETUUID *)dest
 					inContext: (id<COEditingContext>)destCtx
 {
+#if 0
 	// 1. if src is already in the destination context
 	//    delete it and all its contents.
 	// 2. S = the set of items in src which are already in destCtx
@@ -49,6 +54,7 @@
 	[updatesAndInserts addObject: dest];
 	
 	[self insertOrUpdateItems: updatesAndInserts];
+#endif
 }
 
 

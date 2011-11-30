@@ -18,7 +18,7 @@
 		COPath *parentPath = [aPath pathByDeletingLastPathComponent];
 		ETUUID *lastPathComponent = [aPath lastPathComponent];
 		ETUUID *parentCommit = [self _baseCommitForPath: parentPath store: aStore];
-		COStoreItem *item = [store storeItemForEmbeddedObject: lastPathComponent
+		COStoreItem *item = [aStore storeItemForEmbeddedObject: lastPathComponent
 													 inCommit: parentCommit];
 		
 		// FIXME: move to COItemFactory or another utility class for dealing with persistent root data structures.
@@ -31,7 +31,7 @@
 			ETUUID *currentBranch = [currentBranchPath lastPathComponent];
 			assert([[currentBranchPath pathByDeletingLastPathComponent] isEmpty]);
 			
-			item = [store storeItemForEmbeddedObject: currentBranch
+			item = [aStore storeItemForEmbeddedObject: currentBranch
 											inCommit: parentCommit];
 		}
 		
