@@ -54,6 +54,12 @@
 	NILARG_EXCEPTION_TEST(aPath);
 	NILARG_EXCEPTION_TEST(aStore);
 	
+	if ([aPath hasLeadingPathsToParent])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"cannot create context with a path with leading ../"];
+	}
+	
     SUPERINIT;
 	
 	insertedOrUpdatedItems = [[NSMutableDictionary alloc] init];
@@ -127,6 +133,17 @@ FIXME:
 			to the same value.
 			*/
 			
+	//
+	// we need to check if we need to merge, first.
+	
+	ETUUID *newBase = [[self class] _baseCommitForPath: [self path] store: [self store]];
+	if (baseCommit != nil && 
+		![newBase isEqual: baseCommit])
+	{
+		[NSException raise: NSInternalInconsistencyException
+					format: @"Merging not yet supported"];
+	}
+	
 	
 	// calculate final uuid set
 	assert(rootItem != nil);
