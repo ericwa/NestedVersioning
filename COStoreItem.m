@@ -219,9 +219,11 @@ static id importPrimitiveFromPlist(id aValue, NSDictionary *aType)
 static id exportToPlist(id aValue, NSDictionary *aType)
 {
 	NSString *typeKind = [aType objectForKey: kCOTypeKind];
+	id plistValue;
+	
 	if ([typeKind isEqualTo: kCOPrimitiveTypeKind])
 	{
-		return exportPrimitiveToPlist(aValue, aType);
+		plistValue = exportPrimitiveToPlist(aValue, aType);
 	}
 	else if ([typeKind isEqualTo: kCOContainerTypeKind])
 	{
@@ -231,13 +233,30 @@ static id exportToPlist(id aValue, NSDictionary *aType)
 			[result addObject: exportPrimitiveToPlist(obj, D(kCOPrimitiveTypeKind, kCOTypeKind,
 															 [aType objectForKey: kCOPrimitiveType], kCOPrimitiveType))];
 		}
-		return result;
+		plistValue = result;
 	}
-	assert(0);
+	else
+	{
+		assert(0);
+	}
+
+	assert(aType != nil);
+	assert(plistValue != nil);
+	
+	return D(aType, @"type",
+			 plistValue, @"value");
+	
 }
 
-static id importFromPlist(id aValue, NSDictionary *aType)
+static NSDictionary *importTypeFromPlist(id aPlist)
 {
+	return [aPlist objectForKey: @"type"];
+}
+
+static id importValueFromPlist(id aPlist)
+{
+	NSDictionary *aType = importTypeFromPlist(aPlist);
+	id aValue = [aPlist objectForKey: @"value"];
 	NSString *typeKind = [aType objectForKey: kCOTypeKind];
 	if ([typeKind isEqualTo: kCOPrimitiveTypeKind])
 	{
@@ -272,7 +291,6 @@ static id importFromPlist(id aValue, NSDictionary *aType)
 	assert(0);
 }
 
-
 - (id)plist
 {
 	NSMutableDictionary *plistValues = [NSMutableDictionary dictionary];
@@ -286,7 +304,6 @@ static id importFromPlist(id aValue, NSDictionary *aType)
 	
 	return [NSDictionary dictionaryWithObjectsAndKeys:
 			plistValues, @"values",
-			types, @"types",
 			[uuid stringValue], @"uuid",
 			nil];
 }
@@ -295,17 +312,25 @@ static id importFromPlist(id aValue, NSDictionary *aType)
 {
 	SUPERINIT;
 	ASSIGN(uuid, [ETUUID UUIDWithString: [aPlist objectForKey: @"uuid"]]);
-	ASSIGN(types, [aPlist objectForKey: @"types"]);
-	
+		
 	NSMutableDictionary *importedValues = [NSMutableDictionary dictionary];
+	NSMutableDictionary *importedTypes = [NSMutableDictionary dictionary];
 	for (NSString *key in [aPlist objectForKey: @"values"])
 	{
-		id importedValue = importFromPlist([[aPlist objectForKey: @"values"] objectForKey: key], [types objectForKey: key]);
-		[importedValues setObject: importedValue 
+		id objPlist = [[aPlist objectForKey: @"values"] objectForKey: key];
+		
+		[importedValues setObject: importValueFromPlist(objPlist)
 						   forKey: key];
+		
+		[importedTypes setObject: importTypeFromPlist(objPlist)
+						  forKey: key];
 	}
-	
 	ASSIGN(values, importedValues);
+	ASSIGN(types, importedTypes);	
+
+	assert([[[types allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)]
+			isEqual: [[values allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)]]);	
+	
 	return self;
 }
 
