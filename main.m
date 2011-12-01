@@ -181,19 +181,36 @@ static void testEditingContextEmbeddedObjects()
 	// 4. Try making a commit in the document
 	//
 	
+
+	COStoreItem *nestedDocCtx2 = [ctx2 _storeItemForUUID: [nestedDocumentRootItem UUID]];
+	EWTestEqual(nestedDocumentRootItem, nestedDocCtx2);
+	
+	[nestedDocCtx2 setValue: @"green"
+			   forAttribute: @"color"
+					   type: COPrimitiveType(kCOPrimitiveTypeString)];
+	
+	[ctx2 _insertOrUpdateItems: S(nestedDocCtx2)];
+	
+	ETUUID *commitInNestedDocCtx2 = [ctx2 commitWithMetadata: nil];
+	
+	EWTestTrue(nil != commitInNestedDocCtx2);
+
+	
+	//
+	// 5. Reopen store and check that we read back the same data
+	//
+	
+	[store release];
+	
 	{
-		COStoreItem *nestedDocCtx2 = [ctx2 _storeItemForUUID: [nestedDocumentRootItem UUID]];
-		EWTestEqual(nestedDocumentRootItem, nestedDocCtx2);
+		COStore *store2 = [[COStore alloc] initWithURL: [NSURL fileURLWithPath: STOREPATH]];
+	
+		id<COEditingContext> testctx1 = [store2 rootContext];
+		id<COEditingContext> testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: [testctx1 rootUUID]];
 		
-		[nestedDocCtx2 setValue: @"green"
-				   forAttribute: @"color"
-						   type: COPrimitiveType(kCOPrimitiveTypeString)];
+		EWTestEqual(nestedDocCtx2, [testctx2 _storeItemForUUID: [testctx2 rootUUID]]);
 		
-		[ctx2 _insertOrUpdateItems: S(nestedDocCtx2)];
-		
-		ETUUID *commitInNestedDocCtx2 = [ctx2 commitWithMetadata: nil];
-		
-		EWTestTrue(nil != commitInNestedDocCtx2);
+		[store2 release];
 	}
 }
 
