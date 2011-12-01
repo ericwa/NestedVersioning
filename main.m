@@ -98,6 +98,29 @@ static void testPath()
 static void testEditingContextEmbeddedObjects()
 {
 	COStore *store = setupStore();
+	
+	//	
+	// 1. first set up a nested persistent root
+	//
+	
+	ETUUID *nestedDocumentInitialVersion;
+	COStoreItem *nestedDocumentRootItem = [COStoreItem item];
+	[nestedDocumentRootItem setValue: @"red"
+						forAttribute: @"color"
+								type: COPrimitiveType(kCOPrimitiveTypeString)];
+	
+	nestedDocumentInitialVersion = [store addCommitWithParent: nil
+													 metadata: nil
+										   UUIDsAndStoreItems: D(nestedDocumentRootItem, [nestedDocumentRootItem UUID])
+													 rootItem: [nestedDocumentRootItem UUID]];
+	assert(nestedDocumentInitialVersion != nil);
+
+	
+	
+	//	
+	// 2. set up the root context
+	//	
+	
 	id<COEditingContext> ctx = [store rootContext];
 	
 	// at this point the context is empty.
@@ -109,18 +132,26 @@ static void testEditingContextEmbeddedObjects()
 	
 	COStoreItem *i1 = [COStoreItem item];
 	COStoreItem *i2 = [COStoreItem item];
-	
-	[i1 setValue: @"hello"
+
+	[i1 setValue: @"persistentRoot"
+	forAttribute: @"type"
+			type: COPrimitiveType(kCOPrimitiveTypeString)];	
+	[i1 setValue: @"test document"
 	forAttribute: @"name"
 			type: COPrimitiveType(kCOPrimitiveTypeString)];
-	
+	[i1 setValue: [COPath pathWithPathComponent: [i2 UUID]]
+	forAttribute: @"currentBranch"
+			type: COPrimitiveType(kCOPrimitiveTypePath)];	
 	[i1 setValue: S([i2 UUID])
 	forAttribute: @"contents"
 			type: COSetContainerType(kCOPrimitiveTypeEmbeddedItem)];
 	
-	[i2 setValue: @"world"
-	forAttribute: @"name"
-			type: COPrimitiveType(kCOPrimitiveTypeString)];
+	[i2 setValue: @"branch"
+	forAttribute: @"type"
+			type: COPrimitiveType(kCOPrimitiveTypeString)];	
+	[i2 setValue: nestedDocumentInitialVersion
+	forAttribute: @"tracking"
+			type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];		
 	
 	[ctx _insertOrUpdateItems: S(i1, i2)
 		newRootEmbeddedObject: [i1 UUID]];
@@ -136,7 +167,34 @@ static void testEditingContextEmbeddedObjects()
 	
 	EWTestEqual(i1, [ctx _storeItemForUUID: [i1 UUID]]);
 	EWTestEqual(i2, [ctx _storeItemForUUID: [i2 UUID]]);
+	
+	
+	//
+	// 3. Now open an embedded context on the document
+	//
 
+	id<COEditingContext> ctx2 = [ctx editingContextForEditingEmbdeddedPersistentRoot: [i1 UUID]];
+	EWTestTrue(nil != ctx2);
+	EWTestEqual([nestedDocumentRootItem UUID], [ctx2 rootUUID]);
+	
+	//
+	// 4. Try making a commit in the document
+	//
+	
+	{
+		COStoreItem *nestedDocCtx2 = [ctx2 _storeItemForUUID: [nestedDocumentRootItem UUID]];
+		EWTestEqual(nestedDocumentRootItem, nestedDocCtx2);
+		
+		[nestedDocCtx2 setValue: @"green"
+				   forAttribute: @"color"
+						   type: COPrimitiveType(kCOPrimitiveTypeString)];
+		
+		[ctx2 _insertOrUpdateItems: S(nestedDocCtx2)];
+		
+		ETUUID *commitInNestedDocCtx2 = [ctx2 commitWithMetadata: nil];
+		
+		EWTestTrue(nil != commitInNestedDocCtx2);
+	}
 }
 
 static void testStoreItem()
