@@ -83,7 +83,7 @@
 + (COPersistentRootEditingContext *) editingContextForEditingPath: (COPath*)aPath
 														  inStore: (COStore *)aStore
 {
-	return [[[self alloc] initWithPath: [COPath path]
+	return [[[self alloc] initWithPath: aPath
 							   inStore: aStore] autorelease];
 }
 
