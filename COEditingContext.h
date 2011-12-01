@@ -5,8 +5,25 @@
 
 @protocol COEditingContext <NSObject>
 
+
+/**
+ * preconditions: (if not satisfied, the method should throw an exception)
+ *  - the provided UUID must identify a valid persistent root item in the
+ *    reciever, which has a valid branch child, which point to an (existing) store commit/version.
+ *    These must be committed already, not just in-memory.
+ */
 - (id<COEditingContext>) editingContextForEditingEmbdeddedPersistentRoot: (ETUUID*)aRoot;
 
+/**
+ * preconditions: (if not satisfied, the method should throw an exception)
+ * 
+ * - given the context has a path "u1/u2/u3../uN", 
+ *   * path element u1 must be a persistent root in the store's top-level persistent root.
+ *   * for each path element uI in the range u1..uN, the persistent root item uI must
+ *     have a current branch child item which points to a version which represents 
+ *     the contents of that persistent root.
+ *
+ */
 - (ETUUID *) commitWithMetadata: (COStoreItemTree *)aTree;
 
 /**

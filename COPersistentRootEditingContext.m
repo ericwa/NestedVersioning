@@ -176,7 +176,23 @@
 	return result;
 }
 
-
+- (void) _insertOrUpdateItems: (NSSet *)items
+		newRootEmbeddedObject: (ETUUID*)aRoot
+{
+	NILARG_EXCEPTION_TEST(items);
+	NILARG_EXCEPTION_TEST(aRoot);
+	
+	assert([items isKindOfClass: [NSSet class]]);
+	
+	ASSIGN(rootItemUUID, aRoot);
+	
+	for (COStoreItem *item in items)
+	{
+		[insertedOrUpdatedItems setObject: item forKey: [item UUID]];
+	}
+	
+	// FIXME: validation
+}
 
 
 
@@ -296,7 +312,7 @@
 		[item setValue: newCommitUUID forAttribute: @"tracking" type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];
 		[item setValue: newCommitUUID forAttribute: @"tip" type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];
 		
-		// FIXME: set the item in the context!
+		//[parentCtx _insertOrUpdateItems: S(item)
 		
 		ETUUID *resultUUID = [parentCtx commitWithMetadata: nil];
 		assert (resultUUID != nil);
