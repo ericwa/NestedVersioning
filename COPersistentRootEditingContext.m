@@ -194,6 +194,11 @@
 	// FIXME: validation
 }
 
+- (void) _insertOrUpdateItems: (NSSet *)items
+{
+	[self _insertOrUpdateItems: items newRootEmbeddedObject: rootItemUUID];
+}
+
 
 
 
@@ -312,7 +317,7 @@
 		[item setValue: newCommitUUID forAttribute: @"tracking" type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];
 		[item setValue: newCommitUUID forAttribute: @"tip" type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];
 		
-		//[parentCtx _insertOrUpdateItems: S(item)
+		[parentCtx _insertOrUpdateItems: S(item)];
 		
 		ETUUID *resultUUID = [parentCtx commitWithMetadata: nil];
 		assert (resultUUID != nil);

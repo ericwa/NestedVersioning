@@ -60,4 +60,11 @@
 
 //- (void) moveItemAtPath: (COItemPath*)src toItemPath: (COItemPath*)dest;
 
+// temporary protocol for updating... need to figure out a better one
+
+- (void) _insertOrUpdateItems: (NSSet *)items
+		newRootEmbeddedObject: (ETUUID*)aRoot;
+
+- (void) _insertOrUpdateItems: (NSSet *)items;
+
 @end

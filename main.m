@@ -103,8 +103,8 @@ static void testEditingContextEmbeddedObjects()
 	// at this point the context is empty.
 	// in particular, it has no rootEmbeddedObject, which means it contains no embedded objets.
 	// this means we can't commit.
-#if 0	
-	EWTestTrue(nil == [ctx rootEmbeddedObject]);
+	
+	EWTestTrue(nil == [ctx rootUUID]);
 	EWTestTrue(nil == [store rootVersion]);
 	
 	COStoreItem *i1 = [COStoreItem item];
@@ -122,22 +122,21 @@ static void testEditingContextEmbeddedObjects()
 	forAttribute: @"name"
 			type: COPrimitiveType(kCOPrimitiveTypeString)];
 	
-	[ctx insertOrUpdateItems: S(i1, i2)
-	   newRootEmbeddedObject: [i1 UUID]];
+	[ctx _insertOrUpdateItems: S(i1, i2)
+		newRootEmbeddedObject: [i1 UUID]];
 	
-	EWTestEqual([i1 UUID], [ctx rootEmbeddedObject]);
-	EWTestEqual(S([i1 UUID], [i2 UUID]),
-				[ctx allEmbeddedObjectUUIDsForUUIDInclusive: [i1 UUID]]);	
+	EWTestEqual([i1 UUID], [ctx rootUUID]);
+//	EWTestEqual(S([i1 UUID], [i2 UUID]),
+//				[ctx rootItemTree]);	
 	
-	ETUUID *firstVersion = [ctx commit];
+	ETUUID *firstVersion = [ctx commitWithMetadata: nil];
 	EWTestTrue(firstVersion != nil);
-	
+	EWTestEqual(firstVersion, [store rootVersion]);
 	// test reading back the items
 	
-	EWTestEqual(i1, [ctx storeItemForUUID: [i1 UUID]]);
-	EWTestEqual(i2, [ctx storeItemForUUID: [i2 UUID]]);
-	
-#endif
+	EWTestEqual(i1, [ctx _storeItemForUUID: [i1 UUID]]);
+	EWTestEqual(i2, [ctx _storeItemForUUID: [i2 UUID]]);
+
 }
 
 static void testStoreItem()
