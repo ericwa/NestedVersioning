@@ -93,7 +93,8 @@ NSDictionary *COPrimitiveType(NSString *aPrimitiveType)
 
 - (NSArray *) attributeNames
 {
-	assert([[types allKeys] isEqual: [values allKeys]]);	
+	assert([[[types allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)]
+			isEqual: [[values allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)]]);	
 	return [types allKeys];
 }
 
