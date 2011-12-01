@@ -202,16 +202,24 @@ static void testEditingContextEmbeddedObjects()
 	
 	[store release];
 	
-	{
-		COStore *store2 = [[COStore alloc] initWithURL: [NSURL fileURLWithPath: STOREPATH]];
 	
-		id<COEditingContext> testctx1 = [store2 rootContext];
-		id<COEditingContext> testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: [testctx1 rootUUID]];
+	COStore *store2 = [[COStore alloc] initWithURL: [NSURL fileURLWithPath: STOREPATH]];
+	
+	id<COEditingContext> testctx1 = [store2 rootContext];
+	id<COEditingContext> testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: [testctx1 rootUUID]];
 		
-		EWTestEqual(nestedDocCtx2, [testctx2 _storeItemForUUID: [testctx2 rootUUID]]);
-		
-		[store2 release];
-	}
+	EWTestEqual(nestedDocCtx2, [testctx2 _storeItemForUUID: [testctx2 rootUUID]]);
+	
+	[store2 release];
+	
+	
+	//
+	// 6. GC the store
+	// 
+	
+	EWTestTrue(4 == [[store2 allCommitUUIDs] count]);
+	[store2 gc];
+	EWTestTrue(3 == [[store2 allCommitUUIDs] count]);	
 }
 
 static void testStoreItem()

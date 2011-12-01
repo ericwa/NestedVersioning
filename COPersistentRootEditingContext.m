@@ -258,8 +258,16 @@
 	// FIXME
 	NSDictionary *md = [NSDictionary dictionaryWithObjectsAndKeys: @"today", @"date", nil];
 	
+	// This is kind of a hack. If we are committing to the top-level of the store,
+	// which is conceptually unversioned, don't set a parent pointer on the commit.
+	// This will ensure old versions get GC'ed.
+	ETUUID *commitParent = baseCommit;
+	if ([path isEmpty])
+	{
+		commitParent = nil;
+	}
 	
-	ETUUID *newCommitUUID = [store addCommitWithParent: baseCommit
+	ETUUID *newCommitUUID = [store addCommitWithParent: commitParent
 									 metadata: md
 						   UUIDsAndStoreItems: uuidsanditems
 									 rootItem: rootItemUUID];
