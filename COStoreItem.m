@@ -76,6 +76,7 @@ NSDictionary *COPrimitiveType(NSString *aPrimitiveType)
 
 - (void) dealloc
 {
+	[uuid release];
 	[types release];
 	[values release];
 	[super dealloc];
