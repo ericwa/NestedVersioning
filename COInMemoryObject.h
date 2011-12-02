@@ -12,9 +12,8 @@
 @interface COInMemoryObject : NSObject
 {
 @private
-	ETUUID *uuid;
-	NSMutableDictionary *types;
-	NSMutableDictionary *values;
+	COStoreItem *item;
+	NSMutableDictionary *inMemoryObjectForEmbeddedUUID;
 }
 
 - (id) initWithUUID: (ETUUID*)aUUID;

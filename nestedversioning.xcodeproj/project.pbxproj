@@ -15,7 +15,7 @@
 		66E2FFA91489576A00C66578 /* COSimpleContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E2FFA81489576A00C66578 /* COSimpleContext.m */; };
 		66E2FFAE14896E4B00C66578 /* COObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E2FFAD14896E4B00C66578 /* COObject.m */; };
 		66E2FFB114896E7D00C66578 /* COObjectContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E2FFB014896E7D00C66578 /* COObjectContext.m */; };
-		66E2FFB514896EFE00C66578 /* COInMemoryObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E2FFB414896EFE00C66578 /* COInMemoryObject.m */; };
+		66E2FFB814899C7B00C66578 /* COPersistentRootEditingContext+PersistentRoots.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E2FFB714899C7A00C66578 /* COPersistentRootEditingContext+PersistentRoots.m */; };
 		66E46D48146A3D490042123E /* TestDeletion.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E46D47146A3D490042123E /* TestDeletion.m */; };
 		66E552B5146B7799008FDFAF /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E552B4146B7799008FDFAF /* libcrypto.dylib */; };
 		66E59CCA1465F38500E16AD5 /* COPersistentRootDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E59CC91465F38400E16AD5 /* COPersistentRootDiff.m */; };
@@ -78,6 +78,8 @@
 		66E2FFB014896E7D00C66578 /* COObjectContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COObjectContext.m; sourceTree = "<group>"; };
 		66E2FFB314896EFE00C66578 /* COInMemoryObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COInMemoryObject.h; sourceTree = "<group>"; };
 		66E2FFB414896EFE00C66578 /* COInMemoryObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COInMemoryObject.m; sourceTree = "<group>"; };
+		66E2FFB614899C7A00C66578 /* COPersistentRootEditingContext+PersistentRoots.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COPersistentRootEditingContext+PersistentRoots.h"; sourceTree = "<group>"; };
+		66E2FFB714899C7A00C66578 /* COPersistentRootEditingContext+PersistentRoots.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "COPersistentRootEditingContext+PersistentRoots.m"; sourceTree = "<group>"; };
 		66E46D47146A3D490042123E /* TestDeletion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestDeletion.m; sourceTree = "<group>"; };
 		66E552B4146B7799008FDFAF /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = usr/lib/libcrypto.dylib; sourceTree = SDKROOT; };
 		66E59CC81465F38400E16AD5 /* COPersistentRootDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPersistentRootDiff.h; sourceTree = "<group>"; };
@@ -222,6 +224,8 @@
 			children = (
 				66EE5D34146355A6008AA95B /* COPersistentRootEditingContext.h */,
 				66EE5D35146355A6008AA95B /* COPersistentRootEditingContext.m */,
+				66E2FFB614899C7A00C66578 /* COPersistentRootEditingContext+PersistentRoots.h */,
+				66E2FFB714899C7A00C66578 /* COPersistentRootEditingContext+PersistentRoots.m */,
 				66E5CBA814830C5700D01039 /* COStorePrivate.h */,
 				66E877561455F0CB006CBE7E /* COStore.m */,
 				66EADD68147345B9003181FC /* COStoreItem.m */,
@@ -334,7 +338,7 @@
 				66E2FFA91489576A00C66578 /* COSimpleContext.m in Sources */,
 				66E2FFAE14896E4B00C66578 /* COObject.m in Sources */,
 				66E2FFB114896E7D00C66578 /* COObjectContext.m in Sources */,
-				66E2FFB514896EFE00C66578 /* COInMemoryObject.m in Sources */,
+				66E2FFB814899C7B00C66578 /* COPersistentRootEditingContext+PersistentRoots.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

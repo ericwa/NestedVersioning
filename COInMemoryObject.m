@@ -11,7 +11,7 @@
 	SUPERINIT;
 	ASSIGN(uuid, aUUID);
 	types = [[NSMutableDictionary alloc] init];
-	values = [[NSMutableDictionary alloc] init];
+	inMemoryObjectForEmbeddedUUID = [[NSMutableDictionary alloc] init];
 	return self;
 }
 
@@ -29,7 +29,7 @@
 {
 	[uuid release];
 	[types release];
-	[values release];
+	[inMemoryObjectForEmbeddedUUID release];
 	[super dealloc];
 }
 
