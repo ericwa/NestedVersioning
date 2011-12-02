@@ -12,6 +12,10 @@
 		66E0189C146455C8000EB1E0 /* TestPhotoMontage.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E0189B146455C8000EB1E0 /* TestPhotoMontage.m */; };
 		66E0189F146468F6000EB1E0 /* TestBLOB.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E0189E146468F6000EB1E0 /* TestBLOB.m */; };
 		66E22EC91421D47100C00A98 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E22EC81421D47100C00A98 /* Foundation.framework */; };
+		66E2FFA91489576A00C66578 /* COSimpleContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E2FFA81489576A00C66578 /* COSimpleContext.m */; };
+		66E2FFAE14896E4B00C66578 /* COObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E2FFAD14896E4B00C66578 /* COObject.m */; };
+		66E2FFB114896E7D00C66578 /* COObjectContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E2FFB014896E7D00C66578 /* COObjectContext.m */; };
+		66E2FFB514896EFE00C66578 /* COInMemoryObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E2FFB414896EFE00C66578 /* COInMemoryObject.m */; };
 		66E46D48146A3D490042123E /* TestDeletion.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E46D47146A3D490042123E /* TestDeletion.m */; };
 		66E552B5146B7799008FDFAF /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E552B4146B7799008FDFAF /* libcrypto.dylib */; };
 		66E59CCA1465F38500E16AD5 /* COPersistentRootDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E59CC91465F38400E16AD5 /* COPersistentRootDiff.m */; };
@@ -66,6 +70,14 @@
 		66E22EC61421D47100C00A98 /* nestedversioning */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = nestedversioning; sourceTree = BUILT_PRODUCTS_DIR; };
 		66E22EC81421D47100C00A98 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		66E2A3031430569C00487419 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
+		66E2FFA71489576A00C66578 /* COSimpleContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COSimpleContext.h; sourceTree = "<group>"; };
+		66E2FFA81489576A00C66578 /* COSimpleContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COSimpleContext.m; sourceTree = "<group>"; };
+		66E2FFAC14896E4B00C66578 /* COObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COObject.h; sourceTree = "<group>"; };
+		66E2FFAD14896E4B00C66578 /* COObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COObject.m; sourceTree = "<group>"; };
+		66E2FFAF14896E7D00C66578 /* COObjectContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COObjectContext.h; sourceTree = "<group>"; };
+		66E2FFB014896E7D00C66578 /* COObjectContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COObjectContext.m; sourceTree = "<group>"; };
+		66E2FFB314896EFE00C66578 /* COInMemoryObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COInMemoryObject.h; sourceTree = "<group>"; };
+		66E2FFB414896EFE00C66578 /* COInMemoryObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COInMemoryObject.m; sourceTree = "<group>"; };
 		66E46D47146A3D490042123E /* TestDeletion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestDeletion.m; sourceTree = "<group>"; };
 		66E552B4146B7799008FDFAF /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = usr/lib/libcrypto.dylib; sourceTree = SDKROOT; };
 		66E59CC81465F38400E16AD5 /* COPersistentRootDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPersistentRootDiff.h; sourceTree = "<group>"; };
@@ -124,7 +136,9 @@
 				66E877691455FE5B006CBE7E /* ETUUID.h */,
 				66E8776A1455FE67006CBE7E /* ETUUID.m */,
 				66DFAECA142A726100623060 /* test-Prefix.pch */,
+				66E2FFB214896EE300C66578 /* COInMemoryObject */,
 				66DFAEC4142A726100623060 /* Common.h */,
+				66E2FFAB14896E3300C66578 /* COObject */,
 				6628FB99142FA65D0072767A /* EWTest.h */,
 				6628FB9A142FA65D0072767A /* EWTest.m */,
 				66E2A305143057A100487419 /* Store */,
@@ -177,9 +191,30 @@
 				66E5CBAA148310D200D01039 /* COEditingContext.h */,
 				66E5CBAC1483199C00D01039 /* COStoreItemTree.h */,
 				7990AD7A148362FE00FD795B /* COItemFactory.h */,
+				66E2FFA71489576A00C66578 /* COSimpleContext.h */,
 				66E5CBAB148311A000D01039 /* Private */,
 			);
 			name = Store;
+			sourceTree = "<group>";
+		};
+		66E2FFAB14896E3300C66578 /* COObject */ = {
+			isa = PBXGroup;
+			children = (
+				66E2FFAC14896E4B00C66578 /* COObject.h */,
+				66E2FFAD14896E4B00C66578 /* COObject.m */,
+				66E2FFAF14896E7D00C66578 /* COObjectContext.h */,
+				66E2FFB014896E7D00C66578 /* COObjectContext.m */,
+			);
+			name = COObject;
+			sourceTree = "<group>";
+		};
+		66E2FFB214896EE300C66578 /* COInMemoryObject */ = {
+			isa = PBXGroup;
+			children = (
+				66E2FFB314896EFE00C66578 /* COInMemoryObject.h */,
+				66E2FFB414896EFE00C66578 /* COInMemoryObject.m */,
+			);
+			name = COInMemoryObject;
 			sourceTree = "<group>";
 		};
 		66E5CBAB148311A000D01039 /* Private */ = {
@@ -193,6 +228,7 @@
 				66E779CF14801F0E005A091E /* COItemPath.m */,
 				66E5CBAD1483199C00D01039 /* COStoreItemTree.m */,
 				7990AD7B148362FE00FD795B /* COItemFactory.m */,
+				66E2FFA81489576A00C66578 /* COSimpleContext.m */,
 			);
 			name = Private;
 			sourceTree = "<group>";
@@ -295,6 +331,10 @@
 				7990AD7C148362FE00FD795B /* COItemFactory.m in Sources */,
 				79156DBA1484BE4D00AB66B1 /* TestConcurrentContextModification.m in Sources */,
 				790B1AE91485B184001ED869 /* TestSimpleUseOfNestedPersistentRoots.m in Sources */,
+				66E2FFA91489576A00C66578 /* COSimpleContext.m in Sources */,
+				66E2FFAE14896E4B00C66578 /* COObject.m in Sources */,
+				66E2FFB114896E7D00C66578 /* COObjectContext.m in Sources */,
+				66E2FFB514896EFE00C66578 /* COInMemoryObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
