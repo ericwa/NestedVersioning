@@ -28,6 +28,7 @@
 		66F4E31A147C606A004FC1BA /* TestGameEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F4E319147C606A004FC1BA /* TestGameEditor.m */; };
 		790B1AE91485B184001ED869 /* TestSimpleUseOfNestedPersistentRoots.m in Sources */ = {isa = PBXBuildFile; fileRef = 790B1AE81485B184001ED869 /* TestSimpleUseOfNestedPersistentRoots.m */; };
 		79156DBA1484BE4D00AB66B1 /* TestConcurrentContextModification.m in Sources */ = {isa = PBXBuildFile; fileRef = 79156DB91484BE4D00AB66B1 /* TestConcurrentContextModification.m */; };
+		79ABB073148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 79ABB072148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -90,6 +91,8 @@
 		66F4E319147C606A004FC1BA /* TestGameEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestGameEditor.m; sourceTree = "<group>"; };
 		790B1AE81485B184001ED869 /* TestSimpleUseOfNestedPersistentRoots.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSimpleUseOfNestedPersistentRoots.m; sourceTree = "<group>"; };
 		79156DB91484BE4D00AB66B1 /* TestConcurrentContextModification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestConcurrentContextModification.m; sourceTree = "<group>"; };
+		79ABB071148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COPersistentRootEditingContext+Convenience.h"; sourceTree = "<group>"; };
+		79ABB072148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "COPersistentRootEditingContext+Convenience.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -171,6 +174,7 @@
 				66E5CBAA148310D200D01039 /* COEditingContext.h */,
 				66EE5D34146355A6008AA95B /* COPersistentRootEditingContext.h */,
 				66E2FFB614899C7A00C66578 /* COPersistentRootEditingContext+PersistentRoots.h */,
+				79ABB071148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.h */,
 				66E5CBAB148311A000D01039 /* Implementation */,
 			);
 			name = Store;
@@ -181,6 +185,7 @@
 			children = (
 				66EE5D35146355A6008AA95B /* COPersistentRootEditingContext.m */,
 				66E2FFB714899C7A00C66578 /* COPersistentRootEditingContext+PersistentRoots.m */,
+				79ABB072148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.m */,
 				66E5CBA814830C5700D01039 /* COStorePrivate.h */,
 				66E877561455F0CB006CBE7E /* COStore.m */,
 				66EADD68147345B9003181FC /* COStoreItem.m */,
@@ -286,6 +291,7 @@
 				79156DBA1484BE4D00AB66B1 /* TestConcurrentContextModification.m in Sources */,
 				790B1AE91485B184001ED869 /* TestSimpleUseOfNestedPersistentRoots.m in Sources */,
 				66E2FFB814899C7B00C66578 /* COPersistentRootEditingContext+PersistentRoots.m in Sources */,
+				79ABB073148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

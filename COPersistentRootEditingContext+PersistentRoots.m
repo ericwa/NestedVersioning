@@ -1,4 +1,5 @@
 #import "COPersistentRootEditingContext+PersistentRoots.h"
+#import "COPersistentRootEditingContext+Convenience.h"
 #import "Common.h"
 #import "COStoreItem.h"
 #import "ETUUID.h"
@@ -41,29 +42,12 @@
 	forAttribute: @"tip"
 			type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];	
 	
-	// insert
-	
-	COStoreItem *destItem = [self _storeItemForUUID: aDest];
-	assert(destItem != nil);
-	
-	// FIXME: Factor out!
-	
-	NSSet *destContents = [destItem valueForAttribute: @"contents"];
-	if (destContents == nil)
-	{
-		destContents = S([i1 UUID]);
-	}
-	else
-	{
-		assert([destContents isKindOfClass: [NSSet class]]);
-		destContents = [destContents setByAddingObject: [i1 UUID]];
-	}
-	
-	[destItem setValue: destContents
-		  forAttribute: @"contents"
-				  type: COSetContainerType(kCOPrimitiveTypeEmbeddedItem)];
-	
-	[self _insertOrUpdateItems: S(i1, i2, destItem)];
+	[self insertValue: [i1 UUID]
+		primitiveType: kCOPrimitiveTypeEmbeddedItem
+	   inSetAttribute: @"contents"
+			 ofObject: aDest];
+		 
+	[self _insertOrUpdateItems: S(i1, i2)];
 
 	return [i1 UUID];
 }
@@ -177,29 +161,12 @@
 	assert([[i2 valueForAttribute: @"type"] isEqual: @"branch"]);
 	assert([[i2 typeForAttribute: @"tracking"] isEqual: COPrimitiveType(kCOPrimitiveTypeCommitUUID)]);
 	
-	// insert
+	[self insertValue: [i1 UUID]
+		primitiveType: kCOPrimitiveTypeEmbeddedItem
+	   inSetAttribute: @"contents"
+			 ofObject: aDest];
 	
-	COStoreItem *destItem = [self _storeItemForUUID: aDest];
-	assert(destItem != nil);
-	
-	NSSet *destContents = [destItem valueForAttribute: @"contents"];
-	// FIXME: Factor out!
-	
-	if (destContents == nil)
-	{
-		destContents = S([i1 UUID]);
-	}
-	else
-	{
-		assert([destContents isKindOfClass: [NSSet class]]);
-		destContents = [destContents setByAddingObject: [i1 UUID]];
-	}
-	
-	[destItem setValue: destContents
-		  forAttribute: @"contents"
-				  type: COSetContainerType(kCOPrimitiveTypeEmbeddedItem)];
-	
-	[self _insertOrUpdateItems: S(i1, i2, destItem)];
+	[self _insertOrUpdateItems: S(i1, i2)];
 	
 	return [i1 UUID];
 }
