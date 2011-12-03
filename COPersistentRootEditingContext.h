@@ -48,4 +48,7 @@
 - (COPath *) path;
 - (COStore *) store;
 
+/** @taskunit private */
+- (COStoreItem *) _storeItemForUUID: (ETUUID*) aUUID;
+
 @end

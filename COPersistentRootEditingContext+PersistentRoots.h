@@ -10,4 +10,21 @@
 										  inItemWithUUID: (ETUUID*)aDest;
 
 
+- (NSSet *) branchesOfPersistentRoot: (ETUUID *)aRoot;
+- (ETUUID *) currentBranchOfPersistentRoot: (ETUUID *)aRoot;
+- (void) setCurrentBranch: (ETUUID*)aBranch
+		forPersistentRoot: (ETUUID*)aUUID;
+
+- (void) setTrackVersion: (ETUUID*)aVersion
+			   forBranch: (ETUUID*)aBranch;
+
+- (void) undoPersistentRoot: (ETUUID*)aRoot;
+- (void) redoPersistentRoot: (ETUUID*)aRoot;
+
+// special method for copying a branch out of a persistent root to create a standalone
+// persistent root. see TestBranchesAndCopies.m
+- (ETUUID *)newPersistentRootCopyingBranch: (ETUUID *)srcBranch
+								insertInto: (ETUUID *)destContainer;
+
+
 @end

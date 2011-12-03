@@ -104,7 +104,7 @@ static void testEditingContextEmbeddedObjects()
 	// 1. set up the root context
 	//	
 	
-	id<COEditingContext> ctx = [store rootContext];
+	COPersistentRootEditingContext *ctx = [store rootContext];
 	
 	// at this point the context is empty.
 	// in particular, it has no rootEmbeddedObject, which means it contains no embedded objets.
@@ -145,11 +145,15 @@ static void testEditingContextEmbeddedObjects()
 	//EWTestEqual(i2, [ctx _storeItemForUUID: [i2 UUID]]);
 	
 	
+	EWTestTrue(1 == [[ctx branchesOfPersistentRoot: u1] count]);
+	EWTestEqual([ctx currentBranchOfPersistentRoot: u1], [[ctx branchesOfPersistentRoot: u1] anyObject]);
+	
+	
 	//
 	// 3. Now open an embedded context on the document
 	//
 
-	id<COEditingContext> ctx2 = [ctx editingContextForEditingEmbdeddedPersistentRoot: u1];
+	COPersistentRootEditingContext *ctx2 = [ctx editingContextForEditingEmbdeddedPersistentRoot: u1];
 	EWTestTrue(nil != ctx2);
 	EWTestEqual([nestedDocumentRootItem UUID], [ctx2 rootUUID]);
 	
