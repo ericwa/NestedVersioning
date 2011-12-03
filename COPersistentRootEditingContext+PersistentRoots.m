@@ -83,12 +83,12 @@
 - (ETUUID *) currentBranchOfPersistentRoot: (ETUUID *)aRoot
 {
 	COStoreItem *root = [self _storeItemForUUID: aRoot];
-	COPath *path = [root valueForAttribute: @"currentBranch"];
+	COPath *aPath = [root valueForAttribute: @"currentBranch"];
 	
-	assert([path isKindOfClass: [COPath class]]);
+	assert([aPath isKindOfClass: [COPath class]]);
 	// FIXME: check it is a single-element path
 	
-	return [path lastPathComponent];	
+	return [aPath lastPathComponent];	
 }
 - (void) setCurrentBranch: (ETUUID*)aBranch
 		forPersistentRoot: (ETUUID*)aRoot
