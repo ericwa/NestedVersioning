@@ -3,6 +3,7 @@
 #import "Common.h"
 #import "COStoreItem.h"
 #import "ETUUID.h"
+#import "COStorePrivate.h"
 
 @implementation COPersistentRootEditingContext (PersistentRoots)
 
@@ -94,8 +95,20 @@
 	return [item valueForAttribute: @"currentVersion"];
 }
 
+- (ETUUID *) headForBranch: (ETUUID*)aBranch
+{
+	COStoreItem *item = [self _storeItemForUUID: aBranch];
+	return [item valueForAttribute: @"head"];
+}
+
+- (ETUUID *) tailForBranch: (ETUUID*)aBranch
+{
+	COStoreItem *item = [self _storeItemForUUID: aBranch];
+	return [item valueForAttribute: @"tail"];
+}
+
 - (void) setCurrentVersion: (ETUUID*)aVersion
-			   forBranch: (ETUUID*)aBranch
+				 forBranch: (ETUUID*)aBranch
 {
 	COStoreItem *branch = [self _storeItemForUUID: aBranch];
 	
@@ -117,15 +130,25 @@
 
 - (void) undoBranch: (ETUUID*)aBranch
 {
-	/*
-	 - to undo:
-	 a) look up the version that "currentVersion" points to
-	 b) get its parent (if it has none, can't undo)
-	 c) set "currentVersion" to the parent, without modifying head
-	 
-	 */	
-	assert(0);
+	ETUUID *currentVersion = [self currentVersionForBranch: aBranch];
+	ETUUID *tail = [self tailForBranch: aBranch];
+	
+	assert(aBranch != nil);
+	assert(currentVersion != nil);
+	assert(tail != nil);
+	
+	if ([currentVersion isEqual: tail])
+	{
+		NSLog(@"Can't undo; already at tail");
+		return;
+	}
+	
+	ETUUID *parent = [store parentForCommit: currentVersion];
+	assert(parent != nil);  // if we are not at the tail, the current commit should have a parent
+	
+	[self setCurrentVersion: parent forBranch: aBranch];
 }
+
 - (void) redoBranch: (ETUUID*)aBranch
 {
 	/*
@@ -133,14 +156,42 @@
 	 X = "head"
 	 if (X == "currentVersion") fail ("can't redo")
 	 while (1) {
-	 if (X.parent == "currentVersion") {
-	 "currentVersion" = X;
-	 finshed;
-	 }
-	 X = X.parent;
+	   if (X.parent == "currentVersion") {
+	     "currentVersion" = X;
+	     finshed;
+	   }
+	   X = X.parent;
 	 }
 	 
 	 **/
+	
+	ETUUID *currentVersion = [self currentVersionForBranch: aBranch];
+	ETUUID *newCurrentVersion = [self headForBranch: aBranch];
+	
+	assert(newCurrentVersion != nil);
+	assert(aBranch != nil);
+	assert(currentVersion != nil);
+	
+	if ([newCurrentVersion isEqual: currentVersion])
+	{
+		NSLog(@"Can't redo; already at head");
+		return;
+	}
+	
+	while (1)
+	{
+		ETUUID *parentOfNewCurrentVersion = [store parentForCommit: newCurrentVersion];
+		assert(parentOfNewCurrentVersion != nil);
+		
+		if ([parentOfNewCurrentVersion isEqual: currentVersion])
+		{
+			[self setCurrentVersion: newCurrentVersion
+						  forBranch: aBranch];
+			return;
+		}
+		newCurrentVersion = parentOfNewCurrentVersion;
+	}
+	
 	assert(0);
 }
 
