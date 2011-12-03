@@ -17,6 +17,13 @@
 - (id<COEditingContext>) editingContextForEditingEmbdeddedPersistentRoot: (ETUUID*)aRoot;
 
 /**
+ * same preconditions as above
+ */
+- (id<COEditingContext>) editingContextForEditingEmbdeddedPersistentRoot: (ETUUID*)aRoot
+																onBranch: (ETUUID*)aBranch;
+
+
+/**
  * preconditions: (if not satisfied, the method should throw an exception)
  * 
  * - given the context has a path "u1/u2/u3../uN", 

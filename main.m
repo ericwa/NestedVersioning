@@ -132,18 +132,7 @@ static void testEditingContextEmbeddedObjects()
 	
 	ETUUID *u1 = [ctx createAndInsertNewPersistentRootWithRootItem: nestedDocumentRootItem
 													inItemWithUUID: uroot];
-		
-//	EWTestEqual(S([i1 UUID], [i2 UUID]),
-//				[ctx rootItemTree]);	
-	
-	ETUUID *firstVersion = [ctx commitWithMetadata: nil];
-	EWTestTrue(firstVersion != nil);
-	EWTestEqual(firstVersion, [store rootVersion]);
-	// test reading back the items
-	
-	//EWTestEqual(i1, [ctx _storeItemForUUID: [i1 UUID]]);
-	//EWTestEqual(i2, [ctx _storeItemForUUID: [i2 UUID]]);
-	
+
 	
 	EWTestTrue(1 == [[ctx branchesOfPersistentRoot: u1] count]);
 	
@@ -167,6 +156,15 @@ static void testEditingContextEmbeddedObjects()
 		forPersistentRoot: u1];
 
 	EWTestEqual(u1BranchA, [ctx currentBranchOfPersistentRoot: u1]);
+
+	//
+	// 2c. commit changes
+	//
+	
+	ETUUID *firstVersion = [ctx commitWithMetadata: nil];
+	EWTestTrue(firstVersion != nil);
+	EWTestEqual(firstVersion, [store rootVersion]);
+
 	
 	//
 	// 3. Now open an embedded context on the document
@@ -205,9 +203,22 @@ static void testEditingContextEmbeddedObjects()
 	COStore *store2 = [[COStore alloc] initWithURL: [NSURL fileURLWithPath: STOREPATH]];
 	
 	id<COEditingContext> testctx1 = [store2 rootContext];
-	id<COEditingContext> testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u1];
+	
+	{
+		id<COEditingContext> testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u1];
 		
-	EWTestEqual(nestedDocCtx2, [testctx2 _storeItemForUUID: [testctx2 rootUUID]]);
+		COStoreItem *item = [testctx2 _storeItemForUUID: [testctx2 rootUUID]];
+		EWTestEqual(@"green", [item valueForAttribute: @"color"]);
+		EWTestEqual(nestedDocCtx2, item);
+	}
+	
+	{
+		id<COEditingContext> testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u1
+																						 onBranch: u1BranchB];
+		COStoreItem *item = [testctx2 _storeItemForUUID: [testctx2 rootUUID]];
+		EWTestEqual(@"red", [item valueForAttribute: @"color"]);
+		EWTestEqual(nestedDocumentRootItem, item);
+	}
 	
 	[store2 release];
 	
@@ -216,9 +227,10 @@ static void testEditingContextEmbeddedObjects()
 	// 6. GC the store
 	// 
 	
-	EWTestTrue(4 == [[store2 allCommitUUIDs] count]);
+	NSUInteger commitsBefore = [[store2 allCommitUUIDs] count];
 	[store2 gc];
-	EWTestTrue(3 == [[store2 allCommitUUIDs] count]);	
+	NSUInteger commitsAfter = [[store2 allCommitUUIDs] count];
+	EWTestTrue(commitsAfter < commitsBefore);
 }
 
 static void testStoreItem()

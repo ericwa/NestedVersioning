@@ -220,6 +220,15 @@
 											  inStore: [self store]];
 }
 
+- (id<COEditingContext>) editingContextForEditingEmbdeddedPersistentRoot: (ETUUID*)aRoot
+																onBranch: (ETUUID*)aBranch
+{
+	// NOTE: We don't use aRoot explicitly. We should use it to do checks.
+	// i.e. check that aBranch is in it, etc.
+	return [[self class] editingContextForEditingPath: [[self path] pathByAppendingPathComponent: aBranch]
+											  inStore: [self store]];
+}
+
 - (ETUUID *) commitWithMetadata: (COStoreItem *)aTree
 {
 
