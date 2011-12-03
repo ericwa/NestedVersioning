@@ -287,4 +287,10 @@
 	return [COPersistentRootEditingContext editingContextForEditingTopLevelOfStore: self];
 }
 
+- (id<COEditingContext>) editingContextForEditingPath: (COPath*)aPath
+{
+	return [COPersistentRootEditingContext editingContextForEditingPath: aPath
+																inStore: self];
+}
+
 @end

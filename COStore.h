@@ -3,6 +3,7 @@
 #import "COStoreItem.h"
 #import "COEditingContext.h"
 
+@class COPath;
 @class COPersistentRootEditingContext;
 @class COStoreItem;
 
@@ -97,5 +98,15 @@
  * returns a new context every time
  */
 - (id <COEditingContext>) rootContext;
+
+/**
+ * preconditions: (if not satisfied, the method should throw an exception)
+ *  - the provided UUID must identify a valid persistent root item in the
+ *    reciever, which has a valid branch child, which point to an (existing) store commit/version.
+ *    These must be committed already, not just in-memory.
+ *  
+ *  - path can contain branches or persistent roots.
+ */
+- (id<COEditingContext>) editingContextForEditingPath: (COPath*)aPath;
 
 @end

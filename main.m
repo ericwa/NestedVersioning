@@ -182,7 +182,7 @@ static void testEditingContextEmbeddedObjects()
 	// 3. Now open an embedded context on the document
 	//
 
-	COPersistentRootEditingContext *ctx2 = [ctx editingContextForEditingEmbdeddedPersistentRoot: u1];
+	COPersistentRootEditingContext *ctx2 = [store editingContextForEditingPath:[COPath pathWithPathComponent: u1]];
 	EWTestTrue(nil != ctx2);
 	EWTestEqual([nestedDocumentRootItem UUID], [ctx2 rootUUID]);
 	
@@ -217,7 +217,7 @@ static void testEditingContextEmbeddedObjects()
 	id<COEditingContext> testctx1 = [store2 rootContext];
 	
 	{
-		id<COEditingContext> testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u1];
+		id<COEditingContext> testctx2 = [store editingContextForEditingPath:[COPath pathWithPathComponent: u1]];
 		
 		COStoreItem *item = [testctx2 _storeItemForUUID: [testctx2 rootUUID]];
 		EWTestEqual(@"green", [item valueForAttribute: @"color"]);
@@ -225,8 +225,7 @@ static void testEditingContextEmbeddedObjects()
 	}
 	
 	{
-		id<COEditingContext> testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u1
-																						 onBranch: u1BranchB];
+		id<COEditingContext> testctx2 = [store editingContextForEditingPath:[COPath pathWithPathComponent: u1BranchB]];
 		COStoreItem *item = [testctx2 _storeItemForUUID: [testctx2 rootUUID]];
 		EWTestEqual(@"red", [item valueForAttribute: @"color"]);
 		EWTestEqual(nestedDocumentRootItem, item);

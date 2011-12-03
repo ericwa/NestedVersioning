@@ -32,8 +32,6 @@
 + (COPersistentRootEditingContext *) editingContextForEditingPath: (COPath*)aPath
 														  inStore: (COStore *)aStore;
 
-- (COPersistentRootEditingContext *) editingContextForEditingEmbdeddedPersistentRoot: (ETUUID*)aRoot;
-
 /**
  * private method; public users should use -[COStore rootContext].
  */
