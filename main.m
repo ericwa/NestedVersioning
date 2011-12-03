@@ -170,7 +170,14 @@ static void testEditingContextEmbeddedObjects()
 	EWTestEqual(u1BranchA, [ctx currentBranchOfPersistentRoot: u1]);
 
 	//
-	// 2c. commit changes
+	// 2c. create another persistent root containing a copy of u1BranchB
+	//
+	
+	ETUUID *u2 = [ctx createAndInsertNewPersistentRootByCopyingBranch: u1BranchB
+													   inItemWithUUID: uroot];
+	
+	//
+	// 2d. commit changes
 	//
 	
 	ETUUID *firstVersion = [ctx commitWithMetadata: nil];
@@ -227,6 +234,13 @@ static void testEditingContextEmbeddedObjects()
 	{
 		id<COEditingContext> testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u1
 																						 onBranch: u1BranchB];
+		COStoreItem *item = [testctx2 _storeItemForUUID: [testctx2 rootUUID]];
+		EWTestEqual(@"red", [item valueForAttribute: @"color"]);
+		EWTestEqual(nestedDocumentRootItem, item);
+	}
+
+	{
+		id<COEditingContext> testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u2];
 		COStoreItem *item = [testctx2 _storeItemForUUID: [testctx2 rootUUID]];
 		EWTestEqual(@"red", [item valueForAttribute: @"color"]);
 		EWTestEqual(nestedDocumentRootItem, item);

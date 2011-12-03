@@ -27,8 +27,8 @@
 
 // special method for copying a branch out of a persistent root to create a standalone
 // persistent root. see TestBranchesAndCopies.m
-- (ETUUID *)newPersistentRootCopyingBranch: (ETUUID *)srcBranch
-								insertInto: (ETUUID *)destContainer;
+- (ETUUID *)createAndInsertNewPersistentRootByCopyingBranch: (ETUUID *)srcBranch
+											 inItemWithUUID: (ETUUID *)destContainer;
 
 - (ETUUID *) createBranchOfPersistentRoot: (ETUUID *)aRoot;
 

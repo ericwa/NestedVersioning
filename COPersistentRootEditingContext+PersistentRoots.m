@@ -153,8 +153,8 @@
 }
 
 
-- (ETUUID *)newPersistentRootCopyingBranch: (ETUUID *)srcBranch
-								insertInto: (ETUUID *)aDest
+- (ETUUID *)createAndInsertNewPersistentRootByCopyingBranch: (ETUUID *)srcBranch
+											 inItemWithUUID: (ETUUID *)aDest
 {
 	COStoreItem *i1 = [COStoreItem item];
 	
