@@ -146,8 +146,27 @@ static void testEditingContextEmbeddedObjects()
 	
 	
 	EWTestTrue(1 == [[ctx branchesOfPersistentRoot: u1] count]);
-	EWTestEqual([ctx currentBranchOfPersistentRoot: u1], [[ctx branchesOfPersistentRoot: u1] anyObject]);
 	
+	//
+	// 2b. create another branch
+	//
+	
+	ETUUID *u1BranchA = [ctx currentBranchOfPersistentRoot: u1];
+	ETUUID *u1BranchB = [ctx createBranchOfPersistentRoot: u1];
+	
+	EWTestEqual(u1BranchA, [ctx currentBranchOfPersistentRoot: u1]);
+	EWTestEqual(S(u1BranchA, u1BranchB), [ctx branchesOfPersistentRoot: u1]);
+	
+	
+	[ctx setCurrentBranch: u1BranchB
+		forPersistentRoot: u1];
+	
+	EWTestEqual(u1BranchB, [ctx currentBranchOfPersistentRoot: u1]);
+	
+	[ctx setCurrentBranch: u1BranchA
+		forPersistentRoot: u1];
+
+	EWTestEqual(u1BranchA, [ctx currentBranchOfPersistentRoot: u1]);
 	
 	//
 	// 3. Now open an embedded context on the document
