@@ -11,6 +11,9 @@
  *  - the provided UUID must identify a valid persistent root item in the
  *    reciever, which has a valid branch child, which point to an (existing) store commit/version.
  *    These must be committed already, not just in-memory.
+ *  
+ *  - one corner case is where the persistent root exists, but in-memory it is switched
+ *    to a different (new) branch. We could simply check for that and throw an exception.
  */
 - (id<COEditingContext>) editingContextForEditingEmbdeddedPersistentRoot: (ETUUID*)aRoot;
 
