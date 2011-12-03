@@ -15,7 +15,8 @@
 - (void) setCurrentBranch: (ETUUID*)aBranch
 		forPersistentRoot: (ETUUID*)aUUID;
 
-- (void) setTrackVersion: (ETUUID*)aVersion
+- (ETUUID *) currentVersionForBranch: (ETUUID*)aBranch;
+- (void) setCurrentVersion: (ETUUID*)aVersion
 			   forBranch: (ETUUID*)aBranch;
 
 - (void) undoPersistentRoot: (ETUUID*)aRoot;

@@ -41,6 +41,9 @@
 	[i2 setValue: nestedDocumentInitialVersion
 	forAttribute: @"head"
 			type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];	// limit for redo. moved on every commit.
+	[i2 setValue: nestedDocumentInitialVersion
+	forAttribute: @"tail"
+			type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];	// limit for undo. never changed.
 	
 	[self insertValue: [i1 UUID]
 		primitiveType: kCOPrimitiveTypeEmbeddedItem
@@ -85,8 +88,13 @@
 	[self _insertOrUpdateItems: S(root)];
 }
 
+- (ETUUID *) currentVersionForBranch: (ETUUID*)aBranch
+{
+	COStoreItem *item = [self _storeItemForUUID: aBranch];
+	return [item valueForAttribute: @"currentVersion"];
+}
 
-- (void) setTrackVersion: (ETUUID*)aVersion
+- (void) setCurrentVersion: (ETUUID*)aVersion
 			   forBranch: (ETUUID*)aBranch
 {
 	COStoreItem *branch = [self _storeItemForUUID: aBranch];
