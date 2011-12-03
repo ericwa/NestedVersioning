@@ -143,6 +143,18 @@ static void testEditingContextEmbeddedObjects()
 	ETUUID *u1BranchA = [ctx currentBranchOfPersistentRoot: u1];
 	ETUUID *u1BranchB = [ctx createBranchOfPersistentRoot: u1];
 	
+	{
+		COStoreItem *u1BranchAItem = [ctx _storeItemForUUID: u1BranchA];
+		[u1BranchAItem setValue: @"Development Branch" forAttribute: @"name" type: COPrimitiveType(kCOPrimitiveTypeString)];
+		[ctx _insertOrUpdateItems: S(u1BranchAItem)];
+	}
+	{
+		COStoreItem *u1BranchBItem = [ctx _storeItemForUUID: u1BranchB];
+		[u1BranchBItem setValue: @"Stable Branch" forAttribute: @"name" type: COPrimitiveType(kCOPrimitiveTypeString)];
+		[ctx _insertOrUpdateItems: S(u1BranchBItem)];
+	}
+	
+	
 	EWTestEqual(u1BranchA, [ctx currentBranchOfPersistentRoot: u1]);
 	EWTestEqual(S(u1BranchA, u1BranchB), [ctx branchesOfPersistentRoot: u1]);
 	
