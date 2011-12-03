@@ -37,6 +37,9 @@
 	[i2 setValue: nestedDocumentInitialVersion
 	forAttribute: @"tracking"
 			type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];		
+	[i2 setValue: nestedDocumentInitialVersion
+	forAttribute: @"tip"
+			type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];	
 	
 	// insert
 	
@@ -105,6 +108,15 @@
 
 - (void) undoPersistentRoot: (ETUUID*)aRoot
 {
+	[self undoBranch: [self currentBranchOfPersistentRoot: aRoot]];
+}
+- (void) redoPersistentRoot: (ETUUID*)aRoot
+{
+	[self redoBranch: [self currentBranchOfPersistentRoot: aRoot]];
+}
+
+- (void) undoBranch: (ETUUID*)aBranch
+{
 	/*
 	 - to undo:
 	 a) look up the version that "tracking" points to
@@ -114,7 +126,7 @@
 	 */	
 	assert(0);
 }
-- (void) redoPersistentRoot: (ETUUID*)aRoot
+- (void) redoBranch: (ETUUID*)aBranch
 {
 	/*
 	 - to redo:
@@ -131,6 +143,7 @@
 	 **/
 	assert(0);
 }
+
 
 - (ETUUID *)newPersistentRootCopyingBranch: (ETUUID *)srcBranch
 								insertInto: (ETUUID *)aDest

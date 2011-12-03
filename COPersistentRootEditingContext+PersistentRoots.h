@@ -21,6 +21,10 @@
 - (void) undoPersistentRoot: (ETUUID*)aRoot;
 - (void) redoPersistentRoot: (ETUUID*)aRoot;
 
+- (void) undoBranch: (ETUUID*)aBranch;
+- (void) redoBranch: (ETUUID*)aBranch;
+
+
 // special method for copying a branch out of a persistent root to create a standalone
 // persistent root. see TestBranchesAndCopies.m
 - (ETUUID *)newPersistentRootCopyingBranch: (ETUUID *)srcBranch
