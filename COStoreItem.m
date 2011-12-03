@@ -94,8 +94,6 @@ NSDictionary *COPrimitiveType(NSString *aPrimitiveType)
 
 - (NSArray *) attributeNames
 {
-	assert([[[types allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)]
-			isEqual: [[values allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)]]);	
 	return [types allKeys];
 }
 
@@ -119,7 +117,33 @@ static void validatePrimitive(id aValue, NSDictionary *aType)
 		NSString *primitiveType = [aType objectForKey: kCOPrimitiveType];
 		assert(primitiveType != nil);
 		
-		// FIXME:
+		if ([primitiveType isEqualToString: kCOPrimitiveTypeCommitUUID] ||
+			[primitiveType isEqualToString: kCOPrimitiveTypeEmbeddedItem])
+		{
+			assert([aValue isKindOfClass: [ETUUID class]]);
+		}
+		else if ([primitiveType isEqualToString: kCOPrimitiveTypePath])
+		{
+			assert([aValue isKindOfClass: [COPath class]]);
+		}
+		else if ([primitiveType isEqualToString: kCOPrimitiveTypeInt64] ||
+				 [primitiveType isEqualToString: kCOPrimitiveTypeDouble])
+		{
+			assert([aValue isKindOfClass: [NSNumber class]]);
+		}
+		else if ([primitiveType isEqualToString: kCOPrimitiveTypeBlob])
+		{
+			assert([aValue isKindOfClass: [NSData class]]);
+		}
+		else if ([primitiveType isEqualToString: kCOPrimitiveTypeString] ||
+				 [primitiveType isEqualToString: kCOPrimitiveTypeFullTextIndexableString])
+		{
+			assert([aValue isKindOfClass: [NSString class]]);
+		}
+		else
+		{
+			assert(0);
+		}	
 	}
 	else
 	{
@@ -173,15 +197,28 @@ static void validate(id aValue, NSDictionary *aType)
 	}
 }
 
+- (void) validate
+{
+	assert([[[types allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)]
+			isEqual: [[values allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)]]);
+	
+	for (NSString *attribute in [self attributeNames])
+	{
+		NSDictionary *type = [self typeForAttribute: attribute];
+		id value = [self valueForAttribute: attribute];
+		validate(value, type);
+	}
+}
+
 // end validation --/>
 
 - (void) setValue: (id)aValue
 	 forAttribute: (NSString*)anAttribute
 			 type: (NSDictionary*)aType
 {
-	validate(aValue, aType);
 	[types setObject: aType forKey: anAttribute];
 	[values setObject: aValue forKey: anAttribute];
+	[self validate];
 }
 
 
@@ -329,8 +366,7 @@ static id importValueFromPlist(id aPlist)
 	ASSIGN(values, importedValues);
 	ASSIGN(types, importedTypes);	
 
-	assert([[[types allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)]
-			isEqual: [[values allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)]]);	
+	[self validate];
 	
 	return self;
 }
@@ -367,6 +403,8 @@ static id importValueFromPlist(id aPlist)
 	[container addObject: aValue];
 	[values setObject: container forKey: anAttribute];
 	[container release];
+	
+	[self validate];
 }
 
 - (NSArray*) allObjectsForAttribute: (NSString*)attribute
@@ -401,6 +439,8 @@ static id importValueFromPlist(id aPlist)
 	[self setValue: aValue 
 	  forAttribute: anAttribute
 			  type: [self typeForAttribute: anAttribute]];
+	
+	[self validate];
 }
 
 - (id)copyWithZone:(NSZone *)zone
