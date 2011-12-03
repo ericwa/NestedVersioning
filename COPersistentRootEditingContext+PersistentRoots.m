@@ -36,11 +36,11 @@
 	forAttribute: @"type"
 			type: COPrimitiveType(kCOPrimitiveTypeString)];	
 	[i2 setValue: nestedDocumentInitialVersion
-	forAttribute: @"tracking"
+	forAttribute: @"currentVersion"
 			type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];		
 	[i2 setValue: nestedDocumentInitialVersion
-	forAttribute: @"tip"
-			type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];	
+	forAttribute: @"head"
+			type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];	// limit for redo. moved on every commit.
 	
 	[self insertValue: [i1 UUID]
 		primitiveType: kCOPrimitiveTypeEmbeddedItem
@@ -92,7 +92,7 @@
 	COStoreItem *branch = [self _storeItemForUUID: aBranch];
 	
 	[branch setValue: aVersion
-		forAttribute: @"tracking"
+		forAttribute: @"currentVersion"
 				type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];
 	
 	[self _insertOrUpdateItems: S(branch)];
@@ -111,9 +111,9 @@
 {
 	/*
 	 - to undo:
-	 a) look up the version that "tracking" points to
+	 a) look up the version that "currentVersion" points to
 	 b) get its parent (if it has none, can't undo)
-	 c) set "tracking" to the parent, without modifying tip
+	 c) set "currentVersion" to the parent, without modifying head
 	 
 	 */	
 	assert(0);
@@ -122,11 +122,11 @@
 {
 	/*
 	 - to redo:
-	 X = "tip"
-	 if (X == "tracking") fail ("can't redo")
+	 X = "head"
+	 if (X == "currentVersion") fail ("can't redo")
 	 while (1) {
-	 if (X.parent == "tracking") {
-	 "tracking" = X;
+	 if (X.parent == "currentVersion") {
+	 "currentVersion" = X;
 	 finshed;
 	 }
 	 X = X.parent;
@@ -159,7 +159,7 @@
 			type: COSetContainerType(kCOPrimitiveTypeEmbeddedItem)];
 	
 	assert([[i2 valueForAttribute: @"type"] isEqual: @"branch"]);
-	assert([[i2 typeForAttribute: @"tracking"] isEqual: COPrimitiveType(kCOPrimitiveTypeCommitUUID)]);
+	assert([[i2 typeForAttribute: @"currentVersion"] isEqual: COPrimitiveType(kCOPrimitiveTypeCommitUUID)]);
 	
 	[self insertValue: [i1 UUID]
 		primitiveType: kCOPrimitiveTypeEmbeddedItem

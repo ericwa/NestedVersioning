@@ -13,7 +13,7 @@
  "name" : "the object's name"
  "uuid" : 0d7489b0-0a9d-11e1-be50-0800200c9a66
  
- "tracking" : one of the following:
+ "currentVersion" : one of the following:
 			  a) the uuid of one of the branches we own,
               b) or a path to another persistent root,
 			  c) or a path to a branch owned by another persistent root,

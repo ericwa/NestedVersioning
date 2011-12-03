@@ -36,9 +36,9 @@
 		}
 		
 		assert ([[item valueForAttribute: @"type"] isEqual: @"branch"]);
-		assert([[item typeForAttribute: @"tracking"] isEqual: COPrimitiveType(kCOPrimitiveTypeCommitUUID)]);
+		assert([[item typeForAttribute: @"currentVersion"] isEqual: COPrimitiveType(kCOPrimitiveTypeCommitUUID)]);
 		
-		ETUUID *trackedVersion = [item valueForAttribute: @"tracking"];
+		ETUUID *trackedVersion = [item valueForAttribute: @"currentVersion"];
 		assert(trackedVersion != nil);
 		
 		return trackedVersion;
@@ -327,12 +327,12 @@
 		}
 		
 		assert ([[item valueForAttribute: @"type"] isEqual: @"branch"]);
-		assert([[item typeForAttribute: @"tracking"] isEqual: COPrimitiveType(kCOPrimitiveTypeCommitUUID)]);
+		assert([[item typeForAttribute: @"currentVersion"] isEqual: COPrimitiveType(kCOPrimitiveTypeCommitUUID)]);
 		
-		ETUUID *trackedVersion = [item valueForAttribute: @"tracking"];
+		ETUUID *trackedVersion = [item valueForAttribute: @"currentVersion"];
 		assert([trackedVersion isEqual: baseCommit]); // we already checked this earlier
-		[item setValue: newCommitUUID forAttribute: @"tracking" type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];
-		[item setValue: newCommitUUID forAttribute: @"tip" type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];
+		[item setValue: newCommitUUID forAttribute: @"currentVersion" type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];
+		[item setValue: newCommitUUID forAttribute: @"head" type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];
 		
 		[parentCtx _insertOrUpdateItems: S(item)];
 		
