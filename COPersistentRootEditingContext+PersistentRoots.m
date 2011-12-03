@@ -46,10 +46,18 @@
 	COStoreItem *destItem = [self _storeItemForUUID: aDest];
 	assert(destItem != nil);
 	
-	NSSet *destContents = [destItem valueForAttribute: @"contents"];
-	assert(destContents == nil);
+	// FIXME: Factor out!
 	
-	destContents = S([i1 UUID]);
+	NSSet *destContents = [destItem valueForAttribute: @"contents"];
+	if (destContents == nil)
+	{
+		destContents = S([i1 UUID]);
+	}
+	else
+	{
+		assert([destContents isKindOfClass: [NSSet class]]);
+		destContents = [destContents setByAddingObject: [i1 UUID]];
+	}
 	
 	[destItem setValue: destContents
 		  forAttribute: @"contents"
@@ -175,9 +183,17 @@
 	assert(destItem != nil);
 	
 	NSSet *destContents = [destItem valueForAttribute: @"contents"];
-	assert(destContents == nil);
+	// FIXME: Factor out!
 	
-	destContents = S([i1 UUID]);
+	if (destContents == nil)
+	{
+		destContents = S([i1 UUID]);
+	}
+	else
+	{
+		assert([destContents isKindOfClass: [NSSet class]]);
+		destContents = [destContents setByAddingObject: [i1 UUID]];
+	}
 	
 	[destItem setValue: destContents
 		  forAttribute: @"contents"
