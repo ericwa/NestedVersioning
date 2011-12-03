@@ -113,6 +113,13 @@ static void testEditingContextEmbeddedObjects()
 	EWTestTrue(nil == [ctx rootUUID]);
 	EWTestTrue(nil == [store rootVersion]);
 		
+	COStoreItem *iroot = [COStoreItem item];
+	ETUUID *uroot = [iroot UUID];
+	
+	[ctx _insertOrUpdateItems: S(iroot)
+		newRootEmbeddedObject: uroot];
+	
+	EWTestEqual(uroot, [ctx rootUUID]);
 	
 	//	
 	// 2.  set up a nested persistent root
@@ -123,10 +130,9 @@ static void testEditingContextEmbeddedObjects()
 						forAttribute: @"color"
 								type: COPrimitiveType(kCOPrimitiveTypeString)];
 	
-	
-	ETUUID *u1 = [ctx createAndInsertAsRootItemNewPersistentRootWithRootItem: nestedDocumentRootItem];
-	
-	EWTestEqual(u1, [ctx rootUUID]);
+	ETUUID *u1 = [ctx createAndInsertNewPersistentRootWithRootItem: nestedDocumentRootItem
+													inItemWithUUID: uroot];
+		
 //	EWTestEqual(S([i1 UUID], [i2 UUID]),
 //				[ctx rootItemTree]);	
 	
@@ -176,7 +182,7 @@ static void testEditingContextEmbeddedObjects()
 	COStore *store2 = [[COStore alloc] initWithURL: [NSURL fileURLWithPath: STOREPATH]];
 	
 	id<COEditingContext> testctx1 = [store2 rootContext];
-	id<COEditingContext> testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: [testctx1 rootUUID]];
+	id<COEditingContext> testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u1];
 		
 	EWTestEqual(nestedDocCtx2, [testctx2 _storeItemForUUID: [testctx2 rootUUID]]);
 	

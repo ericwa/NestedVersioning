@@ -5,7 +5,8 @@
 
 @implementation COPersistentRootEditingContext (PersistentRoots)
 
-- (ETUUID *)createAndInsertAsRootItemNewPersistentRootWithRootItem: (COStoreItem *)anItem
+- (ETUUID *)createAndInsertNewPersistentRootWithRootItem: (COStoreItem *)anItem
+										  inItemWithUUID: (ETUUID*)aDest
 {
 	ETUUID *nestedDocumentInitialVersion = [store addCommitWithParent: nil
 															 metadata: nil
@@ -37,8 +38,21 @@
 	forAttribute: @"tracking"
 			type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];		
 	
-	[self _insertOrUpdateItems: S(i1, i2)
-		 newRootEmbeddedObject: [i1 UUID]];
+	// insert
+	
+	COStoreItem *destItem = [self _storeItemForUUID: aDest];
+	assert(destItem != nil);
+	
+	NSSet *destContents = [destItem valueForAttribute: @"contents"];
+	assert(destContents == nil);
+	
+	destContents = S([i1 UUID]);
+	
+	[destItem setValue: destContents
+		  forAttribute: @"contents"
+				  type: COSetContainerType(kCOPrimitiveTypeEmbeddedItem)];
+	
+	[self _insertOrUpdateItems: S(i1, i2, destItem)];
 
 	return [i1 UUID];
 }
