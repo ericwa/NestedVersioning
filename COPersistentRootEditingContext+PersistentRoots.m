@@ -176,4 +176,30 @@
 }
 
 
+- (ETUUID *) createBranchOfPersistentRoot: (ETUUID *)aRoot
+{
+	COStoreItem *proot = [self _storeItemForUUID: aRoot];
+	COStoreItem *branch = [self _storeItemForUUID: [self currentBranchOfPersistentRoot: aRoot]];
+	[branch setUUID: [ETUUID UUID]]; // makes it a copy.
+	
+	// update proot contents
+	
+	assert(proot != nil);
+	
+	NSSet *prootContents = [proot valueForAttribute: @"contents"];
+	assert(prootContents != nil);
+	assert([prootContents isKindOfClass: [NSSet class]]);
+	
+	prootContents = [prootContents setByAddingObject: [branch UUID]];
+	
+	[proot setValue: prootContents
+		  forAttribute: @"contents"
+			type: COSetContainerType(kCOPrimitiveTypeEmbeddedItem)];
+	
+	
+	[self _insertOrUpdateItems: S(proot, branch)];
+	
+	return [branch UUID];
+}
+
 @end

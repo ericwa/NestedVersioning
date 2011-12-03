@@ -26,5 +26,6 @@
 - (ETUUID *)newPersistentRootCopyingBranch: (ETUUID *)srcBranch
 								insertInto: (ETUUID *)destContainer;
 
+- (ETUUID *) createBranchOfPersistentRoot: (ETUUID *)aRoot;
 
 @end
