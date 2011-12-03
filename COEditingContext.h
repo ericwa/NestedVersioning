@@ -1,6 +1,5 @@
 #import <Foundation/Foundation.h>
 
-#import "COStoreItemTree.h"
 #import "COItemPath.h"
 
 @protocol COEditingContext <NSObject>
@@ -27,7 +26,7 @@
  *     the contents of that persistent root.
  *
  */
-- (ETUUID *) commitWithMetadata: (COStoreItemTree *)aTree;
+- (ETUUID *) commitWithMetadata: (COStoreItem *)aTree;
 
 /**
  * this embedded object defines object lifetime of all objects inside this
@@ -37,12 +36,12 @@
  */
 - (ETUUID *)rootUUID;
 
-- (COStoreItemTree *)rootItemTree;
+- (COStoreItem *)rootItemTree;
 
 /**
  * Returns an entire subtree
  */
-- (COStoreItemTree *)storeItemTreeForUUID: (ETUUID*) aUUID;
+- (COStoreItem *)storeItemTreeForUUID: (ETUUID*) aUUID;
 
 /* @taskunit editing methods */
 

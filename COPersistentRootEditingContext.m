@@ -220,7 +220,7 @@
 											  inStore: [self store]];
 }
 
-- (ETUUID *) commitWithMetadata: (COStoreItemTree *)aTree
+- (ETUUID *) commitWithMetadata: (COStoreItem *)aTree
 {
 
 	//
@@ -348,14 +348,14 @@
 	return rootItemUUID;
 }
 
-- (COStoreItemTree *)rootItemTree
+- (COStoreItem *)rootItemTree
 {
 	return [self storeItemTreeForUUID: rootItemUUID];
 }
 
-- (COStoreItemTree *)storeItemTreeForUUID: (ETUUID*) aUUID
+- (COStoreItem *)storeItemTreeForUUID: (ETUUID*) aUUID
 {
-	NSSet *uuids = [[self _allEmbeddedObjectUUIDsForUUID: aUUID] setByAddingObject: aUUID];
+/*	NSSet *uuids = [[self _allEmbeddedObjectUUIDsForUUID: aUUID] setByAddingObject: aUUID];
 	
 	NSMutableSet *items = [NSMutableSet set];
 	for (ETUUID *uuid in uuids)
@@ -365,6 +365,7 @@
 		 
 	return [COStoreItemTree itemTreeWithItems: items
 										 root: aUUID];
+ */
 }
 
 
