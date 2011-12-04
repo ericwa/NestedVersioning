@@ -36,6 +36,8 @@
 	 forAttribute: (NSString*)anAttribute
 			 type: (NSDictionary*)aType;
 
+- (void)removeValueForAttribute: (NSString*)anAttribute;
+
 /** @taskunit I/O */
 
 - (NSSet*) allContainedStoreItems;

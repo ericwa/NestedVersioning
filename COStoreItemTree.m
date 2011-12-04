@@ -136,6 +136,11 @@
 	}
 }
 
+- (void)removeValueForAttribute: (NSString*)anAttribute
+{
+	[root removeValueForAttribute: anAttribute];
+}
+
 /** @taskunit I/O */
 
 - (NSSet*) allContainedStoreItems

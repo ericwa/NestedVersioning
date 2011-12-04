@@ -130,6 +130,8 @@ kCOContainerOrdered = YES, kCOContainerAllowsDuplicates = YES: NSArray
 	 forAttribute: (NSString*)anAttribute
 			 type: (NSDictionary*)aType;
 
+- (void)removeValueForAttribute: (NSString*)anAttribute;
+
 /** @taskunit plist import/export */
 
 - (id)plist;

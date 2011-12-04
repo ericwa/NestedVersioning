@@ -106,6 +106,10 @@ static void testStoreItemTree()
 	
 	EWTestTrue(![t1 isEqual: t1a]);
 	
+	[t1a removeValueForAttribute: @"name"];
+	
+	EWTestEqual(t1, t1a);
+	
 }
 
 static void testEditingContextEmbeddedObjects()

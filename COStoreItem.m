@@ -225,6 +225,11 @@ static void validate(id aValue, NSDictionary *aType)
 	[self validate];
 }
 
+- (void)removeValueForAttribute: (NSString*)anAttribute
+{
+	[types removeObjectForKey: anAttribute];
+	[values removeObjectForKey: anAttribute];
+}
 
 /** @taskunit plist import/export */
 
