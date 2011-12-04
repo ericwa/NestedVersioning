@@ -189,6 +189,25 @@
 	[self addTree: aValue
   forSetAttribute: @"contents"];
 }
+- (void) removeTree: (COStoreItemTree *)aValue
+{
+	NSMutableSet *container = [NSMutableSet setWithSet: [self valueForAttribute: @"contents"]];
+	assert([container containsObject: aValue]);
+	[container removeObject: aValue];
+	[self setValue: container
+	  forAttribute: @"contents"
+			  type: COSetContainerType(kCOPrimitiveTypeEmbeddedItem)];
+}
+
+- (NSSet*)contents
+{
+	NSSet *contents = [self valueForAttribute: @"contents"];
+	if (contents != nil)
+	{
+		return contents;
+	}
+	return [NSSet set];
+}
 
 - (id)copyWithZone:(NSZone *)zone
 {

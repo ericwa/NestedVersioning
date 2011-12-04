@@ -51,6 +51,8 @@
  * adds the given tree to the default @"contents" attribute
  */
 - (void) addTree: (COStoreItemTree *)aValue;
+- (void) removeTree: (COStoreItemTree *)aValue;
+- (NSSet*)contents;
 
 /**
  * @returns a mutable copy

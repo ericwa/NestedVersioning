@@ -100,16 +100,19 @@ static void testStoreItemTree()
 	COStoreItemTree *t1a = [[t1 copy] autorelease];
 	EWTestEqual(t1, t1a);
 	
-	[t1a setValue: @"hello"
-	 forAttribute: @"name"
-			 type: COPrimitiveType(kCOPrimitiveTypeString)];
+	COStoreItemTree *t2a = [[t1a contents] anyObject];
+	EWTestEqual(t2, t2a);
+	
+	COStoreItemTree *t3b = [COStoreItemTree itemTree];
+	[t2a addTree: t3b];
 	
 	EWTestTrue(![t1 isEqual: t1a]);
+	EWTestTrue(![t2 isEqual: t2a]);
 	
-	[t1a removeValueForAttribute: @"name"];
+	[t2a removeTree: t3b];
 	
 	EWTestEqual(t1, t1a);
-	
+	EWTestEqual(t2, t2a);	
 }
 
 static void testEditingContextEmbeddedObjects()
