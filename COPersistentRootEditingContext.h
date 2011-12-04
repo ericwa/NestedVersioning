@@ -5,7 +5,7 @@
 #import "COItemPath.h"
 #import "COEditingContext.h"
 
-@interface COPersistentRootEditingContext : NSObject <COEditingContext, NSCopying>
+@interface COPersistentRootEditingContext : NSObject <COEditingContext>
 {
 	COStore *store;
 	
@@ -43,7 +43,7 @@
  * returns an independent copy.
  * FIXME: would it be useful to have a copy without any local changes?
  */
-- (id)copyWithZone:(NSZone *)zone;
+//- (id)copyWithZone:(NSZone *)zone;
 
 - (COPath *) path;
 - (COStore *) store;
