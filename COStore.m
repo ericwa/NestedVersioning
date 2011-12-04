@@ -180,13 +180,8 @@
 	
 	NSDictionary *dict = [self UUIDsAndStoreItemsForCommit: aCommitUUID];
 	COStoreItem *item = [dict objectForKey: embeddedObject];
-	
-	if (item == nil)
-	{
-		[NSException raise: NSInvalidArgumentException
-					format: @"%@ not found in commit %@", embeddedObject, aCommitUUID];
-	}
-	
+
+	// may be nil if it isn't in the commit
 	return item;
 }
 

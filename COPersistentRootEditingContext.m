@@ -138,7 +138,6 @@
 	if (baseCommit != nil)
 	{
 		result = [[[store storeItemForEmbeddedObject: aUUID inCommit: baseCommit] copy] autorelease];
-		assert(result != nil);
 	}
 	
 	COStoreItem *localResult = [[[insertedOrUpdatedItems objectForKey: aUUID] copy] autorelease];
