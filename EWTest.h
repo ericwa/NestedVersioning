@@ -3,7 +3,7 @@
 // Private
 
 void EWTestEqualFunction(id expected, id actual, const char *filename, int line);
-void EWTestIntsEqualFunction(int expected, int actual, const char *filename, int line);
+void EWTestIntsEqualFunction(NSInteger expected, NSInteger actual, const char *filename, int line);
 void EWTestTrueFunction(BOOL flag, const char *filename, int line);
 
 // Public

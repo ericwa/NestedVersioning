@@ -14,12 +14,12 @@ void EWTestEqualFunction(id expected, id actual, const char *filename, int line)
         passes++;
 }
 
-void EWTestIntsEqualFunction(int expected, int actual, const char *filename, int line)
+void EWTestIntsEqualFunction(NSInteger expected, NSInteger actual, const char *filename, int line)
 {
     if (expected != actual)   
     {
         fails++;
-        NSLog(@"%s:%d: EWTestIntsEqual expected %d, got %d", filename, line, expected, actual);
+        NSLog(@"%s:%d: EWTestIntsEqual expected %d, got %d", filename, line, (int)expected, (int)actual);
     }
     else
         passes++;
