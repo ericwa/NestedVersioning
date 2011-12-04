@@ -235,10 +235,8 @@ static void testEditingContextEmbeddedObjects()
 		EWTestEqual(@"red", [item valueForAttribute: @"color"]);
 		EWTestEqual(nestedDocumentRootItem, item);
 	}
-	
-	[store2 release];
-	
-	
+
+		
 	//
 	// 6. GC the store
 	// 
@@ -247,6 +245,9 @@ static void testEditingContextEmbeddedObjects()
 	[store2 gc];
 	NSUInteger commitsAfter = [[store2 allCommitUUIDs] count];
 	EWTestTrue(commitsAfter < commitsBefore);
+	
+	
+	[store2 release];	
 }
 
 static void testStoreItem()
