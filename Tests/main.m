@@ -95,8 +95,16 @@ static void testStoreItemTree()
 	[t1 addTree: t2];
 	[t2 addTree: t3];
 	
-	EWTestIntsEqual(3, [[t1 allContainedStoreItems] count ]);
+	EWTestIntsEqual(3, [[t1 allContainedStoreItems] count]);
 	
+	COStoreItemTree *t1a = [[t1 copy] autorelease];
+	EWTestEqual(t1, t1a);
+	
+	[t1a setValue: @"hello"
+	 forAttribute: @"name"
+			 type: COPrimitiveType(kCOPrimitiveTypeString)];
+	
+	EWTestTrue(![t1 isEqual: t1a]);
 	
 }
 

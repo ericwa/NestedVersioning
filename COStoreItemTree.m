@@ -205,5 +205,25 @@
 	return newCopy;
 }
 
+/** @taskunit equality testing */
+
+- (BOOL) isEqual:(id)object
+{
+	if (![object isKindOfClass: [self class]])
+	{
+		return NO;
+	}
+	COStoreItemTree *otherItemTree = (COStoreItemTree*)object;
+	
+	if (![otherItemTree->root isEqual: root]) return NO;
+	if (![otherItemTree->items isEqual: items]) return NO;
+	return YES;
+}
+
+- (NSUInteger) hash
+{
+	return [root hash] ^ [items hash];
+}
+
 @end
 
