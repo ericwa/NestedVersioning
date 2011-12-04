@@ -240,7 +240,12 @@
 	COStoreItemTree *otherItemTree = (COStoreItemTree*)object;
 	
 	if (![otherItemTree->root isEqual: root]) return NO;
-	if (![otherItemTree->items isEqual: items]) return NO;
+	
+	// FIXME: we "leak" COStoreItemTrees in a way;
+	// if you add some trees and then later remove them, the tree objects
+	// are never cleared from the items dictionary. this is why we use
+	// this more complex test for equality rather than testing the items dict.
+	if (![[otherItemTree allContainedStoreItems] isEqual: [self allContainedStoreItems]]) return NO;
 	return YES;
 }
 
