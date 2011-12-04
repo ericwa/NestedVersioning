@@ -17,10 +17,3 @@ static void setupTest()
 	[[@"pretend this is a 5gb video" dataUsingEncoding: NSUTF8StringEncoding]
 		writeToFile: VIDEOFILE atomically: NO];
 }
-
-void test()
-{
-
-
-
-}

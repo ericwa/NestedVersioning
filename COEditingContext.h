@@ -2,6 +2,8 @@
 
 #import "COItemPath.h"
 
+@class COPersistentRootEditingContext;
+
 @protocol COEditingContext <NSObject>
 
 
@@ -15,12 +17,12 @@
  *    to a different (new) branch. However this method completely ignore the receiver context;
  *    the only information it uses in the receiver is [self path].
  */
-- (id<COEditingContext>) editingContextForEditingEmbdeddedPersistentRoot: (ETUUID*)aRoot;
+- (COPersistentRootEditingContext *) editingContextForEditingEmbdeddedPersistentRoot: (ETUUID*)aRoot;
 
 /**
  * same preconditions as above
  */
-- (id<COEditingContext>) editingContextForEditingEmbdeddedPersistentRoot: (ETUUID*)aRoot
+- (COPersistentRootEditingContext *) editingContextForEditingEmbdeddedPersistentRoot: (ETUUID*)aRoot
 																onBranch: (ETUUID*)aBranch;
 
 

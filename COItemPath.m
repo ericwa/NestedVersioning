@@ -47,7 +47,7 @@ unorderedCollectionName: (NSString *)collection
 
 - (void) dealloc
 {
-	[uuid realase];
+	[uuid release];
 	[attribute release];
 	[super dealloc];
 }

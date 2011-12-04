@@ -96,6 +96,6 @@
 /**
  * returns a new context every time
  */
-- (id <COEditingContext>) rootContext;
+- (COPersistentRootEditingContext *) rootContext;
 
 @end

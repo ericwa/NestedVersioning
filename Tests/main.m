@@ -211,10 +211,10 @@ static void testEditingContextEmbeddedObjects()
 	
 	COStore *store2 = [[COStore alloc] initWithURL: [NSURL fileURLWithPath: STOREPATH]];
 	
-	id<COEditingContext> testctx1 = [store2 rootContext];
+	COPersistentRootEditingContext *testctx1 = [store2 rootContext];
 	
 	{
-		id<COEditingContext> testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u1];
+		COPersistentRootEditingContext *testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u1];
 		
 		COStoreItem *item = [testctx2 _storeItemForUUID: [testctx2 rootUUID]];
 		EWTestEqual(@"green", [item valueForAttribute: @"color"]);
@@ -222,7 +222,7 @@ static void testEditingContextEmbeddedObjects()
 	}
 	
 	{
-		id<COEditingContext> testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u1
+		COPersistentRootEditingContext *testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u1
 																						 onBranch: u1BranchB];
 		COStoreItem *item = [testctx2 _storeItemForUUID: [testctx2 rootUUID]];
 		EWTestEqual(@"red", [item valueForAttribute: @"color"]);
@@ -230,7 +230,7 @@ static void testEditingContextEmbeddedObjects()
 	}
 
 	{
-		id<COEditingContext> testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u2];
+		COPersistentRootEditingContext *testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u2];
 		COStoreItem *item = [testctx2 _storeItemForUUID: [testctx2 rootUUID]];
 		EWTestEqual(@"red", [item valueForAttribute: @"color"]);
 		EWTestEqual(nestedDocumentRootItem, item);
@@ -252,7 +252,6 @@ static void testEditingContextEmbeddedObjects()
 static void testStoreItem()
 {
 	COStoreItem *i1 = [COStoreItem item];
-	ETUUID *u1 = [i1 UUID];
 	
 	COPath *p1 = [[[COPath path]
 						pathByAppendingPathComponent:[ETUUID UUIDWithString: @"cdf68e39-8f4b-4afa-9f81-ba2f7cdf50e6"]]

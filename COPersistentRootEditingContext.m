@@ -213,13 +213,13 @@
 
 
 
-- (id<COEditingContext>) editingContextForEditingEmbdeddedPersistentRoot: (ETUUID*)aRoot
+- (COPersistentRootEditingContext *) editingContextForEditingEmbdeddedPersistentRoot: (ETUUID*)aRoot
 {
 	return [[self class] editingContextForEditingPath: [[self path] pathByAppendingPathComponent: aRoot]
 											  inStore: [self store]];
 }
 
-- (id<COEditingContext>) editingContextForEditingEmbdeddedPersistentRoot: (ETUUID*)aRoot
+- (COPersistentRootEditingContext *) editingContextForEditingEmbdeddedPersistentRoot: (ETUUID*)aRoot
 																onBranch: (ETUUID*)aBranch
 {
 	// NOTE: We don't use aRoot explicitly. We should use it to do checks.
@@ -374,6 +374,7 @@
 	return [COStoreItemTree itemTreeWithItems: items
 										 root: aUUID];
  */
+	return nil;
 }
 
 

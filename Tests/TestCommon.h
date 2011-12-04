@@ -11,3 +11,5 @@
 #define STOREPATH [@"~/om5teststore" stringByExpandingTildeInPath]
 
 COStore *setupStore();
+
+void testUndo();
