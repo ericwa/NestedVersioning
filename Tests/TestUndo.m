@@ -2,6 +2,14 @@
 
 void testUndo()
 {
+	// commits in the persistent root
+	
+	ETUUID *commit1 = nil; // initial commit, "red"
+	ETUUID *commit2 = nil; // "orange"
+	ETUUID *commit3 = nil; // "yellow"
+	ETUUID *commit4 = nil; // "green"
+	
+	
 	// setup a simple persistent root containing { "color" : "red" }
 	
 	COStore *store = setupStore();
@@ -26,6 +34,8 @@ void testUndo()
 	[ctx commitWithMetadata: nil];
 	
 	
+	
+	
 	// make a commit in the persistent root { "color" : "orange" }
 	
 	{
@@ -35,8 +45,22 @@ void testUndo()
 				   forAttribute: @"color"
 						   type: COPrimitiveType(kCOPrimitiveTypeString)];
 		[ctx2 _insertOrUpdateItems: S(contents2)];
-		[ctx2 commitWithMetadata: nil];
+		commit2 = [ctx2 commitWithMetadata: nil];
+		
+		commit1 = [store parentForCommit: commit2];
+		assert(commit1 != nil);
 	}
+	
+	
+	
+	
+	// reopen the context to avoid a merge.
+	// FIXME: shouldn't be necessary
+	
+	ctx = [store rootContext];
+	
+	
+	
 	
 	// cretate a branch; label the branches
 	
@@ -56,114 +80,97 @@ void testUndo()
 	
 	[ctx commitWithMetadata: nil];
 
+	
+	
+	
+	// test that we can read the document contents.
+	
 	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
 	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchA] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
 	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchB] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);	
 	
 	
-	/*
 	
-	EWTestEqual(u1BranchA, [ctx currentBranchOfPersistentRoot: u1]);
-	EWTestEqual(S(u1BranchA, u1BranchB), [ctx branchesOfPersistentRoot: u1]);
-	
+	// switch to Branch B
 	
 	[ctx setCurrentBranch: u1BranchB
 		forPersistentRoot: u1];
-	
 	EWTestEqual(u1BranchB, [ctx currentBranchOfPersistentRoot: u1]);
 	
-	[ctx setCurrentBranch: u1BranchA
-		forPersistentRoot: u1];
-	
-	EWTestEqual(u1BranchA, [ctx currentBranchOfPersistentRoot: u1]);
-	
-	//
-	// 2c. create another persistent root containing a copy of u1BranchB
-	//
-	
-	ETUUID *u2 = [ctx createAndInsertNewPersistentRootByCopyingBranch: u1BranchB
-													   inItemWithUUID: uroot];
-	
-	//
-	// 2d. commit changes
-	//
-	
-	ETUUID *firstVersion = [ctx commitWithMetadata: nil];
-	EWTestTrue(firstVersion != nil);
-	EWTestEqual(firstVersion, [store rootVersion]);
+	[ctx commitWithMetadata: nil];
 	
 	
-	//
-	// 3. Now open an embedded context on the document
-	//
-	
-	COPersistentRootEditingContext *ctx2 = [ctx editingContextForEditingEmbdeddedPersistentRoot: u1];
-	EWTestTrue(nil != ctx2);
-	EWTestEqual([nestedDocumentRootItem UUID], [ctx2 rootUUID]);
-	
-	//
-	// 4. Try making a commit in the document
-	//
 	
 	
-	COStoreItem *nestedDocCtx2 = [ctx2 _storeItemForUUID: [nestedDocumentRootItem UUID]];
-	EWTestEqual(nestedDocumentRootItem, nestedDocCtx2);
+	// make 2 commits in the persistent root, "yellow", "green"
 	
-	[nestedDocCtx2 setValue: @"green"
+	{
+		COPersistentRootEditingContext *ctx3 = [ctx editingContextForEditingEmbdeddedPersistentRoot: u1];
+		COStoreItem *contents3 = [ctx3 _storeItemForUUID: [ctx3 rootUUID]];
+		[contents3 setValue: @"yellow"
 			   forAttribute: @"color"
 					   type: COPrimitiveType(kCOPrimitiveTypeString)];
-	
-	[ctx2 _insertOrUpdateItems: S(nestedDocCtx2)];
-	
-	ETUUID *commitInNestedDocCtx2 = [ctx2 commitWithMetadata: nil];
-	
-	EWTestTrue(nil != commitInNestedDocCtx2);
-	
-	
-	//
-	// 5. Reopen store and check that we read back the same data
-	//
-	
-	[store release];
-	
-	
-	COStore *store2 = [[COStore alloc] initWithURL: [NSURL fileURLWithPath: STOREPATH]];
-	
-	id<COEditingContext> testctx1 = [store2 rootContext];
-	
-	{
-		id<COEditingContext> testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u1];
-		
-		COStoreItem *item = [testctx2 _storeItemForUUID: [testctx2 rootUUID]];
-		EWTestEqual(@"green", [item valueForAttribute: @"color"]);
-		EWTestEqual(nestedDocCtx2, item);
+		[ctx3 _insertOrUpdateItems: S(contents3)];
+		commit3 = [ctx3 commitWithMetadata: nil];
 	}
 	
-	{
-		id<COEditingContext> testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u1
-																						 onBranch: u1BranchB];
-		COStoreItem *item = [testctx2 _storeItemForUUID: [testctx2 rootUUID]];
-		EWTestEqual(@"red", [item valueForAttribute: @"color"]);
-		EWTestEqual(nestedDocumentRootItem, item);
-	}
+	EWTestEqual(@"yellow", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchA] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
+	EWTestEqual(@"yellow", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchB] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);	
 	
 	{
-		id<COEditingContext> testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u2];
-		COStoreItem *item = [testctx2 _storeItemForUUID: [testctx2 rootUUID]];
-		EWTestEqual(@"red", [item valueForAttribute: @"color"]);
-		EWTestEqual(nestedDocumentRootItem, item);
+		COPersistentRootEditingContext *ctx4 = [ctx editingContextForEditingEmbdeddedPersistentRoot: u1];
+		COStoreItem *contents4 = [ctx4 _storeItemForUUID: [ctx4 rootUUID]];
+		[contents4 setValue: @"green"
+			   forAttribute: @"color"
+					   type: COPrimitiveType(kCOPrimitiveTypeString)];
+		[ctx4 _insertOrUpdateItems: S(contents4)];
+		commit4 = [ctx4 commitWithMetadata: nil];
 	}
 	
-	[store2 release];
+	EWTestEqual(@"green", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchA] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
+	EWTestEqual(@"green", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchB] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);	
 	
 	
-	//
-	// 6. GC the store
-	// 
 	
-	NSUInteger commitsBefore = [[store2 allCommitUUIDs] count];
-	[store2 gc];
-	NSUInteger commitsAfter = [[store2 allCommitUUIDs] count];
-	EWTestTrue(commitsAfter < commitsBefore);
-	*/
+	
+	
+	// finally, test undo/redo.
+	
+	
+	
+	// reopen the context to avoid a merge.
+	// FIXME: shouldn't be necessary
+	
+	ctx = [store rootContext];
+	
+	[ctx undoPersistentRoot: u1];
+	[ctx commitWithMetadata: nil];
+	
+	EWTestEqual(@"yellow", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchA] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
+	EWTestEqual(@"yellow", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchB] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);	
+	
+	
+	
+	
+	
+	[ctx undoPersistentRoot: u1];
+	[ctx commitWithMetadata: nil];
+	
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchA] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchB] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);	
+	
+	
+	
+	[ctx undoPersistentRoot: u1]; // does nothing - because we can't undo past the point where Branch B was created
+	[ctx commitWithMetadata: nil];
+	
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchA] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchB] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);	
+	
+	
 }
