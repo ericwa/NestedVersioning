@@ -65,13 +65,28 @@
 		66E22EC61421D47100C00A98 /* nestedversioning */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = nestedversioning; sourceTree = BUILT_PRODUCTS_DIR; };
 		66E22EC81421D47100C00A98 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		66E2A3031430569C00487419 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
-		66E2F16F148AAD2C0007968F /* Scraps */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Scraps; sourceTree = "<group>"; };
 		66E2FFB614899C7A00C66578 /* COPersistentRootEditingContext+PersistentRoots.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COPersistentRootEditingContext+PersistentRoots.h"; sourceTree = "<group>"; };
 		66E2FFB714899C7A00C66578 /* COPersistentRootEditingContext+PersistentRoots.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "COPersistentRootEditingContext+PersistentRoots.m"; sourceTree = "<group>"; };
 		66E46D47146A3D490042123E /* TestDeletion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestDeletion.m; sourceTree = "<group>"; };
 		66E552B4146B7799008FDFAF /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = usr/lib/libcrypto.dylib; sourceTree = SDKROOT; };
 		66E5CABB147B4E42002DE8FD /* TestPhotoManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestPhotoManager.m; sourceTree = "<group>"; };
 		66E5CBA814830C5700D01039 /* COStorePrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COStorePrivate.h; sourceTree = "<group>"; };
+		66E76726148B3D1C009937E8 /* COInMemoryObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COInMemoryObject.h; sourceTree = "<group>"; };
+		66E76727148B3D1C009937E8 /* COInMemoryObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COInMemoryObject.m; sourceTree = "<group>"; };
+		66E76728148B3D1C009937E8 /* COItemFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COItemFactory.h; sourceTree = "<group>"; };
+		66E76729148B3D1C009937E8 /* COItemFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COItemFactory.m; sourceTree = "<group>"; };
+		66E7672A148B3D1C009937E8 /* COObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COObject.h; sourceTree = "<group>"; };
+		66E7672B148B3D1C009937E8 /* COObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COObject.m; sourceTree = "<group>"; };
+		66E7672C148B3D1C009937E8 /* COObjectContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COObjectContext.h; sourceTree = "<group>"; };
+		66E7672D148B3D1C009937E8 /* COObjectContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COObjectContext.m; sourceTree = "<group>"; };
+		66E7672E148B3D1C009937E8 /* COPersistentRoot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPersistentRoot.h; sourceTree = "<group>"; };
+		66E7672F148B3D1C009937E8 /* COPersistentRoot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COPersistentRoot.m; sourceTree = "<group>"; };
+		66E76730148B3D1C009937E8 /* COPersistentRootDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPersistentRootDiff.h; sourceTree = "<group>"; };
+		66E76731148B3D1C009937E8 /* COPersistentRootDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COPersistentRootDiff.m; sourceTree = "<group>"; };
+		66E76732148B3D1C009937E8 /* COSimpleContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COSimpleContext.h; sourceTree = "<group>"; };
+		66E76733148B3D1C009937E8 /* COSimpleContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COSimpleContext.m; sourceTree = "<group>"; };
+		66E76734148B3D1C009937E8 /* COStoreItemTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COStoreItemTree.h; sourceTree = "<group>"; };
+		66E76735148B3D1C009937E8 /* COStoreItemTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COStoreItemTree.m; sourceTree = "<group>"; };
 		66E779CE14801F0E005A091E /* COItemPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COItemPath.h; sourceTree = "<group>"; };
 		66E779CF14801F0E005A091E /* COItemPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COItemPath.m; sourceTree = "<group>"; };
 		66E877551455F0CB006CBE7E /* COStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COStore.h; sourceTree = "<group>"; };
@@ -130,7 +145,7 @@
 				66DFAECB142A726100623060 /* test.1 */,
 				662811F913F8B5010075BBC2 /* Frameworks */,
 				662811F713F8B5010075BBC2 /* Products */,
-				66E2F16F148AAD2C0007968F /* Scraps */,
+				66E76724148B3CEA009937E8 /* Scraps */,
 			);
 			sourceTree = "<group>";
 		};
@@ -191,6 +206,29 @@
 				66E779CF14801F0E005A091E /* COItemPath.m */,
 			);
 			name = Implementation;
+			sourceTree = "<group>";
+		};
+		66E76724148B3CEA009937E8 /* Scraps */ = {
+			isa = PBXGroup;
+			children = (
+				66E76726148B3D1C009937E8 /* COInMemoryObject.h */,
+				66E76727148B3D1C009937E8 /* COInMemoryObject.m */,
+				66E76728148B3D1C009937E8 /* COItemFactory.h */,
+				66E76729148B3D1C009937E8 /* COItemFactory.m */,
+				66E7672A148B3D1C009937E8 /* COObject.h */,
+				66E7672B148B3D1C009937E8 /* COObject.m */,
+				66E7672C148B3D1C009937E8 /* COObjectContext.h */,
+				66E7672D148B3D1C009937E8 /* COObjectContext.m */,
+				66E7672E148B3D1C009937E8 /* COPersistentRoot.h */,
+				66E7672F148B3D1C009937E8 /* COPersistentRoot.m */,
+				66E76730148B3D1C009937E8 /* COPersistentRootDiff.h */,
+				66E76731148B3D1C009937E8 /* COPersistentRootDiff.m */,
+				66E76732148B3D1C009937E8 /* COSimpleContext.h */,
+				66E76733148B3D1C009937E8 /* COSimpleContext.m */,
+				66E76734148B3D1C009937E8 /* COStoreItemTree.h */,
+				66E76735148B3D1C009937E8 /* COStoreItemTree.m */,
+			);
+			path = Scraps;
 			sourceTree = "<group>";
 		};
 		791A0EBD148AF3C200334CB1 /* Tests */ = {
