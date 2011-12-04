@@ -136,18 +136,53 @@
 	}
 }
 
+/** @taskunit I/O */
+
+- (NSSet*) allContainedStoreItems
+{
+	NSMutableSet *result = [NSMutableSet set];
+	
+	[result addObject: root];
+	
+	for (NSString *key in [self attributeNames])
+	{
+		NSDictionary *type = [self typeForAttribute: key];
+		if ([[type objectForKey: kCOPrimitiveType] isEqual: kCOPrimitiveTypeEmbeddedItem])
+		{
+			for (COStoreItemTree *tree in [self valueForAttribute: key])
+			{
+				[result unionSet: [tree allContainedStoreItems]];
+			}
+		}
+	}
+	return result;
+}
+
 /** @taskunit convenience */
 
-- (void) addObject: (id)aValue
-	  forAttribute: (NSString*)anAttribute
-			  type: (NSDictionary*)aType
+- (void) addTree: (COStoreItemTree *)aValue
+ forSetAttribute: (NSString*)anAttribute
 {
-	id container = [[self valueForAttribute: anAttribute] mutableCopy];
-	[container addObject: aValue];
+	id container = [self valueForAttribute: anAttribute];
+	
+	if (container == nil)
+	{
+		container = [NSSet setWithObject: aValue];
+	}
+	else
+	{
+		container = [container setByAddingObject: aValue];
+	}
+	
 	[self setValue: container
 	  forAttribute: anAttribute
-			  type: aType];
-	[container release];
+			  type: COSetContainerType(kCOPrimitiveTypeEmbeddedItem)];
+}
+
+- (void) addTree: (COStoreItemTree *)aValue
+{
+	[self addTree: aValue
+  forSetAttribute: @"contents"];
 }
 
 - (id)copyWithZone:(NSZone *)zone

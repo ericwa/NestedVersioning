@@ -36,11 +36,19 @@
 	 forAttribute: (NSString*)anAttribute
 			 type: (NSDictionary*)aType;
 
+/** @taskunit I/O */
+
+- (NSSet*) allContainedStoreItems;
+
 /** @taskunit convenience */
 
-- (void) addObject: (id)aValue
-	  forAttribute: (NSString*)anAttribute
-			  type: (NSDictionary*)aType;
+- (void) addTree: (COStoreItemTree *)aValue
+ forSetAttribute: (NSString*)anAttribute;
+
+/**
+ * adds the given tree to the default @"contents" attribute
+ */
+- (void) addTree: (COStoreItemTree *)aValue;
 
 /**
  * @returns a mutable copy
