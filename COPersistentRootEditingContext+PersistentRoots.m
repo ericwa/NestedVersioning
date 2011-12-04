@@ -236,6 +236,19 @@
 	COStoreItem *branch = [self _storeItemForUUID: [self currentBranchOfPersistentRoot: aRoot]];
 	[branch setUUID: [ETUUID UUID]]; // makes it a copy.
 
+	// Reset the limits for undo/redo
+	{
+		ETUUID *currentVersion = [branch valueForAttribute: @"currentVersion"];
+		assert(currentVersion != nil);
+		
+		[branch setValue: currentVersion
+			forAttribute: @"head"
+					type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];	// limit for redo. moved on every commit.
+		[branch setValue: currentVersion
+			forAttribute: @"tail"
+					type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];	// limit for undo. never changed.
+	}
+	
 	[self insertValue: [branch UUID]
 		primitiveType: kCOPrimitiveTypeEmbeddedItem
 	   inSetAttribute: @"contents"
