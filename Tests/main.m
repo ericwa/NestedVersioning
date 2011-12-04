@@ -1,16 +1,6 @@
-#import <Foundation/Foundation.h>
-#import "EWTest.h"
-#import "COStore.h"
-#import "COPath.h"
-#import "COStoreItem.h"
-#import "COStorePrivate.h"
-#import "COEditingContext.h"
-#import "Common.h"
-#import "COPersistentRootEditingContext+PersistentRoots.h"
+#import "TestCommon.h"
 
-#define STOREPATH [@"~/om5teststore" stringByExpandingTildeInPath]
-
-static COStore *setupStore()
+COStore *setupStore()
 {
 	[[NSFileManager defaultManager] removeItemAtPath: STOREPATH error: NULL];
 	return [[COStore alloc] initWithURL: [NSURL fileURLWithPath: STOREPATH]];
@@ -297,6 +287,7 @@ int main (int argc, const char * argv[])
 	//testStoreController();
 	testEditingContextEmbeddedObjects();
 	testStoreItem();
+	testUndo();
 	
     EWTestLog();
     
