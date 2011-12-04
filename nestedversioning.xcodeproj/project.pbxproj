@@ -16,6 +16,7 @@
 		66E46D48146A3D490042123E /* TestDeletion.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E46D47146A3D490042123E /* TestDeletion.m */; };
 		66E552B5146B7799008FDFAF /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E552B4146B7799008FDFAF /* libcrypto.dylib */; };
 		66E5CABC147B4E42002DE8FD /* TestPhotoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E5CABB147B4E42002DE8FD /* TestPhotoManager.m */; };
+		66E76749148B4813009937E8 /* COStoreItemTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E76735148B3D1C009937E8 /* COStoreItemTree.m */; };
 		66E877571455F0CB006CBE7E /* COStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E877561455F0CB006CBE7E /* COStore.m */; };
 		66E8776B1455FE67006CBE7E /* ETUUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E8776A1455FE67006CBE7E /* ETUUID.m */; };
 		66EADD6514732AEE003181FC /* TestUndo.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EADD6414732AEE003181FC /* TestUndo.m */; };
@@ -184,6 +185,7 @@
 			children = (
 				66E877551455F0CB006CBE7E /* COStore.h */,
 				66EADD67147345B9003181FC /* COStoreItem.h */,
+				66E76734148B3D1C009937E8 /* COStoreItemTree.h */,
 				66EE5D34146355A6008AA95B /* COPersistentRootEditingContext.h */,
 				66E2FFB614899C7A00C66578 /* COPersistentRootEditingContext+PersistentRoots.h */,
 				79ABB071148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.h */,
@@ -201,6 +203,7 @@
 				66E5CBA814830C5700D01039 /* COStorePrivate.h */,
 				66E877561455F0CB006CBE7E /* COStore.m */,
 				66EADD68147345B9003181FC /* COStoreItem.m */,
+				66E76735148B3D1C009937E8 /* COStoreItemTree.m */,
 			);
 			name = Implementation;
 			sourceTree = "<group>";
@@ -224,8 +227,6 @@
 				66E76731148B3D1C009937E8 /* COPersistentRootDiff.m */,
 				66E76732148B3D1C009937E8 /* COSimpleContext.h */,
 				66E76733148B3D1C009937E8 /* COSimpleContext.m */,
-				66E76734148B3D1C009937E8 /* COStoreItemTree.h */,
-				66E76735148B3D1C009937E8 /* COStoreItemTree.m */,
 			);
 			path = Scraps;
 			sourceTree = "<group>";
@@ -317,6 +318,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				66E76749148B4813009937E8 /* COStoreItemTree.m in Sources */,
 				66DFAED0142A726100623060 /* main.m in Sources */,
 				6628FB9B142FA65D0072767A /* EWTest.m in Sources */,
 				66E877571455F0CB006CBE7E /* COStore.m in Sources */,
