@@ -86,8 +86,8 @@
 		66E76733148B3D1C009937E8 /* COSimpleContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COSimpleContext.m; sourceTree = "<group>"; };
 		66E76734148B3D1C009937E8 /* COStoreItemTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COStoreItemTree.h; sourceTree = "<group>"; };
 		66E76735148B3D1C009937E8 /* COStoreItemTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COStoreItemTree.m; sourceTree = "<group>"; };
-		66E779CE14801F0E005A091E /* COItemPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = COItemPath.h; path = ../COItemPath.h; sourceTree = "<group>"; };
-		66E779CF14801F0E005A091E /* COItemPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = COItemPath.m; path = ../COItemPath.m; sourceTree = "<group>"; };
+		66E7673E148B3DE8009937E8 /* COItemPath.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = COItemPath.h; sourceTree = "<group>"; };
+		66E7673F148B3DE8009937E8 /* COItemPath.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = COItemPath.m; sourceTree = "<group>"; };
 		66E877551455F0CB006CBE7E /* COStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COStore.h; sourceTree = "<group>"; };
 		66E877561455F0CB006CBE7E /* COStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COStore.m; sourceTree = "<group>"; };
 		66E877691455FE5B006CBE7E /* ETUUID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETUUID.h; sourceTree = "<group>"; };
@@ -208,8 +208,8 @@
 		66E76724148B3CEA009937E8 /* Scraps */ = {
 			isa = PBXGroup;
 			children = (
-				66E779CE14801F0E005A091E /* COItemPath.h */,
-				66E779CF14801F0E005A091E /* COItemPath.m */,
+				66E7673E148B3DE8009937E8 /* COItemPath.h */,
+				66E7673F148B3DE8009937E8 /* COItemPath.m */,
 				66E76726148B3D1C009937E8 /* COInMemoryObject.h */,
 				66E76727148B3D1C009937E8 /* COInMemoryObject.m */,
 				66E76728148B3D1C009937E8 /* COItemFactory.h */,
