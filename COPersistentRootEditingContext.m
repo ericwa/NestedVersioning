@@ -144,7 +144,7 @@
 	
 	if (localResult != nil)
 	{
-		NSLog(@"overriding %@ with %@", result, localResult);
+		//NSLog(@"overriding %@ with %@", result, localResult);
 		result = localResult;
 	}
 	
