@@ -172,7 +172,14 @@ void testUndo()
 	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchA] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
 	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchB] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);	
 	
-	
+
+	// ensure that a GC here does not delete any commits we need
+	{
+		NSUInteger commitsBefore = [[store allCommitUUIDs] count];
+		[store gc];
+		NSUInteger commitsAfter = [[store allCommitUUIDs] count];
+		EWTestTrue(commitsAfter < commitsBefore);
+	}
 	
 	[ctx redoPersistentRoot: u1];
 	[ctx commitWithMetadata: nil];
