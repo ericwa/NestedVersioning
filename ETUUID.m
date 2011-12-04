@@ -139,13 +139,12 @@ static void ETUUIDGet16RandomBytes(unsigned char bytes[16])
 
 - (BOOL) isEqual: (id)anObject
 {
-	if (![anObject isKindOfClass: [self class]])
+	if (anObject == self)
 	{
-		return NO;
+		return YES;
 	}
-	ETUUID *aUUID = (ETUUID*)anObject;
-	const unsigned char *other_uuid = [aUUID UUIDValue];
-	return (0 == memcmp(uuid, other_uuid, 16));
+	return ([anObject isKindOfClass: [self class]]
+			&& (0 == memcmp(uuid, [(ETUUID *)anObject UUIDValue], 16)));
 }
 
 - (NSString *) stringValue
