@@ -173,4 +173,30 @@ void testUndo()
 	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchB] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);	
 	
 	
+	
+	[ctx redoPersistentRoot: u1];
+	[ctx commitWithMetadata: nil];
+	
+	EWTestEqual(@"yellow", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchA] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
+	EWTestEqual(@"yellow", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchB] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);	
+	
+	
+	
+	[ctx redoPersistentRoot: u1];
+	[ctx commitWithMetadata: nil];
+	
+	EWTestEqual(@"green", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchA] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
+	EWTestEqual(@"green", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchB] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);	
+	
+	
+	
+	
+	[ctx redoPersistentRoot: u1]; // does nothing - because we can't redo past the end of the branch
+	[ctx commitWithMetadata: nil];
+	
+	EWTestEqual(@"green", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchA] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
+	EWTestEqual(@"green", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchB] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);	
 }
