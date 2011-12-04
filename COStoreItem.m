@@ -216,6 +216,10 @@ static void validate(id aValue, NSDictionary *aType)
 	 forAttribute: (NSString*)anAttribute
 			 type: (NSDictionary*)aType
 {
+	NILARG_EXCEPTION_TEST(aValue);
+	NILARG_EXCEPTION_TEST(anAttribute);
+	NILARG_EXCEPTION_TEST(aType);
+	
 	[types setObject: aType forKey: anAttribute];
 	[values setObject: aValue forKey: anAttribute];
 	[self validate];
