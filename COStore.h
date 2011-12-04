@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "ETUUID.h"
 #import "COStoreItem.h"
-#import "COEditingContext.h"
+#import "COPersistentRootEditingContext.h"
 
 @class COPersistentRootEditingContext;
 @class COStoreItem;

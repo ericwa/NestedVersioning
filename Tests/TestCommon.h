@@ -4,7 +4,7 @@
 #import "COPath.h"
 #import "COStoreItem.h"
 #import "COStorePrivate.h"
-#import "COEditingContext.h"
+#import "COPersistentRootEditingContext.h"
 #import "Common.h"
 #import "COPersistentRootEditingContext+PersistentRoots.h"
 
