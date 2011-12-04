@@ -7,6 +7,7 @@
 #import "COPersistentRootEditingContext.h"
 #import "Common.h"
 #import "COPersistentRootEditingContext+PersistentRoots.h"
+#import "COStoreItemTree.h"
 
 #define STOREPATH [@"~/om5teststore" stringByExpandingTildeInPath]
 

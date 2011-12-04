@@ -86,6 +86,20 @@ static void testPath()
 	EWTestEqual([[COPath pathWithPathComponent: u1] pathByAppendingPathComponent: u3], [path pathByAppendingPath: path5]);	
 }
 
+static void testStoreItemTree()
+{
+	COStoreItemTree *t1 = [COStoreItemTree itemTree];
+	COStoreItemTree *t2 = [COStoreItemTree itemTree];
+	COStoreItemTree *t3 = [COStoreItemTree itemTree];
+	
+	[t1 addTree: t2];
+	[t2 addTree: t3];
+	
+	EWTestIntsEqual(3, [[t1 allContainedStoreItems] count ]);
+	
+	
+}
+
 static void testEditingContextEmbeddedObjects()
 {
 	COStore *store = setupStore();
@@ -284,6 +298,7 @@ int main (int argc, const char * argv[])
 
 	testStore();
 	testPath();
+	testStoreItemTree();
 	//testStoreController();
 	testEditingContextEmbeddedObjects();
 	testStoreItem();
