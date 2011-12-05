@@ -38,6 +38,8 @@
 		792972F5148C4CA800FD35A9 /* TestCompositeDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 792972F4148C4CA800FD35A9 /* TestCompositeDocument.m */; };
 		792972FA148C4D6D00FD35A9 /* TestUserRequirements.m in Sources */ = {isa = PBXBuildFile; fileRef = 792972F9148C4D6D00FD35A9 /* TestUserRequirements.m */; };
 		79297309148C94FD00FD35A9 /* COItemFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 79297308148C94FD00FD35A9 /* COItemFactory.m */; };
+		79926C19148CADF80095A665 /* EWPersistentRootWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79926C18148CADF80095A665 /* EWPersistentRootWindowController.m */; };
+		79926C1F148CAE390095A665 /* PersistentRootWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79926C1E148CAE390095A665 /* PersistentRootWindow.xib */; };
 		79ABB073148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 79ABB072148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.m */; };
 /* End PBXBuildFile section */
 
@@ -134,6 +136,9 @@
 		792972F9148C4D6D00FD35A9 /* TestUserRequirements.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestUserRequirements.m; sourceTree = "<group>"; };
 		79297307148C94FD00FD35A9 /* COItemFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COItemFactory.h; sourceTree = "<group>"; };
 		79297308148C94FD00FD35A9 /* COItemFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COItemFactory.m; sourceTree = "<group>"; };
+		79926C17148CADF80095A665 /* EWPersistentRootWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWPersistentRootWindowController.h; sourceTree = "<group>"; };
+		79926C18148CADF80095A665 /* EWPersistentRootWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWPersistentRootWindowController.m; sourceTree = "<group>"; };
+		79926C1E148CAE390095A665 /* PersistentRootWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PersistentRootWindow.xib; sourceTree = "<group>"; };
 		79ABB071148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COPersistentRootEditingContext+Convenience.h"; sourceTree = "<group>"; };
 		79ABB072148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "COPersistentRootEditingContext+Convenience.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -290,6 +295,9 @@
 				66EB757E148CA9D300C2114B /* AppDelegate.m */,
 				66EB7580148CA9D400C2114B /* MainMenu.xib */,
 				66EB7572148CA9D300C2114B /* Supporting Files */,
+				79926C17148CADF80095A665 /* EWPersistentRootWindowController.h */,
+				79926C18148CADF80095A665 /* EWPersistentRootWindowController.m */,
+				79926C1E148CAE390095A665 /* PersistentRootWindow.xib */,
 			);
 			path = StoreBrowser;
 			sourceTree = "<group>";
@@ -417,6 +425,7 @@
 				66EB7576148CA9D300C2114B /* InfoPlist.strings in Resources */,
 				66EB757C148CA9D300C2114B /* Credits.rtf in Resources */,
 				66EB7582148CA9D400C2114B /* MainMenu.xib in Resources */,
+				79926C1F148CAE390095A665 /* PersistentRootWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -460,6 +469,7 @@
 			files = (
 				66EB7578148CA9D300C2114B /* main.m in Sources */,
 				66EB757F148CA9D300C2114B /* AppDelegate.m in Sources */,
+				79926C19148CADF80095A665 /* EWPersistentRootWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

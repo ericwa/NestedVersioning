@@ -1,12 +1,5 @@
-//
-//  AppDelegate.m
-//  StoreBrowser
-//
-//  Created by Eric Wasylishen on 11-12-05.
-//  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
-//
-
 #import "AppDelegate.h"
+#import "EWPersistentRootWindowController.h"
 
 @implementation AppDelegate
 
@@ -19,7 +12,9 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-	// Insert code here to initialize your application
+	EWPersistentRootWindowController *wc = [[EWPersistentRootWindowController alloc] 
+												initWithWindowNibName: @"PersistentRootWindow"];
+	[wc showWindow: nil];
 }
 
 @end
