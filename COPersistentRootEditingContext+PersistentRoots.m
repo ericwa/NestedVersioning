@@ -7,12 +7,21 @@
 
 @implementation COPersistentRootEditingContext (PersistentRoots)
 
-- (ETUUID *)createAndInsertNewPersistentRootWithRootItem: (COStoreItem *)anItem
+- (ETUUID *)createAndInsertNewPersistentRootWithRootItem: (COStoreItemTree *)anItem
 										  inItemWithUUID: (ETUUID*)aDest
 {
+	// FIXME: awkward translation
+	NSSet *allItems = [anItem allContainedStoreItems];
+	NSMutableDictionary *uuidsAndStoreItems = [NSMutableDictionary dictionary];
+	for (COStoreItem *item in allItems)
+	{
+		[uuidsAndStoreItems setObject: item forKey: [item UUID]];
+	}
+	
+	
 	ETUUID *nestedDocumentInitialVersion = [store addCommitWithParent: nil
 															 metadata: nil
-												   UUIDsAndStoreItems: D(anItem, [anItem UUID])
+												   UUIDsAndStoreItems: uuidsAndStoreItems
 															 rootItem: [anItem UUID]];
 	assert(nestedDocumentInitialVersion != nil);
 	

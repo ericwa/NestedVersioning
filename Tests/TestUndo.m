@@ -22,7 +22,7 @@ void testUndo()
 		newRootEmbeddedObject: uroot];
 	
 		
-	COStoreItem *contents1 = [COStoreItem item];
+	COStoreItemTree *contents1 = [COStoreItemTree itemTree];
 	[contents1 setValue: @"red"
 		   forAttribute: @"color"
 				   type: COPrimitiveType(kCOPrimitiveTypeString)];
