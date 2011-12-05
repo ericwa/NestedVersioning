@@ -127,9 +127,10 @@ void testTagging()
 		[photolibCtx commitWithMetadata: nil];
 		
 		// set up tags on photo1
-		
+
+		{
 		// open a context to edit the branch
-		
+
 			COPersistentRootEditingContext *photo1Ctx = [photolibCtx editingContextForEditingEmbdeddedPersistentRoot: photo1];
 			
 			ETUUID *photo1Ctx_root = [photo1Ctx rootUUID];
@@ -153,5 +154,65 @@ void testTagging()
 			[photo1Ctx _insertOrUpdateItems: S(photo1Ctx_rootItem)];
 			
 			[photo1Ctx commitWithMetadata: nil];
+		}
+	
+		// set up tags on photo2
 		
+		{
+			// open a context to edit the branch
+			
+			COPersistentRootEditingContext *photo2Ctx = [photolibCtx editingContextForEditingEmbdeddedPersistentRoot: photo2];
+			
+			ETUUID *photo2Ctx_root = [photo2Ctx rootUUID];
+			
+			COPath *tag1 = [[[[[COPath path] 
+							   pathByAppendingPathToParent]
+							  pathByAppendingPathToParent]
+							 pathByAppendingPathComponent: taglibUUID]
+							pathByAppendingPathComponent: brazil];
+			
+			COPath *tag2 = [[[COPath path] pathByAppendingPathToParent]
+							pathByAppendingPathComponent: sunlight];
+			
+			COPath *tag3 = [[[COPath path] pathByAppendingPathToParent]
+							pathByAppendingPathComponent: abstract];
+			
+			COStoreItem *photo2Ctx_rootItem = [photo2Ctx _storeItemForUUID:photo2Ctx_root];
+			[photo2Ctx_rootItem setValue: S(tag1, tag2, tag3)
+							forAttribute: @"tags"
+									type: COSetContainerType(kCOPrimitiveTypePath)];
+			[photo2Ctx _insertOrUpdateItems: S(photo2Ctx_rootItem)];
+			
+			[photo2Ctx commitWithMetadata: nil];
+		}
+	
+		// set up tags on photo3
+		
+		{
+			// open a context to edit the branch
+			
+			COPersistentRootEditingContext *photo3Ctx = [photolibCtx editingContextForEditingEmbdeddedPersistentRoot: photo3];
+			
+			ETUUID *photo3Ctx_root = [photo3Ctx rootUUID];
+			
+			COPath *tag1 = [[[[[COPath path] 
+							   pathByAppendingPathToParent]
+							  pathByAppendingPathToParent]
+							 pathByAppendingPathComponent: taglibUUID]
+							pathByAppendingPathComponent: brazil];
+			
+			COPath *tag2 = [[[COPath path] pathByAppendingPathToParent]
+							pathByAppendingPathComponent: people];
+			
+			COPath *tag3 = [[[COPath path] pathByAppendingPathToParent]
+							pathByAppendingPathComponent: artificial];
+			
+			COStoreItem *photo3Ctx_rootItem = [photo3Ctx _storeItemForUUID:photo3Ctx_root];
+			[photo3Ctx_rootItem setValue: S(tag1, tag2, tag3)
+							forAttribute: @"tags"
+									type: COSetContainerType(kCOPrimitiveTypePath)];
+			[photo3Ctx _insertOrUpdateItems: S(photo3Ctx_rootItem)];
+			
+			[photo3Ctx commitWithMetadata: nil];
+		}
 }
