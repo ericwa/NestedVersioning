@@ -28,6 +28,9 @@
 		66F4E31A147C606A004FC1BA /* TestGameEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F4E319147C606A004FC1BA /* TestGameEditor.m */; };
 		790B1AE91485B184001ED869 /* TestSimpleUseOfNestedPersistentRoots.m in Sources */ = {isa = PBXBuildFile; fileRef = 790B1AE81485B184001ED869 /* TestSimpleUseOfNestedPersistentRoots.m */; };
 		79156DBA1484BE4D00AB66B1 /* TestConcurrentContextModification.m in Sources */ = {isa = PBXBuildFile; fileRef = 79156DB91484BE4D00AB66B1 /* TestConcurrentContextModification.m */; };
+		792972EE148C4AC100FD35A9 /* TestReferencesBetweenPersistentRoots.m in Sources */ = {isa = PBXBuildFile; fileRef = 792972ED148C4AC100FD35A9 /* TestReferencesBetweenPersistentRoots.m */; };
+		792972F5148C4CA800FD35A9 /* TestCompositeDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 792972F4148C4CA800FD35A9 /* TestCompositeDocument.m */; };
+		792972FA148C4D6D00FD35A9 /* TestUserRequirements.m in Sources */ = {isa = PBXBuildFile; fileRef = 792972F9148C4D6D00FD35A9 /* TestUserRequirements.m */; };
 		79ABB073148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 79ABB072148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.m */; };
 /* End PBXBuildFile section */
 
@@ -106,6 +109,9 @@
 		790B1AE81485B184001ED869 /* TestSimpleUseOfNestedPersistentRoots.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSimpleUseOfNestedPersistentRoots.m; sourceTree = "<group>"; };
 		79156DB91484BE4D00AB66B1 /* TestConcurrentContextModification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestConcurrentContextModification.m; sourceTree = "<group>"; };
 		791A0EB7148AF39000334CB1 /* TestCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestCommon.h; sourceTree = "<group>"; };
+		792972ED148C4AC100FD35A9 /* TestReferencesBetweenPersistentRoots.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestReferencesBetweenPersistentRoots.m; sourceTree = "<group>"; };
+		792972F4148C4CA800FD35A9 /* TestCompositeDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCompositeDocument.m; sourceTree = "<group>"; };
+		792972F9148C4D6D00FD35A9 /* TestUserRequirements.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestUserRequirements.m; sourceTree = "<group>"; };
 		79ABB071148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COPersistentRootEditingContext+Convenience.h"; sourceTree = "<group>"; };
 		79ABB072148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "COPersistentRootEditingContext+Convenience.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -251,6 +257,9 @@
 				66F4E319147C606A004FC1BA /* TestGameEditor.m */,
 				66E46D47146A3D490042123E /* TestDeletion.m */,
 				66E0189E146468F6000EB1E0 /* TestBLOB.m */,
+				792972ED148C4AC100FD35A9 /* TestReferencesBetweenPersistentRoots.m */,
+				792972F4148C4CA800FD35A9 /* TestCompositeDocument.m */,
+				792972F9148C4D6D00FD35A9 /* TestUserRequirements.m */,
 			);
 			name = "Tests - documented only";
 			path = Tests;
@@ -338,6 +347,9 @@
 				790B1AE91485B184001ED869 /* TestSimpleUseOfNestedPersistentRoots.m in Sources */,
 				66E2FFB814899C7B00C66578 /* COPersistentRootEditingContext+PersistentRoots.m in Sources */,
 				79ABB073148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.m in Sources */,
+				792972EE148C4AC100FD35A9 /* TestReferencesBetweenPersistentRoots.m in Sources */,
+				792972F5148C4CA800FD35A9 /* TestCompositeDocument.m in Sources */,
+				792972FA148C4D6D00FD35A9 /* TestUserRequirements.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

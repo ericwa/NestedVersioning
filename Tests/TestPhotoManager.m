@@ -26,6 +26,18 @@ void test()
 	 -contained photos can be in multiple albums.
 	 */
 	
+	
+	/*
+	 also, test "home-made" versioning, merging:
+	 
+	 "One of my desirable properties is that the versioning primitive, cheap copy,
+	 be available for everyday use (e.g. simply copying a photo). While there should 
+	 be a default versioning scheme, sometimes you don’t need that overhead, and just
+	 want to cook your own. You should be able to, and get the same efficiency for free."
+	 
+	 
+	 */
+	
 	// library1 <<persistent root>>
 	//  |
 	//  |--folder1
