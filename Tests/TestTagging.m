@@ -48,13 +48,10 @@ void testTagging()
 	
 	COPersistentRootEditingContext *rootCtx = [store rootContext];
 	
-	//<-- FIXME: Refactor
-	COStoreItem *iroot = [COStoreItem item];
+	COStoreItemTree *iroot = [COStoreItemTree itemTree];
 	ETUUID *uroot = [iroot UUID];
 	
-	[rootCtx _insertOrUpdateItems: S(iroot)
-		newRootEmbeddedObject: uroot];
-	//-->
+	[rootCtx setItemTree: iroot];
 	
 	
 	ETUUID *taglibUUID = [rootCtx createAndInsertNewPersistentRootWithRootItem: [factory newFolder: @"tag library"]

@@ -3,6 +3,7 @@
 #import "COStoreItem.h"
 #import "COStore.h"
 #import "COItemPath.h"
+#import "COStoreItemTree.h"
 
 @class COStore;
 
@@ -126,5 +127,9 @@
 
 - (void) _insertOrUpdateItems: (NSSet *)items;
 
+/**
+ * Replace the entire contents of the receiver with the given item tree
+ */
+- (void) setItemTree: (COStoreItemTree *)aTree;
 
 @end

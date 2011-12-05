@@ -377,5 +377,16 @@
 	return nil;
 }
 
+- (void) setItemTree: (COStoreItemTree	*)aTree
+{
+	NILARG_EXCEPTION_TEST(aTree);
+
+	ASSIGN(rootItemUUID, [aTree UUID]);
+	
+	for (COStoreItem *item in [aTree allContainedStoreItems])
+	{
+		[insertedOrUpdatedItems setObject: item forKey: [item UUID]];
+	}
+}
 
 @end
