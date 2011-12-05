@@ -8,4 +8,7 @@
 	  inSetAttribute: (NSString*)anAttribute
 			ofObject: (ETUUID*)aDest;
 
+- (ETUUID *) insertTree: (COStoreItemTree*)aTree
+			inContainer: (ETUUID*)aContainer;
+
 @end

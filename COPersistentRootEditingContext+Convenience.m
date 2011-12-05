@@ -42,4 +42,16 @@
 	[self _insertOrUpdateItems: S(destItem)];	
 }
 
+- (ETUUID *) insertTree: (COStoreItemTree*)aTree
+		inContainer: (ETUUID*)aContainer
+{
+	[self insertValue: [aTree UUID]
+		primitiveType: kCOPrimitiveTypeEmbeddedItem
+	   inSetAttribute: @"contents"
+			 ofObject: aContainer];
+	
+	[self _insertOrUpdateItems: [aTree allContainedStoreItems]];	
+	return [aTree UUID];
+}
+
 @end

@@ -7,6 +7,7 @@
 #import "COPersistentRootEditingContext.h"
 #import "Common.h"
 #import "COPersistentRootEditingContext+PersistentRoots.h"
+#import "COPersistentRootEditingContext+Convenience.h"
 #import "COStoreItemTree.h"
 #import "COItemFactory.h"
 
@@ -15,3 +16,4 @@
 COStore *setupStore();
 
 void testUndo();
+void testTagging();

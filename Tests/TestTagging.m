@@ -61,79 +61,75 @@ void testTagging()
 	
 	[rootCtx commitWithMetadata: nil];
 	
-	#if 0	
 	// set up some tags
-	{
+	
 		COPersistentRootEditingContext *taglibCtx = [rootCtx editingContextForEditingEmbdeddedPersistentRoot: taglibUUID];
 		
 		ETUUID *taglibFolder = [taglibCtx rootUUID];
 		
 
-		ETUUID *places = [taglibCtx insertItem: [factory newFolderNamed: @"places"]
+		ETUUID *places = [taglibCtx insertTree: [factory newFolder: @"places"]
 								   inContainer: taglibFolder];
-		ETUUID *northamerica = [taglibCtx insertItem: [factory newFolderNamed: @"north america"]
+		ETUUID *northamerica = [taglibCtx insertTree: [factory newFolder: @"north america"]
 										 inContainer: places];
-		ETUUID *canada = [taglibCtx insertItem: [factory newItemNamed: @"canada"]
+		ETUUID *canada = [taglibCtx insertTree: [factory newItem: @"canada"]
 								   inContainer: northamerica];
-		ETUUID *southamerica = [taglibCtx insertItem: [factory newFolderNamed: @"south america"]
+		ETUUID *southamerica = [taglibCtx insertTree: [factory newFolder: @"south america"]
 										 inContainer: places];
-		ETUUID *brazil = [taglibCtx insertItem: [factory newItemNamed: @"brazil"]
+		ETUUID *brazil = [taglibCtx insertTree: [factory newItem: @"brazil"]
 								   inContainer: southamerica];
 		
-		[taglibCtx commit];
-	}
+		[taglibCtx commitWithMetadata: nil];
+	
 
 
 	// create a photo library
-	{
+	
 		COPersistentRootEditingContext *photolibCtx = [rootCtx editingContextForEditingEmbdeddedPersistentRoot: photolibUUID];
 		
-		ETUUID *photolibFolder = [photolibCtx rootItemUUID];
+		ETUUID *photolibFolder = [photolibCtx rootUUID];
 		
 		// set up some local tags
-		{
-			localtagFolder = [photolibCtx insertItem: [factory newFolderNamed: @"local tags"]
-										 inContainer: photolibFolder];
-			subject = [photolibCtx insertItem: [factory newFolderNamed: @"subject"]
-							   inContainer: localtagFolder];
-			landscape = [photolibCtx insertItem: [factory newFolderNamed: @"landscape"]
-									 inContainer: subject];
-			people = [photolibCtx insertItem: [factory newItemNamed: @"people"]
-							   inContainer: subject];
-			abstract = [photolibCtx insertItem: [factory newFolderNamed: @"abstract"]
-									 inContainer: subject];
-			lighting = [photolibCtx insertItem: [factory newItemNamed: @"lighting"]
-							   inContainer: localtagFolder];
-			sunlight = [photolibCtx insertItem: [factory newItemNamed: @"sunlight"]
-								   inContainer: lighting];
-			artificial = [photolibCtx insertItem: [factory newItemNamed: @"artificial"]
-								   inContainer: lighting];			
-		}
+		
+			ETUUID *localtagFolder = [photolibCtx insertTree: [factory newFolder: @"local tags"]
+												 inContainer: photolibFolder];
+			ETUUID *subject = [photolibCtx insertTree: [factory newFolder: @"subject"]
+										  inContainer: localtagFolder];
+			ETUUID *landscape = [photolibCtx insertTree: [factory newItem: @"landscape"]
+											inContainer: subject];
+			ETUUID *people = [photolibCtx insertTree: [factory newItem: @"people"]
+										 inContainer: subject];
+			ETUUID *abstract = [photolibCtx insertTree: [factory newItem: @"abstract"]
+										   inContainer: subject];
+			ETUUID *lighting = [photolibCtx insertTree: [factory newFolder: @"lighting"]
+										   inContainer: localtagFolder];
+			ETUUID *sunlight = [photolibCtx insertTree: [factory newItem: @"sunlight"]
+										   inContainer: lighting];
+			ETUUID *artificial = [photolibCtx insertTree: [factory newItem: @"artificial"]
+											 inContainer: lighting];			
+		
 		
 		// set up photo shoots folder
-		{
-			photoshootsFolder = [photolibCtx insertItem: [factory newFolderNamed: @"photo shoots"]
-											inContainer: photolibFolder];
-			shoot1 = [photolibCtx insertItem: [factory newFolderNamed: @"shoot1"]
-								 inContainer: photoshootsFolder];
-			
-			photo1 = [factory newPersistentRootWithRootItem: [factory newFolder: @"photo1"]
-												 insertInto: shoot1
-												  inContext: photolibCtx];
-			photo2 = [factory newPersistentRootWithRootItem: [factory newFolder: @"photo2"]
-												 insertInto: shoot1
-												  inContext: photolibCtx];			
-			photo3 = [factory newPersistentRootWithRootItem: [factory newFolder: @"photo3"]
-												 insertInto: shoot1
-												  inContext: photolibCtx];
-		}
 		
-		[photolibCtx commit];
+			ETUUID *photoshootsFolder = [photolibCtx insertTree: [factory newFolder: @"photo shoots"]
+													inContainer: photolibFolder];
+			ETUUID *shoot1 = [photolibCtx insertTree: [factory newFolder: @"shoot1"]
+										 inContainer: photoshootsFolder];
+			
+			ETUUID *photo1 = [photolibCtx createAndInsertNewPersistentRootWithRootItem: [factory newFolder: @"photo1"]
+																		inItemWithUUID: shoot1];
+			ETUUID *photo2 = [photolibCtx createAndInsertNewPersistentRootWithRootItem: [factory newFolder: @"photo2"]
+																		inItemWithUUID: shoot1];			
+			ETUUID *photo3 = [photolibCtx createAndInsertNewPersistentRootWithRootItem: [factory newFolder: @"photo3"]
+																		inItemWithUUID: shoot1];
+		
+		
+		[photolibCtx commitWithMetadata: nil];
 		
 		// set up tags on photo1
 		
 		// open a context to edit the branch
-		{
+		
 			COPersistentRootEditingContext *photo1Ctx = [photolibCtx editingContextForEditingEmbdeddedPersistentRoot: photo1];
 			
 			ETUUID *photo1Ctx_root = [photo1Ctx rootUUID];
@@ -150,15 +146,12 @@ void testTagging()
 			COPath *tag3 = [[[COPath path] pathByAppendingPathToParent]
 								pathByAppendingPathComponent: abstract];
 			
-			COStoreItem *photo1Ctx_rootItem = [photo1Ctx storeItemForUUID:photo1Ctx_root];
+			COStoreItem *photo1Ctx_rootItem = [photo1Ctx _storeItemForUUID:photo1Ctx_root];
 			[photo1Ctx_rootItem setValue: S(tag1, tag2, tag3)
 							forAttribute: @"tags"
-									type: COSetContainerType(kCOPrimitiveTypePath)
-			[photo1Ctx updateItem: photo1Ctx_rootItem];
+									type: COSetContainerType(kCOPrimitiveTypePath)];
+			[photo1Ctx _insertOrUpdateItems: S(photo1Ctx_rootItem)];
 			
-			[photo1Ctx commit];
-		}
+			[photo1Ctx commitWithMetadata: nil];
 		
-	}
-#endif
 }

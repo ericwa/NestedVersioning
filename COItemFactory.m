@@ -24,4 +24,9 @@
 	return tree;
 }
 
+- (COStoreItemTree*) newItem: (NSString*)aName
+{
+	return [self newFolder: aName];
+}
+
 @end
