@@ -14,7 +14,7 @@ void testTagging()
 	//          |
 	//          \-brazil
 	//    
-	// photo library <<persistent root>>
+	// photo library <<persistent root (branchA, branchB) >>
 	//  |
 	//  |--local tags
 	//  |   |
@@ -215,4 +215,18 @@ void testTagging()
 			
 			[photo3Ctx commitWithMetadata: nil];
 		}
+	
+	// create branch of photo library
+	
+	// reopen the context to avoid a merge.
+	// FIXME: shouldn't be necessary
+	
+	rootCtx = [store rootContext];
+	
+	ETUUID *photolibBranchA = [rootCtx currentBranchOfPersistentRoot: photolibUUID];
+	ETUUID *photolibBranchB = [rootCtx createBranchOfPersistentRoot: photolibUUID];
+	[rootCtx commitWithMetadata: nil];
+	
+	
+	// do some searches.
 }
