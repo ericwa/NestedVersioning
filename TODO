@@ -3,3 +3,9 @@ TODO
 
 [x] (Nov 17/2011) rewrite store classes to use COStoreItem
 [ ] (Nov 30/2011) investigate a lazy loading/faulting api, refactor editing context api
+[ ] search
+
+
+last:
+
+[ ] migrate to sqlite
