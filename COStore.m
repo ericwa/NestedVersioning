@@ -58,7 +58,7 @@
 - (ETUUID*) addCommitWithParent: (ETUUID*)parent
                        metadata: (id)metadataPlist
 			 UUIDsAndStoreItems: (NSDictionary*)objects
-					   rootItem: (ETUUID*)root;
+					   rootItem: (ETUUID*)root
 {
 	NILARG_EXCEPTION_TEST(objects);
 	NILARG_EXCEPTION_TEST(root);
