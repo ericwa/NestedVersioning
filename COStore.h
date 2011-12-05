@@ -98,4 +98,17 @@
  */
 - (COPersistentRootEditingContext *) rootContext;
 
+
+
+/** @taskunit search */
+
+/**
+ * low-level search method. returns commit UUIDs where the
+ * query was _first_ satisfied.
+ *
+ * should be efficient; i.e. lookup on an indexed SQL table, or
+ * full-text-search index lookup.
+ */
+- (NSSet*) commitsMatchingQuery: (NSString*)aQuery;
+
 @end
