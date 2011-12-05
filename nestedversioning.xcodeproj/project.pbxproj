@@ -32,6 +32,16 @@
 		66EE5D4A1463AD68008AA95B /* TestBranchesAndCopies.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EE5D491463AD67008AA95B /* TestBranchesAndCopies.m */; };
 		66F4E316147C59F0004FC1BA /* TestTagging.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F4E315147C59F0004FC1BA /* TestTagging.m */; };
 		66F4E31A147C606A004FC1BA /* TestGameEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F4E319147C606A004FC1BA /* TestGameEditor.m */; };
+		79016345148D4886005A9226 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E552B4146B7799008FDFAF /* libcrypto.dylib */; };
+		79016346148D4899005A9226 /* COPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EE5D3914637418008AA95B /* COPath.m */; };
+		79016347148D4899005A9226 /* ETUUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E8776A1455FE67006CBE7E /* ETUUID.m */; };
+		79016348148D4899005A9226 /* COPersistentRootEditingContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EE5D35146355A6008AA95B /* COPersistentRootEditingContext.m */; };
+		79016349148D4899005A9226 /* COPersistentRootEditingContext+PersistentRoots.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E2FFB714899C7A00C66578 /* COPersistentRootEditingContext+PersistentRoots.m */; };
+		7901634A148D4899005A9226 /* COPersistentRootEditingContext+Convenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 79ABB072148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.m */; };
+		7901634B148D4899005A9226 /* COStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E877561455F0CB006CBE7E /* COStore.m */; };
+		7901634C148D4899005A9226 /* COStoreItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EADD68147345B9003181FC /* COStoreItem.m */; };
+		7901634D148D4899005A9226 /* COStoreItemTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E76735148B3D1C009937E8 /* COStoreItemTree.m */; };
+		7901634E148D4899005A9226 /* COItemFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 79297308148C94FD00FD35A9 /* COItemFactory.m */; };
 		790B1AE91485B184001ED869 /* TestSimpleUseOfNestedPersistentRoots.m in Sources */ = {isa = PBXBuildFile; fileRef = 790B1AE81485B184001ED869 /* TestSimpleUseOfNestedPersistentRoots.m */; };
 		79156DBA1484BE4D00AB66B1 /* TestConcurrentContextModification.m in Sources */ = {isa = PBXBuildFile; fileRef = 79156DB91484BE4D00AB66B1 /* TestConcurrentContextModification.m */; };
 		792972EE148C4AC100FD35A9 /* TestReferencesBetweenPersistentRoots.m in Sources */ = {isa = PBXBuildFile; fileRef = 792972ED148C4AC100FD35A9 /* TestReferencesBetweenPersistentRoots.m */; };
@@ -157,6 +167,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79016345148D4886005A9226 /* libcrypto.dylib in Frameworks */,
 				66EB756C148CA9D300C2114B /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -167,7 +178,6 @@
 		662811EB13F8B5000075BBC2 = {
 			isa = PBXGroup;
 			children = (
-				66E552B4146B7799008FDFAF /* libcrypto.dylib */,
 				66416D20142D3EE20016501D /* README */,
 				66E2A3031430569C00487419 /* TODO */,
 				66EE5D3814637418008AA95B /* COPath.h */,
@@ -203,6 +213,7 @@
 		662811F913F8B5010075BBC2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				66E552B4146B7799008FDFAF /* libcrypto.dylib */,
 				66E22EC81421D47100C00A98 /* Foundation.framework */,
 				66EB756B148CA9D300C2114B /* Cocoa.framework */,
 				66EB756D148CA9D300C2114B /* Other Frameworks */,
@@ -470,6 +481,15 @@
 				66EB7578148CA9D300C2114B /* main.m in Sources */,
 				66EB757F148CA9D300C2114B /* AppDelegate.m in Sources */,
 				79926C19148CADF80095A665 /* EWPersistentRootWindowController.m in Sources */,
+				79016346148D4899005A9226 /* COPath.m in Sources */,
+				79016347148D4899005A9226 /* ETUUID.m in Sources */,
+				79016348148D4899005A9226 /* COPersistentRootEditingContext.m in Sources */,
+				79016349148D4899005A9226 /* COPersistentRootEditingContext+PersistentRoots.m in Sources */,
+				7901634A148D4899005A9226 /* COPersistentRootEditingContext+Convenience.m in Sources */,
+				7901634B148D4899005A9226 /* COStore.m in Sources */,
+				7901634C148D4899005A9226 /* COStoreItem.m in Sources */,
+				7901634D148D4899005A9226 /* COStoreItemTree.m in Sources */,
+				7901634E148D4899005A9226 /* COItemFactory.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
