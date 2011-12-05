@@ -243,6 +243,7 @@
 				791A0EB7148AF39000334CB1 /* TestCommon.h */,
 				66DFAEBF142A726100623060 /* main.m */,
 				66EADD6414732AEE003181FC /* TestUndo.m */,
+				66F4E315147C59F0004FC1BA /* TestTagging.m */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -271,7 +272,6 @@
 				66EE5D491463AD67008AA95B /* TestBranchesAndCopies.m */,
 				66E0189B146455C8000EB1E0 /* TestPhotoMontage.m */,
 				66E5CABB147B4E42002DE8FD /* TestPhotoManager.m */,
-				66F4E315147C59F0004FC1BA /* TestTagging.m */,
 			);
 			name = "Tests - docs and code sketch";
 			path = Tests;

@@ -1,6 +1,6 @@
-#if 0
+#import "TestCommon.h"
 
-void test()
+void testTagging()
 {	
 	// tag library <<persistent root>>
 	//  |
@@ -42,19 +42,22 @@ void test()
     //          |
 	//          \--photo3 (tags: lighting/artificial, places/south america/brazil, subject/people)
 
+#if 0
+	COStore *store = setupStore();
 	
-	rootctx = [store rootContext];
-	taglibUUID = [rootCtx newPersistentRootWithRootItem: [factory newFolder: @"tag library"]];
-	photolibUUID = [rootCtx newPersistentRootWithRootItem: [factory newFolder: @"photo library"]];
+	COPersistentRootEditingContext *rootCtx = [store rootContext];
+	
+	ETUUID *taglibUUID = [rootCtx newPersistentRootWithRootItem: [factory newFolder: @"tag library"]];
+	ETUUID *photolibUUID = [rootCtx newPersistentRootWithRootItem: [factory newFolder: @"photo library"]];
 	
 
-	[rootCtx commit];
+	[rootCtx commitWithMetadata: nil];
 	
 	// set up some tags
 	{
-		taglibCtx = [rootCtx editingContextForEditingEmbdeddedPersistentRoot: taglibUUID];
+		COPersistentRootEditingContext *taglibCtx = [rootCtx editingContextForEditingEmbdeddedPersistentRoot: taglibUUID];
 		
-		taglibFolder = [taglibCtx rootItemUUID];
+		ETUUID *taglibFolder = [taglibCtx rootUUID];
 		
 
 		places = [taglibCtx insertItem: [factory newFolderNamed: @"places"]
@@ -73,9 +76,9 @@ void test()
 	
 	// create a photo library
 	{
-		photolibCtx = [rootCtx editingContextForEditingEmbdeddedPersistentRoot: photolibUUID];
+		COPersistentRootEditingContext *photolibCtx = [rootCtx editingContextForEditingEmbdeddedPersistentRoot: photolibUUID];
 		
-		photolibFolder = [photolibCtx rootItemUUID];
+		ETUUID *photolibFolder = [photolibCtx rootItemUUID];
 		
 		// set up some local tags
 		{
@@ -121,9 +124,9 @@ void test()
 		
 		// open a context to edit the branch
 		{
-			photo1Ctx = [photolibCtx editingContextForEditingEmbdeddedPersistentRoot: photo1];
+			COPersistentRootEditingContext *photo1Ctx = [photolibCtx editingContextForEditingEmbdeddedPersistentRoot: photo1];
 			
-			photo1Ctx_root = [photo1Ctx rootItemUUID];
+			ETUUID *photo1Ctx_root = [photo1Ctx rootUUID];
 			
 			COPath *tag1 = [[[[[COPath path] 
 								pathByAppendingPathToParent]
@@ -147,7 +150,5 @@ void test()
 		}
 		
 	}
-	
-}
-
 #endif
+}

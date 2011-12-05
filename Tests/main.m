@@ -318,6 +318,7 @@ int main (int argc, const char * argv[])
 	testEditingContextEmbeddedObjects();
 	testStoreItem();
 	testUndo();
+	testTagging();
 	
     EWTestLog();
     
