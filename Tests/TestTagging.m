@@ -228,5 +228,11 @@ void testTagging()
 	[rootCtx commitWithMetadata: nil];
 	
 	
-	// do some searches.
+	// do some searches
+	
+	// 1. search for "subject/abstract" tag. note there are two instances of the tag; one in photolibBranchA
+	//    and one in photolibBranchB. Searching for complete paths (e.g. "../../abstract") makes no sense.
+	//    so we just search for the uuid of "abstract".
+	
+	
 }
