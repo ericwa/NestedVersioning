@@ -21,6 +21,12 @@
 		66E8776B1455FE67006CBE7E /* ETUUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E8776A1455FE67006CBE7E /* ETUUID.m */; };
 		66EADD6514732AEE003181FC /* TestUndo.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EADD6414732AEE003181FC /* TestUndo.m */; };
 		66EADD69147345B9003181FC /* COStoreItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EADD68147345B9003181FC /* COStoreItem.m */; };
+		66EB756C148CA9D300C2114B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66EB756B148CA9D300C2114B /* Cocoa.framework */; };
+		66EB7576148CA9D300C2114B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 66EB7574148CA9D300C2114B /* InfoPlist.strings */; };
+		66EB7578148CA9D300C2114B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EB7577148CA9D300C2114B /* main.m */; };
+		66EB757C148CA9D300C2114B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 66EB757A148CA9D300C2114B /* Credits.rtf */; };
+		66EB757F148CA9D300C2114B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EB757E148CA9D300C2114B /* AppDelegate.m */; };
+		66EB7582148CA9D400C2114B /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 66EB7580148CA9D400C2114B /* MainMenu.xib */; };
 		66EE5D36146355A6008AA95B /* COPersistentRootEditingContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EE5D35146355A6008AA95B /* COPersistentRootEditingContext.m */; };
 		66EE5D3A14637418008AA95B /* COPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EE5D3914637418008AA95B /* COPath.m */; };
 		66EE5D4A1463AD68008AA95B /* TestBranchesAndCopies.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EE5D491463AD67008AA95B /* TestBranchesAndCopies.m */; };
@@ -100,6 +106,19 @@
 		66EADD6414732AEE003181FC /* TestUndo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestUndo.m; sourceTree = "<group>"; wrapsLines = 1; };
 		66EADD67147345B9003181FC /* COStoreItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COStoreItem.h; sourceTree = "<group>"; };
 		66EADD68147345B9003181FC /* COStoreItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COStoreItem.m; sourceTree = "<group>"; };
+		66EB7569148CA9D300C2114B /* StoreBrowser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StoreBrowser.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		66EB756B148CA9D300C2114B /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		66EB756E148CA9D300C2114B /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		66EB756F148CA9D300C2114B /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		66EB7570148CA9D300C2114B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		66EB7573148CA9D300C2114B /* StoreBrowser-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "StoreBrowser-Info.plist"; sourceTree = "<group>"; };
+		66EB7575148CA9D300C2114B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		66EB7577148CA9D300C2114B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		66EB7579148CA9D300C2114B /* StoreBrowser-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "StoreBrowser-Prefix.pch"; sourceTree = "<group>"; };
+		66EB757B148CA9D300C2114B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		66EB757D148CA9D300C2114B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		66EB757E148CA9D300C2114B /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		66EB7581148CA9D400C2114B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		66EE5D34146355A6008AA95B /* COPersistentRootEditingContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPersistentRootEditingContext.h; sourceTree = "<group>"; };
 		66EE5D35146355A6008AA95B /* COPersistentRootEditingContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COPersistentRootEditingContext.m; sourceTree = "<group>"; };
 		66EE5D3814637418008AA95B /* COPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPath.h; sourceTree = "<group>"; };
@@ -129,6 +148,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		66EB7566148CA9D300C2114B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				66EB756C148CA9D300C2114B /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -152,6 +179,7 @@
 				79FB63B81486ABC600751E1E /* Tests - documented only */,
 				6628FB9D142FA7840072767A /* Tests - old */,
 				66DFAECB142A726100623060 /* test.1 */,
+				66EB7571148CA9D300C2114B /* StoreBrowser */,
 				662811F913F8B5010075BBC2 /* Frameworks */,
 				662811F713F8B5010075BBC2 /* Products */,
 				66E76724148B3CEA009937E8 /* Scraps */,
@@ -162,6 +190,7 @@
 			isa = PBXGroup;
 			children = (
 				66E22EC61421D47100C00A98 /* nestedversioning */,
+				66EB7569148CA9D300C2114B /* StoreBrowser.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -170,6 +199,8 @@
 			isa = PBXGroup;
 			children = (
 				66E22EC81421D47100C00A98 /* Foundation.framework */,
+				66EB756B148CA9D300C2114B /* Cocoa.framework */,
+				66EB756D148CA9D300C2114B /* Other Frameworks */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -242,6 +273,39 @@
 			path = Scraps;
 			sourceTree = "<group>";
 		};
+		66EB756D148CA9D300C2114B /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				66EB756E148CA9D300C2114B /* AppKit.framework */,
+				66EB756F148CA9D300C2114B /* CoreData.framework */,
+				66EB7570148CA9D300C2114B /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		66EB7571148CA9D300C2114B /* StoreBrowser */ = {
+			isa = PBXGroup;
+			children = (
+				66EB757D148CA9D300C2114B /* AppDelegate.h */,
+				66EB757E148CA9D300C2114B /* AppDelegate.m */,
+				66EB7580148CA9D400C2114B /* MainMenu.xib */,
+				66EB7572148CA9D300C2114B /* Supporting Files */,
+			);
+			path = StoreBrowser;
+			sourceTree = "<group>";
+		};
+		66EB7572148CA9D300C2114B /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				66EB7573148CA9D300C2114B /* StoreBrowser-Info.plist */,
+				66EB7574148CA9D300C2114B /* InfoPlist.strings */,
+				66EB7577148CA9D300C2114B /* main.m */,
+				66EB7579148CA9D300C2114B /* StoreBrowser-Prefix.pch */,
+				66EB757A148CA9D300C2114B /* Credits.rtf */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		791A0EBD148AF3C200334CB1 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -302,6 +366,23 @@
 			productReference = 66E22EC61421D47100C00A98 /* nestedversioning */;
 			productType = "com.apple.product-type.tool";
 		};
+		66EB7568148CA9D300C2114B /* StoreBrowser */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 66EB7583148CA9D400C2114B /* Build configuration list for PBXNativeTarget "StoreBrowser" */;
+			buildPhases = (
+				66EB7565148CA9D300C2114B /* Sources */,
+				66EB7566148CA9D300C2114B /* Frameworks */,
+				66EB7567148CA9D300C2114B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = StoreBrowser;
+			productName = StoreBrowser;
+			productReference = 66EB7569148CA9D300C2114B /* StoreBrowser.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -323,9 +404,23 @@
 			projectRoot = "";
 			targets = (
 				66E22EC51421D47100C00A98 /* nestedversioning */,
+				66EB7568148CA9D300C2114B /* StoreBrowser */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		66EB7567148CA9D300C2114B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				66EB7576148CA9D300C2114B /* InfoPlist.strings in Resources */,
+				66EB757C148CA9D300C2114B /* Credits.rtf in Resources */,
+				66EB7582148CA9D400C2114B /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		66E22EC21421D47100C00A98 /* Sources */ = {
@@ -359,7 +454,43 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		66EB7565148CA9D300C2114B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				66EB7578148CA9D300C2114B /* main.m in Sources */,
+				66EB757F148CA9D300C2114B /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		66EB7574148CA9D300C2114B /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				66EB7575148CA9D300C2114B /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		66EB757A148CA9D300C2114B /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				66EB757B148CA9D300C2114B /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		66EB7580148CA9D400C2114B /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				66EB7581148CA9D400C2114B /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		6628122A13F8B5010075BBC2 /* Debug */ = {
@@ -425,6 +556,28 @@
 			};
 			name = Release;
 		};
+		66EB7584148CA9D400C2114B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "StoreBrowser/StoreBrowser-Prefix.pch";
+				INFOPLIST_FILE = "StoreBrowser/StoreBrowser-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		66EB7585148CA9D400C2114B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "StoreBrowser/StoreBrowser-Prefix.pch";
+				INFOPLIST_FILE = "StoreBrowser/StoreBrowser-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -445,6 +598,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		66EB7583148CA9D400C2114B /* Build configuration list for PBXNativeTarget "StoreBrowser" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				66EB7584148CA9D400C2114B /* Debug */,
+				66EB7585148CA9D400C2114B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
