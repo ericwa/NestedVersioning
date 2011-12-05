@@ -42,17 +42,29 @@ void testTagging()
     //          |
 	//          \--photo3 (tags: lighting/artificial, places/south america/brazil, subject/people)
 
-#if 0
+
 	COStore *store = setupStore();
+	COItemFactory *factory = [COItemFactory factory];
 	
 	COPersistentRootEditingContext *rootCtx = [store rootContext];
 	
-	ETUUID *taglibUUID = [rootCtx newPersistentRootWithRootItem: [factory newFolder: @"tag library"]];
-	ETUUID *photolibUUID = [rootCtx newPersistentRootWithRootItem: [factory newFolder: @"photo library"]];
+	//<-- FIXME: Refactor
+	COStoreItem *iroot = [COStoreItem item];
+	ETUUID *uroot = [iroot UUID];
 	
-
+	[rootCtx _insertOrUpdateItems: S(iroot)
+		newRootEmbeddedObject: uroot];
+	//-->
+	
+	
+	ETUUID *taglibUUID = [rootCtx createAndInsertNewPersistentRootWithRootItem: [factory newFolder: @"tag library"]
+																inItemWithUUID: uroot];
+	ETUUID *photolibUUID = [rootCtx createAndInsertNewPersistentRootWithRootItem: [factory newFolder: @"photo library"]
+																  inItemWithUUID: uroot];
+	
 	[rootCtx commitWithMetadata: nil];
 	
+	#if 0	
 	// set up some tags
 	{
 		COPersistentRootEditingContext *taglibCtx = [rootCtx editingContextForEditingEmbdeddedPersistentRoot: taglibUUID];
@@ -60,20 +72,21 @@ void testTagging()
 		ETUUID *taglibFolder = [taglibCtx rootUUID];
 		
 
-		places = [taglibCtx insertItem: [factory newFolderNamed: @"places"]
-						   inContainer: taglibFolder];
-		northamerica = [taglibCtx insertItem: [factory newFolderNamed: @"north america"]
-								 inContainer: places];
-		canada = [taglibCtx insertItem: [factory newItemNamed: @"canada"]
-								 inContainer: northamerica];
-		southamerica = [taglibCtx insertItem: [factory newFolderNamed: @"south america"]
-								 inContainer: places];
-		brazil = [taglibCtx insertItem: [factory newItemNamed: @"brazil"]
-								 inContainer: southamerica];
+		ETUUID *places = [taglibCtx insertItem: [factory newFolderNamed: @"places"]
+								   inContainer: taglibFolder];
+		ETUUID *northamerica = [taglibCtx insertItem: [factory newFolderNamed: @"north america"]
+										 inContainer: places];
+		ETUUID *canada = [taglibCtx insertItem: [factory newItemNamed: @"canada"]
+								   inContainer: northamerica];
+		ETUUID *southamerica = [taglibCtx insertItem: [factory newFolderNamed: @"south america"]
+										 inContainer: places];
+		ETUUID *brazil = [taglibCtx insertItem: [factory newItemNamed: @"brazil"]
+								   inContainer: southamerica];
 		
 		[taglibCtx commit];
 	}
-	
+
+
 	// create a photo library
 	{
 		COPersistentRootEditingContext *photolibCtx = [rootCtx editingContextForEditingEmbdeddedPersistentRoot: photolibUUID];
