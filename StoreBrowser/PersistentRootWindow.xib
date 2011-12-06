@@ -178,27 +178,28 @@
 													<bool key="NSIsEditable">YES</bool>
 													<reference key="NSTableView" ref="946196492"/>
 												</object>
-												<object class="NSTableColumn" id="508513403">
+												<object class="NSTableColumn" id="817072080">
+													<string key="NSIdentifier">type</string>
 													<double key="NSWidth">307</double>
 													<double key="NSMinWidth">10</double>
 													<double key="NSMaxWidth">3.4028234663852886e+38</double>
 													<object class="NSTableHeaderCell" key="NSHeaderCell">
 														<int key="NSCellFlags">75628096</int>
 														<int key="NSCellFlags2">2048</int>
-														<string key="NSContents"/>
+														<string key="NSContents">Type</string>
 														<reference key="NSSupport" ref="26"/>
 														<object class="NSColor" key="NSBackgroundColor">
 															<int key="NSColorSpace">6</int>
 															<string key="NSCatalogName">System</string>
 															<string key="NSColorName">headerColor</string>
-															<object class="NSColor" key="NSColor" id="403703567">
+															<object class="NSColor" key="NSColor" id="304562291">
 																<int key="NSColorSpace">3</int>
 																<bytes key="NSWhite">MQA</bytes>
 															</object>
 														</object>
 														<reference key="NSTextColor" ref="411987205"/>
 													</object>
-													<object class="NSTextFieldCell" key="NSDataCell" id="372176531">
+													<object class="NSTextFieldCell" key="NSDataCell" id="539364087">
 														<int key="NSCellFlags">337772096</int>
 														<int key="NSCellFlags2">2048</int>
 														<string key="NSContents">Text Cell</string>
@@ -215,7 +216,7 @@
 											</object>
 											<double key="NSIntercellSpacingWidth">3</double>
 											<double key="NSIntercellSpacingHeight">2</double>
-											<reference key="NSBackgroundColor" ref="403703567"/>
+											<reference key="NSBackgroundColor" ref="304562291"/>
 											<object class="NSColor" key="NSGridColor">
 												<int key="NSColorSpace">6</int>
 												<string key="NSCatalogName">System</string>
@@ -532,7 +533,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="846399802"/>
 							<reference ref="559506655"/>
-							<reference ref="508513403"/>
+							<reference ref="817072080"/>
 						</object>
 						<reference key="parent" ref="291792349"/>
 					</object>
@@ -639,17 +640,17 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">44</int>
-						<reference key="object" ref="508513403"/>
+						<reference key="object" ref="817072080"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="372176531"/>
+							<reference ref="539364087"/>
 						</object>
 						<reference key="parent" ref="946196492"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">45</int>
-						<reference key="object" ref="372176531"/>
-						<reference key="parent" ref="508513403"/>
+						<reference key="object" ref="539364087"/>
+						<reference key="parent" ref="817072080"/>
 					</object>
 				</object>
 			</object>
