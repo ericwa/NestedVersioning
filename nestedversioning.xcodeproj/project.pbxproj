@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		660E66E4148D92E00062308D /* EWPersistentRootOutlineModelObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 660E66E3148D92E00062308D /* EWPersistentRootOutlineModelObject.m */; };
 		6628FB9B142FA65D0072767A /* EWTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6628FB9A142FA65D0072767A /* EWTest.m */; };
 		66DFAED0142A726100623060 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DFAEBF142A726100623060 /* main.m */; };
 		66E0189C146455C8000EB1E0 /* TestPhotoMontage.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E0189B146455C8000EB1E0 /* TestPhotoMontage.m */; };
@@ -66,6 +67,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		660E66E2148D92E00062308D /* EWPersistentRootOutlineModelObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWPersistentRootOutlineModelObject.h; sourceTree = "<group>"; };
+		660E66E3148D92E00062308D /* EWPersistentRootOutlineModelObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWPersistentRootOutlineModelObject.m; sourceTree = "<group>"; };
 		6628FB99142FA65D0072767A /* EWTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWTest.h; sourceTree = "<group>"; };
 		6628FB9A142FA65D0072767A /* EWTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWTest.m; sourceTree = "<group>"; };
 		6628FB9E142FA7840072767A /* TestArrayDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestArrayDiff.m; sourceTree = "<group>"; };
@@ -308,6 +311,8 @@
 				66EB7572148CA9D300C2114B /* Supporting Files */,
 				79926C17148CADF80095A665 /* EWPersistentRootWindowController.h */,
 				79926C18148CADF80095A665 /* EWPersistentRootWindowController.m */,
+				660E66E2148D92E00062308D /* EWPersistentRootOutlineModelObject.h */,
+				660E66E3148D92E00062308D /* EWPersistentRootOutlineModelObject.m */,
 				79926C1E148CAE390095A665 /* PersistentRootWindow.xib */,
 			);
 			path = StoreBrowser;
@@ -490,6 +495,7 @@
 				7901634C148D4899005A9226 /* COStoreItem.m in Sources */,
 				7901634D148D4899005A9226 /* COStoreItemTree.m in Sources */,
 				7901634E148D4899005A9226 /* COItemFactory.m in Sources */,
+				660E66E4148D92E00062308D /* EWPersistentRootOutlineModelObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
