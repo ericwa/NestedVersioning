@@ -1,4 +1,4 @@
-#import <Foundation/Foundation.h>
+#import <Cocoa/Cocoa.h>
 #import "COPath.h"
 #import "COStore.h"
 #import "COPersistentRootEditingContext.h"

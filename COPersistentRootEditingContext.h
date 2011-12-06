@@ -2,7 +2,6 @@
 #import "COPath.h"
 #import "COStoreItem.h"
 #import "COStore.h"
-#import "COItemPath.h"
 #import "COStoreItemTree.h"
 
 @class COStore;

@@ -4,20 +4,20 @@
 // types are stored in dictionaries. they can either be primitive or container.
 // all types must have kCOTypeKind set to kCOPrimitiveTypeKind or kCOContainerTypeKind.
 
-NSString * const kCOTypeKind;
-NSString * const kCOPrimitiveTypeKind;
-NSString * const kCOContainerTypeKind;
+extern NSString * const kCOTypeKind;
+extern NSString * const kCOPrimitiveTypeKind;
+extern NSString * const kCOContainerTypeKind;
 
 // all types must have kCOPrimitiveType set to one of the types below.
 // note that the things in a container must all be of the same type
 
-NSString * const kCOPrimitiveType;
-NSString * const kCOPrimitiveTypeInt64;
-NSString * const kCOPrimitiveTypeDouble;
-NSString * const kCOPrimitiveTypeString;
-NSString * const kCOPrimitiveTypeFullTextIndexableString; 
-NSString * const kCOPrimitiveTypeBlob;
-NSString * const kCOPrimitiveTypeCommitUUID; // just a version uuid. prevents version from being GC'ed.
+extern NSString * const kCOPrimitiveType;
+extern NSString * const kCOPrimitiveTypeInt64;
+extern NSString * const kCOPrimitiveTypeDouble;
+extern NSString * const kCOPrimitiveTypeString;
+extern NSString * const kCOPrimitiveTypeFullTextIndexableString; 
+extern NSString * const kCOPrimitiveTypeBlob;
+extern NSString * const kCOPrimitiveTypeCommitUUID; // just a version uuid. prevents version from being GC'ed.
 
 // this division of 3 reference types was borrowed from WinFS...
 
@@ -27,12 +27,12 @@ NSString * const kCOPrimitiveTypeCommitUUID; // just a version uuid. prevents ve
 // used for:
 //   - link from document to tag objects in same or different persistent root
 //   - link from photo album to photos in same or different persistent root
-NSString * const kCOPrimitiveTypePath;
+extern NSString * const kCOPrimitiveTypePath;
 
 // only for objects in the same persistent root.
 // within a persistent root, we will enforce that the embedded object has
 // only one parent;
-NSString * const kCOPrimitiveTypeEmbeddedItem; 
+extern NSString * const kCOPrimitiveTypeEmbeddedItem; 
 
 // if a type is a container type, it must have these two values set to either YES or NO
 // to specify the type of container.
@@ -43,17 +43,17 @@ NSString * const kCOPrimitiveTypeEmbeddedItem;
 
 // NOTE: a container of kCOPrimitiveTypeEmbeddedItem can not have kCOContainerAllowsDuplicates
 
-NSString * const kCOContainerOrdered;
-NSString * const kCOContainerAllowsDuplicates;
+extern NSString * const kCOContainerOrdered;
+extern NSString * const kCOContainerAllowsDuplicates;
 
 
 // Convenience type constructors
 
-NSDictionary *COBagContainerType(NSString *aPrimitiveType); // unordered, duplicates allowed. aka multiset. (NSCountedSet)
-NSDictionary *COArrayContainerType(NSString *aPrimitiveType); // ordered, duplicates allowed. (NSArray)
-NSDictionary *COSetContainerType(NSString *aPrimitiveType); // unordered, no duplicates. (NSSet)
+extern NSDictionary *COBagContainerType(NSString *aPrimitiveType); // unordered, duplicates allowed. aka multiset. (NSCountedSet)
+extern NSDictionary *COArrayContainerType(NSString *aPrimitiveType); // ordered, duplicates allowed. (NSArray)
+extern NSDictionary *COSetContainerType(NSString *aPrimitiveType); // unordered, no duplicates. (NSSet)
 
-NSDictionary *COPrimitiveType(NSString *aPrimitiveType);
+extern NSDictionary *COPrimitiveType(NSString *aPrimitiveType);
 
 
 /**
