@@ -17,6 +17,9 @@
 	NSMutableArray *contents;
 }
 
+- (ETUUID *)UUID;
+- (NSString *)attribute;
+
 - (id)initWithContext: (COPersistentRootEditingContext *)aContext;
 
 - (NSArray*)children;

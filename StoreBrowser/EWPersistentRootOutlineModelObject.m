@@ -54,6 +54,14 @@ isPrimitiveInContainer: (BOOL)aFlag
 	[super dealloc];
 }
 
+- (ETUUID *)UUID
+{
+	return UUID;
+}
+- (NSString *)attribute
+{
+	return attribute;
+}
 - (NSArray *) buildContents
 {	
 	if (UUID == nil)
@@ -192,7 +200,6 @@ isPrimitiveInContainer: (BOOL)aFlag
 	
 	return nil;
 }
-
 
 @end
 

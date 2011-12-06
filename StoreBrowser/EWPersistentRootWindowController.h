@@ -13,6 +13,7 @@
 	COStore *store;
 	COPersistentRootEditingContext *ctx;
 	EWPersistentRootOutlineModelObject *outlineModel;
+	IBOutlet NSOutlineView *outlineView;
 }
 
 - (id)initWithPath: (COPath*)aPath

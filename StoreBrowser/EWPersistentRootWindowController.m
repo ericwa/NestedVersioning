@@ -29,9 +29,13 @@
 	return self;
 }
 
+- (void)awakeFromNib
+{
+	[outlineView setTarget: self];
+	[outlineView setDoubleAction: @selector(doubleClick:)];
+}
 
-
-/* NSOutlineView data source */
+/* convenience */
 
 - (EWPersistentRootOutlineModelObject *)modelForItem: (id)anItem
 {
@@ -42,6 +46,48 @@
 	}
 	return model;
 }
+
+- (EWPersistentRootOutlineModelObject *) selectedItem
+{
+	return [self modelForItem:
+				[outlineView itemAtRow: [outlineView selectedRow]]];
+}
+
+/* NSOutlineView Target/Action */
+
+- (void)doubleClick: (id)sender
+{
+	if (sender == outlineView)
+	{
+		EWPersistentRootOutlineModelObject *row = [self selectedItem];
+		
+		NSLog(@"Double click %@", [row UUID]);
+		
+		if ([row attribute] == nil) // only if we click on the root of an embedded object
+		{
+			COStoreItem *item = [ctx _storeItemForUUID: [row UUID]];
+			if ([[item valueForAttribute: @"type"] isEqualToString: @"persistentRoot"] ||
+				[[item valueForAttribute: @"type"] isEqualToString: @"branch"])
+			{
+				NSLog(@"open root!");
+				
+				// FIXME: don't leak, move to app controller
+				
+				EWPersistentRootWindowController *wc = [[EWPersistentRootWindowController alloc] initWithPath: [path pathByAppendingPathComponent: [row UUID]]
+																										store: store];
+				
+				[wc showWindow: nil];
+			}
+		}
+		
+		// FIXME:
+		// setting a double action on an outline view seems to break normal editing
+		// so we hack it in here.
+	}
+}
+
+
+/* NSOutlineView data source */
 
 - (NSInteger) outlineView: (NSOutlineView *)outlineView numberOfChildrenOfItem: (id)item
 {
