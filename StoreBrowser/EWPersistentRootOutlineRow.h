@@ -25,4 +25,6 @@
 - (NSArray*)children;
 - (id)valueForTableColumn: (NSTableColumn *)column;
 
+- (NSImage *)image;
+
 @end

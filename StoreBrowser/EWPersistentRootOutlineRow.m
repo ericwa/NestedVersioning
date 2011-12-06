@@ -165,7 +165,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 			COStoreItem *storeItem = [ctx _storeItemForUUID: UUID];
 			id value = [storeItem valueForAttribute: @"name"];
 			if (value) {
-				return [NSString stringWithFormat: @"<< item named '%@' >>", value];
+				return [NSString stringWithFormat: @"%@ (%@)", value, [storeItem UUID]];
 			}
 			
 			return UUID;
@@ -199,6 +199,24 @@ isPrimitiveInContainer: (BOOL)aFlag
 	}
 	
 	return nil;
+}
+
+- (NSImage *)image
+{
+	if (attribute == nil)
+	{
+		COStoreItem *item = [ctx _storeItemForUUID: UUID];
+		if ([[item valueForAttribute: @"type"] isEqualToString: @"persistentRoot"] ||
+			[[item valueForAttribute: @"type"] isEqualToString: @"branch"])
+		{
+			return [NSImage imageNamed: @"package-x-generic"];
+		}
+		return [NSImage imageNamed: @"folder"];
+	}
+	else
+	{
+		return [NSImage imageNamed: @"text-x-generic"];
+	}
 }
 
 @end

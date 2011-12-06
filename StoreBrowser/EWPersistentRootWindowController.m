@@ -33,6 +33,12 @@
 {
 	[outlineView setTarget: self];
 	[outlineView setDoubleAction: @selector(doubleClick:)];
+	
+	{
+		NSButtonCell *cell = [[[NSBrowserCell alloc] init] autorelease];
+	
+		[[outlineView tableColumnWithIdentifier: @"name"] setDataCell: cell];
+	}
 }
 
 /* convenience */
@@ -108,5 +114,17 @@
 {
 	return [[self modelForItem: item] valueForTableColumn: column];
 }
+
+/* NSOutlineView delegate */
+
+- (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
+{
+	if ([cell isKindOfClass: [NSBrowserCell class]])
+	{
+		[cell setLeaf: YES];
+		[cell setImage: [item image]];
+	}
+}
+
 
 @end
