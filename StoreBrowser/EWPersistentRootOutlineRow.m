@@ -195,6 +195,14 @@ isPrimitiveInContainer: (BOOL)aFlag
 			{
 				return [type objectForKey: kCOPrimitiveType];
 			}
+			else
+			{
+				BOOL ordered = [[type objectForKey: kCOContainerOrdered] boolValue];
+				BOOL allowsDuplicates = [[type objectForKey: kCOContainerAllowsDuplicates] boolValue];
+				
+				return [NSString stringWithFormat: @"(%@%@Container)", (ordered ? @"Ordered " : @"Unordered "),
+						(allowsDuplicates ? @"" : @"Unique ")];
+			}
 		}
 	}
 	
