@@ -5,6 +5,10 @@ TODO
 [ ] (Nov 30/2011) investigate a lazy loading/faulting api, refactor editing context api
 [ ] (dec 5)       search
 [ ] (dec 5)       work on storebrowser
+[ ] (dec 6)       make COStoreItem immutable. implement an efficient mutable t
+                  by layering a diff together with an efficient immutable tree
+                  this should be decoupled from the editing context code, and 
+                  should become a thin wrapper around it.
 
 last:
 
