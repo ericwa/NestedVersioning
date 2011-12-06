@@ -1,7 +1,7 @@
-#import "EWPersistentRootOutlineModelObject.h"
+#import "EWPersistentRootOutlineRow.h"
 #import "Common.h"
 
-@implementation EWPersistentRootOutlineModelObject
+@implementation EWPersistentRootOutlineRow
 
 - (id) initWithContext: (COPersistentRootEditingContext *)aContext
 			  itemUUID: (ETUUID *)aUUID
@@ -80,7 +80,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 		
 		for (NSString *attr in [[storeItem attributeNames] sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)])
 		{
-			EWPersistentRootOutlineModelObject *obj = [[EWPersistentRootOutlineModelObject alloc] initWithContext: ctx
+			EWPersistentRootOutlineRow *obj = [[EWPersistentRootOutlineRow alloc] initWithContext: ctx
 																										 itemUUID: UUID
 																										attribute: attr];
 			[result addObject: obj];
@@ -107,7 +107,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 			
 			for (ETUUID *embeddedUUID in [storeItem allObjectsForAttribute: attribute])
 			{
-				EWPersistentRootOutlineModelObject *obj = [[EWPersistentRootOutlineModelObject alloc] initWithContext: ctx
+				EWPersistentRootOutlineRow *obj = [[EWPersistentRootOutlineRow alloc] initWithContext: ctx
 																											 itemUUID: embeddedUUID];
 				[result addObject: obj];
 				[obj release];
@@ -121,7 +121,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 			const NSUInteger count = [[storeItem allObjectsForAttribute: attribute] count];
 			for (NSUInteger i=0; i<count; i++)
 			{
-				EWPersistentRootOutlineModelObject *obj = [[EWPersistentRootOutlineModelObject alloc] initWithContext: ctx
+				EWPersistentRootOutlineRow *obj = [[EWPersistentRootOutlineRow alloc] initWithContext: ctx
 																											 itemUUID: UUID
 																											attribute: attribute
 																							   isPrimitiveInContainer: YES

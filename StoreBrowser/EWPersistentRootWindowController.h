@@ -5,14 +5,14 @@
 #import "COPersistentRootEditingContext+Convenience.h"
 #import "COPersistentRootEditingContext+PersistentRoots.h"
 
-#import "EWPersistentRootOutlineModelObject.h"
+#import "EWPersistentRootOutlineRow.h"
 
 @interface EWPersistentRootWindowController : NSWindowController
 {
 	COPath *path;
 	COStore *store;
 	COPersistentRootEditingContext *ctx;
-	EWPersistentRootOutlineModelObject *outlineModel;
+	EWPersistentRootOutlineRow *outlineModel;
 	IBOutlet NSOutlineView *outlineView;
 }
 

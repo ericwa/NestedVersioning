@@ -11,7 +11,7 @@
 																	 inStore: store]);
 	assert(ctx != nil);
 	
-	outlineModel = [[EWPersistentRootOutlineModelObject alloc] initWithContext: ctx];
+	outlineModel = [[EWPersistentRootOutlineRow alloc] initWithContext: ctx];
 }
 
 - (id)initWithPath: (COPath*)aPath
@@ -37,9 +37,9 @@
 
 /* convenience */
 
-- (EWPersistentRootOutlineModelObject *)modelForItem: (id)anItem
+- (EWPersistentRootOutlineRow *)modelForItem: (id)anItem
 {
-	EWPersistentRootOutlineModelObject *model = anItem;
+	EWPersistentRootOutlineRow *model = anItem;
 	if (model == nil)
 	{
 		model = outlineModel;
@@ -47,7 +47,7 @@
 	return model;
 }
 
-- (EWPersistentRootOutlineModelObject *) selectedItem
+- (EWPersistentRootOutlineRow *) selectedItem
 {
 	return [self modelForItem:
 				[outlineView itemAtRow: [outlineView selectedRow]]];
@@ -59,7 +59,7 @@
 {
 	if (sender == outlineView)
 	{
-		EWPersistentRootOutlineModelObject *row = [self selectedItem];
+		EWPersistentRootOutlineRow *row = [self selectedItem];
 		
 		NSLog(@"Double click %@", [row UUID]);
 		

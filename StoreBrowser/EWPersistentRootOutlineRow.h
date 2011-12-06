@@ -5,7 +5,7 @@
 #import "COPersistentRootEditingContext+Convenience.h"
 #import "COPersistentRootEditingContext+PersistentRoots.h"
 
-@interface EWPersistentRootOutlineModelObject : NSObject
+@interface EWPersistentRootOutlineRow : NSObject
 {
 	COPersistentRootEditingContext *ctx;
 	
