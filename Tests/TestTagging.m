@@ -36,11 +36,17 @@ void testTagging()
 	//      |
 	//      \--shoot1
     //          |
-	//          |--photo1 (tags: places/north america/canada, subject/landscape, subject/abstract)
+	//          |--photo1 <<persistent root>> 
+	//          |   |
+	//          |   \--(tags: places/north america/canada, subject/landscape, subject/abstract)
     //          |
-	//          |--photo2 (tags: lighting/sunlight, places/south america/brazil, subject/abstract)
+	//          |--photo2 <<persistent root>> 
+	//          |   |
+	//          |   \--(tags: lighting/sunlight, places/south america/brazil, subject/abstract)
     //          |
-	//          \--photo3 (tags: lighting/artificial, places/south america/brazil, subject/people)
+	//          \--photo3 <<persistent root>> 
+	//              |
+	//              \--(tags: lighting/artificial, places/south america/brazil, subject/people)
 
 
 	COStore *store = setupStore();
