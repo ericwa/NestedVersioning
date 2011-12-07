@@ -31,10 +31,20 @@
 	
 	[i1 setValue: @"persistentRoot"
 	forAttribute: @"type"
-			type: COPrimitiveType(kCOPrimitiveTypeString)];	
-	[i1 setValue: @"test document"
-	forAttribute: @"name"
 			type: COPrimitiveType(kCOPrimitiveTypeString)];
+	
+	// borrow the name of the persistent root from the provided root item
+	{
+		NSString *name = [anItem valueForAttribute: @"name"];
+		if (name == nil)
+		{
+			name = @"Untitled Persistent Root";
+		}
+		
+		[i1 setValue: name
+		forAttribute: @"name"
+				type: COPrimitiveType(kCOPrimitiveTypeString)];		
+	}
 	[i1 setValue: [COPath pathWithPathComponent: [i2 UUID]]
 	forAttribute: @"currentBranch"
 			type: COPrimitiveType(kCOPrimitiveTypePath)];	
