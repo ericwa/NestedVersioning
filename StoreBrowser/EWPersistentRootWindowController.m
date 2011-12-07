@@ -29,7 +29,19 @@
 	return self;
 }
 
-- (void)awakeFromNib
+- (NSString *)persistentRootTitle
+{
+	if ([path isEmpty])
+	{
+		return @"Store Root";
+	}
+	else
+	{
+		return [path stringValue];
+	}
+}
+
+- (void)windowDidLoad
 {
 	[outlineView setTarget: self];
 	[outlineView setDoubleAction: @selector(doubleClick:)];
@@ -39,6 +51,9 @@
 	
 		[[outlineView tableColumnWithIdentifier: @"name"] setDataCell: cell];
 	}
+	
+	
+	[[self window] setTitle: [self persistentRootTitle]];
 }
 
 /* convenience */
