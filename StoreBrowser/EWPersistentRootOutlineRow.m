@@ -70,6 +70,11 @@ isPrimitiveInContainer: (BOOL)aFlag
 		return [NSArray array];
 	}
 	
+	if (isPrimitiveInContainer)
+	{
+		return [NSArray array];
+	}
+	
 	COStoreItem *storeItem = [ctx _storeItemForUUID: UUID];
 	
 	if (attribute == nil) // no attribute, so a root node for a persistent root
@@ -186,11 +191,15 @@ isPrimitiveInContainer: (BOOL)aFlag
 	}
 	else if ([[column identifier] isEqualToString: @"type"])
 	{
-		if (attribute != nil)
+		COStoreItem *item = [ctx _storeItemForUUID: UUID];
+		NSDictionary *type = [item typeForAttribute: attribute];
+
+		if (isPrimitiveInContainer)
 		{
-			COStoreItem *item = [ctx _storeItemForUUID: UUID];
-			NSDictionary *type = [item typeForAttribute: attribute];
-			
+			return [type objectForKey: kCOPrimitiveType];
+		}
+		else if (attribute != nil)
+		{
 			if ([[type objectForKey: kCOTypeKind] isEqual: kCOPrimitiveTypeKind])
 			{
 				return [type objectForKey: kCOPrimitiveType];
