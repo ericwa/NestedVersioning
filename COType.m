@@ -1,5 +1,5 @@
 #import "COType.h"
-#import "Common.h"
+#import "COMacros.h"
 #import "ETUUID.h"
 #import "COPath.h"
 #import "COTypePrivate.h"

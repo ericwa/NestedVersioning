@@ -3,7 +3,7 @@
 #import "COItemPath.h"
 #import "COPath.h"
 #import "COPersistentRootEditingContext.h"
-#import "Common.h"
+#import "COMacros.h"
 
 @implementation COItemFactory
 

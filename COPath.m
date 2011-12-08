@@ -1,5 +1,5 @@
 #import "COPath.h"
-#import "Common.h"
+#import "COMacros.h"
 
 @implementation COPath
 

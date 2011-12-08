@@ -1,5 +1,5 @@
 #import "EWPersistentRootWindowController.h"
-#import "Common.h"
+#import "COMacros.h"
 #import <AppKit/NSOutlineView.h>
 
 

@@ -1,7 +1,7 @@
 #import "AppDelegate.h"
 #import "EWPersistentRootWindowController.h"
 
-#import "Common.h"
+#import "COMacros.h"
 
 @implementation AppDelegate
 

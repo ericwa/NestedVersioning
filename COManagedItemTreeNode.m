@@ -1,5 +1,5 @@
 #import "COManagedItemTreeNode.h"
-#import "Common.h"
+#import "COMacros.h"
 
 @implementation COManagedItemTreeNode
 

@@ -1,5 +1,5 @@
 #import "COPersistentRootEditingContext.h"
-#import "Common.h"
+#import "COMacros.h"
 #import "COStorePrivate.h"
 
 @implementation COPersistentRootEditingContext

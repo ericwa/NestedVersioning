@@ -5,7 +5,7 @@
 #import "COStoreItem.h"
 #import "COStorePrivate.h"
 #import "COPersistentRootEditingContext.h"
-#import "Common.h"
+#import "COMacros.h"
 #import "COPersistentRootEditingContext+PersistentRoots.h"
 #import "COPersistentRootEditingContext+Convenience.h"
 #import "COStoreItemTree.h"

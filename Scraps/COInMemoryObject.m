@@ -1,5 +1,5 @@
 #import "COInMemoryObject.h"
-#import "Common.h"
+#import "COMacros.h"
 #import "ETUUID.h"
 
 @implementation COInMemoryObject

@@ -1,5 +1,5 @@
 #import "COStoreItem.h"
-#import "Common.h"
+#import "COMacros.h"
 #import "COPath.h"
 #import "COType.h"
 #import "COType+Plist.h"

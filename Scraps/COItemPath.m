@@ -1,5 +1,5 @@
 #import "COItemPath.h"
-#import "Common.h"
+#import "COMacros.h"
 
 @interface COItemPathToUnorderedContainer : COItemPath
 {

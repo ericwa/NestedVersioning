@@ -7,7 +7,7 @@
 */
 
 #import <Foundation/Foundation.h>
-#import "Common.h"
+#import "COMacros.h"
 #import "ETUUID.h"
 
 

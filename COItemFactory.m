@@ -1,5 +1,5 @@
 #import "COItemFactory.h"
-#import "Common.h"
+#import "COMacros.h"
 
 @implementation COItemFactory
 

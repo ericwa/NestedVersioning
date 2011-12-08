@@ -1,5 +1,5 @@
 #import "COSimpleContext.h"
-#import "Common.h"
+#import "COMacros.h"
 #import "COStorePrivate.h"
 
 @implementation COSimpleContext
