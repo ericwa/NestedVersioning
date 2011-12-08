@@ -47,7 +47,7 @@
 	[outlineView setDoubleAction: @selector(doubleClick:)];
 	
 	{
-		NSButtonCell *cell = [[[NSBrowserCell alloc] init] autorelease];
+		NSBrowserCell *cell = [[[NSBrowserCell alloc] init] autorelease];
 	
 		[[outlineView tableColumnWithIdentifier: @"name"] setDataCell: cell];
 	}
