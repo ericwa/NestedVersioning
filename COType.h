@@ -4,8 +4,6 @@
  * Immutable object representing a value type.
  */
 @interface COType : NSObject <NSCopying>
-{	
-}
 
 + (COType *) int64Type;
 + (COType *) doubleType;
@@ -30,6 +28,8 @@
 
 - (NSString *) stringValue;
 + (COType*) typeWithString: (NSString *)aTypeString;
+
+- (NSString *) description;
 
 /** @taskunit NSCopying protocol */
 
