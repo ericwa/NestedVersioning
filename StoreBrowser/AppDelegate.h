@@ -1,6 +1,8 @@
 #import <Cocoa/Cocoa.h>
 #import "COStore.h"
 
+@class EWPersistentRootWindowController;
+
 @interface AppDelegate : NSObject
 {
 	NSMutableDictionary	*windowControllerForPath;
@@ -11,5 +13,6 @@
 
 - (void) browsePersistentRootAtPath: (COPath*)aPath;
 
+- (EWPersistentRootWindowController *) windowControllerForPath: (COPath*)aPath;
 
 @end

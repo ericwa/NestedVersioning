@@ -52,8 +52,82 @@
 		[[outlineView tableColumnWithIdentifier: @"name"] setDataCell: cell];
 	}
 	
+	if ([path isEmpty])
+	{
+		[highlightInParentButton setEnabled: NO];
+		[undoButton setEnabled: NO];
+		[redoButton setEnabled: NO];
+	}
+	
 	
 	[[self window] setTitle: [self persistentRootTitle]];
+}
+
+- (IBAction) highlightInParent: (id)sender
+{
+	assert(![path isEmpty]);
+	
+	[[[NSApp delegate] windowControllerForPath: [path pathByDeletingLastPathComponent]] 
+		orderFrontAndHighlightItem: [path lastPathComponent]];
+}
+
+- (IBAction) undo: (id)sender
+{
+	NSLog(@"Unimplemented");
+}
+
+- (IBAction) redo: (id)sender
+{
+	NSLog(@"Unimplemented");
+}
+
+static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *start, ETUUID *aUUID)
+{
+	if ([[start UUID] isEqual: aUUID] && [start attribute] == nil)
+	{
+		return start;
+	}
+	else
+	{
+		for (EWPersistentRootOutlineRow *row in [start children])
+		{
+			EWPersistentRootOutlineRow *result = searchForUUID(row, aUUID);
+			if (result != nil)
+			{
+				return result;
+			}
+		}
+		return nil;
+	}
+}
+
+static void expandParentsOfItem(NSOutlineView *aView, id anItem)
+{
+	NSMutableArray *anArray = [NSMutableArray array];
+	
+	for (id expandRow = [aView parentForItem: anItem];
+		 expandRow != nil; 
+		 expandRow = [aView parentForItem: expandRow])
+	{
+		[anArray addObject: expandRow];
+	}
+	for (id row in [anArray reverseObjectEnumerator])
+	{
+		[aView expandItem: row];
+	}
+}
+
+- (void) orderFrontAndHighlightItem: (ETUUID*)aUUID
+{
+	EWPersistentRootOutlineRow *row = searchForUUID(outlineModel, aUUID);
+	assert(row != nil);
+	
+	expandParentsOfItem(outlineView, row);
+	
+	[outlineView selectRowIndexes: [NSIndexSet indexSetWithIndex:[outlineView rowForItem: row]]
+			 byExtendingSelection: NO];
+
+	[self showWindow: nil];
 }
 
 /* convenience */

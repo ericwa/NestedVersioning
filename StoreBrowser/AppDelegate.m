@@ -28,7 +28,7 @@
 	[self browsePersistentRootAtPath: [COPath path]];
 }
 
-- (void) browsePersistentRootAtPath: (COPath*)aPath
+- (EWPersistentRootWindowController *) windowControllerForPath: (COPath*)aPath
 {
 	EWPersistentRootWindowController *wc = [windowControllerForPath objectForKey: aPath];
 	
@@ -39,7 +39,12 @@
 		[wc release];
 	}
 	
-	[wc showWindow: nil];
+	return wc;
+}
+
+- (void) browsePersistentRootAtPath: (COPath*)aPath
+{
+	[[self windowControllerForPath: aPath] showWindow: nil];
 }
 
 @end

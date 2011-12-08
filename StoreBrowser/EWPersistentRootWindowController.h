@@ -14,9 +14,21 @@
 	COPersistentRootEditingContext *ctx;
 	EWPersistentRootOutlineRow *outlineModel;
 	IBOutlet NSOutlineView *outlineView;
+	
+	IBOutlet NSButton *highlightInParentButton;
+	IBOutlet NSButton *undoButton;
+	IBOutlet NSButton *redoButton;
 }
 
 - (id)initWithPath: (COPath*)aPath
 			 store: (COStore*)aStore;
 
+- (IBAction) highlightInParent: (id)sender;
+- (IBAction) undo: (id)sender;
+- (IBAction) redo: (id)sender;
+
+- (void) orderFrontAndHighlightItem: (ETUUID*)aUUID;
+
 @end
+
+
