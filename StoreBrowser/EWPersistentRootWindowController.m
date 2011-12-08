@@ -134,12 +134,48 @@
 
 - (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
-	if ([cell isKindOfClass: [NSBrowserCell class]])
+	if ([[tableColumn identifier] isEqualToString: @"name"])
 	{
-		[cell setLeaf: YES];
-		[cell setImage: [item image]];
+		if ([cell isKindOfClass: [NSBrowserCell class]])
+		{
+			[cell setLeaf: YES];
+			[cell setImage: [item image]];
+		}
 	}
 }
 
+- (NSCell *)outlineView:(NSOutlineView *)outlineView dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item
+{
+	if ([[tableColumn identifier] isEqualToString: @"action"])
+	{
+		if ([item attribute] == nil) // only if we click on the root of an embedded object
+		{
+			COStoreItem *storeItem = [ctx _storeItemForUUID: [item UUID]];
+			if ([[storeItem valueForAttribute: @"type"] isEqualToString: @"persistentRoot"] ||
+				[[storeItem valueForAttribute: @"type"] isEqualToString: @"branch"])
+			{
+				NSButtonCell *cell = [[[NSButtonCell alloc] init] autorelease];
+				[cell setBezelStyle: NSRoundRectBezelStyle];
+				[cell setTitle: @"Open"];
+				[cell setTarget: self];
+				[cell setAction: @selector(openPersistentRoot:)];
+				return cell;
+			}
+		}
+	}
+	
+	return [tableColumn dataCell];
+}
+
+/** @taskunit open button */
+
+- (void)openPersistentRoot: (id)sender
+{
+	EWPersistentRootOutlineRow *row = [self selectedItem];
+	
+	EWPersistentRootWindowController *wc = [[EWPersistentRootWindowController alloc] initWithPath: [path pathByAppendingPathComponent: [row UUID]]
+																							store: store];
+	[wc showWindow: nil];
+}
 
 @end
