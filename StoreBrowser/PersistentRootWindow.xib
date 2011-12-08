@@ -154,7 +154,7 @@
 												</object>
 												<object class="NSTableColumn" id="728616414">
 													<string key="NSIdentifier">action</string>
-													<double key="NSWidth">63.1875</double>
+													<double key="NSWidth">154.17578125</double>
 													<double key="NSMinWidth">10</double>
 													<double key="NSMaxWidth">3.4028234663852886e+38</double>
 													<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -213,7 +213,7 @@
 												</object>
 												<object class="NSTableColumn" id="1023255779">
 													<string key="NSIdentifier">type</string>
-													<double key="NSWidth">236.99609375</double>
+													<double key="NSWidth">145.99609375</double>
 													<double key="NSMinWidth">10</double>
 													<double key="NSMaxWidth">3.4028234663852886e+38</double>
 													<object class="NSTableHeaderCell" key="NSHeaderCell">

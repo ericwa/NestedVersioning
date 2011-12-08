@@ -154,9 +154,20 @@
 			if ([[storeItem valueForAttribute: @"type"] isEqualToString: @"persistentRoot"] ||
 				[[storeItem valueForAttribute: @"type"] isEqualToString: @"branch"])
 			{
+				NSString *msg;
+				
+				if ([[storeItem valueForAttribute: @"type"] isEqualToString: @"persistentRoot"])
+				{
+					msg = @"Open Current Branch";
+				}
+				else
+				{
+					msg = @"Open";
+				}
+				
 				NSButtonCell *cell = [[[NSButtonCell alloc] init] autorelease];
 				[cell setBezelStyle: NSRoundRectBezelStyle];
-				[cell setTitle: @"Open"];
+				[cell setTitle: msg];
 				[cell setTarget: self];
 				[cell setAction: @selector(openPersistentRoot:)];
 				return cell;
