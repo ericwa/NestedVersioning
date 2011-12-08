@@ -90,14 +90,7 @@
 			if ([[item valueForAttribute: @"type"] isEqualToString: @"persistentRoot"] ||
 				[[item valueForAttribute: @"type"] isEqualToString: @"branch"])
 			{
-				NSLog(@"open root!");
-				
-				// FIXME: don't leak, move to app controller
-				
-				EWPersistentRootWindowController *wc = [[EWPersistentRootWindowController alloc] initWithPath: [path pathByAppendingPathComponent: [row UUID]]
-																										store: store];
-				
-				[wc showWindow: nil];
+				[[NSApp delegate] browsePersistentRootAtPath: [path pathByAppendingPathComponent: [row UUID]]];
 			}
 		}
 		
@@ -184,9 +177,7 @@
 {
 	EWPersistentRootOutlineRow *row = [self selectedItem];
 	
-	EWPersistentRootWindowController *wc = [[EWPersistentRootWindowController alloc] initWithPath: [path pathByAppendingPathComponent: [row UUID]]
-																							store: store];
-	[wc showWindow: nil];
+	[[NSApp delegate] browsePersistentRootAtPath: [path pathByAppendingPathComponent: [row UUID]]];
 }
 
 @end
