@@ -37,7 +37,7 @@
 	}
 	else
 	{
-		return [path stringValue];
+		return [@"Persistent Root " stringByAppendingString: [path stringValue]];
 	}
 }
 
