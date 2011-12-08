@@ -22,6 +22,21 @@
 - (BOOL) isMultivalued;
 - (BOOL) isPrimitive;
 
+/**
+ * Throws an exception if the receiver is not multivalued
+ */
+- (BOOL) isOrdered;
+/**
+ * Throws an exception if the receiver is not multivalued
+ */
+- (BOOL) isUnique;
+
+/**
+ * For primitive types, returns self.
+ * For multivalued types, returns the type of objects in the multivalue
+ */
+- (COType *) primitiveType;
+
 - (BOOL) validateValue: (id)aValue;
 
 /** @taskunit String Import/Export */
@@ -31,8 +46,10 @@
 
 - (NSString *) description;
 
+- (BOOL) isEqual: (id)object;
+
 /** @taskunit NSCopying protocol */
 
-- (id) copyWithZone:(NSZone *)zone;
+- (id) copyWithZone: (NSZone *)zone;
 
 @end

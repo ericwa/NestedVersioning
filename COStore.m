@@ -227,8 +227,8 @@
 	{
 		for (NSString *attribute in [item attributeNames])
 		{
-			NSString *primitiveType = [[item typeForAttribute: attribute] objectForKey: kCOPrimitiveType];
-			if ([primitiveType isEqualToString: kCOPrimitiveTypeCommitUUID])
+			COType *primitiveType = [[item typeForAttribute: attribute] primitiveType];
+			if ([primitiveType isEqual: [COType commitUUIDType]])
 			{
 				for (ETUUID *aValue in [item allObjectsForAttribute: attribute])
 				{

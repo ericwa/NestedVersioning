@@ -31,7 +31,7 @@
 	
 	[i1 setValue: @"persistentRoot"
 	forAttribute: @"type"
-			type: COPrimitiveType(kCOPrimitiveTypeString)];
+			type: [COType stringType]];
 	
 	// borrow the name of the persistent root from the provided root item
 	{
@@ -43,30 +43,30 @@
 		
 		[i1 setValue: name
 		forAttribute: @"name"
-				type: COPrimitiveType(kCOPrimitiveTypeString)];		
+				type: [COType stringType]];		
 	}
 	[i1 setValue: [COPath pathWithPathComponent: [i2 UUID]]
 	forAttribute: @"currentBranch"
-			type: COPrimitiveType(kCOPrimitiveTypePath)];	
+			type: [COType pathType]];	
 	[i1 setValue: S([i2 UUID])
 	forAttribute: @"contents"
-			type: COSetContainerType(kCOPrimitiveTypeEmbeddedItem)];
+			type: [COType setWithPrimitiveType: [COType embeddedItemType]]];
 	
 	[i2 setValue: @"branch"
 	forAttribute: @"type"
-			type: COPrimitiveType(kCOPrimitiveTypeString)];	
+			type: [COType stringType]];	
 	[i2 setValue: nestedDocumentInitialVersion
 	forAttribute: @"currentVersion"
-			type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];		
+			type: [COType commitUUIDType]];		
 	[i2 setValue: nestedDocumentInitialVersion
 	forAttribute: @"head"
-			type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];	// limit for redo. moved on every commit.
+			type: [COType commitUUIDType]];	// limit for redo. moved on every commit.
 	[i2 setValue: nestedDocumentInitialVersion
 	forAttribute: @"tail"
-			type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];	// limit for undo. never changed.
+			type: [COType commitUUIDType]];	// limit for undo. never changed.
 	
 	[self insertValue: [i1 UUID]
-		primitiveType: kCOPrimitiveTypeEmbeddedItem
+		primitiveType: [COType embeddedItemType]
 	   inSetAttribute: @"contents"
 			 ofObject: aDest];
 		 
@@ -103,7 +103,7 @@
 	COStoreItem *root = [self _storeItemForUUID: aRoot];
 	[root setValue: [COPath pathWithPathComponent: aBranch]
 	  forAttribute: @"currentBranch"
-			  type: COPrimitiveType(kCOPrimitiveTypePath)];
+			  type: [COType pathType]];
 	
 	[self _insertOrUpdateItems: S(root)];
 }
@@ -133,7 +133,7 @@
 	
 	[branch setValue: aVersion
 		forAttribute: @"currentVersion"
-				type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];
+				type: [COType commitUUIDType]];
 	
 	[self _insertOrUpdateItems: S(branch)];
 }
@@ -225,22 +225,22 @@
 	
 	[i1 setValue: @"persistentRoot"
 	forAttribute: @"type"
-			type: COPrimitiveType(kCOPrimitiveTypeString)];	
+			type: [COType stringType]];	
 	[i1 setValue: @"test document"
 	forAttribute: @"name"
-			type: COPrimitiveType(kCOPrimitiveTypeString)];
+			type: [COType stringType]];
 	[i1 setValue: [COPath pathWithPathComponent: [i2 UUID]]
 	forAttribute: @"currentBranch"
-			type: COPrimitiveType(kCOPrimitiveTypePath)];	
+			type:[COType pathType]];	
 	[i1 setValue: S([i2 UUID])
 	forAttribute: @"contents"
-			type: COSetContainerType(kCOPrimitiveTypeEmbeddedItem)];
+			type: [COType setWithPrimitiveType: [COType embeddedItemType]]];
 	
 	assert([[i2 valueForAttribute: @"type"] isEqual: @"branch"]);
-	assert([[i2 typeForAttribute: @"currentVersion"] isEqual: COPrimitiveType(kCOPrimitiveTypeCommitUUID)]);
+	assert([[i2 typeForAttribute: @"currentVersion"] isEqual: [COType commitUUIDType]]);
 	
 	[self insertValue: [i1 UUID]
-		primitiveType: kCOPrimitiveTypeEmbeddedItem
+		primitiveType: [COType embeddedItemType]
 	   inSetAttribute: @"contents"
 			 ofObject: aDest];
 	
@@ -262,14 +262,14 @@
 		
 		[branch setValue: currentVersion
 			forAttribute: @"head"
-					type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];	// limit for redo. moved on every commit.
+					type: [COType commitUUIDType]];	// limit for redo. moved on every commit.
 		[branch setValue: currentVersion
 			forAttribute: @"tail"
-					type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];	// limit for undo. never changed.
+					type: [COType commitUUIDType]];	// limit for undo. never changed.
 	}
 	
 	[self insertValue: [branch UUID]
-		primitiveType: kCOPrimitiveTypeEmbeddedItem
+		primitiveType: [COType embeddedItemType]
 	   inSetAttribute: @"contents"
 			 ofObject: aRoot];
 

@@ -20,7 +20,7 @@
 	COStoreItemTree *tree = [COStoreItemTree itemTree];
 	[tree setValue: aName
 	  forAttribute: @"name"
-			  type: COPrimitiveType(kCOPrimitiveTypeString)];
+			  type: [COType stringType]];
 	return tree;
 }
 

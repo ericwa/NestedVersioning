@@ -4,7 +4,7 @@
 @interface COPersistentRootEditingContext (Convenience)
 
 - (void) insertValue: (id)aValue
-	   primitiveType: (NSString*)aPrimitiveType
+	   primitiveType: (COType *)aPrimitiveType
 	  inSetAttribute: (NSString*)anAttribute
 			ofObject: (ETUUID*)aDest;
 

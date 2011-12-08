@@ -40,18 +40,18 @@
 	return [root attributeNames];
 }
 
-- (NSDictionary *) typeForAttribute: (NSString *)anAttribute
+- (COType *) typeForAttribute: (NSString *)anAttribute
 {
 	return [root typeForAttribute: anAttribute];
 }
 - (id) valueForAttribute: (NSString*)anAttribute
 {
 	id rootValue = [root valueForAttribute: anAttribute];
-	NSDictionary *type = [self typeForAttribute: anAttribute];
+	COType *type = [self typeForAttribute: anAttribute];
 	
-	if ([[type objectForKey: kCOPrimitiveType] isEqual: kCOPrimitiveTypeEmbeddedItem])
+	if ([[type primitiveType] isEqual: [COType embeddedItemType]])
 	{
-		if ([[type objectForKey: kCOTypeKind] isEqual: kCOContainerTypeKind])
+		if ([type isMultivalued])
 		{
 			id container;
 			
@@ -91,12 +91,12 @@
 }
 
 - (void) setValue: (id)aValue
-	 forAttribute: (NSString*)anAttribute
-			 type: (NSDictionary*)aType
+	 forAttribute: (NSString *)anAttribute
+			 type: (COType *)aType
 {
-	if ([[aType objectForKey: kCOPrimitiveType] isEqual: kCOPrimitiveTypeEmbeddedItem])
+	if ([[aType primitiveType] isEqual: [COType embeddedItemType]])
 	{
-		if ([[aType objectForKey: kCOTypeKind] isEqual: kCOContainerTypeKind])
+		if ([aType isMultivalued])
 		{
 			id container;
 			
@@ -151,8 +151,8 @@
 	
 	for (NSString *key in [self attributeNames])
 	{
-		NSDictionary *type = [self typeForAttribute: key];
-		if ([[type objectForKey: kCOPrimitiveType] isEqual: kCOPrimitiveTypeEmbeddedItem])
+		COType *type = [self typeForAttribute: key];
+		if ([[type primitiveType] isEqual: [COType embeddedItemType]])
 		{
 			for (COStoreItemTree *tree in [self valueForAttribute: key])
 			{
@@ -181,7 +181,7 @@
 	
 	[self setValue: container
 	  forAttribute: anAttribute
-			  type: COSetContainerType(kCOPrimitiveTypeEmbeddedItem)];
+			  type: [COType setWithPrimitiveType: [COType embeddedItemType]]];
 }
 
 - (void) addTree: (COStoreItemTree *)aValue
@@ -196,7 +196,7 @@
 	[container removeObject: aValue];
 	[self setValue: container
 	  forAttribute: @"contents"
-			  type: COSetContainerType(kCOPrimitiveTypeEmbeddedItem)];
+			  type: [COType setWithPrimitiveType: [COType embeddedItemType]]];
 }
 
 - (NSSet*)contents

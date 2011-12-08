@@ -20,11 +20,52 @@
 	return YES;
 }
 
+/**
+ * Primitive types have no state so equality is based on class
+ */
+- (BOOL) isEqual: (id)object
+{
+	return [self isKindOfClass: [object class]];
+}
+
+- (COType *) primitiveType
+{
+	return self;
+}
+
+- (NSString *) description
+{
+	return [self stringValue];
+}
+
++ (COType*) typeWithString: (NSString *)aTypeString
+{
+	NILARG_EXCEPTION_TEST(aTypeString);
+
+	NSArray *types = [NSArray arrayWithObjects:
+						[COInt64Type type],
+					  [CODoubleType type],
+					  [COStringType type],
+					  [COFullTextIndexableStringType type],
+					  [COBlobType type],
+					  [COCommitType type],
+					  [COPathType type],
+					  [COEmbeddedItemType type],
+					  nil];
+
+	for (COType *type in types)
+	{
+		if ([[type stringValue] isEqualToString: aTypeString])
+			return type;
+	}
+	return nil;
+}
+
 @end
 
 @implementation COInt64Type
 
-- (NSString *)description
+- (NSString *)stringValue
 {
 	return @"Int";
 }
@@ -39,7 +80,7 @@
 
 @implementation CODoubleType
 
-- (NSString *)description
+- (NSString *)stringValue
 {
 	return @"Double";
 }
@@ -54,7 +95,7 @@
 
 @implementation COStringType
 
-- (NSString *)description
+- (NSString *)stringValue
 {
 	return @"String";
 }
@@ -69,9 +110,9 @@
 
 @implementation COFullTextIndexableStringType
 
-- (NSString *)description
+- (NSString *)stringValue
 {
-	return @"Indexable String";
+	return @"IndexableString";
 }
 
 - (BOOL) validateValue: (id)aValue
@@ -84,7 +125,7 @@
 
 @implementation COBlobType
 
-- (NSString *)description
+- (NSString *)stringValue
 {
 	return @"Blob";
 }
@@ -99,9 +140,9 @@
 
 @implementation COCommitType
 
-- (NSString *)description
+- (NSString *)stringValue
 {
-	return @"Commit Ref";
+	return @"Commit";
 }
 
 - (BOOL) validateValue: (id)aValue
@@ -114,7 +155,7 @@
 
 @implementation COPathType
 
-- (NSString *)description
+- (NSString *)stringValue
 {
 	return @"Path";
 }
@@ -129,9 +170,9 @@
 
 @implementation COEmbeddedItemType
 
-- (NSString *)description
+- (NSString *)stringValue
 {
-	return @"Embedded Item";
+	return @"EmbeddedItem";
 }
 
 - (BOOL) validateValue: (id)aValue
@@ -172,7 +213,8 @@
 {
 	return YES;
 }
-- (BOOL) isType
+
+- (BOOL) isPrimitive
 {
 	return NO;
 }
@@ -199,6 +241,72 @@
 	}			
 	
 	return [prefix stringByAppendingString: [primitiveType description]];
+}
+
+- (NSString *)stringValue
+{
+	NSString *suffix;
+	
+	if (!ordered && unique)
+	{
+		suffix = @"-Set";
+	}
+	else if (!ordered && !unique)
+	{
+		suffix = @"-Bag ";
+	}
+	else if (ordered && unique)
+	{
+		suffix = @"-UniqueArray";
+	}
+	else
+	{
+		suffix = @"-Array";
+	}			
+	
+	return [[primitiveType stringValue] stringByAppendingString: suffix];
+}
+
++ (COType*) typeWithString: (NSString *)aTypeString
+{
+	NILARG_EXCEPTION_TEST(aTypeString);
+		
+	NSRange separator = [aTypeString rangeOfString: @"-"];
+	if (separator.location == NSNotFound)
+	{
+		return nil;
+	}
+	
+	NSString *primitiveString = [aTypeString substringToIndex: separator.location];
+	COType *primitive = [COPrimitiveType typeWithString: primitiveString];
+	NSString *suffixString = [aTypeString substringFromIndex: separator.location];
+	
+	BOOL isOrdered, isUnique;
+	
+	if ([suffixString isEqualToString: @"-Set"])
+	{
+		isOrdered = NO; isUnique = YES;
+	}
+	else if ([suffixString isEqualToString: @"-Bag"])
+	{
+		isOrdered = NO; isUnique = NO;
+	}
+	else if ([suffixString isEqualToString: @"-UniqueArray"])
+	{
+		isOrdered = YES; isUnique = YES;
+	}
+	else if ([suffixString isEqualToString: @"-Array"])
+	{
+		isOrdered = YES; isUnique = NO;
+	}
+	else
+	{
+		return nil;
+	}
+	
+	return [[[COMultivaluedType alloc] initWithPrimitiveType: primitive
+												   isOrdered: isOrdered
+													isUnique: isUnique] autorelease];
 }
 
 - (BOOL) validateValue: (id)aValue
@@ -238,6 +346,30 @@
 	}
 	
 	return valid;
+}
+
+- (BOOL) isEqual: (id)object
+{
+	if (![object isKindOfClass: [self class]])
+		return NO;
+	COMultivaluedType *otherType = (COMultivaluedType *)object;
+	return ([primitiveType isEqual: otherType->primitiveType] 
+			&& ordered == otherType->ordered
+			&& unique == otherType->unique);
+}
+
+- (COType *) primitiveType
+{
+	return primitiveType;
+}
+
+- (BOOL) isOrdered
+{
+	return ordered;
+}
+- (BOOL) isUnique
+{
+	return unique;
 }
 
 @end
@@ -319,28 +451,87 @@
 			 isUnique: YES] autorelease];
 }
 
++ (COType*) typeWithString: (NSString *)aTypeString
+{
+	NILARG_EXCEPTION_TEST(aTypeString);
+	
+	COType *result = [COMultivaluedType typeWithString: aTypeString];
+	if (result == nil)
+	{
+		result = [COPrimitiveType typeWithString: aTypeString];
+	}
+	
+	if (result == nil)
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"'%@' is not a valid string representation of a type", aTypeString];
+	}
+	
+	return result;
+}
+
 - (BOOL) isMultivalued
 {
 	[NSException raise: NSInternalInconsistencyException
 				format: @"%@ unimplemented", NSStringFromSelector(_cmd)];
+	return NO;
 }
 
 - (BOOL) isPrimitive
 {
 	[NSException raise: NSInternalInconsistencyException
 				format: @"%@ unimplemented", NSStringFromSelector(_cmd)];
+	return NO;
 }
 
 - (BOOL) validateValue: (id)aValue
 {
 	[NSException raise: NSInternalInconsistencyException
 				format: @"%@ unimplemented", NSStringFromSelector(_cmd)];
+	return NO;
 }
 
 - (NSString *) description
 {
 	[NSException raise: NSInternalInconsistencyException
 				format: @"%@ unimplemented", NSStringFromSelector(_cmd)];
+	return nil;
+}
+
+- (NSString *) stringValue
+{
+	[NSException raise: NSInternalInconsistencyException
+				format: @"%@ unimplemented", NSStringFromSelector(_cmd)];
+	return nil;
+}
+
+
+- (COType *) primitiveType
+{
+	[NSException raise: NSInternalInconsistencyException
+				format: @"%@ unimplemented", NSStringFromSelector(_cmd)];
+	return nil;
+}
+
+- (BOOL) isOrdered
+{
+	[NSException raise: NSInternalInconsistencyException
+				format: @"%@ unimplemented", NSStringFromSelector(_cmd)];
+	return NO;
+}
+
+- (BOOL) isUnique
+{
+	[NSException raise: NSInternalInconsistencyException
+				 format: @"%@ unimplemented", NSStringFromSelector(_cmd)];
+	return NO;
+}
+
+- (BOOL) isEqual: (id)object
+{
+	[NSException raise: NSInternalInconsistencyException
+				format: @"%@ unimplemented", NSStringFromSelector(_cmd)];
+	return NO;
 }
 
 - (id) copyWithZone:(NSZone *)zone

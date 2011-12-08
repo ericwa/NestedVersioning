@@ -36,7 +36,7 @@
 		}
 		
 		assert ([[item valueForAttribute: @"type"] isEqual: @"branch"]);
-		assert([[item typeForAttribute: @"currentVersion"] isEqual: COPrimitiveType(kCOPrimitiveTypeCommitUUID)]);
+		assert([[item typeForAttribute: @"currentVersion"] isEqual: [COType commitUUIDType]]);
 		
 		ETUUID *trackedVersion = [item valueForAttribute: @"currentVersion"];
 		assert(trackedVersion != nil);
@@ -162,8 +162,8 @@
 	COStoreItem *item = [self _storeItemForUUID: aUUID];
 	for (NSString *key in [item attributeNames])
 	{
-		NSDictionary *type = [item typeForAttribute: key];
-		if ([[type objectForKey: kCOPrimitiveType] isEqual: kCOPrimitiveTypeEmbeddedItem])
+		COType *type = [item typeForAttribute: key];
+		if ([[type primitiveType] isEqual: [COType embeddedItemType]])
 		{		
 			for (ETUUID *embedded in [item allObjectsForAttribute: key])
 			{
@@ -326,12 +326,12 @@
 		}
 		
 		assert ([[item valueForAttribute: @"type"] isEqual: @"branch"]);
-		assert([[item typeForAttribute: @"currentVersion"] isEqual: COPrimitiveType(kCOPrimitiveTypeCommitUUID)]);
+		assert([[item typeForAttribute: @"currentVersion"] isEqual: [COType commitUUIDType]]);
 		
 		ETUUID *trackedVersion = [item valueForAttribute: @"currentVersion"];
 		assert([trackedVersion isEqual: baseCommit]); // we already checked this earlier
-		[item setValue: newCommitUUID forAttribute: @"currentVersion" type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];
-		[item setValue: newCommitUUID forAttribute: @"head" type: COPrimitiveType(kCOPrimitiveTypeCommitUUID)];
+		[item setValue: newCommitUUID forAttribute: @"currentVersion" type: [COType commitUUIDType]];
+		[item setValue: newCommitUUID forAttribute: @"head" type: [COType commitUUIDType]];
 		
 		[parentCtx _insertOrUpdateItems: S(item)];
 		

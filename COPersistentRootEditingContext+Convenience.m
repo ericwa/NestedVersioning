@@ -2,11 +2,12 @@
 #import "Common.h"
 #import "COStoreItem.h"
 #import "ETUUID.h"
+#import "COType.h"
 
 @implementation COPersistentRootEditingContext (Convenience)
 
 - (void) insertValue: (id)aValue
-	   primitiveType: (NSString*)aPrimitiveType
+	   primitiveType: (COType *)aPrimitiveType
 	  inSetAttribute: (NSString*)anAttribute
 			ofObject: (ETUUID*)aDest
 {
@@ -18,7 +19,7 @@
 	COStoreItem *destItem = [self _storeItemForUUID: aDest];
 	assert(destItem != nil);
 	
-	NSDictionary *type = [destItem typeForAttribute: anAttribute];
+	COType *type = [destItem typeForAttribute: anAttribute];
 	NSSet *destContents = [destItem valueForAttribute: anAttribute];
 	if (type == nil && destContents == nil)
 	{
@@ -26,10 +27,10 @@
 	}
 	else
 	{
-		assert([kCOContainerTypeKind isEqual: [type objectForKey: kCOTypeKind]]);
-		assert([[NSNumber numberWithBool: NO] isEqual: [type objectForKey: kCOContainerOrdered]]);
-		assert([[NSNumber numberWithBool: NO] isEqual: [type objectForKey: kCOContainerAllowsDuplicates]]);
-		assert([aPrimitiveType isEqual: [type objectForKey: kCOPrimitiveType]]);
+		assert([type isMultivalued]);
+		assert(![type isOrdered]);
+		assert([type isUnique]);
+		assert([aPrimitiveType isEqual: [type primitiveType]]);
 		
 		assert([destContents isKindOfClass: [NSSet class]]);
 		destContents = [destContents setByAddingObject: aValue];
@@ -37,7 +38,7 @@
 	
 	[destItem setValue: destContents
 		  forAttribute: @"contents"
-				  type: COSetContainerType(aPrimitiveType)];
+				  type: [COType setWithPrimitiveType: aPrimitiveType]];
 	
 	[self _insertOrUpdateItems: S(destItem)];	
 }
@@ -46,7 +47,7 @@
 		inContainer: (ETUUID*)aContainer
 {
 	[self insertValue: [aTree UUID]
-		primitiveType: kCOPrimitiveTypeEmbeddedItem
+		primitiveType: [COType embeddedItemType]
 	   inSetAttribute: @"contents"
 			 ofObject: aContainer];
 	

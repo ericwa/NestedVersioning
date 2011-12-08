@@ -11,7 +11,7 @@ static void testStore()
 	COStore *store = setupStore();
 	
 	COStoreItem *i1 = [COStoreItem item];
-	[i1 setValue: @"hello" forAttribute: @"name" type: COPrimitiveType(kCOPrimitiveTypeString)];
+	[i1 setValue: @"hello" forAttribute: @"name" type: [COType stringType]];
 	
 	NSDictionary *uuidsanditems = [NSDictionary dictionaryWithObjectsAndKeys:
 								  i1, [i1 UUID],
@@ -147,7 +147,7 @@ static void testEditingContextEmbeddedObjects()
 	COStoreItemTree *nestedDocumentRootItem = [COStoreItemTree itemTree];
 	[nestedDocumentRootItem setValue: @"red"
 						forAttribute: @"color"
-								type: COPrimitiveType(kCOPrimitiveTypeString)];
+								type: [COType stringType]];
 	
 	ETUUID *u1 = [ctx createAndInsertNewPersistentRootWithRootItem: nestedDocumentRootItem
 													inItemWithUUID: uroot];
@@ -164,12 +164,12 @@ static void testEditingContextEmbeddedObjects()
 	
 	{
 		COStoreItem *u1BranchAItem = [ctx _storeItemForUUID: u1BranchA];
-		[u1BranchAItem setValue: @"Development Branch" forAttribute: @"name" type: COPrimitiveType(kCOPrimitiveTypeString)];
+		[u1BranchAItem setValue: @"Development Branch" forAttribute: @"name" type: [COType stringType]];
 		[ctx _insertOrUpdateItems: S(u1BranchAItem)];
 	}
 	{
 		COStoreItem *u1BranchBItem = [ctx _storeItemForUUID: u1BranchB];
-		[u1BranchBItem setValue: @"Stable Branch" forAttribute: @"name" type: COPrimitiveType(kCOPrimitiveTypeString)];
+		[u1BranchBItem setValue: @"Stable Branch" forAttribute: @"name" type: [COType stringType]];
 		[ctx _insertOrUpdateItems: S(u1BranchBItem)];
 	}
 	
@@ -222,7 +222,7 @@ static void testEditingContextEmbeddedObjects()
 	
 	[nestedDocCtx2 setValue: @"green"
 			   forAttribute: @"color"
-					   type: COPrimitiveType(kCOPrimitiveTypeString)];
+					   type: [COType stringType]];
 	
 	[ctx2 _insertOrUpdateItems: S(nestedDocCtx2)];
 	
@@ -289,7 +289,7 @@ static void testStoreItem()
 	
 	[i1 setValue: S(p1)
 	forAttribute: @"contents"
-			type: COSetContainerType(kCOPrimitiveTypePath)];
+			type: [COType setWithPrimitiveType: [COType pathType]]];
 	
 	NSLog(@"%@", [i1 plist]);
 	

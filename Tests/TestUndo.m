@@ -25,7 +25,7 @@ void testUndo()
 	COStoreItemTree *contents1 = [COStoreItemTree itemTree];
 	[contents1 setValue: @"red"
 		   forAttribute: @"color"
-				   type: COPrimitiveType(kCOPrimitiveTypeString)];
+				   type: [COType stringType]];
 	ETUUID *contentsUUID = [contents1 UUID];
 
 	ETUUID *u1 = [ctx createAndInsertNewPersistentRootWithRootItem: contents1
@@ -42,8 +42,8 @@ void testUndo()
 		COPersistentRootEditingContext *ctx2 = [ctx editingContextForEditingEmbdeddedPersistentRoot: u1];
 		COStoreItem *contents2 = [ctx2 _storeItemForUUID: [ctx2 rootUUID]];
 		[contents2 setValue: @"orange"
-				   forAttribute: @"color"
-						   type: COPrimitiveType(kCOPrimitiveTypeString)];
+			   forAttribute: @"color"
+					   type: [COType stringType]];
 		[ctx2 _insertOrUpdateItems: S(contents2)];
 		commit2 = [ctx2 commitWithMetadata: nil];
 		
@@ -69,12 +69,12 @@ void testUndo()
 	
 	{
 		COStoreItem *u1BranchAItem = [ctx _storeItemForUUID: u1BranchA];
-		[u1BranchAItem setValue: @"Branch A" forAttribute: @"name" type: COPrimitiveType(kCOPrimitiveTypeString)];
+		[u1BranchAItem setValue: @"Branch A" forAttribute: @"name" type: [COType stringType]];
 		[ctx _insertOrUpdateItems: S(u1BranchAItem)];
 	}
 	{
 		COStoreItem *u1BranchBItem = [ctx _storeItemForUUID: u1BranchB];
-		[u1BranchBItem setValue: @"Branch B" forAttribute: @"name" type: COPrimitiveType(kCOPrimitiveTypeString)];
+		[u1BranchBItem setValue: @"Branch B" forAttribute: @"name" type: [COType stringType]];
 		[ctx _insertOrUpdateItems: S(u1BranchBItem)];
 	}
 	
@@ -109,7 +109,7 @@ void testUndo()
 		COStoreItem *contents3 = [ctx3 _storeItemForUUID: [ctx3 rootUUID]];
 		[contents3 setValue: @"yellow"
 			   forAttribute: @"color"
-					   type: COPrimitiveType(kCOPrimitiveTypeString)];
+					   type: [COType stringType]];
 		[ctx3 _insertOrUpdateItems: S(contents3)];
 		commit3 = [ctx3 commitWithMetadata: nil];
 	}
@@ -123,7 +123,7 @@ void testUndo()
 		COStoreItem *contents4 = [ctx4 _storeItemForUUID: [ctx4 rootUUID]];
 		[contents4 setValue: @"green"
 			   forAttribute: @"color"
-					   type: COPrimitiveType(kCOPrimitiveTypeString)];
+					   type: [COType stringType]];
 		[ctx4 _insertOrUpdateItems: S(contents4)];
 		commit4 = [ctx4 commitWithMetadata: nil];
 	}

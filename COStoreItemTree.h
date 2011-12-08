@@ -3,6 +3,7 @@
 #import "COStoreItem.h"
 #import "ETUUID.h"
 
+
 /**
  * note: items retrieved from an item tree should be copied before being modified
  */
@@ -29,12 +30,12 @@
 
 - (NSArray *) attributeNames;
 
-- (NSDictionary *) typeForAttribute: (NSString *)anAttribute;
+- (COType *) typeForAttribute: (NSString *)anAttribute;
 - (id) valueForAttribute: (NSString*)anAttribute;
 
 - (void) setValue: (id)aValue
 	 forAttribute: (NSString*)anAttribute
-			 type: (NSDictionary*)aType;
+			 type: (COType *)aType;
 
 - (void)removeValueForAttribute: (NSString*)anAttribute;
 
