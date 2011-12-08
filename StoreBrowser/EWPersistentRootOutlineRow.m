@@ -215,6 +215,10 @@ isPrimitiveInContainer: (BOOL)aFlag
 						 [type objectForKey: kCOPrimitiveType]];
 			}
 		}
+		else
+		{
+			return kCOPrimitiveTypeEmbeddedItem;
+		}
 	}
 	
 	return nil;
