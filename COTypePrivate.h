@@ -26,7 +26,7 @@
 	BOOL ordered;
 	BOOL unique;
 }
-- (id) initWithPrimitiveType: (COPrimitiveType*)aType
+- (id) initWithPrimitiveType: (COType*)aType
 				   isOrdered: (BOOL)isOrdered
 					isUnique: (BOOL)isUnique;
 @end

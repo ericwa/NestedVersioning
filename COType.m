@@ -145,11 +145,15 @@
 
 @implementation COMultivaluedType
 
-- (id) initWithPrimitiveType: (COPrimitiveType*)aType
+- (id) initWithPrimitiveType: (COType*)aType
 				   isOrdered: (BOOL)isOrdered
 					isUnique: (BOOL)isUnique
 {
-	NILARG_EXCEPTION_TEST(aType);
+	if (![aType isKindOfClass: [COPrimitiveType class]])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"%@ is not a primitive type", aType];
+	}
 	
 	SUPERINIT;
 	ASSIGN(primitiveType, aType);
