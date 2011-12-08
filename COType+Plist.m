@@ -32,7 +32,7 @@
 
 - (id) valueForPlistValue: (id)aPlist
 {
-	return aValue;
+	return aPlist;
 }
 
 @end
@@ -47,7 +47,7 @@
 
 - (id) valueForPlistValue: (id)aPlist
 {
-	return aValue;
+	return aPlist;
 }
 
 @end
@@ -62,7 +62,7 @@
 
 - (id) valueForPlistValue: (id)aPlist
 {
-	return aValue;
+	return aPlist;
 }
 
 @end
@@ -77,7 +77,7 @@
 
 - (id) valueForPlistValue: (id)aPlist
 {
-	return aValue;
+	return aPlist;
 }
 
 @end
@@ -92,7 +92,7 @@
 
 - (id) valueForPlistValue: (id)aPlist
 {
-	return aValue;
+	return aPlist;
 }
 
 @end
@@ -150,7 +150,7 @@
 	NSMutableArray *result = [NSMutableArray array];
 	for (id obj in aValue)
 	{
-		[result addObject: [primitive plistValueForValue: obj]];
+		[result addObject: [primitiveType plistValueForValue: obj]];
 	}
 	return result;
 }
@@ -173,7 +173,7 @@
 		
 	for (id obj in aPlist)
 	{
-		[collection addObject: [primitive valueForPlistValue: obj]];
+		[collection addObject: [primitiveType valueForPlistValue: obj]];
 	}
 	return collection;
 }

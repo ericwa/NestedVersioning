@@ -152,7 +152,7 @@
 	NILARG_EXCEPTION_TEST(aType);
 	
 	SUPERINIT;
-	ASSIGN(primitive, aType);
+	ASSIGN(primitiveType, aType);
 	ordered = isOrdered;
 	unique = isUnique;
 	return self;
@@ -160,7 +160,7 @@
 
 - (void) dealloc
 {
-	[primitive release];
+	[primitiveType release];
 	[super dealloc];
 }
 
@@ -168,7 +168,7 @@
 {
 	return YES;
 }
-- (BOOL) isPrimitive
+- (BOOL) isType
 {
 	return NO;
 }
@@ -194,23 +194,23 @@
 		prefix = @"Array of ";
 	}			
 	
-	return [prefix stringByAppendingString: [primitive description]];
+	return [prefix stringByAppendingString: [primitiveType description]];
 }
 
 - (BOOL) validateValue: (id)aValue
 {
 	BOOL valid;
 	
-	if (!orderedVal && unique)
+	if (!ordered && unique)
 	{
 		valid = [aValue isKindOfClass: [NSSet class]] && 
 			![aValue isKindOfClass: [NSCountedSet class]];
 	}
-	else if (!orderedVal && !unique)
+	else if (!ordered && !unique)
 	{
 		valid = [aValue isKindOfClass: [NSCountedSet class]];			
 	}
-	else if (orderedVal && unique)
+	else if (ordered && unique)
 	{
 		if ([aValue isKindOfClass: [NSArray class]])
 		{
@@ -230,7 +230,7 @@
 	
 	for (id obj in aValue)
 	{
-		valid = valid && [primitive validateValue: obj];
+		valid = valid && [primitiveType validateValue: obj];
 	}
 	
 	return valid;

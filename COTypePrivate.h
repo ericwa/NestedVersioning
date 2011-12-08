@@ -22,8 +22,8 @@
 
 @interface COMultivaluedType : COType
 {
-	COPrimitiveType *primitive;
-	BOOL orderd;
+	COPrimitiveType *primitiveType;
+	BOOL ordered;
 	BOOL unique;
 }
 - (id) initWithPrimitiveType: (COPrimitiveType*)aType
