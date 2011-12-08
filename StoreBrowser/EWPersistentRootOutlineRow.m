@@ -225,10 +225,13 @@ isPrimitiveInContainer: (BOOL)aFlag
 	if (attribute == nil)
 	{
 		COStoreItem *item = [ctx _storeItemForUUID: UUID];
-		if ([[item valueForAttribute: @"type"] isEqualToString: @"persistentRoot"] ||
-			[[item valueForAttribute: @"type"] isEqualToString: @"branch"])
+		if ([[item valueForAttribute: @"type"] isEqualToString: @"persistentRoot"])
 		{
 			return [NSImage imageNamed: @"package-x-generic"];
+		}
+		else if	([[item valueForAttribute: @"type"] isEqualToString: @"branch"])
+		{
+			return [NSImage imageNamed: @"branch"];
 		}
 		return [NSImage imageNamed: @"folder"];
 	}

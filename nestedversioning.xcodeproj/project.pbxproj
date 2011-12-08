@@ -12,6 +12,7 @@
 		660E66EA148DCC0D0062308D /* package-x-generic.png in Resources */ = {isa = PBXBuildFile; fileRef = 660E66E7148DCC0D0062308D /* package-x-generic.png */; };
 		660E66EB148DCC0D0062308D /* text-x-generic.png in Resources */ = {isa = PBXBuildFile; fileRef = 660E66E8148DCC0D0062308D /* text-x-generic.png */; };
 		6628FB9B142FA65D0072767A /* EWTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6628FB9A142FA65D0072767A /* EWTest.m */; };
+		668D312D14905F0500294077 /* branch.png in Resources */ = {isa = PBXBuildFile; fileRef = 668D312C14905F0500294077 /* branch.png */; };
 		66DFAED0142A726100623060 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DFAEBF142A726100623060 /* main.m */; };
 		66E0189C146455C8000EB1E0 /* TestPhotoMontage.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E0189B146455C8000EB1E0 /* TestPhotoMontage.m */; };
 		66E0189F146468F6000EB1E0 /* TestBLOB.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E0189E146468F6000EB1E0 /* TestBLOB.m */; };
@@ -92,6 +93,7 @@
 		6628FBA7142FA7840072767A /* TestSynchronization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSynchronization.m; sourceTree = "<group>"; };
 		6628FBA8142FA7840072767A /* TestUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestUtilities.m; sourceTree = "<group>"; };
 		66416D20142D3EE20016501D /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		668D312C14905F0500294077 /* branch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = branch.png; sourceTree = "<group>"; };
 		66DFAEBF142A726100623060 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		66DFAEC4142A726100623060 /* Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = "<group>"; };
 		66DFAECA142A726100623060 /* test-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "test-Prefix.pch"; sourceTree = "<group>"; };
@@ -152,7 +154,7 @@
 		66EDFD92148EF72000D0DC0B /* COItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COItem.m; sourceTree = "<group>"; };
 		66EDFD94148EF73200D0DC0B /* COType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COType.h; sourceTree = "<group>"; };
 		66EDFD95148EF73200D0DC0B /* COType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COType.m; sourceTree = "<group>"; };
-		66EDFD97148EF88400D0DC0B /* COItemTreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; path = COItemTreeNode.h; sourceTree = "<group>"; };
+		66EDFD97148EF88400D0DC0B /* COItemTreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COItemTreeNode.h; sourceTree = "<group>"; };
 		66EDFD98148EF88400D0DC0B /* COItemTreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COItemTreeNode.m; sourceTree = "<group>"; };
 		66EDFD9A148F557800D0DC0B /* COMutableLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COMutableLayer.h; sourceTree = "<group>"; };
 		66EDFD9B148F557800D0DC0B /* COMutableLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COMutableLayer.m; sourceTree = "<group>"; };
@@ -331,6 +333,7 @@
 				660E66E6148DCC0D0062308D /* folder.png */,
 				660E66E7148DCC0D0062308D /* package-x-generic.png */,
 				660E66E8148DCC0D0062308D /* text-x-generic.png */,
+				668D312C14905F0500294077 /* branch.png */,
 				66EB757D148CA9D300C2114B /* AppDelegate.h */,
 				66EB757E148CA9D300C2114B /* AppDelegate.m */,
 				66EB7580148CA9D400C2114B /* MainMenu.xib */,
@@ -489,6 +492,7 @@
 				660E66E9148DCC0D0062308D /* folder.png in Resources */,
 				660E66EA148DCC0D0062308D /* package-x-generic.png in Resources */,
 				660E66EB148DCC0D0062308D /* text-x-generic.png in Resources */,
+				668D312D14905F0500294077 /* branch.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
