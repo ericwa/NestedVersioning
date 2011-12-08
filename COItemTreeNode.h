@@ -1,18 +1,12 @@
 #import <Foundation/Foundation.h>
-#import "COFaultProvider.h"
 
-/**
- * Tree node that gets its data from a fault provider. when the fault provider
- * changes, it needs to re-fetch the state.
- */
+#import "ETUUID.h"
+
 @interface COItemTreeNode : NSObject
 {
-
+	ETUUID *uuid;
+	NSMutableDictionary *valueForAttribute; // string -> (COItemTreeNode, NString, ETUUID, NSNumber, NSData) or set/array
+	NSMutableDictionary *typeForAttribute; // string-> COType
 }
-
-
-/** @taskunit private */
-
-- (void) refetch;
 
 @end
