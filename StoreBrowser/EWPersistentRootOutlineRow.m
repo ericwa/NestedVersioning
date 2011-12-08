@@ -196,28 +196,15 @@ isPrimitiveInContainer: (BOOL)aFlag
 
 		if (isPrimitiveInContainer)
 		{
-			return [type objectForKey: kCOPrimitiveType];
+			return COHumanReadableType(COPrimitiveType([type objectForKey: kCOPrimitiveType]));
 		}
 		else if (attribute != nil)
 		{
-			if ([[type objectForKey: kCOTypeKind] isEqual: kCOPrimitiveTypeKind])
-			{
-				return [type objectForKey: kCOPrimitiveType];
-			}
-			else
-			{
-				BOOL ordered = [[type objectForKey: kCOContainerOrdered] boolValue];
-				BOOL allowsDuplicates = [[type objectForKey: kCOContainerAllowsDuplicates] boolValue];
-				
-				return [NSString stringWithFormat: @"(%@%@Container of %@)", 
-						(ordered ? @"Ordered " : @"Unordered "),
-						(allowsDuplicates ? @"" : @"Unique "),
-						 [type objectForKey: kCOPrimitiveType]];
-			}
+			return COHumanReadableType(type);
 		}
 		else
 		{
-			return kCOPrimitiveTypeEmbeddedItem;
+			return COHumanReadableType(COPrimitiveType(kCOPrimitiveTypeEmbeddedItem));
 		}
 	}
 	

@@ -53,6 +53,79 @@ NSDictionary *COPrimitiveType(NSString *aPrimitiveType)
 			 aPrimitiveType, kCOPrimitiveType);	
 }
 
+NSString *COHumanReadableType(NSDictionary *aType)
+{
+	if ([[aType objectForKey: kCOTypeKind] isEqual: kCOContainerTypeKind])
+	{
+		BOOL ordered = [[aType objectForKey: kCOContainerOrdered] boolValue];
+		BOOL allowsDuplicates = [[aType objectForKey: kCOContainerAllowsDuplicates] boolValue];
+		
+		NSString *prefix;
+		
+		if (!ordered && !allowsDuplicates)
+		{
+			prefix = @"Set of ";
+		}
+		else if (!ordered && allowsDuplicates)
+		{
+			prefix = @"Bag of ";
+		}
+		else if (ordered && !allowsDuplicates)
+		{
+			prefix = @"Unique Array of ";
+		}
+		else if (ordered && allowsDuplicates)
+		{
+			prefix = @"Array of ";
+		}			
+		
+		return [prefix stringByAppendingString: 
+				COHumanReadableType(COPrimitiveType([aType objectForKey: kCOPrimitiveType]))];
+	}
+	else if ([[aType objectForKey: kCOTypeKind] isEqual: kCOPrimitiveTypeKind])
+	{
+		NSString *primitiveType = [aType objectForKey: kCOPrimitiveType];
+		
+		if ([primitiveType isEqualToString: kCOPrimitiveTypeCommitUUID])
+		{
+			return @"Commit Ref";
+		}
+		else if ([primitiveType isEqualToString: kCOPrimitiveTypeEmbeddedItem])
+		{
+			return @"Embedded Item";
+		}
+		else if ([primitiveType isEqualToString: kCOPrimitiveTypePath])
+		{
+			return @"Path";
+		}
+		else if ([primitiveType isEqualToString: kCOPrimitiveTypeInt64])
+		{
+			return @"Int";
+		}
+		else if ([primitiveType isEqualToString: kCOPrimitiveTypeDouble])
+		{
+			return @"Double";
+		}
+		else if ([primitiveType isEqualToString: kCOPrimitiveTypeBlob])
+		{
+			return @"Blob";
+		}
+		else if ([primitiveType isEqualToString: kCOPrimitiveTypeString])
+		{
+			return @"String";
+		}
+		else if ([primitiveType isEqualToString: kCOPrimitiveTypeFullTextIndexableString])
+		{
+			return @"Indexable String";
+		}
+		else
+		{
+			assert(0);
+		}	
+	}
+	else assert(0);
+}
+
 @implementation COStoreItem
 
 - (id) initWithUUID: (ETUUID*)aUUID

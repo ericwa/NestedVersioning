@@ -55,6 +55,7 @@ extern NSDictionary *COSetContainerType(NSString *aPrimitiveType); // unordered,
 
 extern NSDictionary *COPrimitiveType(NSString *aPrimitiveType);
 
+extern NSString *COHumanReadableType(NSDictionary *aType);
 
 /**
 examples of type dictionaries:
