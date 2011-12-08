@@ -11,7 +11,8 @@
 																	 inStore: store]);
 	assert(ctx != nil);
 	
-	outlineModel = [[EWPersistentRootOutlineRow alloc] initWithContext: ctx];
+	outlineModel = [[EWPersistentRootOutlineRow alloc] initWithContext: ctx
+																parent: nil];
 }
 
 - (id)initWithPath: (COPath*)aPath
@@ -101,33 +102,43 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
 	}
 }
 
-static void expandParentsOfItem(NSOutlineView *aView, id anItem)
+static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow *item)
 {
 	NSMutableArray *anArray = [NSMutableArray array];
 	
-	for (id expandRow = [aView parentForItem: anItem];
-		 expandRow != nil; 
-		 expandRow = [aView parentForItem: expandRow])
+	for (EWPersistentRootOutlineRow *parent = [item parent]; 
+		 parent != nil;
+		 parent = [parent parent])
 	{
-		[anArray addObject: expandRow];
+		[anArray addObject: parent];
 	}
+		 
 	for (id row in [anArray reverseObjectEnumerator])
 	{
+		NSLog(@"expand %p", row);
 		[aView expandItem: row];
-	}
+	}	
 }
 
 - (void) orderFrontAndHighlightItem: (ETUUID*)aUUID
 {
+	[self showWindow: nil];	
+	
 	EWPersistentRootOutlineRow *row = searchForUUID(outlineModel, aUUID);
 	assert(row != nil);
+
+	/*
+	NSLog(@"%d items", (int)[outlineView numberOfRows]);
+	
+	NSLog(@"item 0: %p", [outlineView itemAtRow: 0]);	
+	NSLog(@"outlineModel: %p", outlineModel);	
+	NSLog(@"outlineModel first child: %p", [[outlineModel children] objectAtIndex: 0]);	
+	*/
 	
 	expandParentsOfItem(outlineView, row);
 	
-	[outlineView selectRowIndexes: [NSIndexSet indexSetWithIndex:[outlineView rowForItem: row]]
+	[outlineView selectRowIndexes: [NSIndexSet indexSetWithIndex: [outlineView rowForItem: row]]
 			 byExtendingSelection: NO];
-
-	[self showWindow: nil];
 }
 
 /* convenience */

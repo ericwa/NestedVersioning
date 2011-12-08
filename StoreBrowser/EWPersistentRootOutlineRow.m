@@ -3,11 +3,17 @@
 
 @implementation EWPersistentRootOutlineRow
 
+- (EWPersistentRootOutlineRow *) parent
+{
+	return parent;
+}
+
 - (id) initWithContext: (COPersistentRootEditingContext *)aContext
 			  itemUUID: (ETUUID *)aUUID
 			 attribute: (NSString*)anAttribute
 isPrimitiveInContainer: (BOOL)aFlag
 				 index: (NSUInteger)anIndex
+			   parent: (EWPersistentRootOutlineRow *)aParent
 {
 	SUPERINIT;
 	ASSIGN(ctx, aContext);
@@ -15,34 +21,41 @@ isPrimitiveInContainer: (BOOL)aFlag
 	ASSIGN(attribute, anAttribute);
 	isPrimitiveInContainer = aFlag;
 	index = anIndex;
+	parent = aParent;
 	return self;
 }
 
 - (id) initWithContext: (COPersistentRootEditingContext *)aContext
 			  itemUUID: (ETUUID *)aUUID
 			 attribute: (NSString*)anAttribute
+			   parent: (EWPersistentRootOutlineRow *)aParent
 {
 	return [self initWithContext: aContext
 						itemUUID: aUUID
 					   attribute: anAttribute 
 		  isPrimitiveInContainer: NO
-						   index: 0];
+						   index: 0
+						  parent: aParent];
 }
 
 - (id) initWithContext: (COPersistentRootEditingContext *)aContext
 			  itemUUID: (ETUUID *)aUUID
+			   parent: (EWPersistentRootOutlineRow *)aParent
 {
 	return [self initWithContext: aContext
 						itemUUID: aUUID
 					   attribute: nil 
 		  isPrimitiveInContainer: NO
-						   index: 0];
+						   index: 0
+						  parent: aParent];
 }
 
 - (id)initWithContext: (COPersistentRootEditingContext *)aContext
+			   parent: (EWPersistentRootOutlineRow *)aParent
 {
 	return [self initWithContext: aContext
-						itemUUID: [aContext rootUUID]];
+						itemUUID: [aContext rootUUID]
+						  parent: aParent];
 }
 
 - (void)dealloc
@@ -86,8 +99,9 @@ isPrimitiveInContainer: (BOOL)aFlag
 		for (NSString *attr in [[storeItem attributeNames] sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)])
 		{
 			EWPersistentRootOutlineRow *obj = [[EWPersistentRootOutlineRow alloc] initWithContext: ctx
-																										 itemUUID: UUID
-																										attribute: attr];
+																						 itemUUID: UUID
+																						attribute: attr
+																						   parent: self];
 			[result addObject: obj];
 			[obj release];
 		}
@@ -113,7 +127,8 @@ isPrimitiveInContainer: (BOOL)aFlag
 			for (ETUUID *embeddedUUID in [storeItem allObjectsForAttribute: attribute])
 			{
 				EWPersistentRootOutlineRow *obj = [[EWPersistentRootOutlineRow alloc] initWithContext: ctx
-																											 itemUUID: embeddedUUID];
+																							 itemUUID: embeddedUUID
+																							   parent: self];
 				[result addObject: obj];
 				[obj release];
 			}
@@ -127,10 +142,11 @@ isPrimitiveInContainer: (BOOL)aFlag
 			for (NSUInteger i=0; i<count; i++)
 			{
 				EWPersistentRootOutlineRow *obj = [[EWPersistentRootOutlineRow alloc] initWithContext: ctx
-																											 itemUUID: UUID
-																											attribute: attribute
-																							   isPrimitiveInContainer: YES
-																												index: i];
+																							 itemUUID: UUID
+																							attribute: attribute
+																			   isPrimitiveInContainer: YES
+																								index: i
+																							   parent: self];
 				[result addObject: obj];
 				[obj release];
 			}

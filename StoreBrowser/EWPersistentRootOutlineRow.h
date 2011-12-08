@@ -9,6 +9,8 @@
 {
 	COPersistentRootEditingContext *ctx;
 	
+	EWPersistentRootOutlineRow *parent;
+	
 	ETUUID *UUID;
 	NSString *attribute;
 	BOOL isPrimitiveInContainer;
@@ -17,10 +19,13 @@
 	NSMutableArray *contents;
 }
 
+- (EWPersistentRootOutlineRow *) parent;
+
 - (ETUUID *)UUID;
 - (NSString *)attribute;
 
-- (id)initWithContext: (COPersistentRootEditingContext *)aContext;
+- (id)initWithContext: (COPersistentRootEditingContext *)aContext
+			   parent: (EWPersistentRootOutlineRow *)aParent;
 
 - (NSArray*)children;
 - (id)valueForTableColumn: (NSTableColumn *)column;
