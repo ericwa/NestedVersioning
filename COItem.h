@@ -14,7 +14,6 @@
 	NSDictionary *values;
 }
 
-
 - (id) initWithUUID: (ETUUID*)aUUID;
 
 /**
@@ -27,8 +26,8 @@
  */
 + (COItem *) item;
 
+
 - (ETUUID *)UUID;
-- (void) setUUID: (ETUUID *)aUUID;
 
 - (NSArray *) attributeNames;
 

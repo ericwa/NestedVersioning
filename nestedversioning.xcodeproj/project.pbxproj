@@ -20,6 +20,7 @@
 		66E46D48146A3D490042123E /* TestDeletion.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E46D47146A3D490042123E /* TestDeletion.m */; };
 		66E552B5146B7799008FDFAF /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E552B4146B7799008FDFAF /* libcrypto.dylib */; };
 		66E5CABC147B4E42002DE8FD /* TestPhotoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E5CABB147B4E42002DE8FD /* TestPhotoManager.m */; };
+		66E61DCA14902D6500FA55DA /* COItemTreeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E61DC914902D6500FA55DA /* COItemTreeManager.m */; };
 		66E76749148B4813009937E8 /* COStoreItemTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E76735148B3D1C009937E8 /* COStoreItemTree.m */; };
 		66E877571455F0CB006CBE7E /* COStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E877561455F0CB006CBE7E /* COStore.m */; };
 		66E8776B1455FE67006CBE7E /* ETUUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E8776A1455FE67006CBE7E /* ETUUID.m */; };
@@ -33,7 +34,7 @@
 		66EB7582148CA9D400C2114B /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 66EB7580148CA9D400C2114B /* MainMenu.xib */; };
 		66EDFD93148EF72000D0DC0B /* COItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EDFD92148EF72000D0DC0B /* COItem.m */; };
 		66EDFD96148EF73200D0DC0B /* COType.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EDFD95148EF73200D0DC0B /* COType.m */; };
-		66EDFD99148EF88400D0DC0B /* COItemTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EDFD98148EF88400D0DC0B /* COItemTree.m */; };
+		66EDFD99148EF88400D0DC0B /* COItemTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EDFD98148EF88400D0DC0B /* COItemTreeNode.m */; };
 		66EDFD9C148F557800D0DC0B /* COMutableLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EDFD9B148F557800D0DC0B /* COMutableLayer.m */; };
 		66EE5D36146355A6008AA95B /* COPersistentRootEditingContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EE5D35146355A6008AA95B /* COPersistentRootEditingContext.m */; };
 		66EE5D3A14637418008AA95B /* COPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EE5D3914637418008AA95B /* COPath.m */; };
@@ -106,6 +107,8 @@
 		66E552B4146B7799008FDFAF /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = usr/lib/libcrypto.dylib; sourceTree = SDKROOT; };
 		66E5CABB147B4E42002DE8FD /* TestPhotoManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestPhotoManager.m; sourceTree = "<group>"; };
 		66E5CBA814830C5700D01039 /* COStorePrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COStorePrivate.h; sourceTree = "<group>"; };
+		66E61DC814902D6500FA55DA /* COItemTreeManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COItemTreeManager.h; sourceTree = "<group>"; };
+		66E61DC914902D6500FA55DA /* COItemTreeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COItemTreeManager.m; sourceTree = "<group>"; };
 		66E76726148B3D1C009937E8 /* COInMemoryObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COInMemoryObject.h; sourceTree = "<group>"; };
 		66E76727148B3D1C009937E8 /* COInMemoryObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COInMemoryObject.m; sourceTree = "<group>"; };
 		66E76728148B3D1C009937E8 /* COItemFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COItemFactory.h; sourceTree = "<group>"; };
@@ -149,8 +152,8 @@
 		66EDFD92148EF72000D0DC0B /* COItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COItem.m; sourceTree = "<group>"; };
 		66EDFD94148EF73200D0DC0B /* COType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COType.h; sourceTree = "<group>"; };
 		66EDFD95148EF73200D0DC0B /* COType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COType.m; sourceTree = "<group>"; };
-		66EDFD97148EF88400D0DC0B /* COItemTree.h */ = {isa = PBXFileReference; fileEncoding = 4; path = COItemTree.h; sourceTree = "<group>"; };
-		66EDFD98148EF88400D0DC0B /* COItemTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COItemTree.m; sourceTree = "<group>"; };
+		66EDFD97148EF88400D0DC0B /* COItemTreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; path = COItemTreeNode.h; sourceTree = "<group>"; };
+		66EDFD98148EF88400D0DC0B /* COItemTreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COItemTreeNode.m; sourceTree = "<group>"; };
 		66EDFD9A148F557800D0DC0B /* COMutableLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COMutableLayer.h; sourceTree = "<group>"; };
 		66EDFD9B148F557800D0DC0B /* COMutableLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COMutableLayer.m; sourceTree = "<group>"; };
 		66EE5D34146355A6008AA95B /* COPersistentRootEditingContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPersistentRootEditingContext.h; sourceTree = "<group>"; };
@@ -361,8 +364,10 @@
 				66EDFD92148EF72000D0DC0B /* COItem.m */,
 				66EDFD94148EF73200D0DC0B /* COType.h */,
 				66EDFD95148EF73200D0DC0B /* COType.m */,
-				66EDFD97148EF88400D0DC0B /* COItemTree.h */,
-				66EDFD98148EF88400D0DC0B /* COItemTree.m */,
+				66EDFD97148EF88400D0DC0B /* COItemTreeNode.h */,
+				66EDFD98148EF88400D0DC0B /* COItemTreeNode.m */,
+				66E61DC814902D6500FA55DA /* COItemTreeManager.h */,
+				66E61DC914902D6500FA55DA /* COItemTreeManager.m */,
 				66EDFD9A148F557800D0DC0B /* COMutableLayer.h */,
 				66EDFD9B148F557800D0DC0B /* COMutableLayer.m */,
 			);
@@ -520,8 +525,9 @@
 				79297309148C94FD00FD35A9 /* COItemFactory.m in Sources */,
 				66EDFD93148EF72000D0DC0B /* COItem.m in Sources */,
 				66EDFD96148EF73200D0DC0B /* COType.m in Sources */,
-				66EDFD99148EF88400D0DC0B /* COItemTree.m in Sources */,
+				66EDFD99148EF88400D0DC0B /* COItemTreeNode.m in Sources */,
 				66EDFD9C148F557800D0DC0B /* COMutableLayer.m in Sources */,
+				66E61DCA14902D6500FA55DA /* COItemTreeManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
