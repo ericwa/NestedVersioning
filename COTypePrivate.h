@@ -1,0 +1,32 @@
+#import "COType.h"
+
+@interface COPrimitiveType : COType
+@end
+@interface COInt64Type : COPrimitiveType
+@end
+@interface CODoubleType : COPrimitiveType
+@end
+@interface COStringType : COPrimitiveType
+@end
+@interface COFullTextIndexableStringType : COPrimitiveType
+@end
+@interface COBlobType : COPrimitiveType
+@end
+@interface COCommitType : COPrimitiveType
+@end
+@interface COPathType : COPrimitiveType
+@end
+@interface COEmbeddedItemType : COPrimitiveType
+@end
+
+
+@interface COMultivaluedType : COType
+{
+	COPrimitiveType *primitive;
+	BOOL orderd;
+	BOOL unique;
+}
+- (id) initWithPrimitiveType: (COPrimitiveType*)aType
+				   isOrdered: (BOOL)isOrdered
+					isUnique: (BOOL)isUnique;
+@end
