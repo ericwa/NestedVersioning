@@ -110,17 +110,16 @@ isPrimitiveInContainer: (BOOL)aFlag
 	}
 	else // outlineitem specifies an attribute
 	{
-		NSDictionary *type = [storeItem typeForAttribute: attribute];
+		COType *type = [storeItem typeForAttribute: attribute];
 		
-		// if it is not a container type, and it is not an embedded item, it has no children
-		if ([[type objectForKey: kCOTypeKind] isEqual: kCOPrimitiveTypeKind] &&
-			![[type objectForKey: kCOPrimitiveType] isEqual: kCOPrimitiveTypeEmbeddedItem])
+		if ([type isPrimitive] &&
+			![type isEqual: [COType embeddedItemType]])
 		{
 			return [NSArray array];
 		}
 		
 		// if it contains embedded objects, just return their UUIDs.
-		if ([[type objectForKey: kCOPrimitiveType] isEqual: kCOPrimitiveTypeEmbeddedItem])
+		if ([[type primitiveType] isEqual: [COType embeddedItemType]])
 		{
 			NSMutableArray *result = [NSMutableArray array];
 			
@@ -197,9 +196,9 @@ isPrimitiveInContainer: (BOOL)aFlag
 		if (attribute != nil)
 		{
 			COStoreItem *item = [ctx _storeItemForUUID: UUID];
-			NSDictionary *type = [item typeForAttribute: attribute];
+			COType *type = [item typeForAttribute: attribute];
 			
-			if ([[type objectForKey: kCOTypeKind] isEqual: kCOPrimitiveTypeKind])
+			if ([type isPrimitive])
 			{
 				return [item valueForAttribute: attribute];
 			}
@@ -208,19 +207,19 @@ isPrimitiveInContainer: (BOOL)aFlag
 	else if ([[column identifier] isEqualToString: @"type"])
 	{
 		COStoreItem *item = [ctx _storeItemForUUID: UUID];
-		NSDictionary *type = [item typeForAttribute: attribute];
+		COType *type = [item typeForAttribute: attribute];
 
 		if (isPrimitiveInContainer)
 		{
-			return COHumanReadableType(COPrimitiveType([type objectForKey: kCOPrimitiveType]));
+			return [[type primitiveType] description];
 		}
 		else if (attribute != nil)
 		{
-			return COHumanReadableType(type);
+			return [type description];
 		}
 		else
 		{
-			return COHumanReadableType(COPrimitiveType(kCOPrimitiveTypeEmbeddedItem));
+			return [[COType embeddedItemType] description];
 		}
 	}
 	
