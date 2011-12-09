@@ -22,7 +22,7 @@
 		COItemTreeNode *node = [itemTreeNodeForUUID objectForKey: aUUID];
 		if (nil != node)
 		{
-			[node refetch];
+			[node unfault];
 		}
 		// if node is nil, there is no instantiated COItemTreeNode for that
 		// object, so there is no need to do anything.

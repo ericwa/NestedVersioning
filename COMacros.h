@@ -6,6 +6,8 @@ object = [((id)value) retain]; \
 [__object release]; \
 })
 
+#define DESTROY(lvalue) ({ [lvalue release]; lvalue = nil; })
+
 #define NILARG_EXCEPTION_TEST(arg) do { \
 if (nil == arg) \
 { \

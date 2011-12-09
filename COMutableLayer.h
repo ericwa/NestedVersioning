@@ -12,5 +12,8 @@
 
 - (COItem*) itemForUUID: (ETUUID *)aUUID;
 
+// tree mutation
+
+- (void) move
 
 @end
