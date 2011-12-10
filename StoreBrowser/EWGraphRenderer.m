@@ -17,9 +17,22 @@
 
 @implementation EWGraphRenderer
 
-static NSUInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUInteger currentLevel, NSMutableDictionary *levelForUUID)
+static void visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUInteger currentLevel, NSMutableDictionary *levelForUUID)
 {
-	NSUInteger maxLevel = currentLevel;
+	NSLog(@"visiting %@", currentUUID);
+	
+	NSNumber *currentSavedLevel = [levelForUUID objectForKey: currentUUID];
+	if (currentSavedLevel != nil)
+	{
+		NSLog(@"%@ already has a level %@", currentUUID, currentSavedLevel);
+		return;
+	}
+	else
+	{
+		[levelForUUID setObject: [NSNumber numberWithUnsignedInteger: currentLevel]
+						 forKey: currentUUID];
+	}
+	
 	
 	NSArray *children = [childrenForUUID objectForKey: currentUUID];
 	assert(children != nil);
@@ -27,25 +40,8 @@ static NSUInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUI
 	{
 		ETUUID *child = [children objectAtIndex: i];
 		
-		NSNumber *childCurrentLevel = [levelForUUID objectForKey: child];
-		if (childCurrentLevel != nil)
-		{
-			NSLog(@"%@ already has a level %@", child, childCurrentLevel);
-		}
-		else
-		{
-			[levelForUUID setObject: [NSNumber numberWithUnsignedInteger: currentLevel + i]
-							 forKey: child];
-			
-			if (currentLevel + i > maxLevel) maxLevel = currentLevel + i;
-			
-			NSUInteger visitMaxLevel = visit(childrenForUUID, child, currentLevel + i, levelForUUID);
-			
-			if (visitMaxLevel > maxLevel) maxLevel = visitMaxLevel;
-			
-		}
+		visit(childrenForUUID, child, currentLevel + i, levelForUUID);
 	}
-	return maxLevel;
 }
 
 - (void) layoutGraphOfStore: (COStore*)aStore
@@ -54,9 +50,9 @@ static NSUInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUI
 	
 	// sort by date.
 	
-	NSArray *allCommitsSorted = [allCommits sortedArrayUsingComparator: ^(id obj1, id obj2) {
+	ASSIGN(allCommitsSorted, [allCommits sortedArrayUsingComparator: ^(id obj1, id obj2) {
 		return [[aStore dateForCommit: obj1] compare: [aStore dateForCommit: obj2]];
-	}];
+	}]);
 	
 	//
 	// Now we just have to decide on the Y position of each node.
@@ -66,7 +62,7 @@ static NSUInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUI
 	// find children for each commit (retaining sorted order)
 	// this is the "display" graph
 		
-	NSMutableDictionary *childrenForUUID = [NSMutableDictionary dictionaryWithCapacity: [allCommits	count]];
+	ASSIGN(childrenForUUID, [NSMutableDictionary dictionaryWithCapacity: [allCommits	count]]);
 	
 	for (ETUUID *aCommit in allCommitsSorted)
 	{
@@ -117,28 +113,102 @@ static NSUInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUI
 	// because it means you merged two projects that started from scratch with no common
 	// ancestor. but we should still support drawing graphs with that.
 
-	NSMutableDictionary *levelForUUID = [NSMutableDictionary dictionary];
-	NSUInteger maxLevelUsed = 0;
+	ASSIGN(levelForUUID, [NSMutableDictionary dictionary]);
+
 	for (ETUUID *root in roots)
 	{
-		maxLevelUsed = visit(childrenForUUID, root, 0, levelForUUID);
+		 visit(childrenForUUID, root, 0, levelForUUID);
 	}
 	
 	NSLog(@"graph output:");
 	
+	maxLevelUsed = 0;
 	for (ETUUID *aCommit in allCommitsSorted)
 	{
-		NSLog(@"%d", (int)[[levelForUUID objectForKey: aCommit] intValue]);
+		NSUInteger level = [[levelForUUID objectForKey: aCommit] intValue];
+		
+		if (level > maxLevelUsed)
+			maxLevelUsed = level;
+		
+		NSLog(@"%d", (int)level);
 	}
 }
 
 - (NSSize) size
 {
-	return size;
-}
-- (void) drawRect: (NSRect)aRect
-{
+	NSSize s = NSMakeSize(64 * [allCommitsSorted count], 64 * (maxLevelUsed + 1));
 	
+	return s;
+}
+
+- (NSRect) rectForCommit: (ETUUID*)aCommit
+{
+	NSNumber *rowObj = [levelForUUID objectForKey: aCommit];
+	assert(rowObj != nil);
+	NSUInteger row = [rowObj integerValue];
+	NSUInteger col = [allCommitsSorted indexOfObject: aCommit];
+	
+	NSRect cellRect = NSMakeRect(col * 64, row * 64, 64, 64);
+	
+	return cellRect;
+}
+
+static void EWDrawHorizontalArrowOfLength(CGFloat length)
+{
+	const CGFloat cap = 3;
+	NSBezierPath *path = [NSBezierPath bezierPath];
+	[path moveToPoint: NSMakePoint(0, 0)];
+	[path lineToPoint: NSMakePoint(length - cap, 0)];
+	[path stroke];
+	
+	[path removeAllPoints];
+	[path moveToPoint: NSMakePoint(length - cap, cap / 2.0)];
+	[path lineToPoint: NSMakePoint(length - cap, cap / -2.0)];
+	[path lineToPoint: NSMakePoint(length, 0)];
+	[path lineToPoint: NSMakePoint(length - cap, cap / 2.0)];
+	[path fill];
+}
+
+- (void) draw
+{
+	for (NSUInteger col = 0; col < [allCommitsSorted count]; col++)
+	{
+		ETUUID *commit = [allCommitsSorted objectAtIndex: col];		
+		
+		[[NSColor blackColor] setStroke];
+		
+		NSRect r = [self rectForCommit: commit];
+		[[NSBezierPath bezierPathWithOvalInRect: NSInsetRect(r, 8, 8)] stroke];
+		
+		for (ETUUID *child in [childrenForUUID objectForKey: commit])
+		{
+			NSPoint p1 = r.origin;
+			NSPoint p2 = [self rectForCommit: child].origin;
+			
+			p1 = NSMakePoint(p1.x + 56, p1.y + 32);
+			p2 = NSMakePoint(p2.x + 8, p2.y + 32);
+			
+			/*assert(!(p2.x-p1.x == 0 && p2.y-p1.y == 0));
+			
+			[NSGraphicsContext saveGraphicsState];
+			
+			NSAffineTransform *xform = [NSAffineTransform transform];
+			[xform translateXBy:p1.x yBy:p1.y];
+			[xform rotateByRadians: atan2(p2.x-p1.x, p2.y-p1.y)];
+			[xform concat];
+			
+			CGFloat hypotenuse = sqrt(pow(p2.x-p1.x, 2) + pow(p2.y-p1.y, 2));
+			EWDrawHorizontalArrowOfLength(hypotenuse);
+			
+			[NSGraphicsContext restoreGraphicsState];*/
+			
+			NSBezierPath *p = [NSBezierPath bezierPath];
+			[p moveToPoint: p1];
+			[p lineToPoint: p2];
+			[p stroke];
+			
+		}
+	}
 }
 
 @end

@@ -18,14 +18,25 @@
 {
 	if (graphRenderer != nil)
 	{
-		[[NSColor greenColor] set];
+		[NSGraphicsContext saveGraphicsState];
+		
+		[[NSColor whiteColor] set];
 		NSRectFill(dirtyRect);
+		
+		[graphRenderer draw];
+		 
+		 [NSGraphicsContext restoreGraphicsState];
 	}
 }
 
 - (void) setGraphRenderer: (EWGraphRenderer *)aRenderer
 {
 	ASSIGN(graphRenderer, aRenderer);
+	
+	NSLog(@"Graph renderer size: %@", NSStringFromSize([graphRenderer size]));
+	
+	[self setFrameSize: [graphRenderer size]];
+	[self setNeedsDisplay: YES];
 }
 
 @end
