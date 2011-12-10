@@ -39,7 +39,18 @@
 	}
 	else
 	{
-		return [@"Persistent Root " stringByAppendingString: [path stringValue]];
+		COPersistentRootEditingContext *parentCtx = [COPersistentRootEditingContext editingContextForEditingPath: [path pathByDeletingLastPathComponent] 
+																										 inStore: store];
+		BOOL isBranch = [parentCtx isBranch: [path lastPathComponent]];
+		
+		if (isBranch)
+		{
+			return [@"Branch " stringByAppendingString: [path stringValue]];	
+		}
+		else
+		{
+			return [@"Persistent Root " stringByAppendingString: [path stringValue]];
+		}
 	}
 }
 
@@ -260,11 +271,11 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 				
 				if ([[storeItem valueForAttribute: @"type"] isEqualToString: @"persistentRoot"])
 				{
-					msg = @"Open Current Branch";
+					msg = @"Open Persistent Root";
 				}
 				else
 				{
-					msg = @"Open";
+					msg = @"Open Branch";
 				}
 				
 				NSButtonCell *cell = [[[NSButtonCell alloc] init] autorelease];
