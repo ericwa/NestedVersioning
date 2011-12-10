@@ -138,6 +138,42 @@
 	[self _insertOrUpdateItems: S(branch)];
 }
 
+/** @taskunit undo/redo */
+
+
+//FIXME: This is an ugly hack
+- (BOOL) isBranch: (ETUUID*)aRootOrBranch
+{
+	NSString *type = [[self _storeItemForUUID: aRootOrBranch] valueForAttribute: @"type"];
+	assert([type isEqual: @"persistentRoot"] || 
+		   [type isEqual: @"branch"]);
+	return [type isEqual: @"branch"];
+}
+
+- (void) undo: (ETUUID*)aRootOrBranch
+{
+	if ([self isBranch: aRootOrBranch])
+	{
+		[self undoBranch: aRootOrBranch];
+	}
+	else
+	{
+		[self undoPersistentRoot: aRootOrBranch];
+	}
+}
+- (void) redo: (ETUUID*)aRootOrBranch
+{
+	if ([self isBranch: aRootOrBranch])
+	{
+		[self redoBranch: aRootOrBranch];
+	}
+	else
+	{
+		[self redoPersistentRoot: aRootOrBranch];
+	}	
+}
+
+
 - (void) undoPersistentRoot: (ETUUID*)aRoot
 {
 	[self undoBranch: [self currentBranchOfPersistentRoot: aRoot]];

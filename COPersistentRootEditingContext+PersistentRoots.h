@@ -20,6 +20,9 @@
 - (void) setCurrentVersion: (ETUUID*)aVersion
 			   forBranch: (ETUUID*)aBranch;
 
+- (void) undo: (ETUUID*)aRootOrBranch;
+- (void) redo: (ETUUID*)aRootOrBranch;
+
 - (void) undoPersistentRoot: (ETUUID*)aRoot;
 - (void) redoPersistentRoot: (ETUUID*)aRoot;
 

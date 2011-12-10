@@ -92,7 +92,7 @@
 	COPersistentRootEditingContext *parentCtx = [COPersistentRootEditingContext editingContextForEditingPath: [path pathByDeletingLastPathComponent] 
 														 inStore: store];
 	
-	[parentCtx undoPersistentRoot: [path lastPathComponent]];
+	[parentCtx undo: [path lastPathComponent]];
 	[parentCtx commitWithMetadata: nil];
 	[[NSApp delegate] reloadAllBrowsers];
 }
@@ -100,9 +100,8 @@
 - (IBAction) redo: (id)sender
 {
 	COPersistentRootEditingContext *parentCtx = [COPersistentRootEditingContext editingContextForEditingPath: [path pathByDeletingLastPathComponent] 
-																							   inStore: store];
-	
-	[parentCtx redoPersistentRoot: [path lastPathComponent]];
+																									 inStore: store];	
+	[parentCtx redo: [path lastPathComponent]];
 	[parentCtx commitWithMetadata: nil];
 	[[NSApp delegate] reloadAllBrowsers];
 }
@@ -289,5 +288,7 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 	
 	[[NSApp delegate] browsePersistentRootAtPath: [path pathByAppendingPathComponent: [row UUID]]];
 }
+
+
 
 @end
