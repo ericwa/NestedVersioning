@@ -222,10 +222,6 @@ isPrimitiveInContainer: (BOOL)aFlag
 			return [[COType embeddedItemType] description];
 		}
 	}
-	else if ([[column identifier] isEqualToString: @"currentbranch"])
-	{
-		return @"";
-	}
 	return nil;
 }
 

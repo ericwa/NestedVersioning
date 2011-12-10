@@ -137,14 +137,22 @@ static void ETUUIDGet16RandomBytes(unsigned char bytes[16])
 	return *((uint64_t *)uuid);
 }
 
-- (BOOL) isEqual: (id)anObject
+- (NSComparisonResult) compare: (id)anObject
 {
 	if (anObject == self)
 	{
-		return YES;
+		return NSOrderedSame;
 	}
-	return ([anObject isKindOfClass: [self class]]
-			&& (0 == memcmp(uuid, [(ETUUID *)anObject UUIDValue], 16)));
+	if ([anObject isKindOfClass: [self class]])
+	{
+		return memcmp(uuid, [(ETUUID *)anObject UUIDValue], 16);
+	}
+	return NSOrderedAscending;
+}
+
+- (BOOL) isEqual: (id)anObject
+{
+	return [self compare: anObject] == NSOrderedSame;
 }
 
 - (NSString *) stringValue
