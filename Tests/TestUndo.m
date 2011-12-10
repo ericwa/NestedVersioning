@@ -206,4 +206,35 @@ void testUndo()
 	EWTestEqual(@"green", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
 	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchA] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
 	EWTestEqual(@"green", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchB] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);	
+	
+	
+	
+	
+	[ctx undoPersistentRoot: u1]; 
+	[ctx undoPersistentRoot: u1]; 
+	[ctx commitWithMetadata: nil];
+	
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchA] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchB] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);	
+	
+
+	
+	// now test creating an implict branch by committing in the persistent root again
+	
+	
+	{
+		COPersistentRootEditingContext *ctx3 = [ctx editingContextForEditingEmbdeddedPersistentRoot: u1];
+		COStoreItem *contents3 = [ctx3 _storeItemForUUID: [ctx3 rootUUID]];
+		[contents3 setValue: @"pink"
+			   forAttribute: @"color"
+					   type: [COType stringType]];
+		[ctx3 _insertOrUpdateItems: S(contents3)];
+		commit3 = [ctx3 commitWithMetadata: nil];
+	}
+	
+	EWTestEqual(@"pink", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchA] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
+	EWTestEqual(@"pink", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchB] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);	
+	
 }
