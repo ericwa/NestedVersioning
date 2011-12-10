@@ -15,4 +15,9 @@
 
 - (EWPersistentRootWindowController *) windowControllerForPath: (COPath*)aPath;
 
+/**
+ * Temporary hack...
+ */
+- (void) reloadAllBrowsers;
+
 @end

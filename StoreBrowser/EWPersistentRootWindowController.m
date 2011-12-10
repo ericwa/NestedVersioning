@@ -11,6 +11,7 @@
 																	 inStore: store]);
 	assert(ctx != nil);
 	
+	DESTROY(outlineModel);
 	outlineModel = [[EWPersistentRootOutlineRow alloc] initWithContext: ctx
 																parent: nil];
 }
@@ -72,6 +73,12 @@
 	
 }
 
+- (void) reloadBrowser
+{
+	[self setupCtx];
+	[outlineView reloadData];
+}
+
 - (IBAction) highlightInParent: (id)sender
 {
 	assert(![path isEmpty]);
@@ -82,12 +89,22 @@
 
 - (IBAction) undo: (id)sender
 {
-	NSLog(@"Unimplemented");
+	COPersistentRootEditingContext *parentCtx = [COPersistentRootEditingContext editingContextForEditingPath: [path pathByDeletingLastPathComponent] 
+														 inStore: store];
+	
+	[parentCtx undoPersistentRoot: [path lastPathComponent]];
+	[parentCtx commitWithMetadata: nil];
+	[[NSApp delegate] reloadAllBrowsers];
 }
 
 - (IBAction) redo: (id)sender
 {
-	NSLog(@"Unimplemented");
+	COPersistentRootEditingContext *parentCtx = [COPersistentRootEditingContext editingContextForEditingPath: [path pathByDeletingLastPathComponent] 
+																							   inStore: store];
+	
+	[parentCtx redoPersistentRoot: [path lastPathComponent]];
+	[parentCtx commitWithMetadata: nil];
+	[[NSApp delegate] reloadAllBrowsers];
 }
 
 static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *start, ETUUID *aUUID)

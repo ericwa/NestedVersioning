@@ -47,4 +47,12 @@
 	[[self windowControllerForPath: aPath] showWindow: nil];
 }
 
+- (void) reloadAllBrowsers
+{
+	for (EWPersistentRootWindowController *wc in [windowControllerForPath allValues])
+	{
+		[wc reloadBrowser];
+	}
+}
+
 @end

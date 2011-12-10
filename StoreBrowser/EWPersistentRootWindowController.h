@@ -32,6 +32,11 @@
 
 - (void) orderFrontAndHighlightItem: (ETUUID*)aUUID;
 
+/**
+ * Temporary hack...
+ */
+- (void) reloadBrowser;
+
 @end
 
 
