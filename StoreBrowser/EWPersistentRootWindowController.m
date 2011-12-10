@@ -252,7 +252,8 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 	if ([[column identifier] isEqualToString: @"currentbranch"])
 	{
 		COStoreItem *storeItem = [ctx _storeItemForUUID: [item UUID]];
-		if ([[storeItem valueForAttribute: @"type"] isEqualToString: @"persistentRoot"])
+		if ([[storeItem valueForAttribute: @"type"] isEqualToString: @"persistentRoot"]
+			&& [item attribute] == nil) // FIXME: horrible hack
 		{
 			
 			// NSPopupButtonCell takes a NSNumber indicating the index in the menu.
