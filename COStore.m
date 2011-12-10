@@ -79,11 +79,11 @@
 		}
 	}
 	
-	NSMutableDictionary *plist = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-							   [commitUUID stringValue], @"uuid",
-							   [root stringValue], @"root",
-							   objectsWithStringUUID, @"objects",
-							   nil];
+	NSMutableDictionary *plist = [NSMutableDictionary dictionaryWithDictionary: D(
+								   [commitUUID stringValue], @"uuid",
+								   [root stringValue], @"root",
+								   objectsWithStringUUID, @"objects",
+								   [NSDate date], @"date")];
 	
 	if (metadataPlist != nil)
 	{
@@ -163,6 +163,12 @@
 - (id) metadataForCommit: (ETUUID*)commit
 {
 	return [[self _plistForCommit: commit] objectForKey: @"metadata"];	
+}
+- (NSDate*) dateForCommit: (ETUUID*)commit
+{
+	NSDate *aDate = [[self _plistForCommit: commit] objectForKey: @"date"];
+	assert([aDate isKindOfClass: [NSDate class]]);
+	return aDate;
 }
 - (NSDictionary *) UUIDsAndStoreItemsForCommit: (ETUUID*)commit
 {

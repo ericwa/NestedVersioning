@@ -12,6 +12,8 @@
 		660E66EA148DCC0D0062308D /* package-x-generic.png in Resources */ = {isa = PBXBuildFile; fileRef = 660E66E7148DCC0D0062308D /* package-x-generic.png */; };
 		660E66EB148DCC0D0062308D /* text-x-generic.png in Resources */ = {isa = PBXBuildFile; fileRef = 660E66E8148DCC0D0062308D /* text-x-generic.png */; };
 		6628FB9B142FA65D0072767A /* EWTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6628FB9A142FA65D0072767A /* EWTest.m */; };
+		66300AFA1492CA7E00246C89 /* EWGraphRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 66300AF91492CA7E00246C89 /* EWGraphRenderer.m */; };
+		66300AFD1493148300246C89 /* EWHistoryGraphView.m in Sources */ = {isa = PBXBuildFile; fileRef = 66300AFC1493148300246C89 /* EWHistoryGraphView.m */; };
 		668D312D14905F0500294077 /* branch.png in Resources */ = {isa = PBXBuildFile; fileRef = 668D312C14905F0500294077 /* branch.png */; };
 		669CADDB1491539100D0CF5F /* COType.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EDFD95148EF73200D0DC0B /* COType.m */; };
 		669CADDC1491539100D0CF5F /* COType+Plist.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F39B851490A8540097B7D5 /* COType+Plist.m */; };
@@ -92,6 +94,10 @@
 		6628FBA6142FA7840072767A /* TestStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestStore.m; sourceTree = "<group>"; };
 		6628FBA7142FA7840072767A /* TestSynchronization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSynchronization.m; sourceTree = "<group>"; };
 		6628FBA8142FA7840072767A /* TestUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestUtilities.m; sourceTree = "<group>"; };
+		66300AF81492CA7E00246C89 /* EWGraphRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWGraphRenderer.h; sourceTree = "<group>"; };
+		66300AF91492CA7E00246C89 /* EWGraphRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWGraphRenderer.m; sourceTree = "<group>"; };
+		66300AFB1493148300246C89 /* EWHistoryGraphView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWHistoryGraphView.h; sourceTree = "<group>"; };
+		66300AFC1493148300246C89 /* EWHistoryGraphView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWHistoryGraphView.m; sourceTree = "<group>"; };
 		66416D20142D3EE20016501D /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		668D312C14905F0500294077 /* branch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = branch.png; sourceTree = "<group>"; };
 		669CADDE1491646300D0CF5F /* COManagedItemTreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COManagedItemTreeNode.h; sourceTree = "<group>"; };
@@ -266,6 +272,15 @@
 			path = Tests;
 			sourceTree = "<group>";
 		};
+		66300AF61492CA5F00246C89 /* Graph Drawing */ = {
+			isa = PBXGroup;
+			children = (
+				66300AF81492CA7E00246C89 /* EWGraphRenderer.h */,
+				66300AF91492CA7E00246C89 /* EWGraphRenderer.m */,
+			);
+			name = "Graph Drawing";
+			sourceTree = "<group>";
+		};
 		669CADED1491C14300D0CF5F /* UUID & Path */ = {
 			isa = PBXGroup;
 			children = (
@@ -364,6 +379,7 @@
 		66EB7571148CA9D300C2114B /* StoreBrowser */ = {
 			isa = PBXGroup;
 			children = (
+				66300AF61492CA5F00246C89 /* Graph Drawing */,
 				660E66E6148DCC0D0062308D /* folder.png */,
 				660E66E7148DCC0D0062308D /* package-x-generic.png */,
 				660E66E8148DCC0D0062308D /* text-x-generic.png */,
@@ -377,6 +393,8 @@
 				660E66E2148D92E00062308D /* EWPersistentRootOutlineRow.h */,
 				660E66E3148D92E00062308D /* EWPersistentRootOutlineRow.m */,
 				79926C1E148CAE390095A665 /* PersistentRootWindow.xib */,
+				66300AFB1493148300246C89 /* EWHistoryGraphView.h */,
+				66300AFC1493148300246C89 /* EWHistoryGraphView.m */,
 			);
 			path = StoreBrowser;
 			sourceTree = "<group>";
@@ -586,6 +604,8 @@
 				7901634C148D4899005A9226 /* COStoreItem.m in Sources */,
 				7901634D148D4899005A9226 /* COStoreItemTree.m in Sources */,
 				660E66E4148D92E00062308D /* EWPersistentRootOutlineRow.m in Sources */,
+				66300AFA1492CA7E00246C89 /* EWGraphRenderer.m in Sources */,
+				66300AFD1493148300246C89 /* EWHistoryGraphView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

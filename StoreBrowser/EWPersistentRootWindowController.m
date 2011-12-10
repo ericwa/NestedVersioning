@@ -1,7 +1,7 @@
 #import "EWPersistentRootWindowController.h"
 #import "COMacros.h"
 #import <AppKit/NSOutlineView.h>
-
+#import "EWGraphRenderer.h"
 
 @implementation EWPersistentRootWindowController
 
@@ -59,9 +59,17 @@
 		[undoButton setEnabled: NO];
 		[redoButton setEnabled: NO];
 	}
-	
+	else
+	{
+		EWGraphRenderer *renderer = [[EWGraphRenderer alloc] init];
+		[renderer layoutGraphOfStore: store];
+		[historyView setGraphRenderer: renderer];
+		[renderer release];
+	}
 	
 	[[self window] setTitle: [self persistentRootTitle]];
+	
+	
 }
 
 - (IBAction) highlightInParent: (id)sender

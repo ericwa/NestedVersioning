@@ -27,6 +27,7 @@
 // FIXME: Should change to "parents"
 - (ETUUID *) parentForCommit: (ETUUID*)commit;
 - (id) metadataForCommit: (ETUUID*)commit;
+- (NSDate*) dateForCommit: (ETUUID*)commit;
 - (NSDictionary *) UUIDsAndStoreItemsForCommit: (ETUUID*)commit;
 - (ETUUID *) rootItemForCommit: (ETUUID*)commit;
 

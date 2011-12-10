@@ -6,6 +6,7 @@
 #import "COPersistentRootEditingContext+PersistentRoots.h"
 
 #import "EWPersistentRootOutlineRow.h"
+#import "EWHistoryGraphView.h"
 
 @interface EWPersistentRootWindowController : NSWindowController
 {
@@ -14,6 +15,8 @@
 	COPersistentRootEditingContext *ctx;
 	EWPersistentRootOutlineRow *outlineModel;
 	IBOutlet NSOutlineView *outlineView;
+	
+	IBOutlet EWHistoryGraphView *historyView;
 	
 	IBOutlet NSButton *highlightInParentButton;
 	IBOutlet NSButton *undoButton;
