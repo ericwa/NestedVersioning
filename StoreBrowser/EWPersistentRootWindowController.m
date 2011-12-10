@@ -259,35 +259,41 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 
 - (NSCell *)outlineView:(NSOutlineView *)outlineView dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
-	if ([[tableColumn identifier] isEqualToString: @"action"])
+
+	
+	if ([item attribute] == nil) // only if we click on the root of an embedded object
 	{
-		if ([item attribute] == nil) // only if we click on the root of an embedded object
+		COStoreItem *storeItem = [ctx _storeItemForUUID: [item UUID]];
+		if ([[storeItem valueForAttribute: @"type"] isEqualToString: @"persistentRoot"] ||
+			[[storeItem valueForAttribute: @"type"] isEqualToString: @"branch"])
 		{
-			COStoreItem *storeItem = [ctx _storeItemForUUID: [item UUID]];
-			if ([[storeItem valueForAttribute: @"type"] isEqualToString: @"persistentRoot"] ||
-				[[storeItem valueForAttribute: @"type"] isEqualToString: @"branch"])
+			if ([[tableColumn identifier] isEqualToString: @"action"])
 			{
-				NSString *msg;
-				
-				if ([[storeItem valueForAttribute: @"type"] isEqualToString: @"persistentRoot"])
-				{
-					msg = @"Open Persistent Root";
-				}
-				else
-				{
-					msg = @"Open Branch";
-				}
-				
 				NSButtonCell *cell = [[[NSButtonCell alloc] init] autorelease];
 				[cell setBezelStyle: NSRoundRectBezelStyle];
-				[cell setTitle: msg];
+				[cell setTitle: @"Open"];
 				[cell setTarget: self];
 				[cell setAction: @selector(openPersistentRoot:)];
-				return cell;
+				return cell;				
+			}
+			else if ([[tableColumn identifier] isEqualToString: @"currentbranch"])
+			{
+				if ([[storeItem valueForAttribute: @"type"] isEqualToString: @"persistentRoot"])
+				{
+					NSPopUpButtonCell *cell = [[[NSPopUpButtonCell alloc] init] autorelease];
+
+					NSMenu *aMenu = [[[NSMenu alloc] init] autorelease];
+					
+					[aMenu addItemWithTitle:@"hi" action:nil keyEquivalent:@""];
+					
+					[cell setMenu: aMenu];
+					
+					return cell;
+				}
 			}
 		}
 	}
-	
+		
 	return [tableColumn dataCell];
 }
 
