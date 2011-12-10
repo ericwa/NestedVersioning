@@ -4,7 +4,7 @@
 @interface EWGraphRenderer : NSObject
 {
 	NSSize size;
-	NSArray *allCommitsSorted;
+	NSMutableArray *allCommitsSorted;
 	NSMutableDictionary *childrenForUUID;
 	NSMutableDictionary *levelForUUID;
 	NSUInteger maxLevelUsed;

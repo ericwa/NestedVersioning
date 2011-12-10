@@ -46,13 +46,13 @@ static void visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUInteger
 
 - (void) layoutGraphOfStore: (COStore*)aStore
 {
-	NSArray *allCommits = [aStore allCommitUUIDs];
+	ASSIGN(allCommitsSorted, [NSMutableArray arrayWithArray: [aStore allCommitUUIDs]]);
 	
 	// sort by date.
 	
-	ASSIGN(allCommitsSorted, [allCommits sortedArrayUsingComparator: ^(id obj1, id obj2) {
+	[allCommitsSorted sortUsingComparator: ^(id obj1, id obj2) {
 		return [[aStore dateForCommit: obj1] compare: [aStore dateForCommit: obj2]];
-	}]);
+	}];
 	
 	//
 	// Now we just have to decide on the Y position of each node.
@@ -62,7 +62,7 @@ static void visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUInteger
 	// find children for each commit (retaining sorted order)
 	// this is the "display" graph
 		
-	ASSIGN(childrenForUUID, [NSMutableDictionary dictionaryWithCapacity: [allCommits	count]]);
+	ASSIGN(childrenForUUID, [NSMutableDictionary dictionaryWithCapacity: [allCommitsSorted count]]);
 	
 	for (ETUUID *aCommit in allCommitsSorted)
 	{
@@ -79,6 +79,20 @@ static void visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUInteger
 		}
 	}
 
+	// remove commits which have no children/parents
+	
+	for (ETUUID *aCommit in [NSArray arrayWithArray: allCommitsSorted])
+	{
+		if ([[childrenForUUID objectForKey: aCommit] count] == 0 &&
+			[aStore parentForCommit: aCommit] == nil)
+		{
+			NSLog(@"removed %@ because it had no parents/children (%d)", 
+				  aCommit, (int)[allCommitsSorted indexOfObject: aCommit]);
+			[allCommitsSorted removeObject: aCommit];
+
+		}
+	}
+	
 	
 	// some nodes should have more than 1 child
 	
