@@ -19,6 +19,7 @@
 {
 	self = [super init];
 	url = [aURL retain];
+	plistForCommitCache = [[NSMutableDictionary alloc] init];
 	
 	BOOL isDirectory;
 	BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath: [url path]
@@ -44,6 +45,7 @@
 
 - (void)dealloc
 {
+	[plistForCommitCache release];
 	[url release];
 	[super dealloc];
 }
@@ -127,6 +129,15 @@
 
 - (NSDictionary *) _plistForCommit: (ETUUID*)commit
 {
+	{
+		id cached = [plistForCommitCache objectForKey: commit];
+		if (cached != nil)
+		{
+			return cached;
+		}
+	}
+	
+	
 	NSString *commitFile = [[self commitsDirectory] stringByAppendingPathComponent:
 							[commit stringValue]];
 	
@@ -155,6 +166,11 @@
 	
 	[plist setObject: [ETUUID UUIDWithString: [plist objectForKey: @"root"]]
 			  forKey: @"root"];
+	
+	// Cache the result in memory to avoid reading from disk in the future
+	// (commits are immutable, so it is safe)
+	
+	[plistForCommitCache setObject: plist forKey: commit];
 	
 	return plist;
 }

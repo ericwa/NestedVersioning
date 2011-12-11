@@ -8,7 +8,23 @@
 
 + (COType *)type
 {
-	return [[[[self class] alloc] init] autorelease];
+	static NSMutableDictionary *typeDictionary;
+	if (typeDictionary == nil)
+	{
+		typeDictionary = [[NSMutableDictionary alloc] init];
+	}
+	
+	COType *singleton = [typeDictionary objectForKey: [self class]];
+	
+	if (singleton == nil)
+	{
+		singleton = [[[self class] alloc] init];
+		[typeDictionary setObject: singleton
+						   forKey: [self class]];
+		[singleton release];
+	}
+	
+	return singleton;
 }
 
 - (BOOL) isMultivalued

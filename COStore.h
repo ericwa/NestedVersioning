@@ -29,6 +29,8 @@
 {
 @private
 	NSURL *url;
+	
+	NSMutableDictionary *plistForCommitCache;
 }
 
 /** @taskunit Initialization */
