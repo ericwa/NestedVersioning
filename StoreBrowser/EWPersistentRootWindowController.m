@@ -330,37 +330,7 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 
 - (void)outlineView:(NSOutlineView *)ov setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item 
 {
-	NSLog(@"Set to %@ col %@", object, [tableColumn identifier]);
-	
-	if ([[tableColumn identifier] isEqualToString: @"currentbranch"])
-	{
-		ETUUID *selectedBranch = [[self orderedBranchesForUUID: [item UUID]] objectAtIndex: [object integerValue]];
-		[ctx setCurrentBranch: selectedBranch
-			forPersistentRoot: [item UUID]];
-		[ctx commitWithMetadata: nil];
-		
-		[[NSApp delegate] reloadAllBrowsers];
-	}
-	if ([[tableColumn identifier] isEqualToString: @"value"])
-	{
-		if ([item attribute] != nil)
-		{
-			NSLog(@"Attempting to store new value '%@' for attribute '%@' of %@",
-				  object, [item attribute], [item UUID]);
-			
-			COStoreItem *storeItem = [ctx _storeItemForUUID: [item UUID]];
-
-			// FIXME: won't work for multivalued properties..
-			// FIXME: will currently only work for strings..
-			
-			[storeItem setValue: object
-				   forAttribute: [item attribute]];
-			[ctx _insertOrUpdateItems: S(storeItem)];
-			[ctx commitWithMetadata: nil];
-			
-			[[NSApp delegate] reloadAllBrowsers];
-		}
-	}
+	[item setValue: object forTableColumn: tableColumn];
 }
 
 /** @taskunit open button */

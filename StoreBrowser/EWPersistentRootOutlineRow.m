@@ -246,5 +246,49 @@ isPrimitiveInContainer: (BOOL)aFlag
 	}
 }
 
+/**
+ * Returns branches for given persistent root in an arbitrary
+ * but stable sorted order
+ */
+- (NSArray *) orderedBranchesForUUID: (ETUUID*)aPersistentRoot
+{
+	return [[[ctx branchesOfPersistentRoot: aPersistentRoot] allObjects] sortedArrayUsingSelector: @selector(compare:)];
+}
+
+- (void) setValue: (id)object forTableColumn: (NSTableColumn *)tableColumn
+{
+	NSLog(@"Set to %@ col %@", object, [tableColumn identifier]);
+	
+	if ([[tableColumn identifier] isEqualToString: @"currentbranch"])
+	{
+		ETUUID *selectedBranch = [[self orderedBranchesForUUID: [self UUID]] objectAtIndex: [object integerValue]];
+		[ctx setCurrentBranch: selectedBranch
+			forPersistentRoot: [self UUID]];
+		[ctx commitWithMetadata: nil];
+		
+		[[NSApp delegate] reloadAllBrowsers];
+	}
+	if ([[tableColumn identifier] isEqualToString: @"value"])
+	{
+		if ([self attribute] != nil)
+		{
+			NSLog(@"Attempting to store new value '%@' for attribute '%@' of %@",
+				  object, [self attribute], [self UUID]);
+			
+			COStoreItem *storeItem = [ctx _storeItemForUUID: [self UUID]];
+			
+			// FIXME: won't work for multivalued properties..
+			// FIXME: will currently only work for strings..
+			
+			[storeItem setValue: object
+				   forAttribute: [self attribute]];
+			[ctx _insertOrUpdateItems: S(storeItem)];
+			[ctx commitWithMetadata: nil];
+			
+			[[NSApp delegate] reloadAllBrowsers];
+		}
+	}	
+}
+
 @end
 
