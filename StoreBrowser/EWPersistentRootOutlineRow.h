@@ -33,4 +33,6 @@
 
 - (NSImage *)image;
 
+- (NSCell *)dataCellForTableColumn: (NSTableColumn *)column;
+
 @end

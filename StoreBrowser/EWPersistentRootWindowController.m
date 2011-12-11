@@ -194,15 +194,6 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 				[outlineView itemAtRow: [outlineView selectedRow]]];
 }
 
-/**
- * Returns branches for given persistent root in an arbitrary
- * but stable sorted order
- */
-- (NSArray *) orderedBranchesForUUID: (ETUUID*)aPersistentRoot
-{
-	return [[[ctx branchesOfPersistentRoot: aPersistentRoot] allObjects] sortedArrayUsingSelector: @selector(compare:)];
-}
-
 /* NSOutlineView Target/Action */
 
 - (void)doubleClick: (id)sender
@@ -249,26 +240,6 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 
 - (id) outlineView: (NSOutlineView *)outlineView objectValueForTableColumn: (NSTableColumn *)column byItem: (id)item
 {
-	if ([[column identifier] isEqualToString: @"currentbranch"])
-	{
-		COStoreItem *storeItem = [ctx _storeItemForUUID: [item UUID]];
-		if ([[storeItem valueForAttribute: @"type"] isEqualToString: @"persistentRoot"]
-			&& [item attribute] == nil) // FIXME: horrible hack
-		{
-			
-			// NSPopupButtonCell takes a NSNumber indicating the index in the menu.
-			
-			NSArray *branches = [self orderedBranchesForUUID: [item UUID]];
-
-			ETUUID *current = [ctx currentBranchOfPersistentRoot: [item UUID]];
-			
-			NSUInteger i = [branches indexOfObject: current];
-			assert(i < [branches count]);
-			
-			return [NSNumber numberWithInt: i];
-		}
-		return nil;
-	}
 	return [[self modelForItem: item] valueForTableColumn: column];
 }
 
@@ -288,59 +259,12 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 
 - (NSCell *)outlineView:(NSOutlineView *)outlineView dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
-	if ([item attribute] == nil) // only if we click on the root of an embedded object
-	{
-		COStoreItem *storeItem = [ctx _storeItemForUUID: [item UUID]];
-		if ([[storeItem valueForAttribute: @"type"] isEqualToString: @"persistentRoot"] ||
-			[[storeItem valueForAttribute: @"type"] isEqualToString: @"branch"])
-		{
-			if ([[tableColumn identifier] isEqualToString: @"action"])
-			{
-				NSButtonCell *cell = [[[NSButtonCell alloc] init] autorelease];
-				[cell setBezelStyle: NSRoundRectBezelStyle];
-				[cell setTitle: @"Open"];
-				[cell setTarget: self];
-				[cell setAction: @selector(openPersistentRoot:)];
-				return cell;				
-			}
-			else if ([[tableColumn identifier] isEqualToString: @"currentbranch"])
-			{
-				if ([[storeItem valueForAttribute: @"type"] isEqualToString: @"persistentRoot"])
-				{
-					NSPopUpButtonCell *cell = [[[NSPopUpButtonCell alloc] init] autorelease];
-					[cell setBezelStyle: NSRoundRectBezelStyle];
-					NSMenu *aMenu = [[[NSMenu alloc] init] autorelease];
-					
-					for (ETUUID *aBranch in [self orderedBranchesForUUID: [item UUID]])
-					{
-						[aMenu addItemWithTitle: [aBranch stringValue]
-										 action: nil
-								  keyEquivalent: @""];
-					}
-					[cell setMenu: aMenu];
-					
-					return cell;
-				}
-			}
-		}
-	}
-		
-	return [tableColumn dataCell];
+	return [item dataCellForTableColumn: tableColumn];
 }
 
 - (void)outlineView:(NSOutlineView *)ov setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item 
 {
 	[item setValue: object forTableColumn: tableColumn];
 }
-
-/** @taskunit open button */
-
-- (void)openPersistentRoot: (id)sender
-{
-	EWPersistentRootOutlineRow *row = [self selectedItem];
-	
-	[[NSApp delegate] browsePersistentRootAtPath: [path pathByAppendingPathComponent: [row UUID]]];
-}
-
 
 @end

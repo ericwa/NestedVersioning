@@ -222,6 +222,26 @@ isPrimitiveInContainer: (BOOL)aFlag
 			return [[COType embeddedItemType] description];
 		}
 	}
+	else if ([[column identifier] isEqualToString: @"currentbranch"])
+	{
+		COStoreItem *storeItem = [ctx _storeItemForUUID: [self UUID]];
+		if ([[storeItem valueForAttribute: @"type"] isEqualToString: @"persistentRoot"]
+			&& [self attribute] == nil) // FIXME: horrible hack
+		{
+			// NSPopupButtonCell takes a NSNumber indicating the index in the menu.
+			
+			NSArray *branches = [self orderedBranchesForUUID: [self UUID]];
+			
+			ETUUID *current = [ctx currentBranchOfPersistentRoot: [self UUID]];
+			
+			NSUInteger i = [branches indexOfObject: current];
+			assert(i < [branches count]);
+			
+			return [NSNumber numberWithInt: i];
+		}
+		return nil;
+	}
+	
 	return nil;
 }
 
@@ -288,6 +308,55 @@ isPrimitiveInContainer: (BOOL)aFlag
 			[[NSApp delegate] reloadAllBrowsers];
 		}
 	}	
+}
+
+- (NSCell *)dataCellForTableColumn: (NSTableColumn *)tableColumn
+{
+	if ([self attribute] == nil) // only if we click on the root of an embedded object
+	{
+		COStoreItem *storeItem = [ctx _storeItemForUUID: [self UUID]];
+		if ([[storeItem valueForAttribute: @"type"] isEqualToString: @"persistentRoot"] ||
+			[[storeItem valueForAttribute: @"type"] isEqualToString: @"branch"])
+		{
+			if ([[tableColumn identifier] isEqualToString: @"action"])
+			{
+				NSButtonCell *cell = [[[NSButtonCell alloc] init] autorelease];
+				[cell setBezelStyle: NSRoundRectBezelStyle];
+				[cell setTitle: @"Open"];
+				[cell setTarget: self];
+				[cell setAction: @selector(openPersistentRoot:)];
+				return cell;				
+			}
+			else if ([[tableColumn identifier] isEqualToString: @"currentbranch"])
+			{
+				if ([[storeItem valueForAttribute: @"type"] isEqualToString: @"persistentRoot"])
+				{
+					NSPopUpButtonCell *cell = [[[NSPopUpButtonCell alloc] init] autorelease];
+					[cell setBezelStyle: NSRoundRectBezelStyle];
+					NSMenu *aMenu = [[[NSMenu alloc] init] autorelease];
+					
+					for (ETUUID *aBranch in [self orderedBranchesForUUID: [self UUID]])
+					{
+						[aMenu addItemWithTitle: [aBranch stringValue]
+										 action: nil
+								  keyEquivalent: @""];
+					}
+					[cell setMenu: aMenu];
+					
+					return cell;
+				}
+			}
+		}
+	}
+	
+	return [tableColumn dataCell];
+}
+
+/** @taskunit open button */
+
+- (void)openPersistentRoot: (id)sender
+{
+	[[NSApp delegate] browsePersistentRootAtPath: [[ctx path] pathByAppendingPathComponent: [self UUID]]];
 }
 
 @end
