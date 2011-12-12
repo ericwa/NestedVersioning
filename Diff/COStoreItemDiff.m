@@ -175,6 +175,9 @@
 	NSMutableSet *addedAttrs = [NSMutableSet setWithArray: [itemB attributeNames]];
 	[addedAttrs minusSet: [NSSet setWithArray: [itemA attributeNames]]];
 	
+	NSMutableSet *commonAttrs = [NSMutableSet setWithArray: [itemB attributeNames]];
+	[commonAttrs intersectSet: [NSSet setWithArray: [itemA attributeNames]]];
+	
 	
 	// process 'insert attribute's
 
@@ -199,6 +202,25 @@
 		[deleteOp release];
 	}
 	
+	// process changes
+	
+	for (NSString *commonAttr in commonAttrs)
+	{
+		COType *typeA = [itemA typeForAttribute: commonAttr];
+		COType *typeB = [itemB typeForAttribute: commonAttr];
+		id valueA = [itemA valueForAttribute: commonAttr];
+		id valueB = [itemB valueForAttribute: commonAttr];
+		
+		if (![typeB isEqual: typeA] || ![valueB isEqual: valueA])
+		{
+			COStoreItemDiffOperationInsertAttribute *editOp = [[COStoreItemDiffOperationInsertAttribute alloc] 
+																 initWithAttribute: commonAttr
+																 type: [itemB typeForAttribute: commonAttr]
+																 value: [itemB valueForAttribute:commonAttr]];
+			[edits addObject:editOp];
+			[editOp release];
+		}
+	}
 	
 	return [[[self alloc] initWithEdits: edits] autorelease];
 }
