@@ -3,7 +3,7 @@
 
 @interface COStoreItemDiff : NSObject
 {
-	NSMutableSet *edits;
+	NSSet *edits;
 }
 
 + (COStoreItemDiff *)diffItem: (COStoreItem *)itemA
