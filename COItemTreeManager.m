@@ -19,7 +19,7 @@
 {
 	for (ETUUID *aUUID in changedUUIDs)
 	{
-		COItemTreeNode *node = [itemTreeNodeForUUID objectForKey: aUUID];
+		COManagedItemTreeNode *node = [itemTreeNodeForUUID objectForKey: aUUID];
 		if (nil != node)
 		{
 			[node unfault];

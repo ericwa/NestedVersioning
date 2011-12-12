@@ -25,6 +25,11 @@
 	return valueForAttribute == nil;
 }
 
+- (COItemTreeManager *) manager
+{
+	return manager;
+}
+
 - (void) unfault
 {
 	DESTROY(valueForAttribute);

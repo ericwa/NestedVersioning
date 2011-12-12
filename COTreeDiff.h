@@ -3,8 +3,9 @@
 
 @interface COTreeDiff : NSObject
 
-+ (COTreeDiff *) diffItemUUIDs: (NSSet*)aSet
-			   inFaultProvider: (id<COFaultProvider>)providerA
-			 withFaultProvider: (id<COFaultProvider>)providerB;
++ (COTreeDiff *) diffRootItem: (ETUUID*)rootA
+				 withRootItem: (ETUUID*)rootB
+			  inFaultProvider: (id<COFaultProvider>)providerA
+			withFaultProvider: (id<COFaultProvider>)providerB;
 
 @end

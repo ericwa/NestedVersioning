@@ -18,4 +18,24 @@
 	
 }
 
+- (COItemTreeNode *) parent
+{
+	return parent;
+}
+
+- (COItemTreeNode *) root
+{
+	COItemTreeNode *root = self;
+	while ([root parent] != nil)
+	{
+		root = [root parent];
+	}
+	return root;
+}
+
+- (id) copyWithZone: (NSZone*)aZone
+{
+	return [self retain];
+}
+
 @end

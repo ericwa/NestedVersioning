@@ -2,4 +2,14 @@
 
 @implementation COTreeDiff
 
+#if 0
+
+- diffObject
+{
+	
+	
+}
+
+#endif
+
 @end
