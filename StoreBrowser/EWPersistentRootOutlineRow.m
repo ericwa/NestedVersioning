@@ -1,5 +1,6 @@
 #import "EWPersistentRootOutlineRow.h"
 #import "COMacros.h"
+#import "COType+String.h"
 
 @implementation EWPersistentRootOutlineRow
 
@@ -297,10 +298,24 @@ isPrimitiveInContainer: (BOOL)aFlag
 			
 			COStoreItem *storeItem = [ctx _storeItemForUUID: [self UUID]];
 			
-			// FIXME: won't work for multivalued properties..
-			// FIXME: will currently only work for strings..
+			COType *type = [storeItem typeForAttribute: [self attribute]];
 			
-			[storeItem setValue: object
+			if (![type supportsRepresentationAsString])
+			{
+				NSLog(@"Type does not support setting from a string");
+				return;
+			}
+			
+			BOOL valid = [type isValidStringValue: object];
+			if (!valid)
+			{
+				NSLog(@"%@ not a valid string value for type %@", object, type);
+				return;
+			}
+			
+			id value = [type valueForStringValue: object]; // e.g. converts string -> ETUUID
+			
+			[storeItem setValue: value
 				   forAttribute: [self attribute]];
 			[ctx _insertOrUpdateItems: S(storeItem)];
 			[ctx commitWithMetadata: nil];
