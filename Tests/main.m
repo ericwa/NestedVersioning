@@ -307,6 +307,19 @@ static void testStoreItem()
 	}
 }
 
+static void testDiff()
+{
+	COStoreItem *i1 = [COStoreItem item];
+	COStoreItem *i2 = [COStoreItem item];
+	
+	[i2 setValue: @"hello" forAttribute: @"name" type: [COType stringType]];
+	
+	COStoreItemDiff *diff = [COStoreItemDiff diffItem: i1 withItem: i2];
+	COStoreItem *i2_fromDiff = [diff itemWithDiffAppliedTo: i1];
+	
+	EWTestEqual(i2, i2_fromDiff);
+}
+
 int main (int argc, const char * argv[])
 {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
@@ -319,6 +332,7 @@ int main (int argc, const char * argv[])
 	testStoreItem();
 	testUndo();
 	testTagging();
+	testDiff();
 	
     EWTestLog();
     

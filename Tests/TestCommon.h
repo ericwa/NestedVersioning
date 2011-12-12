@@ -10,6 +10,7 @@
 #import "COPersistentRootEditingContext+Convenience.h"
 #import "COStoreItemTree.h"
 #import "COItemFactory.h"
+#import "COStoreItemDiff.h"
 
 #define STOREPATH [@"~/om5teststore" stringByExpandingTildeInPath]
 
