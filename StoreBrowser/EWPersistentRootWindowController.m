@@ -220,6 +220,24 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 	}
 }
 
+- (void)deleteForward:(id)sender
+{
+	EWPersistentRootOutlineRow *itemToDelete = [self selectedItem];
+	if (itemToDelete != outlineModel)
+	{
+		[itemToDelete deleteRow];
+	}
+}
+
+- (void)delete:(id)sender
+{
+	[self deleteForward: sender];
+}
+
+- (void)keyDown:(NSEvent *)theEvent
+{
+	[self interpretKeyEvents: [NSArray arrayWithObject:theEvent]];
+}
 
 /* NSOutlineView data source */
 

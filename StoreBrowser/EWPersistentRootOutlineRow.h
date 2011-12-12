@@ -35,4 +35,6 @@
 
 - (NSCell *)dataCellForTableColumn: (NSTableColumn *)column;
 
+- (void) deleteRow;
+
 @end

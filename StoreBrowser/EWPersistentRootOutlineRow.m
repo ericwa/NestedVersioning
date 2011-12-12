@@ -374,5 +374,62 @@ isPrimitiveInContainer: (BOOL)aFlag
 	[[NSApp delegate] browsePersistentRootAtPath: [[ctx path] pathByAppendingPathComponent: [self UUID]]];
 }
 
+- (void) deleteRow
+{	
+	if (isPrimitiveInContainer)
+	{
+		COStoreItem *storeItem = [ctx _storeItemForUUID: UUID];
+		id container = [[storeItem valueForAttribute: [self attribute]] mutableCopy];
+		id valueToDelete = [[storeItem allObjectsForAttribute: attribute] objectAtIndex: index]; // FIXME: hack
+		NSLog(@"Deleting %@ from multivalue", valueToDelete);
+		[container removeObject: valueToDelete];
+		[storeItem setValue: container forAttribute: attribute];
+		[container release];
+		
+		[ctx _insertOrUpdateItems: S(storeItem)];
+		[ctx commitWithMetadata: nil];
+	}
+	else if (attribute != nil)
+	{
+		COStoreItem *storeItem = [ctx _storeItemForUUID: UUID];
+		NSLog(@"Deleting primitive attribute %@", attribute);
+		
+		[storeItem removeValueForAttribute: attribute];
+		
+		[ctx _insertOrUpdateItems: S(storeItem)];
+		[ctx commitWithMetadata: nil];
+	}
+	else // embedded item
+	{
+		NSLog(@"Deleting embedded item %@", [self UUID]);
+		
+		COStoreItem *parentItem = [ctx _storeItemForUUID: [parent UUID]];
+		
+		COType *parentType = [parentItem typeForAttribute: [parent attribute]];
+		
+		assert([[parentType primitiveType] isEqual: [COType embeddedItemType]]);
+		assert([parent attribute] != nil);
+	
+		if ([[parentItem typeForAttribute: [parent attribute]] isPrimitive])
+		{
+			assert(0); // FIXME: embedded items in primitive attributes not supported by outline code yet?
+		}
+		else
+		{
+			id container = [[parentItem valueForAttribute: [parent attribute]] mutableCopy];
+			assert([container containsObject: [self UUID]]);
+			NSLog(@"Deleting embedded item %@ from multivalue %@. parent UUID: %@, attrib: %@", 
+				[self UUID], container, [parent UUID], [parent attribute]);			
+			[container removeObject:  [self UUID]];
+			[parentItem setValue: container forAttribute: [parent attribute]];
+			[container release];
+		}
+		
+		[ctx _insertOrUpdateItems: S(parentItem)];
+		[ctx commitWithMetadata: nil];
+	}
+	[[NSApp delegate] reloadAllBrowsers];
+}
+
 @end
 
