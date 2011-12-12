@@ -177,9 +177,7 @@
 	
 	
 	// process 'insert attribute's
-	
 
-	
 	for (NSString *addedAttr in addedAttrs)
 	{
 		COStoreItemDiffOperationInsertAttribute *insertOp = [[COStoreItemDiffOperationInsertAttribute alloc] 
@@ -188,6 +186,17 @@
 																		value: [itemB valueForAttribute:addedAttr]];
 		[edits addObject: insertOp];
 		[insertOp release];
+	}
+	
+	// process deletes
+	
+	for (NSString *removedAttr in removedAttrs)
+	{
+		COStoreItemDiffOperationDeleteAttribute *deleteOp = [[COStoreItemDiffOperationDeleteAttribute alloc] 
+															 initWithAttribute: removedAttr
+															 type: [itemA typeForAttribute: removedAttr]];
+		[edits addObject: deleteOp];
+		[deleteOp release];
 	}
 	
 	

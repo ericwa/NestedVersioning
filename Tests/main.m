@@ -312,6 +312,7 @@ static void testDiff()
 	COStoreItem *i1 = [COStoreItem item];
 	COStoreItem *i2 = [COStoreItem item];
 	
+	[i1 setValue: @"test" forAttribute: @"type" type: [COType stringType]];
 	[i2 setValue: @"hello" forAttribute: @"name" type: [COType stringType]];
 	
 	COStoreItemDiff *diff = [COStoreItemDiff diffItem: i1 withItem: i2];
