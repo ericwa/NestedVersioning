@@ -227,7 +227,7 @@
 
 - (COStoreItem *)itemWithDiffAppliedTo: (COStoreItem *)anItem
 {
-	COStoreItem *newItem = [[anItem copy] autorelease];
+	COMutableStoreItem *newItem = [[anItem mutableCopy] autorelease];
 	for (COStoreItemDiffOperation *op in edits)
 	{
 		[op applyTo: newItem];

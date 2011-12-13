@@ -311,15 +311,19 @@ static void testStoreItem()
 
 static void testDiff()
 {
-	COMutableStoreItem *i1 = [COMutableStoreItem item];
-	COMutableStoreItem *i2 = [COMutableStoreItem item];
-	
-	[i1 setValue: @"test" forAttribute: @"type" type: [COType stringType]];
-	[i1 setValue: S(@"home") forAttribute: @"places" type: [COType setWithPrimitiveType: [COType stringType]]];
-	
-	[i2 setValue: @"hello" forAttribute: @"name" type: [COType stringType]];
-	[i2 setValue: S(@"work", @"home") forAttribute: @"places" type: [COType setWithPrimitiveType: [COType stringType]]];
-	
+	COStoreItem *i1 = [[[COStoreItem alloc] initWithUUID: [ETUUID UUID]
+									  typesForAttributes: D([COType stringType], @"type",
+															[COType setWithPrimitiveType: [COType stringType]], @"places")
+									 valuesForAttributes: D(@"test", @"type",
+															S(@"home"), @"places")] autorelease];
+
+																   
+	COStoreItem *i2 = [[[COStoreItem alloc] initWithUUID: [ETUUID UUID]
+									  typesForAttributes: D([COType stringType], @"name",
+															[COType setWithPrimitiveType: [COType stringType]], @"places")
+									 valuesForAttributes: D(@"hello", @"name",
+															S(@"work", @"home"), @"places")] autorelease];
+
 	COStoreItemDiff *diff = [COStoreItemDiff diffItem: i1 withItem: i2];
 	COStoreItem *i2_fromDiff = [diff itemWithDiffAppliedTo: i1];
 	

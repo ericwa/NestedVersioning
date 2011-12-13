@@ -39,7 +39,7 @@
 		
 		// FIXME: for performance, the store should cache store items:
 		
-		COMutableStoreItem *item = [aStore storeItemForEmbeddedObject: lastPathComponent
+		COStoreItem *item = [aStore storeItemForEmbeddedObject: lastPathComponent
 													 inCommit: parentCommit];
 		
 		// FIXME: move to COItemFactory or another utility class for dealing with persistent root data structures.

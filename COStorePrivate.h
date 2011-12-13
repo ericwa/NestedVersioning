@@ -31,7 +31,7 @@
 - (NSDictionary *) UUIDsAndStoreItemsForCommit: (ETUUID*)commit;
 - (ETUUID *) rootItemForCommit: (ETUUID*)commit;
 
-- (COMutableStoreItem *) storeItemForEmbeddedObject: (ETUUID*)embeddedObject
+- (COStoreItem *) storeItemForEmbeddedObject: (ETUUID*)embeddedObject
 									inCommit: (ETUUID*)aCommitUUID;
 
 
