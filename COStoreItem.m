@@ -56,6 +56,14 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 	[super dealloc];
 }
 
++ (COStoreItem *) itemWithTypesForAttributes: (NSDictionary *)typesForAttributes
+						 valuesForAttributes: (NSDictionary *)valuesForAttributes
+{
+	return [[[self alloc] initWithUUID: [ETUUID UUID]
+					typesForAttributes: typesForAttributes
+				   valuesForAttributes: valuesForAttributes] autorelease];
+}
+
 - (ETUUID *)UUID
 {
 	return uuid;

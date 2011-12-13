@@ -22,6 +22,9 @@
  typesForAttributes: (NSDictionary *)typesForAttributes
 valuesForAttributes: (NSDictionary *)valuesForAttributes;
 
++ (COStoreItem *) itemWithTypesForAttributes: (NSDictionary *)typesForAttributes
+						 valuesForAttributes: (NSDictionary *)valuesForAttributes;
+
 - (ETUUID *) UUID;
 
 - (NSArray *) attributeNames;
