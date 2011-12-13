@@ -330,23 +330,22 @@ static void testDiff()
 	EWTestEqual(i2, i2_fromDiff);
 }
 
+#define WITH_POOL(x) {NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init]; x; [pool release];}
+
 int main (int argc, const char * argv[])
 {
-    NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-
-	testStore();
-	testPath();
-	testStoreItemTree();
-	//testStoreController();
-	testEditingContextEmbeddedObjects();
-	testStoreItem();
-	testUndo();
-	testTagging();
-	testDiff();
+	WITH_POOL(testStore());
+	WITH_POOL(testPath());
+	WITH_POOL(testStoreItemTree());
+	//WITH_POOL(testStoreController());
+	WITH_POOL(testEditingContextEmbeddedObjects());
+	WITH_POOL(testStoreItem());
+	WITH_POOL(testUndo());
+	WITH_POOL(testTagging());
+	WITH_POOL(testDiff());
 	
-    EWTestLog();
+    WITH_POOL(EWTestLog());
     
-    [pool drain];
     return 0;
 }
 
