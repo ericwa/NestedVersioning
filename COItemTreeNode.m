@@ -43,12 +43,12 @@
 
 - (COItemTreeNode *) root
 {
-	COItemTreeNode *root = self;
-	while ([root parent] != nil)
+	COItemTreeNode *aRoot = self;
+	while ([aRoot parent] != nil)
 	{
-		root = [root parent];
+		aRoot = [aRoot parent];
 	}
-	return root;
+	return aRoot;
 }
 
 - (NSArray *) attributeNames
@@ -135,6 +135,7 @@
 				assert([aTree isKindOfClass: [COItemTreeNode class]]);
 				[container addObject: [aTree UUID]];
 				[items setObject: aTree forKey: [aTree UUID]];
+				((COItemTreeNode*)aTree)->parent = self;
 			}
 			
 			[root setValue: container forAttribute: anAttribute type: aType];
@@ -143,6 +144,7 @@
 		{
 			assert([aValue isKindOfClass: [self class]]);
 			[items setObject: aValue forKey: [aValue UUID]];
+			((COItemTreeNode*)aValue)->parent = self;
 			[root setValue: [aValue UUID] forAttribute: anAttribute type: aType];
 		}
 	}
@@ -229,16 +231,18 @@
 {
 	NSMutableDictionary *newItems = [NSMutableDictionary dictionary];
 	
-	for (ETUUID *uuid in items)
-	{
-		COItemTreeNode *tree = [[items objectForKey: uuid] copy];
-		[newItems setObject: tree forKey: uuid];
-		[tree release];
-	}
-	
 	COMutableItem *newRoot = [[root copy] autorelease];
 	
 	COItemTreeNode *newCopy = [[COItemTreeNode alloc] init];
+	
+	for (ETUUID *uuid in items)
+	{
+		COItemTreeNode *tree = [[items objectForKey: uuid] copyWithZone: zone];
+		[newItems setObject: tree forKey: uuid];
+		tree->parent = newCopy;
+		[tree release];
+	}
+	
 	ASSIGN(newCopy->root, newRoot);
 	ASSIGN(newCopy->items, newItems);
 		   
