@@ -1,8 +1,8 @@
 #import <Foundation/Foundation.h>
 #import "COPath.h"
-#import "COStoreItem.h"
+#import "COItem.h"
 #import "COStore.h"
-#import "COStoreItemTree.h"
+#import "COItemTreeNode.h"
 
 @class COStore;
 
@@ -50,7 +50,7 @@
 - (COStore *) store;
 
 /** @taskunit private */
-- (COMutableStoreItem *) _storeItemForUUID: (ETUUID*) aUUID;
+- (COMutableItem *) _storeItemForUUID: (ETUUID*) aUUID;
 
 /** @taskunit COEditingContext */
 
@@ -83,7 +83,7 @@
  *     the contents of that persistent root.
  *
  */
-- (ETUUID *) commitWithMetadata: (COMutableStoreItem *)aTree;
+- (ETUUID *) commitWithMetadata: (COMutableItem *)aTree;
 
 /**
  * this embedded object defines object lifetime of all objects inside this
@@ -93,12 +93,12 @@
  */
 - (ETUUID *)rootUUID;
 
-- (COMutableStoreItem *)rootItemTree;
+- (COMutableItem *)rootItemTree;
 
 /**
  * Returns an entire subtree
  */
-- (COMutableStoreItem *)storeItemTreeForUUID: (ETUUID*) aUUID;
+- (COMutableItem *)storeItemTreeForUUID: (ETUUID*) aUUID;
 
 /* @taskunit editing methods */
 
@@ -129,6 +129,6 @@
 /**
  * Replace the entire contents of the receiver with the given item tree
  */
-- (void) setItemTree: (COStoreItemTree *)aTree;
+- (void) setItemTree: (COItemTreeNode *)aTree;
 
 @end

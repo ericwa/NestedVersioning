@@ -1,6 +1,6 @@
 #import "COPersistentRootEditingContext+Convenience.h"
 #import "COMacros.h"
-#import "COStoreItem.h"
+#import "COItem.h"
 #import "ETUUID.h"
 #import "COType.h"
 
@@ -16,7 +16,7 @@
 	NILARG_EXCEPTION_TEST(anAttribute);
 	NILARG_EXCEPTION_TEST(aDest);
 	
-	COMutableStoreItem *destItem = [self _storeItemForUUID: aDest];
+	COMutableItem *destItem = [self _storeItemForUUID: aDest];
 	assert(destItem != nil);
 	
 	COType *type = [destItem typeForAttribute: anAttribute];
@@ -43,7 +43,7 @@
 	[self _insertOrUpdateItems: S(destItem)];	
 }
 
-- (ETUUID *) insertTree: (COStoreItemTree*)aTree
+- (ETUUID *) insertTree: (COItemTreeNode*)aTree
 		inContainer: (ETUUID*)aContainer
 {
 	[self insertValue: [aTree UUID]

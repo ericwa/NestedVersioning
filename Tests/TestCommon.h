@@ -2,15 +2,15 @@
 #import "EWTest.h"
 #import "COStore.h"
 #import "COPath.h"
-#import "COStoreItem.h"
+#import "COItem.h"
 #import "COStorePrivate.h"
 #import "COPersistentRootEditingContext.h"
 #import "COMacros.h"
 #import "COPersistentRootEditingContext+PersistentRoots.h"
 #import "COPersistentRootEditingContext+Convenience.h"
-#import "COStoreItemTree.h"
+#import "COItemTreeNode.h"
 #import "COItemFactory.h"
-#import "COStoreItemDiff.h"
+#import "COItemDiff.h"
 
 #define STOREPATH [@"~/om5teststore" stringByExpandingTildeInPath]
 

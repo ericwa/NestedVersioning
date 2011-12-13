@@ -1,19 +1,19 @@
 #import "COPersistentRootEditingContext+PersistentRoots.h"
 #import "COPersistentRootEditingContext+Convenience.h"
 #import "COMacros.h"
-#import "COStoreItem.h"
+#import "COItem.h"
 #import "ETUUID.h"
 #import "COStorePrivate.h"
 
 @implementation COPersistentRootEditingContext (PersistentRoots)
 
-- (ETUUID *)createAndInsertNewPersistentRootWithRootItem: (COStoreItemTree *)anItem
+- (ETUUID *)createAndInsertNewPersistentRootWithRootItem: (COItemTreeNode *)anItem
 										  inItemWithUUID: (ETUUID*)aDest
 {
 	// FIXME: awkward translation
 	NSSet *allItems = [anItem allContainedStoreItems];
 	NSMutableDictionary *uuidsAndStoreItems = [NSMutableDictionary dictionary];
-	for (COMutableStoreItem *item in allItems)
+	for (COMutableItem *item in allItems)
 	{
 		[uuidsAndStoreItems setObject: item forKey: [item UUID]];
 	}
@@ -26,8 +26,8 @@
 	assert(nestedDocumentInitialVersion != nil);
 	
 	
-	COMutableStoreItem *i1 = [COMutableStoreItem item];
-	COMutableStoreItem *i2 = [COMutableStoreItem item];
+	COMutableItem *i1 = [COMutableItem item];
+	COMutableItem *i2 = [COMutableItem item];
 	
 	[i1 setValue: @"persistentRoot"
 	forAttribute: @"type"
@@ -79,7 +79,7 @@
 
 - (NSSet *) branchesOfPersistentRoot: (ETUUID *)aRoot
 {
-	COMutableStoreItem *root = [self _storeItemForUUID: aRoot];
+	COMutableItem *root = [self _storeItemForUUID: aRoot];
 	NSSet *set = [root valueForAttribute: @"contents"];
 	
 	assert([set isKindOfClass: [NSSet class]]);
@@ -89,7 +89,7 @@
 }
 - (ETUUID *) currentBranchOfPersistentRoot: (ETUUID *)aRoot
 {
-	COMutableStoreItem *root = [self _storeItemForUUID: aRoot];
+	COMutableItem *root = [self _storeItemForUUID: aRoot];
 	COPath *aPath = [root valueForAttribute: @"currentBranch"];
 	
 	assert([aPath isKindOfClass: [COPath class]]);
@@ -100,7 +100,7 @@
 - (void) setCurrentBranch: (ETUUID*)aBranch
 		forPersistentRoot: (ETUUID*)aRoot
 {
-	COMutableStoreItem *root = [self _storeItemForUUID: aRoot];
+	COMutableItem *root = [self _storeItemForUUID: aRoot];
 	[root setValue: [COPath pathWithPathComponent: aBranch]
 	  forAttribute: @"currentBranch"
 			  type: [COType pathType]];
@@ -110,26 +110,26 @@
 
 - (ETUUID *) currentVersionForBranch: (ETUUID*)aBranch
 {
-	COMutableStoreItem *item = [self _storeItemForUUID: aBranch];
+	COMutableItem *item = [self _storeItemForUUID: aBranch];
 	return [item valueForAttribute: @"currentVersion"];
 }
 
 - (ETUUID *) headForBranch: (ETUUID*)aBranch
 {
-	COMutableStoreItem *item = [self _storeItemForUUID: aBranch];
+	COMutableItem *item = [self _storeItemForUUID: aBranch];
 	return [item valueForAttribute: @"head"];
 }
 
 - (ETUUID *) tailForBranch: (ETUUID*)aBranch
 {
-	COMutableStoreItem *item = [self _storeItemForUUID: aBranch];
+	COMutableItem *item = [self _storeItemForUUID: aBranch];
 	return [item valueForAttribute: @"tail"];
 }
 
 - (void) setCurrentVersion: (ETUUID*)aVersion
 				 forBranch: (ETUUID*)aBranch
 {
-	COMutableStoreItem *branch = [self _storeItemForUUID: aBranch];
+	COMutableItem *branch = [self _storeItemForUUID: aBranch];
 	
 	[branch setValue: aVersion
 		forAttribute: @"currentVersion"
@@ -254,9 +254,9 @@
 - (ETUUID *)createAndInsertNewPersistentRootByCopyingBranch: (ETUUID *)srcBranch
 											 inItemWithUUID: (ETUUID *)aDest
 {
-	COMutableStoreItem *i1 = [COMutableStoreItem item];
+	COMutableItem *i1 = [COMutableItem item];
 	
-	COMutableStoreItem *i2 = [[[self _storeItemForUUID: srcBranch] copy] autorelease];
+	COMutableItem *i2 = [[[self _storeItemForUUID: srcBranch] copy] autorelease];
 	[i2 setUUID: [ETUUID UUID]]; // Give it a new UUID
 	
 	[i1 setValue: @"persistentRoot"
@@ -288,7 +288,7 @@
 
 - (ETUUID *) createBranchOfPersistentRoot: (ETUUID *)aRoot
 {
-	COMutableStoreItem *branch = [self _storeItemForUUID: [self currentBranchOfPersistentRoot: aRoot]];
+	COMutableItem *branch = [self _storeItemForUUID: [self currentBranchOfPersistentRoot: aRoot]];
 	[branch setUUID: [ETUUID UUID]]; // makes it a copy.
 
 	// Reset the limits for undo/redo

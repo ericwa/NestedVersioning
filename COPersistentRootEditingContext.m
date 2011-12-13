@@ -39,7 +39,7 @@
 		
 		// FIXME: for performance, the store should cache store items:
 		
-		COStoreItem *item = [aStore storeItemForEmbeddedObject: lastPathComponent
+		COItem *item = [aStore storeItemForEmbeddedObject: lastPathComponent
 													 inCommit: parentCommit];
 		
 		// FIXME: move to COItemFactory or another utility class for dealing with persistent root data structures.
@@ -150,18 +150,18 @@
 /**
  * returns a copy
  */
-- (COMutableStoreItem *) _storeItemForUUID: (ETUUID*) aUUID
+- (COMutableItem *) _storeItemForUUID: (ETUUID*) aUUID
 {
 	assert([aUUID isKindOfClass: [ETUUID class]]);
 	
-	COMutableStoreItem *result = nil;
+	COMutableItem *result = nil;
 	
 	if (baseCommit != nil)
 	{
 		result = [[[store storeItemForEmbeddedObject: aUUID inCommit: baseCommit] mutableCopy] autorelease];
 	}
 	
-	COMutableStoreItem *localResult = [[[insertedOrUpdatedItems objectForKey: aUUID] mutableCopy] autorelease];
+	COMutableItem *localResult = [[[insertedOrUpdatedItems objectForKey: aUUID] mutableCopy] autorelease];
 	
 	if (localResult != nil)
 	{
@@ -181,7 +181,7 @@
 	
 	NSMutableSet *result = [NSMutableSet set];
 	
-	COMutableStoreItem *item = [self _storeItemForUUID: aUUID];
+	COMutableItem *item = [self _storeItemForUUID: aUUID];
 	for (NSString *key in [item attributeNames])
 	{
 		COType *type = [item typeForAttribute: key];
@@ -207,7 +207,7 @@
 	
 	ASSIGN(rootItemUUID, aRoot);
 	
-	for (COMutableStoreItem *item in items)
+	for (COMutableItem *item in items)
 	{
 		[insertedOrUpdatedItems setObject: item forKey: [item UUID]];
 	}
@@ -250,7 +250,7 @@
 											  inStore: [self store]];
 }
 
-- (ETUUID *) commitWithMetadata: (COMutableStoreItem *)aTree
+- (ETUUID *) commitWithMetadata: (COMutableItem *)aTree
 {
 
 	//
@@ -278,7 +278,7 @@
 	{
 		for (ETUUID *uuid in finalUUIDSet)
 		{
-			COMutableStoreItem *item = [self _storeItemForUUID: uuid];
+			COMutableItem *item = [self _storeItemForUUID: uuid];
 			
 			[uuidsanditems setObject: item
 							  forKey: uuid];
@@ -330,7 +330,7 @@
 		COPersistentRootEditingContext *parentCtx = [[[self class] alloc] initWithPath: parentPath
 																			   inStore: store];
 		
-		COMutableStoreItem *item = [parentCtx _storeItemForUUID: ourUUID];
+		COMutableItem *item = [parentCtx _storeItemForUUID: ourUUID];
 		assert(item != nil);
 		
 		// FIXME: move to COItemFactory or another utility class for dealing with persistent root data structures.
@@ -378,12 +378,12 @@
 	return rootItemUUID;
 }
 
-- (COMutableStoreItem *)rootItemTree
+- (COMutableItem *)rootItemTree
 {
 	return [self storeItemTreeForUUID: rootItemUUID];
 }
 
-- (COMutableStoreItem *)storeItemTreeForUUID: (ETUUID*) aUUID
+- (COMutableItem *)storeItemTreeForUUID: (ETUUID*) aUUID
 {
 /*	NSSet *uuids = [[self _allEmbeddedObjectUUIDsForUUID: aUUID] setByAddingObject: aUUID];
 	
@@ -399,13 +399,13 @@
 	return nil;
 }
 
-- (void) setItemTree: (COStoreItemTree	*)aTree
+- (void) setItemTree: (COItemTreeNode	*)aTree
 {
 	NILARG_EXCEPTION_TEST(aTree);
 
 	ASSIGN(rootItemUUID, [aTree UUID]);
 	
-	for (COMutableStoreItem *item in [aTree allContainedStoreItems])
+	for (COMutableItem *item in [aTree allContainedStoreItems])
 	{
 		[insertedOrUpdatedItems setObject: item forKey: [item UUID]];
 	}

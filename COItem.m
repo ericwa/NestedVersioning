@@ -1,10 +1,10 @@
-#import "COStoreItem.h"
+#import "COItem.h"
 #import "COMacros.h"
 #import "COPath.h"
 #import "COType.h"
 #import "COType+Plist.h"
 
-@implementation COStoreItem
+@implementation COItem
 
 - (BOOL) validate
 {
@@ -56,7 +56,7 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 	[super dealloc];
 }
 
-+ (COStoreItem *) itemWithTypesForAttributes: (NSDictionary *)typesForAttributes
++ (COItem *) itemWithTypesForAttributes: (NSDictionary *)typesForAttributes
 						 valuesForAttributes: (NSDictionary *)valuesForAttributes
 {
 	return [[[self alloc] initWithUUID: [ETUUID UUID]
@@ -155,7 +155,7 @@ static id importValueFromPlist(id aPlist)
 	{
 		return NO;
 	}
-	COStoreItem *otherItem = (COStoreItem*)object;
+	COItem *otherItem = (COItem*)object;
 	
 	if (![otherItem->uuid isEqual: uuid]) return NO;
 	if (![otherItem->types isEqual: types]) return NO;
@@ -199,7 +199,7 @@ static id importValueFromPlist(id aPlist)
 
 - (id) mutableCopyWithZone: (NSZone *)zone
 {
-	return [[COMutableStoreItem alloc] initWithUUID: uuid			
+	return [[COMutableItem alloc] initWithUUID: uuid			
 								 typesForAttributes: types
 								valuesForAttributes: values];
 }
@@ -209,7 +209,7 @@ static id importValueFromPlist(id aPlist)
 
 
 
-@implementation COMutableStoreItem
+@implementation COMutableItem
 
 - (id) initWithUUID: (ETUUID *)aUUID
  typesForAttributes: (NSDictionary *)typesForAttributes
@@ -246,7 +246,7 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 	return [self initWithUUID: [ETUUID UUID]];
 }
 
-+ (COMutableStoreItem *) item
++ (COMutableItem *) item
 {
 	return [[[self alloc] init] autorelease];
 }

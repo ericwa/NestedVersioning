@@ -1,5 +1,5 @@
 #import "COTreeDiff.h"
-#import "COStoreItemDiff.h"
+#import "COItemDiff.h"
 #import "COMacros.h"
 
 @implementation COTreeDiff
@@ -10,7 +10,7 @@ static void _COAllItemUUIDsInTree_implementation(ETUUID *treeRoot, id<COFaultPro
 {
 	[result addObject: treeRoot];
 	
-	COStoreItem *item = [faultProvider itemForUUID: treeRoot];
+	COItem *item = [faultProvider itemForUUID: treeRoot];
 	for (NSString *key in [item attributeNames])
 	{
 		COType *type = [item typeForAttribute: key];
@@ -57,10 +57,10 @@ static NSSet *COAllItemUUIDsInTree(ETUUID *treeRoot, id<COFaultProvider> faultPr
 	
 	for (ETUUID *commonUUID in commonUUIDs)
 	{
-		COStoreItem *commonItemA = [providerA itemForUUID: commonUUID];
-		COStoreItem *commonItemB = [providerB itemForUUID: commonUUID];
+		COItem *commonItemA = [providerA itemForUUID: commonUUID];
+		COItem *commonItemB = [providerB itemForUUID: commonUUID];
 		
-		COStoreItemDiff *diff = [COStoreItemDiff diffItem: commonItemA withItem: commonItemB];
+		COItemDiff *diff = [COItemDiff diffItem: commonItemA withItem: commonItemB];
 		
 		[itemDiffForUUID setObject: diff
 							forKey: commonUUID];

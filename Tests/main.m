@@ -10,7 +10,7 @@ static void testStore()
 {
 	COStore *store = setupStore();
 	
-	COStoreItem *i1 = [[[COStoreItem alloc] initWithUUID: [ETUUID UUID]
+	COItem *i1 = [[[COItem alloc] initWithUUID: [ETUUID UUID]
 									  typesForAttributes: D([COType stringType], @"name")
 									 valuesForAttributes: D(@"hello", @"name")] autorelease];
 	
@@ -90,22 +90,22 @@ static void testPath()
 
 static void testStoreItemTree()
 {
-	COStoreItemTree *t1 = [COStoreItemTree itemTree];
-	COStoreItemTree *t2 = [COStoreItemTree itemTree];
-	COStoreItemTree *t3 = [COStoreItemTree itemTree];
+	COItemTreeNode *t1 = [COItemTreeNode itemTree];
+	COItemTreeNode *t2 = [COItemTreeNode itemTree];
+	COItemTreeNode *t3 = [COItemTreeNode itemTree];
 	
 	[t1 addTree: t2];
 	[t2 addTree: t3];
 	
 	EWTestIntsEqual(3, [[t1 allContainedStoreItems] count]);
 	
-	COStoreItemTree *t1a = [[t1 copy] autorelease];
+	COItemTreeNode *t1a = [[t1 copy] autorelease];
 	EWTestEqual(t1, t1a);
 	
-	COStoreItemTree *t2a = [[t1a contents] anyObject];
+	COItemTreeNode *t2a = [[t1a contents] anyObject];
 	EWTestEqual(t2, t2a);
 	
-	COStoreItemTree *t3b = [COStoreItemTree itemTree];
+	COItemTreeNode *t3b = [COItemTreeNode itemTree];
 	[t2a addTree: t3b];
 	
 	EWTestTrue(![t1 isEqual: t1a]);
@@ -134,7 +134,7 @@ static void testEditingContextEmbeddedObjects()
 	EWTestTrue(nil == [ctx rootUUID]);
 	EWTestTrue(nil == [store rootVersion]);
 		
-	COMutableStoreItem *iroot = [COMutableStoreItem item];
+	COMutableItem *iroot = [COMutableItem item];
 	ETUUID *uroot = [iroot UUID];
 	
 	[ctx _insertOrUpdateItems: S(iroot)
@@ -146,7 +146,7 @@ static void testEditingContextEmbeddedObjects()
 	// 2.  set up a nested persistent root
 	//
 	
-	COStoreItemTree *nestedDocumentRootItem = [COStoreItemTree itemTree];
+	COItemTreeNode *nestedDocumentRootItem = [COItemTreeNode itemTree];
 	[nestedDocumentRootItem setValue: @"red"
 						forAttribute: @"color"
 								type: [COType stringType]];
@@ -165,12 +165,12 @@ static void testEditingContextEmbeddedObjects()
 	ETUUID *u1BranchB = [ctx createBranchOfPersistentRoot: u1];
 	
 	{
-		COMutableStoreItem *u1BranchAItem = [ctx _storeItemForUUID: u1BranchA];
+		COMutableItem *u1BranchAItem = [ctx _storeItemForUUID: u1BranchA];
 		[u1BranchAItem setValue: @"Development Branch" forAttribute: @"name" type: [COType stringType]];
 		[ctx _insertOrUpdateItems: S(u1BranchAItem)];
 	}
 	{
-		COMutableStoreItem *u1BranchBItem = [ctx _storeItemForUUID: u1BranchB];
+		COMutableItem *u1BranchBItem = [ctx _storeItemForUUID: u1BranchB];
 		[u1BranchBItem setValue: @"Stable Branch" forAttribute: @"name" type: [COType stringType]];
 		[ctx _insertOrUpdateItems: S(u1BranchBItem)];
 	}
@@ -219,7 +219,7 @@ static void testEditingContextEmbeddedObjects()
 	//
 	
 
-	COMutableStoreItem *nestedDocCtx2 = [ctx2 _storeItemForUUID: [nestedDocumentRootItem UUID]];
+	COMutableItem *nestedDocCtx2 = [ctx2 _storeItemForUUID: [nestedDocumentRootItem UUID]];
 	//EWTestEqual(nestedDocumentRootItem, nestedDocCtx2);
 	
 	[nestedDocCtx2 setValue: @"green"
@@ -247,7 +247,7 @@ static void testEditingContextEmbeddedObjects()
 	{
 		COPersistentRootEditingContext *testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u1];
 		
-		COMutableStoreItem *item = [testctx2 _storeItemForUUID: [testctx2 rootUUID]];
+		COMutableItem *item = [testctx2 _storeItemForUUID: [testctx2 rootUUID]];
 		EWTestEqual(@"green", [item valueForAttribute: @"color"]);
 		EWTestEqual(nestedDocCtx2, item);
 	}
@@ -255,14 +255,14 @@ static void testEditingContextEmbeddedObjects()
 	{
 		COPersistentRootEditingContext *testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u1
 																						 onBranch: u1BranchB];
-		COMutableStoreItem *item = [testctx2 _storeItemForUUID: [testctx2 rootUUID]];
+		COMutableItem *item = [testctx2 _storeItemForUUID: [testctx2 rootUUID]];
 		EWTestEqual(@"red", [item valueForAttribute: @"color"]);
 		//EWTestEqual(nestedDocumentRootItem, item);
 	}
 
 	{
 		COPersistentRootEditingContext *testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u2];
-		COMutableStoreItem *item = [testctx2 _storeItemForUUID: [testctx2 rootUUID]];
+		COMutableItem *item = [testctx2 _storeItemForUUID: [testctx2 rootUUID]];
 		EWTestEqual(@"red", [item valueForAttribute: @"color"]);
 		//EWTestEqual(nestedDocumentRootItem, item);
 	}
@@ -283,7 +283,7 @@ static void testEditingContextEmbeddedObjects()
 
 static void testStoreItem()
 {
-	COMutableStoreItem *i1 = [COMutableStoreItem item];
+	COMutableItem *i1 = [COMutableItem item];
 	
 	COPath *p1 = [[[COPath path]
 						pathByAppendingPathComponent:[ETUUID UUIDWithString: @"cdf68e39-8f4b-4afa-9f81-ba2f7cdf50e6"]]
@@ -304,28 +304,28 @@ static void testStoreItem()
 				 mutabilityOption: NSPropertyListMutableContainersAndLeaves
 			format: NULL
 			errorDescription:NULL];
-		COMutableStoreItem *i1clone = [[[COMutableStoreItem alloc] initWithPlist: plist] autorelease];
+		COMutableItem *i1clone = [[[COMutableItem alloc] initWithPlist: plist] autorelease];
 		EWTestEqual(i1, i1clone);
 	}
 }
 
 static void testDiff()
 {
-	COStoreItem *i1 = [[[COStoreItem alloc] initWithUUID: [ETUUID UUID]
+	COItem *i1 = [[[COItem alloc] initWithUUID: [ETUUID UUID]
 									  typesForAttributes: D([COType stringType], @"type",
 															[COType setWithPrimitiveType: [COType stringType]], @"places")
 									 valuesForAttributes: D(@"test", @"type",
 															S(@"home"), @"places")] autorelease];
 
 																   
-	COStoreItem *i2 = [[[COStoreItem alloc] initWithUUID: [ETUUID UUID]
+	COItem *i2 = [[[COItem alloc] initWithUUID: [ETUUID UUID]
 									  typesForAttributes: D([COType stringType], @"name",
 															[COType setWithPrimitiveType: [COType stringType]], @"places")
 									 valuesForAttributes: D(@"hello", @"name",
 															S(@"work", @"home"), @"places")] autorelease];
 
-	COStoreItemDiff *diff = [COStoreItemDiff diffItem: i1 withItem: i2];
-	COStoreItem *i2_fromDiff = [diff itemWithDiffAppliedTo: i1];
+	COItemDiff *diff = [COItemDiff diffItem: i1 withItem: i2];
+	COItem *i2_fromDiff = [diff itemWithDiffAppliedTo: i1];
 	
 	EWTestEqual(i2, i2_fromDiff);
 }

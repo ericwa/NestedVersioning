@@ -54,7 +54,7 @@ void testTagging()
 	
 	COPersistentRootEditingContext *rootCtx = [store rootContext];
 	
-	COStoreItemTree *iroot = [COStoreItemTree itemTree];
+	COItemTreeNode *iroot = [COItemTreeNode itemTree];
 	ETUUID *uroot = [iroot UUID];
 	
 	[rootCtx setItemTree: iroot];
@@ -153,7 +153,7 @@ void testTagging()
 			COPath *tag3 = [[[COPath path] pathByAppendingPathToParent]
 								pathByAppendingPathComponent: abstract];
 			
-			COMutableStoreItem *photo1Ctx_rootItem = [photo1Ctx _storeItemForUUID:photo1Ctx_root];
+			COMutableItem *photo1Ctx_rootItem = [photo1Ctx _storeItemForUUID:photo1Ctx_root];
 			[photo1Ctx_rootItem setValue: S(tag1, tag2, tag3)
 							forAttribute: @"tags"
 									type: [COType setWithPrimitiveType: [COType pathType]]];
@@ -183,7 +183,7 @@ void testTagging()
 			COPath *tag3 = [[[COPath path] pathByAppendingPathToParent]
 							pathByAppendingPathComponent: abstract];
 			
-			COMutableStoreItem *photo2Ctx_rootItem = [photo2Ctx _storeItemForUUID:photo2Ctx_root];
+			COMutableItem *photo2Ctx_rootItem = [photo2Ctx _storeItemForUUID:photo2Ctx_root];
 			[photo2Ctx_rootItem setValue: S(tag1, tag2, tag3)
 							forAttribute: @"tags"
 									type: [COType setWithPrimitiveType: [COType pathType]]];
@@ -213,7 +213,7 @@ void testTagging()
 			COPath *tag3 = [[[COPath path] pathByAppendingPathToParent]
 							pathByAppendingPathComponent: artificial];
 			
-			COMutableStoreItem *photo3Ctx_rootItem = [photo3Ctx _storeItemForUUID:photo3Ctx_root];
+			COMutableItem *photo3Ctx_rootItem = [photo3Ctx _storeItemForUUID:photo3Ctx_root];
 			[photo3Ctx_rootItem setValue: S(tag1, tag2, tag3)
 							forAttribute: @"tags"
 									type: [COType setWithPrimitiveType: [COType pathType]]];

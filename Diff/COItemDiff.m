@@ -1,4 +1,4 @@
-#import "COStoreItemDiff.h"
+#import "COItemDiff.h"
 #import "COMacros.h"
 
 // operation classes
@@ -9,7 +9,7 @@
 	COType *type;
 }
 - (id) initWithAttribute: (NSString*)anAttribute type: (COType*)aType;
-- (void) applyTo: (COMutableStoreItem *)anItem;
+- (void) applyTo: (COMutableItem *)anItem;
 
 @end
 
@@ -81,7 +81,7 @@
 	[super dealloc];
 }
 
-- (void) applyTo: (COMutableStoreItem *)anItem
+- (void) applyTo: (COMutableItem *)anItem
 {
 	[anItem setUUID: uuid];
 }
@@ -107,7 +107,7 @@
 	[super dealloc];
 }
 
-- (void) applyTo: (COMutableStoreItem *)anItem
+- (void) applyTo: (COMutableItem *)anItem
 {
 	[anItem setValue: value
 		forAttribute: attribute
@@ -120,7 +120,7 @@
 
 @implementation COStoreItemDiffOperationDeleteAttribute
 
-- (void) applyTo: (COMutableStoreItem *)anItem
+- (void) applyTo: (COMutableItem *)anItem
 {
 	[anItem removeValueForAttribute: attribute];
 }
@@ -136,7 +136,7 @@
 
 // Main implementation
 
-@implementation COStoreItemDiff
+@implementation COItemDiff
 
 - (id)initWithEdits: (NSSet*)aSet
 {
@@ -151,8 +151,8 @@
 	[super dealloc];
 }
 
-+ (COStoreItemDiff *)diffItem: (COStoreItem *)itemA
-					 withItem: (COStoreItem *)itemB
++ (COItemDiff *)diffItem: (COItem *)itemA
+					 withItem: (COItem *)itemB
 {
 	NILARG_EXCEPTION_TEST(itemA);
 	NILARG_EXCEPTION_TEST(itemB);
@@ -225,9 +225,9 @@
 	return [[[self alloc] initWithEdits: edits] autorelease];
 }
 
-- (COStoreItem *)itemWithDiffAppliedTo: (COStoreItem *)anItem
+- (COItem *)itemWithDiffAppliedTo: (COItem *)anItem
 {
-	COMutableStoreItem *newItem = [[anItem mutableCopy] autorelease];
+	COMutableItem *newItem = [[anItem mutableCopy] autorelease];
 	for (COStoreItemDiffOperation *op in edits)
 	{
 		[op applyTo: newItem];

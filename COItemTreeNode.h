@@ -1,17 +1,33 @@
 #import <Foundation/Foundation.h>
 
+#import "COItem.h"
 #import "ETUUID.h"
 
 
 /**
+ * note: items retrieved from an item tree should be copied before being modified
  */
-@interface COItemTreeNode : NSObject
+@interface COItemTreeNode : NSObject <NSCopying>
 {
-	ETUUID *uuid;
-	NSMutableDictionary *valueForAttribute; // string -> (COItemTreeNode, NString, ETUUID, NSNumber, NSData) or set/array
-	NSMutableDictionary *typeForAttribute; // string-> COType
-	COItemTreeNode *parent; // weak ref
+	@private
+	COMutableItem *root;
+	NSMutableDictionary *items;
+	COItemTreeNode *parent;
 }
+
+- (id) initWithUUID: (ETUUID*)aUUID;
+
+/**
+ * init with a new UUID
+ */
+- (id) init;
+
+/**
+ * new item with new UIID
+ */
++ (COItemTreeNode *)itemTree;
+
+- (ETUUID *)UUID;
 
 /**
  * @returns nil if the receiver has no parent.
@@ -24,6 +40,36 @@
  */
 - (COItemTreeNode *) root;
 
-- (id) copyWithZone: (NSZone*)aZone;
+- (NSArray *) attributeNames;
+
+- (COType *) typeForAttribute: (NSString *)anAttribute;
+- (id) valueForAttribute: (NSString*)anAttribute;
+
+- (void) setValue: (id)aValue
+	 forAttribute: (NSString*)anAttribute
+			 type: (COType *)aType;
+
+- (void)removeValueForAttribute: (NSString*)anAttribute;
+
+/** @taskunit I/O */
+
+- (NSSet*) allContainedStoreItems;
+
+/** @taskunit convenience */
+
+- (void) addTree: (COItemTreeNode *)aValue
+ forSetAttribute: (NSString*)anAttribute;
+
+/**
+ * adds the given tree to the default @"contents" attribute
+ */
+- (void) addTree: (COItemTreeNode *)aValue;
+- (void) removeTree: (COItemTreeNode *)aValue;
+- (NSSet*)contents;
+
+/**
+ * @returns a mutable copy
+ */
+- (id)copyWithZone:(NSZone *)zone;
 
 @end

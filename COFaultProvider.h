@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "COStoreItem.h"
+#import "COItem.h"
 #import "ETUUID.h"
 
 @protocol COFaultObserver <NSObject>
@@ -19,7 +19,7 @@
 /**
  * Interface for the fault observer to get rows from the fault provider
  */
-- (COStoreItem*) itemForUUID: (ETUUID *)aUUID;
+- (COItem*) itemForUUID: (ETUUID *)aUUID;
 
 - (void) addFaultObserver: (id<COFaultObserver>)anObserver;
 - (void) removeFaultObserver: (id<COFaultObserver>)anObserver;

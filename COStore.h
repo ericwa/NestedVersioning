@@ -1,10 +1,10 @@
 #import <Foundation/Foundation.h>
 #import "ETUUID.h"
-#import "COStoreItem.h"
+#import "COItem.h"
 #import "COPersistentRootEditingContext.h"
 
 @class COPersistentRootEditingContext;
-@class COStoreItem;
+@class COItem;
 
 /**
  * lowest level of access to store.. deals with commit tree/forest.

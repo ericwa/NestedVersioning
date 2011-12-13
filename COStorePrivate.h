@@ -1,9 +1,9 @@
 #import <Foundation/Foundation.h>
 #import "ETUUID.h"
-#import "COStoreItem.h"
+#import "COItem.h"
 
 @class COPersistentRootEditingContext;
-@class COMutableStoreItem;
+@class COMutableItem;
 
 
 @interface COStore (Private)
@@ -31,7 +31,7 @@
 - (NSDictionary *) UUIDsAndStoreItemsForCommit: (ETUUID*)commit;
 - (ETUUID *) rootItemForCommit: (ETUUID*)commit;
 
-- (COStoreItem *) storeItemForEmbeddedObject: (ETUUID*)embeddedObject
+- (COItem *) storeItemForEmbeddedObject: (ETUUID*)embeddedObject
 									inCommit: (ETUUID*)aCommitUUID;
 
 

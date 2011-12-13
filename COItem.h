@@ -11,7 +11,7 @@
  * it will be changed to write the object to the sqlite db
  * at some point.
  */
-@interface COStoreItem : NSObject <NSCopying, NSMutableCopying>
+@interface COItem : NSObject <NSCopying, NSMutableCopying>
 {
 	ETUUID *uuid;
 	NSDictionary *types;
@@ -25,7 +25,7 @@
  typesForAttributes: (NSDictionary *)typesForAttributes
 valuesForAttributes: (NSDictionary *)valuesForAttributes;
 
-+ (COStoreItem *) itemWithTypesForAttributes: (NSDictionary *)typesForAttributes
++ (COItem *) itemWithTypesForAttributes: (NSDictionary *)typesForAttributes
 						 valuesForAttributes: (NSDictionary *)valuesForAttributes;
 
 - (ETUUID *) UUID;
@@ -54,7 +54,7 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes;
 
 
 
-@interface COMutableStoreItem : COStoreItem
+@interface COMutableItem : COItem
 {
 }
 
@@ -63,7 +63,7 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes;
 /**
  * new item with new UIID
  */
-+ (COMutableStoreItem *) item;
++ (COMutableItem *) item;
 
 - (void) setUUID: (ETUUID *)aUUID;
 

@@ -1,5 +1,5 @@
 #import <Cocoa/Cocoa.h>
-#import "COStoreItemTree.h"
+#import "COItemTreeNode.h"
 
 @interface COItemFactory : NSObject
 {
@@ -7,7 +7,7 @@
 
 + (COItemFactory *)factory;
 
-- (COStoreItemTree*) newFolder: (NSString*)aName;
-- (COStoreItemTree*) newItem: (NSString*)aName;
+- (COItemTreeNode*) newFolder: (NSString*)aName;
+- (COItemTreeNode*) newItem: (NSString*)aName;
 
 @end

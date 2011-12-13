@@ -72,7 +72,7 @@
 	{
 		for (ETUUID *uuid in objects)
 		{
-			assert([[objects objectForKey: uuid] isKindOfClass: [COStoreItem class]]);
+			assert([[objects objectForKey: uuid] isKindOfClass: [COItem class]]);
 			assert([[[objects objectForKey: uuid] UUID] isEqual: uuid]);
 			
 			id plist = [[objects objectForKey: uuid] plist];
@@ -148,7 +148,7 @@
 		for (NSString *uuidString in [plist objectForKey: @"objects"])
 		{
 			id objectPlist = [[plist objectForKey: @"objects"] objectForKey: uuidString];
-			COStoreItem *item = [[[COStoreItem alloc] initWithPlist: objectPlist] autorelease];
+			COItem *item = [[[COItem alloc] initWithPlist: objectPlist] autorelease];
 			[objectsWithUUID setObject: item
 								forKey: [ETUUID UUIDWithString: uuidString]];
 		}
@@ -196,14 +196,14 @@
 {
 	return [[self _plistForCommit: commit] objectForKey: @"root"];	
 }
-- (COStoreItem *) storeItemForEmbeddedObject: (ETUUID*)embeddedObject
+- (COItem *) storeItemForEmbeddedObject: (ETUUID*)embeddedObject
 									inCommit: (ETUUID*)aCommitUUID
 {
 	NILARG_EXCEPTION_TEST(embeddedObject);
 	NILARG_EXCEPTION_TEST(aCommitUUID);
 	
 	NSDictionary *dict = [self UUIDsAndStoreItemsForCommit: aCommitUUID];
-	COStoreItem *item = [dict objectForKey: embeddedObject];
+	COItem *item = [dict objectForKey: embeddedObject];
 
 	// may be nil if it isn't in the commit
 	return item;
@@ -247,7 +247,7 @@
 	}
 	
 	NSDictionary *embeddedObjects = [self UUIDsAndStoreItemsForCommit: aVersion];
-	for (COStoreItem *item in [embeddedObjects allValues])
+	for (COItem *item in [embeddedObjects allValues])
 	{
 		for (NSString *attribute in [item attributeNames])
 		{
