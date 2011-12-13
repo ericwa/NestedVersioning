@@ -6,8 +6,21 @@
 
 /** @taskunit creation */
 
+/**
+ * throws an exception if the path has -[COPath hasLeadingPathsToParent] == TRUE
+ *
+ * if the path can't be navigated, should we return nil or throw an exception?
+ */
 + (ETUUID *) _baseCommitForPath: (COPath*)aPath store: (COStore *)aStore
 {
+	NILARG_EXCEPTION_TEST(aPath);
+	NILARG_EXCEPTION_TEST(aStore);
+	if ([aPath hasLeadingPathsToParent])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"%@ called with a path with leading '..'", NSStringFromSelector(_cmd)];
+	}
+	
 	if ([aPath isEmpty])
 	{
 		// may be nil
@@ -17,7 +30,15 @@
 	{
 		COPath *parentPath = [aPath pathByDeletingLastPathComponent];
 		ETUUID *lastPathComponent = [aPath lastPathComponent];
-		ETUUID *parentCommit = [self _baseCommitForPath: parentPath store: aStore];
+		ETUUID *parentCommit = [self _baseCommitForPath: parentPath store: aStore]; // recursive call
+		
+		if (parentCommit == nil)
+		{
+			return nil;
+		}
+		
+		// FIXME: for performance, the store should cache store items:
+		
 		COStoreItem *item = [aStore storeItemForEmbeddedObject: lastPathComponent
 													 inCommit: parentCommit];
 		
