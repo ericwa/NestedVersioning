@@ -10,9 +10,9 @@ static void testStore()
 {
 	COStore *store = setupStore();
 	
-	COStoreItem *i1 = [[COStoreItem alloc] initWithUUID: [ETUUID UUID]
-									 typesForAttributes: D([COType stringType], @"name")
-									valuesForAttributes: D(@"hello", @"name")];
+	COStoreItem *i1 = [[[COStoreItem alloc] initWithUUID: [ETUUID UUID]
+									  typesForAttributes: D([COType stringType], @"name")
+									 valuesForAttributes: D(@"hello", @"name")] autorelease];
 	
 	NSDictionary *uuidsanditems = [NSDictionary dictionaryWithObjectsAndKeys:
 								  i1, [i1 UUID],
@@ -35,6 +35,7 @@ static void testStore()
 	[store setRootVersion: uuid];
 	EWTestEqual(uuid, [store rootVersion]);
 	
+	[store release];
 }
 
 static void testPath()
@@ -320,7 +321,7 @@ static void testDiff()
 	[i2 setValue: S(@"work", @"home") forAttribute: @"places" type: [COType setWithPrimitiveType: [COType stringType]]];
 	
 	COStoreItemDiff *diff = [COStoreItemDiff diffItem: i1 withItem: i2];
-	COMutableStoreItem *i2_fromDiff = [diff itemWithDiffAppliedTo: i1];
+	COStoreItem *i2_fromDiff = [diff itemWithDiffAppliedTo: i1];
 	
 	EWTestEqual(i2, i2_fromDiff);
 }

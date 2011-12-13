@@ -20,14 +20,17 @@
 	[intersection release];
 	
 	ops = [[NSMutableArray alloc] init];
-	if (![add isEmpty])
+	if (0 != [add count])
 	{
 		[(NSMutableArray*)ops addObject: [COSetDiffOperationAdd addOperationWithAddedObjects: add]];
 	}
-	if (![remove isEmpty])
+	if (0 != [remove count])
 	{
 		[(NSMutableArray*)ops addObject: [COSetDiffOperationRemove removeOperationWithRemovedObjects: remove]];
 	}
+	
+	[add release];
+	[remove release];
 	
 	return self;
 }
@@ -130,32 +133,32 @@
 	// Now create operation objects
 	
 	NSMutableArray *nonoverlappingNonconflictingOps = [NSMutableArray array];
-	if (![nonconflictingNonoverlappingAdds isEmpty])
+	if (0 != [nonconflictingNonoverlappingAdds count])
 	{
 		[nonoverlappingNonconflictingOps addObject: [COSetDiffOperationAdd addOperationWithAddedObjects: nonconflictingNonoverlappingAdds]];
 	}
-	if (![nonconflictingNonoverlappingRemoves isEmpty])
+	if (0 != [nonconflictingNonoverlappingRemoves count])
 	{
 		[nonoverlappingNonconflictingOps addObject: [COSetDiffOperationRemove removeOperationWithRemovedObjects: nonconflictingNonoverlappingRemoves]];
 	}
 	
 	NSMutableArray *overlappingNonconflictingOps = [NSMutableArray array];
-	if (![overlappingAdds isEmpty])
+	if (0 != [overlappingAdds count])
 	{
 		[overlappingNonconflictingOps addObject: [COSetDiffOperationAdd addOperationWithAddedObjects: overlappingAdds]];
 	}
-	if (![overlappingRemoves isEmpty])
+	if (0 != [overlappingRemoves count])
 	{
 		[overlappingNonconflictingOps addObject: [COSetDiffOperationRemove removeOperationWithRemovedObjects: overlappingRemoves]];
 	}
 	
 	NSMutableArray *mergeConflicts = [NSMutableArray array];
-	if (![baseAddedConflicts isEmpty])
+	if (0 != [baseAddedConflicts count])
 	{
 		[mergeConflicts addObject: [COMergeConflict conflictWithOpsFromBase: [NSArray arrayWithObject: [COSetDiffOperationAdd addOperationWithAddedObjects: baseAddedConflicts]]
 															   opsFromOther: [NSArray arrayWithObject: [COSetDiffOperationRemove removeOperationWithRemovedObjects: otherRemovedConflicts]]]];
 	}
-	if (![baseRemovedConflicts isEmpty])
+	if (0 != [baseRemovedConflicts count])
 	{
 		[mergeConflicts addObject: [COMergeConflict conflictWithOpsFromBase: [NSArray arrayWithObject: [COSetDiffOperationRemove removeOperationWithRemovedObjects: baseRemovedConflicts]]
 															   opsFromOther: [NSArray arrayWithObject: [COSetDiffOperationAdd addOperationWithAddedObjects: otherAddedConflicts]]]];    

@@ -240,5 +240,5 @@ void testTagging()
 	//    and one in photolibBranchB. Searching for complete paths (e.g. "../../abstract") makes no sense.
 	//    so we just search for the uuid of "abstract".
 	
-	
+	[store release];
 }

@@ -62,7 +62,7 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes;
 /**
  * new item with new UIID
  */
-+ (COStoreItem *) item;
++ (COMutableStoreItem *) item;
 
 - (void) setUUID: (ETUUID *)aUUID;
 
