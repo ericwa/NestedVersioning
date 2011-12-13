@@ -11,12 +11,45 @@
  * it will be changed to write the object to the sqlite db
  * at some point.
  */
-@interface COStoreItem : NSObject <NSCopying>
+@interface COStoreItem : NSObject <NSCopying, NSMutableCopying>
 {
-@private
 	ETUUID *uuid;
-	NSMutableDictionary *types;
-	NSMutableDictionary *values;
+	NSDictionary *types;
+	NSDictionary *values;
+}
+
+- (id) initWithUUID: (ETUUID *)aUUID
+ typesForAttributes: (NSDictionary *)typesForAttributes
+valuesForAttributes: (NSDictionary *)valuesForAttributes;
+
+- (ETUUID *) UUID;
+
+- (NSArray *) attributeNames;
+
+- (COType *) typeForAttribute: (NSString *)anAttribute;
+- (id) valueForAttribute: (NSString*)anAttribute;
+
+/** @taskunit plist import/export */
+
+- (id)plist;
+- (id)initWithPlist: (id)aPlist;
+
+/** @taskunit convenience */
+
+// allows treating primitive or container, unordered or ordered as NSArray
+- (NSArray*) allObjectsForAttribute: (NSString*)attribute;
+
+/** @taskunit NSCopying and NSMutableCopying */
+
+- (id)copyWithZone:(NSZone *)zone;
+- (id)mutableCopyWithZone:(NSZone *)zone;
+
+@end
+
+
+
+@interface COMutableStoreItem : COStoreItem
+{
 }
 
 - (id) initWithUUID: (ETUUID*)aUUID;
@@ -31,25 +64,13 @@
  */
 + (COStoreItem *) item;
 
-
-- (ETUUID *)UUID;
 - (void) setUUID: (ETUUID *)aUUID;
-
-- (NSArray *) attributeNames;
-
-- (COType *) typeForAttribute: (NSString *)anAttribute;
-- (id) valueForAttribute: (NSString*)anAttribute;
 
 - (void) setValue: (id)aValue
 	 forAttribute: (NSString*)anAttribute
 			 type: (COType *)aType;
 
 - (void)removeValueForAttribute: (NSString*)anAttribute;
-
-/** @taskunit plist import/export */
-
-- (id)plist;
-- (id)initWithPlist: (id)aPlist;
 
 /** @taskunit convenience */
 
@@ -59,12 +80,7 @@
 - (void) setValue: (id)aValue
 	 forAttribute: (NSString*)anAttribute;
 
-// allows treating primitive or container, unordered or ordered as NSArray
-- (NSArray*) allObjectsForAttribute: (NSString*)attribute;
-
-/**
- * @returns a mutable copy
- */
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
+

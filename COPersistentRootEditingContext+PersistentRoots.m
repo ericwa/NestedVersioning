@@ -13,7 +13,7 @@
 	// FIXME: awkward translation
 	NSSet *allItems = [anItem allContainedStoreItems];
 	NSMutableDictionary *uuidsAndStoreItems = [NSMutableDictionary dictionary];
-	for (COStoreItem *item in allItems)
+	for (COMutableStoreItem *item in allItems)
 	{
 		[uuidsAndStoreItems setObject: item forKey: [item UUID]];
 	}
@@ -26,8 +26,8 @@
 	assert(nestedDocumentInitialVersion != nil);
 	
 	
-	COStoreItem *i1 = [COStoreItem item];
-	COStoreItem *i2 = [COStoreItem item];
+	COMutableStoreItem *i1 = [COMutableStoreItem item];
+	COMutableStoreItem *i2 = [COMutableStoreItem item];
 	
 	[i1 setValue: @"persistentRoot"
 	forAttribute: @"type"
@@ -79,7 +79,7 @@
 
 - (NSSet *) branchesOfPersistentRoot: (ETUUID *)aRoot
 {
-	COStoreItem *root = [self _storeItemForUUID: aRoot];
+	COMutableStoreItem *root = [self _storeItemForUUID: aRoot];
 	NSSet *set = [root valueForAttribute: @"contents"];
 	
 	assert([set isKindOfClass: [NSSet class]]);
@@ -89,7 +89,7 @@
 }
 - (ETUUID *) currentBranchOfPersistentRoot: (ETUUID *)aRoot
 {
-	COStoreItem *root = [self _storeItemForUUID: aRoot];
+	COMutableStoreItem *root = [self _storeItemForUUID: aRoot];
 	COPath *aPath = [root valueForAttribute: @"currentBranch"];
 	
 	assert([aPath isKindOfClass: [COPath class]]);
@@ -100,7 +100,7 @@
 - (void) setCurrentBranch: (ETUUID*)aBranch
 		forPersistentRoot: (ETUUID*)aRoot
 {
-	COStoreItem *root = [self _storeItemForUUID: aRoot];
+	COMutableStoreItem *root = [self _storeItemForUUID: aRoot];
 	[root setValue: [COPath pathWithPathComponent: aBranch]
 	  forAttribute: @"currentBranch"
 			  type: [COType pathType]];
@@ -110,26 +110,26 @@
 
 - (ETUUID *) currentVersionForBranch: (ETUUID*)aBranch
 {
-	COStoreItem *item = [self _storeItemForUUID: aBranch];
+	COMutableStoreItem *item = [self _storeItemForUUID: aBranch];
 	return [item valueForAttribute: @"currentVersion"];
 }
 
 - (ETUUID *) headForBranch: (ETUUID*)aBranch
 {
-	COStoreItem *item = [self _storeItemForUUID: aBranch];
+	COMutableStoreItem *item = [self _storeItemForUUID: aBranch];
 	return [item valueForAttribute: @"head"];
 }
 
 - (ETUUID *) tailForBranch: (ETUUID*)aBranch
 {
-	COStoreItem *item = [self _storeItemForUUID: aBranch];
+	COMutableStoreItem *item = [self _storeItemForUUID: aBranch];
 	return [item valueForAttribute: @"tail"];
 }
 
 - (void) setCurrentVersion: (ETUUID*)aVersion
 				 forBranch: (ETUUID*)aBranch
 {
-	COStoreItem *branch = [self _storeItemForUUID: aBranch];
+	COMutableStoreItem *branch = [self _storeItemForUUID: aBranch];
 	
 	[branch setValue: aVersion
 		forAttribute: @"currentVersion"
@@ -254,9 +254,9 @@
 - (ETUUID *)createAndInsertNewPersistentRootByCopyingBranch: (ETUUID *)srcBranch
 											 inItemWithUUID: (ETUUID *)aDest
 {
-	COStoreItem *i1 = [COStoreItem item];
+	COMutableStoreItem *i1 = [COMutableStoreItem item];
 	
-	COStoreItem *i2 = [[[self _storeItemForUUID: srcBranch] copy] autorelease];
+	COMutableStoreItem *i2 = [[[self _storeItemForUUID: srcBranch] copy] autorelease];
 	[i2 setUUID: [ETUUID UUID]]; // Give it a new UUID
 	
 	[i1 setValue: @"persistentRoot"
@@ -288,7 +288,7 @@
 
 - (ETUUID *) createBranchOfPersistentRoot: (ETUUID *)aRoot
 {
-	COStoreItem *branch = [self _storeItemForUUID: [self currentBranchOfPersistentRoot: aRoot]];
+	COMutableStoreItem *branch = [self _storeItemForUUID: [self currentBranchOfPersistentRoot: aRoot]];
 	[branch setUUID: [ETUUID UUID]]; // makes it a copy.
 
 	// Reset the limits for undo/redo

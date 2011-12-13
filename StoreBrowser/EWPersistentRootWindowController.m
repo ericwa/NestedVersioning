@@ -206,7 +206,7 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 		
 		if ([row attribute] == nil) // only if we click on the root of an embedded object
 		{
-			COStoreItem *item = [ctx _storeItemForUUID: [row UUID]];
+			COMutableStoreItem *item = [ctx _storeItemForUUID: [row UUID]];
 			if ([[item valueForAttribute: @"type"] isEqualToString: @"persistentRoot"] ||
 				[[item valueForAttribute: @"type"] isEqualToString: @"branch"])
 			{

@@ -28,13 +28,13 @@
 	NILARG_EXCEPTION_TEST(aCtxt);
 
 	
-	COStoreItem *dest = [self storeItemForUUID: anObject];
+	COMutableStoreItem *dest = [self storeItemForUUID: anObject];
 	
 	assert([[dest attributeNames] containsObject: attribute]);
 	assert([[[dest typeForAttribute: attribute] objectForKey: kCOTypeKind] isEqual: kCOContainerTypeKind]);
 	assert([[[dest typeForAttribute: attribute] objectForKey: kCOPrimitiveType] isEqual: kCOPrimitiveTypeEmbeddedItem]);
 	
-	// FIXME: THis should be a UUID->COStoreItem dictionary
+	// FIXME: THis should be a UUID->COMutableStoreItem dictionary
 	// so we guarantee that the set doesnt' contain multiple items with the same UUID.
 	NSMutableSet *updatesAndInserts = [NSMutableSet set];
 	[updatesAndInserts unionSet: [aCtxt allEmbeddedItemsForUUIDInclusive: aUUID]];
@@ -96,7 +96,7 @@
  NSSet *uuids = [self allEmbeddedObjectUUIDsForUUIDInclusive: aUUID];
  for (ETUUID *uuid in uuids)
  {
- COStoreItem *item = [aCtxt storeItemForUUID: uuid];
+ COMutableStoreItem *item = [aCtxt storeItemForUUID: uuid];
  
  // FIXME: This assumes that -insertItem doens't check that
  // kCOPrimitiveTypeEmbeddedItem constraints are enforced.
@@ -122,7 +122,7 @@
  
  for (ETUUID *sourceUUID in sourceUUIDs)
  {
- COStoreItem *itemCopy = [[self storeItemForUUID: sourceUUID] mutableCopy];
+ COMutableStoreItem *itemCopy = [[self storeItemForUUID: sourceUUID] mutableCopy];
  for (NSString *key in [itemCopy attributeNames])
  {
  // FIXME:

@@ -77,7 +77,7 @@ void test()
 		// add c" to r' -> (a', b', c', c")
 		
 		{
-			COStoreItem *r1item = [ctx storeItemForUUID: r1];
+			COMutableStoreItem *r1item = [ctx storeItemForUUID: r1];
 			[r1item addObject: r2b3copy forAttribute: @"contents"];
 			[ctx updateItem: r1item];
 		}

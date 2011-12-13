@@ -50,7 +50,7 @@
 - (COStore *) store;
 
 /** @taskunit private */
-- (COStoreItem *) _storeItemForUUID: (ETUUID*) aUUID;
+- (COMutableStoreItem *) _storeItemForUUID: (ETUUID*) aUUID;
 
 /** @taskunit COEditingContext */
 
@@ -83,7 +83,7 @@
  *     the contents of that persistent root.
  *
  */
-- (ETUUID *) commitWithMetadata: (COStoreItem *)aTree;
+- (ETUUID *) commitWithMetadata: (COMutableStoreItem *)aTree;
 
 /**
  * this embedded object defines object lifetime of all objects inside this
@@ -93,12 +93,12 @@
  */
 - (ETUUID *)rootUUID;
 
-- (COStoreItem *)rootItemTree;
+- (COMutableStoreItem *)rootItemTree;
 
 /**
  * Returns an entire subtree
  */
-- (COStoreItem *)storeItemTreeForUUID: (ETUUID*) aUUID;
+- (COMutableStoreItem *)storeItemTreeForUUID: (ETUUID*) aUUID;
 
 /* @taskunit editing methods */
 

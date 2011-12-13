@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "COPath.h"
-#import "COStoreItem.h"
+#import "COMutableStoreItem.h"
 #import "COStore.h"
 #import "COItemPath.h"
 #import "COEditingContext.h"

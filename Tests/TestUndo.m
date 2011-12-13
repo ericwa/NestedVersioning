@@ -15,7 +15,7 @@ void testUndo()
 	COStore *store = setupStore();
 
 	COPersistentRootEditingContext *ctx = [store rootContext];
-	COStoreItem *iroot = [COStoreItem item];
+	COMutableStoreItem *iroot = [COMutableStoreItem item];
 	ETUUID *uroot = [iroot UUID];
 	
 	[ctx _insertOrUpdateItems: S(iroot)
@@ -40,7 +40,7 @@ void testUndo()
 	
 	{
 		COPersistentRootEditingContext *ctx2 = [ctx editingContextForEditingEmbdeddedPersistentRoot: u1];
-		COStoreItem *contents2 = [ctx2 _storeItemForUUID: [ctx2 rootUUID]];
+		COMutableStoreItem *contents2 = [ctx2 _storeItemForUUID: [ctx2 rootUUID]];
 		[contents2 setValue: @"orange"
 			   forAttribute: @"color"
 					   type: [COType stringType]];
@@ -68,12 +68,12 @@ void testUndo()
 	ETUUID *u1BranchB = [ctx createBranchOfPersistentRoot: u1];
 	
 	{
-		COStoreItem *u1BranchAItem = [ctx _storeItemForUUID: u1BranchA];
+		COMutableStoreItem *u1BranchAItem = [ctx _storeItemForUUID: u1BranchA];
 		[u1BranchAItem setValue: @"Branch A" forAttribute: @"name" type: [COType stringType]];
 		[ctx _insertOrUpdateItems: S(u1BranchAItem)];
 	}
 	{
-		COStoreItem *u1BranchBItem = [ctx _storeItemForUUID: u1BranchB];
+		COMutableStoreItem *u1BranchBItem = [ctx _storeItemForUUID: u1BranchB];
 		[u1BranchBItem setValue: @"Branch B" forAttribute: @"name" type: [COType stringType]];
 		[ctx _insertOrUpdateItems: S(u1BranchBItem)];
 	}
@@ -106,7 +106,7 @@ void testUndo()
 	
 	{
 		COPersistentRootEditingContext *ctx3 = [ctx editingContextForEditingEmbdeddedPersistentRoot: u1];
-		COStoreItem *contents3 = [ctx3 _storeItemForUUID: [ctx3 rootUUID]];
+		COMutableStoreItem *contents3 = [ctx3 _storeItemForUUID: [ctx3 rootUUID]];
 		[contents3 setValue: @"yellow"
 			   forAttribute: @"color"
 					   type: [COType stringType]];
@@ -120,7 +120,7 @@ void testUndo()
 	
 	{
 		COPersistentRootEditingContext *ctx4 = [ctx editingContextForEditingEmbdeddedPersistentRoot: u1];
-		COStoreItem *contents4 = [ctx4 _storeItemForUUID: [ctx4 rootUUID]];
+		COMutableStoreItem *contents4 = [ctx4 _storeItemForUUID: [ctx4 rootUUID]];
 		[contents4 setValue: @"green"
 			   forAttribute: @"color"
 					   type: [COType stringType]];
@@ -225,7 +225,7 @@ void testUndo()
 	
 	{
 		COPersistentRootEditingContext *ctx3 = [ctx editingContextForEditingEmbdeddedPersistentRoot: u1];
-		COStoreItem *contents3 = [ctx3 _storeItemForUUID: [ctx3 rootUUID]];
+		COMutableStoreItem *contents3 = [ctx3 _storeItemForUUID: [ctx3 rootUUID]];
 		[contents3 setValue: @"pink"
 			   forAttribute: @"color"
 					   type: [COType stringType]];

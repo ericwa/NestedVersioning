@@ -8,7 +8,7 @@
 	NILARG_EXCEPTION_TEST(aUUID);
 	
 	SUPERINIT
-	root = [[COStoreItem alloc] initWithUUID: aUUID];
+	root = [[COMutableStoreItem alloc] initWithUUID: aUUID];
 	items = [[NSMutableDictionary alloc] init];
 	return self;
 }
@@ -220,7 +220,7 @@
 		[tree release];
 	}
 	
-	COStoreItem *newRoot = [[root copy] autorelease];
+	COMutableStoreItem *newRoot = [[root copy] autorelease];
 	
 	COStoreItemTree *newCopy = [[COStoreItemTree alloc] init];
 	ASSIGN(newCopy->root, newRoot);

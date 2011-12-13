@@ -16,7 +16,7 @@
 	NILARG_EXCEPTION_TEST(anAttribute);
 	NILARG_EXCEPTION_TEST(aDest);
 	
-	COStoreItem *destItem = [self _storeItemForUUID: aDest];
+	COMutableStoreItem *destItem = [self _storeItemForUUID: aDest];
 	assert(destItem != nil);
 	
 	COType *type = [destItem typeForAttribute: anAttribute];

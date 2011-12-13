@@ -47,11 +47,11 @@
 /**
  * returns a copy
  */
-- (COStoreItem *) _storeItemForUUID: (ETUUID*) aUUID
+- (COMutableStoreItem *) _storeItemForUUID: (ETUUID*) aUUID
 {
 	assert([aUUID isKindOfClass: [ETUUID class]]);
 	
-	COStoreItem *result = nil;
+	COMutableStoreItem *result = nil;
 	
 	if (baseCommit != nil)
 	{
@@ -59,7 +59,7 @@
 		assert(result != nil);
 	}
 	
-	COStoreItem *localResult = [[[insertedOrUpdatedItems objectForKey: aUUID] copy] autorelease];
+	COMutableStoreItem *localResult = [[[insertedOrUpdatedItems objectForKey: aUUID] copy] autorelease];
 	
 	if (localResult != nil)
 	{
@@ -78,7 +78,7 @@
 	
 	NSMutableSet *result = [NSMutableSet set];
 	
-	COStoreItem *item = [self _storeItemForUUID: aUUID];
+	COMutableStoreItem *item = [self _storeItemForUUID: aUUID];
 	for (NSString *key in [item attributeNames])
 	{
 		NSDictionary *type = [item typeForAttribute: key];
@@ -104,7 +104,7 @@
 	
 	ASSIGN(rootItemUUID, aRoot);
 	
-	for (COStoreItem *item in items)
+	for (COMutableStoreItem *item in items)
 	{
 		[insertedOrUpdatedItems setObject: item forKey: [item UUID]];
 	}
@@ -150,7 +150,7 @@
 	{
 		for (ETUUID *uuid in finalUUIDSet)
 		{
-			COStoreItem *item = [self _storeItemForUUID: uuid];
+			COMutableStoreItem *item = [self _storeItemForUUID: uuid];
 			
 			[uuidsanditems setObject: item
 							  forKey: uuid];

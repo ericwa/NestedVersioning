@@ -16,6 +16,6 @@
 							index: (NSUInteger)index;
 
 - (void) insertValue: (id)aValue
-		 inStoreItem: (COStoreItem *)aStoreItem;
+		 inStoreItem: (COMutableStoreItem *)aStoreItem;
 
 @end

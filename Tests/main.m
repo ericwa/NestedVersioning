@@ -10,8 +10,9 @@ static void testStore()
 {
 	COStore *store = setupStore();
 	
-	COStoreItem *i1 = [COStoreItem item];
-	[i1 setValue: @"hello" forAttribute: @"name" type: [COType stringType]];
+	COStoreItem *i1 = [[COStoreItem alloc] initWithUUID: [ETUUID UUID]
+									 typesForAttributes: D([COType stringType], @"name")
+									valuesForAttributes: D(@"hello", @"name")];
 	
 	NSDictionary *uuidsanditems = [NSDictionary dictionaryWithObjectsAndKeys:
 								  i1, [i1 UUID],
@@ -132,7 +133,7 @@ static void testEditingContextEmbeddedObjects()
 	EWTestTrue(nil == [ctx rootUUID]);
 	EWTestTrue(nil == [store rootVersion]);
 		
-	COStoreItem *iroot = [COStoreItem item];
+	COMutableStoreItem *iroot = [COMutableStoreItem item];
 	ETUUID *uroot = [iroot UUID];
 	
 	[ctx _insertOrUpdateItems: S(iroot)
@@ -163,12 +164,12 @@ static void testEditingContextEmbeddedObjects()
 	ETUUID *u1BranchB = [ctx createBranchOfPersistentRoot: u1];
 	
 	{
-		COStoreItem *u1BranchAItem = [ctx _storeItemForUUID: u1BranchA];
+		COMutableStoreItem *u1BranchAItem = [ctx _storeItemForUUID: u1BranchA];
 		[u1BranchAItem setValue: @"Development Branch" forAttribute: @"name" type: [COType stringType]];
 		[ctx _insertOrUpdateItems: S(u1BranchAItem)];
 	}
 	{
-		COStoreItem *u1BranchBItem = [ctx _storeItemForUUID: u1BranchB];
+		COMutableStoreItem *u1BranchBItem = [ctx _storeItemForUUID: u1BranchB];
 		[u1BranchBItem setValue: @"Stable Branch" forAttribute: @"name" type: [COType stringType]];
 		[ctx _insertOrUpdateItems: S(u1BranchBItem)];
 	}
@@ -217,7 +218,7 @@ static void testEditingContextEmbeddedObjects()
 	//
 	
 
-	COStoreItem *nestedDocCtx2 = [ctx2 _storeItemForUUID: [nestedDocumentRootItem UUID]];
+	COMutableStoreItem *nestedDocCtx2 = [ctx2 _storeItemForUUID: [nestedDocumentRootItem UUID]];
 	//EWTestEqual(nestedDocumentRootItem, nestedDocCtx2);
 	
 	[nestedDocCtx2 setValue: @"green"
@@ -245,7 +246,7 @@ static void testEditingContextEmbeddedObjects()
 	{
 		COPersistentRootEditingContext *testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u1];
 		
-		COStoreItem *item = [testctx2 _storeItemForUUID: [testctx2 rootUUID]];
+		COMutableStoreItem *item = [testctx2 _storeItemForUUID: [testctx2 rootUUID]];
 		EWTestEqual(@"green", [item valueForAttribute: @"color"]);
 		EWTestEqual(nestedDocCtx2, item);
 	}
@@ -253,14 +254,14 @@ static void testEditingContextEmbeddedObjects()
 	{
 		COPersistentRootEditingContext *testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u1
 																						 onBranch: u1BranchB];
-		COStoreItem *item = [testctx2 _storeItemForUUID: [testctx2 rootUUID]];
+		COMutableStoreItem *item = [testctx2 _storeItemForUUID: [testctx2 rootUUID]];
 		EWTestEqual(@"red", [item valueForAttribute: @"color"]);
 		//EWTestEqual(nestedDocumentRootItem, item);
 	}
 
 	{
 		COPersistentRootEditingContext *testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u2];
-		COStoreItem *item = [testctx2 _storeItemForUUID: [testctx2 rootUUID]];
+		COMutableStoreItem *item = [testctx2 _storeItemForUUID: [testctx2 rootUUID]];
 		EWTestEqual(@"red", [item valueForAttribute: @"color"]);
 		//EWTestEqual(nestedDocumentRootItem, item);
 	}
@@ -281,7 +282,7 @@ static void testEditingContextEmbeddedObjects()
 
 static void testStoreItem()
 {
-	COStoreItem *i1 = [COStoreItem item];
+	COMutableStoreItem *i1 = [COMutableStoreItem item];
 	
 	COPath *p1 = [[[COPath path]
 						pathByAppendingPathComponent:[ETUUID UUIDWithString: @"cdf68e39-8f4b-4afa-9f81-ba2f7cdf50e6"]]
@@ -302,15 +303,15 @@ static void testStoreItem()
 				 mutabilityOption: NSPropertyListMutableContainersAndLeaves
 			format: NULL
 			errorDescription:NULL];
-		COStoreItem *i1clone = [[[COStoreItem alloc] initWithPlist: plist] autorelease];
+		COMutableStoreItem *i1clone = [[[COMutableStoreItem alloc] initWithPlist: plist] autorelease];
 		EWTestEqual(i1, i1clone);
 	}
 }
 
 static void testDiff()
 {
-	COStoreItem *i1 = [COStoreItem item];
-	COStoreItem *i2 = [COStoreItem item];
+	COMutableStoreItem *i1 = [COMutableStoreItem item];
+	COMutableStoreItem *i2 = [COMutableStoreItem item];
 	
 	[i1 setValue: @"test" forAttribute: @"type" type: [COType stringType]];
 	[i1 setValue: S(@"home") forAttribute: @"places" type: [COType setWithPrimitiveType: [COType stringType]]];
@@ -319,7 +320,7 @@ static void testDiff()
 	[i2 setValue: S(@"work", @"home") forAttribute: @"places" type: [COType setWithPrimitiveType: [COType stringType]]];
 	
 	COStoreItemDiff *diff = [COStoreItemDiff diffItem: i1 withItem: i2];
-	COStoreItem *i2_fromDiff = [diff itemWithDiffAppliedTo: i1];
+	COMutableStoreItem *i2_fromDiff = [diff itemWithDiffAppliedTo: i1];
 	
 	EWTestEqual(i2, i2_fromDiff);
 }

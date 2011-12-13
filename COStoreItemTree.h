@@ -10,7 +10,7 @@
 @interface COStoreItemTree : NSObject <NSCopying>
 {
 	@private
-	COStoreItem *root;
+	COMutableStoreItem *root;
 	NSMutableDictionary *items;
 }
 

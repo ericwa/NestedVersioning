@@ -9,7 +9,7 @@
 	COType *type;
 }
 - (id) initWithAttribute: (NSString*)anAttribute type: (COType*)aType;
-- (void) applyTo: (COStoreItem *)anItem;
+- (void) applyTo: (COMutableStoreItem *)anItem;
 
 @end
 
@@ -81,7 +81,7 @@
 	[super dealloc];
 }
 
-- (void) applyTo: (COStoreItem *)anItem
+- (void) applyTo: (COMutableStoreItem *)anItem
 {
 	[anItem setUUID: uuid];
 }
@@ -107,7 +107,7 @@
 	[super dealloc];
 }
 
-- (void) applyTo: (COStoreItem *)anItem
+- (void) applyTo: (COMutableStoreItem *)anItem
 {
 	[anItem setValue: value
 		forAttribute: attribute
@@ -120,7 +120,7 @@
 
 @implementation COStoreItemDiffOperationDeleteAttribute
 
-- (void) applyTo: (COStoreItem *)anItem
+- (void) applyTo: (COMutableStoreItem *)anItem
 {
 	[anItem removeValueForAttribute: attribute];
 }

@@ -6,23 +6,46 @@
 
 @implementation COStoreItem
 
-- (id) initWithUUID: (ETUUID*)aUUID
+- (BOOL) validate
 {
+	if (![[NSSet setWithArray: [types allKeys]] isEqual:
+		  [NSSet setWithArray: [values allKeys]]])
+	{
+		return NO;
+	}
+	
+	for (NSString *attribute in types)
+	{
+		COType *type = [self typeForAttribute: attribute];
+		id value = [self valueForAttribute: attribute];
+		
+		if (![type validateValue: value])
+			return NO;
+	}
+	return YES;
+}
+
+- (id) initWithUUID: (ETUUID *)aUUID
+ typesForAttributes: (NSDictionary *)typesForAttributes
+valuesForAttributes: (NSDictionary *)valuesForAttributes
+{
+	NILARG_EXCEPTION_TEST(aUUID);
+	NILARG_EXCEPTION_TEST(typesForAttributes);
+	NILARG_EXCEPTION_TEST(valuesForAttributes);
+		
 	SUPERINIT;
 	ASSIGN(uuid, aUUID);
-	types = [[NSMutableDictionary alloc] init];
-	values = [[NSMutableDictionary alloc] init];
+	types = [[NSDictionary alloc] initWithDictionary: typesForAttributes];
+	values = [[NSDictionary alloc] initWithDictionary: valuesForAttributes];
+	
+	if (![self validate])
+	{
+		[self release];
+		[NSException raise: NSInvalidArgumentException
+					format: @"validation failed"];
+	}
+	
 	return self;
-}
-
-- (id) init
-{
-	return [self initWithUUID: [ETUUID UUID]];
-}
-
-+ (COStoreItem *) item
-{
-	return [[[COStoreItem alloc] init] autorelease];
 }
 
 - (void) dealloc
@@ -37,11 +60,6 @@
 {
 	return uuid;
 }
-- (void) setUUID: (ETUUID *)aUUID
-{
-	NILARG_EXCEPTION_TEST(aUUID);
-	ASSIGN(uuid, aUUID);
-}
 
 - (NSArray *) attributeNames
 {
@@ -53,41 +71,9 @@
 	return [types objectForKey: anAttribute];
 }
 
-- (id) valueForAttribute: (NSString*)anAttribute
+- (id) valueForAttribute: (NSString *)anAttribute
 {
 	return [values objectForKey: anAttribute];
-}
-
-- (void) validate
-{
-	assert([[[types allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)]
-			isEqual: [[values allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)]]);
-	
-	for (NSString *attribute in [self attributeNames])
-	{
-		COType *type = [self typeForAttribute: attribute];
-		id value = [self valueForAttribute: attribute];
-		assert([type validateValue: value]);
-	}
-}
-
-- (void) setValue: (id)aValue
-	 forAttribute: (NSString *)anAttribute
-			 type: (COType *)aType
-{
-	NILARG_EXCEPTION_TEST(aValue);
-	NILARG_EXCEPTION_TEST(anAttribute);
-	NILARG_EXCEPTION_TEST(aType);
-	
-	[types setObject: aType forKey: anAttribute];
-	[values setObject: aValue forKey: anAttribute];
-	[self validate];
-}
-
-- (void)removeValueForAttribute: (NSString*)anAttribute
-{
-	[types removeObjectForKey: anAttribute];
-	[values removeObjectForKey: anAttribute];
 }
 
 /** @taskunit plist import/export */
@@ -110,9 +96,9 @@ static id importValueFromPlist(id aPlist)
 	return [importTypeFromPlist(aPlist) valueForPlistValue: [aPlist objectForKey: @"value"]];
 }
 
-- (id)plist
+- (id) plist
 {
-	NSMutableDictionary *plistValues = [NSMutableDictionary dictionary];
+	NSMutableDictionary *plistValues = [NSMutableDictionary dictionaryWithCapacity: [values count]];
 	
 	for (NSString *key in values)
 	{
@@ -127,10 +113,9 @@ static id importValueFromPlist(id aPlist)
 			nil];
 }
 
-- (id)initWithPlist: (id)aPlist
+- (id) initWithPlist: (id)aPlist
 {
-	SUPERINIT;
-	ASSIGN(uuid, [ETUUID UUIDWithString: [aPlist objectForKey: @"uuid"]]);
+	ETUUID *aUUID = [ETUUID UUIDWithString: [aPlist objectForKey: @"uuid"]];
 		
 	NSMutableDictionary *importedValues = [NSMutableDictionary dictionary];
 	NSMutableDictionary *importedTypes = [NSMutableDictionary dictionary];
@@ -144,25 +129,27 @@ static id importValueFromPlist(id aPlist)
 		[importedTypes setObject: importTypeFromPlist(objPlist)
 						  forKey: key];
 	}
-	ASSIGN(values, importedValues);
-	ASSIGN(types, importedTypes);	
-
-	[self validate];
 	
-	return self;
+	return [self initWithUUID: aUUID
+		   typesForAttributes: importedTypes
+		  valuesForAttributes: importedValues];
 }
 
 /** @taskunit equality testing */
 
-- (BOOL) isEqual:(id)object
+- (BOOL) isEqual: (id)object
 {
+	if (object == self)
+	{
+		return YES;
+	}
 	if (![object isKindOfClass: [self class]])
 	{
 		return NO;
 	}
 	COStoreItem *otherItem = (COStoreItem*)object;
 	
-	if (![[otherItem UUID] isEqual: [self UUID]]) return NO;
+	if (![otherItem->uuid isEqual: uuid]) return NO;
 	if (![otherItem->types isEqual: types]) return NO;
 	if (![otherItem->values isEqual: values]) return NO;
 	return YES;
@@ -175,20 +162,7 @@ static id importValueFromPlist(id aPlist)
 
 /** @taskunit convenience */
 
-- (void) addObject: (id)aValue
-	  forAttribute: (NSString*)anAttribute
-{
-	assert([[types objectForKey: anAttribute] isMultivalued]);
-	
-	id container = [[values objectForKey: anAttribute] mutableCopy];
-	[container addObject: aValue];
-	[values setObject: container forKey: anAttribute];
-	[container release];
-	
-	[self validate];
-}
-
-- (NSArray*) allObjectsForAttribute: (NSString*)attribute
+- (NSArray *) allObjectsForAttribute: (NSString *)attribute
 {
 	id value = [self valueForAttribute: attribute];
 	
@@ -210,6 +184,105 @@ static id importValueFromPlist(id aPlist)
 	}
 }
 
+- (id) copyWithZone: (NSZone *)zone
+{
+	return [self retain];
+}
+
+- (id) mutableCopyWithZone: (NSZone *)zone
+{
+	return [[COMutableStoreItem alloc] initWithUUID: uuid			
+								 typesForAttributes: types
+								valuesForAttributes: values];
+}
+
+@end
+
+
+
+
+@implementation COMutableStoreItem
+
+- (id) initWithUUID: (ETUUID *)aUUID
+ typesForAttributes: (NSDictionary *)typesForAttributes
+valuesForAttributes: (NSDictionary *)valuesForAttributes
+{
+	NILARG_EXCEPTION_TEST(aUUID);
+	NILARG_EXCEPTION_TEST(typesForAttributes);
+	NILARG_EXCEPTION_TEST(valuesForAttributes);
+	
+	SUPERINIT;
+	ASSIGN(uuid, aUUID);
+	types = [[NSMutableDictionary alloc] initWithDictionary: typesForAttributes];
+	values = [[NSMutableDictionary alloc] initWithDictionary: valuesForAttributes];
+	
+	if (![self validate])
+	{
+		[self release];
+		[NSException raise: NSInvalidArgumentException
+					format: @"validation failed"];
+	}
+	
+	return self;
+}
+
+- (id) initWithUUID: (ETUUID*)aUUID
+{
+	return [self initWithUUID: aUUID
+		   typesForAttributes: [NSDictionary dictionary]
+		  valuesForAttributes: [NSDictionary dictionary]];
+}
+
+- (id) init
+{
+	return [self initWithUUID: [ETUUID UUID]];
+}
+
++ (COMutableStoreItem *) item
+{
+	return [[[self alloc] init] autorelease];
+}
+
+- (void) setUUID: (ETUUID *)aUUID
+{
+	NILARG_EXCEPTION_TEST(aUUID);
+	ASSIGN(uuid, aUUID);
+}
+
+- (void) setValue: (id)aValue
+	 forAttribute: (NSString *)anAttribute
+			 type: (COType *)aType
+{
+	NILARG_EXCEPTION_TEST(aValue);
+	NILARG_EXCEPTION_TEST(anAttribute);
+	NILARG_EXCEPTION_TEST(aType);
+	
+	[(NSMutableDictionary *)types setObject: aType forKey: anAttribute];
+	[(NSMutableDictionary *)values setObject: aValue forKey: anAttribute];
+}
+
+- (void)removeValueForAttribute: (NSString*)anAttribute
+{
+	[(NSMutableDictionary *)types removeObjectForKey: anAttribute];
+	[(NSMutableDictionary *)values removeObjectForKey: anAttribute];
+}
+
+/** @taskunit convenience */
+
+- (void) addObject: (id)aValue
+	  forAttribute: (NSString*)anAttribute
+{
+	assert([[types objectForKey: anAttribute] isMultivalued]);
+	
+	id container = [[values objectForKey: anAttribute] mutableCopy];
+	[container addObject: aValue];
+	[(NSMutableDictionary *)values setObject: container forKey: anAttribute];
+	[container release];
+	
+	[self validate];
+}
+
+
 - (void) setValue: (id)aValue
 	 forAttribute: (NSString*)anAttribute
 {
@@ -222,10 +295,8 @@ static id importValueFromPlist(id aPlist)
 
 - (id)copyWithZone:(NSZone *)zone
 {
-	COStoreItem *myCopy = [[[self class] alloc] initWithUUID: [self UUID]];
-	[myCopy->types setDictionary: types];
-	[myCopy->values setDictionary: values];
-	return myCopy;
+	return [self mutableCopyWithZone: zone];
 }
 
 @end
+

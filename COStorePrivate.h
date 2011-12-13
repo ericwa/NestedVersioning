@@ -3,7 +3,7 @@
 #import "COStoreItem.h"
 
 @class COPersistentRootEditingContext;
-@class COStoreItem;
+@class COMutableStoreItem;
 
 
 @interface COStore (Private)
@@ -31,7 +31,7 @@
 - (NSDictionary *) UUIDsAndStoreItemsForCommit: (ETUUID*)commit;
 - (ETUUID *) rootItemForCommit: (ETUUID*)commit;
 
-- (COStoreItem *) storeItemForEmbeddedObject: (ETUUID*)embeddedObject
+- (COMutableStoreItem *) storeItemForEmbeddedObject: (ETUUID*)embeddedObject
 									inCommit: (ETUUID*)aCommitUUID;
 
 

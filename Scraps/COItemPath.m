@@ -58,7 +58,7 @@ unorderedCollectionName: (NSString *)collection
 }
 
 - (void) insertValue: (id)aValue
-		 inStoreItem: (COStoreItem *)aStoreItem
+		 inStoreItem: (COMutableStoreItem *)aStoreItem
 {	
 	[NSException raise: NSInternalInconsistencyException
 				format: @"%@ unimplemented", NSStringFromSelector(_cmd)];
@@ -82,7 +82,7 @@ unorderedCollectionName: (NSString *)collection
 }
 
 - (void) insertValue: (id)aValue
-		 inStoreItem: (COStoreItem *)aStoreItem
+		 inStoreItem: (COMutableStoreItem *)aStoreItem
 {
 	assert([[[aStoreItem typeForAttribute: attribute] objectForKey: kCOTypeKind] isEqual: kCOContainerTypeKind]);
 	assert([[[aStoreItem typeForAttribute: attribute] objectForKey: kCOContainerOrdered] isEqual: [NSNumber numberWithBool: YES]]);
@@ -127,7 +127,7 @@ unorderedCollectionName: (NSString *)collection
 }
 
 - (void) insertValue: (id)aValue
-		 inStoreItem: (COStoreItem *)aStoreItem
+		 inStoreItem: (COMutableStoreItem *)aStoreItem
 {
 	assert([[[aStoreItem typeForAttribute: attribute] objectForKey: kCOTypeKind] isEqual: kCOContainerTypeKind]);
 	assert([[[aStoreItem typeForAttribute: attribute] objectForKey: kCOContainerOrdered] isEqual: [NSNumber numberWithBool: NO]]);
