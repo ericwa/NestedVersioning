@@ -18,6 +18,9 @@
 	NSDictionary *values;
 }
 
+/**
+ * designated initializer.
+ */
 - (id) initWithUUID: (ETUUID *)aUUID
  typesForAttributes: (NSDictionary *)typesForAttributes
 valuesForAttributes: (NSDictionary *)valuesForAttributes;
@@ -58,11 +61,6 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes;
 - (id) initWithUUID: (ETUUID*)aUUID;
 
 /**
- * init with a new UUID
- */
-- (id) init;
-
-/**
  * new item with new UIID
  */
 + (COMutableStoreItem *) item;
@@ -83,7 +81,7 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes;
 - (void) setValue: (id)aValue
 	 forAttribute: (NSString*)anAttribute;
 
-- (id)copyWithZone:(NSZone *)zone;
+- (id) copyWithZone:(NSZone *)zone;
 
 @end
 
