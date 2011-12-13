@@ -1,5 +1,6 @@
 #import "COTreeDiff.h"
 #import "COStoreItemDiff.h"
+#import "COMacros.h"
 
 @implementation COTreeDiff
 
@@ -25,9 +26,18 @@ static void _COAllItemUUIDsInTree_implementation(ETUUID *treeRoot, id<COFaultPro
 
 static NSSet *COAllItemUUIDsInTree(ETUUID *treeRoot, id<COFaultProvider> faultProvider)
 {
-	NSMutableSet *result = [NSMUtableSet set];
+	NSMutableSet *result = [NSMutableSet set];
 	_COAllItemUUIDsInTree_implementation(treeRoot, faultProvider, result);
 	return result;
+}
+
+- (id) initWithRootUUID: (ETUUID*)aUUID
+		itemDiffForUUID: (NSDictionary *)aDict
+{
+	SUPERINIT;
+	ASSIGN(root, aUUID);
+	ASSIGN(itemDiffForUUID, aDict);
+	return self;
 }
 
 + (COTreeDiff *) diffRootItem: (ETUUID*)rootA
@@ -43,6 +53,8 @@ static NSSet *COAllItemUUIDsInTree(ETUUID *treeRoot, id<COFaultProvider> faultPr
 	
 	// ok.. move detection.
 	
+	NSMutableDictionary *itemDiffForUUID = [NSMutableDictionary dictionary];
+	
 	for (ETUUID *commonUUID in commonUUIDs)
 	{
 		COStoreItem *commonItemA = [providerA itemForUUID: commonUUID];
@@ -50,8 +62,12 @@ static NSSet *COAllItemUUIDsInTree(ETUUID *treeRoot, id<COFaultProvider> faultPr
 		
 		COStoreItemDiff *diff = [COStoreItemDiff diffItem: commonItemA withItem: commonItemB];
 		
-		// ....
+		[itemDiffForUUID setObject: diff
+							forKey: commonUUID];
 	}
+	
+	return [[[self alloc] initWithRootUUID: rootB
+						   itemDiffForUUID: itemDiffForUUID] autorelease];
 }
 
 @end
