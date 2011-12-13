@@ -25,6 +25,7 @@
 		66E2FFB814899C7B00C66578 /* COPersistentRootEditingContext+PersistentRoots.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E2FFB714899C7A00C66578 /* COPersistentRootEditingContext+PersistentRoots.m */; };
 		66E46D48146A3D490042123E /* TestDeletion.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E46D47146A3D490042123E /* TestDeletion.m */; };
 		66E4BE571496956200B7024A /* COStoreItemDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E4BE561496956200B7024A /* COStoreItemDiff.m */; };
+		66E4BE5B149713CA00B7024A /* COType+Diff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E4BE5A149713CA00B7024A /* COType+Diff.m */; };
 		66E5038A1495E6EF003C69C7 /* COType+String.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E503891495E6EF003C69C7 /* COType+String.m */; };
 		66E5038C1495EA0C003C69C7 /* COType+String.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E503891495E6EF003C69C7 /* COType+String.m */; };
 		66E5039F1495F9CF003C69C7 /* COArrayDiff.mm in Sources */ = {isa = PBXBuildFile; fileRef = 66E503931495F9CF003C69C7 /* COArrayDiff.mm */; };
@@ -127,6 +128,8 @@
 		66E46D47146A3D490042123E /* TestDeletion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestDeletion.m; sourceTree = "<group>"; };
 		66E4BE551496956200B7024A /* COStoreItemDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COStoreItemDiff.h; sourceTree = "<group>"; };
 		66E4BE561496956200B7024A /* COStoreItemDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COStoreItemDiff.m; sourceTree = "<group>"; };
+		66E4BE59149713CA00B7024A /* COType+Diff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COType+Diff.h"; sourceTree = "<group>"; };
+		66E4BE5A149713CA00B7024A /* COType+Diff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "COType+Diff.m"; sourceTree = "<group>"; };
 		66E503881495E6EF003C69C7 /* COType+String.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COType+String.h"; sourceTree = "<group>"; };
 		66E503891495E6EF003C69C7 /* COType+String.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "COType+String.m"; sourceTree = "<group>"; };
 		66E503921495F9CF003C69C7 /* COArrayDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COArrayDiff.h; sourceTree = "<group>"; };
@@ -329,6 +332,8 @@
 				66F39B851490A8540097B7D5 /* COType+Plist.m */,
 				66E503881495E6EF003C69C7 /* COType+String.h */,
 				66E503891495E6EF003C69C7 /* COType+String.m */,
+				66E4BE59149713CA00B7024A /* COType+Diff.h */,
+				66E4BE5A149713CA00B7024A /* COType+Diff.m */,
 			);
 			name = Types;
 			sourceTree = "<group>";
@@ -641,6 +646,7 @@
 				66E503A31495F9D0003C69C7 /* COSetDiff.m in Sources */,
 				66E503A41495F9D0003C69C7 /* COStringDiff.mm in Sources */,
 				66E4BE571496956200B7024A /* COStoreItemDiff.m in Sources */,
+				66E4BE5B149713CA00B7024A /* COType+Diff.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

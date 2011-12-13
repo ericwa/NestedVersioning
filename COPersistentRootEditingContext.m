@@ -153,6 +153,7 @@
 	return result;
 }
 
+// FIXME: Duplicate of code in COTreeDiff
 - (NSSet *) _allEmbeddedObjectUUIDsForUUID: (ETUUID*) aUUID
 {
 	NILARG_EXCEPTION_TEST(aUUID);
