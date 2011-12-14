@@ -7,9 +7,11 @@
 /** @taskunit creation */
 
 /**
- * throws an exception if the path has -[COPath hasLeadingPathsToParent] == TRUE
+ * @returns the commit UUID which the path leads to. Prints nil and logs a warning
+ * if there is an error while navigating the path.
  *
- * if the path can't be navigated, should we return nil or throw an exception?
+ * Throws an exception if the path has -[COPath hasLeadingPathsToParent] == TRUE or is
+ * nil.
  */
 + (ETUUID *) _baseCommitForPath: (COPath*)aPath store: (COStore *)aStore
 {
