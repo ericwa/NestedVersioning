@@ -60,9 +60,9 @@ void testTagging()
 	[rootCtx setItemTree: iroot];
 	
 	
-	ETUUID *taglibUUID = [rootCtx createAndInsertNewPersistentRootWithRootItem: [factory newFolder: @"tag library"]
+	ETUUID *taglibUUID = [rootCtx createAndInsertNewPersistentRootWithRootItem: [factory folder: @"tag library"]
 																inItemWithUUID: uroot];
-	ETUUID *photolibUUID = [rootCtx createAndInsertNewPersistentRootWithRootItem: [factory newFolder: @"photo library"]
+	ETUUID *photolibUUID = [rootCtx createAndInsertNewPersistentRootWithRootItem: [factory folder: @"photo library"]
 																  inItemWithUUID: uroot];
 	
 	[rootCtx commitWithMetadata: nil];
@@ -74,15 +74,15 @@ void testTagging()
 		ETUUID *taglibFolder = [taglibCtx rootUUID];
 		
 
-		ETUUID *places = [taglibCtx insertTree: [factory newFolder: @"places"]
+		ETUUID *places = [taglibCtx insertTree: [factory folder: @"places"]
 								   inContainer: taglibFolder];
-		ETUUID *northamerica = [taglibCtx insertTree: [factory newFolder: @"north america"]
+		ETUUID *northamerica = [taglibCtx insertTree: [factory folder: @"north america"]
 										 inContainer: places];
-		ETUUID *canada = [taglibCtx insertTree: [factory newItem: @"canada"]
+		ETUUID *canada = [taglibCtx insertTree: [factory item: @"canada"]
 								   inContainer: northamerica];
-		ETUUID *southamerica = [taglibCtx insertTree: [factory newFolder: @"south america"]
+		ETUUID *southamerica = [taglibCtx insertTree: [factory folder: @"south america"]
 										 inContainer: places];
-		ETUUID *brazil = [taglibCtx insertTree: [factory newItem: @"brazil"]
+		ETUUID *brazil = [taglibCtx insertTree: [factory item: @"brazil"]
 								   inContainer: southamerica];
 		
 		[taglibCtx commitWithMetadata: nil];
@@ -97,36 +97,36 @@ void testTagging()
 		
 		// set up some local tags
 		
-			ETUUID *localtagFolder = [photolibCtx insertTree: [factory newFolder: @"local tags"]
+			ETUUID *localtagFolder = [photolibCtx insertTree: [factory folder: @"local tags"]
 												 inContainer: photolibFolder];
-			ETUUID *subject = [photolibCtx insertTree: [factory newFolder: @"subject"]
+			ETUUID *subject = [photolibCtx insertTree: [factory folder: @"subject"]
 										  inContainer: localtagFolder];
-			ETUUID *landscape = [photolibCtx insertTree: [factory newItem: @"landscape"]
+			ETUUID *landscape = [photolibCtx insertTree: [factory item: @"landscape"]
 											inContainer: subject];
-			ETUUID *people = [photolibCtx insertTree: [factory newItem: @"people"]
+			ETUUID *people = [photolibCtx insertTree: [factory item: @"people"]
 										 inContainer: subject];
-			ETUUID *abstract = [photolibCtx insertTree: [factory newItem: @"abstract"]
+			ETUUID *abstract = [photolibCtx insertTree: [factory item: @"abstract"]
 										   inContainer: subject];
-			ETUUID *lighting = [photolibCtx insertTree: [factory newFolder: @"lighting"]
+			ETUUID *lighting = [photolibCtx insertTree: [factory folder: @"lighting"]
 										   inContainer: localtagFolder];
-			ETUUID *sunlight = [photolibCtx insertTree: [factory newItem: @"sunlight"]
+			ETUUID *sunlight = [photolibCtx insertTree: [factory item: @"sunlight"]
 										   inContainer: lighting];
-			ETUUID *artificial = [photolibCtx insertTree: [factory newItem: @"artificial"]
+			ETUUID *artificial = [photolibCtx insertTree: [factory item: @"artificial"]
 											 inContainer: lighting];			
 		
 		
 		// set up photo shoots folder
 		
-			ETUUID *photoshootsFolder = [photolibCtx insertTree: [factory newFolder: @"photo shoots"]
+			ETUUID *photoshootsFolder = [photolibCtx insertTree: [factory folder: @"photo shoots"]
 													inContainer: photolibFolder];
-			ETUUID *shoot1 = [photolibCtx insertTree: [factory newFolder: @"shoot1"]
+			ETUUID *shoot1 = [photolibCtx insertTree: [factory folder: @"shoot1"]
 										 inContainer: photoshootsFolder];
 			
-			ETUUID *photo1 = [photolibCtx createAndInsertNewPersistentRootWithRootItem: [factory newFolder: @"photo1"]
+			ETUUID *photo1 = [photolibCtx createAndInsertNewPersistentRootWithRootItem: [factory folder: @"photo1"]
 																		inItemWithUUID: shoot1];
-			ETUUID *photo2 = [photolibCtx createAndInsertNewPersistentRootWithRootItem: [factory newFolder: @"photo2"]
+			ETUUID *photo2 = [photolibCtx createAndInsertNewPersistentRootWithRootItem: [factory folder: @"photo2"]
 																		inItemWithUUID: shoot1];			
-			ETUUID *photo3 = [photolibCtx createAndInsertNewPersistentRootWithRootItem: [factory newFolder: @"photo3"]
+			ETUUID *photo3 = [photolibCtx createAndInsertNewPersistentRootWithRootItem: [factory folder: @"photo3"]
 																		inItemWithUUID: shoot1];
 		
 		

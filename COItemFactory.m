@@ -13,7 +13,7 @@
 	return factory;
 }
 
-- (COItemTreeNode*) newFolder: (NSString*)aName
+- (COItemTreeNode*) folder: (NSString*)aName
 {
 	NILARG_EXCEPTION_TEST(aName);
 	
@@ -24,9 +24,9 @@
 	return tree;
 }
 
-- (COItemTreeNode*) newItem: (NSString*)aName
+- (COItemTreeNode*) item: (NSString*)aName
 {
-	return [self newFolder: aName];
+	return [self folder: aName];
 }
 
 @end

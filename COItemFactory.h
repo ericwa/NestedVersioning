@@ -7,7 +7,7 @@
 
 + (COItemFactory *)factory;
 
-- (COItemTreeNode*) newFolder: (NSString*)aName;
-- (COItemTreeNode*) newItem: (NSString*)aName;
+- (COItemTreeNode*) folder: (NSString*)aName;
+- (COItemTreeNode*) item: (NSString*)aName;
 
 @end
