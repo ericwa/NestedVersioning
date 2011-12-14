@@ -211,6 +211,11 @@
 		[NSException raise: NSInvalidArgumentException
 					format: @"%@ is not a primitive type", aType];
 	}
+	if ([aType isEqual: [COType embeddedItemType]] && !isUnique)
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"[COType embeddedItemType] can only exist in a unique multivalue", aType];
+	}
 	
 	SUPERINIT;
 	ASSIGN(primitiveType, aType);
