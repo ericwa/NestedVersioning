@@ -91,11 +91,22 @@ static void testPath()
 static void testStoreItemTree()
 {
 	COItemTreeNode *t1 = [COItemTreeNode itemTree];
-	COItemTreeNode *t2 = [COItemTreeNode itemTree];
+	COItemTreeNode *t2 = [COItemTreeNode itemTree];	
 	COItemTreeNode *t3 = [COItemTreeNode itemTree];
 	
+	EWTestTrue(nil == [t2 parent]);
+	EWTestTrue(t2 == [t2 root]);
+	
 	[t1 addTree: t2];
+	
+	EWTestTrue(t1 == [t2 parent]);	
+	EWTestTrue(t1 == [t2 root]);
+	EWTestTrue(nil == [t1 parent]);	
+	EWTestTrue(t1 == [t1 root]);
+	
 	[t2 addTree: t3];
+	
+	EWTestTrue(t2 == [t3 parent]);
 	
 	EWTestIntsEqual(3, [[t1 allContainedStoreItems] count]);
 	
@@ -115,6 +126,17 @@ static void testStoreItemTree()
 	
 	EWTestEqual(t1, t1a);
 	EWTestEqual(t2, t2a);	
+	
+	EWTestTrue(t1a == [t2a parent]);
+	
+	
+	// test moving an item to a new tree removes it from its old parent
+	
+	[t1 addTree: t2a];
+	
+	EWTestTrue(t1 == [t2a parent]);
+	EWTestIntsEqual(4, [[t1 allContainedStoreItems] count]);
+	EWTestIntsEqual(1, [[t1a allContainedStoreItems] count]);	
 }
 
 static void testEditingContextEmbeddedObjects()
