@@ -54,6 +54,7 @@
 /** @taskunit I/O */
 
 - (NSSet*) allContainedStoreItems;
+- (NSSet*) allContainedStoreItemUUIDs;
 
 /** @taskunit convenience */
 

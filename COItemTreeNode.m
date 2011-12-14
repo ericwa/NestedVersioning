@@ -181,6 +181,16 @@
 	return result;
 }
 
+- (NSSet*) allContainedStoreItemUUIDs
+{
+	NSMutableSet *result = [NSMutableSet set];
+	for (COMutableItem *item in [self allContainedStoreItems])
+	{
+		[result addObject: [item UUID]];
+	}
+	return result;
+}
+
 /** @taskunit convenience */
 
 - (void) addTree: (COItemTreeNode *)aValue
