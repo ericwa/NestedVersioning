@@ -89,7 +89,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 		return [NSArray array];
 	}
 	
-	COMutableStoreItem *storeItem = [ctx _storeItemForUUID: UUID];
+	COMutableItem *storeItem = [ctx _storeItemForUUID: UUID];
 	
 	if (attribute == nil) // no attribute, so a root node for a persistent root
 	{
@@ -172,7 +172,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 	{
 		if (isPrimitiveInContainer)
 		{
-			COMutableStoreItem *storeItem = [ctx _storeItemForUUID: UUID];
+			COMutableItem *storeItem = [ctx _storeItemForUUID: UUID];
 			id value = [[storeItem allObjectsForAttribute: attribute] objectAtIndex: index];
 			return value;
 		}
@@ -183,7 +183,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 		}
 		else			
 		{
-			COMutableStoreItem *storeItem = [ctx _storeItemForUUID: UUID];
+			COMutableItem *storeItem = [ctx _storeItemForUUID: UUID];
 			id value = [storeItem valueForAttribute: @"name"];
 			if (value) {
 				return [NSString stringWithFormat: @"%@ (%@)", value, [storeItem UUID]];
@@ -196,7 +196,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 	{
 		if (attribute != nil)
 		{
-			COMutableStoreItem *item = [ctx _storeItemForUUID: UUID];
+			COMutableItem *item = [ctx _storeItemForUUID: UUID];
 			COType *type = [item typeForAttribute: attribute];
 			
 			if ([type isPrimitive])
@@ -207,7 +207,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 	}
 	else if ([[column identifier] isEqualToString: @"type"])
 	{
-		COMutableStoreItem *item = [ctx _storeItemForUUID: UUID];
+		COMutableItem *item = [ctx _storeItemForUUID: UUID];
 		COType *type = [item typeForAttribute: attribute];
 
 		if (isPrimitiveInContainer)
@@ -225,7 +225,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 	}
 	else if ([[column identifier] isEqualToString: @"currentbranch"])
 	{
-		COMutableStoreItem *storeItem = [ctx _storeItemForUUID: [self UUID]];
+		COMutableItem *storeItem = [ctx _storeItemForUUID: [self UUID]];
 		if ([[storeItem valueForAttribute: @"type"] isEqualToString: @"persistentRoot"]
 			&& [self attribute] == nil) // FIXME: horrible hack
 		{
@@ -250,7 +250,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 {
 	if (attribute == nil)
 	{
-		COMutableStoreItem *item = [ctx _storeItemForUUID: UUID];
+		COMutableItem *item = [ctx _storeItemForUUID: UUID];
 		if ([[item valueForAttribute: @"type"] isEqualToString: @"persistentRoot"])
 		{
 			return [NSImage imageNamed: @"package-x-generic"];
@@ -296,7 +296,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 			NSLog(@"Attempting to store new value '%@' for attribute '%@' of %@",
 				  object, [self attribute], [self UUID]);
 			
-			COMutableStoreItem *storeItem = [ctx _storeItemForUUID: [self UUID]];
+			COMutableItem *storeItem = [ctx _storeItemForUUID: [self UUID]];
 			
 			COType *type = [storeItem typeForAttribute: [self attribute]];
 			
@@ -329,7 +329,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 {
 	if ([self attribute] == nil) // only if we click on the root of an embedded object
 	{
-		COMutableStoreItem *storeItem = [ctx _storeItemForUUID: [self UUID]];
+		COMutableItem *storeItem = [ctx _storeItemForUUID: [self UUID]];
 		if ([[storeItem valueForAttribute: @"type"] isEqualToString: @"persistentRoot"] ||
 			[[storeItem valueForAttribute: @"type"] isEqualToString: @"branch"])
 		{
@@ -378,7 +378,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 {	
 	if (isPrimitiveInContainer)
 	{
-		COMutableStoreItem *storeItem = [ctx _storeItemForUUID: UUID];
+		COMutableItem *storeItem = [ctx _storeItemForUUID: UUID];
 		id container = [[storeItem valueForAttribute: [self attribute]] mutableCopy];
 		id valueToDelete = [[storeItem allObjectsForAttribute: attribute] objectAtIndex: index]; // FIXME: hack
 		NSLog(@"Deleting %@ from multivalue", valueToDelete);
@@ -391,7 +391,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 	}
 	else if (attribute != nil)
 	{
-		COMutableStoreItem *storeItem = [ctx _storeItemForUUID: UUID];
+		COMutableItem *storeItem = [ctx _storeItemForUUID: UUID];
 		NSLog(@"Deleting primitive attribute %@", attribute);
 		
 		[storeItem removeValueForAttribute: attribute];
@@ -403,7 +403,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 	{
 		NSLog(@"Deleting embedded item %@", [self UUID]);
 		
-		COMutableStoreItem *parentItem = [ctx _storeItemForUUID: [parent UUID]];
+		COMutableItem *parentItem = [ctx _storeItemForUUID: [parent UUID]];
 		
 		COType *parentType = [parentItem typeForAttribute: [parent attribute]];
 		
