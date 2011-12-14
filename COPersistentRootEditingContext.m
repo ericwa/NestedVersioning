@@ -26,44 +26,50 @@
 		// may be nil
 		return [aStore rootVersion];
 	}
-	else
+
+	COPath *parentPath = [aPath pathByDeletingLastPathComponent];
+	ETUUID *lastPathComponent = [aPath lastPathComponent];
+	ETUUID *parentCommit = [self _baseCommitForPath: parentPath store: aStore]; // recursive call
+	
+	if (parentCommit == nil)
 	{
-		COPath *parentPath = [aPath pathByDeletingLastPathComponent];
-		ETUUID *lastPathComponent = [aPath lastPathComponent];
-		ETUUID *parentCommit = [self _baseCommitForPath: parentPath store: aStore]; // recursive call
-		
-		if (parentCommit == nil)
+		return nil;
+	}
+	
+	COItem *item = [aStore storeItemForEmbeddedObject: lastPathComponent
+											 inCommit: parentCommit];
+	
+	// item may be a persistent root or a branch.
+	
+	if ([[item valueForAttribute: @"type"] isEqual: @"persistentRoot"])
+	{
+		COPath *currentBranchPath = [item valueForAttribute: @"currentBranch"];
+		if (![currentBranchPath isKindOfClass: [COPath class]]
+			|| ![currentBranchPath hasComponents]
+			|| [currentBranchPath hasLeadingPathsToParent]
+			|| ![[currentBranchPath pathByDeletingLastPathComponent] isEmpty])
 		{
+			NSLog(@"WARNING: persistent root at %@ has invalid or no current branch (%@)", aPath, currentBranchPath);
 			return nil;
 		}
-		
-		// FIXME: for performance, the store should cache store items:
-		
-		COItem *item = [aStore storeItemForEmbeddedObject: lastPathComponent
-													 inCommit: parentCommit];
-		
-		// FIXME: move to COItemFactory or another utility class for dealing with persistent root data structures.
-		
-		// item may be a persistent root or a branch.
-		
-		if ([[item valueForAttribute: @"type"] isEqual: @"persistentRoot"])
-		{
-			COPath *currentBranchPath = [item valueForAttribute: @"currentBranch"];
-			ETUUID *currentBranch = [currentBranchPath lastPathComponent];
-			assert([[currentBranchPath pathByDeletingLastPathComponent] isEmpty]);
-			
-			item = [aStore storeItemForEmbeddedObject: currentBranch
-											inCommit: parentCommit];
-		}
-		
-		assert ([[item valueForAttribute: @"type"] isEqual: @"branch"]);
-		assert([[item typeForAttribute: @"currentVersion"] isEqual: [COType commitUUIDType]]);
-		
-		ETUUID *trackedVersion = [item valueForAttribute: @"currentVersion"];
-		assert(trackedVersion != nil);
-		
-		return trackedVersion;
+				  
+		ETUUID *currentBranch = [currentBranchPath lastPathComponent];
+
+		item = [aStore storeItemForEmbeddedObject: currentBranch
+										 inCommit: parentCommit];
 	}
+
+	ETUUID *trackedVersion = [item valueForAttribute: @"currentVersion"];	
+	
+	if (![[item valueForAttribute: @"type"] isEqual: @"branch"]
+		|| ![[item typeForAttribute: @"currentVersion"] isEqual: [COType commitUUIDType]]
+		|| (nil == trackedVersion))
+	{
+		NSLog(@"WARNING: branch specified by %@ is invalid/has no current version set", aPath);
+		return nil;
+	}
+	
+	return trackedVersion;
 }
 
 /**
