@@ -187,6 +187,7 @@
  forSetAttribute: (NSString*)anAttribute
 {
 	id container = [self valueForAttribute: anAttribute];
+	COType *type = [self typeForAttribute: anAttribute];
 	
 	if (container == nil)
 	{
@@ -194,8 +195,23 @@
 	}
 	else
 	{
+		assert([type isEqual: [COType setWithPrimitiveType: [COType embeddedItemType]]]);
 		container = [container setByAddingObject: aValue];
 	}
+	
+	[self setValue: container
+	  forAttribute: anAttribute
+			  type: [COType setWithPrimitiveType: [COType embeddedItemType]]];
+}
+
+- (void) removeTree: (COItemTreeNode *)aValue
+	forSetAttribute: (NSString*)anAttribute
+{
+	id container = [NSMutableSet setWithSet: [self valueForAttribute: anAttribute]];
+	COType *type = [self typeForAttribute: anAttribute];
+	assert(type == nil || [type isEqual: [COType setWithPrimitiveType: [COType embeddedItemType]]]);
+
+	[container removeObject: aValue];
 	
 	[self setValue: container
 	  forAttribute: anAttribute
@@ -209,12 +225,8 @@
 }
 - (void) removeTree: (COItemTreeNode *)aValue
 {
-	NSMutableSet *container = [NSMutableSet setWithSet: [self valueForAttribute: @"contents"]];
-	assert([container containsObject: aValue]);
-	[container removeObject: aValue];
-	[self setValue: container
-	  forAttribute: @"contents"
-			  type: [COType setWithPrimitiveType: [COType embeddedItemType]]];
+	[self removeTree: aValue
+	 forSetAttribute: @"contents"];
 }
 
 - (NSSet*)contents

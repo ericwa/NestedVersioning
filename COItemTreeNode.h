@@ -60,6 +60,10 @@
 - (void) addTree: (COItemTreeNode *)aValue
  forSetAttribute: (NSString*)anAttribute;
 
+- (void) removeTree: (COItemTreeNode *)aValue
+ forSetAttribute: (NSString*)anAttribute;
+
+
 /**
  * adds the given tree to the default @"contents" attribute
  */
