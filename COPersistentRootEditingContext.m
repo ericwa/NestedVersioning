@@ -7,11 +7,11 @@
 /** @taskunit creation */
 
 /**
- * @returns the commit UUID which the path leads to. Prints nil and logs a warning
- * if there is an error while navigating the path.
+ * @returns the commit UUID which the path leads to. 
  *
- * Throws an exception if the path has -[COPath hasLeadingPathsToParent] == TRUE or is
- * nil.
+ * Throws an exception if there is an error while navigating the path (similar to
+ * opening a filesystem path that does not exist), or if the path has
+ * -[COPath hasLeadingPathsToParent] == TRUE or is nil.
  */
 + (ETUUID *) _baseCommitForPath: (COPath*)aPath store: (COStore *)aStore
 {
@@ -33,11 +33,6 @@
 	ETUUID *lastPathComponent = [aPath lastPathComponent];
 	ETUUID *parentCommit = [self _baseCommitForPath: parentPath store: aStore]; // recursive call
 	
-	if (parentCommit == nil)
-	{
-		return nil;
-	}
-	
 	COItem *item = [aStore storeItemForEmbeddedObject: lastPathComponent
 											 inCommit: parentCommit];
 	
@@ -51,8 +46,9 @@
 			|| [currentBranchPath hasLeadingPathsToParent]
 			|| ![[currentBranchPath pathByDeletingLastPathComponent] isEmpty])
 		{
-			NSLog(@"WARNING: persistent root at %@ has invalid or no current branch (%@)", aPath, currentBranchPath);
-			return nil;
+			[NSException raise: NSInvalidArgumentException
+						format: @"persistent root at %@ has invalid or no current branch (%@)",
+								aPath, currentBranchPath];
 		}
 				  
 		ETUUID *currentBranch = [currentBranchPath lastPathComponent];
@@ -67,8 +63,8 @@
 		|| ![[item typeForAttribute: @"currentVersion"] isEqual: [COType commitUUIDType]]
 		|| (nil == trackedVersion))
 	{
-		NSLog(@"WARNING: branch specified by %@ is invalid/has no current version set", aPath);
-		return nil;
+		[NSException raise: NSInvalidArgumentException
+					format: @"branch specified by %@ is invalid/has no current version set", aPath];
 	}
 	
 	return trackedVersion;
@@ -96,9 +92,23 @@
 	ASSIGN(path, aPath);
 	ASSIGN(store, aStore);
 	
-	// this will be somewhat expensive, but needs to be done - we need to 
-	// know what version our context is based on.
-	ASSIGN(baseCommit, [[self class] _baseCommitForPath: aPath store: aStore]);
+	@try
+	{
+		// this will be somewhat expensive, but needs to be done - we need to 
+		// know what version our context is based on.
+		ASSIGN(baseCommit, [[self class] _baseCommitForPath: aPath store: aStore]);
+	}
+	@catch (NSException *exception)
+	{
+		NSLog(@"WARNING: Exception occurred while calling +[COPersistentRootEditingContext _baseCommitForPath: %@ store: %@]: %@", aPath, aStore, exception);
+		[self release];
+		
+		// FIXME: remove
+		assert(0);
+		
+		return nil;
+	}
+	
 	
 	if (baseCommit != nil)
 	{
@@ -160,26 +170,20 @@
  */
 - (COMutableItem *) _storeItemForUUID: (ETUUID*) aUUID
 {
-	assert([aUUID isKindOfClass: [ETUUID class]]);
-	
-	COMutableItem *result = nil;
-	
-	if (baseCommit != nil)
-	{
-		result = [[[store storeItemForEmbeddedObject: aUUID inCommit: baseCommit] mutableCopy] autorelease];
-	}
+	NILARG_EXCEPTION_TEST(aUUID);
 	
 	COMutableItem *localResult = [[[insertedOrUpdatedItems objectForKey: aUUID] mutableCopy] autorelease];
 	
 	if (localResult != nil)
 	{
-		//NSLog(@"overriding %@ with %@", result, localResult);
-		result = localResult;
+		return localResult;
 	}
 	
-	assert(result != nil); // either the store, or in memory, must have the value
-	
-	return result;
+	if (baseCommit != nil)
+	{
+		return [[[store storeItemForEmbeddedObject: aUUID inCommit: baseCommit] mutableCopy] autorelease];
+	}
+	return nil;
 }
 
 // FIXME: Duplicate of code in COTreeDiff
@@ -268,7 +272,26 @@
 	// we need to check if we need to merge, first.
 	
 	
-	ETUUID *newBase = [[self class] _baseCommitForPath: [self path] store: [self store]];
+	ETUUID *newBase;
+	
+	@try
+	{
+		newBase = [[self class] _baseCommitForPath: [self path] store: [self store]];
+	}
+	@catch (NSException *exception)
+	{
+		NSLog(@"WARNING: Exception occurred while calling +[COPersistentRootEditingContext _baseCommitForPath: %@ store: %@]: %@", [self path], [self store], exception);
+		
+		// This means one of the persistent roots we will need to update to make the commit has been
+		// corrupted/deleted since the context was created.
+		// There isn't much we can do... it won't be possible to commit our changes.
+		
+		// FIXME: remove
+		assert(0);
+		
+		return nil;
+	}
+	
 	if (baseCommit != nil && 
 		![newBase isEqual: baseCommit])
 	{
