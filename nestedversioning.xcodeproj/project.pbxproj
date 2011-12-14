@@ -119,8 +119,8 @@
 		668F26B81498327400A3CEA6 /* COValueDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COValueDiff.m; sourceTree = "<group>"; };
 		669CADDE1491646300D0CF5F /* COManagedItemTreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COManagedItemTreeNode.h; sourceTree = "<group>"; };
 		669CADDF1491646300D0CF5F /* COManagedItemTreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COManagedItemTreeNode.m; sourceTree = "<group>"; };
-		669CADE61491844000D0CF5F /* COTreeDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COTreeDiff.h; sourceTree = "<group>"; };
-		669CADE71491844000D0CF5F /* COTreeDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COTreeDiff.m; sourceTree = "<group>"; };
+		669CADE61491844000D0CF5F /* COTreeDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = COTreeDiff.h; path = ../COTreeDiff.h; sourceTree = "<group>"; };
+		669CADE71491844000D0CF5F /* COTreeDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = COTreeDiff.m; path = ../COTreeDiff.m; sourceTree = "<group>"; };
 		66DFAEBF142A726100623060 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		66DFAEC4142A726100623060 /* COMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COMacros.h; sourceTree = "<group>"; };
 		66DFAECA142A726100623060 /* test-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "test-Prefix.pch"; sourceTree = "<group>"; };
@@ -379,6 +379,8 @@
 				66E5039E1495F9CF003C69C7 /* diff.hh */,
 				66E4BE551496956200B7024A /* COItemDiff.h */,
 				66E4BE561496956200B7024A /* COItemDiff.m */,
+				669CADE61491844000D0CF5F /* COTreeDiff.h */,
+				669CADE71491844000D0CF5F /* COTreeDiff.m */,
 			);
 			path = Diff;
 			sourceTree = "<group>";
@@ -468,8 +470,6 @@
 				66E61DC914902D6500FA55DA /* COItemTreeManager.m */,
 				66EDFD9A148F557800D0DC0B /* COMutableLayer.h */,
 				66EDFD9B148F557800D0DC0B /* COMutableLayer.m */,
-				669CADE61491844000D0CF5F /* COTreeDiff.h */,
-				669CADE71491844000D0CF5F /* COTreeDiff.m */,
 				668F26B414982F8700A3CEA6 /* COStoreItemProvider.h */,
 				668F26B514982F8700A3CEA6 /* COStoreItemProvider.m */,
 			);
