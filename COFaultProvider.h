@@ -2,14 +2,14 @@
 #import "COItem.h"
 #import "ETUUID.h"
 
-@protocol COFaultObserver <NSObject>
+//@protocol COFaultObserver <NSObject>
 
 /**
  * The fault provider will call this when its state changes
  */
-- (void) refetchUUIDs: (NSSet*)aSet;
+//- (void) refetchUUIDs: (NSSet*)aSet;
 
-@end
+//@end
 
 /**
  * Protocol to bridge an editing context and an item tree cache
@@ -21,7 +21,7 @@
  */
 - (COItem*) itemForUUID: (ETUUID *)aUUID;
 
-- (void) addFaultObserver: (id<COFaultObserver>)anObserver;
-- (void) removeFaultObserver: (id<COFaultObserver>)anObserver;
+//- (void) addFaultObserver: (id<COFaultObserver>)anObserver;
+//- (void) removeFaultObserver: (id<COFaultObserver>)anObserver;
 
 @end

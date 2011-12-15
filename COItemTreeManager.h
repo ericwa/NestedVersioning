@@ -7,7 +7,7 @@
 
 @interface COItemTreeManager : NSObject
 {
-	id <COFaultProvider> faultProvider;
+	id <COFaultProvider> faultProvider; // weak reference
 	
 	NSMutableDictionary *itemTreeNodeForUUID;
 }

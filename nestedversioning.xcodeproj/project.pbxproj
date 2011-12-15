@@ -356,6 +356,7 @@
 				66E2FFB614899C7A00C66578 /* COPersistentRootEditingContext+PersistentRoots.h */,
 				79ABB071148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.h */,
 				79297307148C94FD00FD35A9 /* COItemFactory.h */,
+				66E61DC814902D6500FA55DA /* COItemTreeManager.h */,
 				66E5CBAB148311A000D01039 /* Implementation */,
 			);
 			name = Store;
@@ -396,6 +397,7 @@
 				66EADD68147345B9003181FC /* COItem.m */,
 				66E76735148B3D1C009937E8 /* COItemTreeNode.m */,
 				79297308148C94FD00FD35A9 /* COItemFactory.m */,
+				66E61DC914902D6500FA55DA /* COItemTreeManager.m */,
 			);
 			name = Implementation;
 			sourceTree = "<group>";
@@ -466,8 +468,6 @@
 				66EDFD90148EF6D700D0DC0B /* COFaultProvider.h */,
 				669CADDE1491646300D0CF5F /* COManagedItemTreeNode.h */,
 				669CADDF1491646300D0CF5F /* COManagedItemTreeNode.m */,
-				66E61DC814902D6500FA55DA /* COItemTreeManager.h */,
-				66E61DC914902D6500FA55DA /* COItemTreeManager.m */,
 				66EDFD9A148F557800D0DC0B /* COMutableLayer.h */,
 				66EDFD9B148F557800D0DC0B /* COMutableLayer.m */,
 				668F26B414982F8700A3CEA6 /* COStoreItemProvider.h */,

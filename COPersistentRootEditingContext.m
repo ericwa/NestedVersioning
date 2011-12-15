@@ -186,6 +186,17 @@
 	return nil;
 }
 
+
+- (COItem*) itemForUUID: (ETUUID *)aUUID
+{
+	if (baseCommit != nil)
+	{
+		return [store storeItemForEmbeddedObject: aUUID
+										inCommit: baseCommit];
+	}
+	return nil;
+}
+
 // FIXME: Duplicate of code in COTreeDiff
 - (NSSet *) _allEmbeddedObjectUUIDsForUUID: (ETUUID*) aUUID
 {
