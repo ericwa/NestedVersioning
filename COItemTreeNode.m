@@ -9,7 +9,7 @@
 	
 	SUPERINIT
 	root = [[COMutableItem alloc] initWithUUID: aUUID];
-	items = [[NSMutableDictionary alloc] init];
+	embeddedItemTreeNodes = [[NSMutableDictionary alloc] init];
 	return self;
 }
 
@@ -21,7 +21,7 @@
 - (void) dealloc
 {
 	[root release];
-	[items release];
+	[embeddedItemTreeNodes release];
 	[super dealloc];
 }
 
@@ -87,17 +87,17 @@
 			
 			for (ETUUID *uuid in rootValue)
 			{
-				assert([items objectForKey: uuid] != nil);
-				[container addObject: [items objectForKey: uuid]];
+				assert([embeddedItemTreeNodes objectForKey: uuid] != nil);
+				[container addObject: [embeddedItemTreeNodes objectForKey: uuid]];
 			}
 			
 			return container;
 		}
 		else
 		{
-			assert([items objectForKey: rootValue] != nil);
+			assert([embeddedItemTreeNodes objectForKey: rootValue] != nil);
 			
-			return [items objectForKey: rootValue];
+			return [embeddedItemTreeNodes objectForKey: rootValue];
 		}
 	}
 	else
@@ -134,7 +134,7 @@
 			{
 				assert([aTree isKindOfClass: [COItemTreeNode class]]);
 				[container addObject: [aTree UUID]];
-				[items setObject: aTree forKey: [aTree UUID]];
+				[embeddedItemTreeNodes setObject: aTree forKey: [aTree UUID]];
 				((COItemTreeNode*)aTree)->parent = self;
 			}
 			
@@ -143,7 +143,7 @@
 		else
 		{
 			assert([aValue isKindOfClass: [self class]]);
-			[items setObject: aValue forKey: [aValue UUID]];
+			[embeddedItemTreeNodes setObject: aValue forKey: [aValue UUID]];
 			((COItemTreeNode*)aValue)->parent = self;
 			[root setValue: [aValue UUID] forAttribute: anAttribute type: aType];
 		}
@@ -257,16 +257,16 @@
 	
 	COItemTreeNode *newCopy = [[COItemTreeNode alloc] init];
 	
-	for (ETUUID *uuid in items)
+	for (ETUUID *uuid in embeddedItemTreeNodes)
 	{
-		COItemTreeNode *tree = [[items objectForKey: uuid] copyWithZone: zone];
+		COItemTreeNode *tree = [[embeddedItemTreeNodes objectForKey: uuid] copyWithZone: zone];
 		[newItems setObject: tree forKey: uuid];
 		tree->parent = newCopy;
 		[tree release];
 	}
 	
 	ASSIGN(newCopy->root, newRoot);
-	ASSIGN(newCopy->items, newItems);
+	ASSIGN(newCopy->embeddedItemTreeNodes, newItems);
 		   
 	return newCopy;
 }
@@ -293,7 +293,7 @@
 
 - (NSUInteger) hash
 {
-	return [root hash] ^ [items hash];
+	return [root hash] ^ [embeddedItemTreeNodes hash];
 }
 
 @end

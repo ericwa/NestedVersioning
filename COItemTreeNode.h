@@ -4,14 +4,11 @@
 #import "ETUUID.h"
 
 
-/**
- * note: items retrieved from an item tree should be copied before being modified
- */
 @interface COItemTreeNode : NSObject <NSCopying>
 {
 	@private
 	COMutableItem *root;
-	NSMutableDictionary *items;
+	NSMutableDictionary *embeddedItemTreeNodes;
 	COItemTreeNode *parent;
 }
 
