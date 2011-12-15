@@ -45,7 +45,7 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes;
 // allows treating primitive or container, unordered or ordered as NSArray
 - (NSArray*) allObjectsForAttribute: (NSString*)attribute;
 
-- (NSSet *) allEmbeddedItemUUIDs;
+- (NSSet *) embeddedItemUUIDs;
 
 /** @taskunit NSCopying and NSMutableCopying */
 

@@ -192,7 +192,7 @@ static id importValueFromPlist(id aPlist)
 	}
 }
 
-- (NSSet *) allEmbeddedItemUUIDs
+- (NSSet *) embeddedItemUUIDs
 {
 	NSMutableSet *result = [NSMutableSet set];
 	
