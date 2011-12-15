@@ -3,12 +3,10 @@
 #import "COItem.h"
 #import "COStore.h"
 #import "COItemTreeNode.h"
-#import "COFaultProvider.h"
-#import "COItemTreeManager.h"
 
 @class COStore;
 
-@interface COPersistentRootEditingContext : NSObject <COFaultProvider>
+@interface COPersistentRootEditingContext : NSObject
 {
 	COStore *store;
 	
@@ -26,7 +24,8 @@
 	// -- in-memory mutable state which is "overlaid" on the 
 	// persistent state represented by baseCommit
 	
-	COItemTreeManager *treeManager;
+	NSMutableDictionary *insertedOrUpdatedItems;
+	ETUUID *rootItemUUID;
 }
 
 /** @taskunit creation */
@@ -131,13 +130,5 @@
  * Replace the entire contents of the receiver with the given item tree
  */
 - (void) setItemTree: (COItemTreeNode *)aTree;
-
-/** @taskunit COFaultProvider protocol */
-
-/**
- * Note: accesses item directly from store, bypassing mutable state in the context
- */
-- (COItem*) itemForUUID: (ETUUID *)aUUID;
-- (ETUUID *) rootItemUUID;
 
 @end
