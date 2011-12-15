@@ -87,7 +87,7 @@
 	
     SUPERINIT;
 	
-	insertedOrUpdatedItems = [[NSMutableDictionary alloc] init];
+	ASSIGN(treeManager, [COItemTreeManager treeManagerWithFaultProvider: self]);
 	
 	ASSIGN(path, aPath);
 	ASSIGN(store, aStore);
@@ -108,14 +108,7 @@
 		
 		return nil;
 	}
-	
-	
-	if (baseCommit != nil)
-	{
-		ASSIGN(rootItemUUID, [store rootItemForCommit: baseCommit]);
-	}
-	// if there has never been a commit, rootItem is nil.	
-	
+		
     return self;
 }
 
@@ -141,8 +134,7 @@
 	[store release];
 	[path release];
 	[baseCommit release];
-	[insertedOrUpdatedItems release];
-	[rootItemUUID release];
+	[treeManager release];
 	[super dealloc];
 }
 
@@ -193,6 +185,15 @@
 	{
 		return [store storeItemForEmbeddedObject: aUUID
 										inCommit: baseCommit];
+	}
+	return nil;
+}
+
+- (ETUUID *) rootItemUUID
+{
+	if (baseCommit != nil)
+	{
+		return [store rootItemForCommit: baseCommit];
 	}
 	return nil;
 }

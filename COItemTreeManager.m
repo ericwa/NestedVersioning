@@ -48,4 +48,18 @@
 	return node;
 }
 
+- (COManagedItemTreeNode *) rootItemTreeNode
+{
+	if (cachedRootUUID == nil)
+	{
+		ASSIGN(cachedRootUUID, [faultProvider rootItemUUID]);
+	}
+	return [self itemTreeNodeForUUID: cachedRootUUID];
+}
+
+- (void) setRootItemTreeNode: (COItemTreeNode *)aTree
+{
+	
+}
+
 @end

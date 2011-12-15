@@ -21,6 +21,8 @@
  */
 - (COItem*) itemForUUID: (ETUUID *)aUUID;
 
+- (ETUUID *) rootItemUUID;
+
 //- (void) addFaultObserver: (id<COFaultObserver>)anObserver;
 //- (void) removeFaultObserver: (id<COFaultObserver>)anObserver;
 

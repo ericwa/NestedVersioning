@@ -190,8 +190,6 @@
 		66EDFD90148EF6D700D0DC0B /* COFaultProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COFaultProvider.h; sourceTree = "<group>"; };
 		66EDFD94148EF73200D0DC0B /* COType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COType.h; sourceTree = "<group>"; };
 		66EDFD95148EF73200D0DC0B /* COType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COType.m; sourceTree = "<group>"; };
-		66EDFD9A148F557800D0DC0B /* COMutableLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COMutableLayer.h; sourceTree = "<group>"; };
-		66EDFD9B148F557800D0DC0B /* COMutableLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COMutableLayer.m; sourceTree = "<group>"; };
 		66EE5D34146355A6008AA95B /* COPersistentRootEditingContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPersistentRootEditingContext.h; sourceTree = "<group>"; };
 		66EE5D35146355A6008AA95B /* COPersistentRootEditingContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COPersistentRootEditingContext.m; sourceTree = "<group>"; };
 		66EE5D3814637418008AA95B /* COPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPath.h; sourceTree = "<group>"; };
@@ -349,9 +347,11 @@
 		66E2A305143057A100487419 /* Store */ = {
 			isa = PBXGroup;
 			children = (
+				66EDFD90148EF6D700D0DC0B /* COFaultProvider.h */,
 				66E877551455F0CB006CBE7E /* COStore.h */,
 				66EADD67147345B9003181FC /* COItem.h */,
 				66E76734148B3D1C009937E8 /* COItemTreeNode.h */,
+				669CADDE1491646300D0CF5F /* COManagedItemTreeNode.h */,
 				66EE5D34146355A6008AA95B /* COPersistentRootEditingContext.h */,
 				66E2FFB614899C7A00C66578 /* COPersistentRootEditingContext+PersistentRoots.h */,
 				79ABB071148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.h */,
@@ -396,6 +396,7 @@
 				66E877561455F0CB006CBE7E /* COStore.m */,
 				66EADD68147345B9003181FC /* COItem.m */,
 				66E76735148B3D1C009937E8 /* COItemTreeNode.m */,
+				669CADDF1491646300D0CF5F /* COManagedItemTreeNode.m */,
 				79297308148C94FD00FD35A9 /* COItemFactory.m */,
 				66E61DC914902D6500FA55DA /* COItemTreeManager.m */,
 			);
@@ -465,11 +466,6 @@
 		66EDFD8E148EF64600D0DC0B /* New Store Objects */ = {
 			isa = PBXGroup;
 			children = (
-				66EDFD90148EF6D700D0DC0B /* COFaultProvider.h */,
-				669CADDE1491646300D0CF5F /* COManagedItemTreeNode.h */,
-				669CADDF1491646300D0CF5F /* COManagedItemTreeNode.m */,
-				66EDFD9A148F557800D0DC0B /* COMutableLayer.h */,
-				66EDFD9B148F557800D0DC0B /* COMutableLayer.m */,
 				668F26B414982F8700A3CEA6 /* COStoreItemProvider.h */,
 				668F26B514982F8700A3CEA6 /* COStoreItemProvider.m */,
 			);

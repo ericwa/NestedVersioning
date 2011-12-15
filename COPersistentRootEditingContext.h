@@ -138,5 +138,6 @@
  * Note: accesses item directly from store, bypassing mutable state in the context
  */
 - (COItem*) itemForUUID: (ETUUID *)aUUID;
+- (ETUUID *) rootItemUUID;
 
 @end
