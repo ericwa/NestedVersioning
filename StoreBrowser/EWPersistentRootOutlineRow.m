@@ -355,12 +355,15 @@ isPrimitiveInContainer: (BOOL)aFlag
 					[cell setBezelStyle: NSRoundRectBezelStyle];
 					NSMenu *aMenu = [[[NSMenu alloc] init] autorelease];
 					
-					for (ETUUID *aBranch in [self orderedBranchesForUUID: [self UUID]])
+					NSArray *branches = [self orderedBranchesForUUID: [self UUID]];
+					for (ETUUID *aBranch in branches)
 					{
 						[aMenu addItemWithTitle: [aBranch stringValue]
 										 action: nil
 								  keyEquivalent: @""];
 					}
+					
+					[cell setEnabled: ([branches count] > 1)];
 					[cell setMenu: aMenu];
 					
 					return cell;
