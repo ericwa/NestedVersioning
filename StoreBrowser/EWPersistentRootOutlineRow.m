@@ -26,6 +26,11 @@ isPrimitiveInContainer: (BOOL)aFlag
 	return self;
 }
 
+- (BOOL) isPrimitiveInContainer
+{
+	return isPrimitiveInContainer;
+}
+
 - (id) initWithContext: (COPersistentRootEditingContext *)aContext
 			  itemUUID: (ETUUID *)aUUID
 			 attribute: (NSString*)anAttribute

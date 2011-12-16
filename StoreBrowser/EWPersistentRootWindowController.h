@@ -8,6 +8,8 @@
 #import "EWPersistentRootOutlineRow.h"
 #import "EWHistoryGraphView.h"
 
+#define EWDragType @"org.etoile.storebrowser.rows"
+
 @interface EWPersistentRootWindowController : NSWindowController
 {
 	COPath *path;

@@ -56,6 +56,9 @@
 
 - (void)windowDidLoad
 {
+	[outlineView registerForDraggedTypes:
+	 [NSArray arrayWithObject: EWDragType]];
+	
 	[outlineView setTarget: self];
 	[outlineView setDoubleAction: @selector(doubleClick:)];
 	
@@ -260,6 +263,133 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 {
 	return [[self modelForItem: item] valueForTableColumn: column];
 }
+
+/* Drag & Drop */
+
+- (BOOL)outlineView:(NSOutlineView *)outlineView writeItems:(NSArray *)items toPasteboard:(NSPasteboard *)pb
+{
+	NSMutableArray *pbItems = [NSMutableArray array];
+
+	if ([items count] == 0) return;
+	
+	EWPersistentRootOutlineRow *firstItem = [items objectAtIndex: 0];
+	
+	for (EWPersistentRootOutlineRow *row in items)
+	{    
+		if ([row parent] != [firstItem parent]) // Keep things simple by only allowing multiple rows if they are siblings
+		{
+			return NO;
+		}
+		
+		NSPasteboardItem *item = [[[NSPasteboardItem alloc] init] autorelease];
+		[item setPropertyList: [NSNumber numberWithInteger: (NSInteger)row]
+					  forType: EWDragType];
+		[pbItems addObject: item];
+	}
+	
+	[pb clearContents];
+	return [pb writeObjects: pbItems];
+}
+
+- (NSDragOperation)outlineView:(NSOutlineView *)outlineView validateDrop:(id <NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)index
+{
+	if (item != nil && ![item isKindOfClass: [EWPersistentRootOutlineRow class]])
+	{
+		return NSDragOperationNone;
+	}
+	for (NSPasteboardItem *pbItem in [[info draggingPasteboard] pasteboardItems])
+	{
+		EWPersistentRootOutlineRow *srcItem = (EWPersistentRootOutlineRow*)[[pbItem propertyListForType: EWDragType] integerValue];
+		
+		// Ensure the destination isn't a child of, or equal to, the source    
+		for (EWPersistentRootOutlineRow *tempDest = item; tempDest != nil; tempDest = [tempDest parent])
+		{
+			if (tempDest == srcItem)
+			{
+				return NSDragOperationNone;
+			}
+		}
+	}
+	return NSDragOperationPrivate;
+}
+
+- (BOOL)outlineView:(NSOutlineView *)outlineView acceptDrop:(id <NSDraggingInfo>)info item:(id)newParent childIndex:(NSInteger)index
+{
+	newParent = [self modelForItem: newParent];
+	
+	NSUInteger insertionIndex = index;
+	
+	NSMutableIndexSet *newSelectedRows = [NSMutableIndexSet indexSet];
+	NSMutableArray *outlineItems = [NSMutableArray array];
+	
+	for (NSPasteboardItem *pbItem in [[info draggingPasteboard] pasteboardItems])
+	{
+		[outlineItems addObject: (EWPersistentRootOutlineRow*)[[pbItem propertyListForType: EWDragType] integerValue]];
+	}
+	
+	return NO;
+	
+	// Make a link if the user is holding control 
+	/*
+	if ([info draggingSourceOperationMask] == NSDragOperationLink &&
+		![[outlineItems objectAtIndex: 0] isKindOfClass: [ItemReference class]]) // Don't make links to link objects
+	{
+		OutlineItem *itemToLinkTo = [outlineItems objectAtIndex: 0];
+		
+		if (insertionIndex == -1) { insertionIndex = [[newParent contents] count]; }
+		
+		ItemReference *ref = [[ItemReference alloc] initWithParent: newParent
+													referencedItem: itemToLinkTo
+														   context: [[self rootObject] objectContext]];
+		[ref autorelease];
+		
+		[newParent addItem: ref 
+				   atIndex: insertionIndex]; 
+		
+		[self commitWithType: kCOTypeMinorEdit
+			shortDescription: @"Drop Link"
+			 longDescription: [NSString stringWithFormat: @"Drop Link to %@ on %@", [itemToLinkTo label], [newParent label]]];
+		
+		return;
+	}
+	
+	// Here we only work on the model.
+	
+	for (OutlineItem *outlineItem in outlineItems)
+	{
+		OutlineItem *oldParent = [outlineItem parent];
+		NSUInteger oldIndex = [[oldParent contents] indexOfObject: outlineItem];
+		
+		NSLog(@"Dropping %@ from %@", [outlineItem label], [oldParent label]);
+		if (insertionIndex == -1) { insertionIndex = [[newParent contents] count]; }
+		
+		if (oldParent == newParent && insertionIndex > oldIndex)
+		{
+			[oldParent removeItemAtIndex: oldIndex];
+			[newParent addItem: outlineItem atIndex: insertionIndex-1]; 
+		}
+		else
+		{
+			[oldParent removeItemAtIndex: oldIndex];
+			[newParent addItem: outlineItem atIndex: insertionIndex++]; 
+		}
+	}
+	
+	[self commitWithType: kCOTypeMinorEdit
+		shortDescription: @"Drop Items"
+		 longDescription: [NSString stringWithFormat: @"Drop %d items on %@", (int)[outlineItems count], [newParent label]]];
+	
+	[outlineView expandItem: newParent];
+	
+	for (OutlineItem *outlineItem in outlineItems)
+	{
+		[newSelectedRows addIndex: [outlineView rowForItem: outlineItem]];
+	}  
+	[outlineView selectRowIndexes: newSelectedRows byExtendingSelection: NO];
+	
+	return YES;*/
+}
+
 
 /* NSOutlineView delegate */
 

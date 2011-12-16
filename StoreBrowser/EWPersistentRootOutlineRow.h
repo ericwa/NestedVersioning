@@ -23,6 +23,7 @@
 
 - (ETUUID *)UUID;
 - (NSString *)attribute;
+- (BOOL) isPrimitiveInContainer;
 
 - (id)initWithContext: (COPersistentRootEditingContext *)aContext
 			   parent: (EWPersistentRootOutlineRow *)aParent;
