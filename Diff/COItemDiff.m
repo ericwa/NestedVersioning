@@ -1,5 +1,6 @@
 #import "COItemDiff.h"
 #import "COMacros.h"
+#import "COType+Diff.h"
 
 // operation classes
 
@@ -35,11 +36,24 @@
 @interface COStoreItemDiffOperationDeleteAttribute : COStoreItemDiffOperation
 @end
 
+/**
+ * Type changes
+ */
+@interface COStoreItemDiffOperationReplaceAttribute : COStoreItemDiffOperationInsertAttribute
+@end
 
-
+/**
+ * Type stays the same
+ */
 @interface COStoreItemDiffOperationModifyAttribute : COStoreItemDiffOperation
 {
+	id <COValueDiff> valueDiff;
 }
+
+- (id) initWithAttribute: (NSString*)anAttribute
+					type: (COType*)aType
+				oldValue: (id)valueA
+				newValue: (id)valueB;
 
 @end
 
@@ -109,6 +123,7 @@
 
 - (void) applyTo: (COMutableItem *)anItem
 {
+	// FIXME: Fail if the attribute already has a value
 	[anItem setValue: value
 		forAttribute: attribute
 				type: type];
@@ -116,7 +131,17 @@
 
 @end
 
+@implementation COStoreItemDiffOperationReplaceAttribute
 
+- (void) applyTo: (COMutableItem *)anItem
+{
+	// FIXME: Fail of the attribute does _not_ already have a value
+	[anItem setValue: value
+		forAttribute: attribute
+				type: type];
+}
+
+@end
 
 @implementation COStoreItemDiffOperationDeleteAttribute
 
@@ -130,6 +155,34 @@
 
 
 @implementation COStoreItemDiffOperationModifyAttribute
+
+- (id) initWithAttribute: (NSString*)anAttribute
+					type: (COType*)aType
+				oldValue: (id)valueA
+				newValue: (id)valueB
+{
+	if (nil == (self = [super initWithAttribute: anAttribute type: aType]))
+		return nil;
+	
+	ASSIGN(valueDiff, [aType diffValue: valueA withValue: valueB]);
+	
+	return self;
+}
+
+- (void)dealloc
+{
+	[valueDiff release];
+	[super dealloc];
+}
+
+- (void) applyTo: (COMutableItem *)anItem
+{
+	id oldValue = [anItem valueForAttribute: attribute];
+	id newValue = [valueDiff valueWithDiffAppliedToValue: oldValue];
+	[anItem setValue: newValue
+		forAttribute: attribute
+				type: type];
+}
 
 @end
 
@@ -211,12 +264,22 @@
 		id valueA = [itemA valueForAttribute: commonAttr];
 		id valueB = [itemB valueForAttribute: commonAttr];
 		
-		if (![typeB isEqual: typeA] || ![valueB isEqual: valueA])
+		if (![typeB isEqual: typeA])
 		{
-			COStoreItemDiffOperationInsertAttribute *editOp = [[COStoreItemDiffOperationInsertAttribute alloc] 
-																 initWithAttribute: commonAttr
-																 type: [itemB typeForAttribute: commonAttr]
-																 value: [itemB valueForAttribute:commonAttr]];
+			COStoreItemDiffOperationReplaceAttribute *editOp = [[COStoreItemDiffOperationReplaceAttribute alloc]
+																initWithAttribute: commonAttr
+																type: [itemB typeForAttribute: commonAttr]
+																value: [itemB valueForAttribute:commonAttr]];
+			[edits addObject:editOp];
+			[editOp release];
+		}
+		else if (![valueB isEqual: valueA])
+		{
+			COStoreItemDiffOperationModifyAttribute *editOp = [[COStoreItemDiffOperationModifyAttribute alloc]
+															   initWithAttribute: commonAttr
+																			type: [itemB typeForAttribute: commonAttr]
+																		oldValue: [itemA valueForAttribute:commonAttr]
+																		newValue: [itemB valueForAttribute:commonAttr]];
 			[edits addObject:editOp];
 			[editOp release];
 		}
