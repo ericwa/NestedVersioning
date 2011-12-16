@@ -23,7 +23,8 @@
 	
 	ASSIGN(path, aPath);
 	ASSIGN(store, aStore);
-
+	ASSIGN(expansion, [NSMutableDictionary dictionary]);
+	
 	[self setupCtx];
 	
 	NSLog(@"%@, %@", [self window], [aStore URL]);
@@ -87,10 +88,33 @@
 	
 }
 
+- (BOOL) isExpanded: (EWPersistentRootOutlineRow*)aRow
+{
+	return [[expansion objectForKey: [aRow identifier]] boolValue];
+}
+- (void) setExpanded: (BOOL)flag
+			  forRow: (EWPersistentRootOutlineRow *)aRow
+{
+	[expansion setObject: [NSNumber numberWithBool: flag] forKey: [aRow identifier]];
+}
+
+- (void)doExpansion: (EWPersistentRootOutlineRow *)row
+{
+	if ([self isExpanded: row])
+	{
+		[outlineView expandItem: row];
+	}
+	for (EWPersistentRootOutlineRow *child in [row children])
+	{
+		[self doExpansion: child];
+	}
+}
+
 - (void) reloadBrowser
 {
 	[self setupCtx];
 	[outlineView reloadData];
+	[self doExpansion: outlineModel];
 }
 
 - (IBAction) highlightInParent: (id)sender
@@ -414,5 +438,17 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 {
 	[item setValue: object forTableColumn: tableColumn];
 }
+
+- (void)outlineViewItemDidCollapse: (NSNotification *)notif
+{
+	EWPersistentRootOutlineRow *anItem = [[notif userInfo] objectForKey: @"NSObject"];
+	[self setExpanded: NO forRow: anItem];
+}
+- (void)outlineViewItemDidExpand: (NSNotification *)notif
+{
+	EWPersistentRootOutlineRow *anItem = [[notif userInfo] objectForKey: @"NSObject"];
+	[self setExpanded: YES forRow: anItem];
+}
+
 
 @end

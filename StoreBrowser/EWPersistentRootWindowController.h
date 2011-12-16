@@ -23,7 +23,13 @@
 	IBOutlet NSButton *highlightInParentButton;
 	IBOutlet NSButton *undoButton;
 	IBOutlet NSButton *redoButton;
+	
+	NSMutableDictionary *expansion;
 }
+
+- (BOOL) isExpanded: (EWPersistentRootOutlineRow*)aRow;
+- (void) setExpanded: (BOOL)flag
+			 forRow: (EWPersistentRootOutlineRow *)aRow;
 
 - (id)initWithPath: (COPath*)aPath
 			 store: (COStore*)aStore;

@@ -38,4 +38,6 @@
 
 - (void) deleteRow;
 
+- (id) identifier;
+
 @end

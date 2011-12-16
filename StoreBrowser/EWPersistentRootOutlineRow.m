@@ -436,5 +436,16 @@ isPrimitiveInContainer: (BOOL)aFlag
 	[[NSApp delegate] reloadAllBrowsers];
 }
 
+- (id)identifier
+{
+	ETUUID *aUUID = [self UUID];
+	NSString *attr = [self attribute];
+	NSNumber *isPrimitiveInContainer = [NSNumber numberWithBool: [self isPrimitiveInContainer]];
+	
+	if (attr == nil) attr = @"";
+	
+	return S(aUUID, attr, isPrimitiveInContainer);
+}
+
 @end
 
