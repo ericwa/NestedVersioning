@@ -4,12 +4,22 @@ TODO
 [x] (Nov 17/2011) rewrite store classes to use COStoreItem
 [ ] (Nov 30/2011) investigate a lazy loading/faulting api, refactor editing context api
 [ ] (dec 5)       search
-[ ] (dec 5)       work on storebrowser
-[ ] (dec 6)       make COStoreItem immutable. implement an efficient mutable t
+[x] (dec 5)       work on storebrowser
+[x] (dec 6)       make COStoreItem immutable. 
+[ ] (dec 6)       implement an efficient mutable tree
                   by layering a diff together with an efficient immutable tree
                   this should be decoupled from the editing context code, and 
                   should become a thin wrapper around it.
-
+[ ] (dec 15)      fix up graph drawing
+[ ] (dec 15)      port over merge code.
+[ ] (dec 15)      come up with a way of representing merge conflicts
+[ ] (dec 15)      finally finish the mutable tree wrapper over COItem.
+                  it should enforce the various validity constraints
+				  (only one copy of a embedded item per tree, etc.), and
+				  support joining trees (if they don't conflict),
+				  detatching trees, moving subtrees. it should also be usable
+				  standalone, with just COType and COItem classes. (no dependencies
+				  on stores/persistent root editing context/ etc.)
 last:
 
 [ ] migrate to sqlite
