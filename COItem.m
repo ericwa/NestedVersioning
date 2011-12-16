@@ -188,7 +188,10 @@ static id importValueFromPlist(id aPlist)
 		{
 			return value;
 		}
-		else assert(0);
+		else
+		{
+			return [NSArray array];
+		}
 	}
 }
 
