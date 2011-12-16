@@ -1,7 +1,6 @@
 #import "COStore.h"
 #import "COMacros.h"
 #import "COStorePrivate.h"
-#import "COPersistentRootEditingContext.h"
 
 @implementation COStore
 
@@ -297,13 +296,6 @@
 							atomically: YES
 							  encoding: NSUTF8StringEncoding
 								 error: NULL];
-}
-
-/** @taskunit accessing the root context */
-
-- (COPersistentRootEditingContext *) rootContext
-{
-	return [COPersistentRootEditingContext editingContextForEditingTopLevelOfStore: self];
 }
 
 @end

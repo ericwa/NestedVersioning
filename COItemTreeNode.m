@@ -325,5 +325,27 @@
 	return [root hash] ^ [embeddedItemTreeNodes hash];
 }
 
+- (BOOL) isFault
+{
+	return valueForAttribute == nil;
+}
+
+- (COItemTreeManager *) manager
+{
+	return manager;
+}
+
+- (void) unfault
+{
+	DESTROY(valueForAttribute);
+	DESTROY(typeForAttribute);
+	
+	valueForAttribute = [[NSMutableDictionary alloc] init];
+	typeForAttribute = [[NSMutableDictionary alloc] init];
+	
+	
+}
+
+
 @end
 

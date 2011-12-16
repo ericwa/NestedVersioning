@@ -12,17 +12,14 @@
 	COItemTreeNode *parent;
 }
 
-- (id) initWithUUID: (ETUUID*)aUUID;
+/** @taskunit creation */
 
 /**
- * init with a new UUID
- */
-- (id) init;
-
-/**
- * new item with new UIID
+ * new standalone in-memory item tree with new UIID
  */
 + (COItemTreeNode *)itemTree;
+
+/** @taskunit tree navigation */
 
 - (ETUUID *)UUID;
 
@@ -36,6 +33,8 @@
  * Returns the root of the item tree
  */
 - (COItemTreeNode *) root;
+
+
 
 - (NSArray *) attributeNames;
 

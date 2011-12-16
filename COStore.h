@@ -1,9 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "ETUUID.h"
 #import "COItem.h"
-#import "COPersistentRootEditingContext.h"
 
-@class COPersistentRootEditingContext;
 @class COItem;
 
 /**
@@ -92,15 +90,6 @@
  * none of X's parents will be deleted.
  */
 - (void) gc;
-
-/** @taskunit accessing the root context */
-
-/**
- * returns a new context every time
- */
-- (COPersistentRootEditingContext *) rootContext;
-
-
 
 /** @taskunit search */
 
