@@ -24,6 +24,7 @@
 		66E0189F146468F6000EB1E0 /* TestBLOB.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E0189E146468F6000EB1E0 /* TestBLOB.m */; };
 		66E22EC91421D47100C00A98 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E22EC81421D47100C00A98 /* Foundation.framework */; };
 		66E2FFB814899C7B00C66578 /* COPersistentRootEditingContext+PersistentRoots.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E2FFB714899C7A00C66578 /* COPersistentRootEditingContext+PersistentRoots.m */; };
+		66E42F16149A91A600C90D5A /* TestTreeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E42F15149A91A600C90D5A /* TestTreeManager.m */; };
 		66E46D48146A3D490042123E /* TestDeletion.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E46D47146A3D490042123E /* TestDeletion.m */; };
 		66E4BE571496956200B7024A /* COItemDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E4BE561496956200B7024A /* COItemDiff.m */; };
 		66E4BE5B149713CA00B7024A /* COType+Diff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E4BE5A149713CA00B7024A /* COType+Diff.m */; };
@@ -129,6 +130,7 @@
 		66E2A3031430569C00487419 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
 		66E2FFB614899C7A00C66578 /* COPersistentRootEditingContext+PersistentRoots.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COPersistentRootEditingContext+PersistentRoots.h"; sourceTree = "<group>"; };
 		66E2FFB714899C7A00C66578 /* COPersistentRootEditingContext+PersistentRoots.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "COPersistentRootEditingContext+PersistentRoots.m"; sourceTree = "<group>"; };
+		66E42F15149A91A600C90D5A /* TestTreeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestTreeManager.m; sourceTree = "<group>"; };
 		66E46D47146A3D490042123E /* TestDeletion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestDeletion.m; sourceTree = "<group>"; };
 		66E4BE551496956200B7024A /* COItemDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COItemDiff.h; sourceTree = "<group>"; };
 		66E4BE561496956200B7024A /* COItemDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COItemDiff.m; sourceTree = "<group>"; };
@@ -474,6 +476,7 @@
 				66DFAEBF142A726100623060 /* main.m */,
 				66EADD6414732AEE003181FC /* TestUndo.m */,
 				66F4E315147C59F0004FC1BA /* TestTagging.m */,
+				66E42F15149A91A600C90D5A /* TestTreeManager.m */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -630,6 +633,7 @@
 				66E4BE571496956200B7024A /* COItemDiff.m in Sources */,
 				66E4BE5B149713CA00B7024A /* COType+Diff.m in Sources */,
 				668F26B614982F8700A3CEA6 /* COStoreItemProvider.m in Sources */,
+				66E42F16149A91A600C90D5A /* TestTreeManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

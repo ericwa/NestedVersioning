@@ -42,11 +42,17 @@
 - (COType *) typeForAttribute: (NSString *)anAttribute;
 - (id) valueForAttribute: (NSString*)anAttribute;
 
-- (void) setValue: (id)aValue
-	 forAttribute: (NSString*)anAttribute
-			 type: (COType *)aType;
+- (void) setPrimitiveValue: (id)aValue
+			  forAttribute: (NSString*)anAttribute
+					  type: (COType *)aType;
+
+
+
 
 - (void)removeValueForAttribute: (NSString*)anAttribute;
+
+- (NSSet *)embeddedItemTreeNodeUUIDs;
+- (NSArray *)embeddedItemTreeNodes;
 
 /** @taskunit I/O */
 
