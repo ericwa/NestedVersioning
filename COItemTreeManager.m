@@ -8,11 +8,17 @@
 
 @implementation COItemTreeManager
 
-- (id)init
+- (id)initWithFaultProvider: (id<COFaultProvider>)aProvider
 {
 	SUPERINIT;
 	itemTreeNodeForUUID = [[NSMutableDictionary alloc] init];
+	faultProvider = aProvider; // weak reference
 	return self;
+}
+
++ (COItemTreeManager *) treeManagerWithFaultProvider: (id<COFaultProvider>)aProvider
+{
+	return [[[self alloc] initWithFaultProvider: aProvider] autorelease];
 }
 
 - (void) refetchUUIDs: (NSSet*)changedUUIDs
@@ -22,7 +28,7 @@
 		COManagedItemTreeNode *node = [itemTreeNodeForUUID objectForKey: aUUID];
 		if (nil != node)
 		{
-			[node unfault];
+			[node refetch]; //[node unfault];
 		}
 		// if node is nil, there is no instantiated COItemTreeNode for that
 		// object, so there is no need to do anything.
@@ -40,6 +46,20 @@
 		[node release];
 	}
 	return node;
+}
+
+- (COManagedItemTreeNode *) rootItemTreeNode
+{
+	if (cachedRootUUID == nil)
+	{
+		ASSIGN(cachedRootUUID, [faultProvider rootItemUUID]);
+	}
+	return [self itemTreeNodeForUUID: cachedRootUUID];
+}
+
+- (void) setRootItemTreeNode: (COItemTreeNode *)aTree
+{
+	
 }
 
 @end

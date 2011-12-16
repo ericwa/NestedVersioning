@@ -81,7 +81,7 @@
 		}
 	}
 	
-	NSLog(@"Commit with parent %@", parent);
+	//NSLog(@"Commit with parent %@", parent);
 	
 	NSMutableDictionary *plist = [NSMutableDictionary dictionaryWithDictionary: D(
 								   [commitUUID stringValue], @"uuid",

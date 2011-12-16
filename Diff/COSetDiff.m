@@ -89,6 +89,11 @@
 	return mutableSet;
 }
 
+- (id) valueWithDiffAppliedToValue: (id)aValue
+{
+	return [self setWithDiffAppliedTo: aValue];
+}
+
 - (COMergeResult *)mergeWith: (COSetDiff *)other;
 {  
 	// FIXME: this method is a mess, can it be simplified?

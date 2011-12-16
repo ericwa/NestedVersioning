@@ -3,12 +3,14 @@
 #import "ETUUID.h"
 #import "COFaultProvider.h"
 
+@class COManagedItemTreeNode;
 @class COItemTreeNode;
 
 @interface COItemTreeManager : NSObject
 {
-	id <COFaultProvider> faultProvider;
+	id <COFaultProvider> faultProvider; // weak reference
 	
+	ETUUID *cachedRootUUID;
 	NSMutableDictionary *itemTreeNodeForUUID;
 }
 
@@ -20,6 +22,10 @@
  *
  * Returns nil if the fault provider doesn't have an item for this UUID.
  */
-- (COItemTreeNode *) itemTreeNodeForUUID: (ETUUID *)aUUID;
+- (COManagedItemTreeNode *) itemTreeNodeForUUID: (ETUUID *)aUUID;
+
+- (COManagedItemTreeNode *) rootItemTreeNode;
+- (void) setRootItemTreeNode: (COItemTreeNode *)aTree;
+
 
 @end

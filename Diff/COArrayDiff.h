@@ -1,7 +1,8 @@
 #import <Foundation/Foundation.h>
 #import "COSequenceDiff.h"
+#import "COType+Diff.h"
 
-@interface COArrayDiff : COSequenceDiff
+@interface COArrayDiff : COSequenceDiff <COValueDiff>
 {
 	
 }
@@ -11,6 +12,8 @@
 
 - (void) applyTo: (NSMutableArray*)array;
 - (NSArray *)arrayWithDiffAppliedTo: (NSArray *)array;
+
+- (id) valueWithDiffAppliedToValue: (id)aValue;
 
 @end
 

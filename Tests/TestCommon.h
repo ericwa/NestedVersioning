@@ -18,3 +18,4 @@ COStore *setupStore();
 
 void testUndo();
 void testTagging();
+void testTreeManager();

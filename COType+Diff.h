@@ -1,8 +1,13 @@
 #import "COType.h"
-#import "COValueDiff.h"
+
+@protocol COValueDiff <NSObject>
+
+- (id) valueWithDiffAppliedToValue: (id)aValue;
+
+@end
 
 @interface COType (Diff)
 
-- (COValueDiff *) diffValue: (id)valueA withValue: (id)valueB;
+- (id <COValueDiff>) diffValue: (id)valueA withValue: (id)valueB;
 
 @end

@@ -130,6 +130,38 @@ void testTagging()
 																		inItemWithUUID: shoot1];
 		
 		
+		// set up some albums
+	
+			ETUUID *albums = [photolibCtx insertTree: [factory folder: @"albums"]
+										 inContainer: photolibFolder];
+			ETUUID *album1 = [photolibCtx insertTree: [factory folder: @"album1"]
+										 inContainer: albums];	
+			ETUUID *album2 = [photolibCtx insertTree: [factory folder: @"album2"]
+										 inContainer: albums];
+	
+		// put photos in the albums as COPaths. Photo 2 and 1 are in both albums
+		// photo 2 appears twice in album1
+		
+			{
+				COMutableItem *item = [photolibCtx _storeItemForUUID: album1];
+				[item setValue: A([COPath pathWithPathComponent: photo1], 
+								  [COPath pathWithPathComponent: photo2],
+								  [COPath pathWithPathComponent: photo2]) 
+				  forAttribute: @"contents"
+						  type: [COType arrayWithPrimitiveType: [COType pathType]]];
+				[photolibCtx _insertOrUpdateItems: S(item)];
+			}
+			{
+				COMutableItem *item = [photolibCtx _storeItemForUUID: album2];
+				[item setValue: A([COPath pathWithPathComponent: photo2], 
+								  [COPath pathWithPathComponent: photo1],
+								  [COPath pathWithPathComponent: photo3]) 
+				  forAttribute: @"contents"
+						  type: [COType arrayWithPrimitiveType: [COType pathType]]];
+				[photolibCtx _insertOrUpdateItems: S(item)];
+			}
+	
+	
 		[photolibCtx commitWithMetadata: nil];
 		
 		// set up tags on photo1

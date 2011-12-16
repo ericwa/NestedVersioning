@@ -26,6 +26,14 @@ void test()
 	 -contained photos can be in multiple albums.
 	 */
 	
+	/*
+	 test deleting a photo; should we automatically delete local (to the same persistent root)
+	 COPath references to it? probably.
+	 
+	 also test deleting a branch of a persistent root; what happens to currentBranch? we will
+	 need special handling to pick a new branch
+	 
+	 */
 	
 	/*
 	 also, test "home-made" versioning, merging:

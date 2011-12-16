@@ -188,9 +188,32 @@ static id importValueFromPlist(id aPlist)
 		{
 			return value;
 		}
-		else assert(0);
+		else
+		{
+			return [NSArray array];
+		}
 	}
 }
+
+- (NSSet *) embeddedItemUUIDs
+{
+	NSMutableSet *result = [NSMutableSet set];
+	
+	for (NSString *key in [self attributeNames])
+	{
+		COType *type = [self typeForAttribute: key];
+		if ([[type primitiveType] isEqual: [COType embeddedItemType]])
+		{		
+			for (ETUUID *embedded in [self allObjectsForAttribute: key])
+			{
+				[result addObject: embedded];
+			}
+		}
+	}
+	return [NSSet setWithSet: result];
+}
+
+/** @taskunit copy */
 
 - (id) copyWithZone: (NSZone *)zone
 {

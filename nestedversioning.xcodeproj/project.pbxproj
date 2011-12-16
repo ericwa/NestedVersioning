@@ -16,7 +16,6 @@
 		66300AFD1493148300246C89 /* EWHistoryGraphView.m in Sources */ = {isa = PBXBuildFile; fileRef = 66300AFC1493148300246C89 /* EWHistoryGraphView.m */; };
 		668D312D14905F0500294077 /* branch.png in Resources */ = {isa = PBXBuildFile; fileRef = 668D312C14905F0500294077 /* branch.png */; };
 		668F26B614982F8700A3CEA6 /* COStoreItemProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 668F26B514982F8700A3CEA6 /* COStoreItemProvider.m */; };
-		668F26B91498327400A3CEA6 /* COValueDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 668F26B81498327400A3CEA6 /* COValueDiff.m */; };
 		669CADDB1491539100D0CF5F /* COType.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EDFD95148EF73200D0DC0B /* COType.m */; };
 		669CADDC1491539100D0CF5F /* COType+Plist.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F39B851490A8540097B7D5 /* COType+Plist.m */; };
 		669CADE81491844000D0CF5F /* COTreeDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 669CADE71491844000D0CF5F /* COTreeDiff.m */; };
@@ -25,6 +24,7 @@
 		66E0189F146468F6000EB1E0 /* TestBLOB.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E0189E146468F6000EB1E0 /* TestBLOB.m */; };
 		66E22EC91421D47100C00A98 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E22EC81421D47100C00A98 /* Foundation.framework */; };
 		66E2FFB814899C7B00C66578 /* COPersistentRootEditingContext+PersistentRoots.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E2FFB714899C7A00C66578 /* COPersistentRootEditingContext+PersistentRoots.m */; };
+		66E42F16149A91A600C90D5A /* TestTreeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E42F15149A91A600C90D5A /* TestTreeManager.m */; };
 		66E46D48146A3D490042123E /* TestDeletion.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E46D47146A3D490042123E /* TestDeletion.m */; };
 		66E4BE571496956200B7024A /* COItemDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E4BE561496956200B7024A /* COItemDiff.m */; };
 		66E4BE5B149713CA00B7024A /* COType+Diff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E4BE5A149713CA00B7024A /* COType+Diff.m */; };
@@ -115,8 +115,6 @@
 		668D312C14905F0500294077 /* branch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = branch.png; sourceTree = "<group>"; };
 		668F26B414982F8700A3CEA6 /* COStoreItemProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COStoreItemProvider.h; sourceTree = "<group>"; };
 		668F26B514982F8700A3CEA6 /* COStoreItemProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COStoreItemProvider.m; sourceTree = "<group>"; };
-		668F26B71498327400A3CEA6 /* COValueDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COValueDiff.h; sourceTree = "<group>"; };
-		668F26B81498327400A3CEA6 /* COValueDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COValueDiff.m; sourceTree = "<group>"; };
 		669CADDE1491646300D0CF5F /* COManagedItemTreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COManagedItemTreeNode.h; sourceTree = "<group>"; };
 		669CADDF1491646300D0CF5F /* COManagedItemTreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COManagedItemTreeNode.m; sourceTree = "<group>"; };
 		669CADE61491844000D0CF5F /* COTreeDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = COTreeDiff.h; path = ../COTreeDiff.h; sourceTree = "<group>"; };
@@ -132,6 +130,7 @@
 		66E2A3031430569C00487419 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
 		66E2FFB614899C7A00C66578 /* COPersistentRootEditingContext+PersistentRoots.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COPersistentRootEditingContext+PersistentRoots.h"; sourceTree = "<group>"; };
 		66E2FFB714899C7A00C66578 /* COPersistentRootEditingContext+PersistentRoots.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "COPersistentRootEditingContext+PersistentRoots.m"; sourceTree = "<group>"; };
+		66E42F15149A91A600C90D5A /* TestTreeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestTreeManager.m; sourceTree = "<group>"; };
 		66E46D47146A3D490042123E /* TestDeletion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestDeletion.m; sourceTree = "<group>"; };
 		66E4BE551496956200B7024A /* COItemDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COItemDiff.h; sourceTree = "<group>"; };
 		66E4BE561496956200B7024A /* COItemDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COItemDiff.m; sourceTree = "<group>"; };
@@ -190,8 +189,6 @@
 		66EDFD90148EF6D700D0DC0B /* COFaultProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COFaultProvider.h; sourceTree = "<group>"; };
 		66EDFD94148EF73200D0DC0B /* COType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COType.h; sourceTree = "<group>"; };
 		66EDFD95148EF73200D0DC0B /* COType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COType.m; sourceTree = "<group>"; };
-		66EDFD9A148F557800D0DC0B /* COMutableLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COMutableLayer.h; sourceTree = "<group>"; };
-		66EDFD9B148F557800D0DC0B /* COMutableLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COMutableLayer.m; sourceTree = "<group>"; };
 		66EE5D34146355A6008AA95B /* COPersistentRootEditingContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPersistentRootEditingContext.h; sourceTree = "<group>"; };
 		66EE5D35146355A6008AA95B /* COPersistentRootEditingContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COPersistentRootEditingContext.m; sourceTree = "<group>"; };
 		66EE5D3814637418008AA95B /* COPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPath.h; sourceTree = "<group>"; };
@@ -331,8 +328,6 @@
 				66E503891495E6EF003C69C7 /* COType+String.m */,
 				66E4BE59149713CA00B7024A /* COType+Diff.h */,
 				66E4BE5A149713CA00B7024A /* COType+Diff.m */,
-				668F26B71498327400A3CEA6 /* COValueDiff.h */,
-				668F26B81498327400A3CEA6 /* COValueDiff.m */,
 			);
 			name = Types;
 			sourceTree = "<group>";
@@ -349,13 +344,16 @@
 		66E2A305143057A100487419 /* Store */ = {
 			isa = PBXGroup;
 			children = (
+				66EDFD90148EF6D700D0DC0B /* COFaultProvider.h */,
 				66E877551455F0CB006CBE7E /* COStore.h */,
 				66EADD67147345B9003181FC /* COItem.h */,
 				66E76734148B3D1C009937E8 /* COItemTreeNode.h */,
+				669CADDE1491646300D0CF5F /* COManagedItemTreeNode.h */,
 				66EE5D34146355A6008AA95B /* COPersistentRootEditingContext.h */,
 				66E2FFB614899C7A00C66578 /* COPersistentRootEditingContext+PersistentRoots.h */,
 				79ABB071148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.h */,
 				79297307148C94FD00FD35A9 /* COItemFactory.h */,
+				66E61DC814902D6500FA55DA /* COItemTreeManager.h */,
 				66E5CBAB148311A000D01039 /* Implementation */,
 			);
 			name = Store;
@@ -395,7 +393,9 @@
 				66E877561455F0CB006CBE7E /* COStore.m */,
 				66EADD68147345B9003181FC /* COItem.m */,
 				66E76735148B3D1C009937E8 /* COItemTreeNode.m */,
+				669CADDF1491646300D0CF5F /* COManagedItemTreeNode.m */,
 				79297308148C94FD00FD35A9 /* COItemFactory.m */,
+				66E61DC914902D6500FA55DA /* COItemTreeManager.m */,
 			);
 			name = Implementation;
 			sourceTree = "<group>";
@@ -463,13 +463,6 @@
 		66EDFD8E148EF64600D0DC0B /* New Store Objects */ = {
 			isa = PBXGroup;
 			children = (
-				66EDFD90148EF6D700D0DC0B /* COFaultProvider.h */,
-				669CADDE1491646300D0CF5F /* COManagedItemTreeNode.h */,
-				669CADDF1491646300D0CF5F /* COManagedItemTreeNode.m */,
-				66E61DC814902D6500FA55DA /* COItemTreeManager.h */,
-				66E61DC914902D6500FA55DA /* COItemTreeManager.m */,
-				66EDFD9A148F557800D0DC0B /* COMutableLayer.h */,
-				66EDFD9B148F557800D0DC0B /* COMutableLayer.m */,
 				668F26B414982F8700A3CEA6 /* COStoreItemProvider.h */,
 				668F26B514982F8700A3CEA6 /* COStoreItemProvider.m */,
 			);
@@ -483,6 +476,7 @@
 				66DFAEBF142A726100623060 /* main.m */,
 				66EADD6414732AEE003181FC /* TestUndo.m */,
 				66F4E315147C59F0004FC1BA /* TestTagging.m */,
+				66E42F15149A91A600C90D5A /* TestTreeManager.m */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -639,7 +633,7 @@
 				66E4BE571496956200B7024A /* COItemDiff.m in Sources */,
 				66E4BE5B149713CA00B7024A /* COType+Diff.m in Sources */,
 				668F26B614982F8700A3CEA6 /* COStoreItemProvider.m in Sources */,
-				668F26B91498327400A3CEA6 /* COValueDiff.m in Sources */,
+				66E42F16149A91A600C90D5A /* TestTreeManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

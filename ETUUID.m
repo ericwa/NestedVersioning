@@ -137,6 +137,7 @@ static void ETUUIDGet16RandomBytes(unsigned char bytes[16])
 	return *((uint64_t *)uuid);
 }
 
+// FIXME: Delete this if not used... seems kind of pointless to sort UUIDs
 - (NSComparisonResult) compare: (id)anObject
 {
 	if (anObject == self)
@@ -145,14 +146,34 @@ static void ETUUIDGet16RandomBytes(unsigned char bytes[16])
 	}
 	if ([anObject isKindOfClass: [self class]])
 	{
-		return memcmp(uuid, [(ETUUID *)anObject UUIDValue], 16);
+		int diff = memcmp(uuid, ((ETUUID *)anObject)->uuid, 16);
+		if (diff > 0)
+		{
+			return NSOrderedAscending;
+		}
+		else if (diff == 0)
+		{
+			return NSOrderedSame;
+		}
+		else
+		{
+			return NSOrderedDescending;
+		}
 	}
 	return NSOrderedAscending;
 }
 
 - (BOOL) isEqual: (id)anObject
 {
-	return [self compare: anObject] == NSOrderedSame;
+	if (anObject == self)
+	{
+		return YES;
+	}
+	if ([anObject isKindOfClass: [self class]])
+	{
+		return (0 == memcmp(uuid, ((ETUUID *)anObject)->uuid, 16));
+	}
+	return NO;
 }
 
 - (NSString *) stringValue
