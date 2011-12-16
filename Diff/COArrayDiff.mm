@@ -142,6 +142,11 @@ public:
 	return mutableArray;
 }
 
+- (id) valueWithDiffAppliedToValue: (id)aValue
+{
+	return [self arrayWithDiffAppliedTo: aValue];
+}
+
 @end
 
 

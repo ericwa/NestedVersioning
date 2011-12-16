@@ -1,7 +1,8 @@
 #import <Foundation/Foundation.h>
 #import "COMergeResult.h"
+#import "COType+Diff.h"
 
-@interface COSetDiff : NSObject
+@interface COSetDiff : NSObject <COValueDiff>
 {
 	NSArray *ops;
 }
@@ -23,6 +24,7 @@
 
 - (void) applyTo: (NSMutableSet*)array;
 - (NSSet *)setWithDiffAppliedTo: (NSSet *)array;
+- (id) valueWithDiffAppliedToValue: (id)aValue;
 
 // Merging with another COSetDiff
 
