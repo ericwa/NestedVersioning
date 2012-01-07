@@ -146,6 +146,24 @@ static void visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUInteger
 		
 		NSLog(@"%d", (int)level);
 	}
+
+	// sanity check: Every object's parent must appear to its left.
+	
+	{
+		NSUInteger i;
+		for (i=0; i<[allCommitsSorted count]; i++)
+		{
+			ETUUID *aCommit = [allCommitsSorted objectAtIndex: i];
+			ETUUID *aCommitParent = [aStore parentForCommit: aCommit];
+			
+			if (aCommitParent != nil)
+			{
+				NSUInteger j = [allCommitsSorted indexOfObject: aCommitParent];
+				assert(j != NSNotFound);
+				assert(j < i);
+			}
+		}
+	}
 }
 
 - (NSSize) size
