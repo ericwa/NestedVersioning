@@ -169,7 +169,7 @@ static void visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUInteger
 
 static void EWDrawHorizontalArrowOfLength(CGFloat length)
 {
-	const CGFloat cap = 3;
+	const CGFloat cap = 8;
 	NSBezierPath *path = [NSBezierPath bezierPath];
 	[path moveToPoint: NSMakePoint(0, 0)];
 	[path lineToPoint: NSMakePoint(length - cap, 0)];
@@ -179,8 +179,26 @@ static void EWDrawHorizontalArrowOfLength(CGFloat length)
 	[path moveToPoint: NSMakePoint(length - cap, cap / 2.0)];
 	[path lineToPoint: NSMakePoint(length - cap, cap / -2.0)];
 	[path lineToPoint: NSMakePoint(length, 0)];
-	[path lineToPoint: NSMakePoint(length - cap, cap / 2.0)];
+	[path closePath];
 	[path fill];
+}
+
+#define EWRandFloat() (rand()/(CGFloat)(RAND_MAX))
+
+static void EWDrawArrowFromTo(NSPoint p1, NSPoint p2)
+{	
+	[NSGraphicsContext saveGraphicsState];
+	
+	[[NSColor colorWithCalibratedHue:EWRandFloat() saturation:1 brightness:0.5 alpha:0.5] set];
+	
+	NSAffineTransform *xform = [NSAffineTransform transform];
+	[xform translateXBy:p1.x yBy:p1.y];
+	[xform rotateByRadians: atan2(p2.y-p1.y, p2.x-p1.x)];
+	[xform concat];
+
+	EWDrawHorizontalArrowOfLength(sqrt(pow(p2.x - p1.x, 2) + pow(p2.y - p1.y, 2)));
+	
+	[NSGraphicsContext restoreGraphicsState];
 }
 
 - (void) draw
@@ -202,25 +220,7 @@ static void EWDrawHorizontalArrowOfLength(CGFloat length)
 			p1 = NSMakePoint(p1.x + 56, p1.y + 32);
 			p2 = NSMakePoint(p2.x + 8, p2.y + 32);
 			
-			/*assert(!(p2.x-p1.x == 0 && p2.y-p1.y == 0));
-			
-			[NSGraphicsContext saveGraphicsState];
-			
-			NSAffineTransform *xform = [NSAffineTransform transform];
-			[xform translateXBy:p1.x yBy:p1.y];
-			[xform rotateByRadians: atan2(p2.x-p1.x, p2.y-p1.y)];
-			[xform concat];
-			
-			CGFloat hypotenuse = sqrt(pow(p2.x-p1.x, 2) + pow(p2.y-p1.y, 2));
-			EWDrawHorizontalArrowOfLength(hypotenuse);
-			
-			[NSGraphicsContext restoreGraphicsState];*/
-			
-			NSBezierPath *p = [NSBezierPath bezierPath];
-			[p moveToPoint: p1];
-			[p lineToPoint: p2];
-			[p stroke];
-			
+			EWDrawArrowFromTo(p1, p2);
 		}
 	}
 }
