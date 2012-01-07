@@ -38,12 +38,12 @@
 
 #define A(...) ({ \
     id __objects[] = {__VA_ARGS__}; \
-    [[[NSArray alloc] initWithObjects: __objects \
-                                count: (sizeof(__objects)/sizeof(id))] autorelease]; \
+    [NSArray arrayWithObjects: __objects \
+						count: (sizeof(__objects)/sizeof(id))]; \
 })
 
 #define S(...) ({ \
     id __objects[] = {__VA_ARGS__}; \
-    [[[NSSet alloc] initWithObjects: __objects \
-                              count: (sizeof(__objects)/sizeof(id))] autorelease]; \
+    [NSSet setWithObjects: __objects \
+					count: (sizeof(__objects)/sizeof(id))]; \
 })
