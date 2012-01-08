@@ -180,7 +180,7 @@ static void visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUInteger
 	NSUInteger row = [rowObj integerValue];
 	NSUInteger col = [allCommitsSorted indexOfObject: aCommit];
 	
-	NSRect cellRect = NSMakeRect(col * 64, row * 64, 64, 64);
+	NSRect cellRect = NSMakeRect(col * 64, row * 16, 16, 16);
 	
 	return cellRect;
 }
@@ -228,17 +228,16 @@ static void EWDrawArrowFromTo(NSPoint p1, NSPoint p2)
 		[[NSColor blackColor] setStroke];
 		
 		NSRect r = [self rectForCommit: commit];
-		[[NSBezierPath bezierPathWithOvalInRect: NSInsetRect(r, 8, 8)] stroke];
+		[[NSBezierPath bezierPathWithOvalInRect: r] stroke];
 		
 		for (ETUUID *child in [childrenForUUID objectForKey: commit])
 		{
-			NSPoint p1 = r.origin;
-			NSPoint p2 = [self rectForCommit: child].origin;
+			NSRect r2 = [self rectForCommit: child];
 			
-			p1 = NSMakePoint(p1.x + 56, p1.y + 32);
-			p2 = NSMakePoint(p2.x + 8, p2.y + 32);
+			NSPoint p = NSMakePoint(r.origin.x + r.size.width/2, r.origin.y + r.size.height/2);
+			NSPoint p2 = NSMakePoint(r2.origin.x + r2.size.width/2, r2.origin.y + r2.size.height/2);
 			
-			EWDrawArrowFromTo(p1, p2);
+			EWDrawArrowFromTo(p, p2);
 		}
 	}
 }
