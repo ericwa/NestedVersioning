@@ -10,6 +10,11 @@
 	return [[url path] stringByAppendingPathComponent: @"rootVersion"];
 }
 
+- (NSString *) commitLogFile
+{
+	return [[url path] stringByAppendingPathComponent: @"commitLog"];
+}
+
 - (NSString *) commitsDirectory
 {
 	return [[url path] stringByAppendingPathComponent: @"commits"];
@@ -56,6 +61,32 @@
 }
 
 /** @taskunit commits */
+
+
+- (NSArray*) allCommitUUIDs
+{
+	NSMutableArray *uuids = [NSMutableArray array];
+	
+	NSArray *arr = [NSArray arrayWithContentsOfFile: [self commitLogFile]];
+	
+	for (NSString *uuidString in arr)
+	{
+		ETUUID *uuid = [ETUUID UUIDWithString: uuidString];			
+		[uuids addObject: uuid];
+	}
+	return uuids;
+}
+
+- (void) setAllCommitUUIDs: (NSArray*)uuids
+{
+	NSMutableArray *uuidStrings = [NSMutableArray array];
+	for (ETUUID *uuid in uuids)
+	{
+		[uuidStrings addObject: [uuid stringValue]];
+	}
+	[uuidStrings writeToFile: [self commitLogFile]
+				  atomically: YES];
+}
 
 - (ETUUID*) addCommitWithParent: (ETUUID*)parent
                        metadata: (id)metadataPlist
@@ -109,22 +140,10 @@
 					format: @"Failed to save commit %@.", plist];
 	}
 	
-	return commitUUID;			
-}
-
-- (NSArray*) allCommitUUIDs
-{
-	NSArray *paths = [[NSFileManager defaultManager]
-					  subpathsAtPath: [self commitsDirectory]];
-	NSMutableArray *uuids = [NSMutableArray array];
+	[self setAllCommitUUIDs:
+	 [[self allCommitUUIDs] arrayByAddingObject: commitUUID]];
 	
-	for (NSString *path in paths)
-	{
-		ETUUID *uuid = [ETUUID UUIDWithString: path];
-		
-		[uuids addObject: uuid];
-	}
-	return uuids;
+	return commitUUID;			
 }
 
 - (NSDictionary *) _plistForCommit: (ETUUID*)commit
@@ -221,6 +240,10 @@
 							removeItemAtPath: commitFile error: NULL];
 		assert(removed);
 	}
+	
+	NSMutableSet *allCommits = [NSMutableSet setWithArray: [self allCommitUUIDs]];
+	[allCommits minusSet: uuids];
+	[self setAllCommitUUIDs: [allCommits allObjects]];
 }
 
 - (void) deleteParentsOfCommit: (ETUUID*)aCommit
