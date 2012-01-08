@@ -16,7 +16,16 @@
 																parent: nil];
 	
 	// View may not exist yet.
-	[historyView setCurrentCommit: [self currentCommit]];
+	// FIXME: duplicated code in init...
+	if (![path isEmpty])
+	{
+		EWGraphRenderer *renderer = [[EWGraphRenderer alloc] init];
+		[renderer layoutGraphOfStore: store];
+		[historyView setGraphRenderer: renderer];
+		[renderer release];
+		
+		[historyView setCurrentCommit: [self currentCommit]];	
+	}
 }
 
 - (id)initWithPath: (COPath*)aPath
@@ -84,12 +93,11 @@
 		[renderer layoutGraphOfStore: store];
 		[historyView setGraphRenderer: renderer];
 		[renderer release];
+		
+		[historyView setCurrentCommit: [self currentCommit]];	
 	}
 	
 	[[self window] setTitle: [self persistentRootTitle]];
-	
-
-	[historyView setCurrentCommit: [self currentCommit]];	
 }
 
 - (BOOL) isExpanded: (EWPersistentRootOutlineRow*)aRow
