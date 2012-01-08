@@ -175,7 +175,7 @@ static NSUInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUI
 
 - (NSSize) size
 {
-	NSSize s = NSMakeSize(64 * [allCommitsSorted count], 64 * (maxLevelUsed + 1));
+	NSSize s = NSMakeSize(32 * [allCommitsSorted count], 32 * (maxLevelUsed + 1));
 	
 	return s;
 }
@@ -187,7 +187,7 @@ static NSUInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUI
 	NSUInteger row = [rowObj integerValue];
 	NSUInteger col = [allCommitsSorted indexOfObject: aCommit];
 	
-	NSRect cellRect = NSMakeRect(col * 64, row * 16, 16, 16);
+	NSRect cellRect = NSMakeRect(col * 32, row * 32, 16, 16);
 	
 	return cellRect;
 }
@@ -226,17 +226,28 @@ static void EWDrawArrowFromTo(NSPoint p1, NSPoint p2)
 	[NSGraphicsContext restoreGraphicsState];
 }
 
-- (void) draw
+- (void) drawWithHighlightedCommit: (ETUUID*)aCommit
 {
 	for (NSUInteger col = 0; col < [allCommitsSorted count]; col++)
 	{
 		ETUUID *commit = [allCommitsSorted objectAtIndex: col];		
 		
-		[[NSColor blackColor] set];
-		
 		NSRect r = [self rectForCommit: commit];
-		[[NSBezierPath bezierPathWithOvalInRect: r] stroke];
+		NSBezierPath *circle = [NSBezierPath bezierPathWithOvalInRect: r];
 		
+		if ([commit isEqual: aCommit])
+		{
+			[[NSColor purpleColor] set];
+			[circle setLineWidth: 3];
+			[circle stroke];
+		}
+		else
+		{
+			[[NSColor blackColor] set];
+			[circle stroke];
+		}
+		
+		[[NSColor blackColor] set];
 		for (ETUUID *child in [childrenForUUID objectForKey: commit])
 		{
 			NSRect r2 = [self rectForCommit: child];

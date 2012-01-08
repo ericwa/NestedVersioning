@@ -23,7 +23,7 @@
 		[[NSColor whiteColor] set];
 		NSRectFill(dirtyRect);
 		
-		[graphRenderer draw];
+		[graphRenderer drawWithHighlightedCommit: currentCommit];
 		 
 		 [NSGraphicsContext restoreGraphicsState];
 	}
@@ -36,6 +36,12 @@
 	NSLog(@"Graph renderer size: %@", NSStringFromSize([graphRenderer size]));
 	
 	[self setFrameSize: [graphRenderer size]];
+	[self setNeedsDisplay: YES];
+}
+
+- (void) setCurrentCommit: (ETUUID *)aCommit
+{
+	ASSIGN(currentCommit, aCommit);
 	[self setNeedsDisplay: YES];
 }
 

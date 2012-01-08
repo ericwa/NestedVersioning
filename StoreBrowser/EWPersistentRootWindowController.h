@@ -45,6 +45,8 @@
  */
 - (void) reloadBrowser;
 
+- (ETUUID *) currentCommit;
+
 @end
 
 

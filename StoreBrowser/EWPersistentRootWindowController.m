@@ -14,6 +14,9 @@
 	DESTROY(outlineModel);
 	outlineModel = [[EWPersistentRootOutlineRow alloc] initWithContext: ctx
 																parent: nil];
+	
+	// View may not exist yet.
+	[historyView setCurrentCommit: [self currentCommit]];
 }
 
 - (id)initWithPath: (COPath*)aPath
@@ -85,7 +88,8 @@
 	
 	[[self window] setTitle: [self persistentRootTitle]];
 	
-	
+
+	[historyView setCurrentCommit: [self currentCommit]];	
 }
 
 - (BOOL) isExpanded: (EWPersistentRootOutlineRow*)aRow
@@ -123,6 +127,27 @@
 	
 	[[[NSApp delegate] windowControllerForPath: [path pathByDeletingLastPathComponent]] 
 		orderFrontAndHighlightItem: [path lastPathComponent]];
+}
+
+/**
+ * FIXME: This is a bit ugly
+ */
+- (ETUUID *) currentCommit
+{
+	if (![path isEmpty])
+	{
+		COPersistentRootEditingContext *parentCtx = [COPersistentRootEditingContext editingContextForEditingPath: [path pathByDeletingLastPathComponent] 
+																										 inStore: store];
+		
+		ETUUID *currentBranch = [parentCtx currentBranchOfPersistentRoot: [path lastPathComponent]];
+		assert(currentBranch != nil);
+		
+		ETUUID *currentCommit = [parentCtx currentVersionForBranch:currentBranch];
+		assert(currentCommit != nil);
+		
+		return currentCommit;
+	}
+	return nil;
 }
 
 - (IBAction) undo: (id)sender

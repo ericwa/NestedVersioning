@@ -13,7 +13,7 @@
 - (void) layoutGraphOfStore: (COStore*)aStore;
 
 - (NSSize) size;
-- (void) draw;
+- (void) drawWithHighlightedCommit: (ETUUID*)aCommit;
 
 @end
 
