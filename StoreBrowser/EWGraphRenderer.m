@@ -17,7 +17,7 @@
 
 @implementation EWGraphRenderer
 
-static void visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUInteger currentLevel, NSMutableDictionary *levelForUUID)
+static NSUInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUInteger currentLevel, NSMutableDictionary *levelForUUID)
 {
 	NSLog(@"visiting %@", currentUUID);
 	
@@ -25,7 +25,7 @@ static void visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUInteger
 	if (currentSavedLevel != nil)
 	{
 		NSLog(@"%@ already has a level %@", currentUUID, currentSavedLevel);
-		return;
+		return 0;
 	}
 	else
 	{
@@ -36,28 +36,30 @@ static void visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUInteger
 	
 	NSArray *children = [childrenForUUID objectForKey: currentUUID];
 	assert(children != nil);
+	
+	NSUInteger maxLevel = currentLevel;
 	for (NSUInteger i=0; i<[children count]; i++)
 	{
 		ETUUID *child = [children objectAtIndex: i];
 		
-		visit(childrenForUUID, child, currentLevel + i, levelForUUID);
+		NSUInteger childMax = 
+			visit(childrenForUUID, child, currentLevel + i, levelForUUID);
+		
+		if (childMax > maxLevel)
+		{
+			maxLevel = childMax;
+		}
 	}
+	return maxLevel;
 }
 
 - (void) layoutGraphOfStore: (COStore*)aStore
 {
 	ASSIGN(allCommitsSorted, [NSMutableArray arrayWithArray: [aStore allCommitUUIDs]]);
 	
-	// sort by date.
-	
-	[allCommitsSorted sortUsingComparator: ^(id obj1, id obj2) {
-		return [[aStore dateForCommit: obj1] compare: [aStore dateForCommit: obj2]];
-	}];
-	
 	//
 	// Now we just have to decide on the Y position of each node.
 	//
-	
 	
 	// find children for each commit (retaining sorted order)
 	// this is the "display" graph
@@ -114,6 +116,8 @@ static void visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUInteger
 		}
 	}
 	
+	NSLog(@"Graph drawing:: %d roots", (int)[roots count]);
+	
 	//
 	// now to find the Y position, we do a DFS on the display graph.
 	// the first root gets assigned level 0. when we visit a node,
@@ -129,9 +133,12 @@ static void visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUInteger
 
 	ASSIGN(levelForUUID, [NSMutableDictionary dictionary]);
 
+	NSUInteger maxLevel = 0;
 	for (ETUUID *root in roots)
 	{
-		 visit(childrenForUUID, root, 0, levelForUUID);
+		NSLog(@"Starting root %@ at %d", root, (int)maxLevel);
+		maxLevel = visit(childrenForUUID, root, maxLevel, levelForUUID);
+		maxLevel++;
 	}
 	
 	NSLog(@"graph output:");
@@ -207,7 +214,7 @@ static void EWDrawArrowFromTo(NSPoint p1, NSPoint p2)
 {	
 	[NSGraphicsContext saveGraphicsState];
 	
-	[[NSColor colorWithCalibratedHue:EWRandFloat() saturation:1 brightness:0.5 alpha:0.5] set];
+	//[[NSColor colorWithCalibratedHue:EWRandFloat() saturation:1 brightness:0.5 alpha:0.5] set];
 	
 	NSAffineTransform *xform = [NSAffineTransform transform];
 	[xform translateXBy:p1.x yBy:p1.y];
@@ -225,7 +232,7 @@ static void EWDrawArrowFromTo(NSPoint p1, NSPoint p2)
 	{
 		ETUUID *commit = [allCommitsSorted objectAtIndex: col];		
 		
-		[[NSColor blackColor] setStroke];
+		[[NSColor blackColor] set];
 		
 		NSRect r = [self rectForCommit: commit];
 		[[NSBezierPath bezierPathWithOvalInRect: r] stroke];
@@ -236,6 +243,9 @@ static void EWDrawArrowFromTo(NSPoint p1, NSPoint p2)
 			
 			NSPoint p = NSMakePoint(r.origin.x + r.size.width/2, r.origin.y + r.size.height/2);
 			NSPoint p2 = NSMakePoint(r2.origin.x + r2.size.width/2, r2.origin.y + r2.size.height/2);
+			
+			p.x += 8;
+			p2.x -= 8;
 			
 			EWDrawArrowFromTo(p, p2);
 		}
