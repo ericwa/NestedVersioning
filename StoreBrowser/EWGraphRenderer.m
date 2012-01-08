@@ -244,3 +244,30 @@ static void EWDrawArrowFromTo(NSPoint p1, NSPoint p2)
 }
 
 @end
+
+/*
+
+@implementation EWGraphBranchGenerator
+
+- (NSUInteger) countOfCommitsInBranchForCommit: (ETUUID*)aCommit
+{
+	
+}
+- (NSSet *) commitsInBranchForCommit: (ETUUID*)aCommit
+{
+	
+}
+
+- (void) addCommit: (ETUUID*)aCommit
+		withParent: (ETUUID*)aParent
+{
+	if (aParent == nil)
+	{
+		// new branch
+	}
+	else if 
+	
+}
+
+@end
+*/
