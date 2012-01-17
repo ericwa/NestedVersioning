@@ -40,4 +40,6 @@
 
 - (id) identifier;
 
+- (NSComparisonResult) compare: (id)anObject;
+
 @end

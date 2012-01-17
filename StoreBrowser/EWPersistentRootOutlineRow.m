@@ -102,7 +102,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 		
 		NSMutableArray *result = [NSMutableArray array];
 		
-		for (NSString *attr in [[storeItem attributeNames] sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)])
+		for (NSString *attr in [storeItem attributeNames])
 		{
 			EWPersistentRootOutlineRow *obj = [[EWPersistentRootOutlineRow alloc] initWithContext: ctx
 																						 itemUUID: UUID
@@ -112,6 +112,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 			[obj release];
 		}
 		
+		[result sortUsingSelector: @selector(compare:)];
 		return result;
 	}
 	else // outlineitem specifies an attribute
@@ -137,6 +138,8 @@ isPrimitiveInContainer: (BOOL)aFlag
 				[result addObject: obj];
 				[obj release];
 			}
+			
+			[result sortUsingSelector: @selector(compare:)];
 			return result;
 		}
 		else // it contains primitive types, which will be leaf nodes
@@ -156,6 +159,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 				[obj release];
 			}
 			
+			[result sortUsingSelector: @selector(compare:)];
 			return result;
 		}
 	}	
@@ -443,11 +447,28 @@ isPrimitiveInContainer: (BOOL)aFlag
 {
 	ETUUID *aUUID = [self UUID];
 	NSString *attr = [self attribute];
-	NSNumber *isPrimitiveInContainer = [NSNumber numberWithBool: [self isPrimitiveInContainer]];
+	NSNumber *isPrimitiveInContainerObj = [NSNumber numberWithBool: [self isPrimitiveInContainer]];
 	
 	if (attr == nil) attr = @"";
 	
-	return S(aUUID, attr, isPrimitiveInContainer);
+	return S(aUUID, attr, isPrimitiveInContainerObj);
+}
+
+/**
+ * Sorts rows in an aribtrary but stable order based on UUID
+ */
+- (NSComparisonResult) compare: (id)anObject
+{
+	if ([anObject isKindOfClass: [self class]])
+	{
+		NSComparisonResult result = [[self UUID] compare: [anObject UUID]];
+		if (result == NSOrderedSame)
+		{
+			result = [[self attribute] compare: [anObject attribute]];
+		}
+		return result;
+	}
+	return NSOrderedAscending;
 }
 
 @end
