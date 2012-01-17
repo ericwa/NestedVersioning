@@ -35,6 +35,8 @@
 
 // special method for copying a branch out of a persistent root to create a standalone
 // persistent root. see TestBranchesAndCopies.m
+// FIXME: Not sure what should happen to the undo/redo limits. For now we'll reset them
+// so the new persistent root has no undo/redo history.
 - (ETUUID *)createAndInsertNewPersistentRootByCopyingBranch: (ETUUID *)srcBranch
 											 inItemWithUUID: (ETUUID *)destContainer;
 

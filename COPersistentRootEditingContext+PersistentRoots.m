@@ -300,6 +300,20 @@
 	forAttribute: @"contents"
 			type: [COType setWithPrimitiveType: [COType embeddedItemType]]];
 	
+	// Reset the limits for undo/redo
+	{
+		ETUUID *currentVersion = [i2 valueForAttribute: @"currentVersion"];
+		assert(currentVersion != nil);
+		
+		[i2 setValue: currentVersion
+		forAttribute: @"head"
+				type: [COType commitUUIDType]];	// limit for redo. moved on every commit.
+		[i2 setValue: currentVersion
+		forAttribute: @"tail"
+				type: [COType commitUUIDType]];	// limit for undo. never changed.
+	}
+	
+	
 	assert([[i2 valueForAttribute: @"type"] isEqual: @"branch"]);
 	assert([[i2 typeForAttribute: @"currentVersion"] isEqual: [COType commitUUIDType]]);
 	
