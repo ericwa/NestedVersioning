@@ -49,6 +49,8 @@
 
 - (ETUUID *) currentCommit;
 
+- (NSArray *)selectedRows;
+
 @end
 
 

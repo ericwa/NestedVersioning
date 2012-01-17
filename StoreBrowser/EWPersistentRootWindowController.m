@@ -281,13 +281,30 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 	}
 }
 
+- (NSArray *)selectedRows
+{
+	NSMutableArray *result = [NSMutableArray array];
+	
+	NSIndexSet *selIndexes = [outlineView selectedRowIndexes];
+	
+	for (NSUInteger i = [selIndexes firstIndex]; i != NSNotFound; i = [selIndexes indexGreaterThanIndex: i])
+	{
+		[result addObject: [outlineView itemAtRow: i]];
+	}
+	
+	return [NSArray arrayWithArray: result];
+}
+
 - (void)deleteForward:(id)sender
 {
-	EWPersistentRootOutlineRow *itemToDelete = [self selectedItem];
-	if (itemToDelete != outlineModel)
+	for (EWPersistentRootOutlineRow *itemToDelete in [self selectedRows])
 	{
-		[itemToDelete deleteRow];
+		if (itemToDelete != outlineModel)
+		{
+			[itemToDelete deleteRow];
+		}
 	}
+	[[NSApp delegate] reloadAllBrowsers];
 }
 
 - (void)delete:(id)sender

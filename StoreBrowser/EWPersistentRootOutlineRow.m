@@ -485,7 +485,6 @@ isPrimitiveInContainer: (BOOL)aFlag
 		[ctx _insertOrUpdateItems: S(parentItem)];
 		[ctx commitWithMetadata: nil];
 	}
-	[[NSApp delegate] reloadAllBrowsers];
 }
 
 - (id)identifier
@@ -546,24 +545,9 @@ isPrimitiveInContainer: (BOOL)aFlag
 	[[NSApp delegate] reloadAllBrowsers];
 }
 
-- (NSArray *)selectedRows
-{
-	NSMutableArray *result = [NSMutableArray array];
-	
-	NSOutlineView *outlineView = [windowController outlineView];
-	NSIndexSet *selIndexes = [outlineView selectedRowIndexes];
-	
-	for (NSUInteger i = [selIndexes firstIndex]; i != NSNotFound; i = [selIndexes indexGreaterThanIndex: i])
-	{
-		[result addObject: [outlineView itemAtRow: i]];
-	}
-	
-	return [NSArray arrayWithArray: result];
-}
-
 - (void) diff: (id)sender
 {
-	NSArray *selectedRows = [self selectedRows];
+	NSArray *selectedRows = [windowController selectedRows];
 	assert([selectedRows count] == 2);
 
 	EWPersistentRootOutlineRow *row1 = [selectedRows objectAtIndex: 0];
