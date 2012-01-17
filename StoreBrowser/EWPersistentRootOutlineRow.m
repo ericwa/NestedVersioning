@@ -549,6 +549,11 @@ isPrimitiveInContainer: (BOOL)aFlag
 	
 }
 
+- (void) delete: (id)sender
+{
+	[windowController deleteForward: sender];
+}
+
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem
 {
     SEL theAction = [anItem action];
@@ -614,6 +619,14 @@ isPrimitiveInContainer: (BOOL)aFlag
 		[menu addItem: item];
 	}
 
+	{
+		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Delete" 
+													   action: @selector(delete:) 
+												keyEquivalent: @""] autorelease];
+		[item setTarget: self];
+		[menu addItem: item];
+	}	
+	
     return menu;
 }
 
