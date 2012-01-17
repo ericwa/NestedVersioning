@@ -140,14 +140,16 @@
 
 /** @taskunit undo/redo */
 
-
-//FIXME: This is an ugly hack
-- (BOOL) isBranch: (ETUUID*)aRootOrBranch
+- (BOOL) isBranch: (ETUUID*)anEmbeddedObject
 {
-	NSString *type = [[self _storeItemForUUID: aRootOrBranch] valueForAttribute: @"type"];
-	assert([type isEqual: @"persistentRoot"] || 
-		   [type isEqual: @"branch"]);
+	NSString *type = [[self _storeItemForUUID: anEmbeddedObject] valueForAttribute: @"type"];
 	return [type isEqual: @"branch"];
+}
+
+- (BOOL) isPersistentRoot: (ETUUID*)anEmbeddedObject
+{
+	NSString *type = [[self _storeItemForUUID: anEmbeddedObject] valueForAttribute: @"type"];
+	return [type isEqual: @"persistentRoot"];
 }
 
 - (void) undo: (ETUUID*)aRootOrBranch
@@ -156,9 +158,13 @@
 	{
 		[self undoBranch: aRootOrBranch];
 	}
-	else
+	else if ([self isPersistentRoot: aRootOrBranch])
 	{
 		[self undoPersistentRoot: aRootOrBranch];
+	}
+	else
+	{
+		assert(0);
 	}
 }
 - (void) redo: (ETUUID*)aRootOrBranch
@@ -167,10 +173,14 @@
 	{
 		[self redoBranch: aRootOrBranch];
 	}
-	else
+	else if ([self isPersistentRoot: aRootOrBranch])
 	{
 		[self redoPersistentRoot: aRootOrBranch];
-	}	
+	}
+	else
+	{
+		assert(0);
+	}
 }
 
 

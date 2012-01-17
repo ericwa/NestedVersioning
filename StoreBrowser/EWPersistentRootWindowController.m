@@ -55,16 +55,18 @@
 	{
 		COPersistentRootEditingContext *parentCtx = [COPersistentRootEditingContext editingContextForEditingPath: [path pathByDeletingLastPathComponent] 
 																										 inStore: store];
-		BOOL isBranch = [parentCtx isBranch: [path lastPathComponent]];
-		
-		if (isBranch)
+		if ([parentCtx isBranch: [path lastPathComponent]])
 		{
 			return [@"Branch " stringByAppendingString: [path stringValue]];	
 		}
-		else
+		else if ([parentCtx isPersistentRoot: [path lastPathComponent]])
 		{
 			return [@"Persistent Root " stringByAppendingString: [path stringValue]];
 		}
+		else {
+			assert(0);
+		}
+
 	}
 }
 

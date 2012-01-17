@@ -37,9 +37,8 @@
 
 - (ETUUID *) createBranchOfPersistentRoot: (ETUUID *)aRoot;
 
-/**
- * Returns YES for a branch, NO for a persistent root
- */
-- (BOOL) isBranch: (ETUUID*)aRootOrBranch;
+- (BOOL) isBranch: (ETUUID*)anEmbeddedObject;
+- (BOOL) isPersistentRoot: (ETUUID*)anEmbeddedObject;
+
 
 @end

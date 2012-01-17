@@ -38,21 +38,11 @@ isPrimitiveInContainer: (BOOL)aFlag
 
 - (BOOL) isPersistentRoot
 {
-	COMutableItem *item = [ctx _storeItemForUUID: UUID];
-	if (attribute == nil)
-	{		
-		return [[item valueForAttribute: @"type"] isEqualToString: @"persistentRoot"];
-	}
-	return NO;
+	return [self isEmbeddedObject] && [ctx isPersistentRoot: UUID];
 }
 - (BOOL) isBranch
 {
-	COMutableItem *item = [ctx _storeItemForUUID: UUID];
-	if (attribute == nil)
-	{		
-		return [[item valueForAttribute: @"type"] isEqualToString: @"branch"];
-	}
-	return NO;
+	return [self isEmbeddedObject] && [ctx isBranch: UUID];
 }
 - (BOOL) isEmbeddedObject
 {
