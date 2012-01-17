@@ -257,22 +257,31 @@ isPrimitiveInContainer: (BOOL)aFlag
 
 - (NSImage *)image
 {
+	COMutableItem *item = [ctx _storeItemForUUID: UUID];
 	if (attribute == nil)
-	{
-		COMutableItem *item = [ctx _storeItemForUUID: UUID];
+	{		
 		if ([[item valueForAttribute: @"type"] isEqualToString: @"persistentRoot"])
 		{
-			return [NSImage imageNamed: @"package-x-generic"];
+			return [NSImage imageNamed: @"package"]; // persistent root embedded object
 		}
 		else if	([[item valueForAttribute: @"type"] isEqualToString: @"branch"])
 		{
-			return [NSImage imageNamed: @"branch"];
+			return [NSImage imageNamed: @"arrow_branch"]; // branch embedded object
 		}
-		return [NSImage imageNamed: @"folder"];
+		return [NSImage imageNamed: @"brick"]; // regular embedded object
 	}
 	else
 	{
-		return [NSImage imageNamed: @"text-x-generic"];
+		COType *type = [item typeForAttribute: attribute];
+		
+		if ([type isPrimitive])
+		{
+			return [NSImage imageNamed: @"bullet_yellow"]; // primitive attribute
+		}
+		else
+		{
+			return [NSImage imageNamed: @"bullet_purple"]; // multivalued attribute
+		}
 	}
 }
 
