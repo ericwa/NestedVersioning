@@ -40,7 +40,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 	COMutableItem *item = [ctx _storeItemForUUID: UUID];
 	if (attribute == nil)
 	{		
-		return ([[item valueForAttribute: @"type"] isEqualToString: @"persistentRoot"])
+		return [[item valueForAttribute: @"type"] isEqualToString: @"persistentRoot"];
 	}
 	return NO;
 }
@@ -49,7 +49,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 	COMutableItem *item = [ctx _storeItemForUUID: UUID];
 	if (attribute == nil)
 	{		
-		return ([[item valueForAttribute: @"type"] isEqualToString: @"branch"])
+		return [[item valueForAttribute: @"type"] isEqualToString: @"branch"];
 	}
 	return NO;
 }
