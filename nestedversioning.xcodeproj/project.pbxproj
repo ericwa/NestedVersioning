@@ -77,6 +77,9 @@
 		79926C19148CADF80095A665 /* EWPersistentRootWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79926C18148CADF80095A665 /* EWPersistentRootWindowController.m */; };
 		79926C1F148CAE390095A665 /* PersistentRootWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79926C1E148CAE390095A665 /* PersistentRootWindow.xib */; };
 		79ABB073148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 79ABB072148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.m */; };
+		79CB302A14C63E1C00ADAB77 /* TestCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CB302914C63E1C00ADAB77 /* TestCommon.m */; };
+		79CB305C14C63E9800ADAB77 /* TestTagging.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F4E315147C59F0004FC1BA /* TestTagging.m */; };
+		79CB305D14C63E9800ADAB77 /* TestCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CB302914C63E1C00ADAB77 /* TestCommon.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -214,6 +217,7 @@
 		79926C1E148CAE390095A665 /* PersistentRootWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PersistentRootWindow.xib; sourceTree = "<group>"; };
 		79ABB071148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COPersistentRootEditingContext+Convenience.h"; sourceTree = "<group>"; };
 		79ABB072148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "COPersistentRootEditingContext+Convenience.m"; sourceTree = "<group>"; };
+		79CB302914C63E1C00ADAB77 /* TestCommon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCommon.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -480,6 +484,7 @@
 				66EADD6414732AEE003181FC /* TestUndo.m */,
 				66F4E315147C59F0004FC1BA /* TestTagging.m */,
 				66E42F15149A91A600C90D5A /* TestTreeManager.m */,
+				79CB302914C63E1C00ADAB77 /* TestCommon.m */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -638,6 +643,7 @@
 				66E4BE5B149713CA00B7024A /* COType+Diff.m in Sources */,
 				668F26B614982F8700A3CEA6 /* COStoreItemProvider.m in Sources */,
 				66E42F16149A91A600C90D5A /* TestTreeManager.m in Sources */,
+				79CB302A14C63E1C00ADAB77 /* TestCommon.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -645,6 +651,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79CB305C14C63E9800ADAB77 /* TestTagging.m in Sources */,
+				79CB305D14C63E9800ADAB77 /* TestCommon.m in Sources */,
 				66E5038C1495EA0C003C69C7 /* COType+String.m in Sources */,
 				669CADDB1491539100D0CF5F /* COType.m in Sources */,
 				669CADDC1491539100D0CF5F /* COType+Plist.m in Sources */,

@@ -543,11 +543,14 @@ isPrimitiveInContainer: (BOOL)aFlag
 	EWPersistentRootOutlineRow *row1 = [selectedRows objectAtIndex: 0];
 	EWPersistentRootOutlineRow *row2 = [selectedRows objectAtIndex: 1];
 
-	COMutableItem *proot1 = [ctx _storeItemForUUID: [row1 UUID]];
-	COMutableItem *proot2 = [ctx _storeItemForUUID: [row2 UUID]];
+	// These are the commits we are going to look in and diff the root objects of
 	
+	ETUUID *ver1 = [ctx currentVersionForBranchOrPersistentRoot: [row1 UUID]];
+	ETUUID *ver2 = [ctx currentVersionForBranchOrPersistentRoot: [row2 UUID]];
 	
+	NSLog(@"diff commits %@ and %@", ver1, ver2);
 }
+
 
 - (void) delete: (id)sender
 {

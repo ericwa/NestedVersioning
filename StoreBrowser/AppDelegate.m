@@ -1,6 +1,6 @@
 #import "AppDelegate.h"
 #import "EWPersistentRootWindowController.h"
-
+#import "TestCommon.h"
 #import "COMacros.h"
 
 @implementation AppDelegate
@@ -10,6 +10,11 @@
 - (id) init
 {
 	SUPERINIT;
+	
+	// Set up a demo store
+	
+	testTagging();
+	
 	store = [[COStore alloc] initWithURL:
 			 [NSURL fileURLWithPath: [@"~/om5teststore" stringByExpandingTildeInPath]]];
 	windowControllerForPath = [[NSMutableDictionary alloc] init];
