@@ -484,5 +484,10 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 	[self setExpanded: YES forRow: anItem];
 }
 
+- (NSOutlineView *)outlineView
+{
+	return outlineView;
+}
+
 
 @end

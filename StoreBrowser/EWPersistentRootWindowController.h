@@ -27,6 +27,8 @@
 	NSMutableDictionary *expansion;
 }
 
+- (NSOutlineView *)outlineView;
+
 - (BOOL) isExpanded: (EWPersistentRootOutlineRow*)aRow;
 - (void) setExpanded: (BOOL)flag
 			 forRow: (EWPersistentRootOutlineRow *)aRow;
