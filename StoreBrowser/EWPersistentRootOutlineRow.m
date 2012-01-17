@@ -596,7 +596,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 	NSMenu *menu = [[[NSMenu alloc] initWithTitle: @""] autorelease];
 
 	{
-		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Diff Persistent Roots/Branches" 
+		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Diff Pair of Persistent Roots/Branches" 
 													   action: @selector(diff:) 
 												keyEquivalent: @""] autorelease];
 		[item setTarget: self];
