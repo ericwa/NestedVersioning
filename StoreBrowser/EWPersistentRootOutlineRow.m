@@ -33,6 +33,32 @@ isPrimitiveInContainer: (BOOL)aFlag
 	return isPrimitiveInContainer;
 }
 
+// Special row types
+
+- (BOOL) isPersistentRoot
+{
+	COMutableItem *item = [ctx _storeItemForUUID: UUID];
+	if (attribute == nil)
+	{		
+		return ([[item valueForAttribute: @"type"] isEqualToString: @"persistentRoot"])
+	}
+	return NO;
+}
+- (BOOL) isBranch
+{
+	COMutableItem *item = [ctx _storeItemForUUID: UUID];
+	if (attribute == nil)
+	{		
+		return ([[item valueForAttribute: @"type"] isEqualToString: @"branch"])
+	}
+	return NO;
+}
+- (BOOL) isEmbeddedObject
+{
+	return attribute == nil;
+}
+
+
 - (id) initWithContext: (COPersistentRootEditingContext *)aContext
 			  itemUUID: (ETUUID *)aUUID
 			 attribute: (NSString*)anAttribute
@@ -104,7 +130,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 	
 	COMutableItem *storeItem = [ctx _storeItemForUUID: UUID];
 	
-	if (attribute == nil) // no attribute, so a root node for a persistent root
+	if ([self isEmbeddedObject]) // no attribute, so a root node for a persistent root
 	{
 		// return all attribute names, sorted alphabetically
 		
@@ -245,9 +271,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 	}
 	else if ([[column identifier] isEqualToString: @"currentbranch"])
 	{
-		COMutableItem *storeItem = [ctx _storeItemForUUID: [self UUID]];
-		if ([[storeItem valueForAttribute: @"type"] isEqualToString: @"persistentRoot"]
-			&& [self attribute] == nil) // FIXME: horrible hack
+		if ([self isPersistentRoot])
 		{
 			// NSPopupButtonCell takes a NSNumber indicating the index in the menu.
 			
@@ -269,13 +293,13 @@ isPrimitiveInContainer: (BOOL)aFlag
 - (NSImage *)image
 {
 	COMutableItem *item = [ctx _storeItemForUUID: UUID];
-	if (attribute == nil)
+	if ([self isEmbeddedObject])
 	{		
-		if ([[item valueForAttribute: @"type"] isEqualToString: @"persistentRoot"])
+		if ([self isPersistentRoot])
 		{
 			return [NSImage imageNamed: @"package"]; // persistent root embedded object
 		}
-		else if	([[item valueForAttribute: @"type"] isEqualToString: @"branch"])
+		else if	([self isBranch])
 		{
 			return [NSImage imageNamed: @"arrow_branch"]; // branch embedded object
 		}
@@ -359,8 +383,8 @@ isPrimitiveInContainer: (BOOL)aFlag
 	if ([self attribute] == nil) // only if we click on the root of an embedded object
 	{
 		COMutableItem *storeItem = [ctx _storeItemForUUID: [self UUID]];
-		if ([[storeItem valueForAttribute: @"type"] isEqualToString: @"persistentRoot"] ||
-			[[storeItem valueForAttribute: @"type"] isEqualToString: @"branch"])
+		if ([self isPersistentRoot] ||
+			[self isBranch])
 		{
 			if ([[tableColumn identifier] isEqualToString: @"action"])
 			{
@@ -373,7 +397,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 			}
 			else if ([[tableColumn identifier] isEqualToString: @"currentbranch"])
 			{
-				if ([[storeItem valueForAttribute: @"type"] isEqualToString: @"persistentRoot"])
+				if ([self isPersistentRoot])
 				{
 					NSPopUpButtonCell *cell = [[[NSPopUpButtonCell alloc] init] autorelease];
 					[cell setBezelStyle: NSRoundRectBezelStyle];

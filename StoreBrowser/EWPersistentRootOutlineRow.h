@@ -49,4 +49,10 @@
 
 - (NSMenu *)menu;
 
+// Special row types
+
+- (BOOL) isPersistentRoot;
+- (BOOL) isBranch;
+- (BOOL) isEmbeddedObject;
+
 @end
