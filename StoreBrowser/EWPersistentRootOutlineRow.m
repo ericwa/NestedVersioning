@@ -587,7 +587,7 @@ isPrimitiveInContainer: (BOOL)aFlag
         return [selIndexes count] == 1 && [self isBranch];
 	}
 	
-	return [super validateUserInterfaceItem: anItem];
+	return [self respondsToSelector: theAction];
 }
 
 
