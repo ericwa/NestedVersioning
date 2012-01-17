@@ -42,4 +42,6 @@
 
 - (NSComparisonResult) compare: (id)anObject;
 
+- (NSMenu *)menu;
+
 @end

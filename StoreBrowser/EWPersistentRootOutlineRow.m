@@ -480,5 +480,62 @@ isPrimitiveInContainer: (BOOL)aFlag
 	return NSOrderedAscending;
 }
 
+// Menu stuff
+
+- (void) branch: (id)sender
+{
+	[ctx createBranchOfPersistentRoot: [self UUID]];
+	
+	[ctx commitWithMetadata: nil];
+	[[NSApp delegate] reloadAllBrowsers];
+}
+
+- (void) duplicateBranchAsPersistentRoot: (id)sender
+{
+	// FIXME: We need a reliable way to get the embedded object which 
+	// an object is contained within. This is a horrible hack:
+	
+	// first parent: the multivalued attribute the branch is in
+	// second parent: the embedded object the branch is in
+	// third parent: the multivalued attribute the embedded object is in
+	// fourth parent: the parent embedded object the embedded object is in
+	ETUUID *dest = [[[[[self parent] parent] parent] parent] UUID];
+	
+	NSLog(@"trying to break out branch %@ into %@ as new UUID", [self UUID], dest);
+	
+	[ctx createAndInsertNewPersistentRootByCopyingBranch: [self UUID]
+										  inItemWithUUID: dest];
+	
+	[ctx commitWithMetadata: nil];
+	[[NSApp delegate] reloadAllBrowsers];
+}
+
+- (NSMenu *)menu
+{
+	NSMenu *menu = [[[NSMenu alloc] initWithTitle: @""] autorelease];
+		
+	COMutableItem *storeItem = [ctx _storeItemForUUID: [self UUID]];
+	
+	if ([[storeItem valueForAttribute: @"type"] isEqualToString: @"persistentRoot"])
+	{
+		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Create Branch" 
+													   action: @selector(branch:) 
+												keyEquivalent: @""] autorelease];
+		[item setTarget: self];
+		[menu addItem: item];
+	}
+
+	if ([[storeItem valueForAttribute: @"type"] isEqualToString: @"branch"])
+	{
+		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Duplicate Branch as Persistent Root" 
+													   action: @selector(duplicateBranchAsPersistentRoot:) 
+												keyEquivalent: @""] autorelease];
+		[item setTarget: self];
+		[menu addItem: item];
+	}
+	
+    return menu;
+}
+
 @end
 
