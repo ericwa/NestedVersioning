@@ -563,63 +563,83 @@ isPrimitiveInContainer: (BOOL)aFlag
 
 - (void) diff: (id)sender
 {
-	NSLog(@"diff %@", [self selectedRows]);
+	NSArray *selectedRows = [self selectedRows];
+	assert([selectedRows count] == 2);
+
+	EWPersistentRootOutlineRow *row1 = [selectedRows objectAtIndex: 0];
+	EWPersistentRootOutlineRow *row2 = [selectedRows objectAtIndex: 1];
+
+	COMutableItem *proot1 = [ctx _storeItemForUUID: [row1 UUID]];
+	COMutableItem *proot2 = [ctx _storeItemForUUID: [row2 UUID]];
+	
+	
 }
 
-- (NSMenu *)menu
+- (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem
 {
-	NSMenu *menu = [[[NSMenu alloc] initWithTitle: @""] autorelease];
-		
+    SEL theAction = [anItem action];
+
 	COMutableItem *storeItem = [ctx _storeItemForUUID: [self UUID]];
 	
 	NSOutlineView *outlineView = [windowController outlineView];
 	NSIndexSet *selIndexes = [outlineView selectedRowIndexes];
 	
-	if ([selIndexes count] > 2)
-	{
-		NSLog(@"Try selecting just one or two rows");
-	}
-	else if ([selIndexes count] == 2)
-	{	
-		EWPersistentRootOutlineRow *row1 = [outlineView itemAtRow: [selIndexes firstIndex]];
-		EWPersistentRootOutlineRow *row2 = [outlineView itemAtRow: [selIndexes indexGreaterThanIndex: [selIndexes firstIndex]]];
-
-		if (([row1 isPersistentRoot] || [row1 isBranch])
-			 && ([row2 isPersistentRoot] || [row2 isBranch]))
-		{
+    if (theAction == @selector(diff:))
+    {
+        if ([selIndexes count] == 2)
+		{	
+			EWPersistentRootOutlineRow *row1 = [outlineView itemAtRow: [selIndexes firstIndex]];
+			EWPersistentRootOutlineRow *row2 = [outlineView itemAtRow: [selIndexes indexGreaterThanIndex: [selIndexes firstIndex]]];
+			
+			if (([row1 isPersistentRoot] || [row1 isBranch])
+				&& ([row2 isPersistentRoot] || [row2 isBranch]))
 			{
-				NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Diff Persistent Roots/Branches" 
-															   action: @selector(diff:) 
-														keyEquivalent: @""] autorelease];
-				[item setTarget: self];
-				[menu addItem: item];
+				return YES;
 			}
 		}
-	}
-	else
+		return NO;
+    }
+	else if (theAction == @selector(branch:))
+    {
+        return [selIndexes count] == 1 && [self isPersistentRoot];
+    }
+	else if (theAction == @selector(duplicateBranchAsPersistentRoot:))
 	{
-		// Single selection
-		
-		if ([[storeItem valueForAttribute: @"type"] isEqualToString: @"persistentRoot"])
-		{
-			NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Create Branch" 
-														   action: @selector(branch:) 
-													keyEquivalent: @""] autorelease];
-			[item setTarget: self];
-			[menu addItem: item];
-		}
-		
-		if ([[storeItem valueForAttribute: @"type"] isEqualToString: @"branch"])
-		{
-			NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Duplicate Branch as Persistent Root" 
-														   action: @selector(duplicateBranchAsPersistentRoot:) 
-													keyEquivalent: @""] autorelease];
-			[item setTarget: self];
-			[menu addItem: item];
-		}
+        return [selIndexes count] == 1 && [self isBranch];
+	}
+	
+	return [super validateUserInterfaceItem: anItem];
+}
+
+
+- (NSMenu *)menu
+{
+	NSMenu *menu = [[[NSMenu alloc] initWithTitle: @""] autorelease];
+
+	{
+		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Diff Persistent Roots/Branches" 
+													   action: @selector(diff:) 
+												keyEquivalent: @""] autorelease];
+		[item setTarget: self];
+		[menu addItem: item];
+	}
+	
+	{
+		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Create Branch" 
+													   action: @selector(branch:) 
+												keyEquivalent: @""] autorelease];
+		[item setTarget: self];
+		[menu addItem: item];
+	}
+	
+	{
+		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Duplicate Branch as Persistent Root" 
+													   action: @selector(duplicateBranchAsPersistentRoot:) 
+												keyEquivalent: @""] autorelease];
+		[item setTarget: self];
+		[menu addItem: item];
 	}
 
-		
     return menu;
 }
 
