@@ -17,6 +17,9 @@
 		forPersistentRoot: (ETUUID*)aUUID;
 
 - (ETUUID *) currentVersionForBranch: (ETUUID*)aBranch;
+
+- (ETUUID *) currentVersionForBranchOrPersistentRoot: (ETUUID*)aRootOrBranch;
+
 - (void) setCurrentVersion: (ETUUID*)aVersion
 			   forBranch: (ETUUID*)aBranch;
 

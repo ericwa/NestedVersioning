@@ -150,10 +150,7 @@
 		COPersistentRootEditingContext *parentCtx = [COPersistentRootEditingContext editingContextForEditingPath: [path pathByDeletingLastPathComponent] 
 																										 inStore: store];
 		
-		ETUUID *currentBranch = [parentCtx currentBranchOfPersistentRoot: [path lastPathComponent]];
-		assert(currentBranch != nil);
-		
-		ETUUID *currentCommit = [parentCtx currentVersionForBranch:currentBranch];
+		ETUUID *currentCommit = [parentCtx currentVersionForBranchOrPersistentRoot: [path lastPathComponent]];
 		assert(currentCommit != nil);
 		
 		return currentCommit;

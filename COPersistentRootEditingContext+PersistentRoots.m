@@ -110,8 +110,26 @@
 
 - (ETUUID *) currentVersionForBranch: (ETUUID*)aBranch
 {
+	assert([self isBranch: aBranch]);
 	COMutableItem *item = [self _storeItemForUUID: aBranch];
 	return [item valueForAttribute: @"currentVersion"];
+}
+
+- (ETUUID *) currentVersionForBranchOrPersistentRoot: (ETUUID*)aRootOrBranch;
+{
+	if ([self isBranch: aRootOrBranch])
+	{
+		return [self currentVersionForBranch: aRootOrBranch];
+	}
+	else if ([self isPersistentRoot: aRootOrBranch])
+	{
+		ETUUID *currentBranch = [self currentBranchOfPersistentRoot: aRootOrBranch];
+		return [self currentVersionForBranch: currentBranch];
+	}
+	else
+	{
+		assert(0);
+	}
 }
 
 - (ETUUID *) headForBranch: (ETUUID*)aBranch
