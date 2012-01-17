@@ -509,10 +509,14 @@ isPrimitiveInContainer: (BOOL)aFlag
 
 - (void) branch: (id)sender
 {
-	[ctx createBranchOfPersistentRoot: [self UUID]];
+	ETUUID *newBranch = [ctx createBranchOfPersistentRoot: [self UUID]];
+	
+	EWPersistentRootWindowController *controller = windowController; // FIXME: ugly hack
 	
 	[ctx commitWithMetadata: nil];
-	[[NSApp delegate] reloadAllBrowsers];
+	[[NSApp delegate] reloadAllBrowsers]; // FIXME: ugly.. deallocates self...
+	
+	[controller orderFrontAndHighlightItem: newBranch];
 }
 
 - (void) duplicateBranchAsPersistentRoot: (id)sender
@@ -528,11 +532,15 @@ isPrimitiveInContainer: (BOOL)aFlag
 	
 	NSLog(@"trying to break out branch %@ into %@ as new UUID", [self UUID], dest);
 	
-	[ctx createAndInsertNewPersistentRootByCopyingBranch: [self UUID]
-										  inItemWithUUID: dest];
+	ETUUID *newRoot = [ctx createAndInsertNewPersistentRootByCopyingBranch: [self UUID]
+															inItemWithUUID: dest];
+	
+	EWPersistentRootWindowController *controller = windowController; // FIXME: ugly hack
 	
 	[ctx commitWithMetadata: nil];
-	[[NSApp delegate] reloadAllBrowsers];
+	[[NSApp delegate] reloadAllBrowsers]; // FIXME: ugly.. deallocates self...
+	
+	[controller orderFrontAndHighlightItem: newRoot];
 }
 
 - (void) diff: (id)sender
