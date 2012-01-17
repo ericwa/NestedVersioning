@@ -5,9 +5,13 @@
 #import "COPersistentRootEditingContext+Convenience.h"
 #import "COPersistentRootEditingContext+PersistentRoots.h"
 
+@class EWPersistentRootWindowController;
+
 @interface EWPersistentRootOutlineRow : NSObject
 {
 	COPersistentRootEditingContext *ctx;
+	
+	EWPersistentRootWindowController *windowController;
 	
 	EWPersistentRootOutlineRow *parent;
 	
@@ -26,7 +30,8 @@
 - (BOOL) isPrimitiveInContainer;
 
 - (id)initWithContext: (COPersistentRootEditingContext *)aContext
-			   parent: (EWPersistentRootOutlineRow *)aParent;
+			   parent: (EWPersistentRootOutlineRow *)aParent
+	 windowController: (EWPersistentRootWindowController *)aController;
 
 - (NSArray*)children;
 - (id)valueForTableColumn: (NSTableColumn *)column;

@@ -13,7 +13,8 @@
 	
 	DESTROY(outlineModel);
 	outlineModel = [[EWPersistentRootOutlineRow alloc] initWithContext: ctx
-																parent: nil];
+																parent: nil
+													  windowController: self];
 	
 	// View may not exist yet.
 	// FIXME: duplicated code in init...

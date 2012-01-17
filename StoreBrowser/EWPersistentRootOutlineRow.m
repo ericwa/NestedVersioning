@@ -14,7 +14,8 @@
 			 attribute: (NSString*)anAttribute
 isPrimitiveInContainer: (BOOL)aFlag
 				 index: (NSUInteger)anIndex
-			   parent: (EWPersistentRootOutlineRow *)aParent
+				parent: (EWPersistentRootOutlineRow *)aParent
+	  windowController: (EWPersistentRootWindowController *)aController
 {
 	SUPERINIT;
 	ASSIGN(ctx, aContext);
@@ -23,6 +24,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 	isPrimitiveInContainer = aFlag;
 	index = anIndex;
 	parent = aParent;
+	windowController = aController;
 	return self;
 }
 
@@ -34,34 +36,40 @@ isPrimitiveInContainer: (BOOL)aFlag
 - (id) initWithContext: (COPersistentRootEditingContext *)aContext
 			  itemUUID: (ETUUID *)aUUID
 			 attribute: (NSString*)anAttribute
-			   parent: (EWPersistentRootOutlineRow *)aParent
+				parent: (EWPersistentRootOutlineRow *)aParent
+	  windowController: (EWPersistentRootWindowController *)aController
 {
 	return [self initWithContext: aContext
 						itemUUID: aUUID
 					   attribute: anAttribute 
 		  isPrimitiveInContainer: NO
 						   index: 0
-						  parent: aParent];
+						  parent: aParent
+				windowController: aController];
 }
 
 - (id) initWithContext: (COPersistentRootEditingContext *)aContext
 			  itemUUID: (ETUUID *)aUUID
-			   parent: (EWPersistentRootOutlineRow *)aParent
+				parent: (EWPersistentRootOutlineRow *)aParent
+	  windowController: (EWPersistentRootWindowController *)aController
 {
 	return [self initWithContext: aContext
 						itemUUID: aUUID
 					   attribute: nil 
 		  isPrimitiveInContainer: NO
 						   index: 0
-						  parent: aParent];
+						  parent: aParent
+				windowController: aController];
 }
 
 - (id)initWithContext: (COPersistentRootEditingContext *)aContext
 			   parent: (EWPersistentRootOutlineRow *)aParent
+	 windowController: (EWPersistentRootWindowController *)aController
 {
 	return [self initWithContext: aContext
 						itemUUID: [aContext rootUUID]
-						  parent: aParent];
+						  parent: aParent
+				windowController: aController];
 }
 
 - (void)dealloc
@@ -107,7 +115,8 @@ isPrimitiveInContainer: (BOOL)aFlag
 			EWPersistentRootOutlineRow *obj = [[EWPersistentRootOutlineRow alloc] initWithContext: ctx
 																						 itemUUID: UUID
 																						attribute: attr
-																						   parent: self];
+																						   parent: self
+																				 windowController: windowController];
 			[result addObject: obj];
 			[obj release];
 		}
@@ -134,7 +143,8 @@ isPrimitiveInContainer: (BOOL)aFlag
 			{
 				EWPersistentRootOutlineRow *obj = [[EWPersistentRootOutlineRow alloc] initWithContext: ctx
 																							 itemUUID: embeddedUUID
-																							   parent: self];
+																							   parent: self
+																					 windowController: windowController];
 				[result addObject: obj];
 				[obj release];
 			}
@@ -154,7 +164,8 @@ isPrimitiveInContainer: (BOOL)aFlag
 																							attribute: attribute
 																			   isPrimitiveInContainer: YES
 																								index: i
-																							   parent: self];
+																							   parent: self
+																					 windowController: windowController];
 				[result addObject: obj];
 				[obj release];
 			}
@@ -515,6 +526,8 @@ isPrimitiveInContainer: (BOOL)aFlag
 	NSMenu *menu = [[[NSMenu alloc] initWithTitle: @""] autorelease];
 		
 	COMutableItem *storeItem = [ctx _storeItemForUUID: [self UUID]];
+	
+	
 	
 	if ([[storeItem valueForAttribute: @"type"] isEqualToString: @"persistentRoot"])
 	{
