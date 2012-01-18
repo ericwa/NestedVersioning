@@ -2,6 +2,8 @@
 #import "COMacros.h"
 #import "COType+String.h"
 #import "EWPersistentRootWindowController.h"
+#import "COPath.h"
+#import "COTreeDiff.h"
 
 @implementation EWPersistentRootOutlineRow
 
@@ -550,13 +552,23 @@ isPrimitiveInContainer: (BOOL)aFlag
 
 	EWPersistentRootOutlineRow *row1 = [selectedRows objectAtIndex: 0];
 	EWPersistentRootOutlineRow *row2 = [selectedRows objectAtIndex: 1];
+	
+	COPersistentRootEditingContext *row1ctx = 
+		[COPersistentRootEditingContext editingContextForEditingPath: [[ctx path] pathByAppendingPathComponent: [row1 UUID]]
+															 inStore: [ctx store]];
 
-	// These are the commits we are going to look in and diff the root objects of
+	COPersistentRootEditingContext *row2ctx = 	
+		[COPersistentRootEditingContext editingContextForEditingPath: [[ctx path] pathByAppendingPathComponent: [row2 UUID]]
+															 inStore: [ctx store]];
 	
-	ETUUID *ver1 = [ctx currentVersionForBranchOrPersistentRoot: [row1 UUID]];
-	ETUUID *ver2 = [ctx currentVersionForBranchOrPersistentRoot: [row2 UUID]];
+	assert(row1ctx != nil);
+	assert(row2ctx != nil);
 	
-	NSLog(@"diff commits %@ and %@", ver1, ver2);
+	COTreeDiff *treediff = [COTreeDiff diffRootItem: [row1ctx rootUUID]
+									   withRootItem: [row2ctx rootUUID]
+									inFaultProvider: row1ctx
+								  withFaultProvider: row2ctx];
+	NSLog(@"tree diff: %@", treediff);
 }
 
 

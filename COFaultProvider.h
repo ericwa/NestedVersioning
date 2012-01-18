@@ -19,9 +19,9 @@
 /**
  * Interface for the fault observer to get rows from the fault provider
  */
-- (COItem*) itemForUUID: (ETUUID *)aUUID;
+- (COItem*) _storeItemForUUID: (ETUUID *)aUUID;
 
-- (ETUUID *) rootItemUUID;
+- (ETUUID *) rootUUID;
 
 //- (void) addFaultObserver: (id<COFaultObserver>)anObserver;
 //- (void) removeFaultObserver: (id<COFaultObserver>)anObserver;

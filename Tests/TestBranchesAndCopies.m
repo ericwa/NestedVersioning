@@ -25,17 +25,17 @@ void test()
 	
 	rootCtx = [store rootContext];
 	libUUID = [rootCtx insertNewPersistentRootWithRootItem: [factory newFolder: @"library"]];
-						// implict inContainer: [rootCtx rootItemUUID]
+						// implict inContainer: [rootCtx rootUUID]
 	
 	[rootCtx commit];
 	
 	{
 		libCtx = [rootCtx editingContextForEditingEmbdeddedPersistentRoot: libUUID];
 		
-		libFolder = [libCtx rootItemUUID];
+		libFolder = [libCtx rootUUID];
 		
 		drawingUUID = [libCtx insertNewPersistentRootWithRootItem: [factory newFolder: @"drawing"]];
-		// implict inContainer: [libCtx rootItemUUID]
+		// implict inContainer: [libCtx rootUUID]
 
 		ETUUID *drawing_b1 = [factory currentBranchForPersistentRoot: drawingUUID inContext: libCtx];
 		ETUUID *drawing_b2 = [factory createBranchForPersistentRoot: drawingUUID inContext: libCtx];
@@ -65,7 +65,7 @@ void test()
 		{
 			drawing1_b3copyCtx = [libCtx editingContextForEditingEmbdeddedPersistentRoot: drawing1_b3copy];
 		
-			drawing1_b3copyCtx_drawing = [drawing1_b3copyCtx rootItemUUID];
+			drawing1_b3copyCtx_drawing = [drawing1_b3copyCtx rootUUID];
 			
 			layer = [drawing1_b3copyCtx_drawing insertItem: [factory newFolderNamed: @"layer"]
 											   inContainer: [drawing1_b3copyCtx_drawing rootItem]];

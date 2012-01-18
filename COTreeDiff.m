@@ -10,7 +10,7 @@ static void _COAllItemUUIDsInTree_implementation(ETUUID *treeRoot, id<COFaultPro
 {
 	[result addObject: treeRoot];
 	
-	COItem *item = [faultProvider itemForUUID: treeRoot];
+	COItem *item = [faultProvider _storeItemForUUID: treeRoot];
 	for (NSString *key in [item attributeNames])
 	{
 		COType *type = [item typeForAttribute: key];
@@ -18,7 +18,7 @@ static void _COAllItemUUIDsInTree_implementation(ETUUID *treeRoot, id<COFaultPro
 		{		
 			for (ETUUID *embedded in [item allObjectsForAttribute: key])
 			{
-				_COAllItemUUIDsInTree_implementation(treeRoot, faultProvider, result);
+				_COAllItemUUIDsInTree_implementation(embedded, faultProvider, result);
 			}
 		}
 	}
@@ -57,8 +57,8 @@ static NSSet *COAllItemUUIDsInTree(ETUUID *treeRoot, id<COFaultProvider> faultPr
 	
 	for (ETUUID *commonUUID in commonUUIDs)
 	{
-		COItem *commonItemA = [providerA itemForUUID: commonUUID];
-		COItem *commonItemB = [providerB itemForUUID: commonUUID];
+		COItem *commonItemA = [providerA _storeItemForUUID: commonUUID];
+		COItem *commonItemB = [providerB _storeItemForUUID: commonUUID];
 		
 		COItemDiff *diff = [COItemDiff diffItem: commonItemA withItem: commonItemB];
 		
