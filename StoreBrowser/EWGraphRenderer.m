@@ -19,12 +19,12 @@
 
 static NSUInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUInteger currentLevel, NSMutableDictionary *levelForUUID)
 {
-	NSLog(@"visiting %@", currentUUID);
+	//NSLog(@"visiting %@", currentUUID);
 	
 	NSNumber *currentSavedLevel = [levelForUUID objectForKey: currentUUID];
 	if (currentSavedLevel != nil)
 	{
-		NSLog(@"%@ already has a level %@", currentUUID, currentSavedLevel);
+		//NSLog(@"%@ already has a level %@", currentUUID, currentSavedLevel);
 		return 0;
 	}
 	else
@@ -88,8 +88,8 @@ static NSUInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUI
 		if ([[childrenForUUID objectForKey: aCommit] count] == 0 &&
 			[aStore parentForCommit: aCommit] == nil)
 		{
-			NSLog(@"removed %@ because it had no parents/children (%d)", 
-				  aCommit, (int)[allCommitsSorted indexOfObject: aCommit]);
+			//NSLog(@"removed %@ because it had no parents/children (%d)", 
+			//	  aCommit, (int)[allCommitsSorted indexOfObject: aCommit]);
 			[allCommitsSorted removeObject: aCommit];
 
 		}
@@ -100,7 +100,7 @@ static NSUInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUI
 	
 	for (ETUUID *aCommit in allCommitsSorted)
 	{
-		NSLog(@"%@ children: %@", aCommit, [childrenForUUID objectForKey: aCommit]);
+		//NSLog(@"%@ children: %@", aCommit, [childrenForUUID objectForKey: aCommit]);
 	}
 	
 	
@@ -116,7 +116,7 @@ static NSUInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUI
 		}
 	}
 	
-	NSLog(@"Graph drawing:: %d roots", (int)[roots count]);
+	//NSLog(@"Graph drawing:: %d roots", (int)[roots count]);
 	
 	//
 	// now to find the Y position, we do a DFS on the display graph.
@@ -136,12 +136,12 @@ static NSUInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUI
 	NSUInteger maxLevel = 0;
 	for (ETUUID *root in roots)
 	{
-		NSLog(@"Starting root %@ at %d", root, (int)maxLevel);
+		//NSLog(@"Starting root %@ at %d", root, (int)maxLevel);
 		maxLevel = visit(childrenForUUID, root, maxLevel, levelForUUID);
 		maxLevel++;
 	}
 	
-	NSLog(@"graph output:");
+	//NSLog(@"graph output:");
 	
 	maxLevelUsed = 0;
 	for (ETUUID *aCommit in allCommitsSorted)
@@ -151,7 +151,7 @@ static NSUInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUI
 		if (level > maxLevelUsed)
 			maxLevelUsed = level;
 		
-		NSLog(@"%d", (int)level);
+		//NSLog(@"%d", (int)level);
 	}
 
 	// sanity check: Every object's parent must appear to its left.
