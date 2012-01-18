@@ -11,6 +11,8 @@
 		6628FB9B142FA65D0072767A /* EWTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6628FB9A142FA65D0072767A /* EWTest.m */; };
 		66300AFA1492CA7E00246C89 /* EWGraphRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 66300AF91492CA7E00246C89 /* EWGraphRenderer.m */; };
 		66300AFD1493148300246C89 /* EWHistoryGraphView.m in Sources */ = {isa = PBXBuildFile; fileRef = 66300AFC1493148300246C89 /* EWHistoryGraphView.m */; };
+		664DA7F314C6B28000942CDC /* COPersistentRootDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 664DA7F214C6B28000942CDC /* COPersistentRootDiff.m */; };
+		664DA7F414C6B28000942CDC /* COPersistentRootDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 664DA7F214C6B28000942CDC /* COPersistentRootDiff.m */; };
 		668F26B614982F8700A3CEA6 /* COStoreItemProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 668F26B514982F8700A3CEA6 /* COStoreItemProvider.m */; };
 		669CADDB1491539100D0CF5F /* COType.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EDFD95148EF73200D0DC0B /* COType.m */; };
 		669CADDC1491539100D0CF5F /* COType+Plist.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F39B851490A8540097B7D5 /* COType+Plist.m */; };
@@ -123,6 +125,8 @@
 		66300AFB1493148300246C89 /* EWHistoryGraphView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWHistoryGraphView.h; sourceTree = "<group>"; };
 		66300AFC1493148300246C89 /* EWHistoryGraphView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWHistoryGraphView.m; sourceTree = "<group>"; };
 		66416D20142D3EE20016501D /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		664DA7F114C6B28000942CDC /* COPersistentRootDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPersistentRootDiff.h; sourceTree = "<group>"; };
+		664DA7F214C6B28000942CDC /* COPersistentRootDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COPersistentRootDiff.m; sourceTree = "<group>"; };
 		668F26B414982F8700A3CEA6 /* COStoreItemProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COStoreItemProvider.h; sourceTree = "<group>"; };
 		668F26B514982F8700A3CEA6 /* COStoreItemProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COStoreItemProvider.m; sourceTree = "<group>"; };
 		669CADDE1491646300D0CF5F /* COManagedItemTreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COManagedItemTreeNode.h; sourceTree = "<group>"; };
@@ -396,6 +400,8 @@
 				66E4BE561496956200B7024A /* COItemDiff.m */,
 				669CADE61491844000D0CF5F /* COTreeDiff.h */,
 				669CADE71491844000D0CF5F /* COTreeDiff.m */,
+				664DA7F114C6B28000942CDC /* COPersistentRootDiff.h */,
+				664DA7F214C6B28000942CDC /* COPersistentRootDiff.m */,
 			);
 			path = Diff;
 			sourceTree = "<group>";
@@ -657,6 +663,7 @@
 				668F26B614982F8700A3CEA6 /* COStoreItemProvider.m in Sources */,
 				66E42F16149A91A600C90D5A /* TestTreeManager.m in Sources */,
 				79CB302A14C63E1C00ADAB77 /* TestCommon.m in Sources */,
+				664DA7F314C6B28000942CDC /* COPersistentRootDiff.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -694,6 +701,7 @@
 				66300AFA1492CA7E00246C89 /* EWGraphRenderer.m in Sources */,
 				66300AFD1493148300246C89 /* EWHistoryGraphView.m in Sources */,
 				66E4BE5E1497464100B7024A /* EWOutlineView.m in Sources */,
+				664DA7F414C6B28000942CDC /* COPersistentRootDiff.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
