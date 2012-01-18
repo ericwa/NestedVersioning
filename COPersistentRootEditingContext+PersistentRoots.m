@@ -280,8 +280,14 @@
 
 
 - (ETUUID *)createAndInsertNewPersistentRootByCopyingBranch: (ETUUID *)srcBranch
+										   ofPersistentRoot: (ETUUID *)srcPersistentRoot
 											 inItemWithUUID: (ETUUID *)aDest
 {
+	assert([[self branchesOfPersistentRoot: srcPersistentRoot] containsObject: srcBranch]);
+	
+	NSString *srcName = [[self _storeItemForUUID: srcPersistentRoot] valueForAttribute: @"name"];
+	NSString *name = [NSString stringWithFormat: @"%@ - copy of branch %@", srcName, [srcBranch stringValue]];
+	
 	COMutableItem *i1 = [COMutableItem item];
 	
 	COMutableItem *i2 = [[[self _storeItemForUUID: srcBranch] copy] autorelease];
@@ -290,7 +296,7 @@
 	[i1 setValue: @"persistentRoot"
 	forAttribute: @"type"
 			type: [COType stringType]];	
-	[i1 setValue: @"test document"
+	[i1 setValue: name
 	forAttribute: @"name"
 			type: [COType stringType]];
 	[i1 setValue: [COPath pathWithPathComponent: [i2 UUID]]

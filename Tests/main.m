@@ -211,6 +211,7 @@ static void testEditingContextEmbeddedObjects()
 	//
 	
 	ETUUID *u2 = [ctx createAndInsertNewPersistentRootByCopyingBranch: u1BranchB
+													 ofPersistentRoot: u1
 													   inItemWithUUID: uroot];
 	
 	//

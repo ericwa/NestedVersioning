@@ -38,6 +38,7 @@
 // FIXME: Not sure what should happen to the undo/redo limits. For now we'll reset them
 // so the new persistent root has no undo/redo history.
 - (ETUUID *)createAndInsertNewPersistentRootByCopyingBranch: (ETUUID *)srcBranch
+										   ofPersistentRoot: (ETUUID *)srcPersistentRoot
 											 inItemWithUUID: (ETUUID *)destContainer;
 
 - (ETUUID *) createBranchOfPersistentRoot: (ETUUID *)aRoot;

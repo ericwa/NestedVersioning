@@ -526,6 +526,8 @@ isPrimitiveInContainer: (BOOL)aFlag
 	// FIXME: We need a reliable way to get the embedded object which 
 	// an object is contained within. This is a horrible hack:
 	
+	ETUUID *persistentRootOwningBranch = [[[self parent] parent] UUID];
+	
 	// first parent: the multivalued attribute the branch is in
 	// second parent: the embedded object the branch is in
 	// third parent: the multivalued attribute the embedded object is in
@@ -535,6 +537,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 	NSLog(@"trying to break out branch %@ into %@ as new UUID", [self UUID], dest);
 	
 	ETUUID *newRoot = [ctx createAndInsertNewPersistentRootByCopyingBranch: [self UUID]
+														  ofPersistentRoot: persistentRootOwningBranch
 															inItemWithUUID: dest];
 	
 	EWPersistentRootWindowController *controller = windowController; // FIXME: ugly hack
