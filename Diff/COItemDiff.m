@@ -298,4 +298,9 @@
 	return newItem;
 }
 
+- (NSUInteger) editCount
+{
+	return [edits count];
+}
+
 @end

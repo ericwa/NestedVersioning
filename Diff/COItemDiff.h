@@ -11,4 +11,6 @@
 
 - (COItem *)itemWithDiffAppliedTo: (COItem *)anItem;
 
+- (NSUInteger) editCount;
+
 @end

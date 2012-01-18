@@ -70,4 +70,17 @@ static NSSet *COAllItemUUIDsInTree(ETUUID *treeRoot, id<COFaultProvider> faultPr
 						   itemDiffForUUID: itemDiffForUUID] autorelease];
 }
 
+- (NSString *)description
+{
+	NSMutableString *desc = [NSMutableString stringWithString: [super description]];
+	[desc appendFormat: @" {\n"];
+	for (ETUUID *uuid in itemDiffForUUID)
+	{
+		COItemDiff *itemdiff = [itemDiffForUUID objectForKey: uuid];
+		[desc appendFormat: @"\t%@: %d edits\n", uuid, [itemdiff editCount]];
+	}
+ 	[desc appendFormat: @"}"];
+	return desc;
+}
+
 @end

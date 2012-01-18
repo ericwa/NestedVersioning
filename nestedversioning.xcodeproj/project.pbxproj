@@ -82,6 +82,13 @@
 		79CB305D14C63E9800ADAB77 /* TestCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CB302914C63E1C00ADAB77 /* TestCommon.m */; };
 		79CB30A714C6456000ADAB77 /* COTreeDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 669CADE71491844000D0CF5F /* COTreeDiff.m */; };
 		79CB30AA14C6457800ADAB77 /* COItemDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E4BE561496956200B7024A /* COItemDiff.m */; };
+		79CB30FE14C6499F00ADAB77 /* COArrayDiff.mm in Sources */ = {isa = PBXBuildFile; fileRef = 66E503931495F9CF003C69C7 /* COArrayDiff.mm */; };
+		79CB30FF14C6499F00ADAB77 /* COMergeResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E503951495F9CF003C69C7 /* COMergeResult.m */; };
+		79CB310014C6499F00ADAB77 /* COObjectGraphDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E503971495F9CF003C69C7 /* COObjectGraphDiff.m */; };
+		79CB310114C6499F00ADAB77 /* COSequenceDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E503991495F9CF003C69C7 /* COSequenceDiff.m */; };
+		79CB310214C6499F00ADAB77 /* COSetDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E5039B1495F9CF003C69C7 /* COSetDiff.m */; };
+		79CB310314C6499F00ADAB77 /* COStringDiff.mm in Sources */ = {isa = PBXBuildFile; fileRef = 66E5039D1495F9CF003C69C7 /* COStringDiff.mm */; };
+		79CB310614C649BC00ADAB77 /* COType+Diff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E4BE5A149713CA00B7024A /* COType+Diff.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -653,8 +660,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79CB30FE14C6499F00ADAB77 /* COArrayDiff.mm in Sources */,
+				79CB30FF14C6499F00ADAB77 /* COMergeResult.m in Sources */,
+				79CB310014C6499F00ADAB77 /* COObjectGraphDiff.m in Sources */,
+				79CB310114C6499F00ADAB77 /* COSequenceDiff.m in Sources */,
+				79CB310214C6499F00ADAB77 /* COSetDiff.m in Sources */,
+				79CB310314C6499F00ADAB77 /* COStringDiff.mm in Sources */,
 				79CB30AA14C6457800ADAB77 /* COItemDiff.m in Sources */,
 				79CB30A714C6456000ADAB77 /* COTreeDiff.m in Sources */,
+				79CB310614C649BC00ADAB77 /* COType+Diff.m in Sources */,
 				79CB305C14C63E9800ADAB77 /* TestTagging.m in Sources */,
 				79CB305D14C63E9800ADAB77 /* TestCommon.m in Sources */,
 				66E5038C1495EA0C003C69C7 /* COType+String.m in Sources */,
