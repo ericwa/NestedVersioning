@@ -294,6 +294,11 @@ isPrimitiveInContainer: (BOOL)aFlag
 		}
 		else if	([self isBranch])
 		{
+			ETUUID *persistentRoot = [[[self parent] parent] UUID]; // FIXME: hack
+			if ([[ctx currentBranchOfPersistentRoot: persistentRoot] isEqual: [self UUID]])
+			{
+				return [NSImage imageNamed: @"arrow_branch_purple"]; // branch embedded object			
+			}
 			return [NSImage imageNamed: @"arrow_branch"]; // branch embedded object
 		}
 		return [NSImage imageNamed: @"brick"]; // regular embedded object
@@ -308,7 +313,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 		}
 		else
 		{
-			return [NSImage imageNamed: @"bullet_purple"]; // multivalued attribute
+			return [NSImage imageNamed: @"bullet_yellow_multiple"]; // multivalued attribute
 		}
 	}
 }
