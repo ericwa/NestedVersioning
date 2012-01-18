@@ -10,8 +10,8 @@ TODO
                   by layering a diff together with an efficient immutable tree
                   this should be decoupled from the editing context code, and 
                   should become a thin wrapper around it.
-[ ] (dec 15)      fix up graph drawing
-[ ] (dec 15)      port over merge code.
+[x] (dec 15)      fix up graph drawing
+[wip] (dec 15)      port over merge code.
 [ ] (dec 15)      come up with a way of representing merge conflicts
 [ ] (dec 15)      finally finish the mutable tree wrapper over COItem.
                   it should enforce the various validity constraints
