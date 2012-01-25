@@ -342,6 +342,7 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView writeItems:(NSArray *)items toPasteboard:(NSPasteboard *)pb
 {
+/*
 	NSMutableArray *pbItems = [NSMutableArray array];
 
 	if ([items count] == 0) return;
@@ -363,10 +364,13 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 	
 	[pb clearContents];
 	return [pb writeObjects: pbItems];
+*/
+	return NO;
 }
 
 - (NSDragOperation)outlineView:(NSOutlineView *)outlineView validateDrop:(id <NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)index
 {
+/*
 	if (item != nil && ![item isKindOfClass: [EWPersistentRootOutlineRow class]])
 	{
 		return NSDragOperationNone;
@@ -385,10 +389,15 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 		}
 	}
 	return NSDragOperationPrivate;
+*/	
+	return NSDragOperationNone;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView acceptDrop:(id <NSDraggingInfo>)info item:(id)newParent childIndex:(NSInteger)index
 {
+	return NO;
+
+/*
 	newParent = [self modelForItem: newParent];
 	
 	NSUInteger insertionIndex = index;
@@ -402,6 +411,8 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 	}
 	
 	return NO;
+
+*/
 	
 	// Make a link if the user is holding control 
 	/*

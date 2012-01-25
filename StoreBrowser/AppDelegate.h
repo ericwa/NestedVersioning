@@ -7,6 +7,7 @@
 {
 	NSMutableDictionary	*windowControllerForPath;
 	COStore *store;
+	NSWindow *_window;
 }
 
 @property (assign) IBOutlet NSWindow *window;
