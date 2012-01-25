@@ -31,7 +31,7 @@
 		66E4BE5E1497464100B7024A /* EWOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E4BE5D1497464100B7024A /* EWOutlineView.m */; };
 		66E5038A1495E6EF003C69C7 /* COType+String.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E503891495E6EF003C69C7 /* COType+String.m */; };
 		66E5038C1495EA0C003C69C7 /* COType+String.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E503891495E6EF003C69C7 /* COType+String.m */; };
-		66E5039F1495F9CF003C69C7 /* COArrayDiff.mm in Sources */ = {isa = PBXBuildFile; fileRef = 66E503931495F9CF003C69C7 /* COArrayDiff.mm */; };
+		66E5039F1495F9CF003C69C7 /* COArrayDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E503931495F9CF003C69C7 /* COArrayDiff.m */; };
 		66E503A01495F9CF003C69C7 /* COMergeResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E503951495F9CF003C69C7 /* COMergeResult.m */; };
 		66E503A11495F9CF003C69C7 /* COObjectGraphDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E503971495F9CF003C69C7 /* COObjectGraphDiff.m */; };
 		66E503A21495F9D0003C69C7 /* COSequenceDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E503991495F9CF003C69C7 /* COSequenceDiff.m */; };
@@ -86,7 +86,7 @@
 		79CB305D14C63E9800ADAB77 /* TestCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CB302914C63E1C00ADAB77 /* TestCommon.m */; };
 		79CB30A714C6456000ADAB77 /* COTreeDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 669CADE71491844000D0CF5F /* COTreeDiff.m */; };
 		79CB30AA14C6457800ADAB77 /* COItemDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E4BE561496956200B7024A /* COItemDiff.m */; };
-		79CB30FE14C6499F00ADAB77 /* COArrayDiff.mm in Sources */ = {isa = PBXBuildFile; fileRef = 66E503931495F9CF003C69C7 /* COArrayDiff.mm */; };
+		79CB30FE14C6499F00ADAB77 /* COArrayDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E503931495F9CF003C69C7 /* COArrayDiff.m */; };
 		79CB30FF14C6499F00ADAB77 /* COMergeResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E503951495F9CF003C69C7 /* COMergeResult.m */; };
 		79CB310014C6499F00ADAB77 /* COObjectGraphDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E503971495F9CF003C69C7 /* COObjectGraphDiff.m */; };
 		79CB310114C6499F00ADAB77 /* COSequenceDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E503991495F9CF003C69C7 /* COSequenceDiff.m */; };
@@ -159,7 +159,7 @@
 		66E503881495E6EF003C69C7 /* COType+String.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COType+String.h"; sourceTree = "<group>"; };
 		66E503891495E6EF003C69C7 /* COType+String.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "COType+String.m"; sourceTree = "<group>"; };
 		66E503921495F9CF003C69C7 /* COArrayDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COArrayDiff.h; sourceTree = "<group>"; };
-		66E503931495F9CF003C69C7 /* COArrayDiff.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = COArrayDiff.mm; sourceTree = "<group>"; };
+		66E503931495F9CF003C69C7 /* COArrayDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COArrayDiff.m; sourceTree = "<group>"; };
 		66E503941495F9CF003C69C7 /* COMergeResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COMergeResult.h; sourceTree = "<group>"; };
 		66E503951495F9CF003C69C7 /* COMergeResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COMergeResult.m; sourceTree = "<group>"; };
 		66E503961495F9CF003C69C7 /* COObjectGraphDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COObjectGraphDiff.h; sourceTree = "<group>"; };
@@ -388,7 +388,7 @@
 			isa = PBXGroup;
 			children = (
 				66E503921495F9CF003C69C7 /* COArrayDiff.h */,
-				66E503931495F9CF003C69C7 /* COArrayDiff.mm */,
+				66E503931495F9CF003C69C7 /* COArrayDiff.m */,
 				66E503941495F9CF003C69C7 /* COMergeResult.h */,
 				66E503951495F9CF003C69C7 /* COMergeResult.m */,
 				66E503961495F9CF003C69C7 /* COObjectGraphDiff.h */,
@@ -658,7 +658,7 @@
 				792972F5148C4CA800FD35A9 /* TestCompositeDocument.m in Sources */,
 				792972FA148C4D6D00FD35A9 /* TestUserRequirements.m in Sources */,
 				66E5038A1495E6EF003C69C7 /* COType+String.m in Sources */,
-				66E5039F1495F9CF003C69C7 /* COArrayDiff.mm in Sources */,
+				66E5039F1495F9CF003C69C7 /* COArrayDiff.m in Sources */,
 				66E503A01495F9CF003C69C7 /* COMergeResult.m in Sources */,
 				66E503A11495F9CF003C69C7 /* COObjectGraphDiff.m in Sources */,
 				66E503A21495F9D0003C69C7 /* COSequenceDiff.m in Sources */,
@@ -678,7 +678,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				79CB30FE14C6499F00ADAB77 /* COArrayDiff.mm in Sources */,
+				79CB30FE14C6499F00ADAB77 /* COArrayDiff.m in Sources */,
 				79CB30FF14C6499F00ADAB77 /* COMergeResult.m in Sources */,
 				79CB310014C6499F00ADAB77 /* COObjectGraphDiff.m in Sources */,
 				79CB310114C6499F00ADAB77 /* COSequenceDiff.m in Sources */,

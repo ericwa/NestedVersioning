@@ -1,35 +1,13 @@
 #import "COArrayDiff.h"
-#include "diff.hh"
+#include "diff.h"
 
 #import "COMacros.h"
 
-class NSArrayWrapper
+static int comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
 {
-private:
-	NSArray *arr1, *arr2;
-	id (*objectAtIndexIMP1)(id, SEL, NSUInteger);
-	id (*objectAtIndexIMP2)(id, SEL, NSUInteger);
-public:
-	bool equal(size_t i, size_t j)
-	{
-		id left = objectAtIndexIMP1(arr1, @selector(objectAtIndex:), i);
-		id right = objectAtIndexIMP2(arr2, @selector(objectAtIndex:), j);
-		
-		return [left isEqual: right];
-	}
-	NSArrayWrapper(NSArray *a1, NSArray *a2) : arr1(a1), arr2(a2)
-	{
-		[arr1 retain];
-		[arr2 retain];
-		objectAtIndexIMP1 = (id (*)(id, SEL, NSUInteger))[arr1 methodForSelector: @selector(objectAtIndex:)];
-		objectAtIndexIMP2 = (id (*)(id, SEL, NSUInteger))[arr2 methodForSelector: @selector(objectAtIndex:)];
-	}
-	~NSArrayWrapper()
-	{
-		[arr1 release];
-		[arr2 release];
-	}
-};
+	return [[(NSArray*)userdata1 objectAtIndex: i] isEqual:
+	[(NSArray*)userdata2 objectAtIndex: j]];
+}
 
 @interface COArrayDiff (Private)
 
@@ -59,35 +37,35 @@ public:
 	
 	//NSLog(@"ArrayDiffing %d vs %d objects", [a count], [b count]);
 	
-	NSArrayWrapper wrapper(a, b);
-	std::vector<ManagedFusion::DifferenceItem> items = 
-    ManagedFusion::Diff<NSArrayWrapper>(wrapper, [a count], [b count]);
+	diffresult_t *result = diff_arrays([a count], [b count], comparefn, a, b);
 	
-	for (std::vector<ManagedFusion::DifferenceItem>::iterator it = items.begin();
-		 it != items.end();
-		 it++)
+	for (size_t i=0; i<diff_editcount(result); i++)
 	{
-		NSRange firstRange = NSMakeRange((*it).rangeInA.location, (*it).rangeInA.length);
-		NSRange secondRange = NSMakeRange((*it).rangeInB.location, (*it).rangeInB.length);
+		diffedit_t edit = diff_edit_at_index(result, i);
 		
-		switch ((*it).type)
+		NSRange firstRange = NSMakeRange(edit.range_in_a.location, edit.range_in_a.length);
+		NSRange secondRange = NSMakeRange(edit.range_in_b.location, edit.range_in_b.length);
+		
+		switch (edit.type)
 		{
-			case ManagedFusion::INSERTION:
+			case difftype_insertion:
 				if (secondRange.length > 0)
 				{
 					[ops addObject: [COArrayDiffOperationInsert insertWithLocation: firstRange.location
 																		   objects: [b subarrayWithRange: secondRange]]];
 				}
 				break;
-			case ManagedFusion::DELETION:
+			case difftype_deletion:
 				[ops addObject: [COArrayDiffOperationDelete deleteWithRange: firstRange]];
 				break;
-			case ManagedFusion::MODIFICATION:
+			case difftype_modification:
 				[ops addObject: [COArrayDiffOperationModify modifyWithRange: firstRange
 																 newObjects: [b subarrayWithRange: secondRange]]];
 				break;
 		}
 	}
+	
+	diff_free(result);
 }
 
 
