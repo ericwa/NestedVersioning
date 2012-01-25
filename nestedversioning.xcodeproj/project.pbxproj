@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		660E66E4148D92E00062308D /* EWPersistentRootOutlineRow.m in Sources */ = {isa = PBXBuildFile; fileRef = 660E66E3148D92E00062308D /* EWPersistentRootOutlineRow.m */; };
+		66101A0A14D09FAA00B50075 /* diff.cc in Sources */ = {isa = PBXBuildFile; fileRef = 66101A0914D09FAA00B50075 /* diff.cc */; };
+		66101A0B14D09FAA00B50075 /* diff.cc in Sources */ = {isa = PBXBuildFile; fileRef = 66101A0914D09FAA00B50075 /* diff.cc */; };
 		6628FB9B142FA65D0072767A /* EWTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6628FB9A142FA65D0072767A /* EWTest.m */; };
 		66300AFA1492CA7E00246C89 /* EWGraphRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 66300AF91492CA7E00246C89 /* EWGraphRenderer.m */; };
 		66300AFD1493148300246C89 /* EWHistoryGraphView.m in Sources */ = {isa = PBXBuildFile; fileRef = 66300AFC1493148300246C89 /* EWHistoryGraphView.m */; };
@@ -34,7 +36,7 @@
 		66E503A11495F9CF003C69C7 /* COObjectGraphDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E503971495F9CF003C69C7 /* COObjectGraphDiff.m */; };
 		66E503A21495F9D0003C69C7 /* COSequenceDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E503991495F9CF003C69C7 /* COSequenceDiff.m */; };
 		66E503A31495F9D0003C69C7 /* COSetDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E5039B1495F9CF003C69C7 /* COSetDiff.m */; };
-		66E503A41495F9D0003C69C7 /* COStringDiff.mm in Sources */ = {isa = PBXBuildFile; fileRef = 66E5039D1495F9CF003C69C7 /* COStringDiff.mm */; };
+		66E503A41495F9D0003C69C7 /* COStringDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E5039D1495F9CF003C69C7 /* COStringDiff.m */; };
 		66E552B5146B7799008FDFAF /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E552B4146B7799008FDFAF /* libcrypto.dylib */; };
 		66E5CABC147B4E42002DE8FD /* TestPhotoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E5CABB147B4E42002DE8FD /* TestPhotoManager.m */; };
 		66E76749148B4813009937E8 /* COItemTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E76735148B3D1C009937E8 /* COItemTreeNode.m */; };
@@ -89,7 +91,7 @@
 		79CB310014C6499F00ADAB77 /* COObjectGraphDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E503971495F9CF003C69C7 /* COObjectGraphDiff.m */; };
 		79CB310114C6499F00ADAB77 /* COSequenceDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E503991495F9CF003C69C7 /* COSequenceDiff.m */; };
 		79CB310214C6499F00ADAB77 /* COSetDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E5039B1495F9CF003C69C7 /* COSetDiff.m */; };
-		79CB310314C6499F00ADAB77 /* COStringDiff.mm in Sources */ = {isa = PBXBuildFile; fileRef = 66E5039D1495F9CF003C69C7 /* COStringDiff.mm */; };
+		79CB310314C6499F00ADAB77 /* COStringDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E5039D1495F9CF003C69C7 /* COStringDiff.m */; };
 		79CB310614C649BC00ADAB77 /* COType+Diff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E4BE5A149713CA00B7024A /* COType+Diff.m */; };
 		79CB315114C6911400ADAB77 /* arrow_branch_purple.png in Resources */ = {isa = PBXBuildFile; fileRef = 79CB315014C6911400ADAB77 /* arrow_branch_purple.png */; };
 /* End PBXBuildFile section */
@@ -109,6 +111,8 @@
 /* Begin PBXFileReference section */
 		660E66E2148D92E00062308D /* EWPersistentRootOutlineRow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWPersistentRootOutlineRow.h; sourceTree = "<group>"; };
 		660E66E3148D92E00062308D /* EWPersistentRootOutlineRow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWPersistentRootOutlineRow.m; sourceTree = "<group>"; };
+		66101A0914D09FAA00B50075 /* diff.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = diff.cc; sourceTree = "<group>"; };
+		66101A0D14D09FB700B50075 /* diff.h */ = {isa = PBXFileReference; fileEncoding = 4; path = diff.h; sourceTree = "<group>"; };
 		6628FB99142FA65D0072767A /* EWTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWTest.h; sourceTree = "<group>"; };
 		6628FB9A142FA65D0072767A /* EWTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWTest.m; sourceTree = "<group>"; };
 		6628FB9E142FA7840072767A /* TestArrayDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestArrayDiff.m; sourceTree = "<group>"; };
@@ -165,7 +169,7 @@
 		66E5039A1495F9CF003C69C7 /* COSetDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COSetDiff.h; sourceTree = "<group>"; };
 		66E5039B1495F9CF003C69C7 /* COSetDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COSetDiff.m; sourceTree = "<group>"; };
 		66E5039C1495F9CF003C69C7 /* COStringDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COStringDiff.h; sourceTree = "<group>"; };
-		66E5039D1495F9CF003C69C7 /* COStringDiff.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = COStringDiff.mm; sourceTree = "<group>"; };
+		66E5039D1495F9CF003C69C7 /* COStringDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COStringDiff.m; sourceTree = "<group>"; };
 		66E5039E1495F9CF003C69C7 /* diff.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = diff.hh; sourceTree = "<group>"; };
 		66E552B4146B7799008FDFAF /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = usr/lib/libcrypto.dylib; sourceTree = SDKROOT; };
 		66E5CABB147B4E42002DE8FD /* TestPhotoManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestPhotoManager.m; sourceTree = "<group>"; };
@@ -394,8 +398,10 @@
 				66E5039A1495F9CF003C69C7 /* COSetDiff.h */,
 				66E5039B1495F9CF003C69C7 /* COSetDiff.m */,
 				66E5039C1495F9CF003C69C7 /* COStringDiff.h */,
-				66E5039D1495F9CF003C69C7 /* COStringDiff.mm */,
+				66E5039D1495F9CF003C69C7 /* COStringDiff.m */,
 				66E5039E1495F9CF003C69C7 /* diff.hh */,
+				66101A0914D09FAA00B50075 /* diff.cc */,
+				66101A0D14D09FB700B50075 /* diff.h */,
 				66E4BE551496956200B7024A /* COItemDiff.h */,
 				66E4BE561496956200B7024A /* COItemDiff.m */,
 				669CADE61491844000D0CF5F /* COTreeDiff.h */,
@@ -657,13 +663,14 @@
 				66E503A11495F9CF003C69C7 /* COObjectGraphDiff.m in Sources */,
 				66E503A21495F9D0003C69C7 /* COSequenceDiff.m in Sources */,
 				66E503A31495F9D0003C69C7 /* COSetDiff.m in Sources */,
-				66E503A41495F9D0003C69C7 /* COStringDiff.mm in Sources */,
+				66E503A41495F9D0003C69C7 /* COStringDiff.m in Sources */,
 				66E4BE571496956200B7024A /* COItemDiff.m in Sources */,
 				66E4BE5B149713CA00B7024A /* COType+Diff.m in Sources */,
 				668F26B614982F8700A3CEA6 /* COStoreItemProvider.m in Sources */,
 				66E42F16149A91A600C90D5A /* TestTreeManager.m in Sources */,
 				79CB302A14C63E1C00ADAB77 /* TestCommon.m in Sources */,
 				664DA7F314C6B28000942CDC /* COPersistentRootDiff.m in Sources */,
+				66101A0A14D09FAA00B50075 /* diff.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -676,7 +683,7 @@
 				79CB310014C6499F00ADAB77 /* COObjectGraphDiff.m in Sources */,
 				79CB310114C6499F00ADAB77 /* COSequenceDiff.m in Sources */,
 				79CB310214C6499F00ADAB77 /* COSetDiff.m in Sources */,
-				79CB310314C6499F00ADAB77 /* COStringDiff.mm in Sources */,
+				79CB310314C6499F00ADAB77 /* COStringDiff.m in Sources */,
 				79CB30AA14C6457800ADAB77 /* COItemDiff.m in Sources */,
 				79CB30A714C6456000ADAB77 /* COTreeDiff.m in Sources */,
 				79CB310614C649BC00ADAB77 /* COType+Diff.m in Sources */,
@@ -702,6 +709,7 @@
 				66300AFD1493148300246C89 /* EWHistoryGraphView.m in Sources */,
 				66E4BE5E1497464100B7024A /* EWOutlineView.m in Sources */,
 				664DA7F414C6B28000942CDC /* COPersistentRootDiff.m in Sources */,
+				66101A0B14D09FAA00B50075 /* diff.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,40 +1,11 @@
 #import "COStringDiff.h"
-#include "diff.hh"
+#include "diff.h"
 
-
-
-// For 100k characters:
-// With NSString wrapper: 1.25s
-// With direct buffer: 0.688s 
-// diff: 0.063s
-
-// For 130k characters: (encounters lots of unrelated text)
-// direct buffer: 3.2s
-// diff: 0.4s
-
-class NSStringWrapper
+static int comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
 {
-private:
-	unichar *buf1, *buf2;
-public:
-	bool equal(size_t i, size_t j)
-	{
-		return buf1[i] == buf2[j];
-	}
-	NSStringWrapper(NSString *s1, NSString *s2)
-	{
-		buf1 = new unichar[[s1 length]];
-		buf2 = new unichar[[s2 length]];
-		[s1 getCharacters: buf1 range: NSMakeRange(0, [s1 length])];
-		[s2 getCharacters: buf2 range: NSMakeRange(0, [s2 length])];
-	}
-	~NSStringWrapper()
-	{
-		delete []buf1;
-		delete []buf2;
-	}
-};
-
+	return [(NSString*)userdata1 characterAtIndex: i] ==
+		[(NSString*)userdata2 characterAtIndex: j];
+}
 
 @implementation COStringDiff
 
@@ -43,33 +14,32 @@ public:
 {
 	NSMutableArray *operations = [NSMutableArray array];
 	
-	NSStringWrapper wrapper(first, second);
-	std::vector<ManagedFusion::DifferenceItem> items = 
-    ManagedFusion::Diff<NSStringWrapper>(wrapper, [first length], [second length]);
-    
-	for (std::vector<ManagedFusion::DifferenceItem>::iterator it = items.begin();
-		 it != items.end();
-		 it++)
+	diffresult_t *result = diff_arrays([first length], [second length], comparefn, first, second);
+	
+	for (size_t i=0; i<diff_editcount(result); i++)
 	{
-		NSRange firstRange = NSMakeRange((*it).rangeInA.location, (*it).rangeInA.length);
-		NSRange secondRange = NSMakeRange((*it).rangeInB.location, (*it).rangeInB.length);
+		diffedit_t edit = diff_edit_at_index(result, i);
 		
-		switch ((*it).type)
+		NSRange firstRange = NSMakeRange(edit.range_in_a.location, edit.range_in_a.length);
+		NSRange secondRange = NSMakeRange(edit.range_in_b.location, edit.range_in_b.length);
+		
+		switch (edit.type)
 		{
-			case ManagedFusion::INSERTION:
+			case difftype_insertion:
 				[operations addObject: [COStringDiffOperationInsert insertWithLocation: firstRange.location
 																				string: [second substringWithRange: secondRange]]];
 				break;
-			case ManagedFusion::DELETION:
+			case difftype_deletion:
 				[operations addObject: [COStringDiffOperationDelete deleteWithRange: firstRange]];
 				break;
-			case ManagedFusion::MODIFICATION:
+			case difftype_modification:
 				[operations addObject: [COStringDiffOperationModify modifyWithRange: firstRange
 																		  newString: [second substringWithRange: secondRange]]];
 				
 				break;
 		}
 	}
+	diff_free(result);
 	
 	self = [super initWithOperations: operations];
 	return self;
