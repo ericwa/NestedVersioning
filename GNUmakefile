@@ -51,9 +51,7 @@ $(APP_NAME)_RESOURCE_FILES=\
 	StoreBrowser/brick.png\
 	StoreBrowser/bullet_yellow.png\
 	StoreBrowser/bullet_yellow_multiple.png\
-	StoreBrowser/package.png
-
-$(APP_NAME)_LOCALIZED_RESOURCE_FILES=\
+	StoreBrowser/package.png\
 	Credits.rtf\
 	InfoPlist.strings\
 	MainMenu.xib
