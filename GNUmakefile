@@ -52,9 +52,9 @@ $(APP_NAME)_RESOURCE_FILES=\
 	StoreBrowser/bullet_yellow.png\
 	StoreBrowser/bullet_yellow_multiple.png\
 	StoreBrowser/package.png\
-	Credits.rtf\
-	InfoPlist.strings\
-	MainMenu.xib
+	StoreBrowser/Credits.rtf\
+	StoreBrowser/InfoPlist.strings\
+	StoreBrowser/MainMenu.xib
 
 $(APP_NAME)_MAIN_MODEL_FILE=MainMenu.xib
 
