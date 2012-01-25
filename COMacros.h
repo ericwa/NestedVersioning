@@ -1,12 +1,16 @@
 #define SUPERINIT if((self = [super init]) == nil) {return nil;}
 
+#ifndef ASSIGN
 #define	ASSIGN(object,value) ({ \
     id __object = (id)(object); \
     object = [((id)value) retain]; \
     [__object release]; \
 })
+#endif
 
+#ifndef DESTROY
 #define DESTROY(lvalue) ({ [lvalue release]; lvalue = nil; })
+#endif
 
 #define NILARG_EXCEPTION_TEST(arg) ({ \
     if (nil == arg) \
