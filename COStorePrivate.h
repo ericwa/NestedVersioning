@@ -24,7 +24,6 @@
 
 - (NSArray*) allCommitUUIDs;
 
-// FIXME: Should change to "parents"
 - (ETUUID *) parentForCommit: (ETUUID*)commit;
 - (id) metadataForCommit: (ETUUID*)commit;
 - (NSDate*) dateForCommit: (ETUUID*)commit;
