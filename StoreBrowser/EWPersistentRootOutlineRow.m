@@ -585,6 +585,20 @@ isPrimitiveInContainer: (BOOL)aFlag
 	[windowController deleteForward: sender];
 }
 
+- (void) switchBranch: (id)sender
+{
+	// FIXME: We need a reliable way to get the embedded object which 
+	// an object is contained within. This is a horrible hack:
+	
+	ETUUID *persistentRootOwningBranch = [[[self parent] parent] UUID];
+	
+	[ctx setCurrentBranch: [self UUID]
+		forPersistentRoot: persistentRootOwningBranch];
+	[ctx commitWithMetadata: nil];
+	
+	[[NSApp delegate] reloadAllBrowsers]; // FIXME: ugly.. deallocates self...
+}
+
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem
 {
     SEL theAction = [anItem action];
@@ -617,6 +631,24 @@ isPrimitiveInContainer: (BOOL)aFlag
 	{
         return [selIndexes count] == 1 && [self isBranch];
 	}
+	else if (theAction == @selector(openPersistentRoot:))
+	{
+		return [selIndexes count] == 1 && ([self isBranch] || [self isPersistentRoot]);
+	}
+	else if (theAction == @selector(switchBranch:))
+	{
+        if ([selIndexes count] == 1 && [self isBranch])
+		{
+			// FIXME: We need a reliable way to get the embedded object which 
+			// an object is contained within. This is a horrible hack:
+			
+			ETUUID *persistentRootOwningBranch = [[[self parent] parent] UUID];
+			
+			// Only enable the menu item if it is for a different branch than the current one
+			return ![[ctx currentBranchOfPersistentRoot: persistentRootOwningBranch] isEqual: [self UUID]];
+		}
+		return NO;
+	}
 	
 	return [self respondsToSelector: theAction];
 }
@@ -626,6 +658,14 @@ isPrimitiveInContainer: (BOOL)aFlag
 {
 	NSMenu *menu = [[[NSMenu alloc] initWithTitle: @""] autorelease];
 
+	{
+		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Open Persistent Roots/Branch Contents" 
+													   action: @selector(openPersistentRoot:) 
+												keyEquivalent: @""] autorelease];
+		[item setTarget: self];
+		[menu addItem: item];
+	}
+	
 	{
 		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Diff Pair of Persistent Roots/Branches" 
 													   action: @selector(diff:) 
@@ -637,6 +677,14 @@ isPrimitiveInContainer: (BOOL)aFlag
 	{
 		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Create Branch" 
 													   action: @selector(branch:) 
+												keyEquivalent: @""] autorelease];
+		[item setTarget: self];
+		[menu addItem: item];
+	}
+	
+	{
+		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Switch to Branch" 
+													   action: @selector(switchBranch:) 
 												keyEquivalent: @""] autorelease];
 		[item setTarget: self];
 		[menu addItem: item];
