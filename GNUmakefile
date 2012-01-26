@@ -45,7 +45,7 @@ $(APP_NAME)_CC_FILES=\
 	Diff/diff.cc
 
 $(APP_NAME)_RESOURCE_FILES=\
-	StoreBrowser/PersistentRootWindow.xib\
+	StoreBrowser/PersistentRootWindow.nib\
 	StoreBrowser/arrow_branch.png\
 	StoreBrowser/arrow_branch_purple.png\
 	StoreBrowser/brick.png\

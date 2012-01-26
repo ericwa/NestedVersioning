@@ -10,6 +10,7 @@
 		6607F95C14D0CD7F00F1E7C6 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 6607F95914D0CD7F00F1E7C6 /* Credits.rtf */; };
 		6607F95D14D0CD7F00F1E7C6 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6607F95A14D0CD7F00F1E7C6 /* InfoPlist.strings */; };
 		6607F95E14D0CD7F00F1E7C6 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6607F95B14D0CD7F00F1E7C6 /* MainMenu.xib */; };
+		6607F97014D0DD9900F1E7C6 /* PersistentRootWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = 6607F96F14D0DD9900F1E7C6 /* PersistentRootWindow.nib */; };
 		660E66E4148D92E00062308D /* EWPersistentRootOutlineRow.m in Sources */ = {isa = PBXBuildFile; fileRef = 660E66E3148D92E00062308D /* EWPersistentRootOutlineRow.m */; };
 		66101A0A14D09FAA00B50075 /* diff.cc in Sources */ = {isa = PBXBuildFile; fileRef = 66101A0914D09FAA00B50075 /* diff.cc */; };
 		66101A0B14D09FAA00B50075 /* diff.cc in Sources */ = {isa = PBXBuildFile; fileRef = 66101A0914D09FAA00B50075 /* diff.cc */; };
@@ -79,7 +80,6 @@
 		792972F5148C4CA800FD35A9 /* TestCompositeDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 792972F4148C4CA800FD35A9 /* TestCompositeDocument.m */; };
 		792972FA148C4D6D00FD35A9 /* TestUserRequirements.m in Sources */ = {isa = PBXBuildFile; fileRef = 792972F9148C4D6D00FD35A9 /* TestUserRequirements.m */; };
 		79926C19148CADF80095A665 /* EWPersistentRootWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79926C18148CADF80095A665 /* EWPersistentRootWindowController.m */; };
-		79926C1F148CAE390095A665 /* PersistentRootWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79926C1E148CAE390095A665 /* PersistentRootWindow.xib */; };
 		79ABB073148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 79ABB072148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.m */; };
 		79CB302A14C63E1C00ADAB77 /* TestCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CB302914C63E1C00ADAB77 /* TestCommon.m */; };
 		79CB305C14C63E9800ADAB77 /* TestTagging.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F4E315147C59F0004FC1BA /* TestTagging.m */; };
@@ -112,6 +112,7 @@
 		6607F95914D0CD7F00F1E7C6 /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
 		6607F95A14D0CD7F00F1E7C6 /* InfoPlist.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = InfoPlist.strings; sourceTree = "<group>"; };
 		6607F95B14D0CD7F00F1E7C6 /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
+		6607F96F14D0DD9900F1E7C6 /* PersistentRootWindow.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = PersistentRootWindow.nib; sourceTree = "<group>"; };
 		660E66E2148D92E00062308D /* EWPersistentRootOutlineRow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWPersistentRootOutlineRow.h; sourceTree = "<group>"; };
 		660E66E3148D92E00062308D /* EWPersistentRootOutlineRow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWPersistentRootOutlineRow.m; sourceTree = "<group>"; };
 		66101A0914D09FAA00B50075 /* diff.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = diff.cc; sourceTree = "<group>"; };
@@ -232,7 +233,6 @@
 		79297308148C94FD00FD35A9 /* COItemFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COItemFactory.m; sourceTree = "<group>"; };
 		79926C17148CADF80095A665 /* EWPersistentRootWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWPersistentRootWindowController.h; sourceTree = "<group>"; };
 		79926C18148CADF80095A665 /* EWPersistentRootWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWPersistentRootWindowController.m; sourceTree = "<group>"; };
-		79926C1E148CAE390095A665 /* PersistentRootWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PersistentRootWindow.xib; sourceTree = "<group>"; };
 		79ABB071148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COPersistentRootEditingContext+Convenience.h"; sourceTree = "<group>"; };
 		79ABB072148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "COPersistentRootEditingContext+Convenience.m"; sourceTree = "<group>"; };
 		79CB302914C63E1C00ADAB77 /* TestCommon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCommon.m; sourceTree = "<group>"; };
@@ -458,6 +458,7 @@
 				6607F95914D0CD7F00F1E7C6 /* Credits.rtf */,
 				6607F95A14D0CD7F00F1E7C6 /* InfoPlist.strings */,
 				6607F95B14D0CD7F00F1E7C6 /* MainMenu.xib */,
+				6607F96F14D0DD9900F1E7C6 /* PersistentRootWindow.nib */,
 				66300AF61492CA5F00246C89 /* Graph Drawing */,
 				66F0C88D14C5444600C0B5A6 /* bullet_yellow_multiple.png */,
 				66F0C88B14C5440500C0B5A6 /* bullet_yellow.png */,
@@ -472,7 +473,6 @@
 				79926C18148CADF80095A665 /* EWPersistentRootWindowController.m */,
 				660E66E2148D92E00062308D /* EWPersistentRootOutlineRow.h */,
 				660E66E3148D92E00062308D /* EWPersistentRootOutlineRow.m */,
-				79926C1E148CAE390095A665 /* PersistentRootWindow.xib */,
 				66300AFB1493148300246C89 /* EWHistoryGraphView.h */,
 				66300AFC1493148300246C89 /* EWHistoryGraphView.m */,
 				66E4BE5C1497464100B7024A /* EWOutlineView.h */,
@@ -610,7 +610,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				79926C1F148CAE390095A665 /* PersistentRootWindow.xib in Resources */,
 				66F0C88014C542CD00C0B5A6 /* package.png in Resources */,
 				66F0C88614C5430D00C0B5A6 /* brick.png in Resources */,
 				66F0C88814C5434200C0B5A6 /* arrow_branch.png in Resources */,
@@ -620,6 +619,7 @@
 				6607F95C14D0CD7F00F1E7C6 /* Credits.rtf in Resources */,
 				6607F95D14D0CD7F00F1E7C6 /* InfoPlist.strings in Resources */,
 				6607F95E14D0CD7F00F1E7C6 /* MainMenu.xib in Resources */,
+				6607F97014D0DD9900F1E7C6 /* PersistentRootWindow.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
