@@ -205,6 +205,18 @@ isPrimitiveInContainer: (BOOL)aFlag
 	return contents;
 }
 
+- (ETUUID *)persistentRootOwningBranch
+{
+	assert([self isBranch]);
+	
+	// FIXME: We need a reliable way to get the embedded object which 
+	// an object is contained within. This is a horrible hack:
+	
+	ETUUID *persistentRootOwningBranch = [[[self parent] parent] UUID];
+	
+	return persistentRootOwningBranch;
+}
+
 - (id)valueForTableColumn: (NSTableColumn *)column
 {
 	if ([[column identifier] isEqualToString: @"name"])
@@ -294,7 +306,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 		}
 		else if	([self isBranch])
 		{
-			ETUUID *persistentRoot = [[[self parent] parent] UUID]; // FIXME: hack
+			ETUUID *persistentRoot = [self persistentRootOwningBranch];
 			if ([[ctx currentBranchOfPersistentRoot: persistentRoot] isEqual: [self UUID]])
 			{
 				return [NSImage imageNamed: @"arrow_branch_purple"]; // branch embedded object			
@@ -528,10 +540,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 
 - (void) duplicateBranchAsPersistentRoot: (id)sender
 {
-	// FIXME: We need a reliable way to get the embedded object which 
-	// an object is contained within. This is a horrible hack:
-	
-	ETUUID *persistentRootOwningBranch = [[[self parent] parent] UUID];
+	ETUUID *persistentRootOwningBranch = [self persistentRootOwningBranch];
 	
 	// first parent: the multivalued attribute the branch is in
 	// second parent: the embedded object the branch is in
@@ -587,13 +596,8 @@ isPrimitiveInContainer: (BOOL)aFlag
 
 - (void) switchBranch: (id)sender
 {
-	// FIXME: We need a reliable way to get the embedded object which 
-	// an object is contained within. This is a horrible hack:
-	
-	ETUUID *persistentRootOwningBranch = [[[self parent] parent] UUID];
-	
 	[ctx setCurrentBranch: [self UUID]
-		forPersistentRoot: persistentRootOwningBranch];
+		forPersistentRoot: [self persistentRootOwningBranch]];
 	[ctx commitWithMetadata: nil];
 	
 	[[NSApp delegate] reloadAllBrowsers]; // FIXME: ugly.. deallocates self...
@@ -639,13 +643,9 @@ isPrimitiveInContainer: (BOOL)aFlag
 	{
         if ([selIndexes count] == 1 && [self isBranch])
 		{
-			// FIXME: We need a reliable way to get the embedded object which 
-			// an object is contained within. This is a horrible hack:
-			
-			ETUUID *persistentRootOwningBranch = [[[self parent] parent] UUID];
-			
 			// Only enable the menu item if it is for a different branch than the current one
-			return ![[ctx currentBranchOfPersistentRoot: persistentRootOwningBranch] isEqual: [self UUID]];
+			return ![[ctx currentBranchOfPersistentRoot: [self persistentRootOwningBranch]]
+						isEqual: [self UUID]];
 		}
 		return NO;
 	}
