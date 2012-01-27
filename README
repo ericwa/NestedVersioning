@@ -1,10 +1,19 @@
-NestedVersioning
-================
+Store Browser
+=============
 
 Author: Eric Wasylishen
 E-Mail: ewasylishen@gmail.com
 License: http://www.opensource.org/licenses/mit-license.php
 
-FIXME: Rewrite introduction/goals
-
 Icons from: http://www.famfamfam.com/lab/icons/silk/ (CC BY 2.5)
+
+
+The StoreBrowser app lets you experiment with this version
+of NestedVersioning a.k.a ObjetMerging 5 a.k.a. CoreObject Prototype
+(I know, the names are confusing.)
+
+When you launch StoreBrowser, it deletes anything left over in
+~/om5teststore/ and then creates an example repository there
+using TestTagging.m.
+
+
