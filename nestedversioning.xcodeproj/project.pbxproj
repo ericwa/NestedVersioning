@@ -266,21 +266,15 @@
 			children = (
 				66416D20142D3EE20016501D /* README */,
 				66E2A3031430569C00487419 /* TODO */,
+				66485D8D14D23A0A004C4431 /* Diff */,
 				66DFAEC4142A726100623060 /* COMacros.h */,
-				66485D8414D2360F004C4431 /* Primitive Diff C API */,
-				66485D8714D23638004C4431 /* Primitive Diff for Objective-C Containers */,
-				66E503911495F9CF003C69C7 /* Diff for Object Graph */,
 				669CADED1491C14300D0CF5F /* UUID & Path */,
 				669CADEE1491C15400D0CF5F /* Type System */,
-				669CADEF1491C1D200D0CF5F /* Test Framework */,
-				66DFAECA142A726100623060 /* test-Prefix.pch */,
 				66EDFD8E148EF64600D0DC0B /* New Store Objects */,
 				66E2A305143057A100487419 /* Store */,
 				791A0EBD148AF3C200334CB1 /* Tests */,
-				79FB63BD1486ABEF00751E1E /* Tests - docs and code sketch */,
-				79FB63B81486ABC600751E1E /* Tests - documented only */,
-				6628FB9D142FA7840072767A /* Tests - old */,
 				66DFAECB142A726100623060 /* test.1 */,
+				66DFAECA142A726100623060 /* test-Prefix.pch */,
 				66EB7571148CA9D300C2114B /* StoreBrowser */,
 				662811F913F8B5010075BBC2 /* Frameworks */,
 				662811F713F8B5010075BBC2 /* Products */,
@@ -320,7 +314,6 @@
 				6628FBA8142FA7840072767A /* TestUtilities.m */,
 			);
 			name = "Tests - old";
-			path = Tests;
 			sourceTree = "<group>";
 		};
 		66300AF61492CA5F00246C89 /* Graph Drawing */ = {
@@ -397,6 +390,48 @@
 			name = Implementation;
 			sourceTree = "<group>";
 		};
+		66485D8B14D23982004C4431 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				66EB7573148CA9D300C2114B /* StoreBrowser-Info.plist */,
+				6607F95914D0CD7F00F1E7C6 /* Credits.rtf */,
+				6607F95A14D0CD7F00F1E7C6 /* InfoPlist.strings */,
+				6607F95B14D0CD7F00F1E7C6 /* MainMenu.xib */,
+				6607F96F14D0DD9900F1E7C6 /* PersistentRootWindow.nib */,
+				66F0C88D14C5444600C0B5A6 /* bullet_yellow_multiple.png */,
+				66F0C88B14C5440500C0B5A6 /* bullet_yellow.png */,
+				66F0C88514C5430D00C0B5A6 /* brick.png */,
+				66F0C87F14C542CD00C0B5A6 /* package.png */,
+				66F0C88714C5434200C0B5A6 /* arrow_branch.png */,
+				79CB315014C6911400ADAB77 /* arrow_branch_purple.png */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		66485D8C14D2399A004C4431 /* Implementation */ = {
+			isa = PBXGroup;
+			children = (
+				66EB7579148CA9D300C2114B /* StoreBrowser-Prefix.pch */,
+				66EB7577148CA9D300C2114B /* main.m */,
+				66EB757E148CA9D300C2114B /* AppDelegate.m */,
+				79926C18148CADF80095A665 /* EWPersistentRootWindowController.m */,
+				660E66E3148D92E00062308D /* EWPersistentRootOutlineRow.m */,
+				66300AFC1493148300246C89 /* EWHistoryGraphView.m */,
+				66E4BE5D1497464100B7024A /* EWOutlineView.m */,
+			);
+			name = Implementation;
+			sourceTree = "<group>";
+		};
+		66485D8D14D23A0A004C4431 /* Diff */ = {
+			isa = PBXGroup;
+			children = (
+				66485D8414D2360F004C4431 /* Primitive Diff C API */,
+				66485D8714D23638004C4431 /* Primitive Diff for Objective-C Containers */,
+				66E503911495F9CF003C69C7 /* Diff for Object Graph */,
+			);
+			name = Diff;
+			sourceTree = "<group>";
+		};
 		669CADED1491C14300D0CF5F /* UUID & Path */ = {
 			isa = PBXGroup;
 			children = (
@@ -427,6 +462,7 @@
 				6628FB9A142FA65D0072767A /* EWTest.m */,
 			);
 			name = "Test Framework";
+			path = ..;
 			sourceTree = "<group>";
 		};
 		66E2A305143057A100487419 /* Store */ = {
@@ -504,40 +540,16 @@
 		66EB7571148CA9D300C2114B /* StoreBrowser */ = {
 			isa = PBXGroup;
 			children = (
-				6607F95914D0CD7F00F1E7C6 /* Credits.rtf */,
-				6607F95A14D0CD7F00F1E7C6 /* InfoPlist.strings */,
-				6607F95B14D0CD7F00F1E7C6 /* MainMenu.xib */,
-				6607F96F14D0DD9900F1E7C6 /* PersistentRootWindow.nib */,
+				66485D8B14D23982004C4431 /* Resources */,
 				66300AF61492CA5F00246C89 /* Graph Drawing */,
-				66F0C88D14C5444600C0B5A6 /* bullet_yellow_multiple.png */,
-				66F0C88B14C5440500C0B5A6 /* bullet_yellow.png */,
-				66F0C88514C5430D00C0B5A6 /* brick.png */,
-				66F0C87F14C542CD00C0B5A6 /* package.png */,
-				66F0C88714C5434200C0B5A6 /* arrow_branch.png */,
-				79CB315014C6911400ADAB77 /* arrow_branch_purple.png */,
 				66EB757D148CA9D300C2114B /* AppDelegate.h */,
-				66EB757E148CA9D300C2114B /* AppDelegate.m */,
-				66EB7572148CA9D300C2114B /* Supporting Files */,
 				79926C17148CADF80095A665 /* EWPersistentRootWindowController.h */,
-				79926C18148CADF80095A665 /* EWPersistentRootWindowController.m */,
 				660E66E2148D92E00062308D /* EWPersistentRootOutlineRow.h */,
-				660E66E3148D92E00062308D /* EWPersistentRootOutlineRow.m */,
 				66300AFB1493148300246C89 /* EWHistoryGraphView.h */,
-				66300AFC1493148300246C89 /* EWHistoryGraphView.m */,
 				66E4BE5C1497464100B7024A /* EWOutlineView.h */,
-				66E4BE5D1497464100B7024A /* EWOutlineView.m */,
+				66485D8C14D2399A004C4431 /* Implementation */,
 			);
 			path = StoreBrowser;
-			sourceTree = "<group>";
-		};
-		66EB7572148CA9D300C2114B /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				66EB7573148CA9D300C2114B /* StoreBrowser-Info.plist */,
-				66EB7577148CA9D300C2114B /* main.m */,
-				66EB7579148CA9D300C2114B /* StoreBrowser-Prefix.pch */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		66EDFD8E148EF64600D0DC0B /* New Store Objects */ = {
@@ -558,6 +570,10 @@
 				66F4E315147C59F0004FC1BA /* TestTagging.m */,
 				66E42F15149A91A600C90D5A /* TestTreeManager.m */,
 				79CB302914C63E1C00ADAB77 /* TestCommon.m */,
+				669CADEF1491C1D200D0CF5F /* Test Framework */,
+				79FB63BD1486ABEF00751E1E /* Tests - docs and code sketch */,
+				79FB63B81486ABC600751E1E /* Tests - documented only */,
+				6628FB9D142FA7840072767A /* Tests - old */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -577,7 +593,6 @@
 				792972F9148C4D6D00FD35A9 /* TestUserRequirements.m */,
 			);
 			name = "Tests - documented only";
-			path = Tests;
 			sourceTree = "<group>";
 		};
 		79FB63BD1486ABEF00751E1E /* Tests - docs and code sketch */ = {
@@ -588,7 +603,6 @@
 				66E5CABB147B4E42002DE8FD /* TestPhotoManager.m */,
 			);
 			name = "Tests - docs and code sketch";
-			path = Tests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
