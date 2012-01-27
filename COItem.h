@@ -10,8 +10,6 @@
  * 
  * it will be changed to write the object to the sqlite db
  * at some point.
- *
- * TODO: We need API to get the parent of an item
  */
 @interface COItem : NSObject <NSCopying, NSMutableCopying>
 {
