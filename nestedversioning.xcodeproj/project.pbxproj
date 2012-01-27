@@ -178,8 +178,6 @@
 		66E552B4146B7799008FDFAF /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = usr/lib/libcrypto.dylib; sourceTree = SDKROOT; };
 		66E5CABB147B4E42002DE8FD /* TestPhotoManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestPhotoManager.m; sourceTree = "<group>"; };
 		66E5CBA814830C5700D01039 /* COStorePrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COStorePrivate.h; sourceTree = "<group>"; };
-		66E61DC814902D6500FA55DA /* COItemTreeManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COItemTreeManager.h; sourceTree = "<group>"; };
-		66E61DC914902D6500FA55DA /* COItemTreeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COItemTreeManager.m; sourceTree = "<group>"; };
 		66E76728148B3D1C009937E8 /* COItemFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COItemFactory.h; sourceTree = "<group>"; };
 		66E76729148B3D1C009937E8 /* COItemFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COItemFactory.m; sourceTree = "<group>"; };
 		66E76732148B3D1C009937E8 /* COSimpleContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COSimpleContext.h; sourceTree = "<group>"; };
@@ -477,7 +475,6 @@
 				66E2FFB614899C7A00C66578 /* COPersistentRootEditingContext+PersistentRoots.h */,
 				79ABB071148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.h */,
 				79297307148C94FD00FD35A9 /* COItemFactory.h */,
-				66E61DC814902D6500FA55DA /* COItemTreeManager.h */,
 				66E5CBAB148311A000D01039 /* Implementation */,
 			);
 			name = Store;
@@ -509,7 +506,6 @@
 				66E76735148B3D1C009937E8 /* COItemTreeNode.m */,
 				669CADDF1491646300D0CF5F /* COManagedItemTreeNode.m */,
 				79297308148C94FD00FD35A9 /* COItemFactory.m */,
-				66E61DC914902D6500FA55DA /* COItemTreeManager.m */,
 			);
 			name = Implementation;
 			sourceTree = "<group>";
