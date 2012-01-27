@@ -1,7 +1,7 @@
 #import "COStringDiff.h"
 #include "diff.h"
 
-static int comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
+static bool comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
 {
 	return [(NSString*)userdata1 characterAtIndex: i] ==
 		[(NSString*)userdata2 characterAtIndex: j];

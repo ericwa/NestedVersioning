@@ -3,7 +3,7 @@
 
 #import "COMacros.h"
 
-static int comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
+static bool comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
 {
 	return [[(NSArray*)userdata1 objectAtIndex: i] isEqual:
 	[(NSArray*)userdata2 objectAtIndex: j]];

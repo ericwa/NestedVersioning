@@ -8,6 +8,8 @@ extern "C" {
 #include <stdint.h>
 #include <stdlib.h>
 
+// types	
+	
 typedef struct
 {
 	size_t location;
@@ -30,16 +32,33 @@ typedef struct
 
 typedef void diffresult_t;
 
-typedef int (*diff_arraycomparefn_t)(size_t i, size_t j, void *userdata1, void *userdata2);
+/**
+ * return true if array_a[i] is equal to array_b[j]
+ */
+typedef bool (*diff_arraycomparefn_t)(size_t i, size_t j, void *userdata1, void *userdata2);
 
+// functions	
+
+/**
+ * generates a diff of array_a with array_b.
+ *
+ * caller provides the lengths of the arrays and a pointer to a function which
+ * checks elements at two indices for equality.
+ */
 diffresult_t *diff_arrays(size_t alength, size_t blength, diff_arraycomparefn_t comparefn, 
 						  void *userdata1, void *userdata2);
+/**
+ * returns the number of edits in the diff
+ */
 size_t diff_editcount(diffresult_t *result);
+/**
+ * returns the ith edit, starting at 0
+ */
 diffedit_t diff_edit_at_index(diffresult_t *result, size_t i);
 	
 void diff_free(diffresult_t *result);
 
-#endif
+#endif /* nestedversioning_diff_h */
 	
 #ifdef __cplusplus
 }
