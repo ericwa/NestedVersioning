@@ -17,7 +17,7 @@
 
 @implementation EWGraphRenderer
 
-static NSUInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSInteger currentLevel, NSMutableDictionary *levelForUUID)
+static NSInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSInteger currentLevel, NSMutableDictionary *levelForUUID)
 {
 	//NSLog(@"visiting %@", currentUUID);
 	
