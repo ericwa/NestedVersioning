@@ -17,7 +17,7 @@
 
 @implementation EWGraphRenderer
 
-static NSUInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUInteger currentLevel, NSMutableDictionary *levelForUUID)
+static NSUInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSInteger currentLevel, NSMutableDictionary *levelForUUID)
 {
 	//NSLog(@"visiting %@", currentUUID);
 	
@@ -29,7 +29,7 @@ static NSUInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUI
 	}
 	else
 	{
-		[levelForUUID setObject: [NSNumber numberWithUnsignedInteger: currentLevel]
+		[levelForUUID setObject: [NSNumber numberWithInteger: currentLevel]
 						 forKey: currentUUID];
 	}
 	
@@ -37,20 +37,18 @@ static NSUInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUI
 	NSArray *children = [childrenForUUID objectForKey: currentUUID];
 	assert(children != nil);
 	
-	NSUInteger maxLevel = currentLevel;
-	for (NSUInteger i=0; i<[children count]; i++)
+	NSInteger maxLevelUsed = currentLevel - 1;
+	for (ETUUID *child in children)
 	{
-		ETUUID *child = [children objectAtIndex: i];
+		NSInteger childMax = 
+			visit(childrenForUUID, child, maxLevelUsed + 1, levelForUUID);
 		
-		NSUInteger childMax = 
-			visit(childrenForUUID, child, currentLevel + i, levelForUUID);
-		
-		if (childMax > maxLevel)
+		if (childMax > maxLevelUsed)
 		{
-			maxLevel = childMax;
+			maxLevelUsed = childMax;
 		}
 	}
-	return maxLevel;
+	return MAX(currentLevel, maxLevelUsed);
 }
 
 - (void) layoutGraphOfStore: (COStore*)aStore
@@ -133,12 +131,11 @@ static NSUInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUI
 
 	ASSIGN(levelForUUID, [NSMutableDictionary dictionary]);
 
-	NSUInteger maxLevel = 0;
+	NSInteger maxLevel = 0;
 	for (ETUUID *root in roots)
 	{
 		//NSLog(@"Starting root %@ at %d", root, (int)maxLevel);
-		maxLevel = visit(childrenForUUID, root, maxLevel, levelForUUID);
-		maxLevel++;
+		maxLevel = visit(childrenForUUID, root, maxLevel, levelForUUID) + 1;
 	}
 	
 	//NSLog(@"graph output:");
@@ -146,7 +143,7 @@ static NSUInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUI
 	maxLevelUsed = 0;
 	for (ETUUID *aCommit in allCommitsSorted)
 	{
-		NSUInteger level = [[levelForUUID objectForKey: aCommit] intValue];
+		NSInteger level = [[levelForUUID objectForKey: aCommit] integerValue];
 		
 		if (level > maxLevelUsed)
 			maxLevelUsed = level;
@@ -157,7 +154,7 @@ static NSUInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSUI
 	// sanity check: Every object's parent must appear to its left.
 	
 	{
-		NSUInteger i;
+		NSInteger i;
 		for (i=0; i<[allCommitsSorted count]; i++)
 		{
 			ETUUID *aCommit = [allCommitsSorted objectAtIndex: i];
