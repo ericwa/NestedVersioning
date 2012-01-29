@@ -80,6 +80,12 @@
 - (NSArray *) attributeNames;
 
 - (COType *) typeForAttribute: (NSString *)anAttribute;
+
+/**
+ * @returns the value for the given
+ * attribute, with the special case of embedded item
+ * UUIDs are returned as COSubtree objects
+ */
 - (id) valueForAttribute: (NSString*)anAttribute;
 
 - (void) setPrimitiveValue: (id)aValue

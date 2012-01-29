@@ -229,12 +229,57 @@
 
 - (COSubtree *) subtreeWithUUID: (ETUUID *)aUUID
 {
+	for (COSubtree *node in [self embeddedSubtrees])
+	{
+		if ([[node UUID] isEqual: aUUID])
+		{
+			return node;
+		}
+	}
 	
+	for (COSubtree *node in [self embeddedSubtrees])
+	{
+		COSubtree *recursiveResult = [node subtreeWithUUID: aUUID];
+		if (recursiveResult != nil)
+		{
+			return recursiveResult;
+		}
+	}
+	
+	return nil;
 }
 
 - (COItemPath *) itemPathOfSubtreeWithUUID: (ETUUID *)aUUID
 {
+	COSubtree *destSubtree = [self subtreeWithUUID: aUUID];
 	
+	if (destSubtree == nil)
+	{
+		return nil;
+	}
+	
+	COSubtree *destSubtreeParent = [destSubtree parent];
+	
+	// Search destSubtreeParent for [destSubtree UUID];
+	// FIXME: Factor out?
+	
+	for (NSString *attr in [destSubtreeParent attributeNames])
+	{
+		if ([[destSubtreeParent->root allObjectsForAttribute: attr] containsObject: [destSubtree UUID]])
+		{
+			if ([[destSubtreeParent typeForAttribute: attr] isOrdered])
+			{
+				
+			}
+			else
+			{
+			
+			}
+		}
+	}
+	
+	[NSException raise: NSInternalInconsistencyException
+				format: @"COSubtree inconsistent"];
 }
 
 - (void) addSubtree: (COSubtree *)aSubtree
@@ -304,17 +349,6 @@
 	[self setValue: container
 	  forAttribute: anAttribute
 			  type: [COType setWithPrimitiveType: [COType embeddedItemType]]];
-}
-
-- (void) addTree: (COSubtree *)aValue
-{
-	[self addTree: aValue
-  forSetAttribute: @"contents"];
-}
-- (void) removeTree: (COSubtree *)aValue
-{
-	[self removeTree: aValue
-	 forSetAttribute: @"contents"];
 }
 
 - (NSSet*)contents
