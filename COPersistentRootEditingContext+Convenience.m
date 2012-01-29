@@ -43,7 +43,7 @@
 	[self _insertOrUpdateItems: S(destItem)];	
 }
 
-- (ETUUID *) insertTree: (COItemTreeNode*)aTree
+- (ETUUID *) insertTree: (COSubtree*)aTree
 		inContainer: (ETUUID*)aContainer
 {
 	[self insertValue: [aTree UUID]

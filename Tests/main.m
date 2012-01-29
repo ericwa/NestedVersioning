@@ -84,9 +84,9 @@ static void testPath()
 
 static void testStoreItemTree()
 {
-	COItemTreeNode *t1 = [COItemTreeNode itemTree];
-	COItemTreeNode *t2 = [COItemTreeNode itemTree];	
-	COItemTreeNode *t3 = [COItemTreeNode itemTree];
+	COSubtree *t1 = [COSubtree subtree];
+	COSubtree *t2 = [COSubtree subtree];	
+	COSubtree *t3 = [COSubtree subtree];
 	
 	EWTestTrue(nil == [t2 parent]);
 	EWTestTrue(t2 == [t2 root]);
@@ -104,13 +104,13 @@ static void testStoreItemTree()
 	
 	EWTestIntsEqual(3, [[t1 allContainedStoreItems] count]);
 	
-	COItemTreeNode *t1a = [[t1 copy] autorelease];
+	COSubtree *t1a = [[t1 copy] autorelease];
 	EWTestEqual(t1, t1a);
 	
-	COItemTreeNode *t2a = [[t1a contents] anyObject];
+	COSubtree *t2a = [[t1a contents] anyObject];
 	EWTestEqual(t2, t2a);
 	
-	COItemTreeNode *t3b = [COItemTreeNode itemTree];
+	COSubtree *t3b = [COSubtree subtree];
 	[t2a addTree: t3b];
 	
 	EWTestTrue(![t1 isEqual: t1a]);
@@ -162,7 +162,7 @@ static void testEditingContextEmbeddedObjects()
 	// 2.  set up a nested persistent root
 	//
 	
-	COItemTreeNode *nestedDocumentRootItem = [COItemTreeNode itemTree];
+	COSubtree *nestedDocumentRootItem = [COSubtree subtree];
 	[nestedDocumentRootItem setValue: @"red"
 						forAttribute: @"color"
 								type: [COType stringType]];

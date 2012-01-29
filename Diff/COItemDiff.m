@@ -123,7 +123,11 @@
 
 - (void) applyTo: (COMutableItem *)anItem
 {
-	// FIXME: Fail if the attribute already has a value
+	if (nil != [anItem valueForAttribute: attribute])
+	{
+		[NSException raise: NSInternalInconsistencyException
+					format: @"expeted attribute %@ to be unset", attribute];
+	}
 	[anItem setValue: value
 		forAttribute: attribute
 				type: type];
@@ -135,7 +139,11 @@
 
 - (void) applyTo: (COMutableItem *)anItem
 {
-	// FIXME: Fail of the attribute does _not_ already have a value
+	if (nil == [anItem valueForAttribute: attribute])
+	{
+		[NSException raise: NSInternalInconsistencyException
+					format: @"expeted attribute %@ to be already set", attribute];
+	}
 	[anItem setValue: value
 		forAttribute: attribute
 				type: type];
@@ -147,6 +155,11 @@
 
 - (void) applyTo: (COMutableItem *)anItem
 {
+	if (nil == [anItem valueForAttribute: attribute])
+	{
+		[NSException raise: NSInternalInconsistencyException
+					format: @"expeted attribute %@ to be already set", attribute];
+	}
 	[anItem removeValueForAttribute: attribute];
 }
 

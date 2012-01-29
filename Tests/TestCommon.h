@@ -8,7 +8,7 @@
 #import "COMacros.h"
 #import "COPersistentRootEditingContext+PersistentRoots.h"
 #import "COPersistentRootEditingContext+Convenience.h"
-#import "COItemTreeNode.h"
+#import "COSubtree.h"
 #import "COItemFactory.h"
 #import "COItemDiff.h"
 

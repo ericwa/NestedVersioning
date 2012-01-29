@@ -54,7 +54,7 @@ void testTagging()
 	
 	COPersistentRootEditingContext *rootCtx = [store rootContext];
 	
-	COItemTreeNode *iroot = [COItemTreeNode itemTree];
+	COSubtree *iroot = [COSubtree subtree];
 	ETUUID *uroot = [iroot UUID];
 	
 	[rootCtx setItemTree: iroot];

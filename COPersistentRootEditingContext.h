@@ -2,7 +2,7 @@
 #import "COPath.h"
 #import "COItem.h"
 #import "COStore.h"
-#import "COItemTreeNode.h"
+#import "COSubtree.h"
 #import "COFaultProvider.h"
 
 @class COStore;
@@ -130,6 +130,6 @@
 /**
  * Replace the entire contents of the receiver with the given item tree
  */
-- (void) setItemTree: (COItemTreeNode *)aTree;
+- (void) setItemTree: (COSubtree *)aTree;
 
 @end

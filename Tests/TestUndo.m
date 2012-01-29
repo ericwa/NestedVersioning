@@ -22,7 +22,7 @@ void testUndo()
 		newRootEmbeddedObject: uroot];
 	
 		
-	COItemTreeNode *contents1 = [COItemTreeNode itemTree];
+	COSubtree *contents1 = [COSubtree subtree];
 	[contents1 setValue: @"red"
 		   forAttribute: @"color"
 				   type: [COType stringType]];

@@ -13,18 +13,18 @@
 	return factory;
 }
 
-- (COItemTreeNode*) folder: (NSString*)aName
+- (COSubtree*) folder: (NSString*)aName
 {
 	NILARG_EXCEPTION_TEST(aName);
 	
-	COItemTreeNode *tree = [COItemTreeNode itemTree];
+	COSubtree *tree = [COSubtree subtree];
 	[tree setValue: aName
 	  forAttribute: @"name"
 			  type: [COType stringType]];
 	return tree;
 }
 
-- (COItemTreeNode*) item: (NSString*)aName
+- (COSubtree*) item: (NSString*)aName
 {
 	return [self folder: aName];
 }

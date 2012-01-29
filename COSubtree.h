@@ -4,12 +4,12 @@
 #import "ETUUID.h"
 
 
-@interface COItemTreeNode : NSObject <NSCopying>
+@interface COSubtree : NSObject <NSCopying>
 {
 	@private
 	COMutableItem *root;
 	NSMutableDictionary *embeddedItemTreeNodes;
-	COItemTreeNode *parent;
+	COSubtree *parent;
 }
 
 - (id) initWithUUID: (ETUUID*)aUUID;
@@ -22,7 +22,7 @@
 /**
  * new item with new UIID
  */
-+ (COItemTreeNode *)itemTree;
++ (COSubtree *)subtree;
 
 - (ETUUID *)UUID;
 
@@ -30,12 +30,12 @@
  * @returns nil if the receiver has no parent.
  * Otherwise, the item tree node in which the receiver is embedded.
  */
-- (COItemTreeNode *) parent;
+- (COSubtree *) parent;
 
 /**
  * Returns the root of the item tree
  */
-- (COItemTreeNode *) root;
+- (COSubtree *) root;
 
 - (NSArray *) attributeNames;
 
@@ -61,18 +61,18 @@
 
 /** @taskunit convenience */
 
-- (void) addTree: (COItemTreeNode *)aValue
+- (void) addTree: (COSubtree *)aValue
  forSetAttribute: (NSString*)anAttribute;
 
-- (void) removeTree: (COItemTreeNode *)aValue
+- (void) removeTree: (COSubtree *)aValue
  forSetAttribute: (NSString*)anAttribute;
 
 
 /**
  * adds the given tree to the default @"contents" attribute
  */
-- (void) addTree: (COItemTreeNode *)aValue;
-- (void) removeTree: (COItemTreeNode *)aValue;
+- (void) addTree: (COSubtree *)aValue;
+- (void) removeTree: (COSubtree *)aValue;
 - (NSSet*)contents;
 
 /**

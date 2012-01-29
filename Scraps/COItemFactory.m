@@ -7,6 +7,10 @@
 
 @implementation COItemFactory
 
+/**
+ *
+ * Needs to know where to insert the item.. not just UUID but attribute as well
+ */
 - (ETUUID *) copyEmbeddedObject: (ETUUID *)src
 					fromContext: (id<COEditingContext>)srcCtx
 					insertInto: (ETUUID *)dest

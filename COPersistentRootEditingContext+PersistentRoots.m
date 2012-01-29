@@ -7,7 +7,7 @@
 
 @implementation COPersistentRootEditingContext (PersistentRoots)
 
-- (ETUUID *)createAndInsertNewPersistentRootWithRootItem: (COItemTreeNode *)anItem
+- (ETUUID *)createAndInsertNewPersistentRootWithRootItem: (COSubtree *)anItem
 										  inItemWithUUID: (ETUUID*)aDest
 {
 	// FIXME: awkward translation

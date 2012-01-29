@@ -430,7 +430,7 @@
 	return nil;
 }
 
-- (void) setItemTree: (COItemTreeNode	*)aTree
+- (void) setItemTree: (COSubtree	*)aTree
 {
 	NILARG_EXCEPTION_TEST(aTree);
 

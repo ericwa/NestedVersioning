@@ -1,13 +1,13 @@
 #import <Foundation/Foundation.h>
 #import "COPersistentRootEditingContext.h"
-#import "COItemTreeNode.h"
+#import "COSubtree.h"
 
 @interface COPersistentRootEditingContext (PersistentRoots)
 
 /**
  * @returns the UUID of the persistent root item in the receiver
  */
-- (ETUUID *)createAndInsertNewPersistentRootWithRootItem: (COItemTreeNode *)anItem // FIXME: take a tree
+- (ETUUID *)createAndInsertNewPersistentRootWithRootItem: (COSubtree *)anItem // FIXME: take a tree
 										  inItemWithUUID: (ETUUID*)aDest;
 
 
