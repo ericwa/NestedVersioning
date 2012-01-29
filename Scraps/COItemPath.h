@@ -2,6 +2,10 @@
 #import "ETUUID.h"
 #import "COStoreItem.h"
 
+/**
+ * COItemPath represents a _destination_ in a COSubtree for
+ * inserting a value
+ */
 @interface COItemPath : NSObject <NSCopying>
 {
 	ETUUID *uuid;
@@ -9,11 +13,15 @@
 }
 
 + (COItemPath *) pathWithItemUUID: (ETUUID *)aUUID
-		  unorderedCollectionName: (NSString *)collection
-				 uuidInCollection: (ETUUID*)aUUIDInCollection;
+		  unorderedCollectionName: (NSString *)collection;
+
 + (COItemPath *) pathWithItemUUID: (ETUUID *)aUUID
 						arrayName: (NSString *)collection
-							index: (NSUInteger)index;
+				   insertionIndex: (NSUInteger)index;
+
+@end
+
+@interface COItemPath (Private)
 
 - (void) insertValue: (id)aValue
 		 inStoreItem: (COMutableStoreItem *)aStoreItem;

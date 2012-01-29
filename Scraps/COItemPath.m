@@ -3,12 +3,10 @@
 
 @interface COItemPathToUnorderedContainer : COItemPath
 {
-	ETUUID *UUIDInCollection;
 }
 
 - (id) initWithItemUUID: (ETUUID *)aUUID
-unorderedCollectionName: (NSString *)collection
-	   uuidInCollection: (ETUUID*)aUUIDInCollection;
+unorderedCollectionName: (NSString *)collection;
 
 @end
 
@@ -19,7 +17,7 @@ unorderedCollectionName: (NSString *)collection
 
 - (id) initWithItemUUID: (ETUUID *)aUUID
 			  arrayName: (NSString *)collection
-				  index: (NSUInteger)anIndex;
+		 insertionIndex: (NSUInteger)anIndex;
 
 @end
 
@@ -29,20 +27,18 @@ unorderedCollectionName: (NSString *)collection
 
 + (COItemPath *) pathWithItemUUID: (ETUUID *)aUUID
 		  unorderedCollectionName: (NSString *)collection
-				 uuidInCollection: (ETUUID*)aUUIDInCollection
 {
 	return [[[COItemPathToUnorderedContainer alloc] initWithItemUUID: aUUID
-											 unorderedCollectionName: collection
-													uuidInCollection: aUUIDInCollection] autorelease];
+											 unorderedCollectionName: collection] autorelease];
 }
 
 + (COItemPath *) pathWithItemUUID: (ETUUID *)aUUID
 						arrayName: (NSString *)collection
-							index: (NSUInteger)index
+				   insertionIndex: (NSUInteger)index
 {
 	return [[[COItemPathToOrderedContainer alloc] initWithItemUUID: aUUID
 														 arrayName: collection
-															 index: index] autorelease];	
+													insertionIndex: index] autorelease];	
 }
 
 - (void) dealloc
@@ -72,7 +68,7 @@ unorderedCollectionName: (NSString *)collection
 
 - (id) initWithItemUUID: (ETUUID *)aUUID
 			  arrayName: (NSString *)collection
-				  index: (NSUInteger)anIndex
+		 insertionIndex: (NSUInteger)anIndex
 {
 	SUPERINIT
 	ASSIGN(uuid, aUUID);
@@ -111,18 +107,15 @@ unorderedCollectionName: (NSString *)collection
 
 - (id) initWithItemUUID: (ETUUID *)aUUID
 unorderedCollectionName: (NSString *)collection
-	   uuidInCollection: (ETUUID*)aUUIDInCollection
 {
 	SUPERINIT
 	ASSIGN(uuid, aUUID);
 	ASSIGN(attribute, collection);
-	ASSIGN(UUIDInCollection, aUUIDInCollection);
 	return self;
 }
 
 - (void) dealloc
 {
-	[UUIDInCollection release];
 	[super dealloc];
 }
 
@@ -146,8 +139,7 @@ unorderedCollectionName: (NSString *)collection
 	
 	COItemPathToUnorderedContainer *other = (COItemPathToUnorderedContainer *)object;
 	return ([uuid isEqual: other->uuid] &&
-			[attribute isEqual: other->attribute] &&
-			[UUIDInCollection isEqual: other->UUIDInCollection]);
+			[attribute isEqual: other->attribute]);
 }
 
 @end
