@@ -47,6 +47,7 @@
 		66E877571455F0CB006CBE7E /* COStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E877561455F0CB006CBE7E /* COStore.m */; };
 		66E8776B1455FE67006CBE7E /* ETUUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E8776A1455FE67006CBE7E /* ETUUID.m */; };
 		66E8E93514D4BC7F00CBE2D8 /* COSubtreeCopy.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E8E93414D4BC7F00CBE2D8 /* COSubtreeCopy.m */; };
+		66E8E93714D5067E00CBE2D8 /* COItemPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E7673F148B3DE8009937E8 /* COItemPath.m */; };
 		66EADD6514732AEE003181FC /* TestUndo.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EADD6414732AEE003181FC /* TestUndo.m */; };
 		66EADD69147345B9003181FC /* COItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EADD68147345B9003181FC /* COItem.m */; };
 		66EB756C148CA9D300C2114B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66EB756B148CA9D300C2114B /* Cocoa.framework */; };
@@ -702,7 +703,6 @@
 				66F39B8B1490AEA00097B7D5 /* COType.m in Sources */,
 				66F39B8C1490AEA00097B7D5 /* COType+Plist.m in Sources */,
 				66F39B8A1490AE0D0097B7D5 /* COItemFactory.m in Sources */,
-				66E76749148B4813009937E8 /* COSubtree.m in Sources */,
 				66DFAED0142A726100623060 /* main.m in Sources */,
 				6628FB9B142FA65D0072767A /* EWTest.m in Sources */,
 				66E877571455F0CB006CBE7E /* COStore.m in Sources */,
@@ -715,9 +715,12 @@
 				66E46D48146A3D490042123E /* TestDeletion.m in Sources */,
 				66EADD6514732AEE003181FC /* TestUndo.m in Sources */,
 				66EADD69147345B9003181FC /* COItem.m in Sources */,
+				66E76749148B4813009937E8 /* COSubtree.m in Sources */,
+				66E8E93514D4BC7F00CBE2D8 /* COSubtreeCopy.m in Sources */,
 				66E5CABC147B4E42002DE8FD /* TestPhotoManager.m in Sources */,
 				66F4E316147C59F0004FC1BA /* TestTagging.m in Sources */,
 				66F4E31A147C606A004FC1BA /* TestGameEditor.m in Sources */,
+				66E8E93714D5067E00CBE2D8 /* COItemPath.m in Sources */,
 				79156DBA1484BE4D00AB66B1 /* TestConcurrentContextModification.m in Sources */,
 				790B1AE91485B184001ED869 /* TestSimpleUseOfNestedPersistentRoots.m in Sources */,
 				66E2FFB814899C7B00C66578 /* COPersistentRootEditingContext+PersistentRoots.m in Sources */,
@@ -739,7 +742,6 @@
 				79CB302A14C63E1C00ADAB77 /* TestCommon.m in Sources */,
 				664DA7F314C6B28000942CDC /* COPersistentRootDiff.m in Sources */,
 				66101A0A14D09FAA00B50075 /* diff.cc in Sources */,
-				66E8E93514D4BC7F00CBE2D8 /* COSubtreeCopy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

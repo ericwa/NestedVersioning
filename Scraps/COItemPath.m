@@ -1,5 +1,7 @@
 #import "COItemPath.h"
+#import "COItem.h"
 #import "COMacros.h"
+#import "COType.h"
 
 @interface COItemPathToUnorderedContainer : COItemPath
 {
@@ -80,8 +82,8 @@ unorderedCollectionName: (NSString *)collection;
 - (void) insertValue: (id)aValue
 		 inStoreItem: (COMutableStoreItem *)aStoreItem
 {
-	assert([[[aStoreItem typeForAttribute: attribute] objectForKey: kCOTypeKind] isEqual: kCOContainerTypeKind]);
-	assert([[[aStoreItem typeForAttribute: attribute] objectForKey: kCOContainerOrdered] isEqual: [NSNumber numberWithBool: YES]]);
+	assert([[aStoreItem typeForAttribute: attribute] isMultivalued]);
+	assert([[aStoreItem typeForAttribute: attribute] isOrdered]);
 	
 	NSMutableArray *array = [[NSMutableArray alloc] initWithArray: [aStoreItem valueForAttribute: attribute]];
 	[array insertObject: aValue atIndex: index];
@@ -122,8 +124,8 @@ unorderedCollectionName: (NSString *)collection
 - (void) insertValue: (id)aValue
 		 inStoreItem: (COMutableStoreItem *)aStoreItem
 {
-	assert([[[aStoreItem typeForAttribute: attribute] objectForKey: kCOTypeKind] isEqual: kCOContainerTypeKind]);
-	assert([[[aStoreItem typeForAttribute: attribute] objectForKey: kCOContainerOrdered] isEqual: [NSNumber numberWithBool: NO]]);
+	assert([[aStoreItem typeForAttribute: attribute] isMultivalued]);
+	assert(![[aStoreItem typeForAttribute: attribute] isOrdered]);
 	
 	NSMutableSet *set = [[aStoreItem valueForAttribute: attribute] mutableCopy]; // may be NSMutableSet subclass NSCountedSet
 	assert([set isKindOfClass: [NSMutableSet class]]);

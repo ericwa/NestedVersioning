@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "ETUUID.h"
-#import "COStoreItem.h"
+
+@class COMutableStoreItem;
 
 /**
  * COItemPath represents a _destination_ in a COSubtree for
