@@ -225,7 +225,51 @@
 	return result;
 }
 
-/** @taskunit convenience */
+/** @taskunit Add/Delete/Move Operations */
+
+- (COSubtree *) subtreeWithUUID: (ETUUID *)aUUID
+{
+	
+}
+
+- (COItemPath *) itemPathOfSubtreeWithUUID: (ETUUID *)aUUID
+{
+	
+}
+
+- (void) addSubtree: (COSubtree *)aSubtree
+		 atItemPath: (COItemPath *)aPath
+{
+
+}
+
+- (void) removeSubtreeWithUUID: (ETUUID *)aUUID
+{
+	if ([[self UUID] isEqual: aUUID])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"-removeSubtreeWithUUID: can not remove the receiver"];
+	}
+	COItemPath *itemPath = [self itemPathOfSubtreeWithUUID: aUUID];
+	
+	// FIXMRE: remove aUUID from the set/array named by itemPath
+}
+
+- (void) moveSubtreeWithUUID: (ETUUID *)aUUID
+				  toItemPath: (COItemPath *)aPath
+{
+	COSubtree *subtreeToMove = [[self subtreeWithUUID: aUUID] retain];
+	
+	[self removeSubtreeWithUUID: aUUID];
+	[self addSubtree: subtreeToMove
+		  atItemPath: aPath];
+	
+	[subtreeToMove release];
+}
+
+
+
+
 
 - (void) addTree: (COSubtree *)aValue
  forSetAttribute: (NSString*)anAttribute

@@ -4,6 +4,7 @@
 #import "ETUUID.h"
 
 @class COSubtreeCopy;
+@class COItemPath;
 
 @interface COSubtree : NSObject <NSCopying>
 {
@@ -51,7 +52,10 @@
  */
 - (COSubtreeCopy *)subtreeCopyWithNameMapping: (NSDictionary *)aMapping;
 
+
+
 /* @taskunit Access to the tree stucture  */
+
 
 
 /**
@@ -66,7 +70,9 @@
 - (COSubtree *) root;
 
 
+
 /* @taskunit Access to the receiver's item */
+
 
 
 - (ETUUID *)UUID;
@@ -92,22 +98,41 @@
 - (NSSet*) allContainedStoreItems;
 - (NSSet*) allContainedStoreItemUUIDs;
 
-/** @taskunit convenience */
-
-- (void) addTree: (COSubtree *)aValue
- forSetAttribute: (NSString*)anAttribute;
-
-- (void) removeTree: (COSubtree *)aValue
- forSetAttribute: (NSString*)anAttribute;
-
+/** @taskunit Add/Delete/Move Operations */
 
 /**
- * adds the given tree to the default @"contents" attribute
+ * Searches the receiver for the subtree with the givent UUID.
+ * Returns nil if not present
  */
+- (COSubtree *) subtreeWithUUID: (ETUUID *)aUUID;
+
+- (COItemPath *) itemPathOfSubtreeWithUUID: (ETUUID *)aUUID;
+
+- (void) addSubtree: (COSubtree *)aSubtree
+		 atItemPath: (COItemPath *)aPath;
+
+/**
+ * Removes a subtree (regardless of where in the receiver or the receiver's children
+ * it is located.) Throws an exception if the guven UUID is not present in the receiver.
+ */
+- (void) removeSubtreeWithUUID: (ETUUID *)aUUID;
+
+- (void) moveSubtreeWithUUID: (ETUUID *)aUUID
+				  toItemPath: (COItemPath *)aPath;
+
+@end
+
+/**
+ * Convenience methods for interacting with the default
+ * "contents" set attribute
+ */
+@interface COSubtree (ContentsProperty)
+
 - (void) addTree: (COSubtree *)aValue;
-- (void) removeTree: (COSubtree *)aValue;
-- (NSSet*)contents;
-
-
+- (void) removeTreeWithUUID: (ETUUID *)aUUID;
+/**
+ * @returns a set of COSubtree
+ */
+- (NSSet*) contents;
 
 @end
