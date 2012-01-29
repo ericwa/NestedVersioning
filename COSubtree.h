@@ -3,14 +3,18 @@
 #import "COItem.h"
 #import "ETUUID.h"
 
+@class COSubtreeCopy;
 
 @interface COSubtree : NSObject <NSCopying>
 {
 	@private
 	COMutableItem *root;
-	NSMutableDictionary *embeddedItemTreeNodes;
+	NSMutableDictionary *embeddedSubtrees;
 	COSubtree *parent;
 }
+
+/* @taskunit Creation */
+
 
 - (id) initWithUUID: (ETUUID*)aUUID;
 
@@ -24,7 +28,31 @@
  */
 + (COSubtree *)subtree;
 
-- (ETUUID *)UUID;
+/**
+ * @returns a mutable copy
+ */
+- (id)copyWithZone:(NSZone *)zone;
+
+/**
+ * @returns a mutable copy with all items in the tree renamed.
+ *
+ * Implemented in terms of subtreeCopyWithNameMapping:
+ */
+- (COSubtreeCopy *)subtreeCopyRenamingAllItems;
+
+/**
+ * @returns a mutable copy with items specified in the mapping
+ * dictionary renamed to the value specified in the dictionary,
+ * and all other items keep their original names.
+ *
+ * Any items within receiver which have path attributes
+ * pointing to items within the receiver will be updated to reflect
+ * the new names.
+ */
+- (COSubtreeCopy *)subtreeCopyWithNameMapping: (NSDictionary *)aMapping;
+
+/* @taskunit Access to the tree stucture  */
+
 
 /**
  * @returns nil if the receiver has no parent.
@@ -37,6 +65,12 @@
  */
 - (COSubtree *) root;
 
+
+/* @taskunit Access to the receiver's item */
+
+
+- (ETUUID *)UUID;
+
 - (NSArray *) attributeNames;
 
 - (COType *) typeForAttribute: (NSString *)anAttribute;
@@ -48,11 +82,10 @@
 
 
 
-
 - (void)removeValueForAttribute: (NSString*)anAttribute;
 
 - (NSSet *)embeddedItemTreeNodeUUIDs;
-- (NSArray *)embeddedItemTreeNodes;
+- (NSArray *)embeddedSubtrees;
 
 /** @taskunit I/O */
 
@@ -75,9 +108,6 @@
 - (void) removeTree: (COSubtree *)aValue;
 - (NSSet*)contents;
 
-/**
- * @returns a mutable copy
- */
-- (id)copyWithZone:(NSZone *)zone;
+
 
 @end

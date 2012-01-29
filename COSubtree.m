@@ -9,7 +9,7 @@
 	
 	SUPERINIT
 	root = [[COMutableItem alloc] initWithUUID: aUUID];
-	embeddedItemTreeNodes = [[NSMutableDictionary alloc] init];
+	embeddedSubtrees = [[NSMutableDictionary alloc] init];
 	return self;
 }
 
@@ -21,7 +21,7 @@
 - (void) dealloc
 {
 	[root release];
-	[embeddedItemTreeNodes release];
+	[embeddedSubtrees release];
 	[super dealloc];
 }
 
@@ -82,7 +82,7 @@
 			
 			for (ETUUID *uuid in rootValue)
 			{
-				COSubtree *node = [embeddedItemTreeNodes objectForKey: uuid];
+				COSubtree *node = [embeddedSubtrees objectForKey: uuid];
 				if (node == nil)
 				{
 					[NSException raise: NSInternalInconsistencyException
@@ -96,7 +96,7 @@
 		}
 		else
 		{
-			COSubtree *node = [embeddedItemTreeNodes objectForKey: rootValue];
+			COSubtree *node = [embeddedSubtrees objectForKey: rootValue];
 			if (node == nil)
 			{
 				[NSException raise: NSInternalInconsistencyException
@@ -166,7 +166,7 @@
 			{
 				assert([aTree isKindOfClass: [COSubtree class]]);
 				[container addObject: [aTree UUID]];
-				[embeddedItemTreeNodes setObject: aTree forKey: [aTree UUID]];
+				[embeddedSubtrees setObject: aTree forKey: [aTree UUID]];
 				((COSubtree*)aTree)->parent = self;
 			}
 			
@@ -175,7 +175,7 @@
 		else
 		{
 			assert([aValue isKindOfClass: [self class]]);
-			[embeddedItemTreeNodes setObject: aValue forKey: [aValue UUID]];
+			[embeddedSubtrees setObject: aValue forKey: [aValue UUID]];
 			((COSubtree*)aValue)->parent = self;
 			[root setValue: [aValue UUID] forAttribute: anAttribute type: aType];
 		}
@@ -193,11 +193,11 @@
 
 - (NSSet *)embeddedItemTreeNodeUUIDs
 {
-	return [NSSet setWithArray: [embeddedItemTreeNodes allKeys]];
+	return [NSSet setWithArray: [embeddedSubtrees allKeys]];
 }
-- (NSArray *)embeddedItemTreeNodes
+- (NSArray *)embeddedSubtrees
 {
-	return [embeddedItemTreeNodes allValues];
+	return [embeddedSubtrees allValues];
 }
 
 /** @taskunit I/O */
@@ -208,7 +208,7 @@
 	
 	[result addObject: root];
 	
-	for (COSubtree *node in [self embeddedItemTreeNodes])
+	for (COSubtree *node in [self embeddedSubtrees])
 	{
 		[result unionSet: [node allContainedStoreItems]];
 	}
@@ -291,18 +291,37 @@
 	
 	COSubtree *newCopy = [[COSubtree alloc] init];
 	
-	for (ETUUID *uuid in embeddedItemTreeNodes)
+	for (ETUUID *uuid in embeddedSubtrees)
 	{
-		COSubtree *tree = [[embeddedItemTreeNodes objectForKey: uuid] copyWithZone: zone];
+		COSubtree *tree = [[embeddedSubtrees objectForKey: uuid] copyWithZone: zone];
 		[newItems setObject: tree forKey: uuid];
 		tree->parent = newCopy;
 		[tree release];
 	}
 	
 	ASSIGN(newCopy->root, newRoot);
-	ASSIGN(newCopy->embeddedItemTreeNodes, newItems);
+	ASSIGN(newCopy->embeddedSubtrees, newItems);
 		   
 	return newCopy;
+}
+
+- (COSubtreeCopy *)subtreeCopyRenamingAllItems
+{
+	NSSet *oldNames = [self allContainedStoreItemUUIDs];
+	NSMutableDictionary *mapping = [NSMutableDictionary dictionaryWithCapacity: [oldNames count]];
+	
+	for (ETUUID *oldName in oldNames)
+	{
+		[mapping setObject: [ETUUID UUID]
+					forKey: oldName];
+	}
+	
+	return [self subtreeCopyWithNameMapping: mapping];
+}
+
+- (COSubtreeCopy *)subtreeCopyWithNameMapping: (NSDictionary *)aMapping
+{
+	[NSException raise: NSInternalInconsistencyException format: @"unimplemented"];
 }
 
 /** @taskunit equality testing */
@@ -316,13 +335,13 @@
 	COSubtree *otherItemTree = (COSubtree*)object;
 	
 	if (![otherItemTree->root isEqual: root]) return NO;
-	if (![otherItemTree->embeddedItemTreeNodes isEqual: embeddedItemTreeNodes]) return NO;
+	if (![otherItemTree->embeddedSubtrees isEqual: embeddedSubtrees]) return NO;
 	return YES;
 }
 
 - (NSUInteger) hash
 {
-	return [root hash] ^ [embeddedItemTreeNodes hash];
+	return [root hash] ^ [embeddedSubtrees hash];
 }
 
 @end
