@@ -20,6 +20,9 @@
 						arrayName: (NSString *)collection
 				   insertionIndex: (NSUInteger)index;
 
++ (COItemPath *) pathWithItemUUID: (ETUUID *)aUUID
+						valueName: (NSString *)aName;
+
 @end
 
 @interface COItemPath (Private)

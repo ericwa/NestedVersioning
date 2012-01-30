@@ -23,15 +23,33 @@ unorderedCollectionName: (NSString *)collection;
 
 @end
 
+@interface COItemPathToValue : COItemPath
+{
+}
+
+- (id) initWithItemUUID: (ETUUID *)aUUID
+			  valueName: (NSString *)aName;
+
+@end
+
 
 
 @implementation COItemPath
+
+- (id) initWithItemUUID: (ETUUID *)aUUID
+		  attributeName: (NSString *)aName
+{
+	SUPERINIT;
+	ASSIGN(uuid, aUUID);
+	ASSIGN(attribute, aName);
+	return self;
+}
 
 + (COItemPath *) pathWithItemUUID: (ETUUID *)aUUID
 		  unorderedCollectionName: (NSString *)collection
 {
 	return [[[COItemPathToUnorderedContainer alloc] initWithItemUUID: aUUID
-											 unorderedCollectionName: collection] autorelease];
+											 attributeName: collection] autorelease];
 }
 
 + (COItemPath *) pathWithItemUUID: (ETUUID *)aUUID
@@ -41,6 +59,13 @@ unorderedCollectionName: (NSString *)collection;
 	return [[[COItemPathToOrderedContainer alloc] initWithItemUUID: aUUID
 														 arrayName: collection
 													insertionIndex: index] autorelease];	
+}
+
++ (COItemPath *) pathWithItemUUID: (ETUUID *)aUUID
+						valueName: (NSString *)aName
+{
+	return [[[COItemPathToUnorderedContainer alloc] initWithItemUUID: aUUID
+											 attributeName: aName] autorelease];	
 }
 
 - (void) dealloc
@@ -62,6 +87,16 @@ unorderedCollectionName: (NSString *)collection;
 				format: @"%@ unimplemented", NSStringFromSelector(_cmd)];
 }
 
+- (BOOL) isEqual:(id)object
+{
+	if (![object isKindOfClass: [self class]])
+		return NO;
+	
+	COItemPath *other = (COItemPath *)object;
+	return ([uuid isEqual: other->uuid] &&
+			[attribute isEqual: other->attribute]);
+}
+
 @end
 
 
@@ -72,18 +107,39 @@ unorderedCollectionName: (NSString *)collection;
 			  arrayName: (NSString *)collection
 		 insertionIndex: (NSUInteger)anIndex
 {
-	SUPERINIT
-	ASSIGN(uuid, aUUID);
-	ASSIGN(attribute, collection);
+	if ((self = [super initWithItemUUID: aUUID attributeName: collection]) == nil)
+	{
+		return nil;
+	}
 	index = anIndex;
 	return self;
 }
 
 - (void) insertValue: (id)aValue
+			  ofType: (COType *)aType
 		 inStoreItem: (COMutableStoreItem *)aStoreItem
 {
-	assert([[aStoreItem typeForAttribute: attribute] isMultivalued]);
-	assert([[aStoreItem typeForAttribute: attribute] isOrdered]);
+	if (![aType isPrimitive])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"expected primitive type"];
+	}
+	
+	if (nil == [aStoreItem typeForAttribute: attribute])
+	{
+		[aStoreItem setType: [COType arrayWithPrimitiveType: aType]
+			   forAttribute: attribute];		
+	}
+	else
+	{
+		if (![[aStoreItem typeForAttribute: attribute] isMultivalued] ||
+			![[aStoreItem typeForAttribute: attribute] isOrdered] ||
+			![[[aStoreItem typeForAttribute: attribute] primitiveType] isEqual: aType])
+		{
+			[NSException raise: NSInvalidArgumentException
+						format: @"type mismatch"];
+		}
+	}
 	
 	NSMutableArray *array = [[NSMutableArray alloc] initWithArray: [aStoreItem valueForAttribute: attribute]];
 	[array insertObject: aValue atIndex: index];
@@ -97,29 +153,13 @@ unorderedCollectionName: (NSString *)collection;
 		return NO;
 	
 	COItemPathToOrderedContainer *other = (COItemPathToOrderedContainer *)object;
-	return ([uuid isEqual: other->uuid] && 
-			[attribute isEqual: other->attribute] &&
-			index == other->index);
+	return (index == other->index && [super isEqual: object]);
 }
 
 @end
 
 
 @implementation COItemPathToUnorderedContainer
-
-- (id) initWithItemUUID: (ETUUID *)aUUID
-unorderedCollectionName: (NSString *)collection
-{
-	SUPERINIT
-	ASSIGN(uuid, aUUID);
-	ASSIGN(attribute, collection);
-	return self;
-}
-
-- (void) dealloc
-{
-	[super dealloc];
-}
 
 - (void) insertValue: (id)aValue
 		 inStoreItem: (COMutableStoreItem *)aStoreItem
@@ -134,14 +174,15 @@ unorderedCollectionName: (NSString *)collection
 	[set release];
 }
 
-- (BOOL) isEqual:(id)object
+@end
+
+
+@implementation COItemPathToValue
+
+- (void) insertValue: (id)aValue
+		 inStoreItem: (COMutableStoreItem *)aStoreItem
 {
-	if (![object isKindOfClass: [self class]])
-		return NO;
-	
-	COItemPathToUnorderedContainer *other = (COItemPathToUnorderedContainer *)object;
-	return ([uuid isEqual: other->uuid] &&
-			[attribute isEqual: other->attribute]);
+	// FIXME:
 }
 
 @end
