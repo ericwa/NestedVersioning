@@ -82,57 +82,6 @@ static void testPath()
 	EWTestEqual([[COPath pathWithPathComponent: u1] pathByAppendingPathComponent: u3], [path pathByAppendingPath: path5]);	
 }
 
-static void testStoreItemTree()
-{
-	COSubtree *t1 = [COSubtree subtree];
-	COSubtree *t2 = [COSubtree subtree];	
-	COSubtree *t3 = [COSubtree subtree];
-	
-	EWTestTrue(nil == [t2 parent]);
-	EWTestTrue(t2 == [t2 root]);
-	
-	[t1 addTree: t2];
-	
-	EWTestTrue(t1 == [t2 parent]);	
-	EWTestTrue(t1 == [t2 root]);
-	EWTestTrue(nil == [t1 parent]);	
-	EWTestTrue(t1 == [t1 root]);
-	
-	[t2 addTree: t3];
-	
-	EWTestTrue(t2 == [t3 parent]);
-	
-	EWTestIntsEqual(3, [[t1 allContainedStoreItems] count]);
-	
-	COSubtree *t1a = [[t1 copy] autorelease];
-	EWTestEqual(t1, t1a);
-	
-	COSubtree *t2a = [[t1a contents] anyObject];
-	EWTestEqual(t2, t2a);
-	
-	COSubtree *t3b = [COSubtree subtree];
-	[t2a addTree: t3b];
-	
-	EWTestTrue(![t1 isEqual: t1a]);
-	EWTestTrue(![t2 isEqual: t2a]);
-	
-	[t2a removeTree: t3b];
-	
-	EWTestEqual(t1, t1a);
-	EWTestEqual(t2, t2a);	
-	
-	EWTestTrue(t1a == [t2a parent]);
-	
-	
-	// test moving an item to a new tree removes it from its old parent
-	
-	[t1 addTree: t2a];
-	
-	EWTestTrue(t1 == [t2a parent]);
-	EWTestIntsEqual(4, [[t1 allContainedStoreItems] count]);
-	EWTestIntsEqual(1, [[t1a allContainedStoreItems] count]);	
-}
-
 static void testEditingContextEmbeddedObjects()
 {
 	COStore *store = setupStore();
@@ -353,7 +302,7 @@ int main (int argc, const char * argv[])
 {
 	WITH_POOL(testStore());
 	WITH_POOL(testPath());
-	WITH_POOL(testStoreItemTree());
+	WITH_POOL(testSubtree());
 	//WITH_POOL(testStoreController());
 	WITH_POOL(testEditingContextEmbeddedObjects());
 	WITH_POOL(testStoreItem());

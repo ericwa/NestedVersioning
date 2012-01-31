@@ -16,6 +16,7 @@
 
 COStore *setupStore();
 
+void testSubtree();
 void testUndo();
 void testTagging();
 void testTreeManager();
