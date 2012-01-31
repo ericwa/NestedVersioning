@@ -14,7 +14,7 @@
 	COSubtree *parent;
 }
 
-/* @taskunit Creation */
+#pragma mark Creation
 
 - (id) initWithUUID: (ETUUID*)aUUID;
 
@@ -53,7 +53,7 @@
 
 
 
-/* @taskunit Access to the tree stucture  */
+#pragma mark Access to the tree stucture
 
 
 
@@ -68,13 +68,14 @@
  */
 - (COSubtree *) root;
 
+- (BOOL) containsSubtreeWithUUID: (ETUUID *)aUUID;
 
 
-/* @taskunit Access to the receiver's item */
+#pragma mark Access to the receiver's item
 
 
 
-- (ETUUID *)UUID;
+- (ETUUID *) UUID;
 
 - (NSArray *) attributeNames;
 
@@ -87,6 +88,14 @@
  */
 - (id) valueForAttribute: (NSString*)anAttribute;
 
+
+
+#pragma mark Mutation
+
+
+/**
+ * sets a value for a primitive (non-multivalued) attribute
+ */
 - (void) setPrimitiveValue: (id)aValue
 			  forAttribute: (NSString*)anAttribute
 					  type: (COType *)aType;

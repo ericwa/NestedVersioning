@@ -4,6 +4,15 @@
 
 @implementation COSubtree
 
+
+/* @taskunit Creation */
+
+
+- (id) init
+{
+	return [self initWithUUID: [ETUUID UUID]];
+}
+
 - (id) initWithUUID: (ETUUID*)aUUID
 {
 	NILARG_EXCEPTION_TEST(aUUID);
@@ -12,11 +21,6 @@
 	root = [[COMutableItem alloc] initWithUUID: aUUID];
 	embeddedSubtrees = [[NSMutableDictionary alloc] init];
 	return self;
-}
-
-- (id) init
-{
-	return [self initWithUUID: [ETUUID UUID]];
 }
 
 - (void) dealloc
@@ -31,10 +35,49 @@
 	return [[[self alloc] init] autorelease];
 }
 
-- (ETUUID *)UUID
+- (id)copyWithZone:(NSZone *)zone
 {
-	return [root UUID];
+	NSMutableDictionary *newItems = [NSMutableDictionary dictionary];
+	
+	COMutableItem *newRoot = [[root copy] autorelease];
+	
+	COSubtree *newCopy = [[COSubtree alloc] init];
+	
+	for (ETUUID *uuid in embeddedSubtrees)
+	{
+		COSubtree *tree = [[embeddedSubtrees objectForKey: uuid] copyWithZone: zone];
+		[newItems setObject: tree forKey: uuid];
+		tree->parent = newCopy;
+		[tree release];
+	}
+	
+	ASSIGN(newCopy->root, newRoot);
+	ASSIGN(newCopy->embeddedSubtrees, newItems);
+	
+	return newCopy;
 }
+
+- (COSubtreeCopy *)subtreeCopyRenamingAllItems
+{
+	NSSet *oldNames = [self allContainedStoreItemUUIDs];
+	NSMutableDictionary *mapping = [NSMutableDictionary dictionaryWithCapacity: [oldNames count]];
+	
+	for (ETUUID *oldName in oldNames)
+	{
+		[mapping setObject: [ETUUID UUID]
+					forKey: oldName];
+	}
+	
+	return [self subtreeCopyWithNameMapping: mapping];
+}
+
+- (COSubtreeCopy *)subtreeCopyWithNameMapping: (NSDictionary *)aMapping
+{
+	[NSException raise: NSInternalInconsistencyException format: @"unimplemented"];
+}
+
+
+/* @taskunit Access to the tree stucture  */
 
 
 - (COSubtree *) parent
@@ -50,6 +93,19 @@
 		aRoot = [aRoot parent];
 	}
 	return aRoot;
+}
+
+- (BOOL) containsSubtreeWithUUID: (ETUUID *)aUUID
+{
+	return nil != [self subtreeWithUUID: aUUID];
+}
+
+/* @taskunit Access to the receiver's item */
+
+
+- (ETUUID *) UUID
+{
+	return [root UUID];
 }
 
 - (NSArray *) attributeNames
@@ -113,6 +169,33 @@
 	}
 }
 
+
+
+/** @taskunit Mutation */
+
+
+
+- (void) setPrimitiveValue: (id)aValue
+			  forAttribute: (NSString*)anAttribute
+					  type: (COType *)aType
+{
+	if (![aType isPrimitive])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"%@ expected a primitive type", NSStringFromSelector(_cmd)];
+	}
+	
+	if ([aType isEqual: [COType embeddedItemType]])
+	{
+		
+	}
+	else
+	{
+		
+	}
+}
+
+/*
 - (void) setValue: (id)aValue
 	 forAttribute: (NSString *)anAttribute
 			 type: (COType *)aType
@@ -186,6 +269,8 @@
 		[root setValue:aValue forAttribute:anAttribute type:aType];
 	}
 }
+*/
+
 
 - (void)removeValueForAttribute: (NSString*)anAttribute
 {
@@ -348,56 +433,6 @@
 			  type: [COType setWithPrimitiveType: [COType embeddedItemType]]];
 }
 
-- (NSSet*)contents
-{
-	NSSet *contents = [self valueForAttribute: @"contents"];
-	if (contents != nil)
-	{
-		return contents;
-	}
-	return [NSSet set];
-}
-
-- (id)copyWithZone:(NSZone *)zone
-{
-	NSMutableDictionary *newItems = [NSMutableDictionary dictionary];
-	
-	COMutableItem *newRoot = [[root copy] autorelease];
-	
-	COSubtree *newCopy = [[COSubtree alloc] init];
-	
-	for (ETUUID *uuid in embeddedSubtrees)
-	{
-		COSubtree *tree = [[embeddedSubtrees objectForKey: uuid] copyWithZone: zone];
-		[newItems setObject: tree forKey: uuid];
-		tree->parent = newCopy;
-		[tree release];
-	}
-	
-	ASSIGN(newCopy->root, newRoot);
-	ASSIGN(newCopy->embeddedSubtrees, newItems);
-		   
-	return newCopy;
-}
-
-- (COSubtreeCopy *)subtreeCopyRenamingAllItems
-{
-	NSSet *oldNames = [self allContainedStoreItemUUIDs];
-	NSMutableDictionary *mapping = [NSMutableDictionary dictionaryWithCapacity: [oldNames count]];
-	
-	for (ETUUID *oldName in oldNames)
-	{
-		[mapping setObject: [ETUUID UUID]
-					forKey: oldName];
-	}
-	
-	return [self subtreeCopyWithNameMapping: mapping];
-}
-
-- (COSubtreeCopy *)subtreeCopyWithNameMapping: (NSDictionary *)aMapping
-{
-	[NSException raise: NSInternalInconsistencyException format: @"unimplemented"];
-}
 
 /** @taskunit equality testing */
 
