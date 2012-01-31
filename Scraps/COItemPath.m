@@ -3,13 +3,16 @@
 #import "COMacros.h"
 #import "COType.h"
 
-@interface COItemPathToUnorderedContainer : COItemPath
-{
-}
+@interface COItemPath (Private)
 
 - (id) initWithItemUUID: (ETUUID *)aUUID
-unorderedCollectionName: (NSString *)collection;
+			  valueName: (NSString *)aName
+				   type: (COType *)aType;
 
+@end
+
+
+@interface COItemPathToUnorderedContainer : COItemPath
 @end
 
 @interface COItemPathToOrderedContainer : COItemPath
@@ -19,17 +22,12 @@ unorderedCollectionName: (NSString *)collection;
 
 - (id) initWithItemUUID: (ETUUID *)aUUID
 			  arrayName: (NSString *)collection
-		 insertionIndex: (NSUInteger)anIndex;
+		 insertionIndex: (NSUInteger)anIndex
+				   type: (COType *)aType;
 
 @end
 
 @interface COItemPathToValue : COItemPath
-{
-}
-
-- (id) initWithItemUUID: (ETUUID *)aUUID
-			  valueName: (NSString *)aName;
-
 @end
 
 
@@ -38,40 +36,49 @@ unorderedCollectionName: (NSString *)collection;
 
 - (id) initWithItemUUID: (ETUUID *)aUUID
 		  attributeName: (NSString *)aName
+				   type: (COType *)aType
 {
 	SUPERINIT;
 	ASSIGN(uuid, aUUID);
 	ASSIGN(attribute, aName);
+	ASSIGN(type, aType);
 	return self;
 }
 
 + (COItemPath *) pathWithItemUUID: (ETUUID *)aUUID
 		  unorderedCollectionName: (NSString *)collection
+							 type: (COType *)aType
 {
 	return [[[COItemPathToUnorderedContainer alloc] initWithItemUUID: aUUID
-											 attributeName: collection] autorelease];
+													   attributeName: collection
+																type: aType] autorelease];
 }
 
 + (COItemPath *) pathWithItemUUID: (ETUUID *)aUUID
 						arrayName: (NSString *)collection
 				   insertionIndex: (NSUInteger)index
+							 type: (COType *)aType
 {
 	return [[[COItemPathToOrderedContainer alloc] initWithItemUUID: aUUID
 														 arrayName: collection
-													insertionIndex: index] autorelease];	
+													insertionIndex: index
+															  type: aType] autorelease];	
 }
 
 + (COItemPath *) pathWithItemUUID: (ETUUID *)aUUID
 						valueName: (NSString *)aName
+							 type: (COType *)aType
 {
 	return [[[COItemPathToUnorderedContainer alloc] initWithItemUUID: aUUID
-											 attributeName: aName] autorelease];	
+													   attributeName: aName
+																type: aType] autorelease];	
 }
 
 - (void) dealloc
 {
 	[uuid release];
 	[attribute release];
+	[type release];
 	[super dealloc];
 }
 
@@ -106,8 +113,11 @@ unorderedCollectionName: (NSString *)collection;
 - (id) initWithItemUUID: (ETUUID *)aUUID
 			  arrayName: (NSString *)collection
 		 insertionIndex: (NSUInteger)anIndex
+				   type: (COType *)aType
 {
-	if ((self = [super initWithItemUUID: aUUID attributeName: collection]) == nil)
+	if ((self = [super initWithItemUUID: aUUID
+						  attributeName: collection
+								   type: type]) == nil)
 	{
 		return nil;
 	}

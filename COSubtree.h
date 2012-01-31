@@ -16,7 +16,6 @@
 
 /* @taskunit Creation */
 
-
 - (id) initWithUUID: (ETUUID*)aUUID;
 
 /**
@@ -114,6 +113,14 @@
 
 - (COItemPath *) itemPathOfSubtreeWithUUID: (ETUUID *)aUUID;
 
+/**
+ * Inserts the given subtree at the given item path.
+ * The provided subtree is removed from its parent, if it has one.
+ * i.e. [aSubtree parent] is mutated by the method call!
+ *
+ * Works regardless of whether aSubtree is a descendant of
+ * [self parent].
+ */
 - (void) addSubtree: (COSubtree *)aSubtree
 		 atItemPath: (COItemPath *)aPath;
 
@@ -134,8 +141,11 @@
  */
 @interface COSubtree (ContentsProperty)
 
+/**
+ * See comments on -addSubtree:atItemPath:
+ */
 - (void) addTree: (COSubtree *)aValue;
-- (void) removeTreeWithUUID: (ETUUID *)aUUID;
+
 /**
  * @returns a set of COSubtree
  */

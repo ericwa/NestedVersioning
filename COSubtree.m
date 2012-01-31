@@ -1,5 +1,6 @@
 #import "COSubtree.h"
 #import "COMacros.h"
+#import "COItemPath.h"
 
 @implementation COSubtree
 
@@ -303,13 +304,9 @@
 - (void) moveSubtreeWithUUID: (ETUUID *)aUUID
 				  toItemPath: (COItemPath *)aPath
 {
-	COSubtree *subtreeToMove = [[self subtreeWithUUID: aUUID] retain];
-	
-	[self removeSubtreeWithUUID: aUUID];
+	COSubtree *subtreeToMove = [self subtreeWithUUID: aUUID];
 	[self addSubtree: subtreeToMove
 		  atItemPath: aPath];
-	
-	[subtreeToMove release];
 }
 
 
@@ -424,3 +421,31 @@
 
 @end
 
+
+@implementation COSubtree (ContentsProperty)
+
+- (void) addTree: (COSubtree *)aValue
+{
+	[self addSubtree: aValue
+		  atItemPath: [COItemPath pathWithItemUUID: [self UUID]
+						   unorderedCollectionName: @"contents"
+											  type: [COType setWithPrimitiveType: [COType embeddedItemType]]]];
+}
+
+- (NSSet*) contents
+{
+	NSSet *contents = (NSSet*)[self valueForAttribute: @"contents"];
+	if (nil == contents)
+	{
+		return [NSSet set];
+	}
+	
+	if (![contents isKindOfClass: [NSSet class]])
+	{
+		[NSException raise: NSInternalInconsistencyException
+					format: @"contents attribute not a set type"];
+	}
+	return contents;
+}
+
+@end
