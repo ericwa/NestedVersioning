@@ -6,6 +6,17 @@
 @class COSubtreeCopy;
 @class COItemPath;
 
+/**
+ * This is a mutable model object for modelling the contents of a persistent
+ * root. COSubtree instances are arranged in a tree structure following
+ * normal ObjC container semantics.
+ *
+ * Why is the data model a tree instead of a reference-counted graph?
+ * We want our data model to have clear and simple semantics for copying
+ * and moving sections of data, and by forcing users to structure data
+ * in a tree they are defining the copying semantics of their data
+ * as a side effect
+ */
 @interface COSubtree : NSObject <NSCopying>
 {
 	@private
@@ -71,7 +82,7 @@
 - (BOOL) containsSubtreeWithUUID: (ETUUID *)aUUID;
 
 
-#pragma mark Access to the receiver's item
+#pragma mark Access to the receiver's attributes/values
 
 
 
