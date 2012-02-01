@@ -22,7 +22,7 @@
 	@private
 	COMutableItem *root;
 	NSMutableDictionary *embeddedSubtrees;
-	COSubtree *parent;
+	COSubtree *parent; // weak reference
 }
 
 #pragma mark Creation
@@ -81,7 +81,19 @@
 
 - (BOOL) containsSubtreeWithUUID: (ETUUID *)aUUID;
 
-- (NSSet *)embeddedSubtreeUUIDs;
+- (NSSet *)allDescendentSubtreeUUIDs;
+
+- (NSSet *)directDescendentSubtreeUUIDs;
+- (NSArray *)directDescendentSubtrees;
+
+/**
+ * Searches the receiver for the subtree with the givent UUID.
+ * Returns nil if not present
+ */
+- (COSubtree *) subtreeWithUUID: (ETUUID *)aUUID;
+
+- (COItemPath *) itemPathOfSubtreeWithUUID: (ETUUID *)aUUID;
+
 
 
 #pragma mark Access to the receiver's attributes/values
@@ -107,7 +119,6 @@
 
 
 /**
- * sets a value for a primitive (non-multivalued) attribute
  * can handle COSubtree
  */
 - (void) setPrimitiveValue: (id)aValue
@@ -116,20 +127,6 @@
 
 
 - (void)removeValueForAttribute: (NSString*)anAttribute;
-
-
-- (NSArray *)embeddedSubtrees;
-
-
-/** @taskunit Add/Delete/Move Operations */
-
-/**
- * Searches the receiver for the subtree with the givent UUID.
- * Returns nil if not present
- */
-- (COSubtree *) subtreeWithUUID: (ETUUID *)aUUID;
-
-- (COItemPath *) itemPathOfSubtreeWithUUID: (ETUUID *)aUUID;
 
 /**
  * Inserts the given subtree at the given item path.
