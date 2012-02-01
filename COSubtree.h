@@ -81,6 +81,8 @@
 
 - (BOOL) containsSubtreeWithUUID: (ETUUID *)aUUID;
 
+- (NSSet *)embeddedSubtreeUUIDs;
+
 
 #pragma mark Access to the receiver's attributes/values
 
@@ -106,22 +108,18 @@
 
 /**
  * sets a value for a primitive (non-multivalued) attribute
+ * can handle COSubtree
  */
 - (void) setPrimitiveValue: (id)aValue
 			  forAttribute: (NSString*)anAttribute
 					  type: (COType *)aType;
 
 
-
 - (void)removeValueForAttribute: (NSString*)anAttribute;
 
-- (NSSet *)embeddedItemTreeNodeUUIDs;
+
 - (NSArray *)embeddedSubtrees;
 
-/** @taskunit I/O */
-
-- (NSSet*) allContainedStoreItems;
-- (NSSet*) allContainedStoreItemUUIDs;
 
 /** @taskunit Add/Delete/Move Operations */
 

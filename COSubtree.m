@@ -202,7 +202,7 @@
 {
 	if ([[aType primitiveType] isEqual: [COType embeddedItemType]])
 	{
-		NSSet *embeddedUUIDsForAllAttributes = [self embeddedItemTreeNodeUUIDs];
+		NSSet *embeddedUUIDsForAllAttributes = [self embeddedSubtreeUUIDs];
 		
 		if ([aType isMultivalued])
 		{
@@ -277,7 +277,7 @@
 	[root removeValueForAttribute: anAttribute];
 }
 
-- (NSSet *)embeddedItemTreeNodeUUIDs
+- (NSSet *)embeddedSubtreeUUIDs
 {
 	return [NSSet setWithArray: [embeddedSubtrees allKeys]];
 }
