@@ -1,6 +1,9 @@
 #import <Foundation/Foundation.h>
 
 @class ETUUID;
+@class COType;
+@class COItemPath;
+@class COSubtree;
 
 /**
  * An immutable tree of objects.

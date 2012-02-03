@@ -1,6 +1,7 @@
 #import "COSubtree.h"
 #import "COMacros.h"
 #import "COItemPath.h"
+#import "COSubtreeCopy.h"
 
 @implementation COSubtree
 
@@ -35,8 +36,11 @@
 	return [[[self alloc] init] autorelease];
 }
 
-- (id)copyWithZone:(NSZone *)zone
+- (id)copyWithNameMapping: (NSDictionary *)aMapping
 {
+	// FIXME: implement
+	
+	
 	NSMutableDictionary *newItems = [NSMutableDictionary dictionary];
 	
 	COMutableItem *newRoot = [[root copy] autorelease];
@@ -45,7 +49,7 @@
 	
 	for (ETUUID *uuid in embeddedSubtrees)
 	{
-		COSubtree *tree = [[embeddedSubtrees objectForKey: uuid] copyWithZone: zone];
+		COSubtree *tree = [[embeddedSubtrees objectForKey: uuid] copy];
 		[newItems setObject: tree forKey: uuid];
 		tree->parent = newCopy;
 		[tree release];
@@ -57,9 +61,14 @@
 	return newCopy;
 }
 
+- (id)copyWithZone:(NSZone *)zone
+{
+	return [self copyWithNameMapping: [NSDictionary dictionary]];
+}
+
 - (COSubtreeCopy *)subtreeCopyRenamingAllItems
 {
-	NSSet *oldNames = [self allContainedStoreItemUUIDs];
+	NSSet *oldNames = [self allUUIDs];
 	NSMutableDictionary *mapping = [NSMutableDictionary dictionaryWithCapacity: [oldNames count]];
 	
 	for (ETUUID *oldName in oldNames)
@@ -73,11 +82,14 @@
 
 - (COSubtreeCopy *)subtreeCopyWithNameMapping: (NSDictionary *)aMapping
 {
-	[NSException raise: NSInternalInconsistencyException format: @"unimplemented"];
+	COSubtree *theCopy = [[self copyWithNameMapping: aMapping] autorelease];
+	
+	return [COSubtreeCopy subtreeCopyWithSubtree: theCopy
+							   mappingDictionary: aMapping];
 }
 
 
-/* @taskunit Access to the tree stucture  */
+#pragma mark Access to the tree stucture
 
 
 - (COSubtree *) parent
@@ -100,7 +112,96 @@
 	return nil != [self subtreeWithUUID: aUUID];
 }
 
-/* @taskunit Access to the receiver's item */
+- (NSSet *)allUUIDs
+{
+	return [[self allDescendentSubtreeUUIDs] setByAddingObject: [self UUID]];
+}
+
+- (NSSet *)allDescendentSubtreeUUIDs
+{
+	NSMutableSet *result = [NSMutableSet set];
+	
+	for (COSubtree *node in [self directDescendentSubtrees])
+	{
+		[result addObject: [node UUID]];
+		[result unionSet: [node allDescendentSubtreeUUIDs]];
+	}
+	
+	return result;
+}
+
+- (NSSet *)directDescendentSubtreeUUIDs
+{
+	return [NSSet setWithArray: [embeddedSubtrees allKeys]];
+}
+
+- (NSArray *)directDescendentSubtrees;
+{
+	return [embeddedSubtrees allValues];
+}
+
+/**
+ * Searches the receiver for the subtree with the givent UUID.
+ * Returns nil if not present
+ */
+- (COSubtree *) subtreeWithUUID: (ETUUID *)aUUID
+{
+	COSubtree *directDescendant = [embeddedSubtrees objectForKey: aUUID];
+	if (directDescendant != nil)
+	{
+		return directDescendant;
+	}
+	
+	for (COSubtree *node in [self directDescendentSubtrees])
+	{
+		COSubtree *recursiveResult = [node subtreeWithUUID: aUUID];
+		if (recursiveResult != nil)
+		{
+			return recursiveResult;
+		}
+	}
+	
+	return nil;
+}
+
+- (COItemPath *) itemPathOfSubtreeWithUUID: (ETUUID *)aUUID
+{
+	COSubtree *destSubtree = [self subtreeWithUUID: aUUID];
+	
+	if (destSubtree == nil)
+	{
+		return nil;
+	}
+	
+	COSubtree *destSubtreeParent = [destSubtree parent];
+	
+	// Search destSubtreeParent for [destSubtree UUID];
+	// FIXME: Factor out?
+	
+	for (NSString *attr in [destSubtreeParent attributeNames])
+	{
+		if ([[destSubtreeParent->root allObjectsForAttribute: attr] containsObject: [destSubtree UUID]])
+		{
+			if ([[destSubtreeParent typeForAttribute: attr] isOrdered])
+			{
+				
+			}
+			else
+			{
+				
+			}
+		}
+	}
+	
+	[NSException raise: NSInternalInconsistencyException
+				format: @"COSubtree inconsistent"];
+	return nil;
+}
+
+
+
+#pragma mark Access to the receiver's attributes/values
+
 
 
 - (ETUUID *) UUID
@@ -171,11 +272,11 @@
 
 
 
-/** @taskunit Mutation */
+#pragma mark Mutation
 
 
 
-- (void) setPrimitiveValue: (id)aValue
+- (void) setValue: (id)aValue
 			  forAttribute: (NSString*)anAttribute
 					  type: (COType *)aType
 {
@@ -277,103 +378,24 @@
 	[root removeValueForAttribute: anAttribute];
 }
 
-- (NSSet *)embeddedSubtreeUUIDs
-{
-	return [NSSet setWithArray: [embeddedSubtrees allKeys]];
-}
-- (NSArray *)embeddedSubtrees
-{
-	return [embeddedSubtrees allValues];
-}
 
-/** @taskunit I/O */
-
-- (NSSet*) allContainedStoreItems
-{
-	NSMutableSet *result = [NSMutableSet set];
-	
-	[result addObject: root];
-	
-	for (COSubtree *node in [self embeddedSubtrees])
-	{
-		[result unionSet: [node allContainedStoreItems]];
-	}
-	return result;
-}
-
-- (NSSet*) allContainedStoreItemUUIDs
-{
-	NSMutableSet *result = [NSMutableSet set];
-	for (COMutableItem *item in [self allContainedStoreItems])
-	{
-		[result addObject: [item UUID]];
-	}
-	return result;
-}
-
-/** @taskunit Add/Delete/Move Operations */
-
-- (COSubtree *) subtreeWithUUID: (ETUUID *)aUUID
-{
-	for (COSubtree *node in [self embeddedSubtrees])
-	{
-		if ([[node UUID] isEqual: aUUID])
-		{
-			return node;
-		}
-	}
-	
-	for (COSubtree *node in [self embeddedSubtrees])
-	{
-		COSubtree *recursiveResult = [node subtreeWithUUID: aUUID];
-		if (recursiveResult != nil)
-		{
-			return recursiveResult;
-		}
-	}
-	
-	return nil;
-}
-
-- (COItemPath *) itemPathOfSubtreeWithUUID: (ETUUID *)aUUID
-{
-	COSubtree *destSubtree = [self subtreeWithUUID: aUUID];
-	
-	if (destSubtree == nil)
-	{
-		return nil;
-	}
-	
-	COSubtree *destSubtreeParent = [destSubtree parent];
-	
-	// Search destSubtreeParent for [destSubtree UUID];
-	// FIXME: Factor out?
-	
-	for (NSString *attr in [destSubtreeParent attributeNames])
-	{
-		if ([[destSubtreeParent->root allObjectsForAttribute: attr] containsObject: [destSubtree UUID]])
-		{
-			if ([[destSubtreeParent typeForAttribute: attr] isOrdered])
-			{
-				
-			}
-			else
-			{
-			
-			}
-		}
-	}
-	
-	[NSException raise: NSInternalInconsistencyException
-				format: @"COSubtree inconsistent"];
-}
-
+/**
+ * Inserts the given subtree at the given item path.
+ * The provided subtree is removed from its parent, if it has one.
+ * i.e. [aSubtree parent] is mutated by the method call!
+ *
+ * Works regardless of whether aSubtree is a descendant of
+ * [self parent].
+ */
 - (void) addSubtree: (COSubtree *)aSubtree
 		 atItemPath: (COItemPath *)aPath
 {
-
 }
 
+/**
+ * Removes a subtree (regardless of where in the receiver or the receiver's children
+ * it is located.) Throws an exception if the guven UUID is not present in the receiver.
+ */
 - (void) removeSubtreeWithUUID: (ETUUID *)aUUID
 {
 	if ([[self UUID] isEqual: aUUID])
@@ -397,44 +419,9 @@
 
 
 
-
-- (void) addTree: (COSubtree *)aValue
- forSetAttribute: (NSString*)anAttribute
-{
-	id container = [self valueForAttribute: anAttribute];
-	COType *type = [self typeForAttribute: anAttribute];
-	
-	if (container == nil)
-	{
-		container = [NSSet setWithObject: aValue];
-	}
-	else
-	{
-		assert([type isEqual: [COType setWithPrimitiveType: [COType embeddedItemType]]]);
-		container = [container setByAddingObject: aValue];
-	}
-	
-	[self setValue: container
-	  forAttribute: anAttribute
-			  type: [COType setWithPrimitiveType: [COType embeddedItemType]]];
-}
-
-- (void) removeTree: (COSubtree *)aValue
-	forSetAttribute: (NSString*)anAttribute
-{
-	id container = [NSMutableSet setWithSet: [self valueForAttribute: anAttribute]];
-	COType *type = [self typeForAttribute: anAttribute];
-	assert(type == nil || [type isEqual: [COType setWithPrimitiveType: [COType embeddedItemType]]]);
-
-	[container removeObject: aValue];
-	
-	[self setValue: container
-	  forAttribute: anAttribute
-			  type: [COType setWithPrimitiveType: [COType embeddedItemType]]];
-}
+#pragma mark equality testing
 
 
-/** @taskunit equality testing */
 
 - (BOOL) isEqual:(id)object
 {

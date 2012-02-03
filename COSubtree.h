@@ -59,6 +59,8 @@
  * Any items within receiver which have path attributes
  * pointing to items within the receiver will be updated to reflect
  * the new names.
+ *
+ * mapping can include the receiver's UUID
  */
 - (COSubtreeCopy *)subtreeCopyWithNameMapping: (NSDictionary *)aMapping;
 
@@ -80,6 +82,8 @@
 - (COSubtree *) root;
 
 - (BOOL) containsSubtreeWithUUID: (ETUUID *)aUUID;
+
+- (NSSet *)allUUIDs;
 
 - (NSSet *)allDescendentSubtreeUUIDs;
 
@@ -121,7 +125,7 @@
 /**
  * can handle COSubtree
  */
-- (void) setPrimitiveValue: (id)aValue
+- (void) setValue: (id)aValue
 			  forAttribute: (NSString*)anAttribute
 					  type: (COType *)aType;
 
@@ -147,6 +151,12 @@
 
 - (void) moveSubtreeWithUUID: (ETUUID *)aUUID
 				  toItemPath: (COItemPath *)aPath;
+
+#pragma mark equality testing
+
+- (BOOL) isEqual:(id)object;
+- (NSUInteger) hash;
+
 
 @end
 
