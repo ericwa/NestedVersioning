@@ -88,7 +88,7 @@
 }
 
 - (void) insertValue: (id)aValue
-		 inStoreItem: (COMutableStoreItem *)aStoreItem
+		 inStoreItem: (COMutableItem *)aStoreItem
 {	
 	[NSException raise: NSInternalInconsistencyException
 				format: @"%@ unimplemented", NSStringFromSelector(_cmd)];
@@ -102,6 +102,11 @@
 	COItemPath *other = (COItemPath *)object;
 	return ([uuid isEqual: other->uuid] &&
 			[attribute isEqual: other->attribute]);
+}
+
+- (ETUUID *)UUID
+{
+	return uuid;
 }
 
 @end
@@ -127,7 +132,7 @@
 
 - (void) insertValue: (id)aValue
 			  ofType: (COType *)aType
-		 inStoreItem: (COMutableStoreItem *)aStoreItem
+		 inStoreItem: (COMutableItem *)aStoreItem
 {
 	if (![aType isPrimitive])
 	{
@@ -172,7 +177,7 @@
 @implementation COItemPathToUnorderedContainer
 
 - (void) insertValue: (id)aValue
-		 inStoreItem: (COMutableStoreItem *)aStoreItem
+		 inStoreItem: (COMutableItem *)aStoreItem
 {
 	assert([[aStoreItem typeForAttribute: attribute] isMultivalued]);
 	assert(![[aStoreItem typeForAttribute: attribute] isOrdered]);
@@ -190,7 +195,7 @@
 @implementation COItemPathToValue
 
 - (void) insertValue: (id)aValue
-		 inStoreItem: (COMutableStoreItem *)aStoreItem
+		 inStoreItem: (COMutableItem *)aStoreItem
 {
 	// FIXME:
 }

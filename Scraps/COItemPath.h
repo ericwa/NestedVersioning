@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "ETUUID.h"
 
-@class COMutableStoreItem;
+@class COMutableItem;
 @class COType;
 
 /**
@@ -32,7 +32,9 @@
 
 @interface COItemPath (Private)
 
+- (ETUUID *)UUID;
+
 - (void) insertValue: (id)aValue
-		 inStoreItem: (COMutableStoreItem *)aStoreItem;
+		 inStoreItem: (COMutableItem *)aStoreItem;
 
 @end

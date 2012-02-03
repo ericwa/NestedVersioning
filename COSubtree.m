@@ -387,25 +387,35 @@
 - (void) addSubtree: (COSubtree *)aSubtree
 		 atItemPath: (COItemPath *)aPath
 {
+	if (![[self UUID] isEqual: [aPath UUID]] &&
+		![self containsSubtreeWithUUID: [aPath UUID]])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"itemPath must be inside the receiver"];
+	}
+	
+	[aSubtree retain]; // balanced by release at end of method
+	
 	if ([aSubtree parent] != nil)
 	{
-		// Remove from parent
-		
-		
+		[[aSubtree parent] removeSubtreeWithUUID: [aSubtree UUID]];
 		aSubtree->parent = nil;
 	}
 	
-	
-	if ([aSubtree root] == [self root])
+	if ([[aPath UUID] isEqual: [self UUID]])
 	{
-		// Move within root's subtree
+		aSubtree->parent = self;
 	}
 	else
 	{
-		
+		aSubtree->parent = [self subtreeWithUUID: [aPath UUID]];
 	}
+	[aSubtree->parent->embeddedSubtrees setObject: aSubtree
+										   forKey: [aSubtree UUID]];
+	[aPath insertValue: [aSubtree UUID]
+		   inStoreItem: aSubtree->parent->root];  
 	
-	aSubtree->parent = [[self root] subtreeWithUUID: [aPath UUID]];
+	[aSubtree release]; // balance retain at start of method
 }
 
 /**
