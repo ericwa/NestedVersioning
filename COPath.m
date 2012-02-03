@@ -169,4 +169,21 @@
 	return [self stringValue];
 }
 
+- (COPath *) pathByRenamingComponents: (NSDictionary *)aMapping
+{
+	NSMutableArray *newElements = [NSMutableArray array];
+	for (ETUUID *element in elements)
+	{
+		ETUUID *newElement = element;
+		if ([aMapping objectForKey: element] != nil)
+		{
+			newElement = [aMapping objectForKey: element];
+		}
+		[newElements addObject: newElement];
+	}
+	
+	return [[[COPath alloc] initWithElements: newElements
+						leadingPathsToParent: leadingPathsToParent] autorelease];
+}
+
 @end

@@ -47,4 +47,6 @@
 - (ETUUID *) lastPathComponent;
 - (COPath *) pathByDeletingLastPathComponent;
 
+- (COPath *) pathByRenamingComponents: (NSDictionary *)aMapping;
+
 @end

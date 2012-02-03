@@ -276,7 +276,28 @@ static id importValueFromPlist(id aPlist)
 		}
 		else if ([[type primitiveType] isEqual: [COType pathType]])
 		{
-			NSLog(@"Renaming paths not yet supported");
+			if ([type isPrimitive])
+			{
+				COPath *pathValue = (COPath*)value;
+				
+				[aCopy setValue: [pathValue pathByRenamingComponents: aMapping]
+				   forAttribute: attr
+						   type: type];
+			}
+			else
+			{ 
+				id newCollection = [[value mutableCopy] autorelease];
+				[newCollection removeAllObjects];
+				
+				for (COPath *pathValue in value)
+				{
+					[newCollection addObject: [pathValue pathByRenamingComponents:aMapping]];
+				}
+				
+				[aCopy setValue: newCollection
+				   forAttribute: attr
+						   type: type];
+			}
 		}
 	}
 	
