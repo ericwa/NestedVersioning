@@ -52,6 +52,11 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes;
 - (id)copyWithZone:(NSZone *)zone;
 - (id)mutableCopyWithZone:(NSZone *)zone;
 
+/**
+ * Returns a mutable item
+ */
+- (id)mutableCopyWithNameMapping: (NSDictionary *)aMapping;
+
 @end
 
 

@@ -139,6 +139,10 @@
  *
  * Works regardless of whether aSubtree is a descendant of
  * [self parent].
+ *
+ * If the subtree being inserted has names which overlap with names in our
+ * root's tree, what do we do? Silently rename those overlapping names in the
+ * subtree being inserted?
  */
 - (void) addSubtree: (COSubtree *)aSubtree
 		 atItemPath: (COItemPath *)aPath;

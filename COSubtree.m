@@ -38,21 +38,18 @@
 
 - (id)copyWithNameMapping: (NSDictionary *)aMapping
 {
-	// FIXME: implement
-	
-	
+	COMutableItem *newRoot = [[root mutableCopyWithNameMapping: aMapping] autorelease];
+
 	NSMutableDictionary *newItems = [NSMutableDictionary dictionary];
-	
-	COMutableItem *newRoot = [[root copy] autorelease];
 	
 	COSubtree *newCopy = [[COSubtree alloc] init];
 	
-	for (ETUUID *uuid in embeddedSubtrees)
+	for (COSubtree *tree in [embeddedSubtrees allValues])
 	{
-		COSubtree *tree = [[embeddedSubtrees objectForKey: uuid] copy];
-		[newItems setObject: tree forKey: uuid];
-		tree->parent = newCopy;
-		[tree release];
+		COSubtree *treeCopy = [tree copyWithNameMapping: aMapping];
+		[newItems setObject: treeCopy forKey: [treeCopy UUID]];
+		treeCopy->parent = newCopy;
+		[treeCopy release];
 	}
 	
 	ASSIGN(newCopy->root, newRoot);

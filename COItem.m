@@ -227,6 +227,62 @@ static id importValueFromPlist(id aPlist)
 								valuesForAttributes: values];
 }
 
+- (id)mutableCopyWithNameMapping: (NSDictionary *)aMapping
+{
+	COMutableItem *aCopy = [self mutableCopy];
+	
+	ETUUID *newUUIDForSelf = [aMapping objectForKey: [self UUID]];
+	if (newUUIDForSelf != nil)
+	{
+		[aCopy setUUID: newUUIDForSelf];
+	}
+	
+	for (NSString *attr in [aCopy attributeNames])
+	{
+		id value = [aCopy valueForAttribute: attr];
+		COType *type = [aCopy typeForAttribute: attr];
+		
+		if ([[type primitiveType] isEqual: [COType embeddedItemType]])
+		{
+			if ([type isPrimitive])
+			{
+				ETUUID *UUIDValue = (ETUUID*)value;
+				if ([aMapping objectForKey: UUIDValue] != nil)
+				{
+					[aCopy setValue: [aMapping objectForKey: UUIDValue]
+						 forAttribute: attr
+								 type: type];
+				}
+			}
+			else
+			{ 
+				id newCollection = [[value mutableCopy] autorelease];
+				[newCollection removeAllObjects];
+				
+				for (ETUUID *UUIDValue in value)
+				{
+					ETUUID *newUUIDValue = UUIDValue;
+					if ([aMapping objectForKey: UUIDValue] != nil)
+					{
+						newUUIDValue = [aMapping objectForKey: UUIDValue];
+					}
+					[newCollection addObject: newUUIDValue];
+				}
+				
+				[aCopy setValue: newCollection
+				   forAttribute: attr
+						   type: type];
+			}
+		}
+		else if ([[type primitiveType] isEqual: [COType pathType]])
+		{
+			NSLog(@"Renaming paths not yet supported");
+		}
+	}
+	
+	return aCopy;
+}
+
 @end
 
 
