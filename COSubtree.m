@@ -390,6 +390,25 @@
 - (void) addSubtree: (COSubtree *)aSubtree
 		 atItemPath: (COItemPath *)aPath
 {
+	if ([aSubtree parent] != nil)
+	{
+		// Remove from parent
+		
+		
+		aSubtree->parent = nil;
+	}
+	
+	
+	if ([aSubtree root] == [self root])
+	{
+		// Move within root's subtree
+	}
+	else
+	{
+		
+	}
+	
+	aSubtree->parent = [[self root] subtreeWithUUID: [aPath UUID]];
 }
 
 /**
