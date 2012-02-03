@@ -43,6 +43,7 @@
 		66E503A41495F9D0003C69C7 /* COStringDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E5039D1495F9CF003C69C7 /* COStringDiff.m */; };
 		66E552B5146B7799008FDFAF /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E552B4146B7799008FDFAF /* libcrypto.dylib */; };
 		66E5CABC147B4E42002DE8FD /* TestPhotoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E5CABB147B4E42002DE8FD /* TestPhotoManager.m */; };
+		66E73A1614DB59D900112D10 /* COTreeContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E73A1514DB59D900112D10 /* COTreeContext.m */; };
 		66E76749148B4813009937E8 /* COSubtree.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E76735148B3D1C009937E8 /* COSubtree.m */; };
 		66E877571455F0CB006CBE7E /* COStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E877561455F0CB006CBE7E /* COStore.m */; };
 		66E8776B1455FE67006CBE7E /* ETUUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E8776A1455FE67006CBE7E /* ETUUID.m */; };
@@ -138,8 +139,8 @@
 		66416D20142D3EE20016501D /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		664DA7F114C6B28000942CDC /* COPersistentRootDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPersistentRootDiff.h; sourceTree = "<group>"; };
 		664DA7F214C6B28000942CDC /* COPersistentRootDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COPersistentRootDiff.m; sourceTree = "<group>"; };
-		668F26B414982F8700A3CEA6 /* COStoreItemProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COStoreItemProvider.h; sourceTree = "<group>"; };
-		668F26B514982F8700A3CEA6 /* COStoreItemProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COStoreItemProvider.m; sourceTree = "<group>"; };
+		668F26B414982F8700A3CEA6 /* COStoreItemProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = COStoreItemProvider.h; path = ../COStoreItemProvider.h; sourceTree = "<group>"; };
+		668F26B514982F8700A3CEA6 /* COStoreItemProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = COStoreItemProvider.m; path = ../COStoreItemProvider.m; sourceTree = "<group>"; };
 		669CADDE1491646300D0CF5F /* COManagedItemTreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COManagedItemTreeNode.h; sourceTree = "<group>"; };
 		669CADDF1491646300D0CF5F /* COManagedItemTreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COManagedItemTreeNode.m; sourceTree = "<group>"; };
 		669CADE61491844000D0CF5F /* COTreeDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = COTreeDiff.h; path = ../COTreeDiff.h; sourceTree = "<group>"; };
@@ -183,20 +184,22 @@
 		66E5CBA814830C5700D01039 /* COStorePrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COStorePrivate.h; sourceTree = "<group>"; };
 		66E61DC814902D6500FA55DA /* COItemTreeManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COItemTreeManager.h; sourceTree = "<group>"; };
 		66E61DC914902D6500FA55DA /* COItemTreeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COItemTreeManager.m; sourceTree = "<group>"; };
+		66E73A1414DB59D900112D10 /* COTreeContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COTreeContext.h; sourceTree = "<group>"; };
+		66E73A1514DB59D900112D10 /* COTreeContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COTreeContext.m; sourceTree = "<group>"; };
 		66E76728148B3D1C009937E8 /* COItemFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COItemFactory.h; sourceTree = "<group>"; };
 		66E76729148B3D1C009937E8 /* COItemFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COItemFactory.m; sourceTree = "<group>"; };
 		66E76732148B3D1C009937E8 /* COSimpleContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COSimpleContext.h; sourceTree = "<group>"; };
 		66E76733148B3D1C009937E8 /* COSimpleContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COSimpleContext.m; sourceTree = "<group>"; };
-		66E76734148B3D1C009937E8 /* COSubtree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COSubtree.h; sourceTree = "<group>"; };
-		66E76735148B3D1C009937E8 /* COSubtree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COSubtree.m; sourceTree = "<group>"; };
+		66E76734148B3D1C009937E8 /* COSubtree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = COSubtree.h; path = ../COSubtree.h; sourceTree = "<group>"; };
+		66E76735148B3D1C009937E8 /* COSubtree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = COSubtree.m; path = ../COSubtree.m; sourceTree = "<group>"; };
 		66E7673E148B3DE8009937E8 /* COItemPath.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = COItemPath.h; path = Scraps/COItemPath.h; sourceTree = "<group>"; };
 		66E7673F148B3DE8009937E8 /* COItemPath.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = COItemPath.m; path = Scraps/COItemPath.m; sourceTree = "<group>"; };
 		66E877551455F0CB006CBE7E /* COStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COStore.h; sourceTree = "<group>"; };
 		66E877561455F0CB006CBE7E /* COStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COStore.m; sourceTree = "<group>"; };
 		66E877691455FE5B006CBE7E /* ETUUID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETUUID.h; sourceTree = "<group>"; };
 		66E8776A1455FE67006CBE7E /* ETUUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETUUID.m; sourceTree = "<group>"; };
-		66E8E93314D4BC7F00CBE2D8 /* COSubtreeCopy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COSubtreeCopy.h; sourceTree = "<group>"; };
-		66E8E93414D4BC7F00CBE2D8 /* COSubtreeCopy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COSubtreeCopy.m; sourceTree = "<group>"; };
+		66E8E93314D4BC7F00CBE2D8 /* COSubtreeCopy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = COSubtreeCopy.h; path = ../COSubtreeCopy.h; sourceTree = "<group>"; };
+		66E8E93414D4BC7F00CBE2D8 /* COSubtreeCopy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = COSubtreeCopy.m; path = ../COSubtreeCopy.m; sourceTree = "<group>"; };
 		66EADD6414732AEE003181FC /* TestUndo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestUndo.m; sourceTree = "<group>"; wrapsLines = 1; };
 		66EADD67147345B9003181FC /* COItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COItem.h; sourceTree = "<group>"; };
 		66EADD68147345B9003181FC /* COItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COItem.m; sourceTree = "<group>"; };
@@ -277,6 +280,7 @@
 				669CADED1491C14300D0CF5F /* UUID & Path */,
 				669CADEE1491C15400D0CF5F /* Type System */,
 				66EDFD8E148EF64600D0DC0B /* New Store Objects */,
+				66E76724148B3CEA009937E8 /* Scraps */,
 				66E2A305143057A100487419 /* Store */,
 				791A0EBD148AF3C200334CB1 /* Tests */,
 				66DFAECB142A726100623060 /* test.1 */,
@@ -284,7 +288,6 @@
 				66EB7571148CA9D300C2114B /* StoreBrowser */,
 				662811F913F8B5010075BBC2 /* Frameworks */,
 				662811F713F8B5010075BBC2 /* Products */,
-				66E76724148B3CEA009937E8 /* Scraps */,
 			);
 			sourceTree = "<group>";
 		};
@@ -521,6 +524,12 @@
 		66E76724148B3CEA009937E8 /* Scraps */ = {
 			isa = PBXGroup;
 			children = (
+				668F26B414982F8700A3CEA6 /* COStoreItemProvider.h */,
+				668F26B514982F8700A3CEA6 /* COStoreItemProvider.m */,
+				66E8E93314D4BC7F00CBE2D8 /* COSubtreeCopy.h */,
+				66E8E93414D4BC7F00CBE2D8 /* COSubtreeCopy.m */,
+				66E76734148B3D1C009937E8 /* COSubtree.h */,
+				66E76735148B3D1C009937E8 /* COSubtree.m */,
 				66E76728148B3D1C009937E8 /* COItemFactory.h */,
 				66E76729148B3D1C009937E8 /* COItemFactory.m */,
 				66E76732148B3D1C009937E8 /* COSimpleContext.h */,
@@ -557,14 +566,10 @@
 		66EDFD8E148EF64600D0DC0B /* New Store Objects */ = {
 			isa = PBXGroup;
 			children = (
-				668F26B414982F8700A3CEA6 /* COStoreItemProvider.h */,
-				668F26B514982F8700A3CEA6 /* COStoreItemProvider.m */,
-				66E8E93314D4BC7F00CBE2D8 /* COSubtreeCopy.h */,
-				66E8E93414D4BC7F00CBE2D8 /* COSubtreeCopy.m */,
-				66E76734148B3D1C009937E8 /* COSubtree.h */,
-				66E76735148B3D1C009937E8 /* COSubtree.m */,
 				66E7673E148B3DE8009937E8 /* COItemPath.h */,
 				66E7673F148B3DE8009937E8 /* COItemPath.m */,
+				66E73A1414DB59D900112D10 /* COTreeContext.h */,
+				66E73A1514DB59D900112D10 /* COTreeContext.m */,
 			);
 			name = "New Store Objects";
 			sourceTree = "<group>";
@@ -746,6 +751,7 @@
 				664DA7F314C6B28000942CDC /* COPersistentRootDiff.m in Sources */,
 				66101A0A14D09FAA00B50075 /* diff.cc in Sources */,
 				7978700F14D799A200B45FC6 /* TestSubtree.m in Sources */,
+				66E73A1614DB59D900112D10 /* COTreeContext.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
