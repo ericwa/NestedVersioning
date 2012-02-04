@@ -446,6 +446,20 @@
 		  atItemPath: aPath];
 }
 
+- (void) renameWithNameMapping: (NSDictionary *)aMapping
+{
+	COMutableItem *newRoot = [[root mutableCopyWithNameMapping: aMapping] autorelease];
+	ASSIGN(root, newRoot);
+	
+	NSMutableDictionary *newItems = [NSMutableDictionary dictionary];
+	for (COSubtree *tree in [embeddedSubtrees allValues])
+	{
+		[tree renameWithNameMapping: aMapping];
+		[newItems setObject: tree forKey: [tree UUID]];
+	}
+	
+	ASSIGN(embeddedSubtrees, newItems);	
+}
 
 
 

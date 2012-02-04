@@ -164,6 +164,11 @@
 - (void) moveSubtreeWithUUID: (ETUUID *)aUUID
 				  toItemPath: (COItemPath *)aPath;
 
+/**
+ * in-place rename
+ */
+- (void) renameWithNameMapping: (NSDictionary *)aMapping;
+
 #pragma mark equality testing
 
 - (BOOL) isEqual:(id)object;
