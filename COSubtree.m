@@ -24,6 +24,37 @@
 	return self;
 }
 
+- (id) initWithItemDictionary: (NSDictionary *)items
+					 rootUUID: (ETUUID *)aRootUUID
+{
+	NILARG_EXCEPTION_TEST(items);
+	NILARG_EXCEPTION_TEST(aRootUUID);
+	
+	if ([items objectForKey: aRootUUID] == nil)
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"items do not form a valid tree"];
+	}
+	
+	SUPERINIT;
+	root = [[items objectForKey: aRootUUID] mutableCopy];
+	embeddedSubtrees = [[NSMutableDictionary alloc] init];
+	
+	// WARNING: the receiver is in an inconsistent state right now
+	// so -directDescendentSubtreeUUIDs must not access embeddedSubtrees
+	// since it is not yet set up.
+	for (ETUUID *aUUID in [self directDescendentSubtreeUUIDs])
+	{
+		COSubtree *subTree = [[[self class] alloc] initWithItemDictionary: items
+																 rootUUID: aRootUUID];
+		[embeddedSubtrees setObject: subTree
+							 forKey: aUUID];
+		[subTree release];
+	}
+	
+	return self;
+}
+
 - (void) dealloc
 {
 	[root release];
@@ -34,6 +65,21 @@
 + (COSubtree *)subtree
 {
 	return [[[self alloc] init] autorelease];
+}
+
++ (COSubtree *)subtreeWithItemSet: (NSSet*)items
+						 rootUUID: (ETUUID *)aRootUUID
+{
+	// We put the items in a temporary dictionary by UUID 
+	// to make constructing the tree more convenient
+	NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity: [items count]];
+	
+	for (COItem *item in items)
+	{
+		[dict setObject: item forKey: [item UUID]];
+	}
+	
+	return [[[self alloc] initWithItemDictionary: dict rootUUID: aRootUUID] autorelease];
 }
 
 - (id)copyWithNameMapping: (NSDictionary *)aMapping
@@ -143,7 +189,22 @@
 
 - (NSSet *)directDescendentSubtreeUUIDs
 {
-	return [NSSet setWithArray: [embeddedSubtrees allKeys]];
+	// WARNING: See comment in initWithItemDictionary:rootUUID:.
+	// We call this method there before the embeddedSubtrees ivar is set up,
+	// so we must not access it here.
+	
+	NSMutableSet *set = [NSMutableSet set];
+	
+	for (NSString *attr in [root attributeNames])
+	{
+		COType *type = [root typeForAttribute: attr];
+		if ([[type primitiveType] isEqual: [COType embeddedItemType]])
+		{
+			[set addObjectsFromArray: [root allObjectsForAttribute: attr]];
+		}
+	}
+	
+	return [NSSet setWithSet: set];
 }
 
 - (NSArray *)directDescendentSubtrees;

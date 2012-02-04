@@ -40,6 +40,15 @@
 + (COSubtree *)subtree;
 
 /**
+ * Builds a COSubtree from a set of items and the UUID
+ * of the root item. Throws an exception under any of these circumstances:
+ *  - items does not contain an item with UUID aRootUUID
+ *  - items contains more than one item with the same UUID
+ */
++ (COSubtree *)subtreeWithItemSet: (NSSet*)items
+						 rootUUID: (ETUUID *)aRootUUID;
+
+/**
  * @returns a mutable copy
  */
 - (id)copyWithZone:(NSZone *)zone;
