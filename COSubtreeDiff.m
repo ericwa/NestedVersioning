@@ -68,7 +68,13 @@
 	 diff in-place doesn't make much sense.
 	 
 	 */
-	assert(0);
+
+	// Get the COItem instances to apply the diff to
+	NSSet *items = [aSubtree allContainedStoreItems];
+	
+	// rebuild the subtree with 
+	// [COSubtree subtreeWithItemSet: (NSSet*)items
+	// rootUUID:]
 }
 
 @end
