@@ -81,6 +81,10 @@
  */
 - (COSubtree *) root;
 
+/**
+ * Returns YES if the uuid is contained
+ * in the receiver (or if it is the receiver's UUID)
+ */
 - (BOOL) containsSubtreeWithUUID: (ETUUID *)aUUID;
 
 - (NSSet *)allUUIDs;
@@ -97,7 +101,8 @@
 
 /**
  * Searches the receiver for the subtree with the givent UUID.
- * Returns nil if not present
+ * Returns nil if not present.
+ * Returns self if given self's uuid
  */
 - (COSubtree *) subtreeWithUUID: (ETUUID *)aUUID;
 
@@ -108,6 +113,8 @@
 #pragma mark Access to the receiver's attributes/values
 
 
+
+- (COItem *) item;
 
 - (ETUUID *) UUID;
 

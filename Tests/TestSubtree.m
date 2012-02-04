@@ -14,7 +14,7 @@ void testSubtreeBasic()
 	EWTestTrue(nil != [t1 UUID]);
 	EWTestTrue(nil == [t1 parent]);
 	EWTestTrue(t1 == [t1 root]);
-	EWTestTrue(![t1 containsSubtreeWithUUID: [t1 UUID]]);
+	EWTestTrue([t1 containsSubtreeWithUUID: [t1 UUID]]);
 	
 	[t1 addTree: t2];
 	

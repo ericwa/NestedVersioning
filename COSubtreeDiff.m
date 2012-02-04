@@ -1,35 +1,10 @@
 #import "COSubtreeDiff.h"
 #import "COItemDiff.h"
 #import "COMacros.h"
+#import "ETUUID.h"
+#import "COSubtree.h"
 
 @implementation COSubtreeDiff
-
-// FIXME: This is generally useful, not just for COTreeDiff
-
-static void _COAllItemUUIDsInTree_implementation(ETUUID *treeRoot, id<COFaultProvider> faultProvider, NSMutableSet *result)
-{
-	[result addObject: treeRoot];
-	
-	COItem *item = [faultProvider _storeItemForUUID: treeRoot];
-	for (NSString *key in [item attributeNames])
-	{
-		COType *type = [item typeForAttribute: key];
-		if ([[type primitiveType] isEqual: [COType embeddedItemType]])
-		{		
-			for (ETUUID *embedded in [item allObjectsForAttribute: key])
-			{
-				_COAllItemUUIDsInTree_implementation(embedded, faultProvider, result);
-			}
-		}
-	}
-}
-
-static NSSet *COAllItemUUIDsInTree(ETUUID *treeRoot, id<COFaultProvider> faultProvider)
-{
-	NSMutableSet *result = [NSMutableSet set];
-	_COAllItemUUIDsInTree_implementation(treeRoot, faultProvider, result);
-	return result;
-}
 
 - (id) initWithRootUUID: (ETUUID*)aUUID
 		itemDiffForUUID: (NSDictionary *)aDict
@@ -40,25 +15,21 @@ static NSSet *COAllItemUUIDsInTree(ETUUID *treeRoot, id<COFaultProvider> faultPr
 	return self;
 }
 
-+ (COSubtreeDiff *) diffRootItem: (ETUUID*)rootA
-				 withRootItem: (ETUUID*)rootB
-			  inFaultProvider: (id<COFaultProvider>)providerA
-			withFaultProvider: (id<COFaultProvider>)providerB
++ (COSubtreeDiff *) diffSubtree: (COSubtree *)a
+					withSubtree: (COSubtree *)b
 {
-	NSSet *rootA_UUIDs = COAllItemUUIDsInTree(rootA, providerA);
-	NSSet *rootB_UUIDs = COAllItemUUIDsInTree(rootB, providerB);
+	NSSet *rootA_UUIDs = [a allUUIDs];
+	NSSet *rootB_UUIDs = [b allUUIDs];
 	
 	NSMutableSet *commonUUIDs = [NSMutableSet setWithSet: rootA_UUIDs];
 	[commonUUIDs intersectSet: rootB_UUIDs];
-	
-	// ok.. move detection.
-	
+		
 	NSMutableDictionary *itemDiffForUUID = [NSMutableDictionary dictionary];
 	
 	for (ETUUID *commonUUID in commonUUIDs)
 	{
-		COItem *commonItemA = [providerA _storeItemForUUID: commonUUID];
-		COItem *commonItemB = [providerB _storeItemForUUID: commonUUID];
+		COItem *commonItemA = [[a subtreeWithUUID: commonUUID] item];
+		COItem *commonItemB = [[b subtreeWithUUID: commonUUID] item];
 		
 		COItemDiff *diff = [COItemDiff diffItem: commonItemA withItem: commonItemB];
 		
@@ -66,7 +37,7 @@ static NSSet *COAllItemUUIDsInTree(ETUUID *treeRoot, id<COFaultProvider> faultPr
 							forKey: commonUUID];
 	}
 	
-	return [[[self alloc] initWithRootUUID: rootB
+	return [[[self alloc] initWithRootUUID: [[b root] UUID]
 						   itemDiffForUUID: itemDiffForUUID] autorelease];
 }
 
@@ -81,6 +52,11 @@ static NSSet *COAllItemUUIDsInTree(ETUUID *treeRoot, id<COFaultProvider> faultPr
 	}
  	[desc appendFormat: @"}"];
 	return desc;
+}
+
+- (void) applyToSubtree: (COSubtree *)aSubtree
+{
+	assert(0);
 }
 
 @end

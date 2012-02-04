@@ -157,6 +157,11 @@
  */
 - (COSubtree *) subtreeWithUUID: (ETUUID *)aUUID
 {
+	if ([[self UUID] isEqual: aUUID])
+	{
+		return self;
+	}
+	
 	COSubtree *directDescendant = [embeddedSubtrees objectForKey: aUUID];
 	if (directDescendant != nil)
 	{
@@ -231,6 +236,10 @@
 #pragma mark Access to the receiver's attributes/values
 
 
+- (COItem *) item
+{
+	return [[root copy] autorelease];
+}
 
 - (ETUUID *) UUID
 {

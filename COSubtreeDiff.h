@@ -1,5 +1,7 @@
 #import <Foundation/Foundation.h>
-#import "COFaultProvider.h"
+
+@class ETUUID;
+@class COSubtree;
 
 @interface COSubtreeDiff : NSObject
 {
@@ -7,9 +9,9 @@
 	NSMutableDictionary *itemDiffForUUID;
 }
 
-+ (COSubtreeDiff *) diffRootItem: (ETUUID*)rootA
-				 withRootItem: (ETUUID*)rootB
-			  inFaultProvider: (id<COFaultProvider>)providerA
-			withFaultProvider: (id<COFaultProvider>)providerB;
++ (COSubtreeDiff *) diffSubtree: (COSubtree *)a
+					withSubtree: (COSubtree *)b;
+
+- (void) applyToSubtree: (COSubtree *)aSubtree;
 
 @end
