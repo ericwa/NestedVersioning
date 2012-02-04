@@ -13,7 +13,7 @@
 	// FIXME: awkward translation
 	NSSet *allItems = [anItem allContainedStoreItems];
 	NSMutableDictionary *uuidsAndStoreItems = [NSMutableDictionary dictionary];
-	for (COMutableItem *item in allItems)
+	for (COItem *item in allItems)
 	{
 		[uuidsAndStoreItems setObject: item forKey: [item UUID]];
 	}

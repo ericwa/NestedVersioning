@@ -219,7 +219,7 @@
 	
 	ASSIGN(rootItemUUID, aRoot);
 	
-	for (COMutableItem *item in items)
+	for (COItem *item in items)
 	{
 		[insertedOrUpdatedItems setObject: item forKey: [item UUID]];
 	}
@@ -436,7 +436,7 @@
 
 	ASSIGN(rootItemUUID, [aTree UUID]);
 	
-	for (COMutableItem *item in [aTree allContainedStoreItems])
+	for (COItem *item in [aTree allContainedStoreItems])
 	{
 		[insertedOrUpdatedItems setObject: item forKey: [item UUID]];
 	}

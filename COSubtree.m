@@ -114,6 +114,20 @@
 	return [[self allDescendentSubtreeUUIDs] setByAddingObject: [self UUID]];
 }
 
+- (NSSet *)allContainedStoreItems
+{
+	NSMutableSet *result = [NSMutableSet set];
+	
+	[result addObject: [[root copy] autorelease]];
+	
+	for (COSubtree *node in [self directDescendentSubtrees])
+	{
+		[result unionSet: [node allContainedStoreItems]];
+	}
+	
+	return result;
+}
+
 - (NSSet *)allDescendentSubtreeUUIDs
 {
 	NSMutableSet *result = [NSMutableSet set];

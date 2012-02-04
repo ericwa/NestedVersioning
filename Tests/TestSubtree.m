@@ -34,7 +34,7 @@ void testSubtree()
 	EWTestTrue(![t1 isEqual: t1a]);
 	EWTestTrue(![t2 isEqual: t2a]);
 	
-	[t2a removeTree: t3b];
+	[t2a removeSubtreeWithUUID: [t3b UUID]];
 	
 	EWTestEqual(t1, t1a);
 	EWTestEqual(t2, t2a);	

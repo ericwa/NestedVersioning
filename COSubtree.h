@@ -85,6 +85,11 @@
 
 - (NSSet *)allUUIDs;
 
+/**
+ * returns the set of all contained COItem instances, including self's
+ */
+- (NSSet *)allContainedStoreItems;
+
 - (NSSet *)allDescendentSubtreeUUIDs;
 
 - (NSSet *)directDescendentSubtreeUUIDs;
