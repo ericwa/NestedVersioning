@@ -18,7 +18,7 @@
 	NILARG_EXCEPTION_TEST(aName);
 	
 	COSubtree *tree = [COSubtree subtree];
-	[tree setValue: aName
+	[tree setPrimitiveValue: aName
 	  forAttribute: @"name"
 			  type: [COType stringType]];
 	return tree;

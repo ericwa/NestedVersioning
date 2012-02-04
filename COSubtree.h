@@ -130,7 +130,7 @@
 /**
  * can handle COSubtree
  */
-- (void) setValue: (id)aValue
+- (void) setPrimitiveValue: (id)aValue
 			  forAttribute: (NSString*)anAttribute
 					  type: (COType *)aType;
 

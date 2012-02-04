@@ -112,7 +112,7 @@ static void testEditingContextEmbeddedObjects()
 	//
 	
 	COSubtree *nestedDocumentRootItem = [COSubtree subtree];
-	[nestedDocumentRootItem setValue: @"red"
+	[nestedDocumentRootItem setPrimitiveValue: @"red"
 						forAttribute: @"color"
 								type: [COType stringType]];
 	

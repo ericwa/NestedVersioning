@@ -23,7 +23,7 @@ void testUndo()
 	
 		
 	COSubtree *contents1 = [COSubtree subtree];
-	[contents1 setValue: @"red"
+	[contents1 setPrimitiveValue: @"red"
 		   forAttribute: @"color"
 				   type: [COType stringType]];
 	ETUUID *contentsUUID = [contents1 UUID];

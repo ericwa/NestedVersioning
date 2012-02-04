@@ -304,7 +304,7 @@
 
 
 
-- (void) setValue: (id)aValue
+- (void) setPrimitiveValue: (id)aValue
 			  forAttribute: (NSString*)anAttribute
 					  type: (COType *)aType
 {
@@ -316,90 +316,18 @@
 	
 	if ([aType isEqual: [COType embeddedItemType]])
 	{
-		
+		[self removeValueForAttribute: anAttribute];
+		[self addSubtree: aValue atItemPath: [COItemPath pathWithItemUUID: [self UUID]
+																valueName: anAttribute
+																	 type: aType]];
 	}
 	else
 	{
-		
+		[root setValue: aValue
+		  forAttribute: anAttribute
+				  type: aType];
 	}
 }
-
-/*
-- (void) setValue: (id)aValue
-	 forAttribute: (NSString *)anAttribute
-			 type: (COType *)aType
-{
-	if ([[aType primitiveType] isEqual: [COType embeddedItemType]])
-	{
-		NSSet *embeddedUUIDsForAllAttributes = [self embeddedSubtreeUUIDs];
-		
-		if ([aType isMultivalued])
-		{
-			NSSet *oldEmbeddedUUIDsForAttribute = [NSSet setWithArray: [root allObjectsForAttribute: anAttribute]];
-			NSSet *newEmbeddedUUIDsForAttribute;
-			if ([aType isOrdered])
-			{
-				newEmbeddedUUIDsForAttribute = [NSSet setWithArray: aValue];
-			}
-			else
-			{
-				newEmbeddedUUIDsForAttribute = aValue;
-			}
-			
-			
-		}
-		else
-		{
-			
-		}
-		
-		
-		
-		
-		
-		if ([aType isMultivalued])
-		{
-			id container;
-			
-			if ([aValue isKindOfClass: [NSCountedSet class]])
-			{
-				container = [NSCountedSet set];
-			}
-			else if ([aValue isKindOfClass: [NSArray class]])
-			{
-				container = [NSMutableArray array];
-			}
-			else if ([aValue isKindOfClass: [NSSet class]])
-			{
-				container = [NSMutableSet set];
-			}
-			else assert(0);
-
-			for (COSubtree *aTree in aValue)
-			{
-				assert([aTree isKindOfClass: [COSubtree class]]);
-				[container addObject: [aTree UUID]];
-				[embeddedSubtrees setObject: aTree forKey: [aTree UUID]];
-				((COSubtree*)aTree)->parent = self;
-			}
-			
-			[root setValue: container forAttribute: anAttribute type: aType];
-		}
-		else
-		{
-			assert([aValue isKindOfClass: [self class]]);
-			[embeddedSubtrees setObject: aValue forKey: [aValue UUID]];
-			((COSubtree*)aValue)->parent = self;
-			[root setValue: [aValue UUID] forAttribute: anAttribute type: aType];
-		}
-	}
-	else
-	{
-		[root setValue:aValue forAttribute:anAttribute type:aType];
-	}
-}
-*/
-
 
 - (void)removeValueForAttribute: (NSString*)anAttribute
 {
