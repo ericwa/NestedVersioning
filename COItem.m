@@ -377,6 +377,60 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 
 /** @taskunit convenience */
 
+- (void)   addObject: (id)aValue
+toUnorderedAttribute: (NSString*)anAttribute
+				type: (COType *)aType
+{
+	if (![aType isMultivalued] || [aType isOrdered])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"expected unordered type"];
+	}
+	
+	if ([self typeForAttribute: anAttribute] == nil)
+	{
+		[self setValue: [aType isUnique] ? [NSSet set] : [NSCountedSet set]
+		  forAttribute: anAttribute
+				  type: aType];
+	}
+		 
+	NSMutableSet *set = [[self valueForAttribute: anAttribute] mutableCopy];
+	NSAssert([set isKindOfClass: [NSMutableSet class]], @"expected NSMutableSet");
+	[set addObject: aValue];
+	[self setValue: set
+	  forAttribute: anAttribute
+			  type: aType];
+	[set release];
+}
+
+- (void)   addObject: (id)aValue
+  toOrderedAttribute: (NSString*)anAttribute
+			 atIndex: (NSUInteger)anIndex
+				type: (COType *)aType
+{
+	if (![aType isMultivalued] || ![aType isOrdered])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"expected ordered type"];
+	}
+	
+	if ([self typeForAttribute: anAttribute] == nil)
+	{
+		[self setValue: [NSMutableArray array]
+		  forAttribute: anAttribute
+				  type: aType];
+	}
+	
+	NSMutableArray *array = [[self valueForAttribute: anAttribute] mutableCopy];
+	NSAssert([array isKindOfClass: [NSMutableArray class]], @"expected NSMutableArray");
+	[array insertObject: aValue
+				atIndex: anIndex];
+	[self setValue: array
+	  forAttribute: anAttribute
+			  type: aType];
+	[array release];
+}
+
 - (void) addObject: (id)aValue
 	  forAttribute: (NSString*)anAttribute
 {

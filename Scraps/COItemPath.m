@@ -131,35 +131,12 @@
 }
 
 - (void) insertValue: (id)aValue
-			  ofType: (COType *)aType
 		 inStoreItem: (COMutableItem *)aStoreItem
 {
-	if (![aType isPrimitive])
-	{
-		[NSException raise: NSInvalidArgumentException
-					format: @"expected primitive type"];
-	}
-	
-	if (nil == [aStoreItem typeForAttribute: attribute])
-	{
-		[aStoreItem setType: [COType arrayWithPrimitiveType: aType]
-			   forAttribute: attribute];		
-	}
-	else
-	{
-		if (![[aStoreItem typeForAttribute: attribute] isMultivalued] ||
-			![[aStoreItem typeForAttribute: attribute] isOrdered] ||
-			![[[aStoreItem typeForAttribute: attribute] primitiveType] isEqual: aType])
-		{
-			[NSException raise: NSInvalidArgumentException
-						format: @"type mismatch"];
-		}
-	}
-	
-	NSMutableArray *array = [[NSMutableArray alloc] initWithArray: [aStoreItem valueForAttribute: attribute]];
-	[array insertObject: aValue atIndex: index];
-	[aStoreItem setValue: array forAttribute: attribute];
-	[array release];
+	[aStoreItem addObject: aValue 
+	   toOrderedAttribute: attribute
+				  atIndex: index
+					 type: type];
 }
 
 - (BOOL) isEqual:(id)object
@@ -179,14 +156,9 @@
 - (void) insertValue: (id)aValue
 		 inStoreItem: (COMutableItem *)aStoreItem
 {
-	assert([[aStoreItem typeForAttribute: attribute] isMultivalued]);
-	assert(![[aStoreItem typeForAttribute: attribute] isOrdered]);
-	
-	NSMutableSet *set = [[aStoreItem valueForAttribute: attribute] mutableCopy]; // may be NSMutableSet subclass NSCountedSet
-	assert([set isKindOfClass: [NSMutableSet class]]);
-	[set addObject: aValue];
-	[aStoreItem setValue: set forAttribute: attribute];
-	[set release];
+	[aStoreItem addObject: aValue
+	 toUnorderedAttribute: attribute
+					 type: type];
 }
 
 @end
@@ -197,7 +169,9 @@
 - (void) insertValue: (id)aValue
 		 inStoreItem: (COMutableItem *)aStoreItem
 {
-	// FIXME:
+	[aStoreItem setValue: aValue
+			forAttribute: attribute
+					type: type];
 }
 
 @end
