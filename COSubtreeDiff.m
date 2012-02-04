@@ -1,8 +1,8 @@
-#import "COTreeDiff.h"
+#import "COSubtreeDiff.h"
 #import "COItemDiff.h"
 #import "COMacros.h"
 
-@implementation COTreeDiff
+@implementation COSubtreeDiff
 
 // FIXME: This is generally useful, not just for COTreeDiff
 
@@ -40,7 +40,7 @@ static NSSet *COAllItemUUIDsInTree(ETUUID *treeRoot, id<COFaultProvider> faultPr
 	return self;
 }
 
-+ (COTreeDiff *) diffRootItem: (ETUUID*)rootA
++ (COSubtreeDiff *) diffRootItem: (ETUUID*)rootA
 				 withRootItem: (ETUUID*)rootB
 			  inFaultProvider: (id<COFaultProvider>)providerA
 			withFaultProvider: (id<COFaultProvider>)providerB
