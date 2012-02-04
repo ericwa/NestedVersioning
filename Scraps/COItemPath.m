@@ -3,7 +3,7 @@
 #import "COMacros.h"
 #import "COType.h"
 
-@interface COItemPath (Private)
+@interface COItemPath (InternalPrivate)
 
 - (id) initWithItemUUID: (ETUUID *)aUUID
 			  valueName: (NSString *)aName
