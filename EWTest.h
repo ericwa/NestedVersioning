@@ -8,7 +8,7 @@ void EWTestTrueFunction(BOOL flag, const char *filename, int line);
 
 // Public
 
-void EWTestLog();
+void EWTestLog(void);
 
 #define EWTestEqual(expected, actual) EWTestEqualFunction(expected, actual, __FILE__, __LINE__)
 #define EWTestIntsEqual(expected, actual) EWTestIntsEqualFunction(expected, actual, __FILE__, __LINE__)

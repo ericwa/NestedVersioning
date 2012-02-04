@@ -14,9 +14,9 @@
 
 #define STOREPATH [@"~/om5teststore" stringByExpandingTildeInPath]
 
-COStore *setupStore();
+COStore *setupStore(void);
 
-void testSubtree();
-void testUndo();
-void testTagging();
-void testTreeManager();
+void testSubtree(void);
+void testUndo(void);
+void testTagging(void);
+void testTreeManager(void);
