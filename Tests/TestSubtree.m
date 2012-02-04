@@ -39,14 +39,5 @@ void testSubtree()
 	EWTestEqual(t1, t1a);
 	EWTestEqual(t2, t2a);	
 	
-	EWTestTrue(t1a == [t2a parent]);
-	
-	
-	// test moving an item to a new tree removes it from its old parent
-	
-	[t1 addTree: t2a];
-	
-	EWTestTrue(t1 == [t2a parent]);
-	EWTestIntsEqual(4, [[t1 allContainedStoreItems] count]);
-	EWTestIntsEqual(1, [[t1a allContainedStoreItems] count]);	
+	EWTestTrue(t1a == [t2a parent]);		
 }

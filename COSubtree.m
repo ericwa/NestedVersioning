@@ -316,7 +316,6 @@
 	
 	if ([aType isEqual: [COType embeddedItemType]])
 	{
-		[self removeValueForAttribute: anAttribute];
 		[self addSubtree: aValue atItemPath: [COItemPath pathWithItemUUID: [self UUID]
 																valueName: anAttribute
 																	 type: aType]];
@@ -361,6 +360,19 @@
 		aSubtree->parent = nil;
 	}
 	
+	// see if there are any name conflicts
+	
+	NSMutableSet *conflictingNames = [NSMutableSet setWithSet: [[self root] allUUIDs]];
+	[conflictingNames intersectSet: [aSubtree allUUIDs]];
+	
+	if ([conflictingNames count] > 0)
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"addSubtree:atItemPath: expects no name conflicts"];
+	}
+	
+	// set up the parent and insert the tree
+	
 	if ([[aPath UUID] isEqual: [self UUID]])
 	{
 		aSubtree->parent = self;
@@ -376,6 +388,31 @@
 	
 	[aSubtree release]; // balance retain at start of method
 }
+
+- (COSubtreeCopy *) addSubtreeRenamingObjectsOnConflict: (COSubtree *)aSubtree
+											 atItemPath: (COItemPath *)aPath
+{
+	// see if there are any name conflicts
+	
+	NSMutableSet *conflictingNames = [NSMutableSet setWithSet: [[self root] allUUIDs]];
+	[conflictingNames intersectSet: [aSubtree allUUIDs]];
+	
+	NSLog(@"Renaming conflicting UUIDS: %@", conflictingNames);
+	NSMutableDictionary *renameDict = [NSMutableDictionary dictionaryWithCapacity: [conflictingNames count]];
+	for (ETUUID *conflictingName in conflictingNames)
+	{
+		[renameDict setObject: [ETUUID UUID] forKey: conflictingName];
+	}
+	
+	COSubtree *aSubtreeRenamed = [[aSubtree copyWithNameMapping: renameDict] autorelease];
+		
+	[self addSubtree: aSubtreeRenamed
+		  atItemPath: aPath];
+	
+	return [COSubtreeCopy subtreeCopyWithSubtree: aSubtreeRenamed
+							   mappingDictionary: renameDict];
+}
+
 
 /**
  * Removes a subtree (regardless of where in the receiver or the receiver's children

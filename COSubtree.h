@@ -152,6 +152,9 @@
 - (void) addSubtree: (COSubtree *)aSubtree
 		 atItemPath: (COItemPath *)aPath;
 
+- (COSubtreeCopy *) addSubtreeRenamingObjectsOnConflict: (COSubtree *)aSubtree
+											 atItemPath: (COItemPath *)aPath;
+
 /**
  * Removes a subtree (regardless of where in the receiver or the receiver's children
  * it is located.) Throws an exception if the guven UUID is not present in the receiver.
