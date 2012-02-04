@@ -54,8 +54,20 @@
 	return desc;
 }
 
-- (void) applyToSubtree: (COSubtree *)aSubtree
+- (COSubtree *) subtreeWithDiffAppliedToSubtree: (COSubtree *)aSubtree
 {
+	/**
+	does applying a diff to a subtree in-place even make sense?
+	 
+	 any pointers to within the tree might point at deallocated objects
+	 after applying the diff, since any object could be deallocated.
+	 hence all pointers to within the subtree must be discarded
+	 
+	 also, if the root changes UUID, we would have to keep the same
+	 COSubtree object but change its UUID. sounds like applying 
+	 diff in-place doesn't make much sense.
+	 
+	 */
 	assert(0);
 }
 

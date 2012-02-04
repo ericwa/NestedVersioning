@@ -12,6 +12,6 @@
 + (COSubtreeDiff *) diffSubtree: (COSubtree *)a
 					withSubtree: (COSubtree *)b;
 
-- (void) applyToSubtree: (COSubtree *)aSubtree;
+- (COSubtree *) subtreeWithDiffAppliedToSubtree: (COSubtree *)aSubtree;
 
 @end
