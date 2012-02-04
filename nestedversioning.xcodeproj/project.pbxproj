@@ -186,8 +186,8 @@
 		66E61DC914902D6500FA55DA /* COItemTreeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COItemTreeManager.m; sourceTree = "<group>"; };
 		66E73A1414DB59D900112D10 /* COTreeContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COTreeContext.h; sourceTree = "<group>"; };
 		66E73A1514DB59D900112D10 /* COTreeContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COTreeContext.m; sourceTree = "<group>"; };
-		66E76728148B3D1C009937E8 /* COItemFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COItemFactory.h; sourceTree = "<group>"; };
-		66E76729148B3D1C009937E8 /* COItemFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COItemFactory.m; sourceTree = "<group>"; };
+		66E76728148B3D1C009937E8 /* COItemFactoryOld.h */ = {isa = PBXFileReference; fileEncoding = 4; path = COItemFactoryOld.h; sourceTree = "<group>"; };
+		66E76729148B3D1C009937E8 /* COItemFactoryOld.m */ = {isa = PBXFileReference; fileEncoding = 4; path = COItemFactoryOld.m; sourceTree = "<group>"; };
 		66E76732148B3D1C009937E8 /* COSimpleContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COSimpleContext.h; sourceTree = "<group>"; };
 		66E76733148B3D1C009937E8 /* COSimpleContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COSimpleContext.m; sourceTree = "<group>"; };
 		66E76734148B3D1C009937E8 /* COSubtree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COSubtree.h; sourceTree = "<group>"; };
@@ -526,8 +526,8 @@
 			children = (
 				668F26B414982F8700A3CEA6 /* COStoreItemProvider.h */,
 				668F26B514982F8700A3CEA6 /* COStoreItemProvider.m */,
-				66E76728148B3D1C009937E8 /* COItemFactory.h */,
-				66E76729148B3D1C009937E8 /* COItemFactory.m */,
+				66E76728148B3D1C009937E8 /* COItemFactoryOld.h */,
+				66E76729148B3D1C009937E8 /* COItemFactoryOld.m */,
 				66E76732148B3D1C009937E8 /* COSimpleContext.h */,
 				66E76733148B3D1C009937E8 /* COSimpleContext.m */,
 			);
