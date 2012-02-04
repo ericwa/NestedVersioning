@@ -186,20 +186,37 @@
 	
 	COSubtree *destSubtreeParent = [destSubtree parent];
 	
-	// Search destSubtreeParent for [destSubtree UUID];
+	// Search destSubtreeParent's attributes for [destSubtree UUID];
 	// FIXME: Factor out?
 	
 	for (NSString *attr in [destSubtreeParent attributeNames])
 	{
 		if ([[destSubtreeParent->root allObjectsForAttribute: attr] containsObject: [destSubtree UUID]])
 		{
-			if ([[destSubtreeParent typeForAttribute: attr] isOrdered])
+			COType *type = [destSubtreeParent typeForAttribute: attr];
+			if ([type isMultivalued])
 			{
-				
+				if ([type isOrdered])
+				{
+					NSUInteger index = [[destSubtreeParent->root allObjectsForAttribute: attr] indexOfObject: [destSubtree UUID]];
+					
+					return [COItemPath pathWithItemUUID: [destSubtreeParent UUID]
+											  arrayName: attr
+										 insertionIndex: index
+												   type: type];
+				}
+				else
+				{
+					return [COItemPath pathWithItemUUID: [destSubtreeParent UUID]
+								unorderedCollectionName: attr
+												   type: type];
+				}
 			}
 			else
 			{
-				
+				return [COItemPath pathWithItemUUID: [destSubtreeParent UUID]
+										  valueName: attr
+											   type: type];
 			}
 		}
 	}
