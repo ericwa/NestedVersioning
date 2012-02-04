@@ -36,5 +36,6 @@
 
 - (void) insertValue: (id)aValue
 		 inStoreItem: (COMutableItem *)aStoreItem;
+- (void) removeValue: (id)aValue inStoreItem: (COMutableItem *)aStoreItem;
 
 @end

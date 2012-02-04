@@ -388,9 +388,17 @@
 		[NSException raise: NSInvalidArgumentException
 					format: @"-removeSubtreeWithUUID: can not remove the receiver"];
 	}
-	COItemPath *itemPath = [self itemPathOfSubtreeWithUUID: aUUID];
+	COSubtree *parentOfSubtreeToRemove = [[self subtreeWithUUID: aUUID] parent];
+	if (parentOfSubtreeToRemove == nil)
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"argument must be inside the reciever to remove it"];
+	}
 	
-	// FIXMRE: remove aUUID from the set/array named by itemPath
+	COItemPath *itemPath = [self itemPathOfSubtreeWithUUID: aUUID];	
+	NSAssert([[itemPath UUID] isEqual: [parentOfSubtreeToRemove UUID]], @"");
+	[itemPath removeValue: aUUID inStoreItem: parentOfSubtreeToRemove->root];
+	[parentOfSubtreeToRemove->embeddedSubtrees removeObjectForKey: aUUID];
 }
 
 - (void) moveSubtreeWithUUID: (ETUUID *)aUUID

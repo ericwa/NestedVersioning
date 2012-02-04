@@ -94,6 +94,12 @@
 				format: @"%@ unimplemented", NSStringFromSelector(_cmd)];
 }
 
+- (void) removeValue: (id)aValue inStoreItem: (COMutableItem *)aStoreItem
+{
+	[NSException raise: NSInternalInconsistencyException
+				format: @"%@ unimplemented", NSStringFromSelector(_cmd)];	
+}
+
 - (BOOL) isEqual:(id)object
 {
 	if (![object isKindOfClass: [self class]])
@@ -139,6 +145,14 @@
 					 type: type];
 }
 
+- (void) removeValue: (id)aValue inStoreItem: (COMutableItem *)aStoreItem
+{
+	NSMutableArray *array = [aStoreItem valueForAttribute: attribute];
+	NSAssert([[array objectAtIndex: index] isEqual: aValue], @"value being removed is not what was expected.");
+	[array removeObjectAtIndex: index];
+	[aStoreItem setValue: array forAttribute: attribute];
+}
+
 - (BOOL) isEqual:(id)object
 {
 	if (![object isKindOfClass: [self class]])
@@ -161,6 +175,14 @@
 					 type: type];
 }
 
+- (void) removeValue: (id)aValue inStoreItem: (COMutableItem *)aStoreItem
+{
+	NSMutableSet *set = [aStoreItem valueForAttribute: attribute];
+	NSAssert([set containsObject: aValue], @"value to be remove is not present in set");
+	[set removeObject: aValue];
+	[aStoreItem setValue: set forAttribute: attribute];
+}
+
 @end
 
 
@@ -172,6 +194,12 @@
 	[aStoreItem setValue: aValue
 			forAttribute: attribute
 					type: type];
+}
+
+- (void) removeValue: (id)aValue inStoreItem: (COMutableItem *)aStoreItem
+{
+	NSAssert([[aStoreItem valueForAttribute: attribute] isEqual: aValue], @"value to be removed is not what was expected");
+	[aStoreItem removeValueForAttribute: attribute];
 }
 
 @end
