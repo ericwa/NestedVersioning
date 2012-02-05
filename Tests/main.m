@@ -285,9 +285,8 @@ int main (int argc, const char * argv[])
 	WITH_POOL(testStore());
 	WITH_POOL(testPath());
 	WITH_POOL(testSubtree());
-	//WITH_POOL(testStoreController());
 	WITH_POOL(testEditingContextEmbeddedObjects());
-	//WITH_POOL(testStoreItem());
+	WITH_POOL(testStoreItem());
 	//WITH_POOL(testUndo());
 	//WITH_POOL(testTagging());
 	//WITH_POOL(testDiff());

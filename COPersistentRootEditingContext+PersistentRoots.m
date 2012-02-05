@@ -1,5 +1,4 @@
 #import "COPersistentRootEditingContext+PersistentRoots.h"
-#import "COPersistentRootEditingContext+Convenience.h"
 #import "COMacros.h"
 #import "COItem.h"
 #import "ETUUID.h"
