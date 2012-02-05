@@ -2,6 +2,14 @@
 
 @interface COItemFactory (PersistentRoots)
 
+/**
+ * This should be called before calling the other persistent root
+ * methods, which will throw an exception if the persistent
+ * root isn't valid.
+ */
+- (BOOL) isValidPersistentRoot: (COSubtree *)aRoot;
+- (BOOL) isValidBranch: (COSubtree *)aRoot;
+
 - (COSubtree *)persistentRootWithInitialVersion: (ETUUID *)aVersion
 									displayName: (NSString *)aName;
 

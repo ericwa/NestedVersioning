@@ -8,6 +8,18 @@
 
 @implementation COItemFactory (PersistentRoots)
 
+- (BOOL) isValidPersistentRoot: (COSubtree *)aRoot
+{
+	// FIXME: Implement
+	return NO;
+}
+
+- (BOOL) isValidBranch: (COSubtree *)aRoot
+{
+	// FIXME: Implement
+	return NO;
+}
+
 - (COSubtree *)persistentRootWithInitialVersion: (ETUUID *)aVersion
 									displayName: (NSString *)aName
 {
