@@ -22,6 +22,10 @@
 			 UUIDsAndStoreItems: (NSDictionary*)objects // ETUUID : COStoreItem
 					   rootItem: (ETUUID*)root;
 
+- (ETUUID*) addCommitWithParent: (ETUUID*)parent
+                       metadata: (id)metadataPlist
+						   tree: (COSubtree*)aTree;
+
 - (NSArray*) allCommitUUIDs;
 
 - (ETUUID *) parentForCommit: (ETUUID*)commit;

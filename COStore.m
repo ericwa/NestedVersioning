@@ -147,6 +147,26 @@
 	return commitUUID;			
 }
 
+
+- (ETUUID*) addCommitWithParent: (ETUUID*)parent
+                       metadata: (id)metadataPlist
+						   tree: (COSubtree*)aTree
+{
+	NSMutableDictionary *uuidsanditems = [NSMutableDictionary dictionary];
+	{
+		for (COItem *item in [aTree allContainedStoreItems])
+		{
+			[uuidsanditems setObject: item
+							  forKey: [item UUID]];
+		}
+	}
+	
+	return [self addCommitWithParent: parent
+							metadata: metadataPlist
+				  UUIDsAndStoreItems: uuidsanditems
+							rootItem: [[aTree root] UUID]];
+}
+
 - (NSDictionary *) _plistForCommit: (ETUUID*)commit
 {
 	{
