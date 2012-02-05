@@ -5,6 +5,16 @@
 
 @implementation COSubtree
 
+- (void) debug
+{
+	for (COSubtree *subtree in [embeddedSubtrees allValues])
+	{
+		assert([subtree root] == [self root]);
+		[subtree debug];
+	}
+	
+	assert([[self directDescendentSubtreeUUIDs] isEqual: [NSSet setWithArray: [embeddedSubtrees allKeys]]]);
+}
 
 /* @taskunit Creation */
 
@@ -51,6 +61,8 @@
 							 forKey: aUUID];
 		[subTree release];
 	}
+	
+	[self debug];
 	
 	return self;
 }
@@ -104,6 +116,8 @@
 	
 	ASSIGN(newCopy->root, newRoot);
 	ASSIGN(newCopy->embeddedSubtrees, newItems);
+	
+	[newCopy debug];
 	
 	return newCopy;
 }
@@ -230,6 +244,7 @@
 	COSubtree *directDescendant = [embeddedSubtrees objectForKey: aUUID];
 	if (directDescendant != nil)
 	{
+		assert([directDescendant root] == [self root]);
 		return directDescendant;
 	}
 	
@@ -238,6 +253,7 @@
 		COSubtree *recursiveResult = [node subtreeWithUUID: aUUID];
 		if (recursiveResult != nil)
 		{
+			assert([recursiveResult root] == [self root]);
 			return recursiveResult;
 		}
 	}
@@ -400,6 +416,8 @@
 		  forAttribute: anAttribute
 				  type: aType];
 	}
+	
+	[self debug];
 }
 
 - (void)   addObject: (id)aValue
@@ -418,6 +436,8 @@ toUnorderedAttribute: (NSString*)anAttribute
    toUnorderedAttribute: anAttribute
 				   type: aType];
 	}
+	
+	[self debug];
 }
 
 - (void)   addObject: (id)aValue
@@ -439,11 +459,15 @@ toUnorderedAttribute: (NSString*)anAttribute
 				atIndex: anIndex
 				   type: aType];
 	}
+	
+	[self debug];
 }
 
 - (void)removeValueForAttribute: (NSString*)anAttribute
 {
 	[root removeValueForAttribute: anAttribute];
+	
+	[self debug];
 }
 
 
@@ -500,6 +524,8 @@ toUnorderedAttribute: (NSString*)anAttribute
 		   inStoreItem: aSubtree->parent->root];  
 	
 	[aSubtree release]; // balance retain at start of method
+	
+	[self debug];
 }
 
 - (COSubtreeCopy *) addSubtreeRenamingObjectsOnConflict: (COSubtree *)aSubtree
@@ -521,6 +547,8 @@ toUnorderedAttribute: (NSString*)anAttribute
 		
 	[self addSubtree: aSubtreeRenamed
 		  atItemPath: aPath];
+	
+	[aSubtreeRenamed debug];
 	
 	return [COSubtreeCopy subtreeCopyWithSubtree: aSubtreeRenamed
 							   mappingDictionary: renameDict];
@@ -549,6 +577,8 @@ toUnorderedAttribute: (NSString*)anAttribute
 	NSAssert([[itemPath UUID] isEqual: [parentOfSubtreeToRemove UUID]], @"");
 	[itemPath removeValue: aUUID inStoreItem: parentOfSubtreeToRemove->root];
 	[parentOfSubtreeToRemove->embeddedSubtrees removeObjectForKey: aUUID];
+	
+	[self debug];
 }
 
 - (void) moveSubtreeWithUUID: (ETUUID *)aUUID
@@ -571,7 +601,9 @@ toUnorderedAttribute: (NSString*)anAttribute
 		[newItems setObject: tree forKey: [tree UUID]];
 	}
 	
-	ASSIGN(embeddedSubtrees, newItems);	
+	ASSIGN(embeddedSubtrees, newItems);
+	
+	[self debug];
 }
 
 
