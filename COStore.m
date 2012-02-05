@@ -2,6 +2,7 @@
 #import "COMacros.h"
 #import "COStorePrivate.h"
 #import "COPersistentRootEditingContext.h"
+#import "COSubtree.h"
 
 @implementation COStore
 
@@ -210,6 +211,19 @@
 - (NSDictionary *) UUIDsAndStoreItemsForCommit: (ETUUID*)commit
 {
 	return [[self _plistForCommit: commit] objectForKey: @"objects"];	
+}
+- (COSubtree *) treeForCommit: (ETUUID *)aCommit
+{
+	ETUUID *rootVersion = [self rootVersion];
+	if (rootVersion == nil)
+	{
+		return nil;
+	}
+	
+	NSSet *itemSet = [NSSet setWithArray: [[self UUIDsAndStoreItemsForCommit: aCommit] allValues]];
+	
+	return [COSubtree subtreeWithItemSet: itemSet
+								rootUUID: rootVersion];
 }
 - (ETUUID *) rootItemForCommit: (ETUUID*)commit
 {

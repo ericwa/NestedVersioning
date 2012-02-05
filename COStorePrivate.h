@@ -28,6 +28,7 @@
 - (id) metadataForCommit: (ETUUID*)commit;
 - (NSDate*) dateForCommit: (ETUUID*)commit;
 - (NSDictionary *) UUIDsAndStoreItemsForCommit: (ETUUID*)commit;
+- (COSubtree *) treeForCommit: (ETUUID *)aCommit;
 - (ETUUID *) rootItemForCommit: (ETUUID*)commit;
 
 - (COItem *) storeItemForEmbeddedObject: (ETUUID*)embeddedObject
