@@ -11,7 +11,6 @@ VERSION=1
 $(APP_NAME)_OBJC_FILES=\
 	COItem.m\
 	COItemFactory.m\
-	COItemTreeNode.m\
 	COPath.m\
 	COPersistentRootEditingContext+Convenience.m\
 	COPersistentRootEditingContext+PersistentRoots.m\
@@ -21,7 +20,7 @@ $(APP_NAME)_OBJC_FILES=\
 	COType+Plist.m\
 	COType+String.m\
 	COType.m\
-	Diff/../COTreeDiff.m\
+	Diff/../COSubtreeDiff.m\
 	Diff/COArrayDiff.m\
 	Diff/COItemDiff.m\
 	Diff/COMergeResult.m\
@@ -39,7 +38,10 @@ $(APP_NAME)_OBJC_FILES=\
 	StoreBrowser/EWPersistentRootWindowController.m\
 	StoreBrowser/main.m\
 	Tests/TestCommon.m\
-	Tests/TestTagging.m
+	Tests/TestTagging.m\
+	COSubtree.m\
+	COSubtreeCopy.m\
+	Scraps/COItemPath.m
 
 $(APP_NAME)_CC_FILES=\
 	Diff/diff.cc
@@ -64,7 +66,8 @@ $(APP_NAME)_LANGUAGES=\
 $(APP_NAME)_INCLUDE_DIRS=\
 	-I./Tests\
 	-I./Diff\
-	-I./StoreBrowser
+	-I./StoreBrowser\
+	-I./Scraps
 
 $(APP_NAME)_LIB_DIRS=
 
