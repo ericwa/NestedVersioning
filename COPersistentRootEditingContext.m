@@ -161,14 +161,24 @@
 
 - (COPersistentRootEditingContext *) editingContextForEditingEmbdeddedPersistentRoot: (COSubtree *)aRoot
 {
+	if ([aRoot root] != [self persistentRootTree])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"argument should be inside [self persistentRootTree]"];
+	}
+	
 	return [[self class] editingContextForEditingPath: [[self path] pathByAppendingPathComponent: [aRoot UUID]]
 											  inStore: [self store]];
 }
 
 - (COPersistentRootEditingContext *) editingContextForEditingBranchOfPersistentRoot: (COSubtree *)aBranch
 {
-	// NOTE: We don't use aRoot explicitly. We should use it to do checks.
-	// i.e. check that aBranch is in it, etc.
+	if ([aBranch root] != [self persistentRootTree])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"argument should be inside [self persistentRootTree]"];
+	}
+	
 	return [[self class] editingContextForEditingPath: [[self path] pathByAppendingPathComponent: [aBranch UUID]]
 											  inStore: [self store]];
 }

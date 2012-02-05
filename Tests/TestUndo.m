@@ -15,21 +15,19 @@ void testUndo()
 	COStore *store = setupStore();
 
 	COPersistentRootEditingContext *ctx = [store rootContext];
-	COMutableItem *iroot = [COMutableItem item];
-	ETUUID *uroot = [iroot UUID];
+	COSubtree *iroot = [COSubtree subtree];
 	
-	[ctx _insertOrUpdateItems: S(iroot)
-		newRootEmbeddedObject: uroot];
+	[ctx setPersistentRootTree: iroot];
 	
 		
 	COSubtree *contents1 = [COSubtree subtree];
 	[contents1 setPrimitiveValue: @"red"
-		   forAttribute: @"color"
-				   type: [COType stringType]];
-	ETUUID *contentsUUID = [contents1 UUID];
+					forAttribute: @"color"
+							type: [COType stringType]];
 
-	ETUUID *u1 = [ctx createAndInsertNewPersistentRootWithRootItem: contents1
-													inItemWithUUID: uroot];
+	COSubtree *i1 = [ctx createPersistentRootWithRootItem: contents1
+											  displayName: @"My Document"];
+	[iroot addTree: i1];
 	
 	[ctx commitWithMetadata: nil];
 	
@@ -39,12 +37,12 @@ void testUndo()
 	// make a commit in the persistent root { "color" : "orange" }
 	
 	{
-		COPersistentRootEditingContext *ctx2 = [ctx editingContextForEditingEmbdeddedPersistentRoot: u1];
-		COMutableItem *contents2 = [ctx2 _storeItemForUUID: [ctx2 rootUUID]];
-		[contents2 setValue: @"orange"
-			   forAttribute: @"color"
-					   type: [COType stringType]];
-		[ctx2 _insertOrUpdateItems: S(contents2)];
+		COPersistentRootEditingContext *ctx2 = [ctx editingContextForEditingEmbdeddedPersistentRoot: i1];
+		COSubtree *contents2 = [ctx2 persistentRootTree];
+		[contents2 setPrimitiveValue: @"orange"
+						forAttribute: @"color"
+								type: [COType stringType]];
+
 		commit2 = [ctx2 commitWithMetadata: nil];
 		
 		commit1 = [store parentForCommit: commit2];
@@ -58,25 +56,16 @@ void testUndo()
 	// FIXME: shouldn't be necessary
 	
 	ctx = [store rootContext];
-	
+	i1 = [[ctx persistentRootTree] subtreeWithUUID: [i1 UUID]];
 	
 	
 	
 	// cretate a branch; label the branches
 	
-	ETUUID *u1BranchA = [ctx currentBranchOfPersistentRoot: u1];
-	ETUUID *u1BranchB = [ctx createBranchOfPersistentRoot: u1];
-	
-	{
-		COMutableItem *u1BranchAItem = [ctx _storeItemForUUID: u1BranchA];
-		[u1BranchAItem setValue: @"Branch A" forAttribute: @"name" type: [COType stringType]];
-		[ctx _insertOrUpdateItems: S(u1BranchAItem)];
-	}
-	{
-		COMutableItem *u1BranchBItem = [ctx _storeItemForUUID: u1BranchB];
-		[u1BranchBItem setValue: @"Branch B" forAttribute: @"name" type: [COType stringType]];
-		[ctx _insertOrUpdateItems: S(u1BranchBItem)];
-	}
+	COSubtree *u1BranchA = [[COItemFactory factory] currentBranchOfPersistentRoot: i1];
+	COSubtree *u1BranchB = [[COItemFactory factory] createBranchOfPersistentRoot: i1];
+	[u1BranchA setPrimitiveValue: @"Branch A" forAttribute: @"name" type: [COType stringType]];
+	[u1BranchB setPrimitiveValue: @"Branch B" forAttribute: @"name" type: [COType stringType]];
 	
 	[ctx commitWithMetadata: nil];
 
@@ -85,17 +74,16 @@ void testUndo()
 	
 	// test that we can read the document contents.
 	
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchA] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchB] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);	
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
 	
 	
 	
 	// switch to Branch B
 	
-	[ctx setCurrentBranch: u1BranchB
-		forPersistentRoot: u1];
-	EWTestEqual(u1BranchB, [ctx currentBranchOfPersistentRoot: u1]);
+	[[COItemFactory factory] setCurrentBranch:u1BranchB forPersistentRoot:i1];
+	EWTestTrue(u1BranchB == [[COItemFactory factory] currentBranchOfPersistentRoot: i1]);
 	
 	[ctx commitWithMetadata: nil];
 	
@@ -105,32 +93,30 @@ void testUndo()
 	// make 2 commits in the persistent root, "yellow", "green"
 	
 	{
-		COPersistentRootEditingContext *ctx3 = [ctx editingContextForEditingEmbdeddedPersistentRoot: u1];
-		COMutableItem *contents3 = [ctx3 _storeItemForUUID: [ctx3 rootUUID]];
-		[contents3 setValue: @"yellow"
-			   forAttribute: @"color"
-					   type: [COType stringType]];
-		[ctx3 _insertOrUpdateItems: S(contents3)];
+		COPersistentRootEditingContext *ctx3 = [ctx editingContextForEditingEmbdeddedPersistentRoot: i1];
+		COSubtree *contents3 = [ctx3 persistentRootTree];
+		[contents3 setPrimitiveValue: @"yellow"
+						forAttribute: @"color"
+								type: [COType stringType]];
 		commit3 = [ctx3 commitWithMetadata: nil];
 	}
 	
-	EWTestEqual(@"yellow", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchA] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
-	EWTestEqual(@"yellow", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchB] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);	
+	EWTestEqual(@"yellow", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
+	EWTestEqual(@"yellow", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
 	
 	{
-		COPersistentRootEditingContext *ctx4 = [ctx editingContextForEditingEmbdeddedPersistentRoot: u1];
-		COMutableItem *contents4 = [ctx4 _storeItemForUUID: [ctx4 rootUUID]];
-		[contents4 setValue: @"green"
-			   forAttribute: @"color"
-					   type: [COType stringType]];
-		[ctx4 _insertOrUpdateItems: S(contents4)];
+		COPersistentRootEditingContext *ctx4 = [ctx editingContextForEditingEmbdeddedPersistentRoot: i1];
+		COSubtree *contents4 = [ctx4 persistentRootTree];
+		[contents4 setPrimitiveValue: @"green"
+						forAttribute: @"color"
+								type: [COType stringType]];
 		commit4 = [ctx4 commitWithMetadata: nil];
 	}
 	
-	EWTestEqual(@"green", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchA] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
-	EWTestEqual(@"green", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchB] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);	
+	EWTestEqual(@"green", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
+	EWTestEqual(@"green", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
 	
 	
 	
@@ -144,33 +130,37 @@ void testUndo()
 	// FIXME: shouldn't be necessary
 	
 	ctx = [store rootContext];
+	i1 = [[ctx persistentRootTree] subtreeWithUUID: [i1 UUID]];
+	u1BranchA = [[ctx persistentRootTree] subtreeWithUUID: [u1BranchA UUID]];
+	u1BranchB = [[ctx persistentRootTree] subtreeWithUUID: [u1BranchB UUID]];
 	
-	[ctx undoPersistentRoot: u1];
+	
+	[ctx undoPersistentRoot: i1];
 	[ctx commitWithMetadata: nil];
 	
-	EWTestEqual(@"yellow", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchA] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
-	EWTestEqual(@"yellow", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchB] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);	
+	EWTestEqual(@"yellow", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
+	EWTestEqual(@"yellow", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
 	
 	
 	
 	
 	
-	[ctx undoPersistentRoot: u1];
+	[ctx undoPersistentRoot: i1];
 	[ctx commitWithMetadata: nil];
 	
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchA] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchB] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);	
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
 	
 	
 	
-	[ctx undoPersistentRoot: u1]; // does nothing - because we can't undo past the point where Branch B was created
+	[ctx undoPersistentRoot: i1]; // does nothing - because we can't undo past the point where Branch B was created
 	[ctx commitWithMetadata: nil];
 	
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchA] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchB] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);	
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
 	
 
 	// ensure that a GC here does not delete any commits we need
@@ -181,42 +171,42 @@ void testUndo()
 		EWTestTrue(commitsAfter < commitsBefore);
 	}
 	
-	[ctx redoPersistentRoot: u1];
+	[ctx redoPersistentRoot: i1];
 	[ctx commitWithMetadata: nil];
 	
-	EWTestEqual(@"yellow", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchA] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
-	EWTestEqual(@"yellow", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchB] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);	
+	EWTestEqual(@"yellow", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
+	EWTestEqual(@"yellow", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
 	
 	
 	
-	[ctx redoPersistentRoot: u1];
+	[ctx redoPersistentRoot: i1];
 	[ctx commitWithMetadata: nil];
 	
-	EWTestEqual(@"green", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchA] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
-	EWTestEqual(@"green", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchB] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);	
+	EWTestEqual(@"green", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
+	EWTestEqual(@"green", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
 	
 	
 	
 	
-	[ctx redoPersistentRoot: u1]; // does nothing - because we can't redo past the end of the branch
+	[ctx redoPersistentRoot: i1]; // does nothing - because we can't redo past the end of the branch
 	[ctx commitWithMetadata: nil];
 	
-	EWTestEqual(@"green", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchA] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
-	EWTestEqual(@"green", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchB] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);	
+	EWTestEqual(@"green", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
+	EWTestEqual(@"green", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
 	
 	
 	
 	
-	[ctx undoPersistentRoot: u1]; 
-	[ctx undoPersistentRoot: u1]; 
+	[ctx undoPersistentRoot: i1]; 
+	[ctx undoPersistentRoot: i1]; 
 	[ctx commitWithMetadata: nil];
 	
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchA] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchB] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);	
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
 	
 
 	
@@ -224,17 +214,16 @@ void testUndo()
 	
 	
 	{
-		COPersistentRootEditingContext *ctx3 = [ctx editingContextForEditingEmbdeddedPersistentRoot: u1];
-		COMutableItem *contents3 = [ctx3 _storeItemForUUID: [ctx3 rootUUID]];
-		[contents3 setValue: @"pink"
-			   forAttribute: @"color"
-					   type: [COType stringType]];
-		[ctx3 _insertOrUpdateItems: S(contents3)];
+		COPersistentRootEditingContext *ctx3 = [ctx editingContextForEditingEmbdeddedPersistentRoot: i1];
+		COSubtree *contents3 = [ctx3 persistentRootTree];
+		[contents3 setPrimitiveValue: @"pink"
+						forAttribute: @"color"
+								type: [COType stringType]];
 		commit3 = [ctx3 commitWithMetadata: nil];
 	}
 	
-	EWTestEqual(@"pink", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchA] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);
-	EWTestEqual(@"pink", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: u1 onBranch: u1BranchB] _storeItemForUUID: contentsUUID] valueForAttribute: @"color"]);	
+	EWTestEqual(@"pink", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
+	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
+	EWTestEqual(@"pink", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
 	
 }

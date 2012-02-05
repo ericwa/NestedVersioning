@@ -57,6 +57,7 @@
 	{
 		COSubtree *subTree = [[[self class] alloc] initWithItemDictionary: items
 																 rootUUID: aUUID];
+		subTree->parent = self;
 		[embeddedSubtrees setObject: subTree
 							 forKey: aUUID];
 		[subTree release];
@@ -465,6 +466,14 @@ toUnorderedAttribute: (NSString*)anAttribute
 
 - (void)removeValueForAttribute: (NSString*)anAttribute
 {
+	if ([[[root typeForAttribute: anAttribute] primitiveType] isEqual: [COType embeddedItemType]])
+	{
+		for (ETUUID *uuidToRemove in [root allObjectsForAttribute: anAttribute])
+		{
+			[embeddedSubtrees removeObjectForKey: uuidToRemove];
+		}
+	}
+		
 	[root removeValueForAttribute: anAttribute];
 	
 	[self debug];

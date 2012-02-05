@@ -193,6 +193,10 @@ static void testEditingContextEmbeddedObjects()
 	
 	COPersistentRootEditingContext *testctx1 = [store2 rootContext];
 	
+	u1Tree = [[testctx1 persistentRootTree] subtreeWithUUID: [u1Tree UUID]];
+	u1BranchB = [[testctx1 persistentRootTree] subtreeWithUUID: [u1BranchB  UUID]];
+	u2 = [[testctx1 persistentRootTree] subtreeWithUUID: [u2 UUID]];
+	
 	{
 		COPersistentRootEditingContext *testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u1Tree];
 		
@@ -287,7 +291,7 @@ int main (int argc, const char * argv[])
 	WITH_POOL(testSubtree());
 	WITH_POOL(testEditingContextEmbeddedObjects());
 	WITH_POOL(testStoreItem());
-	//WITH_POOL(testUndo());
+	WITH_POOL(testUndo());
 	//WITH_POOL(testTagging());
 	//WITH_POOL(testDiff());
 	//WITH_POOL(testTreeManager());
