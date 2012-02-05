@@ -7,13 +7,20 @@
 
 - (void) debug
 {
+	// check consistency of parent pointers
+	
 	for (COSubtree *subtree in [embeddedSubtrees allValues])
 	{
+		assert([subtree parent] == self);
 		assert([subtree root] == [self root]);
 		[subtree debug];
 	}
 	
-	assert([[self directDescendentSubtreeUUIDs] isEqual: [NSSet setWithArray: [embeddedSubtrees allKeys]]]);
+	// check for 1:1 correspondence between embedded items
+	// in our COItem and the embeddedSubtrees dictionary
+	
+	assert([[self directDescendentSubtreeUUIDs] isEqual:
+				[NSSet setWithArray: [embeddedSubtrees allKeys]]]);
 }
 
 /* @taskunit Creation */
