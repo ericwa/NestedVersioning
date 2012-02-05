@@ -13,7 +13,7 @@ TODO
 [x] (dec 15)      fix up graph drawing
 [wip] (dec 15)      port over merge code.
 [ ] (dec 15)      come up with a way of representing merge conflicts
-[ ] (dec 15)      finally finish the mutable tree wrapper over COItem.
+[x] (dec 15)      finally finish the mutable tree wrapper over COItem.
                   it should enforce the various validity constraints
 				  (only one copy of a embedded item per tree, etc.), and
 				  support joining trees (if they don't conflict),
