@@ -4,9 +4,7 @@
 
 @interface COPersistentRootEditingContext (PersistentRoots)
 
-/**
- * @returns the UUID of the persistent root item in the receiver
- */
+// FIXME: update method 
 - (ETUUID *)createAndInsertNewPersistentRootWithRootItem: (COSubtree *)anItem
 										  inItemWithUUID: (ETUUID*)aDest;
 
