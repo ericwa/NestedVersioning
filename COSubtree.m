@@ -46,7 +46,7 @@
 	for (ETUUID *aUUID in [self directDescendentSubtreeUUIDs])
 	{
 		COSubtree *subTree = [[[self class] alloc] initWithItemDictionary: items
-																 rootUUID: aRootUUID];
+																 rootUUID: aUUID];
 		[embeddedSubtrees setObject: subTree
 							 forKey: aUUID];
 		[subTree release];

@@ -4,6 +4,7 @@
 
 void testSubtreeBasic(void);
 void testSubtreeEquality(void);
+void testSubtreeCreationFromItems(void);
 
 void testSubtreeBasic()
 {
@@ -80,8 +81,22 @@ void testSubtreeEquality()
 	EWTestTrue(t1a == [t2a parent]);		
 }
 
+void testSubtreeCreationFromItems()
+{
+	COSubtree *t1 = [COSubtree subtree];
+	COSubtree *t2 = [COSubtree subtree];	
+	COSubtree *t3 = [COSubtree subtree];
+	[t1 addTree: t2];
+	[t2 addTree: t3];
+
+	COSubtree *t1a = [COSubtree subtreeWithItemSet: [t1 allContainedStoreItems]
+										  rootUUID: [t1 UUID]];
+	EWTestEqual(t1, t1a);
+}
+
 void testSubtree()
 {
 	testSubtreeBasic();
 	testSubtreeEquality();
+	testSubtreeCreationFromItems();
 }
