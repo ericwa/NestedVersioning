@@ -141,14 +141,13 @@ static void testEditingContextEmbeddedObjects()
 							forPersistentRoot: u1Tree];
 
 	EWTestEqual(u1BranchA, [[COItemFactory factory] currentBranchOfPersistentRoot: u1Tree]);
-#if 0
+
 	//
 	// 2c. create another persistent root containing a copy of u1BranchB
 	//
 	
-	ETUUID *u2 = [ctx createAndInsertNewPersistentRootByCopyingBranch: u1BranchB
-													 ofPersistentRoot: u1
-													   inItemWithUUID: uroot];
+	COSubtree *u2 = [[COItemFactory factory] persistentRootByCopyingBranch:  u1BranchB];
+	[iroot addTree: u2];
 	
 	//
 	// 2d. commit changes
@@ -163,15 +162,15 @@ static void testEditingContextEmbeddedObjects()
 	// 3. Now open an embedded context on the document
 	//
 
-	COPersistentRootEditingContext *ctx2 = [ctx editingContextForEditingEmbdeddedPersistentRoot: u1];
+	COPersistentRootEditingContext *ctx2 = [ctx editingContextForEditingEmbdeddedPersistentRoot: [u1Tree UUID]];
 	EWTestTrue(nil != ctx2);
-	EWTestEqual([nestedDocumentRootItem UUID], [ctx2 rootUUID]);
+	EWTestEqual([nestedDocumentRootItem UUID], [[ctx2 persistentRootTree] UUID]);
 	
 	//
 	// 4. Try making a commit in the document
 	//
 	
-
+#if 0
 	COMutableItem *nestedDocCtx2 = [ctx2 _storeItemForUUID: [nestedDocumentRootItem UUID]];
 	//EWTestEqual(nestedDocumentRootItem, nestedDocCtx2);
 	
