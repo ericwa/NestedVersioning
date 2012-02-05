@@ -115,8 +115,7 @@
 	
 	if (baseCommit != nil)
 	{
-		// FIXME: Build tree from store's tree at baseCommit
-		//ASSIGN(rootItemUUID, [store rootItemForCommit: baseCommit]);
+		ASSIGN(tree, [store treeForCommit: baseCommit]);
 	}
 
 	// if there has never been a commit, tree is nil.	
@@ -212,17 +211,6 @@
 					format: @"Merging not yet supported"];
 	}
 	
-	
-	// set up the commit dictionary
-	NSMutableDictionary *uuidsanditems = [NSMutableDictionary dictionary];
-	{
-		for (COItem *item in [tree allContainedStoreItems])
-		{
-			[uuidsanditems setObject: item
-							  forKey: [item UUID]];
-		}
-	}
-	
 	// FIXME
 	NSDictionary *md = [NSDictionary dictionaryWithObjectsAndKeys: @"today", @"date", nil];
 	
@@ -236,9 +224,8 @@
 	}
 	
 	ETUUID *newCommitUUID = [store addCommitWithParent: commitParent
-									 metadata: md
-						   UUIDsAndStoreItems: uuidsanditems
-									 rootItem: [[tree root] UUID]];
+											  metadata: md
+												  tree: tree];
 	
 	
 	assert(newCommitUUID != nil);
