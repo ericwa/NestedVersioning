@@ -3,7 +3,7 @@
 #import "COType+String.h"
 #import "EWPersistentRootWindowController.h"
 #import "COPath.h"
-#import "COTreeDiff.h"
+#import "COSubtreeDiff.h"
 
 @implementation EWPersistentRootOutlineRow
 
@@ -581,11 +581,13 @@ isPrimitiveInContainer: (BOOL)aFlag
 	assert(row1ctx != nil);
 	assert(row2ctx != nil);
 	
-	COTreeDiff *treediff = [COTreeDiff diffRootItem: [row1ctx rootUUID]
-									   withRootItem: [row2ctx rootUUID]
-									inFaultProvider: row1ctx
-								  withFaultProvider: row2ctx];
-	NSLog(@"tree diff: %@", treediff);
+	// FIXME:
+	
+	//COSubtreeDiff *treediff = [COSubtreeDiff diffRootItem: [row1ctx rootUUID]
+	//								   withRootItem: [row2ctx rootUUID]
+	//								inFaultProvider: row1ctx
+	//							  withFaultProvider: row2ctx];
+	//NSLog(@"tree diff: %@", treediff);
 }
 
 

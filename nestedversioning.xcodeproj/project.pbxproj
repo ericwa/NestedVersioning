@@ -45,6 +45,8 @@
 		66E5CABC147B4E42002DE8FD /* TestPhotoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E5CABB147B4E42002DE8FD /* TestPhotoManager.m */; };
 		66E73A1614DB59D900112D10 /* COTreeContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E73A1514DB59D900112D10 /* COTreeContext.m */; };
 		66E76749148B4813009937E8 /* COSubtree.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E76735148B3D1C009937E8 /* COSubtree.m */; };
+		66E83F3814DE3A4B00A8611A /* COSubtreeCopy.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E8E93414D4BC7F00CBE2D8 /* COSubtreeCopy.m */; };
+		66E83F3914DE3A5E00A8611A /* COItemPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E7673F148B3DE8009937E8 /* COItemPath.m */; };
 		66E877571455F0CB006CBE7E /* COStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E877561455F0CB006CBE7E /* COStore.m */; };
 		66E8776B1455FE67006CBE7E /* ETUUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E8776A1455FE67006CBE7E /* ETUUID.m */; };
 		66E8E93514D4BC7F00CBE2D8 /* COSubtreeCopy.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E8E93414D4BC7F00CBE2D8 /* COSubtreeCopy.m */; };
@@ -780,17 +782,19 @@
 				79016346148D4899005A9226 /* COPath.m in Sources */,
 				79016347148D4899005A9226 /* ETUUID.m in Sources */,
 				79016348148D4899005A9226 /* COPersistentRootEditingContext.m in Sources */,
+				66E83F3814DE3A4B00A8611A /* COSubtreeCopy.m in Sources */,
 				79016349148D4899005A9226 /* COPersistentRootEditingContext+PersistentRoots.m in Sources */,
 				7901634A148D4899005A9226 /* COPersistentRootEditingContext+Convenience.m in Sources */,
 				7901634B148D4899005A9226 /* COStore.m in Sources */,
-				7901634C148D4899005A9226 /* COItem.m in Sources */,
 				7901634D148D4899005A9226 /* COSubtree.m in Sources */,
+				7901634C148D4899005A9226 /* COItem.m in Sources */,
 				660E66E4148D92E00062308D /* EWPersistentRootOutlineRow.m in Sources */,
 				66300AFA1492CA7E00246C89 /* EWGraphRenderer.m in Sources */,
 				66300AFD1493148300246C89 /* EWHistoryGraphView.m in Sources */,
 				66E4BE5E1497464100B7024A /* EWOutlineView.m in Sources */,
 				664DA7F414C6B28000942CDC /* COPersistentRootDiff.m in Sources */,
 				66101A0B14D09FAA00B50075 /* diff.cc in Sources */,
+				66E83F3914DE3A5E00A8611A /* COItemPath.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
