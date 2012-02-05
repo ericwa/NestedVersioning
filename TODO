@@ -1,8 +1,8 @@
 TODO
 ====
 
-[ ] (Feb 5/2012)  refactor COPersistentRootEditingContext+PersistentRoots.h methods
-[ ] (Feb 5/2012)  finish rewriting tests to use COSubtree
+[x] (Feb 5/2012)  refactor COPersistentRootEditingContext+PersistentRoots.h methods
+[x] (Feb 5/2012)  finish rewriting tests to use COSubtree
 [ ] (Feb 5/2012)  write more tests? convert docs-only tests to code?
 
 [x] (Nov 17/2011) rewrite store classes to use COStoreItem
