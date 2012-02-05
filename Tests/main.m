@@ -93,19 +93,15 @@ static void testEditingContextEmbeddedObjects()
 	COPersistentRootEditingContext *ctx = [store rootContext];
 	
 	// at this point the context is empty.
-	// in particular, it has no rootEmbeddedObject, which means it contains no embedded objets.
+	// in particular, it has no persistentRootTree, which means it contains no embedded objets.
 	// this means we can't commit.
 	
-	EWTestTrue(nil == [ctx rootUUID]);
-	EWTestTrue(nil == [store rootVersion]);
+	EWTestTrue(nil == [ctx persistentRootTree]);
 		
-	COMutableItem *iroot = [COMutableItem item];
+	COSubtree *iroot = [COSubtree subtree];
 	ETUUID *uroot = [iroot UUID];
 	
-	[ctx _insertOrUpdateItems: S(iroot)
-		newRootEmbeddedObject: uroot];
-	
-	EWTestEqual(uroot, [ctx rootUUID]);
+	[ctx setPersistentRootTree: iroot];
 	
 	//	
 	// 2.  set up a nested persistent root
@@ -119,42 +115,34 @@ static void testEditingContextEmbeddedObjects()
 	ETUUID *u1 = [ctx createAndInsertNewPersistentRootWithRootItem: nestedDocumentRootItem
 													inItemWithUUID: uroot];
 
+	COSubtree *u1Tree = [[ctx persistentRootTree] subtreeWithUUID: u1];
 	
-	EWTestTrue(1 == [[ctx branchesOfPersistentRoot: u1] count]);
+	EWTestTrue(1 == [[[COItemFactory factory] branchesOfPersistentRoot: u1Tree] count]);
 	
 	//
 	// 2b. create another branch
 	//
 	
-	ETUUID *u1BranchA = [ctx currentBranchOfPersistentRoot: u1];
-	ETUUID *u1BranchB = [ctx createBranchOfPersistentRoot: u1];
+	COSubtree *u1BranchA = [[COItemFactory factory] currentBranchOfPersistentRoot: u1Tree];
+	COSubtree *u1BranchB = [[COItemFactory factory] createBranchOfPersistentRoot: u1Tree];
 	
-	{
-		COMutableItem *u1BranchAItem = [ctx _storeItemForUUID: u1BranchA];
-		[u1BranchAItem setValue: @"Development Branch" forAttribute: @"name" type: [COType stringType]];
-		[ctx _insertOrUpdateItems: S(u1BranchAItem)];
-	}
-	{
-		COMutableItem *u1BranchBItem = [ctx _storeItemForUUID: u1BranchB];
-		[u1BranchBItem setValue: @"Stable Branch" forAttribute: @"name" type: [COType stringType]];
-		[ctx _insertOrUpdateItems: S(u1BranchBItem)];
-	}
+	[u1BranchA setPrimitiveValue: @"Development Branch" forAttribute: @"name" type: [COType stringType]];
+	[u1BranchB setPrimitiveValue: @"Stable Branch" forAttribute: @"name" type: [COType stringType]];	
 	
+	EWTestEqual(u1BranchA, [[COItemFactory factory] currentBranchOfPersistentRoot: u1Tree]);
+	EWTestEqual(S(u1BranchA, u1BranchB), [[COItemFactory factory] branchesOfPersistentRoot: u1Tree]);
 	
-	EWTestEqual(u1BranchA, [ctx currentBranchOfPersistentRoot: u1]);
-	EWTestEqual(S(u1BranchA, u1BranchB), [ctx branchesOfPersistentRoot: u1]);
-	
-	
-	[ctx setCurrentBranch: u1BranchB
-		forPersistentRoot: u1];
-	
-	EWTestEqual(u1BranchB, [ctx currentBranchOfPersistentRoot: u1]);
-	
-	[ctx setCurrentBranch: u1BranchA
-		forPersistentRoot: u1];
 
-	EWTestEqual(u1BranchA, [ctx currentBranchOfPersistentRoot: u1]);
+	[[COItemFactory factory] setCurrentBranch: u1BranchB
+							forPersistentRoot: u1Tree];
+	
+	EWTestEqual(u1BranchB, [[COItemFactory factory] currentBranchOfPersistentRoot: u1Tree]);
+	
+	[[COItemFactory factory] setCurrentBranch: u1BranchA
+							forPersistentRoot: u1Tree];
 
+	EWTestEqual(u1BranchA, [[COItemFactory factory] currentBranchOfPersistentRoot: u1Tree]);
+#if 0
 	//
 	// 2c. create another persistent root containing a copy of u1BranchB
 	//
@@ -245,6 +233,7 @@ static void testEditingContextEmbeddedObjects()
 	
 	
 	[store2 release];	
+#endif
 }
 
 static void testStoreItem()
@@ -305,11 +294,11 @@ int main (int argc, const char * argv[])
 	WITH_POOL(testSubtree());
 	//WITH_POOL(testStoreController());
 	WITH_POOL(testEditingContextEmbeddedObjects());
-	WITH_POOL(testStoreItem());
-	WITH_POOL(testUndo());
-	WITH_POOL(testTagging());
-	WITH_POOL(testDiff());
-	WITH_POOL(testTreeManager());
+	//WITH_POOL(testStoreItem());
+	//WITH_POOL(testUndo());
+	//WITH_POOL(testTagging());
+	//WITH_POOL(testDiff());
+	//WITH_POOL(testTreeManager());
 	
     WITH_POOL(EWTestLog());
     
