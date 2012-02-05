@@ -57,8 +57,12 @@
 
 - (void) dealloc
 {
-	[root release];
-	[embeddedSubtrees release];
+	for (COSubtree *aSubtree in [embeddedSubtrees allValues])
+	{
+		aSubtree->parent = nil;
+	}
+	DESTROY(root);
+	DESTROY(embeddedSubtrees);
 	[super dealloc];
 }
 
