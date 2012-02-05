@@ -167,8 +167,8 @@
 		66E503931495F9CF003C69C7 /* COArrayDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = COArrayDiff.m; path = Diff/COArrayDiff.m; sourceTree = "<group>"; };
 		66E503941495F9CF003C69C7 /* COMergeResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COMergeResult.h; sourceTree = "<group>"; };
 		66E503951495F9CF003C69C7 /* COMergeResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COMergeResult.m; sourceTree = "<group>"; };
-		66E503961495F9CF003C69C7 /* COObjectGraphDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COObjectGraphDiff.h; sourceTree = "<group>"; };
-		66E503971495F9CF003C69C7 /* COObjectGraphDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COObjectGraphDiff.m; sourceTree = "<group>"; };
+		66E503961495F9CF003C69C7 /* COObjectGraphDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = COObjectGraphDiff.h; path = ../Diff/COObjectGraphDiff.h; sourceTree = "<group>"; };
+		66E503971495F9CF003C69C7 /* COObjectGraphDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = COObjectGraphDiff.m; path = ../Diff/COObjectGraphDiff.m; sourceTree = "<group>"; };
 		66E503981495F9CF003C69C7 /* COSequenceDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = COSequenceDiff.h; path = Diff/COSequenceDiff.h; sourceTree = "<group>"; };
 		66E503991495F9CF003C69C7 /* COSequenceDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = COSequenceDiff.m; path = Diff/COSequenceDiff.m; sourceTree = "<group>"; };
 		66E5039A1495F9CF003C69C7 /* COSetDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = COSetDiff.h; path = Diff/COSetDiff.h; sourceTree = "<group>"; };
@@ -388,7 +388,6 @@
 			isa = PBXGroup;
 			children = (
 				66E503951495F9CF003C69C7 /* COMergeResult.m */,
-				66E503971495F9CF003C69C7 /* COObjectGraphDiff.m */,
 				66E4BE561496956200B7024A /* COItemDiff.m */,
 				669CADE71491844000D0CF5F /* COSubtreeDiff.m */,
 				664DA7F214C6B28000942CDC /* COPersistentRootDiff.m */,
@@ -497,7 +496,6 @@
 			isa = PBXGroup;
 			children = (
 				66E503941495F9CF003C69C7 /* COMergeResult.h */,
-				66E503961495F9CF003C69C7 /* COObjectGraphDiff.h */,
 				66E4BE551496956200B7024A /* COItemDiff.h */,
 				669CADE61491844000D0CF5F /* COSubtreeDiff.h */,
 				664DA7F114C6B28000942CDC /* COPersistentRootDiff.h */,
@@ -520,6 +518,8 @@
 		66E76724148B3CEA009937E8 /* Scraps */ = {
 			isa = PBXGroup;
 			children = (
+				66E503961495F9CF003C69C7 /* COObjectGraphDiff.h */,
+				66E503971495F9CF003C69C7 /* COObjectGraphDiff.m */,
 				79999EEA14DE516B00FFBC99 /* COEditingContext.m */,
 				79999EEB14DE516B00FFBC99 /* COItemFactoryOld.h */,
 				79999EEC14DE516B00FFBC99 /* COItemPath.m */,
