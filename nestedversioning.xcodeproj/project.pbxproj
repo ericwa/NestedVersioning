@@ -487,6 +487,7 @@
 			isa = PBXGroup;
 			children = (
 				66E877551455F0CB006CBE7E /* COStore.h */,
+				66E5CBA814830C5700D01039 /* COStorePrivate.h */,
 				66E877561455F0CB006CBE7E /* COStore.m */,
 			);
 			name = Store;
@@ -512,7 +513,6 @@
 				66EE5D35146355A6008AA95B /* COPersistentRootEditingContext.m */,
 				66E2FFB714899C7A00C66578 /* COPersistentRootEditingContext+PersistentRoots.m */,
 				79ABB072148ADBA5008732D8 /* COPersistentRootEditingContext+Convenience.m */,
-				66E5CBA814830C5700D01039 /* COStorePrivate.h */,
 			);
 			name = Implementation;
 			sourceTree = "<group>";
