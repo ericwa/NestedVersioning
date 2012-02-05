@@ -41,13 +41,12 @@
  *    to a different (new) branch. However this method completely ignore the receiver context;
  *    the only information it uses in the receiver is [self path].
  */
-- (COPersistentRootEditingContext *) editingContextForEditingEmbdeddedPersistentRoot: (ETUUID*)aRoot;
+- (COPersistentRootEditingContext *) editingContextForEditingEmbdeddedPersistentRoot: (COSubtree *)aRoot;
 
 /**
  * same preconditions as above
  */
-- (COPersistentRootEditingContext *) editingContextForEditingEmbdeddedPersistentRoot: (ETUUID*)aRoot
-																			onBranch: (ETUUID*)aBranch;
+- (COPersistentRootEditingContext *) editingContextForEditingBranchOfPersistentRoot: (COSubtree *)aBranch;
 
 /**
  * private method; public users should use -[COStore rootContext].

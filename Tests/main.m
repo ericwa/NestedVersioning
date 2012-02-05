@@ -162,7 +162,7 @@ static void testEditingContextEmbeddedObjects()
 	// 3. Now open an embedded context on the document
 	//
 
-	COPersistentRootEditingContext *ctx2 = [ctx editingContextForEditingEmbdeddedPersistentRoot: [u1Tree UUID]];
+	COPersistentRootEditingContext *ctx2 = [ctx editingContextForEditingEmbdeddedPersistentRoot: u1Tree];
 	EWTestTrue(nil != ctx2);
 	EWTestEqual([nestedDocumentRootItem UUID], [[ctx2 persistentRootTree] UUID]);
 	
@@ -170,15 +170,12 @@ static void testEditingContextEmbeddedObjects()
 	// 4. Try making a commit in the document
 	//
 	
-#if 0
-	COMutableItem *nestedDocCtx2 = [ctx2 _storeItemForUUID: [nestedDocumentRootItem UUID]];
+	COSubtree *nestedDocCtx2 = [ctx2 persistentRootTree];
 	//EWTestEqual(nestedDocumentRootItem, nestedDocCtx2);
 	
-	[nestedDocCtx2 setValue: @"green"
-			   forAttribute: @"color"
-					   type: [COType stringType]];
-	
-	[ctx2 _insertOrUpdateItems: S(nestedDocCtx2)];
+	[nestedDocCtx2 setPrimitiveValue: @"green"
+						forAttribute: @"color"
+								type: [COType stringType]];
 	
 	ETUUID *commitInNestedDocCtx2 = [ctx2 commitWithMetadata: nil];
 	
@@ -197,24 +194,23 @@ static void testEditingContextEmbeddedObjects()
 	COPersistentRootEditingContext *testctx1 = [store2 rootContext];
 	
 	{
-		COPersistentRootEditingContext *testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u1];
+		COPersistentRootEditingContext *testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u1Tree];
 		
-		COMutableItem *item = [testctx2 _storeItemForUUID: [testctx2 rootUUID]];
+		COSubtree *item = [testctx2 persistentRootTree];
 		EWTestEqual(@"green", [item valueForAttribute: @"color"]);
 		EWTestEqual(nestedDocCtx2, item);
 	}
 	
 	{
-		COPersistentRootEditingContext *testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u1
-																						 onBranch: u1BranchB];
-		COMutableItem *item = [testctx2 _storeItemForUUID: [testctx2 rootUUID]];
+		COPersistentRootEditingContext *testctx2 = [testctx1 editingContextForEditingBranchOfPersistentRoot: u1BranchB];
+		COSubtree *item = [testctx2 persistentRootTree];
 		EWTestEqual(@"red", [item valueForAttribute: @"color"]);
 		//EWTestEqual(nestedDocumentRootItem, item);
 	}
 
 	{
 		COPersistentRootEditingContext *testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u2];
-		COMutableItem *item = [testctx2 _storeItemForUUID: [testctx2 rootUUID]];
+		COSubtree *item = [testctx2 persistentRootTree];
 		EWTestEqual(@"red", [item valueForAttribute: @"color"]);
 		//EWTestEqual(nestedDocumentRootItem, item);
 	}
@@ -231,7 +227,6 @@ static void testEditingContextEmbeddedObjects()
 	
 	
 	[store2 release];	
-#endif
 }
 
 static void testStoreItem()

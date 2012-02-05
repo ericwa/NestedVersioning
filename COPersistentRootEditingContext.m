@@ -159,18 +159,17 @@
 	return store;
 }
 
-- (COPersistentRootEditingContext *) editingContextForEditingEmbdeddedPersistentRoot: (ETUUID*)aRoot
+- (COPersistentRootEditingContext *) editingContextForEditingEmbdeddedPersistentRoot: (COSubtree *)aRoot
 {
-	return [[self class] editingContextForEditingPath: [[self path] pathByAppendingPathComponent: aRoot]
+	return [[self class] editingContextForEditingPath: [[self path] pathByAppendingPathComponent: [aRoot UUID]]
 											  inStore: [self store]];
 }
 
-- (COPersistentRootEditingContext *) editingContextForEditingEmbdeddedPersistentRoot: (ETUUID*)aRoot
-																onBranch: (ETUUID*)aBranch
+- (COPersistentRootEditingContext *) editingContextForEditingBranchOfPersistentRoot: (COSubtree *)aBranch
 {
 	// NOTE: We don't use aRoot explicitly. We should use it to do checks.
 	// i.e. check that aBranch is in it, etc.
-	return [[self class] editingContextForEditingPath: [[self path] pathByAppendingPathComponent: aBranch]
+	return [[self class] editingContextForEditingPath: [[self path] pathByAppendingPathComponent: [aBranch UUID]]
 											  inStore: [self store]];
 }
 
