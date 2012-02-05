@@ -6,7 +6,7 @@
 
 @class COStore;
 
-@interface COPersistentRootEditingContext : NSObject
+@interface COPersistentRootEditingContext : NSObject <NSCopying>
 {
 	COStore *store;
 	
@@ -21,38 +21,15 @@
 	 */
 	ETUUID *baseCommit;
 		
-	// -- in-memory mutable state which is "overlaid" on the 
-	// persistent state represented by baseCommit
+	// -- in-memory mutable state:
 	
-	NSMutableDictionary *insertedOrUpdatedItems;
-	ETUUID *rootItemUUID;
+	COSubtree *tree;
 }
 
 /** @taskunit creation */
 
 + (COPersistentRootEditingContext *) editingContextForEditingPath: (COPath*)aPath
 														  inStore: (COStore *)aStore;
-
-- (COPersistentRootEditingContext *) editingContextForEditingEmbdeddedPersistentRoot: (ETUUID*)aRoot;
-
-/**
- * private method; public users should use -[COStore rootContext].
- */
-+ (COPersistentRootEditingContext *) editingContextForEditingTopLevelOfStore: (COStore *)aStore;
-
-/**
- * returns an independent copy.
- * FIXME: would it be useful to have a copy without any local changes?
- */
-//- (id)copyWithZone:(NSZone *)zone;
-
-- (COPath *) path;
-- (COStore *) store;
-
-/** @taskunit private */
-- (COMutableItem *) _storeItemForUUID: (ETUUID*) aUUID;
-
-/** @taskunit COEditingContext */
 
 /**
  * preconditions: (if not satisfied, the method should throw an exception)
@@ -72,6 +49,21 @@
 - (COPersistentRootEditingContext *) editingContextForEditingEmbdeddedPersistentRoot: (ETUUID*)aRoot
 																			onBranch: (ETUUID*)aBranch;
 
+/**
+ * private method; public users should use -[COStore rootContext].
+ */
++ (COPersistentRootEditingContext *) editingContextForEditingTopLevelOfStore: (COStore *)aStore;
+
+/**
+ * returns an independent copy.
+ * FIXME: would it be useful to have a copy without any local changes?
+ */
+- (id)copyWithZone:(NSZone *)zone;
+
+- (COPath *) path;
+- (COStore *) store;
+
+
 
 /**
  * preconditions: (if not satisfied, the method should throw an exception)
@@ -83,52 +75,13 @@
  *     the contents of that persistent root.
  *
  */
-- (ETUUID *) commitWithMetadata: (COMutableItem *)aTree;
+- (ETUUID *) commitWithMetadata: (COSubtree *)theMetadata;
 
 /**
- * this embedded object defines object lifetime of all objects inside this
- * persistent root. i.e., for embedded objects to belong to this persistent
- * root they must be a child (or grand-child, etc.) of rootEmbeddedObject
- * through a kCOPrimitiveTypeEmbeddedObject relationship.
+ * access the mutable tree, through which users can modify the current state of the persistent root
  */
-- (ETUUID *)rootUUID;
+- (COSubtree *)persistentRootTree;
 
-- (COMutableItem *)rootItemTree;
-
-/**
- * Returns an entire subtree
- */
-- (COMutableItem *)storeItemTreeForUUID: (ETUUID*) aUUID;
-
-/* @taskunit editing methods */
-
-/**
- * Updates an entire subtree. throws an exception if any uuids in the
- * provided subtree are already in use, or if the item tree root does
- * not already exist in the context.
- */
-//- (void) updateItemTree: (COStoreItemTree*)anItemTree;
-
-/** 
- * throws an exception if any UUID's in aTree are already in use in this context
- */
-//- (void) insertItemTree: (COStoreItemTree *)aTree
-//			 atItemPath: (COItemPath*)anItemPath;
-
-//- (void) removeItemTreeAtItemPath: (COItemPath*)anItemPath;
-
-//- (void) moveItemAtPath: (COItemPath*)src toItemPath: (COItemPath*)dest;
-
-// temporary protocol for updating... need to figure out a better one
-
-- (void) _insertOrUpdateItems: (NSSet *)items
-		newRootEmbeddedObject: (ETUUID*)aRoot;
-
-- (void) _insertOrUpdateItems: (NSSet *)items;
-
-/**
- * Replace the entire contents of the receiver with the given item tree
- */
-- (void) setItemTree: (COSubtree *)aTree;
+- (void) setPersistentRootTree: (COSubtree *)aSubtree;
 
 @end

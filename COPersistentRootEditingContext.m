@@ -1,6 +1,9 @@
 #import "COPersistentRootEditingContext.h"
 #import "COMacros.h"
 #import "COStorePrivate.h"
+#import "COItemFactory.h"
+#import "COItemFactory+PersistentRoots.h"
+#import "COSubtree.h"
 
 @implementation COPersistentRootEditingContext
 
@@ -37,6 +40,8 @@
 											 inCommit: parentCommit];
 	
 	// item may be a persistent root or a branch.
+	
+	// FIXME: update to use COSubtree
 	
 	if ([[item valueForAttribute: @"type"] isEqual: @"persistentRoot"])
 	{
@@ -87,8 +92,6 @@
 	
     SUPERINIT;
 	
-	insertedOrUpdatedItems = [[NSMutableDictionary alloc] init];
-	
 	ASSIGN(path, aPath);
 	ASSIGN(store, aStore);
 	
@@ -112,9 +115,11 @@
 	
 	if (baseCommit != nil)
 	{
-		ASSIGN(rootItemUUID, [store rootItemForCommit: baseCommit]);
+		// FIXME: Build tree from store's tree at baseCommit
+		//ASSIGN(rootItemUUID, [store rootItemForCommit: baseCommit]);
 	}
-	// if there has never been a commit, rootItem is nil.	
+
+	// if there has never been a commit, tree is nil.	
 	
     return self;
 }
@@ -138,11 +143,10 @@
 
 - (void)dealloc
 {
-	[store release];
-	[path release];
-	[baseCommit release];
-	[insertedOrUpdatedItems release];
-	[rootItemUUID release];
+	DESTROY(store);
+	DESTROY(path);
+	DESTROY(baseCommit);
+	DESTROY(tree);
 	[super dealloc];
 }
 
@@ -155,97 +159,6 @@
 {
 	return store;
 }
-
-
-// =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-=
-// =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-=
-// 
-// Private methods
-//
-// =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-=
-// =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-=
-
-/**
- * returns a copy
- */
-- (COMutableItem *) _storeItemForUUID: (ETUUID*) aUUID
-{
-	NILARG_EXCEPTION_TEST(aUUID);
-	
-	COMutableItem *localResult = [[[insertedOrUpdatedItems objectForKey: aUUID] mutableCopy] autorelease];
-	
-	if (localResult != nil)
-	{
-		return localResult;
-	}
-	
-	if (baseCommit != nil)
-	{
-		return [[[store storeItemForEmbeddedObject: aUUID inCommit: baseCommit] mutableCopy] autorelease];
-	}
-	return nil;
-}
-
-// FIXME: Duplicate of code in COTreeDiff
-- (NSSet *) _allEmbeddedObjectUUIDsForUUID: (ETUUID*) aUUID
-{
-	NILARG_EXCEPTION_TEST(aUUID);
-	
-	NSMutableSet *result = [NSMutableSet set];
-	
-	COMutableItem *item = [self _storeItemForUUID: aUUID];
-	for (NSString *key in [item attributeNames])
-	{
-		COType *type = [item typeForAttribute: key];
-		if ([[type primitiveType] isEqual: [COType embeddedItemType]])
-		{		
-			for (ETUUID *embedded in [item allObjectsForAttribute: key])
-			{
-				[result addObject: embedded];
-				[result unionSet: [self _allEmbeddedObjectUUIDsForUUID: embedded]];
-			}
-		}
-	}
-	return result;
-}
-
-- (void) _insertOrUpdateItems: (NSSet *)items
-		newRootEmbeddedObject: (ETUUID*)aRoot
-{
-	NILARG_EXCEPTION_TEST(items);
-	NILARG_EXCEPTION_TEST(aRoot);
-	
-	assert([items isKindOfClass: [NSSet class]]);
-	
-	ASSIGN(rootItemUUID, aRoot);
-	
-	for (COItem *item in items)
-	{
-		[insertedOrUpdatedItems setObject: item forKey: [item UUID]];
-	}
-	
-	// FIXME: validation
-}
-
-- (void) _insertOrUpdateItems: (NSSet *)items
-{
-	[self _insertOrUpdateItems: items newRootEmbeddedObject: rootItemUUID];
-}
-
-
-
-
-// =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-=
-// =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-=
-// 
-// COEditingContext protocol
-//
-// =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-=
-// =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-= =-=-=-=-=-=-=-=-=-=
-
-
-
-
 
 - (COPersistentRootEditingContext *) editingContextForEditingEmbdeddedPersistentRoot: (ETUUID*)aRoot
 {
@@ -262,7 +175,7 @@
 											  inStore: [self store]];
 }
 
-- (ETUUID *) commitWithMetadata: (COMutableItem *)aTree
+- (ETUUID *) commitWithMetadata: (COSubtree *)theMetadata
 {
 
 	//
@@ -300,19 +213,13 @@
 	}
 	
 	
-	// calculate final uuid set
-	assert(rootItemUUID != nil);
-	NSSet *finalUUIDSet = [[self _allEmbeddedObjectUUIDsForUUID: rootItemUUID] setByAddingObject: rootItemUUID];
-	
 	// set up the commit dictionary
 	NSMutableDictionary *uuidsanditems = [NSMutableDictionary dictionary];
 	{
-		for (ETUUID *uuid in finalUUIDSet)
+		for (COItem *item in [tree allContainedStoreItems])
 		{
-			COMutableItem *item = [self _storeItemForUUID: uuid];
-			
 			[uuidsanditems setObject: item
-							  forKey: uuid];
+							  forKey: [item UUID]];
 		}
 	}
 	
@@ -331,7 +238,7 @@
 	ETUUID *newCommitUUID = [store addCommitWithParent: commitParent
 									 metadata: md
 						   UUIDsAndStoreItems: uuidsanditems
-									 rootItem: rootItemUUID];
+									 rootItem: [[tree root] UUID]];
 	
 	
 	assert(newCommitUUID != nil);
@@ -347,9 +254,7 @@
 	//
 	
 	// if anything in the transaction failed, we can bail out here.
-	
-	
-	
+
 
 	// now update our path's parent
 	
@@ -361,32 +266,26 @@
 		COPersistentRootEditingContext *parentCtx = [[[self class] alloc] initWithPath: parentPath
 																			   inStore: store];
 		
-		COMutableItem *item = [parentCtx _storeItemForUUID: ourUUID];
+		COSubtree *item = [[parentCtx persistentRootTree] subtreeWithUUID: ourUUID];
 		assert(item != nil);
-		
-		// FIXME: move to COItemFactory or another utility class for dealing with persistent root data structures.
-		
+
 		// item may be a persistent root or a branch.
 		
-		if ([[item valueForAttribute: @"type"] isEqual: @"persistentRoot"])
+		if ([[COItemFactory factory] isPersistentRoot: item])
 		{
-			COPath *currentBranchPath = [item valueForAttribute: @"currentBranch"];
-			ETUUID *currentBranch = [currentBranchPath lastPathComponent];
-			assert([[currentBranchPath pathByDeletingLastPathComponent] isEmpty]);
-			
-			item = [parentCtx _storeItemForUUID: currentBranch];
-			assert(item != nil);
+			item = [[COItemFactory factory] currentBranchOfPersistentRoot: item];
 		}
 		
-		assert ([[item valueForAttribute: @"type"] isEqual: @"branch"]);
-		assert([[item typeForAttribute: @"currentVersion"] isEqual: [COType commitUUIDType]]);
+		assert([[COItemFactory factory] isBranch: item]);
 		
-		ETUUID *trackedVersion = [item valueForAttribute: @"currentVersion"];
+		ETUUID *trackedVersion = [[COItemFactory factory] currentVersionForBranch: item];
 		assert([trackedVersion isEqual: baseCommit]); // we already checked this earlier
-		[item setValue: newCommitUUID forAttribute: @"currentVersion" type: [COType commitUUIDType]];
-		[item setValue: newCommitUUID forAttribute: @"head" type: [COType commitUUIDType]];
-		
-		[parentCtx _insertOrUpdateItems: S(item)];
+		[item setPrimitiveValue: newCommitUUID 
+				   forAttribute: @"currentVersion"
+						   type: [COType commitUUIDType]];
+		[item setPrimitiveValue: newCommitUUID 
+				   forAttribute: @"head" 
+						   type: [COType commitUUIDType]];
 		
 		ETUUID *resultUUID = [parentCtx commitWithMetadata: nil];
 		assert (resultUUID != nil);
@@ -394,52 +293,21 @@
 		[parentCtx release];
 	}
 	
-	
-	 // update our internal state
+	// update our internal state
 	 
-	 ASSIGN(baseCommit, newCommitUUID);
-	 [insertedOrUpdatedItems removeAllObjects];
-	 
+	ASSIGN(baseCommit, newCommitUUID);
 		 
 	return newCommitUUID;
 }
 
-- (ETUUID *)rootUUID
+- (COSubtree *)persistentRootTree
 {
-	return rootItemUUID;
+	return tree;
 }
 
-- (COMutableItem *)rootItemTree
+- (void) setPersistentRootTree: (COSubtree *)aSubtree
 {
-	return [self storeItemTreeForUUID: rootItemUUID];
-}
-
-- (COMutableItem *)storeItemTreeForUUID: (ETUUID*) aUUID
-{
-/*	NSSet *uuids = [[self _allEmbeddedObjectUUIDsForUUID: aUUID] setByAddingObject: aUUID];
-	
-	NSMutableSet *items = [NSMutableSet set];
-	for (ETUUID *uuid in uuids)
-	{
-		[items addObject: [self _storeItemForUUID: aUUID]];
-	}
-		 
-	return [COStoreItemTree itemTreeWithItems: items
-										 root: aUUID];
- */
-	return nil;
-}
-
-- (void) setItemTree: (COSubtree	*)aTree
-{
-	NILARG_EXCEPTION_TEST(aTree);
-
-	ASSIGN(rootItemUUID, [aTree UUID]);
-	
-	for (COItem *item in [aTree allContainedStoreItems])
-	{
-		[insertedOrUpdatedItems setObject: item forKey: [item UUID]];
-	}
+	ASSIGN(tree, aSubtree);
 }
 
 @end
