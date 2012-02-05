@@ -234,8 +234,8 @@
 }
 - (COSubtree *) treeForCommit: (ETUUID *)aCommit
 {
-	ETUUID *rootVersion = [self rootVersion];
-	if (rootVersion == nil)
+	ETUUID *rootItemUUID = [self rootItemForCommit: aCommit];
+	if (rootItemUUID == nil)
 	{
 		return nil;
 	}
@@ -243,7 +243,7 @@
 	NSSet *itemSet = [NSSet setWithArray: [[self UUIDsAndStoreItemsForCommit: aCommit] allValues]];
 	
 	return [COSubtree subtreeWithItemSet: itemSet
-								rootUUID: rootVersion];
+								rootUUID: rootItemUUID];
 }
 - (ETUUID *) rootItemForCommit: (ETUUID*)commit
 {
