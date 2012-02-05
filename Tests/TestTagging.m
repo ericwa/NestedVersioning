@@ -55,112 +55,107 @@ void testTagging()
 	COPersistentRootEditingContext *rootCtx = [store rootContext];
 	
 	COSubtree *iroot = [COSubtree subtree];
-	ETUUID *uroot = [iroot UUID];
 	
-	[rootCtx setItemTree: iroot];
+	[rootCtx setPersistentRootTree: iroot];
 	
 	
-	ETUUID *taglibUUID = [rootCtx createAndInsertNewPersistentRootWithRootItem: [factory folder: @"tag library"]
-																inItemWithUUID: uroot];
-	ETUUID *photolibUUID = [rootCtx createAndInsertNewPersistentRootWithRootItem: [factory folder: @"photo library"]
-																  inItemWithUUID: uroot];
+	COSubtree *taglib = [rootCtx createPersistentRootWithRootItem: [factory folder: @"tag library"]
+													  displayName: @"tag library"];
+	[iroot addTree: taglib];
+	
+	COSubtree *photolib = [rootCtx createPersistentRootWithRootItem: [factory folder: @"photo library"]
+														displayName: @"photo library"];
+	[iroot addTree: photolib];
 	
 	[rootCtx commitWithMetadata: nil];
 	
 	// set up some tags
 	
-		COPersistentRootEditingContext *taglibCtx = [rootCtx editingContextForEditingEmbdeddedPersistentRoot: taglibUUID];
+		COPersistentRootEditingContext *taglibCtx = [rootCtx editingContextForEditingEmbdeddedPersistentRoot: taglib];
 		
-		ETUUID *taglibFolder = [taglibCtx rootUUID];
+		COSubtree *taglibFolder = [taglibCtx persistentRootTree];
 		
 
-		ETUUID *places = [taglibCtx insertTree: [factory folder: @"places"]
-								   inContainer: taglibFolder];
-		ETUUID *northamerica = [taglibCtx insertTree: [factory folder: @"north america"]
-										 inContainer: places];
-		ETUUID *canada = [taglibCtx insertTree: [factory item: @"canada"]
-								   inContainer: northamerica];
-		ETUUID *southamerica = [taglibCtx insertTree: [factory folder: @"south america"]
-										 inContainer: places];
-		ETUUID *brazil = [taglibCtx insertTree: [factory item: @"brazil"]
-								   inContainer: southamerica];
-		
+		COSubtree *places = [factory folder: @"places"];
+		[taglibFolder addTree: places];
+		COSubtree *northamerica =  [factory folder: @"north america"];
+		[places addTree: northamerica];
+		COSubtree *canada = [factory item: @"canada"];
+		[northamerica addTree: canada];
+		COSubtree *southamerica = [factory folder: @"south america"];
+		[places addTree: southamerica];
+		COSubtree *brazil = [factory item: @"brazil"];
+		[southamerica addTree: brazil];
+	
 		[taglibCtx commitWithMetadata: nil];
 	
 
 
 	// create a photo library
 	
-		COPersistentRootEditingContext *photolibCtx = [rootCtx editingContextForEditingEmbdeddedPersistentRoot: photolibUUID];
+		COPersistentRootEditingContext *photolibCtx = [rootCtx editingContextForEditingEmbdeddedPersistentRoot: photolib];
 		
-		ETUUID *photolibFolder = [photolibCtx rootUUID];
+		COSubtree *photolibFolder = [photolibCtx persistentRootTree];
 		
 		// set up some local tags
 		
-			ETUUID *localtagFolder = [photolibCtx insertTree: [factory folder: @"local tags"]
-												 inContainer: photolibFolder];
-			ETUUID *subject = [photolibCtx insertTree: [factory folder: @"subject"]
-										  inContainer: localtagFolder];
-			ETUUID *landscape = [photolibCtx insertTree: [factory item: @"landscape"]
-											inContainer: subject];
-			ETUUID *people = [photolibCtx insertTree: [factory item: @"people"]
-										 inContainer: subject];
-			ETUUID *abstract = [photolibCtx insertTree: [factory item: @"abstract"]
-										   inContainer: subject];
-			ETUUID *lighting = [photolibCtx insertTree: [factory folder: @"lighting"]
-										   inContainer: localtagFolder];
-			ETUUID *sunlight = [photolibCtx insertTree: [factory item: @"sunlight"]
-										   inContainer: lighting];
-			ETUUID *artificial = [photolibCtx insertTree: [factory item: @"artificial"]
-											 inContainer: lighting];			
+			COSubtree *localtagFolder = [factory folder: @"local tags"];
+			[photolibFolder addTree: localtagFolder];
+			COSubtree *subject = [factory folder: @"subject"];
+			[localtagFolder addTree: subject];
+			COSubtree *landscape = [factory item: @"landscape"];
+			[subject addTree: landscape];
+			COSubtree *people = [factory item: @"people"];
+			[subject addTree: people];
+			COSubtree *abstract = [factory item: @"abstract"];
+			[subject addTree: abstract];
+			COSubtree *lighting = [factory folder: @"lighting"];
+			[localtagFolder addTree: lighting];
+			COSubtree *sunlight = [factory item: @"sunlight"];
+			[lighting addTree: sunlight];
+			COSubtree *artificial = [factory item: @"artificial"];
+			[lighting addTree: artificial];
 		
 		
 		// set up photo shoots folder
 		
-			ETUUID *photoshootsFolder = [photolibCtx insertTree: [factory folder: @"photo shoots"]
-													inContainer: photolibFolder];
-			ETUUID *shoot1 = [photolibCtx insertTree: [factory folder: @"shoot1"]
-										 inContainer: photoshootsFolder];
+			COSubtree *photoshootsFolder = [factory folder: @"photo shoots"];
+			[photolibFolder addTree: photoshootsFolder];
+			COSubtree *shoot1 = [factory folder: @"shoot1"];
+			[photoshootsFolder addTree: shoot1];
 			
-			ETUUID *photo1 = [photolibCtx createAndInsertNewPersistentRootWithRootItem: [factory folder: @"photo1"]
-																		inItemWithUUID: shoot1];
-			ETUUID *photo2 = [photolibCtx createAndInsertNewPersistentRootWithRootItem: [factory folder: @"photo2"]
-																		inItemWithUUID: shoot1];			
-			ETUUID *photo3 = [photolibCtx createAndInsertNewPersistentRootWithRootItem: [factory folder: @"photo3"]
-																		inItemWithUUID: shoot1];
-		
+			COSubtree *photo1 = [photolibCtx createPersistentRootWithRootItem: [factory folder: @"photo1"]
+															  displayName: @"photo1"];
+			[shoot1 addTree: photo1];
+
+			COSubtree *photo2 = [photolibCtx createPersistentRootWithRootItem: [factory folder: @"photo2"]
+																  displayName: @"photo2"];
+			[shoot1 addTree: photo2];
+			
+			COSubtree *photo3 = [photolibCtx createPersistentRootWithRootItem: [factory folder: @"photo3"]
+																  displayName: @"photo3"];
+			[shoot1 addTree: photo3];
+	
 		
 		// set up some albums
 	
-			ETUUID *albums = [photolibCtx insertTree: [factory folder: @"albums"]
-										 inContainer: photolibFolder];
-			ETUUID *album1 = [photolibCtx insertTree: [factory folder: @"album1"]
-										 inContainer: albums];	
-			ETUUID *album2 = [photolibCtx insertTree: [factory folder: @"album2"]
-										 inContainer: albums];
+			COSubtree *albums = [factory folder: @"albums"];
+			[photolibFolder addTree: albums];
+			COSubtree *album1 = [factory folder: @"album1"];
+			[albums addTree: album1];
+			COSubtree *album2 = [factory folder: @"album2"];
+			[albums addTree: album1];
 	
 		// put photos in the albums as COPaths. Photo 2 and 1 are in both albums
 		// photo 2 appears twice in album1
-		
-			{
-				COMutableItem *item = [photolibCtx _storeItemForUUID: album1];
-				[item setValue: A([COPath pathWithPathComponent: photo1], 
-								  [COPath pathWithPathComponent: photo2],
-								  [COPath pathWithPathComponent: photo2]) 
-				  forAttribute: @"contents"
-						  type: [COType arrayWithPrimitiveType: [COType pathType]]];
-				[photolibCtx _insertOrUpdateItems: S(item)];
-			}
-			{
-				COMutableItem *item = [photolibCtx _storeItemForUUID: album2];
-				[item setValue: A([COPath pathWithPathComponent: photo2], 
-								  [COPath pathWithPathComponent: photo1],
-								  [COPath pathWithPathComponent: photo3]) 
-				  forAttribute: @"contents"
-						  type: [COType arrayWithPrimitiveType: [COType pathType]]];
-				[photolibCtx _insertOrUpdateItems: S(item)];
-			}
 	
+			[album1 addObject: [COPath pathWithPathComponent: [photo1 UUID]] toOrderedAttribute: @"contents" atIndex:0 type:[COType arrayWithPrimitiveType: [COType pathType]]];
+			[album1 addObject: [COPath pathWithPathComponent: [photo2 UUID]] toOrderedAttribute: @"contents" atIndex:1 type:[COType arrayWithPrimitiveType: [COType pathType]]];
+			[album1 addObject: [COPath pathWithPathComponent: [photo2 UUID]] toOrderedAttribute: @"contents" atIndex:2 type:[COType arrayWithPrimitiveType: [COType pathType]]];
+
+			[album2 addObject: [COPath pathWithPathComponent: [photo2 UUID]] toOrderedAttribute: @"contents" atIndex:0 type:[COType arrayWithPrimitiveType: [COType pathType]]];
+			[album2 addObject: [COPath pathWithPathComponent: [photo3 UUID]] toOrderedAttribute: @"contents" atIndex:1 type:[COType arrayWithPrimitiveType: [COType pathType]]];
+			[album2 addObject: [COPath pathWithPathComponent: [photo1 UUID]] toOrderedAttribute: @"contents" atIndex:2 type:[COType arrayWithPrimitiveType: [COType pathType]]];
 	
 		[photolibCtx commitWithMetadata: nil];
 		
@@ -171,25 +166,23 @@ void testTagging()
 
 			COPersistentRootEditingContext *photo1Ctx = [photolibCtx editingContextForEditingEmbdeddedPersistentRoot: photo1];
 			
-			ETUUID *photo1Ctx_root = [photo1Ctx rootUUID];
-			
 			COPath *tag1 = [[[[[COPath path] 
 								pathByAppendingPathToParent]
 									pathByAppendingPathToParent]
-										pathByAppendingPathComponent: taglibUUID]
-											pathByAppendingPathComponent: canada];
+										pathByAppendingPathComponent: [taglib UUID]]
+											pathByAppendingPathComponent: [canada UUID]];
 			
 			COPath *tag2 = [[[COPath path] pathByAppendingPathToParent]
-								pathByAppendingPathComponent: landscape];
+								pathByAppendingPathComponent: [landscape UUID]];
 
 			COPath *tag3 = [[[COPath path] pathByAppendingPathToParent]
-								pathByAppendingPathComponent: abstract];
+								pathByAppendingPathComponent: [abstract UUID]];
 			
-			COMutableItem *photo1Ctx_rootItem = [photo1Ctx _storeItemForUUID:photo1Ctx_root];
-			[photo1Ctx_rootItem setValue: S(tag1, tag2, tag3)
-							forAttribute: @"tags"
-									type: [COType setWithPrimitiveType: [COType pathType]]];
-			[photo1Ctx _insertOrUpdateItems: S(photo1Ctx_rootItem)];
+			COSubtree *photo1Ctx_rootItem = [photo1Ctx persistentRootTree];
+
+			[photo1Ctx_rootItem addObject: tag1 toUnorderedAttribute: @"tags" type: [COType setWithPrimitiveType: [COType pathType]]];
+			[photo1Ctx_rootItem addObject: tag2 toUnorderedAttribute: @"tags" type: [COType setWithPrimitiveType: [COType pathType]]];
+			[photo1Ctx_rootItem addObject: tag3 toUnorderedAttribute: @"tags" type: [COType setWithPrimitiveType: [COType pathType]]];
 			
 			[photo1Ctx commitWithMetadata: nil];
 		}
@@ -200,26 +193,24 @@ void testTagging()
 			// open a context to edit the branch
 			
 			COPersistentRootEditingContext *photo2Ctx = [photolibCtx editingContextForEditingEmbdeddedPersistentRoot: photo2];
-			
-			ETUUID *photo2Ctx_root = [photo2Ctx rootUUID];
-			
+		
 			COPath *tag1 = [[[[[COPath path] 
 							   pathByAppendingPathToParent]
 							  pathByAppendingPathToParent]
-							 pathByAppendingPathComponent: taglibUUID]
-							pathByAppendingPathComponent: brazil];
+							 pathByAppendingPathComponent: [taglib UUID]]
+							pathByAppendingPathComponent: [brazil UUID]];
 			
 			COPath *tag2 = [[[COPath path] pathByAppendingPathToParent]
-							pathByAppendingPathComponent: sunlight];
+							pathByAppendingPathComponent: [sunlight UUID]];
 			
 			COPath *tag3 = [[[COPath path] pathByAppendingPathToParent]
-							pathByAppendingPathComponent: abstract];
+							pathByAppendingPathComponent: [abstract UUID]];
 			
-			COMutableItem *photo2Ctx_rootItem = [photo2Ctx _storeItemForUUID:photo2Ctx_root];
-			[photo2Ctx_rootItem setValue: S(tag1, tag2, tag3)
-							forAttribute: @"tags"
-									type: [COType setWithPrimitiveType: [COType pathType]]];
-			[photo2Ctx _insertOrUpdateItems: S(photo2Ctx_rootItem)];
+			COSubtree *photo2Ctx_rootItem = [photo2Ctx persistentRootTree];
+			
+			[photo2Ctx_rootItem addObject: tag1 toUnorderedAttribute: @"tags" type: [COType setWithPrimitiveType: [COType pathType]]];
+			[photo2Ctx_rootItem addObject: tag2 toUnorderedAttribute: @"tags" type: [COType setWithPrimitiveType: [COType pathType]]];
+			[photo2Ctx_rootItem addObject: tag3 toUnorderedAttribute: @"tags" type: [COType setWithPrimitiveType: [COType pathType]]];
 			
 			[photo2Ctx commitWithMetadata: nil];
 		}
@@ -231,25 +222,24 @@ void testTagging()
 			
 			COPersistentRootEditingContext *photo3Ctx = [photolibCtx editingContextForEditingEmbdeddedPersistentRoot: photo3];
 			
-			ETUUID *photo3Ctx_root = [photo3Ctx rootUUID];
-			
+		
 			COPath *tag1 = [[[[[COPath path] 
 							   pathByAppendingPathToParent]
 							  pathByAppendingPathToParent]
-							 pathByAppendingPathComponent: taglibUUID]
-							pathByAppendingPathComponent: brazil];
+							 pathByAppendingPathComponent: [taglib UUID]]
+							pathByAppendingPathComponent: [brazil UUID]];
 			
 			COPath *tag2 = [[[COPath path] pathByAppendingPathToParent]
-							pathByAppendingPathComponent: people];
+							pathByAppendingPathComponent: [people UUID]];
 			
 			COPath *tag3 = [[[COPath path] pathByAppendingPathToParent]
-							pathByAppendingPathComponent: artificial];
+							pathByAppendingPathComponent: [artificial UUID]];
 			
-			COMutableItem *photo3Ctx_rootItem = [photo3Ctx _storeItemForUUID:photo3Ctx_root];
-			[photo3Ctx_rootItem setValue: S(tag1, tag2, tag3)
-							forAttribute: @"tags"
-									type: [COType setWithPrimitiveType: [COType pathType]]];
-			[photo3Ctx _insertOrUpdateItems: S(photo3Ctx_rootItem)];
+			COSubtree *photo3Ctx_rootItem = [photo3Ctx persistentRootTree];
+			
+			[photo3Ctx_rootItem addObject: tag1 toUnorderedAttribute: @"tags" type: [COType setWithPrimitiveType: [COType pathType]]];
+			[photo3Ctx_rootItem addObject: tag2 toUnorderedAttribute: @"tags" type: [COType setWithPrimitiveType: [COType pathType]]];
+			[photo3Ctx_rootItem addObject: tag3 toUnorderedAttribute: @"tags" type: [COType setWithPrimitiveType: [COType pathType]]];
 			
 			[photo3Ctx commitWithMetadata: nil];
 		}
@@ -260,9 +250,10 @@ void testTagging()
 	// FIXME: shouldn't be necessary
 	
 	rootCtx = [store rootContext];
+	photolib = [[rootCtx persistentRootTree] subtreeWithUUID: [photolib UUID]];
 	
-	ETUUID *photolibBranchA = [rootCtx currentBranchOfPersistentRoot: photolibUUID];
-	ETUUID *photolibBranchB = [rootCtx createBranchOfPersistentRoot: photolibUUID];
+	COSubtree *photolibBranchA = [[COItemFactory factory] currentBranchOfPersistentRoot: photolib];
+	COSubtree *photolibBranchB = [[COItemFactory factory] createBranchOfPersistentRoot: photolib];
 	[rootCtx commitWithMetadata: nil];
 	
 	

@@ -292,7 +292,7 @@ int main (int argc, const char * argv[])
 	WITH_POOL(testEditingContextEmbeddedObjects());
 	WITH_POOL(testStoreItem());
 	WITH_POOL(testUndo());
-	//WITH_POOL(testTagging());
+	WITH_POOL(testTagging());
 	//WITH_POOL(testDiff());
 	//WITH_POOL(testTreeManager());
 	
