@@ -154,6 +154,21 @@
 - (void)removeValueForAttribute: (NSString*)anAttribute;
 
 /**
+ * Creates the container if needed. 
+ */
+- (void)   addObject: (id)aValue
+toUnorderedAttribute: (NSString*)anAttribute
+				type: (COType *)aType;
+
+/**
+ * Creates the container if needed. 
+ */
+- (void)   addObject: (id)aValue
+  toOrderedAttribute: (NSString*)anAttribute
+			 atIndex: (NSUInteger)anIndex
+				type: (COType *)aType;
+
+/**
  * Inserts the given subtree at the given item path.
  * The provided subtree is removed from its parent, if it has one.
  * i.e. [aSubtree parent] is mutated by the method call!

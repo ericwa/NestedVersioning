@@ -402,6 +402,45 @@
 	}
 }
 
+- (void)   addObject: (id)aValue
+toUnorderedAttribute: (NSString*)anAttribute
+				type: (COType *)aType
+{
+	if ([[aType primitiveType] isEqual: [COType embeddedItemType]])
+	{
+		[self addSubtree: aValue atItemPath: [COItemPath pathWithItemUUID: [self UUID]
+												  unorderedCollectionName: anAttribute
+																	 type: aType]];
+	}
+	else
+	{
+		[root addObject: aValue
+   toUnorderedAttribute: anAttribute
+				   type: aType];
+	}
+}
+
+- (void)   addObject: (id)aValue
+  toOrderedAttribute: (NSString*)anAttribute
+			 atIndex: (NSUInteger)anIndex
+				type: (COType *)aType
+{
+	if ([[aType primitiveType] isEqual: [COType embeddedItemType]])
+	{
+		[self addSubtree: aValue atItemPath: [COItemPath pathWithItemUUID: [self UUID]
+																arrayName: anAttribute
+														   insertionIndex: anIndex
+																	 type: aType]];
+	}
+	else
+	{
+		[root addObject: aValue
+	 toOrderedAttribute: anAttribute
+				atIndex: anIndex
+				   type: aType];
+	}
+}
+
 - (void)removeValueForAttribute: (NSString*)anAttribute
 {
 	[root removeValueForAttribute: anAttribute];
