@@ -10,8 +10,8 @@
 
 @implementation COPersistentRootEditingContext (PersistentRoots)
 
-- (ETUUID *)createAndInsertNewPersistentRootWithRootItem: (COSubtree *)anItem
-										  inItemWithUUID: (ETUUID*)aDest
+- (COSubtree *)createPersistentRootWithRootItem: (COSubtree *)anItem
+									displayName: (NSString *)aName
 {
 	ETUUID *nestedDocumentInitialVersion = [store addCommitWithParent: nil
 															 metadata: nil
@@ -21,74 +21,55 @@
 
 	COSubtree *result = [[COItemFactory factory] persistentRootWithInitialVersion: nestedDocumentInitialVersion
 																	  displayName: @"New Persistent Root"];
-	
-	COSubtree *dest = [[self persistentRootTree] subtreeWithUUID: aDest];	
-	[dest  addObject: result
-toUnorderedAttribute: @"contents"
-			    type: [COType setWithPrimitiveType: [COType embeddedItemType]]];
-
-	return [result UUID];
+	return result;
 }
 
-- (BOOL) isBranch: (ETUUID *)anEmbeddedObject
+- (void) undo: (COSubtree*)aRootOrBranch
 {
-	return [[COItemFactory factory] isBranch: [[self persistentRootTree] subtreeWithUUID: anEmbeddedObject]];
-}
-- (BOOL) isPersistentRoot: (ETUUID *)anEmbeddedObject
-{
-	return [[COItemFactory factory] isPersistentRoot: [[self persistentRootTree] subtreeWithUUID: anEmbeddedObject]];
-}
-
-- (void) undo: (ETUUID*)aRootOrBranch
-{
-	if ([self isBranch: aRootOrBranch])
+	if ([[COItemFactory factory] isBranch: aRootOrBranch])
 	{
 		[self undoBranch: aRootOrBranch];
 	}
-	else if ([self isPersistentRoot: aRootOrBranch])
+	else if ([[COItemFactory factory] isPersistentRoot: aRootOrBranch])
 	{
 		[self undoPersistentRoot: aRootOrBranch];
 	}
 	else
 	{
-		assert(0);
+		[NSException raise: NSInvalidArgumentException
+					format: @"expected persistent root or branch"];
 	}
 }
-- (void) redo: (ETUUID*)aRootOrBranch
+- (void) redo: (COSubtree*)aRootOrBranch
 {
-	if ([self isBranch: aRootOrBranch])
+	if ([[COItemFactory factory] isBranch: aRootOrBranch])
 	{
 		[self redoBranch: aRootOrBranch];
 	}
-	else if ([self isPersistentRoot: aRootOrBranch])
+	else if ([[COItemFactory factory] isPersistentRoot: aRootOrBranch])
 	{
 		[self redoPersistentRoot: aRootOrBranch];
 	}
 	else
 	{
-		assert(0);
+		[NSException raise: NSInvalidArgumentException
+					format: @"expected persistent root or branch"];
 	}
 }
 
-- (void) undoPersistentRoot: (ETUUID*)aRoot
+- (void) undoPersistentRoot: (COSubtree*)aRoot
 {
-	COSubtree *aTree = [[self persistentRootTree] subtreeWithUUID:aRoot];
-	
-	[self undoBranch: [[[COItemFactory factory] currentBranchOfPersistentRoot: aTree] UUID]];
+	[self undoBranch: [[COItemFactory factory] currentBranchOfPersistentRoot: aRoot]];
 }
-- (void) redoPersistentRoot: (ETUUID*)aRoot
+- (void) redoPersistentRoot: (COSubtree*)aRoot
 {
-	COSubtree *aTree = [[self persistentRootTree] subtreeWithUUID:aRoot];
-	
-	[self redoBranch: [[[COItemFactory factory] currentBranchOfPersistentRoot: aTree] UUID]];
+	[self redoBranch: [[COItemFactory factory] currentBranchOfPersistentRoot: aRoot]];
 }
 
-- (void) undoBranch: (ETUUID*)aBranch
+- (void) undoBranch: (COSubtree*)aBranch
 {
-	COSubtree *branchTree = [[self persistentRootTree] subtreeWithUUID:aBranch];
-	
-	ETUUID *currentVersion = [[COItemFactory factory] currentVersionForBranch: branchTree];
-	ETUUID *tail = [[COItemFactory factory] tailForBranch: branchTree];
+	ETUUID *currentVersion = [[COItemFactory factory] currentVersionForBranch: aBranch];
+	ETUUID *tail = [[COItemFactory factory] tailForBranch: aBranch];
 	
 	assert(aBranch != nil);
 	assert(currentVersion != nil);
@@ -103,10 +84,10 @@ toUnorderedAttribute: @"contents"
 	ETUUID *parent = [store parentForCommit: currentVersion];
 	assert(parent != nil);  // if we are not at the tail, the current commit should have a parent
 	
-	[[COItemFactory factory] setCurrentVersion: parent forBranch: branchTree];
+	[[COItemFactory factory] setCurrentVersion: parent forBranch: aBranch];
 }
 
-- (void) redoBranch: (ETUUID*)aBranch
+- (void) redoBranch: (COSubtree*)aBranch
 {
 	/*
 	 - to redo:
@@ -122,10 +103,8 @@ toUnorderedAttribute: @"contents"
 	 
 	 **/
 	
-	COSubtree *branchTree = [[self persistentRootTree] subtreeWithUUID:aBranch];
-	
-	ETUUID *currentVersion = [[COItemFactory factory] currentVersionForBranch: branchTree];
-	ETUUID *newCurrentVersion = [[COItemFactory factory] headForBranch: branchTree];
+	ETUUID *currentVersion = [[COItemFactory factory] currentVersionForBranch: aBranch];
+	ETUUID *newCurrentVersion = [[COItemFactory factory] headForBranch: aBranch];
 	
 	assert(newCurrentVersion != nil);
 	assert(aBranch != nil);
@@ -145,7 +124,7 @@ toUnorderedAttribute: @"contents"
 		if ([parentOfNewCurrentVersion isEqual: currentVersion])
 		{
 			[[COItemFactory factory] setCurrentVersion: newCurrentVersion
-											 forBranch: branchTree];
+											 forBranch: aBranch];
 			return;
 		}
 		newCurrentVersion = parentOfNewCurrentVersion;

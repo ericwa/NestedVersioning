@@ -4,20 +4,16 @@
 
 @interface COPersistentRootEditingContext (PersistentRoots)
 
-// FIXME: update method 
-- (ETUUID *)createAndInsertNewPersistentRootWithRootItem: (COSubtree *)anItem
-										  inItemWithUUID: (ETUUID*)aDest;
+- (COSubtree *)createPersistentRootWithRootItem: (COSubtree *)anItem
+									displayName: (NSString *)aName;
 
-- (BOOL) isBranch: (ETUUID *)anEmbeddedObject;
-- (BOOL) isPersistentRoot: (ETUUID *)anEmbeddedObject;
+- (void) undo: (COSubtree*)aRootOrBranch;
+- (void) redo: (COSubtree*)aRootOrBranch;
 
-- (void) undo: (ETUUID*)aRootOrBranch;
-- (void) redo: (ETUUID*)aRootOrBranch;
+- (void) undoPersistentRoot: (COSubtree*)aRoot;
+- (void) redoPersistentRoot: (COSubtree*)aRoot;
 
-- (void) undoPersistentRoot: (ETUUID*)aRoot;
-- (void) redoPersistentRoot: (ETUUID*)aRoot;
-
-- (void) undoBranch: (ETUUID*)aBranch;
-- (void) redoBranch: (ETUUID*)aBranch;
+- (void) undoBranch: (COSubtree*)aBranch;
+- (void) redoBranch: (COSubtree*)aBranch;
 
 @end
