@@ -99,7 +99,6 @@ static void testEditingContextEmbeddedObjects()
 	EWTestTrue(nil == [ctx persistentRootTree]);
 		
 	COSubtree *iroot = [COSubtree subtree];
-	ETUUID *uroot = [iroot UUID];
 	
 	[ctx setPersistentRootTree: iroot];
 	
@@ -112,10 +111,10 @@ static void testEditingContextEmbeddedObjects()
 						forAttribute: @"color"
 								type: [COType stringType]];
 	
-	ETUUID *u1 = [ctx createAndInsertNewPersistentRootWithRootItem: nestedDocumentRootItem
-													inItemWithUUID: uroot];
+	COSubtree *u1Tree = [ctx createPersistentRootWithRootItem: nestedDocumentRootItem
+												  displayName: @"My Document"];
+	[iroot addTree: u1Tree];
 
-	COSubtree *u1Tree = [[ctx persistentRootTree] subtreeWithUUID: u1];
 	
 	EWTestTrue(1 == [[[COItemFactory factory] branchesOfPersistentRoot: u1Tree] count]);
 	
