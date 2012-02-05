@@ -5,8 +5,10 @@
 
 @interface COSubtreeDiff : NSObject
 {
-	ETUUID *root;
-	NSMutableDictionary *itemDiffForUUID;
+	ETUUID *oldRoot;
+	ETUUID *newRoot;
+	NSMutableDictionary *itemDiffForUUID;  // ETUUID : COItemDiff
+	NSMutableDictionary *insertedItemForUUID; // ETUUID : COItem
 }
 
 + (COSubtreeDiff *) diffSubtree: (COSubtree *)a

@@ -6,12 +6,16 @@
 
 @implementation COSubtreeDiff
 
-- (id) initWithRootUUID: (ETUUID*)aUUID
-		itemDiffForUUID: (NSDictionary *)aDict
+- (id) initWithOldRootUUID: (ETUUID*)anOldRoot
+			   newRootUUID: (ETUUID*)aNewRoot
+		   itemDiffForUUID: (NSDictionary *)anItemDiffForUUID
+	   insertedItemForUUID: (NSDictionary *)anInsertedItemForUUID
 {
 	SUPERINIT;
-	ASSIGN(root, aUUID);
-	ASSIGN(itemDiffForUUID, aDict);
+	ASSIGN(oldRoot, anOldRoot);
+	ASSIGN(newRoot, aNewRoot);
+	ASSIGN(itemDiffForUUID, anItemDiffForUUID);
+	ASSIGN(insertedItemForUUID, anInsertedItemForUUID);
 	return self;
 }
 
@@ -20,25 +24,41 @@
 {
 	NSSet *rootA_UUIDs = [a allUUIDs];
 	NSSet *rootB_UUIDs = [b allUUIDs];
+
 	
-	NSMutableSet *commonUUIDs = [NSMutableSet setWithSet: rootA_UUIDs];
-	[commonUUIDs intersectSet: rootB_UUIDs];
-		
 	NSMutableDictionary *itemDiffForUUID = [NSMutableDictionary dictionary];
-	
-	for (ETUUID *commonUUID in commonUUIDs)
 	{
-		COItem *commonItemA = [[a subtreeWithUUID: commonUUID] item];
-		COItem *commonItemB = [[b subtreeWithUUID: commonUUID] item];
+		NSMutableSet *commonUUIDs = [NSMutableSet setWithSet: rootA_UUIDs];
+		[commonUUIDs intersectSet: rootB_UUIDs];
 		
-		COItemDiff *diff = [COItemDiff diffItem: commonItemA withItem: commonItemB];
-		
-		[itemDiffForUUID setObject: diff
-							forKey: commonUUID];
+		for (ETUUID *aUUID in commonUUIDs)
+		{
+			COItem *commonItemA = [[a subtreeWithUUID: aUUID] item];
+			COItem *commonItemB = [[b subtreeWithUUID: aUUID] item];
+			
+			COItemDiff *diff = [COItemDiff diffItem: commonItemA withItem: commonItemB];
+			
+			[itemDiffForUUID setObject: diff
+								forKey: aUUID];
+		}
 	}
 	
-	return [[[self alloc] initWithRootUUID: [[b root] UUID]
-						   itemDiffForUUID: itemDiffForUUID] autorelease];
+	NSMutableDictionary *insertedItemForUUID = [NSMutableDictionary dictionary];
+	{
+		NSMutableSet *insertedUUIDs = [NSMutableSet setWithSet: rootB_UUIDs];
+		[insertedUUIDs minusSet: rootA_UUIDs];
+		
+		for (ETUUID *aUUID in insertedUUIDs)
+		{
+			[insertedItemForUUID setObject: [[b subtreeWithUUID: aUUID] item]
+									forKey: aUUID];
+		}		
+	}
+	
+	return [[[self alloc] initWithOldRootUUID: [[a root] UUID]
+								  newRootUUID: [[b root] UUID]
+							  itemDiffForUUID: itemDiffForUUID
+						  insertedItemForUUID: insertedItemForUUID] autorelease];
 }
 
 - (NSString *)description
@@ -69,12 +89,30 @@
 	 
 	 */
 
-	// Get the COItem instances to apply the diff to
-	NSSet *items = [aSubtree allContainedStoreItems];
+	NSSet *oldItems = [aSubtree allContainedStoreItems];
+	NSMutableSet *newItems = [NSMutableSet set];
 	
-	// rebuild the subtree with 
-	// [COSubtree subtreeWithItemSet: (NSSet*)items
-	// rootUUID:]
+	if (![[[aSubtree root] UUID] isEqual: oldRoot])
+	{
+		NSLog(@"WARNING: diff was created from a subtree with UUID %@ and being applied to a subtree with UUID %@", oldRoot, [[aSubtree root] UUID]);
+	}
+	
+	// Add the items from oldItems that we have a diff for
+	
+	for (COItem *item in oldItems)
+	{
+		COItemDiff *itemDiff = [itemDiffForUUID objectForKey: [item UUID]];
+		if (itemDiff != nil)
+		{
+			COItem *newItem = [itemDiff itemWithDiffAppliedTo: item];
+			[newItems addObject: newItem];
+		}
+	}
+	
+	[newItems addObjectsFromArray: [insertedItemForUUID allValues]];
+	
+	return [COSubtree subtreeWithItemSet: newItems
+								rootUUID: newRoot];
 }
 
 @end
