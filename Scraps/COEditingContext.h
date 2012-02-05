@@ -17,8 +17,6 @@
 
 + (COEditingContext *) editingContext;
 
-- (COEditingContext *) editingContextWithFaultProvider: (id<COFaultProvider>)aProvider;
-
 - (id)copyWithZone:(NSZone *)zone;
 
 - (COPath *) path;

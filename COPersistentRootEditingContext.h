@@ -3,11 +3,10 @@
 #import "COItem.h"
 #import "COStore.h"
 #import "COSubtree.h"
-#import "COFaultProvider.h"
 
 @class COStore;
 
-@interface COPersistentRootEditingContext : NSObject <COFaultProvider>
+@interface COPersistentRootEditingContext : NSObject
 {
 	COStore *store;
 	
