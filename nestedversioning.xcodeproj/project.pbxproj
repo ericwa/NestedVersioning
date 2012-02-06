@@ -77,6 +77,7 @@
 		7901634C148D4899005A9226 /* COItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EADD68147345B9003181FC /* COItem.m */; };
 		7901634D148D4899005A9226 /* COSubtree.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E76735148B3D1C009937E8 /* COSubtree.m */; };
 		790B1AE91485B184001ED869 /* TestSimpleUseOfNestedPersistentRoots.m in Sources */ = {isa = PBXBuildFile; fileRef = 790B1AE81485B184001ED869 /* TestSimpleUseOfNestedPersistentRoots.m */; };
+		7914B89914DF5F1A0078FE39 /* COItemFactory+PersistentRoots.m in Sources */ = {isa = PBXBuildFile; fileRef = 79999F1414DE597200FFBC99 /* COItemFactory+PersistentRoots.m */; };
 		79156DBA1484BE4D00AB66B1 /* TestConcurrentContextModification.m in Sources */ = {isa = PBXBuildFile; fileRef = 79156DB91484BE4D00AB66B1 /* TestConcurrentContextModification.m */; };
 		792972EE148C4AC100FD35A9 /* TestReferencesBetweenPersistentRoots.m in Sources */ = {isa = PBXBuildFile; fileRef = 792972ED148C4AC100FD35A9 /* TestReferencesBetweenPersistentRoots.m */; };
 		792972F5148C4CA800FD35A9 /* TestCompositeDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 792972F4148C4CA800FD35A9 /* TestCompositeDocument.m */; };
@@ -803,6 +804,7 @@
 				669CADDB1491539100D0CF5F /* COType.m in Sources */,
 				669CADDC1491539100D0CF5F /* COType+Plist.m in Sources */,
 				66F39B891490AE020097B7D5 /* COItemFactory.m in Sources */,
+				7914B89914DF5F1A0078FE39 /* COItemFactory+PersistentRoots.m in Sources */,
 				66EB7578148CA9D300C2114B /* main.m in Sources */,
 				66EB757F148CA9D300C2114B /* AppDelegate.m in Sources */,
 				79926C19148CADF80095A665 /* EWPersistentRootWindowController.m in Sources */,

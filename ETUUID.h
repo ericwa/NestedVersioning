@@ -69,7 +69,6 @@ ETUUID does not have a designated initializer. */
 
 /** @taskunit Comparison */
 
-- (NSComparisonResult) compare: (id)anObject;
 - (BOOL) isEqual: (id)anObject;
 
 @end

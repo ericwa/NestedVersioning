@@ -2,6 +2,9 @@
 #import "COMacros.h"
 #import <AppKit/NSOutlineView.h>
 #import "EWGraphRenderer.h"
+#import "COItemFactory.h"
+#import "COItemFactory+PersistentRoots.h"
+#import "AppDelegate.h"
 
 @implementation EWPersistentRootWindowController
 
@@ -55,11 +58,15 @@
 	{
 		COPersistentRootEditingContext *parentCtx = [COPersistentRootEditingContext editingContextForEditingPath: [path pathByDeletingLastPathComponent] 
 																										 inStore: store];
-		if ([parentCtx isBranch: [path lastPathComponent]])
+		
+		COSubtree *persistentRootTree = [parentCtx persistentRootTree];
+		COSubtree *item = [persistentRootTree subtreeWithUUID: [path lastPathComponent]];
+		
+		if ([[COItemFactory factory] isBranch: item])
 		{
 			return [@"Branch " stringByAppendingString: [path stringValue]];	
 		}
-		else if ([parentCtx isPersistentRoot: [path lastPathComponent]])
+		else if ([[COItemFactory factory] isPersistentRoot: item])
 		{
 			return [@"Persistent Root " stringByAppendingString: [path stringValue]];
 		}
@@ -136,7 +143,7 @@
 {
 	assert(![path isEmpty]);
 	
-	[[[NSApp delegate] windowControllerForPath: [path pathByDeletingLastPathComponent]] 
+	[[(AppDelegate*)[NSApp delegate] windowControllerForPath: [path pathByDeletingLastPathComponent]] 
 		orderFrontAndHighlightItem: [path lastPathComponent]];
 }
 
@@ -150,7 +157,9 @@
 		COPersistentRootEditingContext *parentCtx = [COPersistentRootEditingContext editingContextForEditingPath: [path pathByDeletingLastPathComponent] 
 																										 inStore: store];
 		
-		ETUUID *currentCommit = [parentCtx currentVersionForBranchOrPersistentRoot: [path lastPathComponent]];
+		COSubtree *item = [[parentCtx persistentRootTree] subtreeWithUUID: [path lastPathComponent]];
+		
+		ETUUID *currentCommit = [[COItemFactory factory] currentVersionForBranchOrPersistentRoot: item];
 		assert(currentCommit != nil);
 		
 		return currentCommit;
@@ -161,9 +170,11 @@
 - (IBAction) undo: (id)sender
 {
 	COPersistentRootEditingContext *parentCtx = [COPersistentRootEditingContext editingContextForEditingPath: [path pathByDeletingLastPathComponent] 
-														 inStore: store];
+																									 inStore: store];
 	
-	[parentCtx undo: [path lastPathComponent]];
+	COSubtree *item = [[parentCtx persistentRootTree] subtreeWithUUID: [path lastPathComponent]];
+	
+	[parentCtx undo: item];
 	[parentCtx commitWithMetadata: nil];
 	[[NSApp delegate] reloadAllBrowsers];
 }
@@ -171,8 +182,11 @@
 - (IBAction) redo: (id)sender
 {
 	COPersistentRootEditingContext *parentCtx = [COPersistentRootEditingContext editingContextForEditingPath: [path pathByDeletingLastPathComponent] 
-																									 inStore: store];	
-	[parentCtx redo: [path lastPathComponent]];
+																									 inStore: store];
+	
+	COSubtree *item = [[parentCtx persistentRootTree] subtreeWithUUID: [path lastPathComponent]];
+	
+	[parentCtx redo: item];
 	[parentCtx commitWithMetadata: nil];
 	[[NSApp delegate] reloadAllBrowsers];
 }
@@ -266,9 +280,10 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 		
 		if ([row attribute] == nil) // only if we click on the root of an embedded object
 		{
-			COMutableItem *item = [ctx _storeItemForUUID: [row UUID]];
-			if ([[item valueForAttribute: @"type"] isEqualToString: @"persistentRoot"] ||
-				[[item valueForAttribute: @"type"] isEqualToString: @"branch"])
+			COSubtree *item = [[ctx persistentRootTree] subtreeWithUUID: [row UUID]];
+			
+			if ([[COItemFactory factory] isPersistentRoot: item] ||
+				[[COItemFactory factory] isBranch: item])
 			{
 				[[NSApp delegate] browsePersistentRootAtPath: [path pathByAppendingPathComponent: [row UUID]]];
 			}
@@ -318,29 +333,29 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 
 /* NSOutlineView data source */
 
-- (NSInteger) outlineView: (NSOutlineView *)outlineView numberOfChildrenOfItem: (id)item
+- (NSInteger) outlineView: (NSOutlineView *)anOutlineView numberOfChildrenOfItem: (id)item
 {
 	return [[[self modelForItem: item] children] count];
 }
 
-- (id) outlineView: (NSOutlineView *)outlineView child: (NSInteger)index ofItem: (id)item
+- (id) outlineView: (NSOutlineView *)anOutlineView child: (NSInteger)index ofItem: (id)item
 {
 	return [[[self modelForItem: item] children] objectAtIndex: index];
 }
 
-- (BOOL) outlineView: (NSOutlineView *)outlineView isItemExpandable: (id)item
+- (BOOL) outlineView: (NSOutlineView *)anOutlineView isItemExpandable: (id)item
 {
-	return [self outlineView: outlineView numberOfChildrenOfItem: item] > 0;
+	return [self outlineView: anOutlineView numberOfChildrenOfItem: item] > 0;
 }
 
-- (id) outlineView: (NSOutlineView *)outlineView objectValueForTableColumn: (NSTableColumn *)column byItem: (id)item
+- (id) outlineView: (NSOutlineView *)anOutlineView objectValueForTableColumn: (NSTableColumn *)column byItem: (id)item
 {
 	return [[self modelForItem: item] valueForTableColumn: column];
 }
 
 /* Drag & Drop */
 
-- (BOOL)outlineView:(NSOutlineView *)outlineView writeItems:(NSArray *)items toPasteboard:(NSPasteboard *)pb
+- (BOOL)outlineView:(NSOutlineView *)anOutlineView writeItems:(NSArray *)items toPasteboard:(NSPasteboard *)pb
 {
 /*
 	NSMutableArray *pbItems = [NSMutableArray array];
@@ -368,7 +383,7 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 	return NO;
 }
 
-- (NSDragOperation)outlineView:(NSOutlineView *)outlineView validateDrop:(id <NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)index
+- (NSDragOperation)outlineView:(NSOutlineView *)anOutlineView validateDrop:(id <NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)index
 {
 /*
 	if (item != nil && ![item isKindOfClass: [EWPersistentRootOutlineRow class]])
@@ -478,7 +493,7 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 
 /* NSOutlineView delegate */
 
-- (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
+- (void)outlineView:(NSOutlineView *)anOutlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
 	if ([[tableColumn identifier] isEqualToString: @"name"])
 	{
@@ -490,12 +505,12 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 	}
 }
 
-- (NSCell *)outlineView:(NSOutlineView *)outlineView dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item
+- (NSCell *)outlineView:(NSOutlineView *)anOutlineView dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
 	return [item dataCellForTableColumn: tableColumn];
 }
 
-- (void)outlineView:(NSOutlineView *)ov setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item 
+- (void)outlineView:(NSOutlineView *)anOutlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item 
 {
 	[item setValue: object forTableColumn: tableColumn];
 }

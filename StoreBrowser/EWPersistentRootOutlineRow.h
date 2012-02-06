@@ -2,7 +2,6 @@
 #import "COPath.h"
 #import "COStore.h"
 #import "COPersistentRootEditingContext.h"
-#import "COPersistentRootEditingContext+Convenience.h"
 #import "COPersistentRootEditingContext+PersistentRoots.h"
 
 @class EWPersistentRootWindowController;
@@ -23,7 +22,11 @@
 	NSMutableArray *contents;
 }
 
++ (NSComparisonResult) compareUUID: (ETUUID*)uuid1 withUUID: (ETUUID *)uuid2;
+
 - (EWPersistentRootOutlineRow *) parent;
+
+- (COSubtree *)rowSubtree;
 
 - (ETUUID *)UUID;
 - (NSString *)attribute;
@@ -48,6 +51,8 @@
 - (NSComparisonResult) compare: (id)anObject;
 
 - (NSMenu *)menu;
+
+- (NSArray *) orderedBranchesForSubtree: (COSubtree*)aPersistentRoot;
 
 // Special row types
 

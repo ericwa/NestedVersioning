@@ -2,7 +2,6 @@
 #import "COPath.h"
 #import "COStore.h"
 #import "COPersistentRootEditingContext.h"
-#import "COPersistentRootEditingContext+Convenience.h"
 #import "COPersistentRootEditingContext+PersistentRoots.h"
 
 #import "EWPersistentRootOutlineRow.h"
