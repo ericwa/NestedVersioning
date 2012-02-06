@@ -11,8 +11,8 @@ VERSION=1
 $(APP_NAME)_OBJC_FILES=\
 	COItem.m\
 	COItemFactory.m\
+	COItemFactory+PersistentRoots.m\
 	COPath.m\
-	COPersistentRootEditingContext+Convenience.m\
 	COPersistentRootEditingContext+PersistentRoots.m\
 	COPersistentRootEditingContext.m\
 	COStore.m\
