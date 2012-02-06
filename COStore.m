@@ -245,6 +245,19 @@
 	return [COSubtree subtreeWithItemSet: itemSet
 								rootUUID: rootItemUUID];
 }
+- (COSubtree *) subtreeForUUID: (ETUUID *)aUUID inCommit: (ETUUID *)aCommit
+{
+	// FIXME: naive implementation
+	COSubtree *entireTree = [self treeForCommit: aCommit];
+	COSubtree *subtree = [entireTree subtreeWithUUID: aUUID];
+	
+	if (subtree == nil)
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"requested UUID not found"];
+	}
+	return subtree;
+}
 - (ETUUID *) rootItemForCommit: (ETUUID*)commit
 {
 	return [[self _plistForCommit: commit] objectForKey: @"root"];	

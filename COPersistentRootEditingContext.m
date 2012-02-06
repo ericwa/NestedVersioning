@@ -35,41 +35,18 @@
 	COPath *parentPath = [aPath pathByDeletingLastPathComponent];
 	ETUUID *lastPathComponent = [aPath lastPathComponent];
 	ETUUID *parentCommit = [self _baseCommitForPath: parentPath store: aStore]; // recursive call
-	
-	COItem *item = [aStore storeItemForEmbeddedObject: lastPathComponent
-											 inCommit: parentCommit];
-	
+
 	// item may be a persistent root or a branch.
-	
-	// FIXME: update to use COSubtree
-	
-	if ([[item valueForAttribute: @"type"] isEqual: @"persistentRoot"])
-	{
-		COPath *currentBranchPath = [item valueForAttribute: @"currentBranch"];
-		if (![currentBranchPath isKindOfClass: [COPath class]]
-			|| ![currentBranchPath hasComponents]
-			|| [currentBranchPath hasLeadingPathsToParent]
-			|| ![[currentBranchPath pathByDeletingLastPathComponent] isEmpty])
-		{
-			[NSException raise: NSInvalidArgumentException
-						format: @"persistent root at %@ has invalid or no current branch (%@)",
-								aPath, currentBranchPath];
-		}
-				  
-		ETUUID *currentBranch = [currentBranchPath lastPathComponent];
 
-		item = [aStore storeItemForEmbeddedObject: currentBranch
-										 inCommit: parentCommit];
-	}
-
-	ETUUID *trackedVersion = [item valueForAttribute: @"currentVersion"];	
+	COSubtree *item = [aStore subtreeForUUID: lastPathComponent inCommit: parentCommit];
 	
-	if (![[item valueForAttribute: @"type"] isEqual: @"branch"]
-		|| ![[item typeForAttribute: @"currentVersion"] isEqual: [COType commitUUIDType]]
-		|| (nil == trackedVersion))
+	ETUUID *trackedVersion = [[COItemFactory factory] currentVersionForBranchOrPersistentRoot: item];	
+	
+	if (nil == trackedVersion ||
+		![trackedVersion isKindOfClass: [ETUUID class]])
 	{
 		[NSException raise: NSInvalidArgumentException
-					format: @"branch specified by %@ is invalid/has no current version set", aPath];
+					format: @"persistent root or branch item invalid/has no current version set", [item UUID]];
 	}
 	
 	return trackedVersion;
