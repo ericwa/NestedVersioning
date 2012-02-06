@@ -568,6 +568,25 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 	[controller orderFrontAndHighlightItem: [newRoot UUID]];
 }
 
+- (void) duplicatePersistentRoot: (id)sender
+{
+	COSubtree *newRoot = [[[self rowSubtree] subtreeCopyRenamingAllItems] subtree];
+	COSubtree *dest = [[self rowSubtree] parent];
+	
+	[newRoot setPrimitiveValue: [NSString stringWithFormat: @"Copy of %@", [newRoot valueForAttribute: @"name"]]
+				  forAttribute: @"name"
+						  type: [COType stringType]];
+	
+	[dest addTree: newRoot];
+	
+	EWPersistentRootWindowController *controller = windowController; // FIXME: ugly hack
+	
+	[ctx commitWithMetadata: nil];
+	[[NSApp delegate] reloadAllBrowsers]; // FIXME: ugly.. deallocates self...
+	
+	[controller orderFrontAndHighlightItem: [newRoot UUID]];
+}
+
 - (void) diff: (id)sender
 {
 	NSArray *selectedRows = [windowController selectedRows];
@@ -639,6 +658,10 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 	{
         return [selIndexes count] == 1 && [self isBranch];
 	}
+	else if (theAction == @selector(duplicatePersistentRoot:))
+	{
+        return [selIndexes count] == 1 && [self isPersistentRoot];
+	}
 	else if (theAction == @selector(openPersistentRoot:))
 	{
 		return [selIndexes count] == 1 && ([self isBranch] || [self isPersistentRoot]);
@@ -702,6 +725,14 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 		[menu addItem: item];
 	}
 
+	{
+		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Duplicate Persistent Root" 
+													   action: @selector(duplicatePersistentRoot:) 
+												keyEquivalent: @""] autorelease];
+		[item setTarget: self];
+		[menu addItem: item];
+	}	
+	
 	{
 		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Delete" 
 													   action: @selector(delete:) 
