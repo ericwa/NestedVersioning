@@ -57,6 +57,7 @@
 	return output;
 }
 
+#if 0
 /**
  * Inspired by the description of diff3 in "A Formal Investigation of diff3"
  */
@@ -194,5 +195,6 @@
 									   overlappingNonconflictingOps: overlappingNonconflictingOps
 														  conflicts: conflicts];
 }
+#endif
 
 @end

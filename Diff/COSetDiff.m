@@ -94,6 +94,7 @@
 	return [self setWithDiffAppliedTo: aValue];
 }
 
+#if 0
 - (COMergeResult *)mergeWith: (COSetDiff *)other;
 {  
 	// FIXME: this method is a mess, can it be simplified?
@@ -173,6 +174,7 @@
 									   overlappingNonconflictingOps: overlappingNonconflictingOps
 														  conflicts: mergeConflicts];
 }
+#endif
 
 @end
 
