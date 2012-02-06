@@ -36,10 +36,6 @@
 	[i1 setPrimitiveValue: aName
 			 forAttribute: @"name"
 					 type: [COType stringType]];		
-
-	[i1 setPrimitiveValue: [COPath pathWithPathComponent: [i2 UUID]]
-			 forAttribute: @"currentBranch"
-					 type: [COType pathType]];
 	
 	[i1    addObject: i2
 toUnorderedAttribute: @"contents"
@@ -55,6 +51,9 @@ toUnorderedAttribute: @"contents"
 				  forBranch: i2
 			updateRedoLimit: YES
 			updateUndoLimit: YES];
+
+	[self setCurrentBranch: i2
+		 forPersistentRoot: i1];	
 	
 	return i1;
 }
@@ -191,12 +190,11 @@ toUnorderedAttribute: @"contents"
 	[i1 setPrimitiveValue: name
 			 forAttribute: @"name"
 					 type: [COType stringType]];
-	[i1 setPrimitiveValue: [COPath pathWithPathComponent: [i2 UUID]]
-			 forAttribute: @"currentBranch"
-					 type:[COType pathType]];	
 	[i1    addObject: i2
 toUnorderedAttribute: @"contents"
 				type: [COType setWithPrimitiveType: [COType embeddedItemType]]];
+	[self setCurrentBranch:i2
+		 forPersistentRoot:i1];
 	
 	// Reset the limits for undo/redo
 	{
