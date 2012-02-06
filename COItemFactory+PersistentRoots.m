@@ -51,17 +51,10 @@ toUnorderedAttribute: @"contents"
 			 forAttribute: @"type"
 					 type: [COType stringType]];
 	
-	[i2 setPrimitiveValue: aVersion
-			 forAttribute: @"currentVersion"
-					 type: [COType commitUUIDType]];		
-	
-	[i2 setPrimitiveValue: aVersion
-			 forAttribute: @"head"
-					 type: [COType commitUUIDType]];	// limit for redo. moved on every commit.
-	
-	[i2 setPrimitiveValue: aVersion
-			 forAttribute: @"tail"
-					 type: [COType commitUUIDType]];	// limit for undo. never changed.
+	[self setCurrentVersion: aVersion
+				  forBranch: i2
+			updateRedoLimit: YES
+			updateUndoLimit: YES];
 	
 	return i1;
 }
@@ -210,12 +203,10 @@ toUnorderedAttribute: @"contents"
 		ETUUID *currentVersion = [i2 valueForAttribute: @"currentVersion"];
 		assert(currentVersion != nil);
 		
-		[i2 setPrimitiveValue: currentVersion
-				 forAttribute: @"head"
-						 type: [COType commitUUIDType]];	// limit for redo. moved on every commit.
-		[i2 setPrimitiveValue: currentVersion
-				 forAttribute: @"tail"
-						 type: [COType commitUUIDType]];	// limit for undo. never changed.
+		[self setCurrentVersion: currentVersion
+					  forBranch: i2
+				updateRedoLimit: YES
+				updateUndoLimit: YES];
 	}
 	
 	assert([[i2 valueForAttribute: @"type"] isEqual: @"branch"]);
@@ -233,12 +224,10 @@ toUnorderedAttribute: @"contents"
 		ETUUID *currentVersion = [branch valueForAttribute: @"currentVersion"];
 		assert(currentVersion != nil);
 		
-		[branch setPrimitiveValue: currentVersion
-					 forAttribute: @"head"
-							 type: [COType commitUUIDType]];	// limit for redo. moved on every commit.
-		[branch setPrimitiveValue: currentVersion
-					 forAttribute: @"tail"
-							 type: [COType commitUUIDType]];	// limit for undo. never changed.
+		[self setCurrentVersion: currentVersion
+					  forBranch: branch
+				updateRedoLimit: YES
+				updateUndoLimit: YES];
 	}
 	
 	[aRoot addObject: branch
