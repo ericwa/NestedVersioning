@@ -19,7 +19,7 @@
 	
 
 	COSubtree *result = [[COItemFactory factory] persistentRootWithInitialVersion: nestedDocumentInitialVersion
-																	  displayName: @"New Persistent Root"];
+																	  displayName: aName];
 	return result;
 }
 
