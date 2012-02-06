@@ -149,10 +149,24 @@ toUnorderedAttribute: @"contents"
 
 - (void) setCurrentVersion: (ETUUID*)aVersion
 				 forBranch: (COSubtree*)aBranch
+		   updateRedoLimit: (BOOL)setRedoLimit
+		   updateUndoLimit: (BOOL)setUndoLimit
 {
 	[aBranch setPrimitiveValue: aVersion
 				  forAttribute: @"currentVersion"
 						  type: [COType commitUUIDType]];
+	if (setRedoLimit)
+	{
+		[aBranch setPrimitiveValue: aVersion
+					  forAttribute: @"head"
+							  type: [COType commitUUIDType]];
+	}
+	if (setUndoLimit)
+	{
+		[aBranch setPrimitiveValue: aVersion
+					  forAttribute: @"tail"
+							  type: [COType commitUUIDType]];
+	}
 }
 
 - (BOOL) isBranch: (COSubtree *)anEmbeddedObject

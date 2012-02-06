@@ -253,12 +253,11 @@
 		
 		ETUUID *trackedVersion = [[COItemFactory factory] currentVersionForBranch: item];
 		assert([trackedVersion isEqual: baseCommit]); // we already checked this earlier
-		[item setPrimitiveValue: newCommitUUID 
-				   forAttribute: @"currentVersion"
-						   type: [COType commitUUIDType]];
-		[item setPrimitiveValue: newCommitUUID 
-				   forAttribute: @"head" 
-						   type: [COType commitUUIDType]];
+		
+		[[COItemFactory factory] setCurrentVersion: newCommitUUID
+										 forBranch: item
+								   updateRedoLimit: YES
+								   updateUndoLimit: NO];
 		
 		ETUUID *resultUUID = [parentCtx commitWithMetadata: nil];
 		assert (resultUUID != nil);

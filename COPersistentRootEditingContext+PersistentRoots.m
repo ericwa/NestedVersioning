@@ -83,7 +83,10 @@
 	ETUUID *parent = [store parentForCommit: currentVersion];
 	assert(parent != nil);  // if we are not at the tail, the current commit should have a parent
 	
-	[[COItemFactory factory] setCurrentVersion: parent forBranch: aBranch];
+	[[COItemFactory factory] setCurrentVersion: parent
+									 forBranch: aBranch
+							   updateRedoLimit: NO
+							   updateUndoLimit: NO];
 }
 
 - (void) redoBranch: (COSubtree*)aBranch
@@ -123,7 +126,9 @@
 		if ([parentOfNewCurrentVersion isEqual: currentVersion])
 		{
 			[[COItemFactory factory] setCurrentVersion: newCurrentVersion
-											 forBranch: aBranch];
+											 forBranch: aBranch			 
+									   updateRedoLimit: NO
+									   updateUndoLimit: NO];
 			return;
 		}
 		newCurrentVersion = parentOfNewCurrentVersion;

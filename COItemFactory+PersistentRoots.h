@@ -28,7 +28,9 @@
 - (ETUUID *) tailForBranch: (COSubtree*)aBranch;
 
 - (void) setCurrentVersion: (ETUUID*)aVersion
-				 forBranch: (COSubtree*)aBranch;
+				 forBranch: (COSubtree*)aBranch
+		   updateRedoLimit: (BOOL)setRedoLimit
+		   updateUndoLimit: (BOOL)setUndoLimit;
 
 - (BOOL) isBranch: (COSubtree *)anEmbeddedObject;
 
