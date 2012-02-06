@@ -23,9 +23,7 @@ $(APP_NAME)_OBJC_FILES=\
 	Diff/../COSubtreeDiff.m\
 	Diff/COArrayDiff.m\
 	Diff/COItemDiff.m\
-	Diff/COMergeResult.m\
 	Diff/COObjectGraphDiff.m\
-	Diff/COPersistentRootDiff.m\
 	Diff/COSequenceDiff.m\
 	Diff/COSetDiff.m\
 	Diff/COStringDiff.m\
