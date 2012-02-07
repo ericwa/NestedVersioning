@@ -1,5 +1,12 @@
 #import "COSubtreeFactory.h"
 
+/**
+ * This is a set of methods for manipulating the items
+ * in an item tree representing persistent roots.
+ *
+ * This is, deliberately, completely non-object-oriented,
+ * since it is just manipulating data.
+ */
 @interface COSubtreeFactory (PersistentRoots)
 
 /**
