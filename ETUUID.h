@@ -8,7 +8,6 @@
 
 #import <Foundation/NSObject.h>
 #import <Foundation/NSString.h>
-#import <Foundation/NSUserDefaults.h>
 
 /** @group UUID
 

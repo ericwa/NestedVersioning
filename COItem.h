@@ -3,13 +3,21 @@
 #import "COType.h"
 
 /**
- * this class is the model object for "embedded objects".
- * 
- * currently it supports reading and writing embededd objects
- * to a simple plist format for debugging.
- * 
- * it will be changed to write the object to the sqlite db
- * at some point.
+ * This is a low-level model object which makes up the contents of a commit's
+ * item tree. (a commit is a set of COItem plus the UUID of the root COItem.)
+ *
+ * It oversees import/export to/from plist format, delegating some of the work
+ * to COType+Plist.
+ *
+ *
+ * *NOTE*: COItem does not participate in an object graph with other COItem
+ * objects; it's basically a "value" object. It can contain NSSet/NSDictionary/NSArray,
+ * but these containers can only contain ETUUID/NSData/NSNumber/NSString/COPath.
+ *
+ * See COSubtree for a higher-level model object, which uses COItem internally
+ * but lets you manipulate a set of COItem's as the corresponding tree of ObjC objects, 
+ * which is easier to work with than raw COItem (but they are exactly equivelant
+ * in terms of the data they represent.)
  */
 @interface COItem : NSObject <NSCopying, NSMutableCopying>
 {

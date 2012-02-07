@@ -5,8 +5,10 @@
 @class COType;
 
 /**
- * COItemPath represents a _destination_ in a COSubtree for
- * inserting a value
+ * COItemPath is a utiltiy class which represents a _destination_ in a COSubtree for
+ * inserting a value.
+ * 
+ * see -[COSubtree moveSubtreeWithUUID:toItemPath:]
  */
 @interface COItemPath : NSObject <NSCopying>
 {

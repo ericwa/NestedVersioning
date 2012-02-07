@@ -8,9 +8,12 @@
 
 /**
  * This is a mutable model object for modelling the contents of a persistent
- * root. COSubtree instances are arranged in a tree structure following
+ * root... high-level counterpart to COItem. See comment in COItem.h.
+ * COSubtree instances are arranged in a tree structure following
  * normal ObjC container semantics.
  *
+ * Comment on NestedVersioning data model:
+ * 
  * Why is the data model a tree instead of a reference-counted graph?
  * We want our data model to have clear and simple semantics for copying
  * and moving sections of data, and by forcing users to structure data

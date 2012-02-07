@@ -10,7 +10,14 @@
 /** @taskunit creation */
 
 /**
- * @returns the commit UUID which the path leads to. 
+ * @returns the commit UUID which the path leads to.
+ *
+ * To use a unix filesystem analogy, this method gives you the inode (commit)
+ * which a full path refers to. In order to compute that, it looks at
+ * the filesystem's root directory listing (the store's root commit), 
+ * looks up the inode (commit UUID) for the first directory name (persistent root UUID).
+ * Next it recursively opens the directory listing file and looks up the inode for and opens
+ * the directory listing for subsequent directory names in the path.
  *
  * Throws an exception if there is an error while navigating the path (similar to
  * opening a filesystem path that does not exist), or if the path has
