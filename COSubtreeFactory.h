@@ -1,11 +1,11 @@
 #import <Cocoa/Cocoa.h>
 #import "COSubtree.h"
 
-@interface COItemFactory : NSObject
+@interface COSubtreeFactory : NSObject
 {
 }
 
-+ (COItemFactory *)factory;
++ (COSubtreeFactory *)factory;
 
 - (COSubtree*) folder: (NSString*)aName;
 - (COSubtree*) item: (NSString*)aName;

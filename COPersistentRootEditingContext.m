@@ -1,8 +1,8 @@
 #import "COPersistentRootEditingContext.h"
 #import "COMacros.h"
 #import "COStorePrivate.h"
-#import "COItemFactory.h"
-#import "COItemFactory+PersistentRoots.h"
+#import "COSubtreeFactory.h"
+#import "COSubtreeFactory+PersistentRoots.h"
 #import "COSubtree.h"
 
 @implementation COPersistentRootEditingContext
@@ -40,7 +40,7 @@
 
 	COSubtree *item = [aStore subtreeForUUID: lastPathComponent inCommit: parentCommit];
 	
-	ETUUID *trackedVersion = [[COItemFactory factory] currentVersionForBranchOrPersistentRoot: item];	
+	ETUUID *trackedVersion = [[COSubtreeFactory factory] currentVersionForBranchOrPersistentRoot: item];	
 	
 	if (nil == trackedVersion ||
 		![trackedVersion isKindOfClass: [ETUUID class]])
@@ -244,17 +244,17 @@
 
 		// item may be a persistent root or a branch.
 		
-		if ([[COItemFactory factory] isPersistentRoot: item])
+		if ([[COSubtreeFactory factory] isPersistentRoot: item])
 		{
-			item = [[COItemFactory factory] currentBranchOfPersistentRoot: item];
+			item = [[COSubtreeFactory factory] currentBranchOfPersistentRoot: item];
 		}
 		
-		assert([[COItemFactory factory] isBranch: item]);
+		assert([[COSubtreeFactory factory] isBranch: item]);
 		
-		ETUUID *trackedVersion = [[COItemFactory factory] currentVersionForBranch: item];
+		ETUUID *trackedVersion = [[COSubtreeFactory factory] currentVersionForBranch: item];
 		assert([trackedVersion isEqual: baseCommit]); // we already checked this earlier
 		
-		[[COItemFactory factory] setCurrentVersion: newCommitUUID
+		[[COSubtreeFactory factory] setCurrentVersion: newCommitUUID
 										 forBranch: item
 								   updateRedoLimit: YES
 								   updateUndoLimit: NO];

@@ -1,6 +1,6 @@
-#import "COItemFactory.h"
+#import "COSubtreeFactory.h"
 
-@interface COItemFactory (PersistentRoots)
+@interface COSubtreeFactory (PersistentRoots)
 
 /**
  * This should be called before calling the other persistent root

@@ -1,4 +1,4 @@
-#import "COItemFactory+PersistentRoots.h"
+#import "COSubtreeFactory+PersistentRoots.h"
 #import "COMacros.h"
 #import "COItem.h"
 #import "ETUUID.h"
@@ -6,7 +6,7 @@
 #import "COSubtreeCopy.h"
 #import "COPath.h"
 
-@implementation COItemFactory (PersistentRoots)
+@implementation COSubtreeFactory (PersistentRoots)
 
 - (BOOL) isValidPersistentRoot: (COSubtree *)aRoot
 {

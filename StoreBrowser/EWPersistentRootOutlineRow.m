@@ -4,8 +4,8 @@
 #import "EWPersistentRootWindowController.h"
 #import "COPath.h"
 #import "COSubtreeDiff.h"
-#import "COItemFactory.h"
-#import "COItemFactory+PersistentRoots.h"
+#import "COSubtreeFactory.h"
+#import "COSubtreeFactory+PersistentRoots.h"
 #import "AppDelegate.h"
 
 @implementation EWPersistentRootOutlineRow
@@ -48,11 +48,11 @@ isPrimitiveInContainer: (BOOL)aFlag
 
 - (BOOL) isPersistentRoot
 {
-	return [self isEmbeddedObject] && [[COItemFactory factory] isPersistentRoot: [self rowSubtree]];
+	return [self isEmbeddedObject] && [[COSubtreeFactory factory] isPersistentRoot: [self rowSubtree]];
 }
 - (BOOL) isBranch
 {
-	return [self isEmbeddedObject] && [[COItemFactory factory] isBranch: [self rowSubtree]];
+	return [self isEmbeddedObject] && [[COSubtreeFactory factory] isBranch: [self rowSubtree]];
 }
 - (BOOL) isEmbeddedObject
 {
@@ -219,7 +219,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 	
 	COSubtree *proot = [[self rowSubtree] parent];
 	assert(proot != nil);
-	assert([[COItemFactory factory] isPersistentRoot: proot]);
+	assert([[COSubtreeFactory factory] isPersistentRoot: proot]);
 	
 	return proot;
 }
@@ -289,7 +289,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 			
 			NSArray *branches = [self orderedBranchesForSubtree: [self rowSubtree]];
 			
-			COSubtree *current = [[COItemFactory factory] currentBranchOfPersistentRoot: [self rowSubtree]];
+			COSubtree *current = [[COSubtreeFactory factory] currentBranchOfPersistentRoot: [self rowSubtree]];
 			
 			NSUInteger i = [branches indexOfObject: current];
 			assert(i < [branches count]);
@@ -313,7 +313,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 		else if	([self isBranch])
 		{
 			COSubtree *persistentRoot = [self persistentRootOwningBranch];
-			if ([[[COItemFactory factory] currentBranchOfPersistentRoot: persistentRoot] isEqual: [self rowSubtree]])
+			if ([[[COSubtreeFactory factory] currentBranchOfPersistentRoot: persistentRoot] isEqual: [self rowSubtree]])
 			{
 				return [NSImage imageNamed: @"arrow_branch_purple"]; // branch embedded object			
 			}
@@ -365,7 +365,7 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
  */
 - (NSArray *) orderedBranchesForSubtree: (COSubtree*)aPersistentRoot
 {
-	return [[[[COItemFactory factory] branchesOfPersistentRoot: aPersistentRoot] allObjects] sortedArrayUsingFunction: subtreeSort
+	return [[[[COSubtreeFactory factory] branchesOfPersistentRoot: aPersistentRoot] allObjects] sortedArrayUsingFunction: subtreeSort
 																											  context: NULL];
 }
 
@@ -376,7 +376,7 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 	if ([[tableColumn identifier] isEqualToString: @"currentbranch"])
 	{
 		COSubtree *selectedBranch = [[self orderedBranchesForSubtree: [self rowSubtree]] objectAtIndex: [object integerValue]];
-		[[COItemFactory factory] setCurrentBranch: selectedBranch
+		[[COSubtreeFactory factory] setCurrentBranch: selectedBranch
 								forPersistentRoot: [self rowSubtree]];
 		[ctx commitWithMetadata: nil];
 		
@@ -539,7 +539,7 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 
 - (void) branch: (id)sender
 {
-	COSubtree *newBranch = [[COItemFactory factory] createBranchOfPersistentRoot: [self rowSubtree]];
+	COSubtree *newBranch = [[COSubtreeFactory factory] createBranchOfPersistentRoot: [self rowSubtree]];
 	
 	EWPersistentRootWindowController *controller = windowController; // FIXME: ugly hack
 	
@@ -551,7 +551,7 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 
 - (void) duplicateBranchAsPersistentRoot: (id)sender
 {
-	COSubtree *newRoot = [[COItemFactory factory] persistentRootByCopyingBranch: [self rowSubtree]];
+	COSubtree *newRoot = [[COSubtreeFactory factory] persistentRootByCopyingBranch: [self rowSubtree]];
 	COSubtree *dest = [[[self rowSubtree] parent] parent];
 	
 	NSLog(@"trying to break out branch %@ into %@ as new UUID", [self UUID], dest);
@@ -621,7 +621,7 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 
 - (void) switchBranch: (id)sender
 {
-	[[COItemFactory factory] setCurrentBranch: [self rowSubtree]
+	[[COSubtreeFactory factory] setCurrentBranch: [self rowSubtree]
 							forPersistentRoot: [self persistentRootOwningBranch]];
 	[ctx commitWithMetadata: nil];
 	
@@ -671,7 +671,7 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
         if ([selIndexes count] == 1 && [self isBranch])
 		{
 			// Only enable the menu item if it is for a different branch than the current one
-			return ![[[COItemFactory factory] currentBranchOfPersistentRoot: [self persistentRootOwningBranch]]
+			return ![[[COSubtreeFactory factory] currentBranchOfPersistentRoot: [self persistentRootOwningBranch]]
 						isEqual: [self rowSubtree]];
 		}
 		return NO;

@@ -1,14 +1,14 @@
-#import "COItemFactory.h"
+#import "COSubtreeFactory.h"
 #import "COMacros.h"
 
-@implementation COItemFactory
+@implementation COSubtreeFactory
 
-+ (COItemFactory *)factory
++ (COSubtreeFactory *)factory
 {
-	static COItemFactory *factory;
+	static COSubtreeFactory *factory;
 	if (factory == nil)
 	{
-		factory = [[COItemFactory alloc] init];
+		factory = [[COSubtreeFactory alloc] init];
 	}
 	return factory;
 }

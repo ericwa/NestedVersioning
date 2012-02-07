@@ -50,7 +50,7 @@ void testTagging()
 
 
 	COStore *store = setupStore();
-	COItemFactory *factory = [COItemFactory factory];
+	COSubtreeFactory *factory = [COSubtreeFactory factory];
 	
 	COPersistentRootEditingContext *rootCtx = [store rootContext];
 	
@@ -252,8 +252,8 @@ void testTagging()
 	rootCtx = [store rootContext];
 	photolib = [[rootCtx persistentRootTree] subtreeWithUUID: [photolib UUID]];
 	
-	COSubtree *photolibBranchA = [[COItemFactory factory] currentBranchOfPersistentRoot: photolib];
-	COSubtree *photolibBranchB = [[COItemFactory factory] createBranchOfPersistentRoot: photolib];
+	COSubtree *photolibBranchA = [[COSubtreeFactory factory] currentBranchOfPersistentRoot: photolib];
+	COSubtree *photolibBranchB = [[COSubtreeFactory factory] createBranchOfPersistentRoot: photolib];
 	[rootCtx commitWithMetadata: nil];
 	
 	

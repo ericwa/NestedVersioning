@@ -8,8 +8,8 @@
 #import "COMacros.h"
 #import "COPersistentRootEditingContext+PersistentRoots.h"
 #import "COSubtree.h"
-#import "COItemFactory.h"
-#import "COItemFactory+PersistentRoots.h"
+#import "COSubtreeFactory.h"
+#import "COSubtreeFactory+PersistentRoots.h"
 #import "COItemDiff.h"
 
 #define STOREPATH [@"~/om5teststore" stringByExpandingTildeInPath]

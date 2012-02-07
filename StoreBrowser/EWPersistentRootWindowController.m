@@ -2,8 +2,8 @@
 #import "COMacros.h"
 #import <AppKit/NSOutlineView.h>
 #import "EWGraphRenderer.h"
-#import "COItemFactory.h"
-#import "COItemFactory+PersistentRoots.h"
+#import "COSubtreeFactory.h"
+#import "COSubtreeFactory+PersistentRoots.h"
 #import "AppDelegate.h"
 
 @implementation EWPersistentRootWindowController
@@ -62,11 +62,11 @@
 		COSubtree *persistentRootTree = [parentCtx persistentRootTree];
 		COSubtree *item = [persistentRootTree subtreeWithUUID: [path lastPathComponent]];
 		
-		if ([[COItemFactory factory] isBranch: item])
+		if ([[COSubtreeFactory factory] isBranch: item])
 		{
 			return [@"Branch " stringByAppendingString: [path stringValue]];	
 		}
-		else if ([[COItemFactory factory] isPersistentRoot: item])
+		else if ([[COSubtreeFactory factory] isPersistentRoot: item])
 		{
 			return [@"Persistent Root " stringByAppendingString: [path stringValue]];
 		}
@@ -159,7 +159,7 @@
 		
 		COSubtree *item = [[parentCtx persistentRootTree] subtreeWithUUID: [path lastPathComponent]];
 		
-		ETUUID *currentCommit = [[COItemFactory factory] currentVersionForBranchOrPersistentRoot: item];
+		ETUUID *currentCommit = [[COSubtreeFactory factory] currentVersionForBranchOrPersistentRoot: item];
 		assert(currentCommit != nil);
 		
 		return currentCommit;
@@ -282,8 +282,8 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 		{
 			COSubtree *item = [[ctx persistentRootTree] subtreeWithUUID: [row UUID]];
 			
-			if ([[COItemFactory factory] isPersistentRoot: item] ||
-				[[COItemFactory factory] isBranch: item])
+			if ([[COSubtreeFactory factory] isPersistentRoot: item] ||
+				[[COSubtreeFactory factory] isBranch: item])
 			{
 				[[NSApp delegate] browsePersistentRootAtPath: [path pathByAppendingPathComponent: [row UUID]]];
 			}

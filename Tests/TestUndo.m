@@ -62,8 +62,8 @@ void testUndo()
 	
 	// cretate a branch; label the branches
 	
-	COSubtree *u1BranchA = [[COItemFactory factory] currentBranchOfPersistentRoot: i1];
-	COSubtree *u1BranchB = [[COItemFactory factory] createBranchOfPersistentRoot: i1];
+	COSubtree *u1BranchA = [[COSubtreeFactory factory] currentBranchOfPersistentRoot: i1];
+	COSubtree *u1BranchB = [[COSubtreeFactory factory] createBranchOfPersistentRoot: i1];
 	[u1BranchA setPrimitiveValue: @"Branch A" forAttribute: @"name" type: [COType stringType]];
 	[u1BranchB setPrimitiveValue: @"Branch B" forAttribute: @"name" type: [COType stringType]];
 	
@@ -82,8 +82,8 @@ void testUndo()
 	
 	// switch to Branch B
 	
-	[[COItemFactory factory] setCurrentBranch:u1BranchB forPersistentRoot:i1];
-	EWTestTrue(u1BranchB == [[COItemFactory factory] currentBranchOfPersistentRoot: i1]);
+	[[COSubtreeFactory factory] setCurrentBranch:u1BranchB forPersistentRoot:i1];
+	EWTestTrue(u1BranchB == [[COSubtreeFactory factory] currentBranchOfPersistentRoot: i1]);
 	
 	[ctx commitWithMetadata: nil];
 	

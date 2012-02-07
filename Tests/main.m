@@ -116,37 +116,37 @@ static void testEditingContextEmbeddedObjects()
 	[iroot addTree: u1Tree];
 
 	
-	EWTestTrue(1 == [[[COItemFactory factory] branchesOfPersistentRoot: u1Tree] count]);
+	EWTestTrue(1 == [[[COSubtreeFactory factory] branchesOfPersistentRoot: u1Tree] count]);
 	
 	//
 	// 2b. create another branch
 	//
 	
-	COSubtree *u1BranchA = [[COItemFactory factory] currentBranchOfPersistentRoot: u1Tree];
-	COSubtree *u1BranchB = [[COItemFactory factory] createBranchOfPersistentRoot: u1Tree];
+	COSubtree *u1BranchA = [[COSubtreeFactory factory] currentBranchOfPersistentRoot: u1Tree];
+	COSubtree *u1BranchB = [[COSubtreeFactory factory] createBranchOfPersistentRoot: u1Tree];
 	
 	[u1BranchA setPrimitiveValue: @"Development Branch" forAttribute: @"name" type: [COType stringType]];
 	[u1BranchB setPrimitiveValue: @"Stable Branch" forAttribute: @"name" type: [COType stringType]];	
 	
-	EWTestEqual(u1BranchA, [[COItemFactory factory] currentBranchOfPersistentRoot: u1Tree]);
-	EWTestEqual(S(u1BranchA, u1BranchB), [[COItemFactory factory] branchesOfPersistentRoot: u1Tree]);
+	EWTestEqual(u1BranchA, [[COSubtreeFactory factory] currentBranchOfPersistentRoot: u1Tree]);
+	EWTestEqual(S(u1BranchA, u1BranchB), [[COSubtreeFactory factory] branchesOfPersistentRoot: u1Tree]);
 	
 
-	[[COItemFactory factory] setCurrentBranch: u1BranchB
+	[[COSubtreeFactory factory] setCurrentBranch: u1BranchB
 							forPersistentRoot: u1Tree];
 	
-	EWTestEqual(u1BranchB, [[COItemFactory factory] currentBranchOfPersistentRoot: u1Tree]);
+	EWTestEqual(u1BranchB, [[COSubtreeFactory factory] currentBranchOfPersistentRoot: u1Tree]);
 	
-	[[COItemFactory factory] setCurrentBranch: u1BranchA
+	[[COSubtreeFactory factory] setCurrentBranch: u1BranchA
 							forPersistentRoot: u1Tree];
 
-	EWTestEqual(u1BranchA, [[COItemFactory factory] currentBranchOfPersistentRoot: u1Tree]);
+	EWTestEqual(u1BranchA, [[COSubtreeFactory factory] currentBranchOfPersistentRoot: u1Tree]);
 
 	//
 	// 2c. create another persistent root containing a copy of u1BranchB
 	//
 	
-	COSubtree *u2 = [[COItemFactory factory] persistentRootByCopyingBranch:  u1BranchB];
+	COSubtree *u2 = [[COSubtreeFactory factory] persistentRootByCopyingBranch:  u1BranchB];
 	[iroot addTree: u2];
 	
 	//
