@@ -17,3 +17,5 @@ xcuserdata
 build
 *.xcuserstate
 *.~lock.*
+StoreBrowser.app
+obj
