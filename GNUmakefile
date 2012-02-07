@@ -10,8 +10,8 @@ VERSION=1
 
 $(APP_NAME)_OBJC_FILES=\
 	COItem.m\
-	COItemFactory.m\
-	COItemFactory+PersistentRoots.m\
+	COSubtreeFactory.m\
+	COSubtreeFactory+PersistentRoots.m\
 	COPath.m\
 	COPersistentRootEditingContext+PersistentRoots.m\
 	COPersistentRootEditingContext.m\
@@ -39,7 +39,7 @@ $(APP_NAME)_OBJC_FILES=\
 	Tests/TestTagging.m\
 	COSubtree.m\
 	COSubtreeCopy.m\
-	Scraps/COItemPath.m
+	COItemPath.m
 
 $(APP_NAME)_CC_FILES=\
 	Diff/diff.cc
@@ -64,8 +64,7 @@ $(APP_NAME)_LANGUAGES=\
 $(APP_NAME)_INCLUDE_DIRS=\
 	-I./Tests\
 	-I./Diff\
-	-I./StoreBrowser\
-	-I./Scraps
+	-I./StoreBrowser
 
 $(APP_NAME)_LIB_DIRS=
 
