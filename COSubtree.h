@@ -52,7 +52,7 @@
 						 rootUUID: (ETUUID *)aRootUUID;
 
 /**
- * @returns a mutable copy
+ * @returns a mutable copy, with UUID's unmodified.
  */
 - (id)copyWithZone:(NSZone *)zone;
 
@@ -75,6 +75,17 @@
  * mapping can include the receiver's UUID
  */
 - (COSubtreeCopy *)subtreeCopyWithNameMapping: (NSDictionary *)aMapping;
+
+
+/*
+ general comment on copying:
+ 
+ - when we copy/move an embedded object from one persistent root to another, it keeps the same uuid. are there any cases where this could cause problems? what if the destination already has objects with some/all of those uuids? probably keep the familiar filesystem semantics:
+ • copy & paste in the same directory (for CO: in the same persistent root), and it makes sense to assign new UUIDs since otherwise the copy&paste would do nothing. 
+ • copy & paste in to another directory (for CO: into another persistent root), and it makes sense to keep the same UUIDs, and overwrite any existing destination objects(?)
+ 
+ 
+ */
 
 
 
