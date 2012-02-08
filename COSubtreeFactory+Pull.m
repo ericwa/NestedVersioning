@@ -71,6 +71,12 @@ static ETUUID *FindCommonAncestor(ETUUID *commitA, ETUUID *commitB, COStore *sto
 		
 		NSLog(@"common ancestor: %@", ancestor);
 		
+		/**
+		 * now, open up the two branches, and do a merge.
+		 *
+		 * note that we need a special merge strategy for merging branch objects:
+		 * call this method recursively!
+		 */
 	}
 
 }
