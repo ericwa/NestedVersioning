@@ -59,12 +59,14 @@ void testTagging()
 	[rootCtx setPersistentRootTree: iroot];
 	
 	
-	COSubtree *taglib = [rootCtx createPersistentRootWithRootItem: [factory folder: @"tag library"]
-													  displayName: @"tag library"];
+	COSubtree *taglib = [[COSubtreeFactory factory] createPersistentRootWithRootItem: [factory folder: @"tag library"]
+													  displayName: @"tag library"
+															store: store];
 	[iroot addTree: taglib];
 	
-	COSubtree *photolib = [rootCtx createPersistentRootWithRootItem: [factory folder: @"photo library"]
-														displayName: @"photo library"];
+	COSubtree *photolib = [[COSubtreeFactory factory] createPersistentRootWithRootItem: [factory folder: @"photo library"]
+														displayName: @"photo library"
+															  store: store];
 	[iroot addTree: photolib];
 	
 	[rootCtx commitWithMetadata: nil];
@@ -124,16 +126,19 @@ void testTagging()
 			COSubtree *shoot1 = [factory folder: @"shoot1"];
 			[photoshootsFolder addTree: shoot1];
 			
-			COSubtree *photo1 = [photolibCtx createPersistentRootWithRootItem: [factory folder: @"photo1"]
-															  displayName: @"photo1"];
+			COSubtree *photo1 = [[COSubtreeFactory factory] createPersistentRootWithRootItem: [factory folder: @"photo1"]
+																  displayName: @"photo1"
+																		store: store];
 			[shoot1 addTree: photo1];
 
-			COSubtree *photo2 = [photolibCtx createPersistentRootWithRootItem: [factory folder: @"photo2"]
-																  displayName: @"photo2"];
+			COSubtree *photo2 = [[COSubtreeFactory factory] createPersistentRootWithRootItem: [factory folder: @"photo2"]
+																  displayName: @"photo2"
+																		store: store];
 			[shoot1 addTree: photo2];
 			
-			COSubtree *photo3 = [photolibCtx createPersistentRootWithRootItem: [factory folder: @"photo3"]
-																  displayName: @"photo3"];
+			COSubtree *photo3 = [[COSubtreeFactory factory] createPersistentRootWithRootItem: [factory folder: @"photo3"]
+																  displayName: @"photo3"
+																		store: store];
 			[shoot1 addTree: photo3];
 	
 		

@@ -111,8 +111,9 @@ static void testEditingContextEmbeddedObjects()
 						forAttribute: @"color"
 								type: [COType stringType]];
 	
-	COSubtree *u1Tree = [ctx createPersistentRootWithRootItem: nestedDocumentRootItem
-												  displayName: @"My Document"];
+	COSubtree *u1Tree = [[COSubtreeFactory factory] createPersistentRootWithRootItem: nestedDocumentRootItem
+																		 displayName: @"My Document"
+																			   store: store];
 	[iroot addTree: u1Tree];
 
 	

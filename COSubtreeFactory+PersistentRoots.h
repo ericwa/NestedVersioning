@@ -1,4 +1,5 @@
 #import "COSubtreeFactory.h"
+#import "COStore.h"
 
 /**
  * This is a set of methods for manipulating the items
@@ -47,6 +48,8 @@
 
 - (COSubtree *) createBranchOfPersistentRoot: (COSubtree *)aRoot;
 
-
+- (COSubtree *)createPersistentRootWithRootItem: (COSubtree *)anItem
+									displayName: (NSString *)aName
+										  store: (COStore *)aStore;
 
 @end

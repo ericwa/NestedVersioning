@@ -6,10 +6,10 @@
 #import "COStorePrivate.h"
 #import "COPersistentRootEditingContext.h"
 #import "COMacros.h"
-#import "COPersistentRootEditingContext+PersistentRoots.h"
 #import "COSubtree.h"
 #import "COSubtreeFactory.h"
 #import "COSubtreeFactory+PersistentRoots.h"
+#import "COSubtreeFactory+Undo.h"
 #import "COItemDiff.h"
 
 #define STOREPATH [@"~/om5teststore" stringByExpandingTildeInPath]

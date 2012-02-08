@@ -235,4 +235,19 @@ toUnorderedAttribute: @"contents"
 	return branch;
 }
 
+- (COSubtree *)createPersistentRootWithRootItem: (COSubtree *)anItem
+									displayName: (NSString *)aName
+										  store: (COStore *)aStore
+{
+	ETUUID *nestedDocumentInitialVersion = [aStore addCommitWithParent: nil
+															  metadata: nil
+																  tree: anItem];
+	assert(nestedDocumentInitialVersion != nil);
+	
+	
+	COSubtree *result = [[COSubtreeFactory factory] persistentRootWithInitialVersion: nestedDocumentInitialVersion
+																		 displayName: aName];
+	return result;
+}
+
 @end

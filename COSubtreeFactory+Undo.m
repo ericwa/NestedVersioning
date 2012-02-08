@@ -1,4 +1,4 @@
-#import "COPersistentRootEditingContext+PersistentRoots.h"
+#import "COSubtreeFactory+Undo.h"
 #import "COMacros.h"
 #import "COItem.h"
 #import "ETUUID.h"
@@ -7,31 +7,18 @@
 #import "COSubtreeFactory+PersistentRoots.h"
 #import "COSubtree.h"
 
-@implementation COPersistentRootEditingContext (PersistentRoots)
-
-- (COSubtree *)createPersistentRootWithRootItem: (COSubtree *)anItem
-									displayName: (NSString *)aName
-{
-	ETUUID *nestedDocumentInitialVersion = [store addCommitWithParent: nil
-															 metadata: nil
-																 tree: anItem];
-	assert(nestedDocumentInitialVersion != nil);
-	
-
-	COSubtree *result = [[COSubtreeFactory factory] persistentRootWithInitialVersion: nestedDocumentInitialVersion
-																	  displayName: aName];
-	return result;
-}
+@implementation COSubtreeFactory (Undo)
 
 - (void) undo: (COSubtree*)aRootOrBranch
+		store: (COStore *)aStore
 {
 	if ([[COSubtreeFactory factory] isBranch: aRootOrBranch])
 	{
-		[self undoBranch: aRootOrBranch];
+		[self undoBranch: aRootOrBranch store: aStore];
 	}
 	else if ([[COSubtreeFactory factory] isPersistentRoot: aRootOrBranch])
 	{
-		[self undoPersistentRoot: aRootOrBranch];
+		[self undoPersistentRoot: aRootOrBranch store: aStore];
 	}
 	else
 	{
@@ -40,14 +27,15 @@
 	}
 }
 - (void) redo: (COSubtree*)aRootOrBranch
+		store: (COStore *)aStore
 {
 	if ([[COSubtreeFactory factory] isBranch: aRootOrBranch])
 	{
-		[self redoBranch: aRootOrBranch];
+		[self redoBranch: aRootOrBranch store: aStore];
 	}
 	else if ([[COSubtreeFactory factory] isPersistentRoot: aRootOrBranch])
 	{
-		[self redoPersistentRoot: aRootOrBranch];
+		[self redoPersistentRoot: aRootOrBranch store: aStore];
 	}
 	else
 	{
@@ -57,15 +45,20 @@
 }
 
 - (void) undoPersistentRoot: (COSubtree*)aRoot
+					  store: (COStore *)aStore
 {
-	[self undoBranch: [[COSubtreeFactory factory] currentBranchOfPersistentRoot: aRoot]];
+	[self undoBranch: [[COSubtreeFactory factory] currentBranchOfPersistentRoot: aRoot]
+			   store: aStore];
 }
 - (void) redoPersistentRoot: (COSubtree*)aRoot
+					  store: (COStore *)aStore
 {
-	[self redoBranch: [[COSubtreeFactory factory] currentBranchOfPersistentRoot: aRoot]];
+	[self redoBranch: [[COSubtreeFactory factory] currentBranchOfPersistentRoot: aRoot]
+			   store: aStore];
 }
 
 - (void) undoBranch: (COSubtree*)aBranch
+			  store: (COStore *)aStore
 {
 	ETUUID *currentVersion = [[COSubtreeFactory factory] currentVersionForBranch: aBranch];
 	ETUUID *tail = [[COSubtreeFactory factory] tailForBranch: aBranch];
@@ -80,7 +73,7 @@
 		return;
 	}
 	
-	ETUUID *parent = [store parentForCommit: currentVersion];
+	ETUUID *parent = [aStore parentForCommit: currentVersion];
 	assert(parent != nil);  // if we are not at the tail, the current commit should have a parent
 	
 	[[COSubtreeFactory factory] setCurrentVersion: parent
@@ -90,6 +83,7 @@
 }
 
 - (void) redoBranch: (COSubtree*)aBranch
+			  store: (COStore *)aStore
 {
 	/*
 	 - to redo:
@@ -120,7 +114,7 @@
 	
 	while (1)
 	{
-		ETUUID *parentOfNewCurrentVersion = [store parentForCommit: newCurrentVersion];
+		ETUUID *parentOfNewCurrentVersion = [aStore parentForCommit: newCurrentVersion];
 		assert(parentOfNewCurrentVersion != nil);
 		
 		if ([parentOfNewCurrentVersion isEqual: currentVersion])

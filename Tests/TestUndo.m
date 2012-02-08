@@ -25,8 +25,9 @@ void testUndo()
 					forAttribute: @"color"
 							type: [COType stringType]];
 
-	COSubtree *i1 = [ctx createPersistentRootWithRootItem: contents1
-											  displayName: @"My Document"];
+	COSubtree *i1 = [[COSubtreeFactory factory] createPersistentRootWithRootItem: contents1
+																	 displayName: @"My Document"
+																		   store: store];
 	[iroot addTree: i1];
 	
 	[ctx commitWithMetadata: nil];
@@ -135,7 +136,7 @@ void testUndo()
 	u1BranchB = [[ctx persistentRootTree] subtreeWithUUID: [u1BranchB UUID]];
 	
 	
-	[ctx undoPersistentRoot: i1];
+	[[COSubtreeFactory factory] undoPersistentRoot: i1 store: store];
 	[ctx commitWithMetadata: nil];
 	
 	EWTestEqual(@"yellow", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
@@ -146,7 +147,7 @@ void testUndo()
 	
 	
 	
-	[ctx undoPersistentRoot: i1];
+	[[COSubtreeFactory factory] undoPersistentRoot: i1 store: store];
 	[ctx commitWithMetadata: nil];
 	
 	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
@@ -155,7 +156,7 @@ void testUndo()
 	
 	
 	
-	[ctx undoPersistentRoot: i1]; // does nothing - because we can't undo past the point where Branch B was created
+	[[COSubtreeFactory factory] undoPersistentRoot: i1 store: store]; // does nothing - because we can't undo past the point where Branch B was created
 	[ctx commitWithMetadata: nil];
 	
 	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
@@ -171,7 +172,7 @@ void testUndo()
 		EWTestTrue(commitsAfter < commitsBefore);
 	}
 	
-	[ctx redoPersistentRoot: i1];
+	[[COSubtreeFactory factory] redoPersistentRoot: i1 store: store];
 	[ctx commitWithMetadata: nil];
 	
 	EWTestEqual(@"yellow", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
@@ -180,7 +181,7 @@ void testUndo()
 	
 	
 	
-	[ctx redoPersistentRoot: i1];
+	[[COSubtreeFactory factory] redoPersistentRoot: i1 store: store];
 	[ctx commitWithMetadata: nil];
 	
 	EWTestEqual(@"green", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
@@ -190,7 +191,7 @@ void testUndo()
 	
 	
 	
-	[ctx redoPersistentRoot: i1]; // does nothing - because we can't redo past the end of the branch
+	[[COSubtreeFactory factory] redoPersistentRoot: i1 store: store]; // does nothing - because we can't redo past the end of the branch
 	[ctx commitWithMetadata: nil];
 	
 	EWTestEqual(@"green", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
@@ -200,8 +201,8 @@ void testUndo()
 	
 	
 	
-	[ctx undoPersistentRoot: i1]; 
-	[ctx undoPersistentRoot: i1]; 
+	[[COSubtreeFactory factory] undoPersistentRoot: i1 store: store]; 
+	[[COSubtreeFactory factory] undoPersistentRoot: i1 store: store];
 	[ctx commitWithMetadata: nil];
 	
 	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
