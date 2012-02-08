@@ -95,6 +95,7 @@
 		79CB310614C649BC00ADAB77 /* COType+Diff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E4BE5A149713CA00B7024A /* COType+Diff.m */; };
 		79CB315114C6911400ADAB77 /* arrow_branch_purple.png in Resources */ = {isa = PBXBuildFile; fileRef = 79CB315014C6911400ADAB77 /* arrow_branch_purple.png */; };
 		79F8202D14E25D85008236F6 /* COSubtreeFactory+Pull.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F8202C14E25D85008236F6 /* COSubtreeFactory+Pull.m */; };
+		79F8205714E26118008236F6 /* TestPull.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F8205614E26118008236F6 /* TestPull.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -230,6 +231,7 @@
 		79CB315014C6911400ADAB77 /* arrow_branch_purple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow_branch_purple.png; sourceTree = "<group>"; };
 		79F8202B14E25D85008236F6 /* COSubtreeFactory+Pull.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COSubtreeFactory+Pull.h"; sourceTree = "<group>"; };
 		79F8202C14E25D85008236F6 /* COSubtreeFactory+Pull.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "COSubtreeFactory+Pull.m"; sourceTree = "<group>"; };
+		79F8205614E26118008236F6 /* TestPull.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestPull.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -537,6 +539,7 @@
 				66F4E315147C59F0004FC1BA /* TestTagging.m */,
 				66E42F15149A91A600C90D5A /* TestTreeManager.m */,
 				79CB302914C63E1C00ADAB77 /* TestCommon.m */,
+				79F8205614E26118008236F6 /* TestPull.m */,
 				669CADEF1491C1D200D0CF5F /* Test Framework */,
 				79FB63BD1486ABEF00751E1E /* Tests - docs and code sketch */,
 				79FB63B81486ABC600751E1E /* Tests - documented only */,
@@ -736,6 +739,7 @@
 				79999F1514DE597200FFBC99 /* COSubtreeFactory+PersistentRoots.m in Sources */,
 				668DA35F14E0E41A0062E6C2 /* COItemPath.m in Sources */,
 				79F8202D14E25D85008236F6 /* COSubtreeFactory+Pull.m in Sources */,
+				79F8205714E26118008236F6 /* TestPull.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -10,6 +10,7 @@
 #import "COSubtreeFactory.h"
 #import "COSubtreeFactory+PersistentRoots.h"
 #import "COSubtreeFactory+Undo.h"
+#import "COSubtreeFactory+Pull.h"
 #import "COItemDiff.h"
 
 #define STOREPATH [@"~/om5teststore" stringByExpandingTildeInPath]
@@ -20,3 +21,4 @@ void testSubtree(void);
 void testUndo(void);
 void testTagging(void);
 void testTreeManager(void);
+void testPull(void);

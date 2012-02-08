@@ -295,6 +295,7 @@ int main (int argc, const char * argv[])
 	WITH_POOL(testUndo());
 	WITH_POOL(testTagging());
 	WITH_POOL(testDiff());
+	WITH_POOL(testPull());
 	
     WITH_POOL(EWTestLog());
     
