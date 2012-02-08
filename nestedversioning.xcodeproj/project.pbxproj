@@ -94,6 +94,7 @@
 		79CB310314C6499F00ADAB77 /* COStringDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E5039D1495F9CF003C69C7 /* COStringDiff.m */; };
 		79CB310614C649BC00ADAB77 /* COType+Diff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E4BE5A149713CA00B7024A /* COType+Diff.m */; };
 		79CB315114C6911400ADAB77 /* arrow_branch_purple.png in Resources */ = {isa = PBXBuildFile; fileRef = 79CB315014C6911400ADAB77 /* arrow_branch_purple.png */; };
+		79F8202D14E25D85008236F6 /* COSubtreeFactory+Pull.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F8202C14E25D85008236F6 /* COSubtreeFactory+Pull.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -227,6 +228,8 @@
 		79999F1414DE597200FFBC99 /* COSubtreeFactory+PersistentRoots.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "COSubtreeFactory+PersistentRoots.m"; sourceTree = "<group>"; };
 		79CB302914C63E1C00ADAB77 /* TestCommon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCommon.m; sourceTree = "<group>"; };
 		79CB315014C6911400ADAB77 /* arrow_branch_purple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow_branch_purple.png; sourceTree = "<group>"; };
+		79F8202B14E25D85008236F6 /* COSubtreeFactory+Pull.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COSubtreeFactory+Pull.h"; sourceTree = "<group>"; };
+		79F8202C14E25D85008236F6 /* COSubtreeFactory+Pull.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "COSubtreeFactory+Pull.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -570,6 +573,8 @@
 				79999F1414DE597200FFBC99 /* COSubtreeFactory+PersistentRoots.m */,
 				66E2FFB614899C7A00C66578 /* COSubtreeFactory+Undo.h */,
 				66E2FFB714899C7A00C66578 /* COSubtreeFactory+Undo.m */,
+				79F8202B14E25D85008236F6 /* COSubtreeFactory+Pull.h */,
+				79F8202C14E25D85008236F6 /* COSubtreeFactory+Pull.m */,
 			);
 			name = "Persistent Roots";
 			sourceTree = "<group>";
@@ -730,6 +735,7 @@
 				7978700F14D799A200B45FC6 /* TestSubtree.m in Sources */,
 				79999F1514DE597200FFBC99 /* COSubtreeFactory+PersistentRoots.m in Sources */,
 				668DA35F14E0E41A0062E6C2 /* COItemPath.m in Sources */,
+				79F8202D14E25D85008236F6 /* COSubtreeFactory+Pull.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
