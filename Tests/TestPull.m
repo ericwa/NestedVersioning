@@ -1,7 +1,8 @@
 #import "TestCommon.h"
 
 static void testPullSimpleFastForward(void);
-static void testPullComplex(void);
+static void testPullWithMerge(void);
+static void testPullWithNestedPersistentRootMerge(void);
 
 static void testPullSimpleFastForward()
 {
@@ -156,7 +157,7 @@ static COSubtree *subtreeVariantB(ETUUID *aUUID)
 
 
 
-static void testPullComplex()
+static void testPullWithMerge()
 {
 	COStore *store = setupStore();
 	
@@ -266,8 +267,94 @@ static void testPullComplex()
 }
 
 
+
+
+
+
+static void testPullWithNestedPersistentRootMerge()
+{
+	COStore *store = setupStore();
+	ETUUID *innerContentsUUID = [ETUUID UUID];
+	
+	COSubtree *innerdoc = [[COSubtreeFactory factory] createPersistentRootWithRootItem: subtreeInitialVersion(innerContentsUUID)
+																		   displayName: @"My Inner Document"
+																				 store: store];
+
+	COSubtree *innerdocBranchA = [[COSubtreeFactory factory] currentBranchOfPersistentRoot: innerdoc];
+	
+	COSubtree *outerdoc = [[COSubtreeFactory factory] createPersistentRootWithRootItem: innerdoc
+																		   displayName: @"My Outer Document"
+																				 store: store];
+
+	COSubtree *outerdocBranchA = [[COSubtreeFactory factory] currentBranchOfPersistentRoot: outerdoc];
+	COSubtree *outerdocBranchB = [[COSubtreeFactory factory] createBranchOfPersistentRoot: outerdoc];
+	
+	// Set outerdoc as the store root.
+	
+	COPersistentRootEditingContext *ctx = [store rootContext];
+	[ctx setPersistentRootTree: outerdoc];
+	[ctx commitWithMetadata: nil];
+	
+	
+	
+	// make a commit on outerdocBranchA/innerdocBranchA
+	
+	{
+		COPath *path = [[COPath pathWithPathComponent: [outerdocBranchA UUID]]
+							pathByAppendingPathComponent: [innerdocBranchA UUID]];
+		COPersistentRootEditingContext *ctx2 = [COPersistentRootEditingContext editingContextForEditingPath: path
+																									inStore: store];
+		[ctx2 setPersistentRootTree: subtreeVariantA(innerContentsUUID)];
+		[ctx2 commitWithMetadata: nil];
+	}
+	
+	// make a commit on outerdocBranchB/innerdocBranchA
+	
+	{
+		COPath *path = [[COPath pathWithPathComponent: [outerdocBranchB UUID]]
+						pathByAppendingPathComponent: [innerdocBranchA UUID]];
+		COPersistentRootEditingContext *ctx2 = [COPersistentRootEditingContext editingContextForEditingPath: path
+																									inStore: store];
+		[ctx2 setPersistentRootTree: subtreeVariantB(innerContentsUUID)];
+		[ctx2 commitWithMetadata: nil];
+	}
+	
+	// reopen the context to avoid a merge.
+	// FIXME: shouldn't be necessary
+	
+	ctx = [store rootContext];
+	outerdoc = [[ctx persistentRootTree] subtreeWithUUID: [outerdoc UUID]];
+	outerdocBranchA = [[ctx persistentRootTree] subtreeWithUUID: [outerdocBranchA UUID]];	
+	outerdocBranchB = [[ctx persistentRootTree] subtreeWithUUID: [outerdocBranchB UUID]];
+	
+		
+	// now, suppose we want to pull the changes made in branch A into branch B.
+	// this will be a full merge.
+	
+	[[COSubtreeFactory factory] pullChangesFromBranch: outerdocBranchA
+											 toBranch: outerdocBranchB
+												store: store];
+	
+	[ctx commitWithMetadata: nil];
+	
+	
+	
+	// check contents of outerdocBranchB/innerdocBranchA
+	
+	{
+		COPath *path = [[COPath pathWithPathComponent: [outerdocBranchB UUID]]
+						pathByAppendingPathComponent: [innerdocBranchA UUID]];
+		COPersistentRootEditingContext *ctx2 = [COPersistentRootEditingContext editingContextForEditingPath: path
+																									inStore: store];
+		EWTestEqual(A(@"a", @"b", @"c", @"d", @"e"),
+					[[ctx2 persistentRootTree] valueForAttribute: @"letters"]);
+	}
+}
+
+
 void testPull()
 {
 	testPullSimpleFastForward();
-	testPullComplex();
+	testPullWithMerge();
+	testPullWithNestedPersistentRootMerge();
 }
