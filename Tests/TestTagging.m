@@ -154,14 +154,18 @@ void testTagging()
 		// put photos in the albums as COPaths. Photo 2 and 1 are in both albums
 		// photo 2 appears twice in album1
 	
-			[album1 addObject: [COPath pathWithPathComponent: [photo1 UUID]] toOrderedAttribute: @"contents" atIndex:0 type:[COType arrayWithPrimitiveType: [COType pathType]]];
-			[album1 addObject: [COPath pathWithPathComponent: [photo2 UUID]] toOrderedAttribute: @"contents" atIndex:1 type:[COType arrayWithPrimitiveType: [COType pathType]]];
-			[album1 addObject: [COPath pathWithPathComponent: [photo2 UUID]] toOrderedAttribute: @"contents" atIndex:2 type:[COType arrayWithPrimitiveType: [COType pathType]]];
+			[album1 setValue: A([COPath pathWithPathComponent: [photo1 UUID]],
+								[COPath pathWithPathComponent: [photo2 UUID]],
+								[COPath pathWithPathComponent: [photo2 UUID]]) 
+				forAttribute: @"contents" 
+						type: [COType arrayWithPrimitiveType: [COType pathType]]];
 
-			[album2 addObject: [COPath pathWithPathComponent: [photo2 UUID]] toOrderedAttribute: @"contents" atIndex:0 type:[COType arrayWithPrimitiveType: [COType pathType]]];
-			[album2 addObject: [COPath pathWithPathComponent: [photo3 UUID]] toOrderedAttribute: @"contents" atIndex:1 type:[COType arrayWithPrimitiveType: [COType pathType]]];
-			[album2 addObject: [COPath pathWithPathComponent: [photo1 UUID]] toOrderedAttribute: @"contents" atIndex:2 type:[COType arrayWithPrimitiveType: [COType pathType]]];
-	
+			[album2 setValue: A([COPath pathWithPathComponent: [photo2 UUID]],
+								[COPath pathWithPathComponent: [photo3 UUID]],
+								[COPath pathWithPathComponent: [photo1 UUID]]) 
+				forAttribute: @"contents" 
+						type: [COType arrayWithPrimitiveType: [COType pathType]]];
+		
 		[photolibCtx commitWithMetadata: nil];
 		
 		// set up tags on photo1
@@ -184,10 +188,10 @@ void testTagging()
 								pathByAppendingPathComponent: [abstract UUID]];
 			
 			COSubtree *photo1Ctx_rootItem = [photo1Ctx persistentRootTree];
-
-			[photo1Ctx_rootItem addObject: tag1 toUnorderedAttribute: @"tags" type: [COType setWithPrimitiveType: [COType pathType]]];
-			[photo1Ctx_rootItem addObject: tag2 toUnorderedAttribute: @"tags" type: [COType setWithPrimitiveType: [COType pathType]]];
-			[photo1Ctx_rootItem addObject: tag3 toUnorderedAttribute: @"tags" type: [COType setWithPrimitiveType: [COType pathType]]];
+			
+			[photo1Ctx_rootItem setValue: S(tag1, tag2, tag3)
+							forAttribute: @"tags"
+									type: [COType setWithPrimitiveType: [COType pathType]]];
 			
 			[photo1Ctx commitWithMetadata: nil];
 		}
@@ -212,10 +216,10 @@ void testTagging()
 							pathByAppendingPathComponent: [abstract UUID]];
 			
 			COSubtree *photo2Ctx_rootItem = [photo2Ctx persistentRootTree];
-			
-			[photo2Ctx_rootItem addObject: tag1 toUnorderedAttribute: @"tags" type: [COType setWithPrimitiveType: [COType pathType]]];
-			[photo2Ctx_rootItem addObject: tag2 toUnorderedAttribute: @"tags" type: [COType setWithPrimitiveType: [COType pathType]]];
-			[photo2Ctx_rootItem addObject: tag3 toUnorderedAttribute: @"tags" type: [COType setWithPrimitiveType: [COType pathType]]];
+						
+			[photo2Ctx_rootItem setValue: S(tag1, tag2, tag3)
+							forAttribute: @"tags"
+									type: [COType setWithPrimitiveType: [COType pathType]]];
 			
 			[photo2Ctx commitWithMetadata: nil];
 		}
@@ -242,9 +246,9 @@ void testTagging()
 			
 			COSubtree *photo3Ctx_rootItem = [photo3Ctx persistentRootTree];
 			
-			[photo3Ctx_rootItem addObject: tag1 toUnorderedAttribute: @"tags" type: [COType setWithPrimitiveType: [COType pathType]]];
-			[photo3Ctx_rootItem addObject: tag2 toUnorderedAttribute: @"tags" type: [COType setWithPrimitiveType: [COType pathType]]];
-			[photo3Ctx_rootItem addObject: tag3 toUnorderedAttribute: @"tags" type: [COType setWithPrimitiveType: [COType pathType]]];
+			[photo3Ctx_rootItem setValue: S(tag1, tag2, tag3)
+							forAttribute: @"tags"
+									type: [COType setWithPrimitiveType: [COType pathType]]];
 			
 			[photo3Ctx commitWithMetadata: nil];
 		}
