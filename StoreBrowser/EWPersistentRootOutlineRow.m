@@ -6,6 +6,7 @@
 #import "COSubtreeDiff.h"
 #import "COSubtreeFactory.h"
 #import "COSubtreeFactory+PersistentRoots.h"
+#import "COSubtreeCopy.h"
 #import "AppDelegate.h"
 
 @implementation EWPersistentRootOutlineRow

@@ -4,6 +4,7 @@
 #import "EWGraphRenderer.h"
 #import "COSubtreeFactory.h"
 #import "COSubtreeFactory+PersistentRoots.h"
+#import "COSubtreeFactory+Undo.h"
 #import "AppDelegate.h"
 
 @implementation EWPersistentRootWindowController
@@ -174,7 +175,7 @@
 	
 	COSubtree *item = [[parentCtx persistentRootTree] subtreeWithUUID: [path lastPathComponent]];
 	
-	[parentCtx undo: item];
+	[[COSubtreeFactory factory] undo: item store: store];
 	[parentCtx commitWithMetadata: nil];
 	[[NSApp delegate] reloadAllBrowsers];
 }
@@ -186,7 +187,7 @@
 	
 	COSubtree *item = [[parentCtx persistentRootTree] subtreeWithUUID: [path lastPathComponent]];
 	
-	[parentCtx redo: item];
+	[[COSubtreeFactory factory] redo: item store: store];
 	[parentCtx commitWithMetadata: nil];
 	[[NSApp delegate] reloadAllBrowsers];
 }

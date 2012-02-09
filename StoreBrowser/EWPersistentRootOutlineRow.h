@@ -2,7 +2,7 @@
 #import "COPath.h"
 #import "COStore.h"
 #import "COPersistentRootEditingContext.h"
-#import "COPersistentRootEditingContext+PersistentRoots.h"
+#import "COSubtreeFactory+PersistentRoots.h"
 
 @class EWPersistentRootWindowController;
 

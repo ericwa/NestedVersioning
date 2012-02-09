@@ -5,6 +5,7 @@
 #import "COSubtree.h"
 #import "COSubtreeCopy.h"
 #import "COPath.h"
+#import "COStorePrivate.h"
 
 @implementation COSubtreeFactory (PersistentRoots)
 

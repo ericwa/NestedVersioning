@@ -17,6 +17,7 @@
 		6628FB9B142FA65D0072767A /* EWTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6628FB9A142FA65D0072767A /* EWTest.m */; };
 		66300AFA1492CA7E00246C89 /* EWGraphRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 66300AF91492CA7E00246C89 /* EWGraphRenderer.m */; };
 		66300AFD1493148300246C89 /* EWHistoryGraphView.m in Sources */ = {isa = PBXBuildFile; fileRef = 66300AFC1493148300246C89 /* EWHistoryGraphView.m */; };
+		66413CA014E38D2900CB592F /* COSubtreeFactory+Pull.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F8202C14E25D85008236F6 /* COSubtreeFactory+Pull.m */; };
 		668DA35F14E0E41A0062E6C2 /* COItemPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 668DA35E14E0E41A0062E6C2 /* COItemPath.m */; };
 		668DA36014E0E41A0062E6C2 /* COItemPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 668DA35E14E0E41A0062E6C2 /* COItemPath.m */; };
 		669CADDB1491539100D0CF5F /* COType.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EDFD95148EF73200D0DC0B /* COType.m */; };
@@ -747,6 +748,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				66413CA014E38D2900CB592F /* COSubtreeFactory+Pull.m in Sources */,
 				79CB30FE14C6499F00ADAB77 /* COArrayDiff.m in Sources */,
 				79CB310014C6499F00ADAB77 /* COObjectGraphDiff.m in Sources */,
 				79CB310114C6499F00ADAB77 /* COSequenceDiff.m in Sources */,
