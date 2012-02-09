@@ -1,6 +1,8 @@
 TODO
 ====
 
+[ ] (Feb 8/2012)  add code to search for all _different_ (i.e. curentVersion not same)
+                  branches of a given persistent root, for making a UI summary
 [ ] (Feb 8/2012)  add support for merging changes from the store into an editing 
                   context's in-memory tree, (in particular for when a commit is
 				  made on a nested persistent root while a context stays open on 
