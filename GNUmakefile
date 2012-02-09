@@ -12,8 +12,8 @@ $(APP_NAME)_OBJC_FILES=\
 	COItem.m\
 	COSubtreeFactory.m\
 	COSubtreeFactory+PersistentRoots.m\
+	COSubtreeFactory+Undo.m\
 	COPath.m\
-	COPersistentRootEditingContext+PersistentRoots.m\
 	COPersistentRootEditingContext.m\
 	COStore.m\
 	COType+Diff.m\
@@ -64,7 +64,8 @@ $(APP_NAME)_LANGUAGES=\
 $(APP_NAME)_INCLUDE_DIRS=\
 	-I./Tests\
 	-I./Diff\
-	-I./StoreBrowser
+	-I./StoreBrowser\
+	-I./Scraps
 
 $(APP_NAME)_LIB_DIRS=
 
