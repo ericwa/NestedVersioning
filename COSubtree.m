@@ -412,11 +412,53 @@
 					format: @"%@ expected a primitive type", NSStringFromSelector(_cmd)];
 	}
 	
-	if ([aType isEqual: [COType embeddedItemType]])
+	[self setValue: aValue
+	  forAttribute: anAttribute
+			  type: aType];
+}
+
+- (void) setValue: (id)aValue
+	 forAttribute: (NSString*)anAttribute
+			 type: (COType *)aType
+{
+	if ([[aType primitiveType] isEqual: [COType embeddedItemType]])
 	{
-		[self addSubtree: aValue atItemPath: [COItemPath pathWithItemUUID: [self UUID]
-																valueName: anAttribute
-																	 type: aType]];
+		if (![aType isMultivalued])
+		{
+			[self addSubtree: aValue atItemPath: [COItemPath pathWithItemUUID: [self UUID]
+																	valueName: anAttribute
+																		 type: aType]];
+		}
+		else
+		{
+			[self removeValueForAttribute: anAttribute];
+			
+			if ([aType isOrdered])
+			{
+				NSArray *array = (NSArray *)aValue;
+				const NSUInteger count = [array count];
+				for (NSUInteger i=0; i<count; i++)
+				{
+					COSubtree *aSubtree = [array objectAtIndex: i];
+					
+					[self addSubtree: aSubtree
+						  atItemPath: [COItemPath pathWithItemUUID: [self UUID]
+														 arrayName: anAttribute
+													insertionIndex: i
+															  type: aType]];
+				}
+			}
+			else
+			{
+				for (COSubtree *aSubtree in aValue)
+				{
+					[self addSubtree: aSubtree
+						  atItemPath: [COItemPath pathWithItemUUID: [self UUID]
+										   unorderedCollectionName: anAttribute
+															  type: aType]];
+				}
+			}
+		}
 	}
 	else
 	{

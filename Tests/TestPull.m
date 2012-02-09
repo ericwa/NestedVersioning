@@ -103,20 +103,9 @@ static COSubtree *subtreeInitialVersion(ETUUID *aUUID)
 {
 	COSubtree *tree = [[[COSubtree alloc] initWithUUID: aUUID] autorelease];
 	
-	[tree addObject: @"b"
- toOrderedAttribute: @"letters"
-			atIndex: 0
-			   type: [COType arrayWithPrimitiveType: [COType stringType]]];
-	
-	[tree addObject: @"c"
- toOrderedAttribute: @"letters"
-			atIndex: 1
-			   type: [COType arrayWithPrimitiveType: [COType stringType]]];
-	
-	[tree addObject: @"d"
- toOrderedAttribute: @"letters"
-			atIndex: 2
-			   type: [COType arrayWithPrimitiveType: [COType stringType]]];
+	[tree setValue: A(@"b", @"c", @"d")
+	  forAttribute: @"letters"
+			  type: [COType arrayWithPrimitiveType: [COType stringType]]];
 	
 	return tree;
 }
