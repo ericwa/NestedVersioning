@@ -164,6 +164,9 @@
 			  forAttribute: (NSString*)anAttribute
 					  type: (COType *)aType;
 
+- (void) setValue: (id)aValue
+	 forAttribute: (NSString*)anAttribute
+			 type: (COType *)aType;
 
 - (void)removeValueForAttribute: (NSString*)anAttribute;
 
