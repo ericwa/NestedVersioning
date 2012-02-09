@@ -1,12 +1,20 @@
 TODO
 ====
 
+[ ] (Feb 8/2012)  add support for merging changes from the store into an editing 
+                  context's in-memory tree, (in particular for when a commit is
+				  made on a nested persistent root while a context stays open on 
+				  one of its parents) so all of the ugly "reopen context"
+				  code in the tests can be removed.
+
 [x] (Feb 5/2012)  refactor COPersistentRootEditingContext+PersistentRoots.h methods
 [x] (Feb 5/2012)  finish rewriting tests to use COSubtree
-[ ] (Feb 5/2012)  write more tests? convert docs-only tests to code?
+[x] (Feb 5/2012)  write more tests? -> wrote "pull" test
+[ ] (Feb 5/2012)  convert docs-only tests to code?
 
 [x] (Nov 17/2011) rewrite store classes to use COStoreItem
-[ ] (Nov 30/2011) investigate a lazy loading/faulting api, refactor editing context api
+[ ] (Nov 30/2011) investigate a lazy loading/faulting api
+[ ] (Nov 30/2011) refactor editing context api
 [ ] (dec 5)       search
 [x] (dec 5)       work on storebrowser
 [x] (dec 6)       make COStoreItem immutable. 
