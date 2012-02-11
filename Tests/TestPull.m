@@ -77,8 +77,8 @@
 	
 	// test that we can read the document contents as expected.
 	
-	UKObjectsEqual(@"yellow", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
-	UKObjectsEqual(@"red", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
+	UKStringsEqual(@"yellow", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
+	UKStringsEqual(@"red", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
 	
 	
 	// now, suppose we want to pull the changes made in branch A into branch B.
@@ -90,7 +90,7 @@
 	
 	[ctx commitWithMetadata: nil];
 	
-	UKObjectsEqual(@"yellow", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
+	UKStringsEqual(@"yellow", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
 }
 
 

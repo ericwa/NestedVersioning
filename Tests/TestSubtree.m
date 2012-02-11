@@ -17,17 +17,17 @@
 	COSubtree *t2 = [COSubtree subtree];	
 	COSubtree *t3 = [COSubtree subtree];
 	
-	UKTrue(nil != [t1 UUID]);
-	UKTrue(nil == [t1 parent]);
-	UKTrue(t1 == [t1 root]);
+	UKNotNil([t1 UUID]);
+	UKNil([t1 parent]);
+	UKObjectsSame(t1, [t1 root]);
 	UKTrue([t1 containsSubtreeWithUUID: [t1 UUID]]);
 	
 	[t1 addTree: t2];
 	
-	UKTrue(t1 == [t2 parent]);	
-	UKTrue(t1 == [t2 root]);
-	UKTrue(nil == [t1 parent]);	
-	UKTrue(t1 == [t1 root]);
+	UKObjectsSame(t1, [t2 parent]);	
+	UKObjectsSame(t1, [t2 root]);
+	UKNil([t1 parent]);	
+	UKObjectsSame(t1, [t1 root]);
 	
 	UKTrue([t1 containsSubtreeWithUUID: [t2 UUID]]);
 	UKObjectsEqual(S([t1 UUID], [t2 UUID]), [t1 allUUIDs]);
@@ -51,7 +51,7 @@
 	UKObjectsEqual(A(t2), [t1 directDescendentSubtrees]);
 	UKIntsEqual(3, [[t1 allContainedStoreItems] count]);
 	UKIntsEqual(2, [[t2 allUUIDs] count]);		
-	UKTrue(t3 == [t1 subtreeWithUUID: [t3 UUID]]);
+	UKObjectsSame(t3, [t1 subtreeWithUUID: [t3 UUID]]);
 	UKObjectsEqual([COItemPath pathWithItemUUID: [t2 UUID]
 					 unorderedCollectionName: @"contents"
 										type: [COType setWithPrimitiveType: [COType embeddedItemType]]], 
@@ -75,8 +75,8 @@
 	COSubtree *t3b = [COSubtree subtree];
 	[t2a addTree: t3b];
 
-	UKTrue(![t1 isEqual: t1a]);
-	UKTrue(![t2 isEqual: t2a]);
+	UKObjectsNotEqual(t1, t1a);
+	UKObjectsNotEqual(t2, t2a);
 
 	[t2a removeSubtreeWithUUID: [t3b UUID]];
 

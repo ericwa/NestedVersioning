@@ -52,10 +52,10 @@
 					 pathByAppendingPathComponent: u1]
 					pathByAppendingPathComponent:u2];
 	
-	UKObjectsEqual(pathStr, [path stringValue]);
+	UKStringsEqual(pathStr, [path stringValue]);
 	
 	UKObjectsEqual([COPath path], [COPath path]);
-	UKObjectsEqual(@"", [[COPath path] stringValue]);
+	UKStringsEqual(@"", [[COPath path] stringValue]);
 	UKObjectsEqual([COPath path], [COPath pathWithString: @""]);
 	
 	UKObjectsEqual([[[COPath path]
@@ -64,7 +64,7 @@
 	
 	UKObjectsEqual(u2, [path lastPathComponent]);
 	UKObjectsEqual(u1, [[path pathByDeletingLastPathComponent] lastPathComponent]);
-	UKTrue(nil == [[[path pathByDeletingLastPathComponent] pathByDeletingLastPathComponent] lastPathComponent]);
+	UKNil([[[path pathByDeletingLastPathComponent] pathByDeletingLastPathComponent] lastPathComponent]);
 	UKObjectsEqual([COPath path], [[path pathByDeletingLastPathComponent] pathByDeletingLastPathComponent]);
 	
 	UKObjectsEqual(path, [COPath pathWithString: pathStr]);
@@ -80,8 +80,8 @@
 	UKObjectsEqual(path3b, path3a);
 	
 	UKTrue([path2 hasLeadingPathsToParent]);
-	UKTrue(![path2 isEmpty]);
-	UKTrue(![path2 hasComponents]);
+	UKFalse([path2 isEmpty]);
+	UKFalse([path2 hasComponents]);
 	
 	UKObjectsEqual([[COPath path] pathByAppendingPathComponent: u1], [path pathByAppendingPath: path2]);
 	UKObjectsEqual([COPath path], [path pathByAppendingPath: path3a]);
@@ -104,7 +104,7 @@
 	// in particular, it has no persistentRootTree, which means it contains no embedded objets.
 	// this means we can't commit.
 	
-	UKTrue(nil == [ctx persistentRootTree]);
+	UKNil([ctx persistentRootTree]);
 	
 	COSubtree *iroot = [COSubtree subtree];
 	
@@ -125,7 +125,7 @@
 	[iroot addTree: u1Tree];
 	
 	
-	UKTrue(1 == [[[COSubtreeFactory factory] branchesOfPersistentRoot: u1Tree] count]);
+	UKIntsEqual(1, [[[COSubtreeFactory factory] branchesOfPersistentRoot: u1Tree] count]);
 	
 	//
 	// 2b. create another branch
@@ -163,7 +163,7 @@
 	//
 	
 	ETUUID *firstVersion = [ctx commitWithMetadata: nil];
-	UKTrue(firstVersion != nil);
+	UKNotNil(firstVersion);
 	UKObjectsEqual(firstVersion, [store rootVersion]);
 	
 	
@@ -172,7 +172,7 @@
 	//
 	
 	COPersistentRootEditingContext *ctx2 = [ctx editingContextForEditingEmbdeddedPersistentRoot: u1Tree];
-	UKTrue(nil != ctx2);
+	UKNotNil(ctx2);
 	UKObjectsEqual([nestedDocumentRootItem UUID], [[ctx2 persistentRootTree] UUID]);
 	
 	//
@@ -188,7 +188,7 @@
 	
 	ETUUID *commitInNestedDocCtx2 = [ctx2 commitWithMetadata: nil];
 	
-	UKTrue(nil != commitInNestedDocCtx2);
+	UKNotNil(commitInNestedDocCtx2);
 	
 	
 	//
@@ -210,21 +210,21 @@
 		COPersistentRootEditingContext *testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u1Tree];
 		
 		COSubtree *item = [testctx2 persistentRootTree];
-		UKObjectsEqual(@"green", [item valueForAttribute: @"color"]);
+		UKStringsEqual(@"green", [item valueForAttribute: @"color"]);
 		UKObjectsEqual(nestedDocCtx2, item);
 	}
 	
 	{
 		COPersistentRootEditingContext *testctx2 = [testctx1 editingContextForEditingBranchOfPersistentRoot: u1BranchB];
 		COSubtree *item = [testctx2 persistentRootTree];
-		UKObjectsEqual(@"red", [item valueForAttribute: @"color"]);
+		UKStringsEqual(@"red", [item valueForAttribute: @"color"]);
 		//UKObjectsEqual(nestedDocumentRootItem, item);
 	}
 	
 	{
 		COPersistentRootEditingContext *testctx2 = [testctx1 editingContextForEditingEmbdeddedPersistentRoot: u2];
 		COSubtree *item = [testctx2 persistentRootTree];
-		UKObjectsEqual(@"red", [item valueForAttribute: @"color"]);
+		UKStringsEqual(@"red", [item valueForAttribute: @"color"]);
 		//UKObjectsEqual(nestedDocumentRootItem, item);
 	}
 	
