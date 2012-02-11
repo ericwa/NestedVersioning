@@ -104,6 +104,7 @@
 		66F0C88E14C5444600C0B5A6 /* bullet_yellow_multiple.png in Resources */ = {isa = PBXBuildFile; fileRef = 66F0C88D14C5444600C0B5A6 /* bullet_yellow_multiple.png */; };
 		79016345148D4886005A9226 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E552B4146B7799008FDFAF /* libcrypto.dylib */; };
 		791B6D6814E64F2100793BDE /* TestObjectGraphDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 791B6D6714E64F2100793BDE /* TestObjectGraphDiff.m */; };
+		7968143D14E72A6A00E5810C /* TestDiffPrimitives.m in Sources */ = {isa = PBXBuildFile; fileRef = 7968143C14E72A6A00E5810C /* TestDiffPrimitives.m */; };
 		79CB315114C6911400ADAB77 /* arrow_branch_purple.png in Resources */ = {isa = PBXBuildFile; fileRef = 79CB315014C6911400ADAB77 /* arrow_branch_purple.png */; };
 		79F0CED614E61795001D440B /* TestTagging.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F4E315147C59F0004FC1BA /* TestTagging.m */; };
 		79F0CEDD14E6179F001D440B /* TestCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CB302914C63E1C00ADAB77 /* TestCommon.m */; };
@@ -284,6 +285,7 @@
 		792972F9148C4D6D00FD35A9 /* TestUserRequirements.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestUserRequirements.m; sourceTree = "<group>"; };
 		79297307148C94FD00FD35A9 /* COSubtreeFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COSubtreeFactory.h; sourceTree = "<group>"; };
 		79297308148C94FD00FD35A9 /* COSubtreeFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COSubtreeFactory.m; sourceTree = "<group>"; };
+		7968143C14E72A6A00E5810C /* TestDiffPrimitives.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestDiffPrimitives.m; sourceTree = "<group>"; };
 		7978700E14D799A200B45FC6 /* TestSubtree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSubtree.m; sourceTree = "<group>"; };
 		79926C17148CADF80095A665 /* EWPersistentRootWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWPersistentRootWindowController.h; sourceTree = "<group>"; };
 		79926C18148CADF80095A665 /* EWPersistentRootWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWPersistentRootWindowController.m; sourceTree = "<group>"; };
@@ -658,6 +660,7 @@
 				79FB63BD1486ABEF00751E1E /* Tests - docs and code sketch */,
 				79FB63B81486ABC600751E1E /* Tests - documented only */,
 				6628FB9D142FA7840072767A /* Tests - old */,
+				7968143C14E72A6A00E5810C /* TestDiffPrimitives.m */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -931,6 +934,7 @@
 				66E778A614E607CD00D5DFFF /* TestPull.m in Sources */,
 				66E778AD14E6080700D5DFFF /* TestGeneral.m in Sources */,
 				791B6D6814E64F2100793BDE /* TestObjectGraphDiff.m in Sources */,
+				7968143D14E72A6A00E5810C /* TestDiffPrimitives.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
