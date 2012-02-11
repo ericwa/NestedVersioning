@@ -513,6 +513,18 @@ toUnorderedAttribute: (NSString*)anAttribute
 	[self debug];
 }
 
+- (void)   addObject: (id)aValue
+  toOrderedAttribute: (NSString*)anAttribute
+				type: (COType *)aType
+{
+	NSUInteger anIndex = [[root valueForAttribute: anAttribute] count];
+						  
+	[self addObject: aValue
+ toOrderedAttribute: anAttribute
+			atIndex: anIndex
+			   type: aType];
+}
+
 - (void)removeValueForAttribute: (NSString*)anAttribute
 {
 	if ([[[root typeForAttribute: anAttribute] primitiveType] isEqual: [COType embeddedItemType]])

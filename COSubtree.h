@@ -185,6 +185,10 @@ toUnorderedAttribute: (NSString*)anAttribute
 			 atIndex: (NSUInteger)anIndex
 				type: (COType *)aType;
 
+- (void)   addObject: (id)aValue
+  toOrderedAttribute: (NSString*)anAttribute
+				type: (COType *)aType;
+
 /**
  * Inserts the given subtree at the given item path.
  * The provided subtree is removed from its parent, if it has one.
