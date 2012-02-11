@@ -1,6 +1,11 @@
 TODO
 ====
-
+[ ] (Feb 11/2012) add a feature like Quentin's COSCustomTrack. of particular interest
+				  would be a "local undo" - linear undo/redo on all objects in a persistent
+				  root _except_ the current versions of branches would be unaltered.
+				  this would support the QuArK-explorer use case, of
+				  undo/redo in the project window which doesn't affect the versions of the
+				  embedded documents.
 [ ] (Feb 8/2012)  add code to search for all _different_ (i.e. curentVersion not same)
                   branches of a given persistent root, for making a UI summary
 [ ] (Feb 8/2012)  add support for merging changes from the store into an editing 
