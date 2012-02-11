@@ -1,10 +1,14 @@
 #import "TestCommon.h"
 
-static void testPullSimpleFastForward(void);
-static void testPullWithMerge(void);
-static void testPullWithNestedPersistentRootMerge(void);
+@interface TestPull : NSObject <UKTest> {
+	
+}
 
-static void testPullSimpleFastForward()
+@end
+
+@implementation TestPull
+
+- (void) testPullSimpleFastForward
 {
 	// setup a simple persistent root containing { "color" : "red" }
 	
@@ -73,8 +77,8 @@ static void testPullSimpleFastForward()
 	
 	// test that we can read the document contents as expected.
 	
-	EWTestEqual(@"yellow", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
-	EWTestEqual(@"red", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
+	UKObjectsEqual(@"yellow", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
+	UKObjectsEqual(@"red", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
 	
 	
 	// now, suppose we want to pull the changes made in branch A into branch B.
@@ -86,7 +90,7 @@ static void testPullSimpleFastForward()
 	
 	[ctx commitWithMetadata: nil];
 	
-	EWTestEqual(@"yellow", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
+	UKObjectsEqual(@"yellow", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
 }
 
 
@@ -146,7 +150,7 @@ static COSubtree *subtreeVariantB(ETUUID *aUUID)
 
 
 
-static void testPullWithMerge()
+- (void) testPullWithMerge
 {
 	COStore *store = setupStore();
 	
@@ -194,9 +198,9 @@ static void testPullWithMerge()
 
 	// test that we can read the document contents as expected.
 	
-	EWTestEqual(A(@"a", @"b", @"c", @"d"),
+	UKObjectsEqual(A(@"a", @"b", @"c", @"d"),
 				[[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"letters"]);
-	EWTestEqual(A(@"b", @"c", @"d"),
+	UKObjectsEqual(A(@"b", @"c", @"d"),
 				[[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"letters"]);
 	
 	
@@ -232,9 +236,9 @@ static void testPullWithMerge()
 	
 	// test that we can read the document contents as expected.
 	
-	EWTestEqual(A(@"a", @"b", @"c", @"d"),
+	UKObjectsEqual(A(@"a", @"b", @"c", @"d"),
 				[[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"letters"]);
-	EWTestEqual(A(@"b", @"c", @"d", @"e"),
+	UKObjectsEqual(A(@"b", @"c", @"d", @"e"),
 				[[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"letters"]);
 	
 
@@ -251,7 +255,7 @@ static void testPullWithMerge()
 	[ctx commitWithMetadata: nil];
 	
 	
-	EWTestEqual(A(@"a", @"b", @"c", @"d", @"e"),
+	UKObjectsEqual(A(@"a", @"b", @"c", @"d", @"e"),
 				[[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"letters"]);
 }
 
@@ -260,7 +264,7 @@ static void testPullWithMerge()
 
 
 
-static void testPullWithNestedPersistentRootMerge()
+- (void) testPullWithNestedPersistentRootMerge
 {
 	COStore *store = setupStore();
 	ETUUID *innerContentsUUID = [ETUUID UUID];
@@ -335,15 +339,9 @@ static void testPullWithNestedPersistentRootMerge()
 						pathByAppendingPathComponent: [innerdocBranchA UUID]];
 		COPersistentRootEditingContext *ctx2 = [COPersistentRootEditingContext editingContextForEditingPath: path
 																									inStore: store];
-		EWTestEqual(A(@"a", @"b", @"c", @"d", @"e"),
+		UKObjectsEqual(A(@"a", @"b", @"c", @"d", @"e"),
 					[[ctx2 persistentRootTree] valueForAttribute: @"letters"]);
 	}
 }
 
-
-void testPull()
-{
-	testPullSimpleFastForward();
-	testPullWithMerge();
-	testPullWithNestedPersistentRootMerge();
-}
+@end

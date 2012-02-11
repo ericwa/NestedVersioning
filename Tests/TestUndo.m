@@ -1,6 +1,14 @@
 #import "TestCommon.h"
 
-void testUndo()
+@interface TestUndo : NSObject <UKTest> {
+	
+}
+
+@end
+
+@implementation TestUndo
+
+- (void) testUndo
 {
 	// commits in the persistent root
 	
@@ -75,16 +83,16 @@ void testUndo()
 	
 	// test that we can read the document contents.
 	
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
+	UKObjectsEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
+	UKObjectsEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
+	UKObjectsEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
 	
 	
 	
 	// switch to Branch B
 	
 	[[COSubtreeFactory factory] setCurrentBranch:u1BranchB forPersistentRoot:i1];
-	EWTestTrue(u1BranchB == [[COSubtreeFactory factory] currentBranchOfPersistentRoot: i1]);
+	UKTrue(u1BranchB == [[COSubtreeFactory factory] currentBranchOfPersistentRoot: i1]);
 	
 	[ctx commitWithMetadata: nil];
 	
@@ -102,9 +110,9 @@ void testUndo()
 		commit3 = [ctx3 commitWithMetadata: nil];
 	}
 	
-	EWTestEqual(@"yellow", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
-	EWTestEqual(@"yellow", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
+	UKObjectsEqual(@"yellow", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
+	UKObjectsEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
+	UKObjectsEqual(@"yellow", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
 	
 	{
 		COPersistentRootEditingContext *ctx4 = [ctx editingContextForEditingEmbdeddedPersistentRoot: i1];
@@ -115,9 +123,9 @@ void testUndo()
 		commit4 = [ctx4 commitWithMetadata: nil];
 	}
 	
-	EWTestEqual(@"green", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
-	EWTestEqual(@"green", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
+	UKObjectsEqual(@"green", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
+	UKObjectsEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
+	UKObjectsEqual(@"green", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
 	
 	
 	
@@ -139,9 +147,9 @@ void testUndo()
 	[[COSubtreeFactory factory] undoPersistentRoot: i1 store: store];
 	[ctx commitWithMetadata: nil];
 	
-	EWTestEqual(@"yellow", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
-	EWTestEqual(@"yellow", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
+	UKObjectsEqual(@"yellow", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
+	UKObjectsEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
+	UKObjectsEqual(@"yellow", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
 	
 	
 	
@@ -150,18 +158,18 @@ void testUndo()
 	[[COSubtreeFactory factory] undoPersistentRoot: i1 store: store];
 	[ctx commitWithMetadata: nil];
 	
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
+	UKObjectsEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
+	UKObjectsEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
+	UKObjectsEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
 	
 	
 	
 	[[COSubtreeFactory factory] undoPersistentRoot: i1 store: store]; // does nothing - because we can't undo past the point where Branch B was created
 	[ctx commitWithMetadata: nil];
 	
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
+	UKObjectsEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
+	UKObjectsEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
+	UKObjectsEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
 	
 
 	// ensure that a GC here does not delete any commits we need
@@ -169,24 +177,24 @@ void testUndo()
 		NSUInteger commitsBefore = [[store allCommitUUIDs] count];
 		[store gc];
 		NSUInteger commitsAfter = [[store allCommitUUIDs] count];
-		EWTestTrue(commitsAfter < commitsBefore);
+		UKTrue(commitsAfter < commitsBefore);
 	}
 	
 	[[COSubtreeFactory factory] redoPersistentRoot: i1 store: store];
 	[ctx commitWithMetadata: nil];
 	
-	EWTestEqual(@"yellow", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
-	EWTestEqual(@"yellow", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
+	UKObjectsEqual(@"yellow", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
+	UKObjectsEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
+	UKObjectsEqual(@"yellow", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
 	
 	
 	
 	[[COSubtreeFactory factory] redoPersistentRoot: i1 store: store];
 	[ctx commitWithMetadata: nil];
 	
-	EWTestEqual(@"green", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
-	EWTestEqual(@"green", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
+	UKObjectsEqual(@"green", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
+	UKObjectsEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
+	UKObjectsEqual(@"green", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
 	
 	
 	
@@ -194,9 +202,9 @@ void testUndo()
 	[[COSubtreeFactory factory] redoPersistentRoot: i1 store: store]; // does nothing - because we can't redo past the end of the branch
 	[ctx commitWithMetadata: nil];
 	
-	EWTestEqual(@"green", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
-	EWTestEqual(@"green", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
+	UKObjectsEqual(@"green", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
+	UKObjectsEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
+	UKObjectsEqual(@"green", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
 	
 	
 	
@@ -205,9 +213,9 @@ void testUndo()
 	[[COSubtreeFactory factory] undoPersistentRoot: i1 store: store];
 	[ctx commitWithMetadata: nil];
 	
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
+	UKObjectsEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
+	UKObjectsEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
+	UKObjectsEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
 	
 
 	
@@ -223,8 +231,10 @@ void testUndo()
 		commit3 = [ctx3 commitWithMetadata: nil];
 	}
 	
-	EWTestEqual(@"pink", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
-	EWTestEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
-	EWTestEqual(@"pink", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
+	UKObjectsEqual(@"pink", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
+	UKObjectsEqual(@"orange", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchA] persistentRootTree] valueForAttribute: @"color"]);
+	UKObjectsEqual(@"pink", [[[ctx editingContextForEditingBranchOfPersistentRoot: u1BranchB] persistentRootTree] valueForAttribute: @"color"]);	
 	
 }
+
+@end

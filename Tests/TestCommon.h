@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "EWTest.h"
+#import <UnitKit/UnitKit.h>
 #import "COStore.h"
 #import "COPath.h"
 #import "COItem.h"
@@ -16,9 +16,3 @@
 #define STOREPATH [@"~/om5teststore" stringByExpandingTildeInPath]
 
 COStore *setupStore(void);
-
-void testSubtree(void);
-void testUndo(void);
-void testTagging(void);
-void testTreeManager(void);
-void testPull(void);

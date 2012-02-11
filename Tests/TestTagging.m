@@ -1,6 +1,14 @@
 #import "TestCommon.h"
 
-void testTagging()
+@interface TestTagging : NSObject <UKTest> {
+	
+}
+
+@end
+
+@implementation TestTagging
+
+- (void) testTagging
 {	
 	// tag library <<persistent root>>
 	//  |
@@ -274,3 +282,5 @@ void testTagging()
 	
 	[store release];
 }
+
+@end
