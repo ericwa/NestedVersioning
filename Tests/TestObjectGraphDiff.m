@@ -47,42 +47,35 @@
 	// doc state:  (triangl1, line1, group1=(circle1, square1), image1)
 	
 	
-	// Now do the merge
+	// ------------
 	
 	
-	/*
-	COObjectGraphDiff *diff_ctx3_vs_ctx2 = [COObjectGraphDiff diffContainer: (id)[ctx3 objectWithUUID: [doc UUID]]
-															  withContainer: (id)[ctx2 objectWithUUID: [doc UUID]]];
-	UKNotNil(diff_ctx3_vs_ctx2);
+	// Calculate diffs
 	
-	COObjectGraphDiff *diff_ctx3_vs_ctx1 = [COObjectGraphDiff diffContainer: (id)[ctx3 objectWithUUID: [doc UUID]]
-															  withContainer: (id)[ctx1 objectWithUUID: [doc UUID]]];
-	UKNotNil(diff_ctx3_vs_ctx2);
+	COSubtreeDiff *diff_doc3_vs_doc2 = [COSubtreeDiff diffSubtree: doc3 withSubtree: doc2];
+	COSubtreeDiff *diff_doc3_vs_doc = [COSubtreeDiff diffSubtree: doc3 withSubtree: doc];
+
+	// Sanity check that the diffs work
 	
+	UKObjectsEqual(doc, [diff_doc3_vs_doc subtreeWithDiffAppliedToSubtree: doc3]);
+	UKObjectsEqual(doc2, [diff_doc3_vs_doc2 subtreeWithDiffAppliedToSubtree: doc3]);
 	
-	COObjectGraphDiff *merged = [COObjectGraphDiff mergeDiff: diff_ctx3_vs_ctx2
-													withDiff: diff_ctx3_vs_ctx1];
+	COSubtreeDiff *diff_merged = [COSubtreeDiff mergeDiff: diff_doc3_vs_doc2
+												withDiff: diff_doc3_vs_doc];
+
 	// FIXME: Test that there are no conflicts
 	
+	COSubtree *merged = [diff_merged subtreeWithDiffAppliedToSubtree: doc3];
 	
-	// Apply the resulting diff to ctx3
-	UKFalse([ctx1 hasChanges]);
-	[merged applyToContext: ctx3];
-	
-	UKIntsEqual(5, [[(COContainer *)[ctx3 objectWithUUID: [doc UUID]] contentArray] count]);
-	if (5 == [[doc contentArray] count])
+	UKIntsEqual(5, [[doc3 valueForAttribute: @"contents"] count]);
+	if (5 == [[doc3 valueForAttribute: @"contents"] count])
 	{
-		UKStringsEqual(@"triangle1", [[[(COContainer *)[ctx3 objectWithUUID: [doc UUID]] contentArray] objectAtIndex: 0] valueForProperty: @"label"]);
-		UKStringsEqual(@"line1", [[[(COContainer *)[ctx3 objectWithUUID: [doc UUID]] contentArray] objectAtIndex: 1] valueForProperty: @"label"]);
-		UKStringsEqual(@"circle1", [[[(COContainer *)[ctx3 objectWithUUID: [doc UUID]] contentArray] objectAtIndex: 2] valueForProperty: @"label"]);
-		UKStringsEqual(@"square1", [[[(COContainer *)[ctx3 objectWithUUID: [doc UUID]] contentArray] objectAtIndex: 3] valueForProperty: @"label"]);	
-		UKStringsEqual(@"image1", [[[(COContainer *)[ctx3 objectWithUUID: [doc UUID]] contentArray] objectAtIndex: 4] valueForProperty: @"label"]);
+		UKStringsEqual(@"triangle1", [[[doc3 valueForAttribute: @"contents"] objectAtIndex: 0] valueForAttribute: @"label"]);
+		UKStringsEqual(@"line1", [[[doc3 valueForAttribute: @"contents"] objectAtIndex: 1] valueForAttribute: @"label"]);
+		UKStringsEqual(@"circle1", [[[doc3 valueForAttribute: @"contents"] objectAtIndex: 2] valueForAttribute: @"label"]);
+		UKStringsEqual(@"square1", [[[doc3 valueForAttribute: @"contents"] objectAtIndex: 3] valueForAttribute: @"label"]);	
+		UKStringsEqual(@"image1", [[[doc3 valueForAttribute: @"contents"] objectAtIndex: 4] valueForAttribute: @"label"]);
 	}
-	
-	for (COContainer *object in [(COContainer *)[ctx3 objectWithUUID: [doc UUID]] contentArray])
-	{
-		UKObjectsSame([ctx3 objectWithUUID: [doc UUID]], [object valueForProperty: @"parentContainer"]);
-	}*/
 }
 
 
