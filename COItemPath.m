@@ -128,7 +128,7 @@
 {
 	if ((self = [super initWithItemUUID: aUUID
 						  attributeName: collection
-								   type: type]) == nil)
+								   type: aType]) == nil)
 	{
 		return nil;
 	}
