@@ -104,6 +104,9 @@
 		66F0C88E14C5444600C0B5A6 /* bullet_yellow_multiple.png in Resources */ = {isa = PBXBuildFile; fileRef = 66F0C88D14C5444600C0B5A6 /* bullet_yellow_multiple.png */; };
 		79016345148D4886005A9226 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E552B4146B7799008FDFAF /* libcrypto.dylib */; };
 		79CB315114C6911400ADAB77 /* arrow_branch_purple.png in Resources */ = {isa = PBXBuildFile; fileRef = 79CB315014C6911400ADAB77 /* arrow_branch_purple.png */; };
+		79F0CED614E61795001D440B /* TestTagging.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F4E315147C59F0004FC1BA /* TestTagging.m */; };
+		79F0CEDD14E6179F001D440B /* TestCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CB302914C63E1C00ADAB77 /* TestCommon.m */; };
+		79F0CEE214E617AA001D440B /* UnitKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E7783514E6049E00D5DFFF /* UnitKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -127,6 +130,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 66E7785014E6062100D5DFFF;
 			remoteInfo = NestedVersioning;
+		};
+		79F0CEE014E617A6001D440B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 662811ED13F8B5000075BBC2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 66E7783414E6049E00D5DFFF /* UnitKit */;
+			remoteInfo = UnitKit;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -318,6 +328,7 @@
 				66E7789514E6077B00D5DFFF /* NestedVersioning.framework in Frameworks */,
 				79016345148D4886005A9226 /* libcrypto.dylib in Frameworks */,
 				66EB756C148CA9D300C2114B /* Cocoa.framework in Frameworks */,
+				79F0CEE214E617AA001D440B /* UnitKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -830,6 +841,7 @@
 			);
 			dependencies = (
 				66E7789714E6078200D5DFFF /* PBXTargetDependency */,
+				79F0CEE114E617A6001D440B /* PBXTargetDependency */,
 			);
 			name = StoreBrowser;
 			productName = StoreBrowser;
@@ -964,6 +976,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79F0CEDD14E6179F001D440B /* TestCommon.m in Sources */,
+				79F0CED614E61795001D440B /* TestTagging.m in Sources */,
 				66E7789814E6079600D5DFFF /* EWGraphRenderer.m in Sources */,
 				66E7789914E6079600D5DFFF /* main.m in Sources */,
 				66E7789A14E6079600D5DFFF /* AppDelegate.m in Sources */,
@@ -991,6 +1005,11 @@
 			isa = PBXTargetDependency;
 			target = 66E7785014E6062100D5DFFF /* NestedVersioning */;
 			targetProxy = 66E778A914E607D400D5DFFF /* PBXContainerItemProxy */;
+		};
+		79F0CEE114E617A6001D440B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 66E7783414E6049E00D5DFFF /* UnitKit */;
+			targetProxy = 79F0CEE014E617A6001D440B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1179,6 +1198,7 @@
 				66E7784314E6049E00D5DFFF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		66E7785D14E6062100D5DFFF /* Build configuration list for PBXNativeTarget "NestedVersioning" */ = {
 			isa = XCConfigurationList;
@@ -1187,6 +1207,7 @@
 				66E7785F14E6062100D5DFFF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		66EB7583148CA9D400C2114B /* Build configuration list for PBXNativeTarget "StoreBrowser" */ = {
 			isa = XCConfigurationList;

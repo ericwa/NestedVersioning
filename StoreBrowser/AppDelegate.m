@@ -13,7 +13,7 @@
 	
 	// Set up a demo store
 	
-	testTagging();
+	[[[[NSClassFromString(@"TestTagging") alloc] init] autorelease] testTagging];
 	
 	store = [[COStore alloc] initWithURL:
 			 [NSURL fileURLWithPath: [@"~/om5teststore" stringByExpandingTildeInPath]]];
