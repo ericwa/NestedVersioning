@@ -103,6 +103,7 @@
 		66F0C88C14C5440500C0B5A6 /* bullet_yellow.png in Resources */ = {isa = PBXBuildFile; fileRef = 66F0C88B14C5440500C0B5A6 /* bullet_yellow.png */; };
 		66F0C88E14C5444600C0B5A6 /* bullet_yellow_multiple.png in Resources */ = {isa = PBXBuildFile; fileRef = 66F0C88D14C5444600C0B5A6 /* bullet_yellow_multiple.png */; };
 		79016345148D4886005A9226 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E552B4146B7799008FDFAF /* libcrypto.dylib */; };
+		791B6D6814E64F2100793BDE /* TestObjectGraphDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 791B6D6714E64F2100793BDE /* TestObjectGraphDiff.m */; };
 		79CB315114C6911400ADAB77 /* arrow_branch_purple.png in Resources */ = {isa = PBXBuildFile; fileRef = 79CB315014C6911400ADAB77 /* arrow_branch_purple.png */; };
 		79F0CED614E61795001D440B /* TestTagging.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F4E315147C59F0004FC1BA /* TestTagging.m */; };
 		79F0CEDD14E6179F001D440B /* TestCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CB302914C63E1C00ADAB77 /* TestCommon.m */; };
@@ -135,7 +136,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 662811ED13F8B5000075BBC2 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 66E7783414E6049E00D5DFFF /* UnitKit */;
+			remoteGlobalIDString = 66E7783414E6049E00D5DFFF;
 			remoteInfo = UnitKit;
 		};
 /* End PBXContainerItemProxy section */
@@ -277,6 +278,7 @@
 		7914B97B14DF80240078FE39 /* COPersistentRootDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPersistentRootDiff.h; sourceTree = "<group>"; };
 		79156DB91484BE4D00AB66B1 /* TestConcurrentContextModification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestConcurrentContextModification.m; sourceTree = "<group>"; };
 		791A0EB7148AF39000334CB1 /* TestCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestCommon.h; sourceTree = "<group>"; };
+		791B6D6714E64F2100793BDE /* TestObjectGraphDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestObjectGraphDiff.m; sourceTree = "<group>"; };
 		792972ED148C4AC100FD35A9 /* TestReferencesBetweenPersistentRoots.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestReferencesBetweenPersistentRoots.m; sourceTree = "<group>"; };
 		792972F4148C4CA800FD35A9 /* TestCompositeDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCompositeDocument.m; sourceTree = "<group>"; };
 		792972F9148C4D6D00FD35A9 /* TestUserRequirements.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestUserRequirements.m; sourceTree = "<group>"; };
@@ -651,6 +653,7 @@
 				66EADD6414732AEE003181FC /* TestUndo.m */,
 				66F4E315147C59F0004FC1BA /* TestTagging.m */,
 				79F8205614E26118008236F6 /* TestPull.m */,
+				791B6D6714E64F2100793BDE /* TestObjectGraphDiff.m */,
 				79CB302914C63E1C00ADAB77 /* TestCommon.m */,
 				79FB63BD1486ABEF00751E1E /* Tests - docs and code sketch */,
 				79FB63B81486ABC600751E1E /* Tests - documented only */,
@@ -927,6 +930,7 @@
 				66E778A514E607CD00D5DFFF /* TestCommon.m in Sources */,
 				66E778A614E607CD00D5DFFF /* TestPull.m in Sources */,
 				66E778AD14E6080700D5DFFF /* TestGeneral.m in Sources */,
+				791B6D6814E64F2100793BDE /* TestObjectGraphDiff.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
