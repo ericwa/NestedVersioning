@@ -4,6 +4,7 @@
 @implementation COSequenceDiffOperation
 
 @synthesize range;
+@synthesize sourceIdentifier;
 
 - (NSComparisonResult) compare: (COSequenceDiffOperation*)other
 {
@@ -25,6 +26,9 @@
 {
 	NSRange r1 = [self range];
 	NSRange r2 = [other range];
+	
+	// FIXME: revisit this calculation
+	
 	return (r1.location >= r2.location && r1.location < (r2.location + r2.length) && r1.length > 0)
     || (r2.location >= r1.location && r2.location < (r1.location + r1.length) && r2.length > 0);
 }
