@@ -1,5 +1,4 @@
 #import <Foundation/Foundation.h>
-#import "COMergeResult.h"
 #import "COType+Diff.h"
 
 @interface COSetDiff : NSObject <COValueDiff>
@@ -28,7 +27,7 @@
 
 // Merging with another COSetDiff
 
-- (COMergeResult *)mergeWith: (COSetDiff *)other;
+//- (COMergeResult *)mergeWith: (COSetDiff *)other;
 
 @end
 

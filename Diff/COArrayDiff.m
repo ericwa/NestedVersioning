@@ -31,6 +31,7 @@ static bool comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
 	[super dealloc];
 }
 
+#if 0
 - (void)diffWithA: (NSArray*)a B: (NSArray*)b
 {
 	ops = [[NSMutableArray alloc] init];
@@ -112,6 +113,7 @@ static bool comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
 		}    
 	}
 }
+#endif
 
 - (NSArray *)arrayWithDiffAppliedTo: (NSArray *)array
 {
@@ -123,109 +125,6 @@ static bool comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
 - (id) valueWithDiffAppliedToValue: (id)aValue
 {
 	return [self arrayWithDiffAppliedTo: aValue];
-}
-
-@end
-
-
-
-
-
-@implementation COArrayDiffOperationInsert 
-
-@synthesize insertedObjects;
-
-+ (COArrayDiffOperationInsert*)insertWithLocation: (NSUInteger)loc objects: (NSArray*)objs
-{
-	COArrayDiffOperationInsert *op = [[[COArrayDiffOperationInsert alloc] init] autorelease];
-	op->range = NSMakeRange(loc, 0);
-	op->insertedObjects = [objs retain];
-	assert([objs count] > 0);
-	return op;
-}
-
-- (NSString *)description
-{
-	return [NSString stringWithFormat: @"Insert '%@' at %d", insertedObjects, range.location];
-}
-
-- (BOOL) isEqual: (id)other
-{
-	if ([other isKindOfClass: [COArrayDiffOperationInsert class]])
-	{
-		COArrayDiffOperationInsert *o = other;
-		return NSEqualRanges([o range], [self range]) &&
-		[[o insertedObjects] isEqual: [self insertedObjects]];
-	}
-	return NO;
-}
-
-- (void) dealloc
-{
-	[insertedObjects release];
-	[super dealloc];
-}
-
-@end
-
-@implementation COArrayDiffOperationDelete
-
-+ (COArrayDiffOperationDelete*)deleteWithRange: (NSRange)range
-{
-	COArrayDiffOperationDelete *op = [[[COArrayDiffOperationDelete alloc] init] autorelease];
-	op->range = range;
-	return op;
-}
-
-- (NSString *)description
-{
-	return [NSString stringWithFormat: @"Delete '%@'", NSStringFromRange(range)];
-}
-
-- (BOOL) isEqual: (id)other
-{
-	if ([other isKindOfClass: [COArrayDiffOperationDelete class]])
-	{
-		COArrayDiffOperationDelete *o = other;
-		return NSEqualRanges([o range], [self range]);
-	}
-	return NO;
-}
-
-@end
-
-@implementation COArrayDiffOperationModify
-
-@synthesize insertedObjects;
-
-+ (COArrayDiffOperationModify*)modifyWithRange: (NSRange)range newObjects: (NSArray*)objs
-{
-	COArrayDiffOperationModify *op = [[[COArrayDiffOperationModify alloc] init] autorelease];
-	op->range = range;
-	op->insertedObjects = [objs retain];
-	return op;
-}
-
-- (NSString *)description
-{
-	return [NSString stringWithFormat: @"Modify '%@' to '%@'", NSStringFromRange(range), insertedObjects];
-}
-
-- (BOOL) isEqual: (id)other
-{
-	if ([other isKindOfClass: [COArrayDiffOperationModify class]])
-	{
-		COArrayDiffOperationModify *o = other;
-		return NSEqualRanges([o range], [self range]) &&
-		[[o insertedObjects] isEqual: [self insertedObjects]];
-	}
-	return NO;
-}
-
-- (void) dealloc
-{
-	[insertedObjects release];
-	[super dealloc];
 }
 
 @end

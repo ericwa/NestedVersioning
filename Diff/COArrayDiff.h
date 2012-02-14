@@ -18,39 +18,3 @@
 @end
 
 
-
-
-
-@interface COArrayDiffOperationInsert : COSequenceDiffOperation 
-{
-	NSArray *insertedObjects;
-}
-
-@property (nonatomic, retain, readonly)  NSArray* insertedObjects;
-
-+ (COArrayDiffOperationInsert*)insertWithLocation: (NSUInteger)loc objects: (NSArray*)objs;
-
-@end
-
-
-
-@interface COArrayDiffOperationDelete : COSequenceDiffOperation
-{
-}
-
-+ (COArrayDiffOperationDelete*)deleteWithRange: (NSRange)range;
-
-@end
-
-
-
-@interface COArrayDiffOperationModify : COSequenceDiffOperation
-{
-	NSArray *insertedObjects;  
-}
-
-@property (nonatomic, retain, readonly)  NSArray* insertedObjects;
-
-+ (COArrayDiffOperationModify*)modifyWithRange: (NSRange)range newObjects: (NSArray*)objs;
-
-@end

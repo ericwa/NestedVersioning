@@ -8,7 +8,7 @@ static bool comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
 }
 
 @implementation COStringDiff
-
+#if 0
 - (id) initWithFirstString: (NSString *)first
               secondString: (NSString *)second
 {
@@ -75,7 +75,7 @@ static bool comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
 		}    
 	}
 }
-
+#endif
 - (NSString *)stringWithDiffAppliedTo: (NSString*)string
 {
 	NSMutableString *mutableString = [NSMutableString stringWithString:string];
@@ -152,104 +152,5 @@ static bool comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
 // 	return [mutableString autorelease];
 // }
 
-
-@end
-
-
-
-@implementation COStringDiffOperationInsert 
-
-@synthesize insertedString;
-
-+ (COStringDiffOperationInsert*)insertWithLocation: (NSUInteger)loc string: (NSString*)string
-{
-	COStringDiffOperationInsert *op = [[[COStringDiffOperationInsert alloc] init] autorelease];
-	op->range = NSMakeRange(loc, 0);
-	op->insertedString = [string retain];
-	return op;
-}
-
-- (NSString *)description
-{
-	return [NSString stringWithFormat: @"Insert '%@' at %d", insertedString, range.location];
-}
-
-- (BOOL) isEqual: (id)other
-{
-	if ([other isKindOfClass: [COStringDiffOperationInsert class]])
-	{
-		COStringDiffOperationInsert *o = other;
-		return NSEqualRanges([o range], [self range]) &&
-		[[o insertedString] isEqual: [self insertedString]];
-	}
-	return NO;
-}
-
-- (void) dealloc
-{
-	[insertedString release];
-	[super dealloc];
-}
-@end
-
-@implementation COStringDiffOperationDelete
-
-+ (COStringDiffOperationDelete*)deleteWithRange: (NSRange)range
-{
-	COStringDiffOperationDelete *op = [[[COStringDiffOperationDelete alloc] init] autorelease];
-	op->range = range;
-	return op;
-}
-
-- (NSString *)description
-{
-	return [NSString stringWithFormat: @"Delete '%@'", NSStringFromRange(range)];
-}
-
-- (BOOL) isEqual: (id)other
-{
-	if ([other isKindOfClass: [COStringDiffOperationDelete class]])
-	{
-		COStringDiffOperationDelete *o = other;
-		return NSEqualRanges([o range], [self range]);
-	}
-	return NO;
-}
-
-@end
-
-@implementation COStringDiffOperationModify
-
-@synthesize insertedString;
-
-+ (COStringDiffOperationModify*)modifyWithRange: (NSRange)range newString: (NSString*)string
-{
-	COStringDiffOperationModify *op = [[[COStringDiffOperationModify alloc] init] autorelease];
-	op->range = range;
-	op->insertedString = [string retain];
-	return op;
-}
-
-- (NSString *)description
-{
-	return [NSString stringWithFormat: @"Modify '%@' to '%@'", NSStringFromRange(range), insertedString];
-}
-
-- (BOOL) isEqual: (id)other
-{
-	if ([other isKindOfClass: [COStringDiffOperationModify class]])
-	{
-		COStringDiffOperationModify *o = other;
-		return NSEqualRanges([o range], [self range]) &&
-		[[o insertedString] isEqual: [self insertedString]];
-	}
-	return NO;
-}
-
-- (void) dealloc
-{
-	[insertedString release];
-	[super dealloc];
-}
 
 @end
