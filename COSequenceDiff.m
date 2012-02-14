@@ -126,11 +126,15 @@ static NSArray *COMergeSortedArraysUsingSelector(NSArray *arrayA, NSArray *array
 				COSequenceEdit *op_i_plus_1 = [sortedOps objectAtIndex: i+i];
 				if ([op_i overlaps: op_i_plus_1])
 				{
+					/**
+					 * Using the -allEdits method allows us to transparently break apart 
+					 * COOverlappingSequenceEditGroup instances and recombine them
+					 */
 					if (overlappingEdits == nil)
 					{
-						overlappingEdits = [[NSMutableSet alloc] initWithObjects: &op_i count: 1];
+						overlappingEdits = [[NSMutableSet alloc] initWithSet: [op_i allEdits]];
 					}
-					[overlappingEdits addObject: op_i_plus_1];		
+					[overlappingEdits unionSet: [op_i_plus_1 allEdits]];
 					i++;
 				}
 				else
@@ -201,6 +205,11 @@ static NSArray *COMergeSortedArraysUsingSelector(NSArray *arrayA, NSArray *array
 	return [self retain];
 }
 
+- (NSSet *)allEdits
+{
+	return [NSSet setWithObject: self];
+}
+
 @end
 
 
@@ -268,6 +277,11 @@ static NSArray *COMergeSortedArraysUsingSelector(NSArray *arrayA, NSArray *array
 - (NSUInteger) hash
 {
 	return [NSStringFromClass([self class]) hash] ^ [overlappingEdits hash] ^ range.location ^ range.length;
+}
+
+- (NSSet *)allEdits
+{
+	return overlappingEdits;
 }
 
 @end

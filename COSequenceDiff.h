@@ -34,6 +34,12 @@
 
 - (BOOL) overlaps: (COSequenceEdit *)other;
 
+/**
+ * Convenience method which returns the reciever in an NSSet,
+ * except for COOverlappingSequenceEditGroup, where it returns all overlapping edits.
+ */
+- (NSSet *)allEdits;
+
 @end
 
 
