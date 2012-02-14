@@ -38,30 +38,24 @@
 @property (nonatomic, readonly) id sourceIdentifier;
 @end
 
-// FIXME: keep in mind a user will likely write resolve a conflict
-// by writing the correct result by hand, not by picking one
-// side of the diff.
-@interface COConflictingSequenceEditGroup : COSequenceEdit
+@interface COOverlappingSequenceEditGroup : COSequenceEdit
 {
-	NSArray *conflictingEdits;
-	COPrimitiveSequenceEdit *currentEdit; /* weak reference */
+	NSArray *overlappingEdits;
+	/**
+	 * determined at creation time by checking if all of the overlappingEdits
+	 * are equal or not.
+	 */
+	BOOL conflicting;
 }
 /**
  * Array of COPrimitiveSequenceEdit
  */
-@property (nonatomic, readonly) NSArray *conflictingEdits;
+@property (nonatomic, readonly) NSArray *overlappingEdits;
+@property (nonatomic, readonly) BOOL conflicting;
 /**
- * The current edit is which edit the user has picked to resolve
- * the conflict.
- * Returns nil if no edit is set as the current one.
- */
-- (COPrimitiveSequenceEdit *) currentEdit;
-- (void) setCurrentEdit: (COPrimitiveSequenceEdit *)anEdit;
-/**
- * edits    an array of COPrimitiveSequenceEdit objects
  * The receiver's range is computed by taking the union of the edits
  */
-+ (COConflictingSequenceEditGroup *)conflictingEditGroupWithEdits: (NSArray *)edits;
++ (COOverlappingSequenceEditGroup *)overlappingEditGroupWithEdits: (NSArray *)edits;
 @end
 
 

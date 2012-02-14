@@ -227,42 +227,32 @@
 @end
 
 
-@interface COConflictingSequenceEditGroup
+@interface COOverlappingSequenceEditGroup
 
-@synthesize conflictingEdits;
+@synthesize overlappingEdits;
+@synthesize conflicting;
 
-- (COPrimitiveSequenceEdit *) currentEdit
++ (COOverlappingSequenceEditGroup *)conflictingEditGroupWithEdits: (NSArray *)edits
 {
-	return currentEdit;
-}
-- (void) setCurrentEdit: (COPrimitiveSequenceEdit *)anEdit
-{
-	if (currentEdit != nil && 
-		NSNotFound == [conflictingEdits indexOfObjectIdenticalTo: anEdit])
-	{
-		[NSException raise: NSInvalidArgumentException
-					format: @"anEdit must be one of the receiver's conflicting edits"];
-	}
-	currentEdit = anEdit;
-}
-
-+ (COConflictingSequenceEditGroup *)conflictingEditGroupWithEdits: (NSArray *)edits
-{
-	NSRange r = [[edits objectAtIndex: 0] range];
+	COPrimitiveSequenceEdit *firstEdit = [edits objectAtIndex: 0];
+	NSRange totalRange = [firstEdit range];
+	BOOL allSame = YES;
 	for (COPrimitiveSequenceEdit *edit in edits)
 	{
-		r = NSUnionRange(r, [edit range]);
+		totalRange = NSUnionRange(totalRange, [edit range]);
+		allSame = allSame && [firstEdit isEqual: edit];
 	}
 	
-	COConflictingSequenceEditGroup *result = [[COConflictingSequenceEditGroup alloc] init];
+	COOverlappingSequenceEditGroup *result = [[COOverlappingSequenceEditGroup alloc] init];
 	result->range = r;
-	result->conflictingEdits = [[NSMutableArray alloc] initWithArray: edits];
+	result->overlappingEdits = [[NSMutableArray alloc] initWithArray: edits];
+	result->conflicting = !allSame;
 	return [result autorelease];
 }
 
 - (void) dealloc
 {
-	[conflictingEdits release];
+	[overlappingEdits release];
 	[super dealloc];
 }
 
