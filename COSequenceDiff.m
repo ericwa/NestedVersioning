@@ -1,40 +1,6 @@
 #import <EtoileFoundation/EtoileFoundation.h>
 #import "COSequenceDiff.h"
 
-@implementation COSequenceDiffOperation
-
-@synthesize range;
-@synthesize sourceIdentifier;
-
-- (NSComparisonResult) compare: (COSequenceDiffOperation*)other
-{
-	if ([other range].location > [self range].location)
-	{
-		return NSOrderedAscending;
-	}
-	if ([other range].location == [self range].location)
-	{
-		return NSOrderedSame;
-	}
-	else
-	{
-		return NSOrderedDescending;
-	}
-}
-
-- (BOOL) overlaps: (COSequenceDiffOperation *)other
-{
-	NSRange r1 = [self range];
-	NSRange r2 = [other range];
-	
-	// FIXME: revisit this calculation
-	
-	return (r1.location >= r2.location && r1.location < (r2.location + r2.length) && r1.length > 0)
-    || (r2.location >= r1.location && r2.location < (r1.location + r1.length) && r2.length > 0);
-}
-
-@end
-
 
 @implementation COSequenceDiff
 
@@ -203,6 +169,166 @@
 	return [COMergeResult resultWithNonoverlappingNonconflictingOps: nonoverlappingNonconflictingOps
 									   overlappingNonconflictingOps: overlappingNonconflictingOps
 														  conflicts: conflicts];
+}
+
+@end
+
+
+
+
+
+
+@implementation COSequenceEdit
+{
+	NSRange range;
+}
+@synthesize range;
+
+- (NSComparisonResult) compare: (COSequenceEdit*)other
+{
+	if ([other range].location > [self range].location)
+	{
+		return NSOrderedAscending;
+	}
+	if ([other range].location == [self range].location)
+	{
+		return NSOrderedSame;
+	}
+	else
+	{
+		return NSOrderedDescending;
+	}
+}
+
+- (BOOL) overlaps: (COSequenceEdit *)other
+{
+	NSRange r1 = [self range];
+	NSRange r2 = [other range];
+	
+	// FIXME: revisit this calculation
+	
+	return (r1.location >= r2.location && r1.location < (r2.location + r2.length) && r1.length > 0)
+    || (r2.location >= r1.location && r2.location < (r1.location + r1.length) && r2.length > 0);
+}
+
+@end
+
+
+@implementation COPrimitiveSequenceEdit
+
+@synthesize sourceIdentifier;
+
+- (void) dealloc
+{
+	[sourceIdentifier release];
+	[super dealloc];
+}
+
+@end
+
+
+@interface COConflictingSequenceEditGroup
+
+@synthesize conflictingEdits;
+
+- (COPrimitiveSequenceEdit *) currentEdit
+{
+	return currentEdit;
+}
+- (void) setCurrentEdit: (COPrimitiveSequenceEdit *)anEdit
+{
+	if (currentEdit != nil && 
+		NSNotFound == [conflictingEdits indexOfObjectIdenticalTo: anEdit])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"anEdit must be one of the receiver's conflicting edits"];
+	}
+	currentEdit = anEdit;
+}
+
++ (COConflictingSequenceEditGroup *)conflictingEditGroupWithEdits: (NSArray *)edits
+{
+	NSRange r = [[edits objectAtIndex: 0] range];
+	for (COPrimitiveSequenceEdit *edit in edits)
+	{
+		r = NSUnionRange(r, [edit range]);
+	}
+	
+	COConflictingSequenceEditGroup *result = [[COConflictingSequenceEditGroup alloc] init];
+	result->range = r;
+	result->conflictingEdits = [[NSMutableArray alloc] initWithArray: edits];
+	return [result autorelease];
+}
+
+- (void) dealloc
+{
+	[conflictingEdits release];
+	[super dealloc];
+}
+
+@end
+
+
+@implementation COSequenceInsertion
+
+@synthesize insertedObject;
+
++ (COSequenceInsertion*)insertionWithLocation: (NSUInteger)aLocation
+							   insertedObject: (id)anObject
+							 sourceIdentifier: (id)aSource
+{
+	COSequenceInsertion *result = [[COSequenceInsertion alloc] init];
+	result->range = NSMakeRange(aLocation, 0);
+	ASSIGN(result->insertedObject, anObject);
+	ASSIGN(result->sourceIdentifier, aSource);
+	return [result autorelease];
+}
+
+- (void) dealloc
+{
+	[insertedObject release];
+	[super dealloc];
+}
+
+@end
+
+
+
+@implementation COSequenceDeletion
+
++ (COSequenceDeletion*)deletionWithRange: (NSRange)aRange
+						sourceIdentifier: (id)aSource
+{
+	COSequenceDeletion *result = [[COSequenceDeletion alloc] init];
+	result->range = aRange;
+	ASSIGN(result->sourceIdentifier, aSource);
+	return [result autorelease];
+}
+
+@end
+
+
+
+
+@implementation COSequenceModification
+
+@synthesize insertedObject;
+
++ (COSequenceModification*)modificationWithRange: (NSRange)aRange
+								  insertedObject: (id)anObject
+								sourceIdentifier: (id)aSource
+{
+	COSequenceInsertion *result = [[COSequenceInsertion alloc] init];
+	result->range = aRange;
+	ASSIGN(result->insertedObject, anObject);
+	ASSIGN(result->sourceIdentifier, aSource);
+	return [result autorelease];
+}
+
+- (void) dealloc
+{
+	[insertedObject release];
+	[super dealloc];
 }
 
 @end
