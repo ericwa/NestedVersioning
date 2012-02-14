@@ -1,6 +1,66 @@
 #import <EtoileFoundation/EtoileFoundation.h>
 #import "COSequenceDiff.h"
 
+/**
+ * Linear-time version of:
+ *
+ * [[arrayA arrayByAddingObjectsFromArray: arrayB] sortedArrayUsingSelector: cmpSel]]
+ *
+ * for when the arrays are already sorted.
+ */
+static NSArray *COMergeSortedArraysUsingSelector(NSArray *arrayA, NSArray *arrayB, SEL cmpSel)
+{
+	const NSUInteger arrayACount = [arrayA count];
+	const NSUInteger arrayBCount = [arrayB count];
+	NSMutableArray *result = [NSMutableArray arrayWithCapacity: arrayACount + arrayBCount];
+	
+	NSUInteger arrayAIndex = 0;
+	NSUInteger arrayBIndex = 0;
+	while (arrayAIndex < arrayACount || arrayBIndex < arrayBCount)
+	{
+		if (arrayAIndex == arrayACount)
+		{
+			[result addObject: [arrayB objectAtIndex: arrayBIndex]];
+			arrayBIndex++;
+		}
+		else if (arrayBIndex == arrayBCount)
+		{
+			[result addObject: [arrayA objectAtIndex: arrayAIndex]];
+			arrayAIndex++;
+		}
+		else
+		{
+			id arrayAElement = [arrayA objectAtIndex: arrayAIndex];
+			id arrayBElement = [arrayB objectAtIndex: arrayBIndex];
+			
+			IMP cmpImp = [arrayAElement methodForSelector: cmpSel];
+			NSComparisonResult cmpResult = ((NSComparisonResult (*)(id, SEL, id))cmpImp)(arrayAElement, cmpSel, arrayBElement);
+			
+			if (cmpResult == NSOrderedAscending || cmpResult == NSOrderedSame)
+			{
+				[result addObject: arrayAElement];
+				arrayAIndex++;
+				[result addObject: arrayBElement];
+				arrayBIndex++;
+			}
+			else if (cmpResult == NSOrderedDescending)
+			{
+				[result addObject: arrayBElement];
+				arrayBIndex++;
+				[result addObject: arrayAElement];
+				arrayAIndex++;
+			}
+			else
+			{
+				[NSException raise: NSInternalInconsistencyException
+							format: @"comparison method returned invalid value"];
+			}
+		}
+	}
+	
+	return result;
+}
+
 
 @implementation COSequenceDiff
 
@@ -54,8 +114,7 @@
 	}
 	else
 	{
-		NSArray *sortedOps = [[[self operations] arrayByAddingObjectsFromArray: [other operations]] 
-								sortedArrayUsingSelector: @selector(compare:)];
+		NSArray *sortedOps = COMergeSortedArraysUsingSelector([self operations], [other operations], @selector(compare:));
 		const NSUInteger sortedOpsCount = [sortedOps count];
 				
 		for (NSUInteger i = 0; i < sortedOpsCount; i++)
