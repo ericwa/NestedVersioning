@@ -20,13 +20,11 @@ static NSArray *COMergeSortedArraysUsingSelector(NSArray *arrayA, NSArray *array
 	{
 		if (arrayAIndex == arrayACount)
 		{
-			[result addObject: [arrayB objectAtIndex: arrayBIndex]];
-			arrayBIndex++;
+			[result addObject: [arrayB objectAtIndex: arrayBIndex++]];
 		}
 		else if (arrayBIndex == arrayBCount)
 		{
-			[result addObject: [arrayA objectAtIndex: arrayAIndex]];
-			arrayAIndex++;
+			[result addObject: [arrayA objectAtIndex: arrayAIndex++]];
 		}
 		else
 		{
@@ -39,22 +37,21 @@ static NSArray *COMergeSortedArraysUsingSelector(NSArray *arrayA, NSArray *array
 			if (cmpResult == NSOrderedAscending || cmpResult == NSOrderedSame)
 			{
 				[result addObject: arrayAElement];
-				arrayAIndex++;
 				[result addObject: arrayBElement];
-				arrayBIndex++;
 			}
 			else if (cmpResult == NSOrderedDescending)
 			{
 				[result addObject: arrayBElement];
-				arrayBIndex++;
 				[result addObject: arrayAElement];
-				arrayAIndex++;
 			}
 			else
 			{
 				[NSException raise: NSInternalInconsistencyException
 							format: @"comparison method returned invalid value"];
 			}
+			
+			arrayAIndex++;
+			arrayBIndex++;
 		}
 	}
 	
