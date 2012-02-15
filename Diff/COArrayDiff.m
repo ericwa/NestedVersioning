@@ -3,38 +3,17 @@
 
 #import "COMacros.h"
 
+@implementation COArrayDiff
+
 static bool comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
 {
 	return [[(NSArray*)userdata1 objectAtIndex: i] isEqual:
-	[(NSArray*)userdata2 objectAtIndex: j]];
+			[(NSArray*)userdata2 objectAtIndex: j]];
 }
 
-@interface COArrayDiff (Private)
-
-- (void)diffWithA: (NSArray*)a B: (NSArray*)b;
-
-@end
-
-@implementation COArrayDiff
-
-- (id) initWithFirstArray: (NSArray *)first secondArray: (NSArray *)second
+- (NSArray *)opsWithFirstArray: (NSArray *)a secondArray: (NSArray *)b
 {
-	SUPERINIT;
-	[self diffWithA:first
-				  B:second];
-	return self;
-}
-
-- (void) dealloc
-{
-	[ops release];
-	[super dealloc];
-}
-
-#if 0
-- (void)diffWithA: (NSArray*)a B: (NSArray*)b
-{
-	ops = [[NSMutableArray alloc] init];
+	NSMutableArray *resultArray = [NSMutableArray array];
 	
 	//NSLog(@"ArrayDiffing %d vs %d objects", [a count], [b count]);
 	
@@ -52,24 +31,36 @@ static bool comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
 			case difftype_insertion:
 				if (secondRange.length > 0)
 				{
-					[ops addObject: [COArrayDiffOperationInsert insertWithLocation: firstRange.location
-																		   objects: [b subarrayWithRange: secondRange]]];
+					[resultArray addObject: [COSequenceInsertion insertWithLocation: firstRange.location
+																	 insertedObject: [b subarrayWithRange: secondRange]
+																   sourceIdentifier: sourceIdentifier]];
 				}
 				break;
 			case difftype_deletion:
-				[ops addObject: [COArrayDiffOperationDelete deleteWithRange: firstRange]];
+				[resultArray addObject: [COSequenceDeletion deletionWithRange: firstRange
+															 sourceIdentifier: sourceIdentifier]];
 				break;
 			case difftype_modification:
-				[ops addObject: [COArrayDiffOperationModify modifyWithRange: firstRange
-																 newObjects: [b subarrayWithRange: secondRange]]];
+				[resultArray addObject: [COSequenceModification modificationWithRange: firstRange
+																	   insertedObject: [b subarrayWithRange: secondRange]
+																	 sourceIdentifier: sourceIdentifier]];
+																				  
 				break;
 		}
 	}
 	
 	diff_free(result);
+	
+	return resultArray;
 }
 
 
+- (id) initWithFirstArray: (NSArray *)first secondArray: (NSArray *)second
+{
+	self = [super initWithOperations: [self opsWithFirstArray: first
+												  secondArray: second]];	
+	return self;
+}
 
 /**
  * Applys the receiver to the given mutable array
@@ -113,7 +104,6 @@ static bool comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
 		}    
 	}
 }
-#endif
 
 - (NSArray *)arrayWithDiffAppliedTo: (NSArray *)array
 {

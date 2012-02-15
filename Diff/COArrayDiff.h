@@ -3,9 +3,6 @@
 #import "COType+Diff.h"
 
 @interface COArrayDiff : COSequenceDiff <COValueDiff>
-{
-	
-}
 
 - (id) initWithFirstArray: (NSArray *)first
               secondArray: (NSArray *)second;
