@@ -163,6 +163,16 @@ static NSArray *COMergeSortedArraysUsingSelector(NSArray *arrayA, NSArray *array
 	return resultDiff;
 }
 
+- (BOOL) hasConflicts
+{
+	BOOL hasConflicts = NO;
+	for (COSequenceEdit *edit in ops)
+	{
+		hasConflicts = hasConflicts || [edit hasConflicts];
+	}
+	return hasConflicts;
+}
+
 @end
 
 
@@ -211,6 +221,11 @@ static NSArray *COMergeSortedArraysUsingSelector(NSArray *arrayA, NSArray *array
 	return [NSSet setWithObject: self];
 }
 
+- (BOOL) hasConflicts
+{
+	return NO;
+}
+
 @end
 
 
@@ -237,7 +252,6 @@ static NSArray *COMergeSortedArraysUsingSelector(NSArray *arrayA, NSArray *array
 @implementation COOverlappingSequenceEditGroup
 
 @synthesize overlappingEdits;
-@synthesize conflicting;
 
 + (COOverlappingSequenceEditGroup *)overlappingEditGroupWithEdits: (NSSet *)edits
 {
@@ -287,6 +301,12 @@ static NSArray *COMergeSortedArraysUsingSelector(NSArray *arrayA, NSArray *array
 {
 	return overlappingEdits;
 }
+
+- (BOOL) hasConflicts
+{
+	return conflicting;
+}
+
 
 @end
 

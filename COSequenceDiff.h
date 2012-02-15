@@ -15,6 +15,8 @@
 
 - (COSequenceDiff *)sequenceDiffByMergingWithDiff: (COSequenceDiff *)other;
 
+- (BOOL) hasConflicts;
+
 @end
 
 
@@ -39,6 +41,8 @@
  * except for COOverlappingSequenceEditGroup, where it returns all overlapping edits.
  */
 - (NSSet *)allEdits;
+
+- (BOOL) hasConflicts;
 
 @end
 
@@ -84,7 +88,6 @@
  * Array of COPrimitiveSequenceEdit
  */
 @property (nonatomic, readonly) NSSet *overlappingEdits;
-@property (nonatomic, readonly) BOOL conflicting;
 /**
  * The receiver's range is computed by taking the union of the edits
  */
