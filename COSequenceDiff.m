@@ -171,9 +171,7 @@ static NSArray *COMergeSortedArraysUsingSelector(NSArray *arrayA, NSArray *array
 
 
 @implementation COSequenceEdit
-{
-	NSRange range;
-}
+
 @synthesize range;
 
 - (NSComparisonResult) compare: (COSequenceEdit*)other
