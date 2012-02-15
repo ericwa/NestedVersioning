@@ -153,7 +153,7 @@ static NSArray *COMergeSortedArraysUsingSelector(NSArray *arrayA, NSArray *array
 				}
 			}
 			
-			if (overlappingEdits != nil)
+			if (overlappingEdits != nil && [overlappingEdits count] > 1)
 			{
 				[result addObject: [COOverlappingSequenceEditGroup overlappingEditGroupWithEdits: overlappingEdits]];
 			}
