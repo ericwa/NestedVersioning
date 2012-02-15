@@ -316,4 +316,9 @@
 	return [edits count];
 }
 
+- (COItemDiff *)itemDiffByMergingWithDiff: (COItemDiff *)other
+{
+	return nil;
+}
+
 @end
