@@ -150,7 +150,7 @@ static void loadBundle(UKRunner *runner, NSString *cwd, NSString *bundlePath)
 			BOOL isDir = NO;
 			if ([fm fileExistsAtPath:file isDirectory:&isDir] && isDir)
 			{
-				int len = [file length];
+				NSUInteger len = [file length];
 				if(len > 8 && [[file substringFromIndex:(len - 6)] isEqualToString:@"bundle"])
 				{
 					loadBundle(runner, cwd, file);
