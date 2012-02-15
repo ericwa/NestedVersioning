@@ -6,6 +6,9 @@
 	NSArray *ops;
 }
 
+/**
+ * Private, only for subclasses
+ */
 - (id) initWithOperations: (NSArray*)opers;
 
 /**

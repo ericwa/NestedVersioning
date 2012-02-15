@@ -98,6 +98,12 @@ static NSArray *COMergeSortedArraysUsingSelector(NSArray *arrayA, NSArray *array
  */
 - (COSequenceDiff *)sequenceDiffByMergingWithDiff: (COSequenceDiff *)other
 {
+	if (![other isKindOfClass: [self class]])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"Only diffs of the same class can be merged"];
+	}
+	
 	// Output arrays
 	NSMutableArray *result = [NSMutableArray array];
     
