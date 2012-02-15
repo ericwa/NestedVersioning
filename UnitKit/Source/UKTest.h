@@ -51,6 +51,10 @@
 
 #define UKIntsNotEqual(a, b) [[UKTestHandler handler] testInt:(a) notEqualTo:(b) inFile:__FILE__ line:__LINE__]
 
+#define UKUnsignedIntsEqual(a, b) [[UKTestHandler handler] testUnsignedInt:(a) equalTo:(b) inFile:__FILE__ line:__LINE__]
+
+#define UKUnsignedIntsNotEqual(a, b) [[UKTestHandler handler] tesUnsignedtInt:(a) notEqualTo:(b) inFile:__FILE__ line:__LINE__]
+
 #define UKFloatsEqual(a, b, d) [[UKTestHandler handler] testFloat:(a) equalTo:(b) delta:(d) inFile:__FILE__ line:__LINE__]
 
 #define UKFloatsNotEqual(a, b, d) [[UKTestHandler handler] testFloat:(a) notEqualTo:(b) delta:(d) inFile:__FILE__ line:__LINE__]

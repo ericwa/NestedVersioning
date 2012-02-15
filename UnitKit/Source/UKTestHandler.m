@@ -238,30 +238,58 @@
     }    
 }
 
-- (void) testInt:(int)a equalTo:(int)b inFile:(char *)filename line:(int)line
+- (void) testInt:(NSInteger)a equalTo:(NSInteger)b inFile:(char *)filename line:(int)line
 {
     NSString *msg;
     if (a == b) {
         msg = [UKTestHandler localizedString:@"msgUKIntsEqual.pass"];
-        msg = [NSString stringWithFormat:msg, a, b];
+        msg = [NSString stringWithFormat:msg, (long long int)a, (long long int)b];
         [self reportStatus:YES inFile:filename line:line message:msg];
     } else {
         msg = [UKTestHandler localizedString:@"msgUKIntsEqual.fail"];
-        msg = [NSString stringWithFormat:msg, a, b];
+        msg = [NSString stringWithFormat:msg, (long long int)a, (long long int)b];
         [self reportStatus:NO inFile:filename line:line message:msg];
     }
 }
 
-- (void) testInt:(int)a notEqualTo:(int)b inFile:(char *)filename line:(int)line
+- (void) testInt:(NSInteger)a notEqualTo:(NSInteger)b inFile:(char *)filename line:(int)line
 {
     NSString *msg;
     if (a != b) {
         msg = [UKTestHandler localizedString:@"msgUKIntsNotEqual.pass"];
-        msg = [NSString stringWithFormat:msg, a, b];        
+        msg = [NSString stringWithFormat:msg, (long long int)a, (long long int)b];        
         [self reportStatus:YES inFile:filename line:line message:msg];
     } else {
         msg = [UKTestHandler localizedString:@"msgUKIntsNotEqual.fail"];
-        msg = [NSString stringWithFormat:msg, a, b];        
+        msg = [NSString stringWithFormat:msg, (long long int)a, (long long int)b];        
+        [self reportStatus:NO inFile:filename line:line message:msg];
+    }
+}
+
+- (void) testUnsignedInt:(NSUInteger)a equalTo:(NSUInteger)b inFile:(char *)filename line:(int)line
+{
+    NSString *msg;
+    if (a == b) {
+        msg = [UKTestHandler localizedString:@"msgUKUnsignedIntsEqual.pass"];
+        msg = [NSString stringWithFormat:msg, (unsigned long long int)a, (unsigned long long int)b];
+        [self reportStatus:YES inFile:filename line:line message:msg];
+    } else {
+        msg = [UKTestHandler localizedString:@"msgUKUnsignedIntsEqual.fail"];
+        msg = [NSString stringWithFormat:msg, (unsigned long long int)a, (unsigned long long int)b];
+        [self reportStatus:NO inFile:filename line:line message:msg];
+    }
+}
+
+- (void) testUnsignedInt:(NSUInteger)a notEqualTo:(NSUInteger)b inFile:(char *)filename line:(int)line
+{
+    NSString *msg;
+    if (a != b) {
+        msg = [UKTestHandler localizedString:@"msgUKUnsignedIntsEqual.pass"];
+        msg = [NSString stringWithFormat:msg, (unsigned long long int)a, (unsigned long long int)b];        
+        [self reportStatus:YES inFile:filename line:line message:msg];
+    } else {
+        msg = [UKTestHandler localizedString:@"msgUKUnsignedIntsEqual.fail"];
+        msg = [NSString stringWithFormat:msg, (unsigned long long int)a, (unsigned long long int)b];        
         [self reportStatus:NO inFile:filename line:line message:msg];
     }
 }

@@ -70,9 +70,13 @@ See -reportException:inClass:hint:. */
 
 - (void) testNotNil:(void *)ref inFile:(char *)filename line:(int)line;
 
-- (void) testInt:(int)a equalTo:(int)b inFile:(char *)filename line:(int)line;
+- (void) testInt:(NSInteger)a equalTo:(NSInteger)b inFile:(char *)filename line:(int)line;
 
-- (void) testInt:(int)a notEqualTo:(int)b inFile:(char *)filename line:(int)line;
+- (void) testInt:(NSInteger)a notEqualTo:(NSInteger)b inFile:(char *)filename line:(int)line;
+
+- (void) testUnsignedInt:(NSUInteger)a equalTo:(NSUInteger)b inFile:(char *)filename line:(int)line;
+
+- (void) testUnsignedInt:(NSUInteger)a notEqualTo:(NSUInteger)b inFile:(char *)filename line:(int)line;
 
 - (void) testFloat:(float)a equalTo:(float)b delta:(float)delta inFile:(char *)filename line:(int)line;
 
