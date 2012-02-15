@@ -64,14 +64,19 @@
 
 /**
  * Concrete subclass of COSequenceEdit which represents
- * an overlapping group of edits; they may be conflicting or not.
+ * an overlapping group of COPrimitiveSequenceEdit instances;
+ * they may be conflicting or not.
+ *
+ * When presenting them to the user to resolve, the user should
+ * see them grouped by sourceIdentifier; i.e. the user chooses
+ * to use all edits with one sourceIdentifier, or all with another.
  */
 @interface COOverlappingSequenceEditGroup : COSequenceEdit
 {
 	NSSet *overlappingEdits;
 	/**
 	 * determined at creation time by checking if all of the overlappingEdits
-	 * are equal or not.
+	 * are equal (ignoring sourceIdentifier) or not.
 	 */
 	BOOL conflicting;
 }

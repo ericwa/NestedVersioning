@@ -111,6 +111,9 @@ static NSArray *COMergeSortedArraysUsingSelector(NSArray *arrayA, NSArray *array
 	}
 	else
 	{
+		/**
+		 * equivelant to sortedOps = [[arrayA arrayByAddingObjectsFromArray: arrayB] sortedArrayUsingSelector: cmpSel]]
+		 */
 		NSArray *sortedOps = COMergeSortedArraysUsingSelector([self operations], [other operations], @selector(compare:));
 		const NSUInteger sortedOpsCount = [sortedOps count];
 				
@@ -245,6 +248,9 @@ static NSArray *COMergeSortedArraysUsingSelector(NSArray *arrayA, NSArray *array
 		[NSException raise: NSInvalidArgumentException
 					format: @"+overlappingEditGroupWithEdits: expects at least 2 edits"];
 	}
+	
+	// Compute the union of the ranges covered by edits,
+	// check if they are conflicting or not
 	
 	COPrimitiveSequenceEdit *firstEdit = [edits anyObject];
 	NSRange totalRange = [firstEdit range];

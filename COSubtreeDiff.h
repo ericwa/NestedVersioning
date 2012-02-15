@@ -3,6 +3,12 @@
 @class ETUUID;
 @class COSubtree;
 
+/**
+ * Concerns for COSubtreeDiff:
+ * - conflicts arise when the same subtree is inserted in multiple places. These conflicts
+ *   won't be captured by the COSequenceDiff, say.
+ * - note that a COSubtreeDiff cannot exist in an inconsistent state.
+ */
 @interface COSubtreeDiff : NSObject
 {
 	ETUUID *oldRoot;
