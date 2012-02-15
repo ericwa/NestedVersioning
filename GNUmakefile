@@ -20,13 +20,12 @@ $(APP_NAME)_OBJC_FILES=\
 	COType+Plist.m\
 	COType+String.m\
 	COType.m\
-	Diff/../COSubtreeDiff.m\
+	Diff/COSubtreeDiff.m\
 	Diff/COArrayDiff.m\
 	Diff/COItemDiff.m\
 	Diff/COObjectGraphDiff.m\
 	Diff/COSequenceDiff.m\
 	Diff/COSetDiff.m\
-	Diff/COStringDiff.m\
 	ETUUID.m\
 	StoreBrowser/AppDelegate.m\
 	StoreBrowser/EWGraphRenderer.m\
