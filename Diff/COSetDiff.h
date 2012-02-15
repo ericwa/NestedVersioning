@@ -9,7 +9,8 @@
 // Creating
 
 - (id) initWithFirstSet: (NSSet *)first
-              secondSet: (NSSet *)second;
+              secondSet: (NSSet *)second
+	   sourceIdentifier: (id)aSource;
 
 - (id) initWithOperations: (NSArray *)operations;
 

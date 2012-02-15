@@ -1,5 +1,6 @@
-#import <EtoileFoundation/EtoileFoundation.h>
+#import <Foundation/Foundation.h>
 #import "COSequenceDiff.h"
+#import "COMacros.h"
 
 /**
  * Linear-time version of:

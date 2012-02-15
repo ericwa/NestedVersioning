@@ -5,7 +5,8 @@
 @interface COArrayDiff : COSequenceDiff <COValueDiff>
 
 - (id) initWithFirstArray: (NSArray *)first
-              secondArray: (NSArray *)second;
+			  secondArray: (NSArray *)second
+		 sourceIdentifier: (id)aSource;
 
 - (void) applyTo: (NSMutableArray*)array;
 - (NSArray *)arrayWithDiffAppliedTo: (NSArray *)array;

@@ -11,7 +11,9 @@ static bool comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
 			[(NSArray*)userdata2 objectAtIndex: j]];
 }
 
-- (NSArray *)opsWithFirstArray: (NSArray *)a secondArray: (NSArray *)b
+- (NSArray *)opsWithFirstArray: (NSArray *)a
+				   secondArray: (NSArray *)b
+			  sourceIdentifier: (id)aSource
 {
 	NSMutableArray *resultArray = [NSMutableArray array];
 	
@@ -31,19 +33,19 @@ static bool comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
 			case difftype_insertion:
 				if (secondRange.length > 0)
 				{
-					[resultArray addObject: [COSequenceInsertion insertWithLocation: firstRange.location
-																	 insertedObject: [b subarrayWithRange: secondRange]
-																   sourceIdentifier: sourceIdentifier]];
+					[resultArray addObject: [COSequenceInsertion insertionWithLocation: firstRange.location
+																		insertedObject: [b subarrayWithRange: secondRange]
+																	  sourceIdentifier: aSource]];
 				}
 				break;
 			case difftype_deletion:
 				[resultArray addObject: [COSequenceDeletion deletionWithRange: firstRange
-															 sourceIdentifier: sourceIdentifier]];
+															 sourceIdentifier: aSource]];
 				break;
 			case difftype_modification:
 				[resultArray addObject: [COSequenceModification modificationWithRange: firstRange
 																	   insertedObject: [b subarrayWithRange: secondRange]
-																	 sourceIdentifier: sourceIdentifier]];
+																	 sourceIdentifier: aSource]];
 																				  
 				break;
 		}
@@ -55,10 +57,13 @@ static bool comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
 }
 
 
-- (id) initWithFirstArray: (NSArray *)first secondArray: (NSArray *)second
+- (id) initWithFirstArray: (NSArray *)first
+			  secondArray: (NSArray *)second
+		 sourceIdentifier: (id)aSource
 {
 	self = [super initWithOperations: [self opsWithFirstArray: first
-												  secondArray: second]];	
+												  secondArray: second
+											 sourceIdentifier: aSource]];	
 	return self;
 }
 
@@ -67,40 +72,47 @@ static bool comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
  */
 - (void) applyTo: (NSMutableArray*)array
 {
-	NSInteger i = 0;
-	for (COSequenceDiffOperation *op in ops)
+	if ([self hasConflicts])
 	{
-		if ([op isKindOfClass: [COArrayDiffOperationInsert class]])
+		[NSException raise: NSGenericException
+					format: @"Cannot apply diff with conflicts"];
+	}
+	
+	NSInteger i = 0;
+	for (COSequenceEdit *op in ops)
+	{
+		if ([op isKindOfClass: [COSequenceInsertion class]])
 		{
-			COArrayDiffOperationInsert *opp = (COArrayDiffOperationInsert*)op;
-			NSRange range = NSMakeRange([op range].location + i, [[opp insertedObjects] count]);
+			COSequenceInsertion *opp = (COSequenceInsertion*)op;
+			NSRange range = NSMakeRange([op range].location + i, [[opp insertedObject] count]);
 			
-			[array insertObjects: [opp insertedObjects]
+			[array insertObjects: (NSArray *)[opp insertedObject]
 					   atIndexes: [NSIndexSet indexSetWithIndexesInRange: range]];
 			
 			i += range.length;
 		}
-		else if ([op isKindOfClass: [COArrayDiffOperationDelete class]])
+		else if ([op isKindOfClass: [COSequenceDeletion class]])
 		{
 			NSRange range = NSMakeRange([op range].location + i, [op range].length);
 			
 			[array removeObjectsAtIndexes: [NSIndexSet indexSetWithIndexesInRange: range]];
 			i -= range.length;
 		}
-		else if ([op isKindOfClass: [COArrayDiffOperationModify class]])
+		else if ([op isKindOfClass: [COSequenceModification class]])
 		{
-			COArrayDiffOperationModify *opp = (COArrayDiffOperationModify*)op;
+			COSequenceModification *opp = (COSequenceModification*)op;
 			NSRange deleteRange = NSMakeRange([opp range].location + i, [opp range].length);
-			NSRange insertRange = NSMakeRange([opp range].location + i, [[opp insertedObjects] count]);
+			NSRange insertRange = NSMakeRange([opp range].location + i, [(NSArray *)[opp insertedObject] count]);
 			
 			[array removeObjectsAtIndexes: [NSIndexSet indexSetWithIndexesInRange: deleteRange]];
-			[array insertObjects: [opp insertedObjects]
+			[array insertObjects: (NSArray *)[opp insertedObject]
 					   atIndexes: [NSIndexSet indexSetWithIndexesInRange: insertRange]];
 			i += (insertRange.length - deleteRange.length);
 		}
 		else
 		{
-			assert(0);
+			[NSException raise: NSInternalInconsistencyException
+						format: @"Unexpected edit type"];
 		}    
 	}
 }

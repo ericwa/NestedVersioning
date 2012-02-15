@@ -5,6 +5,7 @@
 
 - (id) initWithFirstSet: (NSSet *)first
               secondSet: (NSSet *)second
+	   sourceIdentifier: (id)aSource
 {
 	SUPERINIT;
 	

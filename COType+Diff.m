@@ -62,13 +62,18 @@
 
 - (id <COValueDiff>) diffValue: (id)valueA withValue: (id)valueB
 {
+	// FIXME :Source identifier?
 	if ([self isOrdered])
 	{
-		return [[[COArrayDiff alloc] initWithFirstArray: valueA secondArray:valueB] autorelease];
+		return [[[COArrayDiff alloc] initWithFirstArray: valueA
+											secondArray: valueB
+									   sourceIdentifier: nil] autorelease];
 	}
 	else
 	{
-		return [[[COSetDiff alloc] initWithFirstSet: valueA secondSet:valueB] autorelease];
+		return [[[COSetDiff alloc] initWithFirstSet: valueA
+										  secondSet: valueB
+								   sourceIdentifier: nil] autorelease];
 	}
 }
 
