@@ -230,7 +230,7 @@ static NSArray *COMergeSortedArraysUsingSelector(NSArray *arrayA, NSArray *array
 
 - (COPrimitiveSequenceEdit *)anyNonconflictingEdit
 {
-	return self;
+	return (COPrimitiveSequenceEdit *)self;
 }
 
 - (BOOL) hasConflicts
@@ -263,8 +263,6 @@ static NSArray *COMergeSortedArraysUsingSelector(NSArray *arrayA, NSArray *array
 
 @implementation COOverlappingSequenceEditGroup
 
-@synthesize overlappingEdits;
-
 + (COOverlappingSequenceEditGroup *)overlappingEditGroupWithEdits: (NSSet *)edits
 {
 	if ([edits count] < 2)
@@ -285,11 +283,41 @@ static NSArray *COMergeSortedArraysUsingSelector(NSArray *arrayA, NSArray *array
 		allSame = allSame && [firstEdit isEqualIgnoringSourceIdentifier: edit];
 	}
 	
+	// Create edits dictionary
+	
+	NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+	for (COPrimitiveSequenceEdit *edit in edits)
+	{
+		id identifier = [edit sourceIdentifier];
+		if (nil == identifier)
+		{
+			[NSException raise: NSInvalidArgumentException
+						format: @"sourceIdentifiers must not be nil"];
+		}
+			 
+		NSMutableArray *array = [dict objectForKey: identifier];
+		if (nil == array)
+		{
+			array = [NSMutableArray arrayWithObject: edit];
+			[dict setObject: array
+					 forKey: identifier];
+		}
+		else
+		{
+			[array addObject: edit];
+		}
+	}
+	
 	COOverlappingSequenceEditGroup *result = [[COOverlappingSequenceEditGroup alloc] init];
 	result->range = totalRange;
-	result->overlappingEdits = [[NSMutableSet alloc] initWithSet: edits];
+	result->overlappingEdits = dict;
 	result->conflicting = !allSame;
 	return [result autorelease];
+}
+
+- (NSArray *) editsForSourceIdentifier: (id)anIdentifier
+{
+	return [NSArray arrayWithArray: [overlappingEdits objectForKey: anIdentifier]];
 }
 
 - (void) dealloc
@@ -301,7 +329,7 @@ static NSArray *COMergeSortedArraysUsingSelector(NSArray *arrayA, NSArray *array
 - (BOOL) isEqual:(id)object
 {
 	return [object isKindOfClass: [self class]] && 
-		[overlappingEdits isEqual: [object overlappingEdits]];
+		[overlappingEdits isEqual: ((COOverlappingSequenceEditGroup *)object)->overlappingEdits];
 }
 
 - (NSUInteger) hash
@@ -311,7 +339,15 @@ static NSArray *COMergeSortedArraysUsingSelector(NSArray *arrayA, NSArray *array
 
 - (NSSet *)allEdits
 {
-	return overlappingEdits;
+	NSMutableSet *set = [NSMutableSet set];
+	for (NSArray *edits in [overlappingEdits allValues])
+	{
+		for (COPrimitiveSequenceEdit *edit in edits)
+		{
+			[set addObject: edit];
+		}
+	}
+	return set;
 }
 
 - (COPrimitiveSequenceEdit *)anyNonconflictingEdit
@@ -321,7 +357,10 @@ static NSArray *COMergeSortedArraysUsingSelector(NSArray *arrayA, NSArray *array
 		[NSException raise: NSGenericException
 					format: @"-anyNonconflictingEdit called on an edit group with conflicts"];
 	}
-	return [overlappingEdits anyObject];
+	
+	id anyKey = [[overlappingEdits allKeys] objectAtIndex: 0];
+	NSArray *edits = [overlappingEdits objectForKey: anyKey];
+	return [edits objectAtIndex: 0];
 }
 
 - (BOOL) hasConflicts

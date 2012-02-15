@@ -39,8 +39,8 @@
 	
 	UKFalse([edit1 hasConflicts]);
 	UKIntsEqual(2, [[edit1 allEdits] count]);
-	UKTrue(NSEqualRanges(NSMakeRange(0, 1), [[[[edit1 allEdits] allObjects] objectAtIndex: 0] range]));
-	UKTrue(NSEqualRanges(NSMakeRange(0, 1), [[[[edit1 allEdits] allObjects] objectAtIndex: 1] range]));
+	UKTrue(NSEqualRanges(NSMakeRange(0, 1), [[[(COOverlappingSequenceEditGroup *)edit1 editsForSourceIdentifier: @"diff12"] objectAtIndex: 0] range]));
+	UKTrue(NSEqualRanges(NSMakeRange(0, 1), [[[(COOverlappingSequenceEditGroup *)edit1 editsForSourceIdentifier: @"diff13"] objectAtIndex: 0] range]));
 }
 
 - (void) testSimpleConflict

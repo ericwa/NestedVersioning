@@ -64,6 +64,8 @@
  * Abstract subclass of COSequenceEdit which adds a 
  * source identifier property, used to indicate where (which user/branch/commit etc)
  * a change originates.
+ *
+ * sourceIdentifier must be non-nil and sutible as a dictionary key.
  */
 @interface COPrimitiveSequenceEdit : COSequenceEdit
 {
@@ -89,17 +91,22 @@
  */
 @interface COOverlappingSequenceEditGroup : COSequenceEdit
 {
-	NSSet *overlappingEdits;
+	/**
+	 * source identifier -> NSArray of COPrimitiveSequenceEdit
+	 */
+	NSDictionary *overlappingEdits; 
 	/**
 	 * determined at creation time by checking if all of the overlappingEdits
 	 * are equal (ignoring sourceIdentifier) or not.
 	 */
 	BOOL conflicting;
 }
+
 /**
- * Array of COPrimitiveSequenceEdit
+ * Sorted array of COPrimitiveSequenceEdit
  */
-@property (nonatomic, readonly) NSSet *overlappingEdits;
+- (NSArray *) editsForSourceIdentifier: (id)anIdentifier;
+
 /**
  * The receiver's range is computed by taking the union of the edits
  */
