@@ -7,82 +7,69 @@
               secondSet: (NSSet *)second
 	   sourceIdentifier: (id)aSource
 {
+	NILARG_EXCEPTION_TEST(aSource);
+	
+	NSMutableSet *insertions = [NSMutableSet setWithSet: second];
+	[insertions minusSet: first];
+	
+	NSMutableSet *deletions = [NSMutableSet setWithSet: first];
+	[deletions minusSet: second];
+	
 	SUPERINIT;
-	
-	NSMutableSet *intersection = [[NSMutableSet alloc] initWithSet: first];
-	[intersection intersectSet: second];
-	
-	NSMutableSet *add = [[NSMutableSet alloc] initWithSet: second];
-	[add minusSet: intersection];
-	
-	NSMutableSet *remove = [[NSMutableSet alloc] initWithSet: first];
-	[remove minusSet: intersection];
-	
-	[intersection release];
-	
-	ops = [[NSMutableArray alloc] init];
-	if (0 != [add count])
-	{
-		[(NSMutableArray*)ops addObject: [COSetDiffOperationAdd addOperationWithAddedObjects: add]];
-	}
-	if (0 != [remove count])
-	{
-		[(NSMutableArray*)ops addObject: [COSetDiffOperationRemove removeOperationWithRemovedObjects: remove]];
-	}
-	
-	[add release];
-	[remove release];
-	
-	return self;
-}
-- (id) initWithOperations: (NSArray *)operations
-{
-	SUPERINIT;
-	ops = [[NSArray alloc] initWithArray: operations];
+	ASSIGN(insertionsForSourceIdentifier, [NSDictionary dictionaryWithObject: insertions forKey: aSource]);
+	ASSIGN(deletionsForSourceIdentifier, [NSDictionary dictionaryWithObject: deletions forKey: aSource]);
 	return self;
 }
 
 - (void) dealloc
 {
-	[ops release];
+	[insertionsForSourceIdentifier release];
+	[deletionsForSourceIdentifier release];
 	[super dealloc];
 }
 
-- (NSArray *)operations
-{
-	return ops;
-}
-- (NSSet *)addedObjects
+- (NSSet *)insertionSet
 {
 	NSMutableSet *added = [NSMutableSet set];
-	for (id op in ops)
+	for (NSSet *addition in [insertionsForSourceIdentifier allValues])
 	{
-		if ([op isKindOfClass: [COSetDiffOperationAdd class]])
-		{
-			[added unionSet: [(COSetDiffOperationAdd*)op addedObjects]];
-		}
+		[added unionSet: addition];
 	}
 	return added;
 }
-- (NSSet *)removedObjects
+
+- (NSSet *)deletionSet
 {
 	NSMutableSet *removed = [NSMutableSet set];
-	for (id op in ops)
+	for (NSSet *removal in [deletionsForSourceIdentifier allValues])
 	{
-		if ([op isKindOfClass: [COSetDiffOperationRemove class]])
-		{
-			[removed unionSet: [(COSetDiffOperationRemove*)op removedObjects]];    
-		}
+		[removed unionSet: removal];
 	}
 	return removed;
 }
+
+- (NSSet *)insertionSetForSourceIdentifier: (id)anIdentifier
+{
+	return [insertionsForSourceIdentifier objectForKey: anIdentifier];
+}
+
+- (NSSet *)deletionSetForSourceIdentifier: (id)anIdentifier
+{
+	return [deletionsForSourceIdentifier objectForKey: anIdentifier];
+}
+
 - (void) applyTo: (NSMutableSet*)set
 {
-	for (id op in ops)
+	for (NSSet *addition in [insertionsForSourceIdentifier allValues])
 	{
-		[op applyTo: set];
+		[set unionSet: addition];
+	}
+	for (NSSet *removal in [deletionsForSourceIdentifier allValues])
+	{
+		[set minusSet: removal];
 	}
 }
+
 - (NSSet *)setWithDiffAppliedTo: (NSSet *)set;
 {
 	NSMutableSet *mutableSet = [NSMutableSet setWithSet: set];
@@ -95,125 +82,34 @@
 	return [self setWithDiffAppliedTo: aValue];
 }
 
-#if 0
-- (COMergeResult *)mergeWith: (COSetDiff *)other;
+- (COSetDiff *)setDiffByMergingWithDiff: (COSetDiff *)other
 {  
-	// FIXME: this method is a mess, can it be simplified?
-	
-	NSSet *baseAdded = [self addedObjects];
-	NSSet *otherAdded = [other addedObjects];
-	NSSet *baseRemoved = [self removedObjects];
-	NSSet *otherRemoved = [other removedObjects];
-	
-	NSMutableSet *overlappingAdds = [NSMutableSet setWithSet: baseAdded];
-	[overlappingAdds intersectsSet: otherAdded];
-	
-	NSMutableSet *overlappingRemoves = [NSMutableSet setWithSet: baseRemoved];
-	[overlappingRemoves intersectsSet: otherRemoved];
-	
-	NSMutableSet *allAdds = [NSMutableSet setWithSet: baseAdded];
-	[allAdds unionSet: otherAdded];
-	
-	NSMutableSet *allRemoves = [NSMutableSet setWithSet: baseRemoved];
-	[allRemoves unionSet: otherRemoved];
-	
-	NSMutableSet *conflicts = [NSMutableSet setWithSet: allAdds];
-	[conflicts intersectSet: allRemoves];
-	
-	NSMutableSet *baseAddedConflicts = [NSMutableSet setWithSet: conflicts];
-	[baseAddedConflicts intersectSet: baseAdded];  
-	NSMutableSet *baseRemovedConflicts = [NSMutableSet setWithSet: conflicts];
-	[baseRemovedConflicts intersectSet: baseRemoved];  
-	NSMutableSet *otherAddedConflicts = [NSMutableSet setWithSet: conflicts];
-	[otherAddedConflicts intersectSet: otherAdded];
-	NSMutableSet *otherRemovedConflicts = [NSMutableSet setWithSet: conflicts];
-	[otherRemovedConflicts intersectSet: otherRemoved];
-	
-	NSMutableSet *nonconflictingNonoverlappingAdds = [NSMutableSet setWithSet: allAdds];
-	[nonconflictingNonoverlappingAdds minusSet: overlappingAdds];
-	[nonconflictingNonoverlappingAdds minusSet: conflicts];
-	
-	NSMutableSet *nonconflictingNonoverlappingRemoves = [NSMutableSet setWithSet: allRemoves];
-	[nonconflictingNonoverlappingRemoves minusSet: overlappingRemoves];
-	[nonconflictingNonoverlappingRemoves minusSet: conflicts];
-	
-	// Now create operation objects
-	
-	NSMutableArray *nonoverlappingNonconflictingOps = [NSMutableArray array];
-	if (0 != [nonconflictingNonoverlappingAdds count])
+	if ([[self deletionSet] intersectsSet: [other insertionSet]]
+		|| [[self insertionSet] intersectsSet: [other deletionSet]])
 	{
-		[nonoverlappingNonconflictingOps addObject: [COSetDiffOperationAdd addOperationWithAddedObjects: nonconflictingNonoverlappingAdds]];
-	}
-	if (0 != [nonconflictingNonoverlappingRemoves count])
-	{
-		[nonoverlappingNonconflictingOps addObject: [COSetDiffOperationRemove removeOperationWithRemovedObjects: nonconflictingNonoverlappingRemoves]];
+		[NSException raise: NSInvalidArgumentException
+					format: @"set diffs being merged could not have originated from the same set and are illegal to merge"];
 	}
 	
-	NSMutableArray *overlappingNonconflictingOps = [NSMutableArray array];
-	if (0 != [overlappingAdds count])
+	if ([[NSSet setWithArray: [insertionsForSourceIdentifier allKeys]] intersectsSet: 
+			[NSSet setWithArray: [other->insertionsForSourceIdentifier allKeys]]]
+		|| [[NSSet setWithArray: [deletionsForSourceIdentifier allKeys]] intersectsSet: 
+			[NSSet setWithArray: [other->deletionsForSourceIdentifier allKeys]]])
 	{
-		[overlappingNonconflictingOps addObject: [COSetDiffOperationAdd addOperationWithAddedObjects: overlappingAdds]];
-	}
-	if (0 != [overlappingRemoves count])
-	{
-		[overlappingNonconflictingOps addObject: [COSetDiffOperationRemove removeOperationWithRemovedObjects: overlappingRemoves]];
-	}
-	
-	NSMutableArray *mergeConflicts = [NSMutableArray array];
-	if (0 != [baseAddedConflicts count])
-	{
-		[mergeConflicts addObject: [COMergeConflict conflictWithOpsFromBase: [NSArray arrayWithObject: [COSetDiffOperationAdd addOperationWithAddedObjects: baseAddedConflicts]]
-															   opsFromOther: [NSArray arrayWithObject: [COSetDiffOperationRemove removeOperationWithRemovedObjects: otherRemovedConflicts]]]];
-	}
-	if (0 != [baseRemovedConflicts count])
-	{
-		[mergeConflicts addObject: [COMergeConflict conflictWithOpsFromBase: [NSArray arrayWithObject: [COSetDiffOperationRemove removeOperationWithRemovedObjects: baseRemovedConflicts]]
-															   opsFromOther: [NSArray arrayWithObject: [COSetDiffOperationAdd addOperationWithAddedObjects: otherAddedConflicts]]]];    
+		[NSException raise: NSInvalidArgumentException
+					format: @"set diffs being merged should have unique source identifiers"];
 	}
 	
-	return [COMergeResult resultWithNonoverlappingNonconflictingOps: nonoverlappingNonconflictingOps
-									   overlappingNonconflictingOps: overlappingNonconflictingOps
-														  conflicts: mergeConflicts];
-}
-#endif
-
-@end
-
-
-@implementation COSetDiffOperationAdd
-@synthesize addedObjects;
-+ (COSetDiffOperationAdd*)addOperationWithAddedObjects: (NSSet*)add
-{
-	COSetDiffOperationAdd *result = [[[COSetDiffOperationAdd alloc] init] autorelease];
-	result->addedObjects = [add retain];
+	NSMutableDictionary *newInsertions = [NSMutableDictionary dictionaryWithDictionary: insertionsForSourceIdentifier];
+	[newInsertions addEntriesFromDictionary: other->insertionsForSourceIdentifier];
+	
+	NSMutableDictionary *newDeletions = [NSMutableDictionary dictionaryWithDictionary: deletionsForSourceIdentifier];
+	[newDeletions addEntriesFromDictionary: other->deletionsForSourceIdentifier];
+	
+	COSetDiff *result = [[[COSetDiff alloc] init] autorelease];
+	ASSIGN(result->insertionsForSourceIdentifier, newInsertions);
+	ASSIGN(result->deletionsForSourceIdentifier, newDeletions);
 	return result;
 }
-- (void) dealloc
-{
-	[addedObjects release];
-	[super dealloc];
-}
-- (void) applyTo: (NSMutableSet*)set
-{
-	[set unionSet: addedObjects];
-}
-@end
 
-@implementation COSetDiffOperationRemove
-@synthesize removedObjects;
-+ (COSetDiffOperationRemove*)removeOperationWithRemovedObjects: (NSSet*)remove
-{
-	COSetDiffOperationRemove *result = [[[COSetDiffOperationRemove alloc] init] autorelease];
-	result->removedObjects = [remove retain];
-	return result;
-}
-- (void) dealloc
-{
-	[removedObjects release];
-	[super dealloc];
-}
-- (void) applyTo: (NSMutableSet*)set
-{
-	[set minusSet: removedObjects];
-}
 @end

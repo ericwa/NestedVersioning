@@ -67,13 +67,13 @@
 	{
 		return [[[COArrayDiff alloc] initWithFirstArray: valueA
 											secondArray: valueB
-									   sourceIdentifier: nil] autorelease];
+									   sourceIdentifier: @"FIXME: x"] autorelease];
 	}
 	else
 	{
 		return [[[COSetDiff alloc] initWithFirstSet: valueA
 										  secondSet: valueB
-								   sourceIdentifier: nil] autorelease];
+								   sourceIdentifier: @"FIXME: y"] autorelease];
 	}
 }
 

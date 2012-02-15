@@ -1,9 +1,13 @@
 #import <Foundation/Foundation.h>
 #import "COType+Diff.h"
 
+/**
+ * Set diffs can always be merged without conflict
+ */
 @interface COSetDiff : NSObject <COValueDiff>
 {
-	NSArray *ops;
+	NSDictionary *insertionsForSourceIdentifier;
+	NSDictionary *deletionsForSourceIdentifier;
 }
 
 // Creating
@@ -12,13 +16,13 @@
               secondSet: (NSSet *)second
 	   sourceIdentifier: (id)aSource;
 
-- (id) initWithOperations: (NSArray *)operations;
-
 // Examining
 
-- (NSArray *)operations;
-- (NSSet *)addedObjects;
-- (NSSet *)removedObjects;
+- (NSSet *)insertionSet;
+- (NSSet *)deletionSet;
+
+- (NSSet *)insertionSetForSourceIdentifier: (id)anIdentifier;
+- (NSSet *)deletionSetForSourceIdentifier: (id)anIdentifier;
 
 // Applying
 
@@ -28,25 +32,6 @@
 
 // Merging with another COSetDiff
 
-//- (COMergeResult *)mergeWith: (COSetDiff *)other;
+- (COSetDiff *)setDiffByMergingWithDiff: (COSetDiff *)other;
 
-@end
-
-
-@interface COSetDiffOperationAdd : NSObject
-{
-	NSSet *addedObjects;
-}
-@property (nonatomic, retain, readonly) NSSet *addedObjects;
-+ (COSetDiffOperationAdd*)addOperationWithAddedObjects: (NSSet*)add;
-- (void) applyTo: (NSMutableSet*)set;
-@end
-
-@interface COSetDiffOperationRemove : NSObject
-{
-	NSSet *removedObjects;
-}
-@property (nonatomic, retain, readonly) NSSet *removedObjects;
-+ (COSetDiffOperationRemove*)removeOperationWithRemovedObjects: (NSSet*)remove;
-- (void) applyTo: (NSMutableSet*)set;
 @end
