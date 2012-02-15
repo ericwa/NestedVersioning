@@ -252,7 +252,7 @@ static NSArray *COMergeSortedArraysUsingSelector(NSArray *arrayA, NSArray *array
 	for (COPrimitiveSequenceEdit *edit in edits)
 	{
 		totalRange = NSUnionRange(totalRange, [edit range]);
-		allSame = allSame && [firstEdit isEqual: edit];
+		allSame = allSame && [firstEdit isEqualIgnoringSourceIdentifier: edit];
 	}
 	
 	COOverlappingSequenceEditGroup *result = [[COOverlappingSequenceEditGroup alloc] init];
