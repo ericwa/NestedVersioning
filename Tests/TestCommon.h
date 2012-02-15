@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import <UnitKit/UnitKit.h>
+#import "COArrayDiff.h"
 #import "COStore.h"
 #import "COPath.h"
 #import "COItem.h"
