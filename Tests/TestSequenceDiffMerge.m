@@ -43,4 +43,26 @@
 	UKTrue(NSEqualRanges(NSMakeRange(0, 1), [[[[edit1 allEdits] allObjects] objectAtIndex: 1] range]));
 }
 
+- (void) testSimpleConflict
+{
+	NSArray *array2 = A(@"c");
+	NSArray *array1 = A(@"a");
+	NSArray *array3 = A(@"b");
+	
+	/**
+	 * modify a->c
+	 */
+	COArrayDiff *diff12 = [[COArrayDiff alloc] initWithFirstArray: array1 secondArray: array2 sourceIdentifier: @"diff12"];
+	
+	/**
+	 * modify a->b
+	 */
+	COArrayDiff *diff13 = [[COArrayDiff alloc] initWithFirstArray: array1 secondArray: array3 sourceIdentifier: @"diff13"];
+
+	COArrayDiff *merged = (COArrayDiff *)[diff12 sequenceDiffByMergingWithDiff: diff13];
+	UKTrue([merged hasConflicts]);
+
+	COSequenceEdit *edit1 = [[merged operations] objectAtIndex: 0];
+}
+
 @end
