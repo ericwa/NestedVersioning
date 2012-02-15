@@ -35,12 +35,38 @@
 	
 	UKObjectsEqual(A(@"A", @"b", @"zoo", @"e", @"foo"), [merged arrayWithDiffAppliedTo: array1]);
 	
-	COSequenceEdit *edit1 = [[merged operations] objectAtIndex: 0];
+	// Examine the a->A change group
 	
+	COOverlappingSequenceEditGroup *edit1 = (COOverlappingSequenceEditGroup *)[[merged operations] objectAtIndex: 0];
+	
+	UKObjectKindOf(edit1, COOverlappingSequenceEditGroup);
 	UKFalse([edit1 hasConflicts]);
 	UKIntsEqual(2, [[edit1 allEdits] count]);
-	UKTrue(NSEqualRanges(NSMakeRange(0, 1), [[[(COOverlappingSequenceEditGroup *)edit1 editsForSourceIdentifier: @"diff12"] objectAtIndex: 0] range]));
-	UKTrue(NSEqualRanges(NSMakeRange(0, 1), [[[(COOverlappingSequenceEditGroup *)edit1 editsForSourceIdentifier: @"diff13"] objectAtIndex: 0] range]));
+	
+	// Examine the a->A change from diff12
+	
+	NSArray *edit1diff12Array = [edit1 editsForSourceIdentifier: @"diff12"];
+	UKIntsEqual(1, [edit1diff12Array count]);
+	
+	COSequenceModification *edit1diff12 = [edit1diff12Array objectAtIndex: 0];
+	UKObjectKindOf(edit1diff12, COSequenceModification);
+	UKObjectsEqual(A(@"A"), [edit1diff12 insertedObject]);
+	UKTrue(NSEqualRanges(NSMakeRange(0, 1), [edit1diff12 range]));
+	UKObjectsEqual(@"diff12", [edit1diff12 sourceIdentifier]);
+
+	// Examine the a->A change from diff13
+	
+	NSArray *edit1diff13Array = [edit1 editsForSourceIdentifier: @"diff13"];
+	UKIntsEqual(1, [edit1diff13Array count]);
+	
+	COSequenceModification *edit1diff13 = [edit1diff13Array objectAtIndex: 0];
+	UKObjectKindOf(edit1diff13, COSequenceModification);
+	UKObjectsEqual(A(@"A"), [edit1diff13 insertedObject]);
+	UKTrue(NSEqualRanges(NSMakeRange(0, 1), [edit1diff13 range]));
+	UKObjectsEqual(@"diff13", [edit1diff13 sourceIdentifier]);
+	
+	UKObjectsNotEqual(edit1diff12, edit1diff13); // because their sourceIdentifiers are different
+	UKTrue([edit1diff12 isEqualIgnoringSourceIdentifier: edit1diff13]);	
 }
 
 - (void) testSimpleConflict
@@ -61,8 +87,38 @@
 
 	COArrayDiff *merged = (COArrayDiff *)[diff12 sequenceDiffByMergingWithDiff: diff13];
 	UKTrue([merged hasConflicts]);
-
-	COSequenceEdit *edit1 = [[merged operations] objectAtIndex: 0];
+	
+	// Examine the {a->c, a->b} change group
+	
+	COOverlappingSequenceEditGroup *edit1 = (COOverlappingSequenceEditGroup *)[[merged operations] objectAtIndex: 0];
+	
+	UKObjectKindOf(edit1, COOverlappingSequenceEditGroup);
+	UKTrue([edit1 hasConflicts]);
+	UKIntsEqual(2, [[edit1 allEdits] count]);
+	
+	// Examine the a->c change from diff12
+	
+	NSArray *edit1diff12Array = [edit1 editsForSourceIdentifier: @"diff12"];
+	UKIntsEqual(1, [edit1diff12Array count]);
+	
+	COSequenceModification *edit1diff12 = [edit1diff12Array objectAtIndex: 0];
+	UKObjectKindOf(edit1diff12, COSequenceModification);
+	UKObjectsEqual(A(@"c"), [edit1diff12 insertedObject]);
+	UKTrue(NSEqualRanges(NSMakeRange(0, 1), [edit1diff12 range]));
+	UKObjectsEqual(@"diff12", [edit1diff12 sourceIdentifier]);
+	
+	// Examine the a->b change from diff13
+	
+	NSArray *edit1diff13Array = [edit1 editsForSourceIdentifier: @"diff13"];
+	UKIntsEqual(1, [edit1diff13Array count]);
+	
+	COSequenceModification *edit1diff13 = [edit1diff13Array objectAtIndex: 0];
+	UKObjectKindOf(edit1diff13, COSequenceModification);
+	UKObjectsEqual(A(@"b"), [edit1diff13 insertedObject]);
+	UKTrue(NSEqualRanges(NSMakeRange(0, 1), [edit1diff13 range]));
+	UKObjectsEqual(@"diff13", [edit1diff13 sourceIdentifier]);
+	
+	UKFalse([edit1diff12 isEqualIgnoringSourceIdentifier: edit1diff13]);
 }
 
 @end
