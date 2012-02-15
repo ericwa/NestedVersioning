@@ -16,7 +16,7 @@
 	NSArray *array3 = A(@"A", @"b", @"c", @"e", @"foo");
 	
 	/**
-	 * modify a->A, remove c, insert 'zoo' after d, remove f
+	 * modify a->A, remove c, insert 'zoo' after d
 	 */
 	COArrayDiff *diff12 = [[COArrayDiff alloc] initWithFirstArray: array1 secondArray: array2 sourceIdentifier: @"diff12"];
 
@@ -31,7 +31,9 @@
 	COArrayDiff *merged = (COArrayDiff *)[diff12 sequenceDiffByMergingWithDiff: diff13];
 	UKFalse([merged hasConflicts]);
 	
-	// Expected: {a->A nonconflicting}, remove c, remove d,  delete d, insert 'zoo' after d, insert foo after e"
+	// Expected: {a->A nonconflicting}, remove c, remove d,  insert 'zoo', insert 'foo'
+	
+	UKObjectsEqual(A(@"A", @"b", @"zoo", @"e", @"foo"), [merged arrayWithDiffAppliedTo: array1]);
 	
 	COSequenceEdit *edit1 = [[merged operations] objectAtIndex: 0];
 	

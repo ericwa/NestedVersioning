@@ -81,6 +81,9 @@ static bool comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
 	NSInteger i = 0;
 	for (COSequenceEdit *op in ops)
 	{
+		// Handle overlapping nonconflicting edit groups
+		op = [op anyNonconflictingEdit];
+		
 		if ([op isKindOfClass: [COSequenceInsertion class]])
 		{
 			COSequenceInsertion *opp = (COSequenceInsertion*)op;

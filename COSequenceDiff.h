@@ -23,6 +23,7 @@
 @end
 
 
+@class COPrimitiveSequenceEdit;
 
 /**
  * Abstract superclass for a sequence edit. Has a range (in the source sequence)
@@ -44,6 +45,14 @@
  * except for COOverlappingSequenceEditGroup, where it returns all overlapping edits.
  */
 - (NSSet *)allEdits;
+
+/**
+ * Convenience method which returns the reciever,
+ * except for COOverlappingSequenceEditGroup, where if the receiver is nonconflicting,
+ * (all contained edits are the same except for source identifier), it returns one
+ * arbitrairly. Throws an exception if the receiver has conflicts.
+ */
+- (COPrimitiveSequenceEdit *)anyNonconflictingEdit;
 
 - (BOOL) hasConflicts;
 
