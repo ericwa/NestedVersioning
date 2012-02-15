@@ -1,7 +1,9 @@
 TODO
 ====
 
-[ ] (Feb 12/2012) port over merge code for all the basic containers.
+[ ] (Feb 15/2012) implement merge for item and subtree. handle conflicts caused by an
+                  embedded item being moved to two different places at once.
+[x] (Feb 12/2012) port over merge code for all the basic containers.
 [ ] (Feb 11/2012) add a feature like Quentin's COSCustomTrack. of particular interest
 				  would be a "local undo" - linear undo/redo on all objects in a persistent
 				  root _except_ the current versions of branches would be unaltered.
