@@ -133,7 +133,7 @@ static NSArray *COMergeSortedArraysUsingSelector(NSArray *arrayA, NSArray *array
 			
 			while (i + 1 < sortedOpsCount)
 			{
-				COSequenceEdit *op_i_plus_1 = [sortedOps objectAtIndex: i+i];
+				COSequenceEdit *op_i_plus_1 = [sortedOps objectAtIndex: i + 1];
 				if ([op_i overlaps: op_i_plus_1])
 				{
 					/**
