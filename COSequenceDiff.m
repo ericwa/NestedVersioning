@@ -283,7 +283,7 @@ static NSArray *COMergeSortedArraysUsingSelector(NSArray *arrayA, NSArray *array
 		allSame = allSame && [firstEdit isEqualIgnoringSourceIdentifier: edit];
 	}
 	
-	// Create edits dictionary
+	// Create edits dictionary, grouping the edits by sourceIdentifier
 	
 	NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
 	for (COPrimitiveSequenceEdit *edit in edits)
@@ -306,6 +306,13 @@ static NSArray *COMergeSortedArraysUsingSelector(NSArray *arrayA, NSArray *array
 		{
 			[array addObject: edit];
 		}
+	}
+	
+	// Sort the edit arrays
+	
+	for (NSMutableArray *array in [dict allValues])
+	{
+		[array sortUsingSelector: @selector(compare:)];
 	}
 	
 	COOverlappingSequenceEditGroup *result = [[COOverlappingSequenceEditGroup alloc] init];
