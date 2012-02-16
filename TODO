@@ -1,6 +1,30 @@
 TODO
 ====
 
+[ ] (Feb 15/2012) add metadata to "commit in child" commits. 
+[ ] (Feb 15/2012) add support for undo/redo to skip "commit in child" commits. 
+[ ] (Feb 15/2012) work out merge metadata. is attempting to be concious of individual cherry-picked
+				  commits worthwhile? is it going to work?
+[ ] (Feb 15/2012) decide what to do about merge conflicts. concerns to resolve:
+					- only providing "choosing between hunks in a COSequenceDiff" is not
+					  sufficient for conflict resolution.
+						+ user might need to make manual changes to correctly resolve the change
+						+ the granularity that makes sense could differ depending on application
+						  (some might make sense to make hunk-level accept/reject resolution,
+						   others might be picking between object A with all edits applied and object B)
+				    - seems good to be able to switch branches while there are conflicts pending resolution on dev branch,
+					  continue working on stable branch, and return to dev branch later to complete the merge
+					- When conflict resolution is complete, we want "1 commit" on the "target branch"
+					  with special metadata saying it represents commits X through Y from the "source branch"
+					  cherry-picked onto the target branch.
+					- anything else...?
+[ ] (Feb 15/2012) StoreBrowser: implement persistent root diff window, including showing changes in
+				  nested persistent roots, and showing conflicts
+[ ] (Feb 15/2012) StoreBrowser: implement diffing two arbitrary commits picked from the history graph
+[ ] (Feb 15/2012) StoreBrowser: implement cherry-pick (selective apply) by right-clicking on a commit
+                  in the commit graph.
+[ ] (Feb 15/2012) StoreBrowser: implement selective undo by right-clicking on a commit
+                  in the commit graph.
 [ ] (Feb 15/2012) implement merge for item and subtree. handle conflicts caused by an
                   embedded item being moved to two different places at once.
 [x] (Feb 12/2012) port over merge code for all the basic containers.
@@ -25,7 +49,7 @@ TODO
 
 [x] (Nov 17/2011) rewrite store classes to use COStoreItem
 [ ] (Nov 30/2011) investigate a lazy loading/faulting api
-[ ] (Nov 30/2011) refactor editing context api
+[x] (Nov 30/2011) refactor editing context api
 [ ] (dec 5)       search
 [x] (dec 5)       work on storebrowser
 [x] (dec 6)       make COStoreItem immutable. 
@@ -34,8 +58,8 @@ TODO
                   this should be decoupled from the editing context code, and 
                   should become a thin wrapper around it.
 [x] (dec 15)      fix up graph drawing
-[wip] (dec 15)      port over merge code.
-[ ] (dec 15)      come up with a way of representing merge conflicts
+[x] (dec 15)      port over (primitive ObjC collection) merge code.
+[x] (dec 15)      come up with a way of representing (primitive ObjC collection) merge conflicts
 [x] (dec 15)      finally finish the mutable tree wrapper over COItem.
                   it should enforce the various validity constraints
 				  (only one copy of a embedded item per tree, etc.), and
