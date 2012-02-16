@@ -104,6 +104,8 @@
 		798763E214EB3B7A0064002F /* TestSequenceDiffMerge.m in Sources */ = {isa = PBXBuildFile; fileRef = 798763E114EB3B7A0064002F /* TestSequenceDiffMerge.m */; };
 		7994684514EB9F7A008AC16E /* TestSetDiffMerge.m in Sources */ = {isa = PBXBuildFile; fileRef = 7994684414EB9F7A008AC16E /* TestSetDiffMerge.m */; };
 		79B5788514ECC47D00B3563F /* COSequenceDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 7968177614E7B39E00E5810C /* COSequenceDiff.m */; };
+		79B578D914ECC94E00B3563F /* EWDiffWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B578D814ECC94E00B3563F /* EWDiffWindowController.m */; };
+		79B578E314ECCACE00B3563F /* DiffWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = 79B578E214ECCACE00B3563F /* DiffWindow.nib */; };
 		79CB315114C6911400ADAB77 /* arrow_branch_purple.png in Resources */ = {isa = PBXBuildFile; fileRef = 79CB315014C6911400ADAB77 /* arrow_branch_purple.png */; };
 		79F0CED614E61795001D440B /* TestTagging.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F4E315147C59F0004FC1BA /* TestTagging.m */; };
 		79F0CEDD14E6179F001D440B /* TestCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CB302914C63E1C00ADAB77 /* TestCommon.m */; };
@@ -284,6 +286,9 @@
 		7994684414EB9F7A008AC16E /* TestSetDiffMerge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSetDiffMerge.m; sourceTree = "<group>"; };
 		79999F1314DE597200FFBC99 /* COSubtreeFactory+PersistentRoots.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COSubtreeFactory+PersistentRoots.h"; sourceTree = "<group>"; };
 		79999F1414DE597200FFBC99 /* COSubtreeFactory+PersistentRoots.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "COSubtreeFactory+PersistentRoots.m"; sourceTree = "<group>"; };
+		79B578D714ECC94E00B3563F /* EWDiffWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWDiffWindowController.h; sourceTree = "<group>"; };
+		79B578D814ECC94E00B3563F /* EWDiffWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWDiffWindowController.m; sourceTree = "<group>"; };
+		79B578E214ECCACE00B3563F /* DiffWindow.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = DiffWindow.nib; sourceTree = "<group>"; };
 		79CB302914C63E1C00ADAB77 /* TestCommon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCommon.m; sourceTree = "<group>"; };
 		79CB315014C6911400ADAB77 /* arrow_branch_purple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow_branch_purple.png; sourceTree = "<group>"; };
 		79F8202B14E25D85008236F6 /* COSubtreeFactory+Pull.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COSubtreeFactory+Pull.h"; sourceTree = "<group>"; };
@@ -469,6 +474,7 @@
 				6607F95A14D0CD7F00F1E7C6 /* InfoPlist.strings */,
 				6607F95B14D0CD7F00F1E7C6 /* MainMenu.xib */,
 				6607F96F14D0DD9900F1E7C6 /* PersistentRootWindow.nib */,
+				79B578E214ECCACE00B3563F /* DiffWindow.nib */,
 				66F0C88D14C5444600C0B5A6 /* bullet_yellow_multiple.png */,
 				66F0C88B14C5440500C0B5A6 /* bullet_yellow.png */,
 				66F0C88514C5430D00C0B5A6 /* brick.png */,
@@ -605,6 +611,7 @@
 				66300AFB1493148300246C89 /* EWHistoryGraphView.h */,
 				66E4BE5C1497464100B7024A /* EWOutlineView.h */,
 				66485D8C14D2399A004C4431 /* Implementation */,
+				79B578DC14ECC95B00B3563F /* Diff View */,
 			);
 			path = StoreBrowser;
 			sourceTree = "<group>";
@@ -677,6 +684,15 @@
 				79F8202C14E25D85008236F6 /* COSubtreeFactory+Pull.m */,
 			);
 			name = "Persistent Roots";
+			sourceTree = "<group>";
+		};
+		79B578DC14ECC95B00B3563F /* Diff View */ = {
+			isa = PBXGroup;
+			children = (
+				79B578D714ECC94E00B3563F /* EWDiffWindowController.h */,
+				79B578D814ECC94E00B3563F /* EWDiffWindowController.m */,
+			);
+			name = "Diff View";
 			sourceTree = "<group>";
 		};
 		79FB63B81486ABC600751E1E /* Tests - documented only */ = {
@@ -894,6 +910,7 @@
 				6607F95D14D0CD7F00F1E7C6 /* InfoPlist.strings in Resources */,
 				6607F95E14D0CD7F00F1E7C6 /* MainMenu.xib in Resources */,
 				6607F97014D0DD9900F1E7C6 /* PersistentRootWindow.nib in Resources */,
+				79B578E314ECCACE00B3563F /* DiffWindow.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -971,6 +988,7 @@
 				66E7789C14E6079600D5DFFF /* EWPersistentRootOutlineRow.m in Sources */,
 				66E7789D14E6079600D5DFFF /* EWHistoryGraphView.m in Sources */,
 				66E7789E14E6079600D5DFFF /* EWOutlineView.m in Sources */,
+				79B578D914ECC94E00B3563F /* EWDiffWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

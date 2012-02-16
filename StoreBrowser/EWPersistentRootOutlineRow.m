@@ -8,6 +8,8 @@
 #import "COSubtreeFactory+PersistentRoots.h"
 #import "COSubtreeCopy.h"
 #import "AppDelegate.h"
+#import "EWDiffWindowController.h"
+
 
 @implementation EWPersistentRootOutlineRow
 
@@ -612,6 +614,9 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 	NSLog(@"tree diff: %@", treediff);
 	
 	// FIXME:
+	
+	EWDiffWindowController *diffWindow = [[EWDiffWindowController alloc] init];
+	[diffWindow showWindow: nil];
 }
 
 
