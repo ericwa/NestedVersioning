@@ -376,4 +376,10 @@
 	return [COPersistentRootEditingContext editingContextForEditingTopLevelOfStore: self];
 }
 
+- (NSSet*) commitsMatchingQuery: (NSString*)aQuery
+{
+	// FIXME:
+	return nil;
+}
+
 @end

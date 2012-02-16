@@ -107,6 +107,13 @@
     return self;
 }
 
+- (id)copyWithZone:(NSZone *)zone
+{
+	[NSException raise: NSGenericException
+				format: @"FIXME"];
+	return nil;
+}
+
 + (COPersistentRootEditingContext *) editingContextForEditingPath: (COPath*)aPath
 														  inStore: (COStore *)aStore
 {
