@@ -174,7 +174,7 @@
 											  inStore: [self store]];
 }
 
-- (ETUUID *) commitWithMetadata: (COSubtree *)theMetadata
+- (ETUUID *) commitWithMetadata: (NSDictionary *)theMetadata
 {
 
 	//
@@ -211,9 +211,6 @@
 					format: @"Merging not yet supported"];
 	}
 	
-	// FIXME
-	NSDictionary *md = [NSDictionary dictionaryWithObjectsAndKeys: @"today", @"date", nil];
-	
 	// This is kind of a hack. If we are committing to the top-level of the store,
 	// which is conceptually unversioned, don't set a parent pointer on the commit.
 	// This will ensure old versions get GC'ed.
@@ -224,9 +221,8 @@
 	}
 	
 	ETUUID *newCommitUUID = [store addCommitWithParent: commitParent
-											  metadata: md
+											  metadata: theMetadata
 												  tree: tree];
-	
 	
 	assert(newCommitUUID != nil);
 
@@ -273,7 +269,10 @@
 								   updateRedoLimit: YES
 								   updateUndoLimit: NO];
 		
-		ETUUID *resultUUID = [parentCtx commitWithMetadata: nil];
+		// See COSubtreeFactory+Undo
+		ETUUID *resultUUID = [parentCtx commitWithMetadata: 
+								[NSDictionary dictionaryWithObject: @"commitInChild"
+															forKey: @"type"]];
 		assert (resultUUID != nil);
 		
 		[parentCtx release];

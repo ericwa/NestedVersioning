@@ -57,6 +57,23 @@
 			   store: aStore];
 }
 
+- (BOOL) shouldSkipVersion: (ETUUID *) aCommit
+				 forBranch: (COSubtree *) aBranch
+					 store: (COStore *) aStore
+{
+	NSDictionary *metadata = [aStore metadataForCommit: aCommit];
+	
+	// FIXME: more complete..
+	
+	NSString *type = [metadata objectForKey: @"type"];
+	if ([type isEqual: @"commitInChild"])
+	{
+		return YES;
+	}
+	
+	return NO;
+}
+
 - (void) undoBranch: (COSubtree*)aBranch
 			  store: (COStore *)aStore
 {
@@ -73,13 +90,34 @@
 		return;
 	}
 	
-	ETUUID *parent = [aStore parentForCommit: currentVersion];
-	assert(parent != nil);  // if we are not at the tail, the current commit should have a parent
+	ETUUID *potentialVersion = [aStore parentForCommit: currentVersion];
 	
-	[[COSubtreeFactory factory] setCurrentVersion: parent
-									 forBranch: aBranch
-							   updateRedoLimit: NO
-							   updateUndoLimit: NO];
+	while (1)
+	{
+		// FIXME: if this assertion fails, it just means the 
+		// persistent root's current version and tail pointers
+		// are inconsistent - it's not a fatal error.
+		assert(potentialVersion != nil);  // if we are not at the tail, the current commit should have a parent
+		
+		if ([currentVersion isEqual: tail])
+		{
+			NSLog(@"Can't undo; reached tail before finding a potential version");
+			return;
+		}
+		
+		if (![self shouldSkipVersion: potentialVersion
+						   forBranch: aBranch
+							   store: aStore])
+		{
+			[[COSubtreeFactory factory] setCurrentVersion: potentialVersion
+												forBranch: aBranch
+										  updateRedoLimit: NO
+										  updateUndoLimit: NO];
+			return;
+		}
+		
+		potentialVersion = [aStore parentForCommit: potentialVersion];
+	}
 }
 
 - (void) redoBranch: (COSubtree*)aBranch
@@ -100,21 +138,54 @@
 	 **/
 	
 	ETUUID *currentVersion = [[COSubtreeFactory factory] currentVersionForBranch: aBranch];
-	ETUUID *newCurrentVersion = [[COSubtreeFactory factory] headForBranch: aBranch];
+	ETUUID *head = [[COSubtreeFactory factory] headForBranch: aBranch];
 	
-	assert(newCurrentVersion != nil);
+	assert(head != nil);
 	assert(aBranch != nil);
 	assert(currentVersion != nil);
 	
-	if ([newCurrentVersion isEqual: currentVersion])
+	if ([head isEqual: currentVersion])
 	{
 		NSLog(@"Can't redo; already at head");
 		return;
 	}
 	
+
+	ETUUID *newCurrentVersion = head;
 	while (1)
 	{
-		ETUUID *parentOfNewCurrentVersion = [aStore parentForCommit: newCurrentVersion];
+		ETUUID *parentOfNewCurrentVersion;
+		
+		// Find a potential commit to redo to
+		// Always allow redoing to the "head" commit, even if it is supposed
+		// to be skippable. This is so undo/redo don't cause data loss.
+		{
+			ETUUID *temp = newCurrentVersion;
+			while ([self shouldSkipVersion: temp
+								 forBranch: aBranch
+									 store: aStore])
+			{
+				temp = [aStore parentForCommit: temp];
+				
+				if ([temp isEqual: currentVersion])
+				{
+					parentOfNewCurrentVersion = currentVersion;
+					break;
+				}
+			}
+				
+			if ([temp isEqual: currentVersion])
+			{
+				parentOfNewCurrentVersion = currentVersion;
+			}			
+			else
+			{
+				newCurrentVersion = temp;
+				parentOfNewCurrentVersion = [aStore parentForCommit: newCurrentVersion];
+			}
+		}
+					
+		// FIXME: not a hard error
 		assert(parentOfNewCurrentVersion != nil);
 		
 		if ([parentOfNewCurrentVersion isEqual: currentVersion])
@@ -125,6 +196,7 @@
 									   updateUndoLimit: NO];
 			return;
 		}
+		
 		newCurrentVersion = parentOfNewCurrentVersion;
 	}
 	

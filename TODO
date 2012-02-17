@@ -1,8 +1,8 @@
 TODO
 ====
 
-[ ] (Feb 15/2012) add metadata to "commit in child" commits. 
-[ ] (Feb 15/2012) add support for undo/redo to skip "commit in child" commits. 
+[x] (Feb 15/2012) add metadata to "commit in child" commits. 
+[x] (Feb 15/2012) add support for undo/redo to skip "commit in child" commits. 
 [ ] (Feb 15/2012) work out merge metadata. is attempting to be concious of individual cherry-picked
 				  commits worthwhile? is it going to work?
 [ ] (Feb 15/2012) decide what to do about merge conflicts. concerns to resolve:
