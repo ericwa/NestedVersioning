@@ -88,7 +88,7 @@
 	
 	{
 		NSBrowserCell *cell = [[[NSBrowserCell alloc] init] autorelease];
-	
+		[cell setEditable: YES];
 		[[outlineView tableColumnWithIdentifier: @"name"] setDataCell: cell];
 	}
 	

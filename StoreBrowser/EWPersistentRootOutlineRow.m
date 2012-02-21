@@ -387,6 +387,25 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 		
 		[[NSApp delegate] reloadAllBrowsers];
 	}
+	if ([[tableColumn identifier] isEqualToString: @"name"])
+	{
+		if ([self attribute] != nil)
+		{
+			// Store the old value under a new name
+			
+			COSubtree *storeItem = [self rowSubtree];
+			COType *type = [storeItem typeForAttribute: [self attribute]];
+			id value = [storeItem valueForAttribute: [self attribute]];
+			
+			[storeItem removeValueForAttribute: [self attribute]];			
+			[storeItem setValue: value
+				   forAttribute: object
+						   type: type];
+			
+			[ctx commitWithMetadata: nil];
+			[[NSApp delegate] reloadAllBrowsers];			
+		}
+	}
 	if ([[tableColumn identifier] isEqualToString: @"value"])
 	{
 		if ([self attribute] != nil)
