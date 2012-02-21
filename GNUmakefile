@@ -23,7 +23,7 @@ $(APP_NAME)_OBJC_FILES=\
 	Diff/COSubtreeDiff.m\
 	Diff/COArrayDiff.m\
 	Diff/COItemDiff.m\
-	Diff/COObjectGraphDiff.m\
+	Diff/COPersistentRootDiff.m\
 	Diff/COSequenceDiff.m\
 	Diff/COSetDiff.m\
 	ETUUID.m\
@@ -33,6 +33,7 @@ $(APP_NAME)_OBJC_FILES=\
 	StoreBrowser/EWOutlineView.m\
 	StoreBrowser/EWPersistentRootOutlineRow.m\
 	StoreBrowser/EWPersistentRootWindowController.m\
+	StoreBrowser/EWDiffWindowController.m\
 	StoreBrowser/main.m\
 	Tests/TestCommon.m\
 	Tests/TestTagging.m\
@@ -45,6 +46,7 @@ $(APP_NAME)_CC_FILES=\
 
 $(APP_NAME)_RESOURCE_FILES=\
 	StoreBrowser/PersistentRootWindow.nib\
+	StoreBrowser/DiffWindow.nib\
 	StoreBrowser/arrow_branch.png\
 	StoreBrowser/arrow_branch_purple.png\
 	StoreBrowser/brick.png\
