@@ -1,11 +1,15 @@
 #import "EWDiffWindowController.h"
-
+#import "COPersistentRootDiff.h"
 
 @implementation EWDiffWindowController
 
-- (id)init
+- (id) initWithPersistentRootDiff: (COPersistentRootDiff*)aDiff
 {
 	self = [super initWithWindowNibName: @"DiffWindow"];
+	
+	NSLog(@"proot diff: %@", aDiff);
+	
+
 	
 	return self;
 }

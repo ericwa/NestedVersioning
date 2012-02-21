@@ -1,13 +1,17 @@
-//
-//  COPersistentRootDiff.m
-//  nestedversioning
-//
-//  Created by Eric Wasylishen on 12-02-10.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
-//
-
 #import "COPersistentRootDiff.h"
+#import "COMacros.h"
+#import "COPath.h"
+#import "COStore.h"
 
 @implementation COPersistentRootDiff
+
+- (id) initWithPath: (COPath *)aRootOrBranchA
+			andPath: (COPath *)aRootOrBranchB
+			inStore: (COStore *)aStore
+{
+	SUPERINIT;
+	
+	return self;
+}
 
 @end

@@ -1,13 +1,17 @@
-//
-//  COPersistentRootDiff.h
-//  nestedversioning
-//
-//  Created by Eric Wasylishen on 12-02-10.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
-//
-
 #import <Foundation/Foundation.h>
 
+@class COPath;
+@class COStore;
+
 @interface COPersistentRootDiff : NSObject
+{
+
+}
+
+// FIXME: another constructor that takes an in-memory COPersistentRoot?
+
+- (id) initWithPath: (COPath *)aRootOrBranchA
+			andPath: (COPath *)aRootOrBranchB
+			inStore: (COStore *)aStore; 
 
 @end

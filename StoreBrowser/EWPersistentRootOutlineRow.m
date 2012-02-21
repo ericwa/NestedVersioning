@@ -4,6 +4,7 @@
 #import "EWPersistentRootWindowController.h"
 #import "COPath.h"
 #import "COSubtreeDiff.h"
+#import "COPersistentRootDiff.h"
 #import "COSubtreeFactory.h"
 #import "COSubtreeFactory+PersistentRoots.h"
 #import "COSubtreeCopy.h"
@@ -598,7 +599,7 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 	EWPersistentRootOutlineRow *row1 = [selectedRows objectAtIndex: 0];
 	EWPersistentRootOutlineRow *row2 = [selectedRows objectAtIndex: 1];
 	
-	COPersistentRootEditingContext *row1ctx = 
+	/*COPersistentRootEditingContext *row1ctx = 
 		[COPersistentRootEditingContext editingContextForEditingPath: [[ctx path] pathByAppendingPathComponent: [row1 UUID]]
 															 inStore: [ctx store]];
 
@@ -611,11 +612,16 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 	
 	COSubtreeDiff *treediff = [COSubtreeDiff diffSubtree: [row1ctx persistentRootTree]
 											 withSubtree: [row2ctx persistentRootTree]];
-	NSLog(@"tree diff: %@", treediff);
+	 
+	 */
 	
+	COPersistentRootDiff *diff = [[COPersistentRootDiff alloc]
+									initWithPath: [[ctx path] pathByAppendingPathComponent: [row1 UUID]]
+										andPath: [[ctx path] pathByAppendingPathComponent: [row2 UUID]]
+										inStore: [ctx store]];
 	// FIXME:
 	
-	EWDiffWindowController *diffWindow = [[EWDiffWindowController alloc] init];
+	EWDiffWindowController *diffWindow = [[EWDiffWindowController alloc] initWithPersistentRootDiff: diff];
 	[diffWindow showWindow: nil];
 }
 
