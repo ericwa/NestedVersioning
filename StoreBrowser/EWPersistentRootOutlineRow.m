@@ -3,6 +3,7 @@
 #import "COType+String.h"
 #import "EWPersistentRootWindowController.h"
 #import "COPath.h"
+#import "COSubtree.h"
 #import "COSubtreeDiff.h"
 #import "COPersistentRootDiff.h"
 #import "COSubtreeFactory.h"
@@ -640,6 +641,16 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 	[[NSApp delegate] reloadAllBrowsers]; // FIXME: ugly.. deallocates self...
 }
 
+- (void) addStringKeyValue: (id)sender
+{
+	COSubtree *subtree = [self rowSubtree];
+	[subtree setValue: @"new value" forAttribute: @"newAttribute" type: [COType stringType]];
+
+	[ctx commitWithMetadata: nil];
+	
+	[[NSApp delegate] reloadAllBrowsers]; // FIXME: ugly.. deallocates self...
+}
+
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem
 {
     SEL theAction = [anItem action];
@@ -687,6 +698,10 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 						isEqual: [self rowSubtree]];
 		}
 		return NO;
+	}
+	else if (theAction == @selector(addStringKeyValue:))
+	{
+        return ([selIndexes count] == 1 && [self isEmbeddedObject]);
 	}
 	
 	return [self respondsToSelector: theAction];
@@ -748,6 +763,14 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 	{
 		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Delete" 
 													   action: @selector(delete:) 
+												keyEquivalent: @""] autorelease];
+		[item setTarget: self];
+		[menu addItem: item];
+	}	
+
+	{
+		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Add String Key/Value" 
+													   action: @selector(addStringKeyValue:) 
 												keyEquivalent: @""] autorelease];
 		[item setTarget: self];
 		[menu addItem: item];
