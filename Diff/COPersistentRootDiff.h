@@ -50,6 +50,19 @@
  } 
  
  
+ test cases:
+ 
+ 
+ photo-library (persistent root)
+  |
+   \-- photo (persistent root)
+ 
+ 
+ 1. two branches of photo-library where the _current branch of photo_ differs
+ 2. two branches of photo-library where photo has diverging edits made on the same branch (Y-shaped commit graph)
+ 3. two branches of photo-library where photo has non-diverging edits made on the same branch (straight-line commit graph)
+ 4. ???
+ 
  */
 
 @interface COPersistentRootDiff : NSObject
