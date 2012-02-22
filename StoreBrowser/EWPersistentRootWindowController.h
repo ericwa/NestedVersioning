@@ -22,6 +22,7 @@
 	IBOutlet NSButton *highlightInParentButton;
 	IBOutlet NSButton *undoButton;
 	IBOutlet NSButton *redoButton;
+	IBOutlet NSSplitView *splitter;
 	
 	NSMutableDictionary *expansion;
 }

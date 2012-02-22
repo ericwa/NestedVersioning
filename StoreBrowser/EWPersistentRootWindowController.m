@@ -137,6 +137,7 @@
 	if ([path isEmpty])
 	{
 		[highlightInParentButton setEnabled: NO];
+		[splitter setPosition: 0.0 ofDividerAtIndex: 0];
 	}
 	else
 	{
