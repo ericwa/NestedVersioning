@@ -1,7 +1,7 @@
 #import "EWGraphRenderer.h"
 #import "COMacros.h"
 #import "COStorePrivate.h"
-
+#import "COSubtreeFactory+Undo.h"
 
 @implementation EWGraphRenderer
 
@@ -227,11 +227,27 @@ static void EWDrawArrowFromTo(NSPoint p1, NSPoint p2)
 	[NSGraphicsContext restoreGraphicsState];
 }
 
+- (NSColor *)colorForCommit: (ETUUID *)aCommit
+{
+	if ([[COSubtreeFactory factory] shouldSkipVersion: aCommit
+											forBranch: nil
+												store: store])
+	{
+		return [NSColor lightGrayColor];			
+	}
+	else
+	{
+		return [NSColor blackColor];
+	}
+}
+
 - (void) drawWithHighlightedCommit: (ETUUID*)aCommit
 {
 	for (NSUInteger col = 0; col < [allCommitsSorted count]; col++)
 	{
 		ETUUID *commit = [allCommitsSorted objectAtIndex: col];		
+		
+		NSColor *color = [self colorForCommit: commit];
 		
 		NSRect r = [self rectForCommit: commit];
 		NSBezierPath *circle = [NSBezierPath bezierPathWithOvalInRect: r];
@@ -244,11 +260,10 @@ static void EWDrawArrowFromTo(NSPoint p1, NSPoint p2)
 		}
 		else
 		{
-			[[NSColor blackColor] set];
+			[color set];
 			[circle stroke];
 		}
 		
-		[[NSColor blackColor] set];
 		for (ETUUID *child in [childrenForUUID objectForKey: commit])
 		{
 			NSRect r2 = [self rectForCommit: child];
@@ -259,6 +274,7 @@ static void EWDrawArrowFromTo(NSPoint p1, NSPoint p2)
 			p.x += 8;
 			p2.x -= 8;
 			
+			[[self colorForCommit: child] set];
 			EWDrawArrowFromTo(p, p2);
 		}
 	}
