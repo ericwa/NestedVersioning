@@ -34,6 +34,7 @@ $(APP_NAME)_OBJC_FILES=\
 	StoreBrowser/EWPersistentRootOutlineRow.m\
 	StoreBrowser/EWPersistentRootWindowController.m\
 	StoreBrowser/EWDiffWindowController.m\
+	StoreBrowser/EWIconTextFieldCell.m\
 	StoreBrowser/main.m\
 	Tests/TestCommon.m\
 	Tests/TestTagging.m\
