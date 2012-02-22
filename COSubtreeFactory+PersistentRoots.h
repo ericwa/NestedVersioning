@@ -52,4 +52,6 @@
 									displayName: (NSString *)aName
 										  store: (COStore *)aStore;
 
+- (NSString *) displayNameForBranchOrPersistentRoot: (COSubtree *)aRootOrBranch;
+
 @end

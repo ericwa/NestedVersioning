@@ -64,15 +64,20 @@
 		COSubtree *persistentRootTree = [parentCtx persistentRootTree];
 		COSubtree *item = [persistentRootTree subtreeWithUUID: [path lastPathComponent]];
 		
+		NSString *displayName = [[COSubtreeFactory factory] displayNameForBranchOrPersistentRoot: item];
+		
 		if ([[COSubtreeFactory factory] isBranch: item])
 		{
-			return [@"Branch " stringByAppendingString: [path stringValue]];	
+			NSString *persistentRootDisplayName = [[COSubtreeFactory factory] displayNameForBranchOrPersistentRoot: [item parent]];
+			
+			return [NSString stringWithFormat: @"Branch '%@' of '%@' (%@)", displayName, persistentRootDisplayName, [path stringValue]];	
 		}
 		else if ([[COSubtreeFactory factory] isPersistentRoot: item])
 		{
-			return [@"Persistent Root " stringByAppendingString: [path stringValue]];
+			return [NSString stringWithFormat: @"Persistent Root '%@' (%@)", displayName,  [path stringValue]];
 		}
-		else {
+		else
+		{
 			assert(0);
 		}
 

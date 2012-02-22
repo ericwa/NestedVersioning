@@ -246,13 +246,17 @@ isPrimitiveInContainer: (BOOL)aFlag
 		}
 		else			
 		{
-			COItem *storeItem = [[self rowSubtree] item];
-			id value = [storeItem valueForAttribute: @"name"];
-			if (value) {
-				return [NSString stringWithFormat: @"%@ (%@)", value, [storeItem UUID]];
+			if ([[COSubtreeFactory factory] isBranch: [self rowSubtree]] || 
+				[[COSubtreeFactory factory] isPersistentRoot: [self rowSubtree]])
+			{
+				return [NSString stringWithFormat: @"%@ (%@)", 
+							[[COSubtreeFactory factory] displayNameForBranchOrPersistentRoot: [self rowSubtree]],
+							[[self rowSubtree] UUID]];
 			}
-			
-			return UUID;
+			else
+			{
+				return [[self rowSubtree] UUID];
+			}
 		}
 	}
 	else if ([[column identifier] isEqualToString: @"value"])

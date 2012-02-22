@@ -251,4 +251,14 @@ toUnorderedAttribute: @"contents"
 	return result;
 }
 
+- (NSString *) displayNameForBranchOrPersistentRoot: (COSubtree *)aRootOrBranch
+{
+	NSString *name = [aRootOrBranch valueForAttribute: @"name"];
+	if ([name isKindOfClass: [NSString class]])
+	{
+		return name;
+	}
+	return @"";
+}
+
 @end
