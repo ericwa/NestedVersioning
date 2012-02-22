@@ -6,6 +6,7 @@
 #import "COSubtreeFactory+PersistentRoots.h"
 #import "COSubtreeFactory+Undo.h"
 #import "AppDelegate.h"
+#import "EWIconTextFieldCell.h"
 
 @implementation EWPersistentRootWindowController
 
@@ -87,7 +88,7 @@
 	[outlineView setDoubleAction: @selector(doubleClick:)];
 	
 	{
-		NSBrowserCell *cell = [[[NSBrowserCell alloc] init] autorelease];
+		EWIconTextFieldCell *cell = [[[EWIconTextFieldCell alloc] init] autorelease];
 		[cell setEditable: YES];
 		[[outlineView tableColumnWithIdentifier: @"name"] setDataCell: cell];
 	}
@@ -498,9 +499,8 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 {
 	if ([[tableColumn identifier] isEqualToString: @"name"])
 	{
-		if ([cell isKindOfClass: [NSBrowserCell class]])
+		if ([cell isKindOfClass: [EWIconTextFieldCell class]])
 		{
-			[cell setLeaf: YES];
 			[cell setImage: [item image]];
 		}
 	}

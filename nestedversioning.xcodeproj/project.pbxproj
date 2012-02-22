@@ -100,6 +100,7 @@
 		66F0C88E14C5444600C0B5A6 /* bullet_yellow_multiple.png in Resources */ = {isa = PBXBuildFile; fileRef = 66F0C88D14C5444600C0B5A6 /* bullet_yellow_multiple.png */; };
 		79016345148D4886005A9226 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E552B4146B7799008FDFAF /* libcrypto.dylib */; };
 		791B6D6814E64F2100793BDE /* TestObjectGraphDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 791B6D6714E64F2100793BDE /* TestObjectGraphDiff.m */; };
+		79284A7814F465890063B0BF /* EWIconTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 79284A7714F465890063B0BF /* EWIconTextFieldCell.m */; };
 		7968177914E7B3A400E5810C /* COSequenceDiff.h in Headers */ = {isa = PBXBuildFile; fileRef = 7968177814E7B3A400E5810C /* COSequenceDiff.h */; };
 		798763E214EB3B7A0064002F /* TestSequenceDiffMerge.m in Sources */ = {isa = PBXBuildFile; fileRef = 798763E114EB3B7A0064002F /* TestSequenceDiffMerge.m */; };
 		7994684514EB9F7A008AC16E /* TestSetDiffMerge.m in Sources */ = {isa = PBXBuildFile; fileRef = 7994684414EB9F7A008AC16E /* TestSetDiffMerge.m */; };
@@ -272,6 +273,8 @@
 		79156DB91484BE4D00AB66B1 /* TestConcurrentContextModification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestConcurrentContextModification.m; sourceTree = "<group>"; };
 		791A0EB7148AF39000334CB1 /* TestCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestCommon.h; sourceTree = "<group>"; };
 		791B6D6714E64F2100793BDE /* TestObjectGraphDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestObjectGraphDiff.m; sourceTree = "<group>"; };
+		79284A7614F465890063B0BF /* EWIconTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWIconTextFieldCell.h; sourceTree = "<group>"; };
+		79284A7714F465890063B0BF /* EWIconTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWIconTextFieldCell.m; sourceTree = "<group>"; };
 		792972ED148C4AC100FD35A9 /* TestReferencesBetweenPersistentRoots.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestReferencesBetweenPersistentRoots.m; sourceTree = "<group>"; };
 		792972F4148C4CA800FD35A9 /* TestCompositeDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCompositeDocument.m; sourceTree = "<group>"; };
 		792972F9148C4D6D00FD35A9 /* TestUserRequirements.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestUserRequirements.m; sourceTree = "<group>"; };
@@ -495,6 +498,7 @@
 				660E66E3148D92E00062308D /* EWPersistentRootOutlineRow.m */,
 				66300AFC1493148300246C89 /* EWHistoryGraphView.m */,
 				66E4BE5D1497464100B7024A /* EWOutlineView.m */,
+				79284A7714F465890063B0BF /* EWIconTextFieldCell.m */,
 			);
 			name = Implementation;
 			sourceTree = "<group>";
@@ -610,6 +614,7 @@
 				660E66E2148D92E00062308D /* EWPersistentRootOutlineRow.h */,
 				66300AFB1493148300246C89 /* EWHistoryGraphView.h */,
 				66E4BE5C1497464100B7024A /* EWOutlineView.h */,
+				79284A7614F465890063B0BF /* EWIconTextFieldCell.h */,
 				66485D8C14D2399A004C4431 /* Implementation */,
 				79B578DC14ECC95B00B3563F /* Diff View */,
 			);
@@ -989,6 +994,7 @@
 				66E7789D14E6079600D5DFFF /* EWHistoryGraphView.m in Sources */,
 				66E7789E14E6079600D5DFFF /* EWOutlineView.m in Sources */,
 				79B578D914ECC94E00B3563F /* EWDiffWindowController.m in Sources */,
+				79284A7814F465890063B0BF /* EWIconTextFieldCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
