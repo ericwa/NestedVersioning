@@ -1,6 +1,8 @@
 TODO
 ====
 
+[x] (Feb 21/2012) StoreBrowser: add support for inserting new string attributes
+[x] (Feb 21/2012) StoreBrowser: add support for renaming attribute keys
 [x] (Feb 15/2012) add metadata to "commit in child" commits. 
 [x] (Feb 15/2012) add support for undo/redo to skip "commit in child" commits. 
 [ ] (Feb 15/2012) work out merge metadata. is attempting to be concious of individual cherry-picked
