@@ -47,6 +47,10 @@ toUnorderedAttribute: @"contents"
 	[i2 setPrimitiveValue: @"branch"
 			 forAttribute: @"type"
 					 type: [COType stringType]];
+
+	[i2 setPrimitiveValue: @"Main Branch"
+			 forAttribute: @"name"
+					 type: [COType stringType]];	
 	
 	[self setCurrentVersion: aVersion
 				  forBranch: i2

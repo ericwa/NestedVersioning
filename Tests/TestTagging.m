@@ -271,6 +271,9 @@
 	
 	COSubtree *photolibBranchA = [[COSubtreeFactory factory] currentBranchOfPersistentRoot: photolib];
 	COSubtree *photolibBranchB = [[COSubtreeFactory factory] createBranchOfPersistentRoot: photolib];
+	[photolibBranchB setValue: @"Test Branch"
+				 forAttribute: @"name"
+						 type: [COType stringType]];
 	[rootCtx commitWithMetadata: nil];
 	
 	

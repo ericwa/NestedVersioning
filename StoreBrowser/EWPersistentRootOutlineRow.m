@@ -470,7 +470,9 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 					NSArray *branches = [self orderedBranchesForSubtree: [self rowSubtree]];
 					for (COSubtree *aBranch in branches)
 					{
-						[aMenu addItemWithTitle: [[aBranch UUID] stringValue]
+						[aMenu addItemWithTitle:  [NSString stringWithFormat: @"%@ (%@)",
+													[[COSubtreeFactory factory] displayNameForBranchOrPersistentRoot: aBranch],
+													[[aBranch UUID] stringValue]]
 										 action: nil
 								  keyEquivalent: @""];
 					}
