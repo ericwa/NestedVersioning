@@ -25,8 +25,8 @@
 	// FIXME: duplicated code in init...
 	if (![path isEmpty])
 	{
-		EWGraphRenderer *renderer = [[EWGraphRenderer alloc] init];
-		[renderer layoutGraphOfStore: store];
+		EWGraphRenderer *renderer = [[EWGraphRenderer alloc] initWithStore: store];
+		[renderer layoutGraph];
 		[historyView setGraphRenderer: renderer];
 		[renderer release];
 		
@@ -106,8 +106,8 @@
 	}
 	else
 	{
-		EWGraphRenderer *renderer = [[EWGraphRenderer alloc] init];
-		[renderer layoutGraphOfStore: store];
+		EWGraphRenderer *renderer = [[EWGraphRenderer alloc] initWithStore: store];
+		[renderer layoutGraph];
 		[historyView setGraphRenderer: renderer];
 		[renderer release];
 		
