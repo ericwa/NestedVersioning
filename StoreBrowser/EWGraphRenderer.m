@@ -280,4 +280,16 @@ static void EWDrawArrowFromTo(NSPoint p1, NSPoint p2)
 	}
 }
 
+- (ETUUID *)commitAtPoint: (NSPoint)aPoint
+{
+	for (ETUUID *commit in allCommitsSorted)
+	{
+		if (NSPointInRect(aPoint, [self rectForCommit: commit]))
+		{
+			return commit;
+		}
+	}
+	return nil;
+}
+
 @end

@@ -17,4 +17,6 @@
 - (NSSize) size;
 - (void) drawWithHighlightedCommit: (ETUUID*)aCommit;
 
+- (ETUUID *)commitAtPoint: (NSPoint)aPoint;
+
 @end
