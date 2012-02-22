@@ -50,11 +50,11 @@
 	return self;
 }
 
-- (NSString *)persistentRootTitle
+- (COSubtree *)persistentRootItem
 {
 	if ([path isEmpty])
 	{
-		return @"Store Root";
+		return nil;
 	}
 	else
 	{
@@ -63,6 +63,19 @@
 		
 		COSubtree *persistentRootTree = [parentCtx persistentRootTree];
 		COSubtree *item = [persistentRootTree subtreeWithUUID: [path lastPathComponent]];
+		return item;
+	}
+}
+
+- (NSString *)persistentRootTitle
+{
+	if ([path isEmpty])
+	{
+		return @"Store Root";
+	}
+	else
+	{
+		COSubtree *item = [self persistentRootItem];
 		
 		NSString *displayName = [[COSubtreeFactory factory] displayNameForBranchOrPersistentRoot: item];
 		
@@ -84,6 +97,26 @@
 	}
 }
 
+- (BOOL) canUndo
+{
+	COSubtree *item = [self persistentRootItem];
+	if (nil != item)
+	{
+		return [[COSubtreeFactory factory] canUndo: item store: store];
+	}
+	return NO;
+}
+
+- (BOOL) canRedo
+{
+	COSubtree *item = [self persistentRootItem];
+	if (nil != item)
+	{
+		return [[COSubtreeFactory factory] canRedo: item store: store];
+	}
+	return NO;
+}
+
 - (void)windowDidLoad
 {
 	[outlineView registerForDraggedTypes:
@@ -98,11 +131,12 @@
 		[[outlineView tableColumnWithIdentifier: @"name"] setDataCell: cell];
 	}
 	
+	[undoButton setEnabled: [self canUndo]];
+	[redoButton setEnabled: [self canRedo]];
+	
 	if ([path isEmpty])
 	{
 		[highlightInParentButton setEnabled: NO];
-		[undoButton setEnabled: NO];
-		[redoButton setEnabled: NO];
 	}
 	else
 	{
@@ -144,6 +178,9 @@
 	[self setupCtx];
 	[outlineView reloadData];
 	[self doExpansion: outlineModel];
+	
+	[undoButton setEnabled: [self canUndo]];
+	[redoButton setEnabled: [self canRedo]];
 }
 
 - (IBAction) highlightInParent: (id)sender

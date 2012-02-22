@@ -9,6 +9,63 @@
 
 @implementation COSubtreeFactory (Undo)
 
+- (BOOL) canUndo: (COSubtree*)aRootOrBranch
+		   store: (COStore *)aStore
+{
+	if ([[COSubtreeFactory factory] isBranch: aRootOrBranch])
+	{
+		return [self canUndoBranch: aRootOrBranch store: aStore];
+	}
+	else if ([[COSubtreeFactory factory] isPersistentRoot: aRootOrBranch])
+	{
+		return [self canUndoPersistentRoot: aRootOrBranch store: aStore];
+	}
+	return NO;
+}
+
+- (BOOL) canRedo: (COSubtree*)aRootOrBranch
+		   store: (COStore *)aStore
+{
+	if ([[COSubtreeFactory factory] isBranch: aRootOrBranch])
+	{
+		return [self canRedoBranch: aRootOrBranch store: aStore];
+	}
+	else if ([[COSubtreeFactory factory] isPersistentRoot: aRootOrBranch])
+	{
+		return [self canRedoPersistentRoot: aRootOrBranch store: aStore];
+	}
+	return NO;
+}
+
+- (BOOL) canUndoPersistentRoot: (COSubtree*)aRoot
+						 store: (COStore *)aStore
+{
+	return [self canUndoBranch: [[COSubtreeFactory factory] currentBranchOfPersistentRoot: aRoot]
+						 store: aStore];
+}
+- (BOOL) canRedoPersistentRoot: (COSubtree*)aRoot
+						 store: (COStore *)aStore
+{
+	return [self canRedoBranch: [[COSubtreeFactory factory] currentBranchOfPersistentRoot: aRoot]
+						 store: aStore];
+}
+
+- (BOOL) canUndoBranch: (COSubtree*)aBranch
+				 store: (COStore *)aStore
+{
+	return ![[[COSubtreeFactory factory] currentVersionForBranch: aBranch] isEqual:
+			 [[COSubtreeFactory factory] tailForBranch: aBranch]];
+}
+
+- (BOOL) canRedoBranch: (COSubtree*)aBranch
+				 store: (COStore *)aStore
+{ 
+	return ![[[COSubtreeFactory factory] currentVersionForBranch: aBranch] isEqual:
+			 [[COSubtreeFactory factory] headForBranch: aBranch]];
+}
+
+
+
 - (void) undo: (COSubtree*)aRootOrBranch
 		store: (COStore *)aStore
 {

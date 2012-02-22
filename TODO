@@ -1,7 +1,7 @@
 TODO
 ====
 
-[ ] (Feb 21/2012) StoreBrowser: gray out undo/redo buttons when undo/redo is impossible
+[x] (Feb 21/2012) StoreBrowser: gray out undo/redo buttons when undo/redo is impossible
 [ ] (Feb 21/2012) doing undo/redo on photolibrary/photo1 should produce commits in photolibrary
 				  which are skipped by default when undoing/redoing in photolibrary
 [x] (Feb 21/2012) StoreBrowser: add support for inserting new string attributes
