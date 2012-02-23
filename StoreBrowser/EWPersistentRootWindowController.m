@@ -660,4 +660,51 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 	[self delete: sender];
 }
 
+// User interface validation
+
+- (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem
+{
+    SEL theAction = [anItem action];
+
+	NSArray *rows = [self selectedRows];
+	
+	if (theAction == @selector(copy:) || theAction == @selector(cut:))
+	{
+		if ([rows count] != 1)
+		{
+			return NO;
+		}
+		
+		EWPersistentRootOutlineRow *row = [rows objectAtIndex: 0];
+		if (![row isEmbeddedObject])
+		{
+			return NO;
+		}
+		
+		return YES;
+	}
+	else if (theAction == @selector(paste:))
+	{
+		NSArray *rows = [self selectedRows];
+		
+		if ([rows count] != 1)
+		{
+			return NO;
+		}
+		
+		EWPersistentRootOutlineRow *row = [rows objectAtIndex: 0];
+		COSubtree *rowSubtree = [row rowSubtree];
+		
+		if (![[rowSubtree typeForAttribute: [row attribute]] isEqual: [COType setWithPrimitiveType: [COType embeddedItemType]]])
+		{
+			return NO;
+		}
+		
+		NSPasteboard *pb = [NSPasteboard generalPasteboard];
+		return [pb availableTypeFromArray: A(EWDragType)] != nil;
+	}
+	
+	return [self respondsToSelector: theAction];
+}
+
 @end
