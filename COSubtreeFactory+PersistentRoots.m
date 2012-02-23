@@ -136,8 +136,9 @@ toUnorderedAttribute: @"contents"
 
 - (void) setCurrentVersion: (ETUUID*)aVersion
  forBranchOrPersistentRoot: (COSubtree *)aRootOrBranch
+					 store: (COStore *)aStore
 {
-	COSubtree *branch = nil;
+	COSubtree *branch = nil;	
 	
 	if ([self isBranch: aRootOrBranch])
 	{
@@ -153,10 +154,16 @@ toUnorderedAttribute: @"contents"
 					format: @"expected persistent root or branch"];
 	}
 	
+	BOOL updateRedo = ![aStore isCommit: aVersion
+						 parentOfCommit: [self headForBranch: branch]];
+	
+	BOOL updateUndo = ![aStore isCommit: [self tailForBranch: branch] 
+						 parentOfCommit: aVersion];
+	
 	[self setCurrentVersion: aVersion 
 				  forBranch: branch
-			updateRedoLimit: YES
-			updateUndoLimit: YES];
+			updateRedoLimit: updateRedo
+			updateUndoLimit: updateUndo];
 }
 
 - (ETUUID *) headForBranch: (COSubtree*)aBranch

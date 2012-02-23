@@ -32,8 +32,13 @@
 
 - (ETUUID *) currentVersionForBranchOrPersistentRoot: (COSubtree *)aRootOrBranch;
 
+/**
+ * Tries to "intelligently" reset the undo/redo limits based on the current
+ * limits.
+ */
 - (void) setCurrentVersion: (ETUUID*)aVersion
- forBranchOrPersistentRoot: (COSubtree *)aRootOrBranch;
+ forBranchOrPersistentRoot: (COSubtree *)aRootOrBranch
+					 store: (COStore *)aStore;
 
 - (ETUUID *) headForBranch: (COSubtree*)aBranch;
 - (ETUUID *) tailForBranch: (COSubtree*)aBranch;

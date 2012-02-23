@@ -248,7 +248,8 @@
 	COSubtree *item = [persistentRootTree subtreeWithUUID: [path lastPathComponent]];
 	
 	[[COSubtreeFactory factory] setCurrentVersion: commit
-						forBranchOrPersistentRoot: item];
+						forBranchOrPersistentRoot: item
+											store: store];
 	
 	[parentCtx commitWithMetadata: nil];
 	[[NSApp delegate] reloadAllBrowsers];
