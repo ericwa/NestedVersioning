@@ -680,7 +680,7 @@ toUnorderedAttribute: (NSString*)anAttribute
 		  atItemPath: aPath];
 }
 
-- (void) renameWithNameMapping: (NSDictionary *)aMapping
+- (void) renameWithNameMapping_internal: (NSDictionary *)aMapping
 {
 	COMutableItem *newRoot = [[root mutableCopyWithNameMapping: aMapping] autorelease];
 	ASSIGN(root, newRoot);
@@ -688,11 +688,16 @@ toUnorderedAttribute: (NSString*)anAttribute
 	NSMutableDictionary *newItems = [NSMutableDictionary dictionary];
 	for (COSubtree *tree in [embeddedSubtrees allValues])
 	{
-		[tree renameWithNameMapping: aMapping];
+		[tree renameWithNameMapping_internal: aMapping];
 		[newItems setObject: tree forKey: [tree UUID]];
 	}
 	
 	ASSIGN(embeddedSubtrees, newItems);
+}
+
+- (void) renameWithNameMapping: (NSDictionary *)aMapping
+{
+	[self renameWithNameMapping_internal: aMapping];
 	
 	[self debug];
 }
