@@ -32,6 +32,9 @@
 
 - (ETUUID *) currentVersionForBranchOrPersistentRoot: (COSubtree *)aRootOrBranch;
 
+- (void) setCurrentVersion: (ETUUID*)aVersion
+ forBranchOrPersistentRoot: (COSubtree *)aRootOrBranch;
+
 - (ETUUID *) headForBranch: (COSubtree*)aBranch;
 - (ETUUID *) tailForBranch: (COSubtree*)aBranch;
 

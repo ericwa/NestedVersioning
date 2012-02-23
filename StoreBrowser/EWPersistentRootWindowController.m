@@ -237,6 +237,23 @@
 	[[NSApp delegate] reloadAllBrowsers];
 }
 
+- (IBAction) switchToCommit: (id)sender
+{
+	ETUUID *commit = [sender representedObject];
+	
+	COPersistentRootEditingContext *parentCtx = [COPersistentRootEditingContext editingContextForEditingPath: [path pathByDeletingLastPathComponent] 
+																									 inStore: store];
+	
+	COSubtree *persistentRootTree = [parentCtx persistentRootTree];
+	COSubtree *item = [persistentRootTree subtreeWithUUID: [path lastPathComponent]];
+	
+	[[COSubtreeFactory factory] setCurrentVersion: commit
+						forBranchOrPersistentRoot: item];
+	
+	[parentCtx commitWithMetadata: nil];
+	[[NSApp delegate] reloadAllBrowsers];
+}
+
 static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *start, ETUUID *aUUID)
 {
 	if ([[start UUID] isEqual: aUUID] && [start attribute] == nil)

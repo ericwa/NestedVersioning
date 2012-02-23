@@ -71,6 +71,16 @@
 			[item setTarget: self];
 			[menu addItem: item];
 		}
+
+		[menu addItem: [NSMenuItem separatorItem]];
+		
+		{
+			NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Switch To Commit" 
+														   action: @selector(switchToCommit:) 
+													keyEquivalent: @""] autorelease];
+			[item setRepresentedObject: commit];
+			[menu addItem: item];
+		}
 		
 		return menu;
 	}

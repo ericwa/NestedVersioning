@@ -134,6 +134,31 @@ toUnorderedAttribute: @"contents"
 	return nil;
 }
 
+- (void) setCurrentVersion: (ETUUID*)aVersion
+ forBranchOrPersistentRoot: (COSubtree *)aRootOrBranch
+{
+	COSubtree *branch = nil;
+	
+	if ([self isBranch: aRootOrBranch])
+	{
+		branch = aRootOrBranch;
+	}
+	else if ([self isPersistentRoot: aRootOrBranch])
+	{
+		branch = [self currentBranchOfPersistentRoot: aRootOrBranch];
+	}
+	else
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"expected persistent root or branch"];
+	}
+	
+	[self setCurrentVersion: aVersion 
+				  forBranch: branch
+			updateRedoLimit: YES
+			updateUndoLimit: YES];
+}
+
 - (ETUUID *) headForBranch: (COSubtree*)aBranch
 {
 	return [aBranch valueForAttribute: @"head"];
