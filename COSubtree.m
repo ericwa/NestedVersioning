@@ -5,27 +5,32 @@
 
 @implementation COSubtree
 
-- (void) debug
+- (void) debugInternal
 {
 	// check consistency of parent pointers
+	
+	if (self == [self root])
+	{
+		assert([self parent] == nil);
+	}
 	
 	for (COSubtree *subtree in [embeddedSubtrees allValues])
 	{
 		assert([subtree parent] == self);
 		assert([subtree root] == [self root]);
-		[subtree debug];
+		[subtree debugInternal];
 	}
 	
 	// check for 1:1 correspondence between embedded items
 	// in our COItem and the embeddedSubtrees dictionary
 	
 	assert([[self directDescendentSubtreeUUIDs] isEqual:
-				[NSSet setWithArray: [embeddedSubtrees allKeys]]]);
-	
-	if ([self parent] != nil)
-	{
-		assert([[self parent] containsSubtreeWithUUID: [self UUID]]);
-	}
+			[NSSet setWithArray: [embeddedSubtrees allKeys]]]);
+}
+
+- (void) debug
+{
+	[[self root] debugInternal];
 }
 
 /* @taskunit Creation */
