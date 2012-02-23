@@ -588,6 +588,8 @@ toUnorderedAttribute: (NSString*)anAttribute
 		}
 		
 		[aSubtree renameWithNameMapping: mapping];
+		
+		// FIXME: Return the mapping to the caller somehow?
 	}
 	
 	// set up the parent and insert the tree
