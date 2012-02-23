@@ -787,6 +787,8 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 		[menu addItem: item];
 	}	
 	
+	[menu addItem: [NSMenuItem separatorItem]];
+	
 	{
 		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Delete" 
 													   action: @selector(delete:) 
@@ -794,6 +796,8 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 		[item setTarget: self];
 		[menu addItem: item];
 	}	
+	
+	[menu addItem: [NSMenuItem separatorItem]];
 
 	{
 		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Add String Key/Value" 
