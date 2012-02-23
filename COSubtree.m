@@ -569,7 +569,6 @@ toUnorderedAttribute: (NSString*)anAttribute
 	if ([aSubtree parent] != nil)
 	{
 		[[aSubtree parent] removeSubtreeWithUUID: [aSubtree UUID]];
-		aSubtree->parent = nil;
 	}
 	
 	// see if there are any name conflicts
@@ -641,7 +640,8 @@ toUnorderedAttribute: (NSString*)anAttribute
 		[NSException raise: NSInvalidArgumentException
 					format: @"-removeSubtreeWithUUID: can not remove the receiver"];
 	}
-	COSubtree *parentOfSubtreeToRemove = [[self subtreeWithUUID: aUUID] parent];
+	COSubtree *subtreeToRemove = [self subtreeWithUUID: aUUID];
+	COSubtree *parentOfSubtreeToRemove = [subtreeToRemove parent];
 	if (parentOfSubtreeToRemove == nil)
 	{
 		[NSException raise: NSInvalidArgumentException
@@ -652,6 +652,7 @@ toUnorderedAttribute: (NSString*)anAttribute
 	NSAssert([[itemPath UUID] isEqual: [parentOfSubtreeToRemove UUID]], @"");
 	[itemPath removeValue: aUUID inStoreItem: parentOfSubtreeToRemove->root];
 	[parentOfSubtreeToRemove->embeddedSubtrees removeObjectForKey: aUUID];
+	subtreeToRemove->parent = nil;
 	
 	[self debug];
 }
