@@ -101,4 +101,12 @@
  */
 - (NSSet*) commitsMatchingQuery: (NSString*)aQuery;
 
+
+
+
+#pragma mark Convenience
+
+
+- (BOOL) isCommit: (ETUUID *)testParent parentOfCommit: (ETUUID *)testChild;
+
 @end

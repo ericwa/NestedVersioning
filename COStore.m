@@ -384,4 +384,21 @@
 	return nil;
 }
 
+- (BOOL) isCommit: (ETUUID *)testParent parentOfCommit: (ETUUID *)testChild
+{	
+	ETUUID *temp = testChild;
+	
+	do
+	{
+		if ([temp isEqual: testParent])
+		{
+			return YES;
+		}
+		temp = [self parentForCommit: temp];
+	}
+	while (temp != nil);
+	
+	return NO;
+}
+
 @end

@@ -9,23 +9,6 @@
 
 @implementation COSubtreeFactory (Pull)
 
-static BOOL CommitIsParentOfCommit(ETUUID *testChild, ETUUID *testParent, COStore *store)
-{	
-	ETUUID *temp = testChild;
-
-	do
-	{
-		if ([temp isEqual: testParent])
-		{
-			return YES;
-		}
-		temp = [store parentForCommit: temp];
-	}
-	while (temp != nil);
-	
-	return NO;
-}
-
 static ETUUID *FindCommonAncestor(ETUUID *commitA, ETUUID *commitB, COStore *store)
 {
 	NSMutableSet *ancestorsOfA = [NSMutableSet set];
@@ -54,7 +37,7 @@ static ETUUID *FindCommonAncestor(ETUUID *commitA, ETUUID *commitB, COStore *sto
 	ETUUID *srcCommit = [self currentVersionForBranch: srcBranch];
 	ETUUID *destCommit = [self currentVersionForBranch: destBranch];
 	
-	if (CommitIsParentOfCommit(srcCommit, destCommit, aStore))
+	if ([aStore isCommit: destCommit parentOfCommit: srcCommit])
 	{
 		NSLog(@"pullChangesFromBranch: fast-forward");
 		
