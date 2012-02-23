@@ -21,6 +21,11 @@
 	
 	assert([[self directDescendentSubtreeUUIDs] isEqual:
 				[NSSet setWithArray: [embeddedSubtrees allKeys]]]);
+	
+	if ([self parent] != nil)
+	{
+		assert([[self parent] containsSubtreeWithUUID: [self UUID]]);
+	}
 }
 
 /* @taskunit Creation */
