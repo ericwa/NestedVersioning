@@ -1,11 +1,12 @@
+#import <Cocoa/Cocoa.h>
 #import "EWPersistentRootWindowController.h"
 #import "COMacros.h"
-#import <AppKit/NSOutlineView.h>
 #import "EWGraphRenderer.h"
 #import "COSubtreeFactory.h"
 #import "COSubtreeFactory+PersistentRoots.h"
 #import "COSubtreeFactory+Undo.h"
 #import "AppDelegate.h"
+#import "COType.h"
 #import "EWIconTextFieldCell.h"
 
 @implementation EWPersistentRootWindowController
@@ -575,5 +576,88 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 	return outlineView;
 }
 
+/* Cut/Copy/Paste */
+
+- (IBAction)copy:(id)sender
+{
+	NSArray *rows = [self selectedRows];
+	
+	if ([rows count] == 0)
+	{
+		NSLog(@"Nothing to copy");
+		return;
+	}
+	if ([rows count] > 1)
+	{
+		NSLog(@"FIXME: only copying first item");
+	}
+	
+	EWPersistentRootOutlineRow *row = [rows objectAtIndex: 0];
+	if (![row isEmbeddedObject])
+	{
+		NSLog(@"Only embedded objects can be copied.");
+		return;
+	}
+	
+	COSubtree *subtreeToCopy = [row rowSubtree];
+	id plistToCopy = [subtreeToCopy plist];
+	
+	NSPasteboard *pb = [NSPasteboard generalPasteboard];
+	[pb declareTypes: A(EWDragType) owner: self];
+	[pb setPropertyList: plistToCopy forType: EWDragType];
+}
+
+- (IBAction)paste:(id)sender
+{
+	NSLog(@"Paste!");
+	
+	// test paste destination
+	
+	NSArray *rows = [self selectedRows];
+	
+	if ([rows count] != 1)
+	{
+		NSLog(@"Select a single row, container property of EmbeddedItemm, to paste on to");
+		return;
+	}
+	
+	EWPersistentRootOutlineRow *row = [rows objectAtIndex: 0];
+	
+	COSubtree *rowSubtree = [row rowSubtree];
+	
+	if (![[rowSubtree typeForAttribute: [row attribute]] isEqual: [COType setWithPrimitiveType: [COType embeddedItemType]]])
+	{
+		NSLog(@"Dest row type is wrong");
+		return;
+	}
+
+	// do the paste
+	
+	NSPasteboard *pb = [NSPasteboard generalPasteboard];
+	NSString *bestType = [pb availableTypeFromArray: A(EWDragType)];
+	if (bestType != nil)
+	{
+		id plist = [pb propertyListForType: EWDragType];
+
+		COSubtree *pasteSubtree = [COSubtree subtreeWithPlist: plist];
+		
+		[rowSubtree addObject: pasteSubtree
+		 toUnorderedAttribute: [row attribute]
+						 type: [rowSubtree typeForAttribute: [row attribute]]]; 
+		
+		[ctx commitWithMetadata: nil];		
+		[[NSApp delegate] reloadAllBrowsers];
+	}
+	else
+	{
+		NSLog(@"No suitable data on pasteboard");
+	}
+}
+
+- (IBAction)cut:(id)sender
+{
+	[self copy: sender];
+	[self delete: sender];
+}
 
 @end

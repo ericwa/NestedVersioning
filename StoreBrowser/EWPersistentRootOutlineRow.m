@@ -733,6 +733,12 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 {
 	NSMenu *menu = [[[NSMenu alloc] initWithTitle: @""] autorelease];
 
+	[menu addItemWithTitle:@"Cut" action: @selector(cut:) keyEquivalent:@""];
+	[menu addItemWithTitle:@"Copy" action: @selector(copy:) keyEquivalent:@""];
+	[menu addItemWithTitle:@"Paste" action: @selector(paste:) keyEquivalent:@""];
+	
+	[menu addItem: [NSMenuItem separatorItem]];
+	
 	{
 		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Open Persistent Roots/Branch Contents" 
 													   action: @selector(openPersistentRoot:) 
