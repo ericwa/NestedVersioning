@@ -700,6 +700,37 @@ toUnorderedAttribute: (NSString*)anAttribute
 	return [root hash] ^ [embeddedSubtrees hash];
 }
 
+
+
+#pragma mark Serialization
+
+
+- (id) plist
+{
+	NSMutableArray *itemPlists = [NSMutableArray array];
+	
+	for (COItem *item in [self allContainedStoreItems])
+	{
+		[itemPlists addObject: [item plist]];
+	}
+	
+	return D([[[self root] UUID] stringValue], @"rootUUID",
+			 itemPlists, @"items");
+}
+
++ (COSubtree *)subtreeWithPlist: (id)aPlist
+{
+	ETUUID *rootUUID = [ETUUID UUIDWithString: [aPlist objectForKey: @"rootUUID"]];
+	NSMutableSet *itemSet = [NSMutableSet set];
+	
+	for (id itemPlist in [aPlist objectForKey: @"items"])
+	{
+		[itemSet addObject: [[[COItem alloc] initWithPlist: itemPlist] autorelease]];
+	}
+	
+	return [self subtreeWithItemSet: itemSet rootUUID: rootUUID];
+}
+
 @end
 
 

@@ -99,6 +99,18 @@
 	UKObjectsEqual(t1, t1a);
 }
 
+- (void) testSubtreePlistRoundTrip
+{
+	COSubtree *t1 = [COSubtree subtree];
+	COSubtree *t2 = [COSubtree subtree];	
+	COSubtree *t3 = [COSubtree subtree];
+	[t1 addTree: t2];
+	[t2 addTree: t3];
+	
+	COSubtree *t1a = [COSubtree subtreeWithPlist: [t1 plist]];
+	UKObjectsEqual(t1, t1a);
+}
+
 - (void) testSubtreeDiff
 {
 	COSubtree *t1 = [COSubtree subtree];

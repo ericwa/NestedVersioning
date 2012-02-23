@@ -227,6 +227,14 @@ toUnorderedAttribute: (NSString*)anAttribute
 - (NSUInteger) hash;
 
 
+
+#pragma mark Serialization
+
+
+- (id) plist;
++ (COSubtree *)subtreeWithPlist: (id)aPlist;
+
+
 @end
 
 /**
