@@ -97,6 +97,10 @@
 	COSubtree *t1a = [COSubtree subtreeWithItemSet: [t1 allContainedStoreItems]
 										  rootUUID: [t1 UUID]];
 	UKObjectsEqual(t1, t1a);
+	
+	COSubtree *t2a = [COSubtree subtreeWithItemSet: [t2 allContainedStoreItems]
+										  rootUUID: [t2 UUID]];
+	UKObjectsEqual(t2, t2a);
 }
 
 - (void) testSubtreePlistRoundTrip
@@ -109,6 +113,9 @@
 	
 	COSubtree *t1a = [COSubtree subtreeWithPlist: [t1 plist]];
 	UKObjectsEqual(t1, t1a);
+	
+	COSubtree *t2a = [COSubtree subtreeWithPlist: [t2 plist]];
+	UKObjectsEqual(t2, t2a);
 }
 
 - (void) testSubtreeDiff

@@ -714,7 +714,7 @@ toUnorderedAttribute: (NSString*)anAttribute
 		[itemPlists addObject: [item plist]];
 	}
 	
-	return D([[[self root] UUID] stringValue], @"rootUUID",
+	return D([[self UUID] stringValue], @"rootUUID",
 			 itemPlists, @"items");
 }
 
