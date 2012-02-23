@@ -21,4 +21,6 @@
  */
 - (void) reloadAllBrowsers;
 
+- (IBAction) garbageCollect: (id)sender;
+
 @end

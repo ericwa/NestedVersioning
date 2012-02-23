@@ -60,4 +60,10 @@
 	}
 }
 
+- (IBAction) garbageCollect: (id)sender
+{
+	[store gc];
+	[self reloadAllBrowsers];
+}
+
 @end
