@@ -288,9 +288,11 @@
 		assert(removed);
 	}
 	
-	NSMutableSet *allCommits = [NSMutableSet setWithArray: [self allCommitUUIDs]];
-	[allCommits minusSet: uuids];
-	[self setAllCommitUUIDs: [allCommits allObjects]];
+	// FIXME: Inefficient
+	
+	NSMutableArray *allCommits = [NSMutableArray arrayWithArray: [self allCommitUUIDs]];
+	[allCommits removeObjectsInArray: [uuids allObjects]];
+	[self setAllCommitUUIDs: allCommits];
 }
 
 - (void) deleteParentsOfCommit: (ETUUID*)aCommit
