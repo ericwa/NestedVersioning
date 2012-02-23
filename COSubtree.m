@@ -578,8 +578,16 @@ toUnorderedAttribute: (NSString*)anAttribute
 	
 	if ([conflictingNames count] > 0)
 	{
-		[NSException raise: NSInvalidArgumentException
-					format: @"addSubtree:atItemPath: expects no name conflicts"];
+		NSLog(@"names %@ need to be remapped", conflictingNames);
+		
+		NSMutableDictionary *mapping = [NSMutableDictionary dictionary];
+		for (ETUUID *name in conflictingNames)
+		{
+			[mapping setObject: [ETUUID UUID]
+						forKey: name];
+		}
+		
+		[aSubtree renameWithNameMapping: mapping];
 	}
 	
 	// set up the parent and insert the tree
