@@ -1,6 +1,3 @@
-#import <Foundation/Foundation.h>
-#import <UnitKit/UnitKit.h>
-#import "COStore.h"
 #import "TestCommon.h"
 
 @interface TestStore : NSObject <UKTest> {
@@ -12,32 +9,41 @@
 
 @implementation TestStore
 
-static COStore *SetUpStore()
+- (void) testBasic
 {
-	if([[NSFileManager defaultManager] fileExistsAtPath: [STORE_URL path]])
-	{
-		BOOL removed = [[NSFileManager defaultManager] removeItemAtPath: [STORE_URL path] error: NULL];
-		assert(removed);
-	}
+	COStore *store = setupStore();
 	
-	return [[COStore alloc] initWithURL: STORE_URL];
+	COItem *i1 = [[[COItem alloc] initWithUUID: [ETUUID UUID]
+							typesForAttributes: D([COType stringType], @"name")
+						   valuesForAttributes: D(@"hello", @"name")] autorelease];
+	
+	NSDictionary *uuidsanditems = [NSDictionary dictionaryWithObjectsAndKeys:
+								   i1, [i1 UUID],
+								   nil];
+	
+	NSDictionary *md = [NSDictionary dictionaryWithObjectsAndKeys: @"today", @"date", nil];
+	
+	ETUUID *uuid = [store addCommitWithParent: nil
+									 metadata: md
+						   UUIDsAndStoreItems: uuidsanditems
+									 rootItem: [i1 UUID]];
+	
+	UKTrue(uuid != nil);
+	UKObjectsEqual([NSArray arrayWithObject: uuid], [store allCommitUUIDs]);
+	UKNil([store parentForCommit: uuid]);
+	UKObjectsEqual(md, [store metadataForCommit: uuid]);
+	UKObjectsEqual(uuidsanditems, [store UUIDsAndStoreItemsForCommit: uuid]);
+	UKObjectsEqual([i1 UUID], [store rootItemForCommit: uuid]);
+	
+	[store setRootVersion: uuid];
+	UKObjectsEqual(uuid, [store rootVersion]);
+	
+	[store release];
 }
 
-static void TearDownStore(COStore *s)
-{
-	assert(s != nil);
-	NSURL *url = [[s URL] retain];
-	[s release];
-	[[NSFileManager defaultManager] removeItemAtPath: [url path] error: NULL];
-}
+// ObjectMerging tests
 
-
-- (void)testCreate
-{
-	COStore *s = SetUpStore();
-	UKNotNil(s);
-	TearDownStore(s);
-}
+#if 0
 
 - (void)testReopenStore
 {
@@ -214,5 +220,7 @@ static void TearDownStore(COStore *s)
 	
 	TearDownStore(s);
 }
+
+#endif
 
 @end

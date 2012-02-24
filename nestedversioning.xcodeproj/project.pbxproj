@@ -11,6 +11,10 @@
 		6607F95D14D0CD7F00F1E7C6 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6607F95A14D0CD7F00F1E7C6 /* InfoPlist.strings */; };
 		6607F95E14D0CD7F00F1E7C6 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6607F95B14D0CD7F00F1E7C6 /* MainMenu.xib */; };
 		6607F97014D0DD9900F1E7C6 /* PersistentRootWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = 6607F96F14D0DD9900F1E7C6 /* PersistentRootWindow.nib */; };
+		6660E23614F84A6C00D2F319 /* TestItemDiffMerge.m in Sources */ = {isa = PBXBuildFile; fileRef = 6660E23514F84A6C00D2F319 /* TestItemDiffMerge.m */; };
+		6660E23A14F84B3000D2F319 /* TestItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 6660E23914F84B3000D2F319 /* TestItem.m */; };
+		6660E23B14F84BD500D2F319 /* TestStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 6628FBA6142FA7840072767A /* TestStore.m */; };
+		6660E23E14F84C2A00D2F319 /* TestPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 6660E23D14F84C2A00D2F319 /* TestPath.m */; };
 		66E22EC91421D47100C00A98 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E22EC81421D47100C00A98 /* Foundation.framework */; };
 		66E7783614E6049E00D5DFFF /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66EB756B148CA9D300C2114B /* Cocoa.framework */; };
 		66E7784414E604D300D5DFFF /* UKRunner.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E7782114E6041900D5DFFF /* UKRunner.m */; };
@@ -87,7 +91,7 @@
 		66E778A414E607CD00D5DFFF /* TestTagging.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F4E315147C59F0004FC1BA /* TestTagging.m */; };
 		66E778A514E607CD00D5DFFF /* TestCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CB302914C63E1C00ADAB77 /* TestCommon.m */; };
 		66E778A614E607CD00D5DFFF /* TestPull.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F8205614E26118008236F6 /* TestPull.m */; };
-		66E778AD14E6080700D5DFFF /* TestGeneral.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E778AC14E6080700D5DFFF /* TestGeneral.m */; };
+		66E778AD14E6080700D5DFFF /* TestPersistentRootEditingContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E778AC14E6080700D5DFFF /* TestPersistentRootEditingContext.m */; };
 		66E778B714E60E3C00D5DFFF /* Icon-Fail.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 66E778B514E60E3C00D5DFFF /* Icon-Fail.tiff */; };
 		66E778B814E60E3C00D5DFFF /* Icon-Pass.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 66E778B614E60E3C00D5DFFF /* Icon-Pass.tiff */; };
 		66E778BE14E60ED900D5DFFF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 66E778BA14E60ED900D5DFFF /* InfoPlist.strings */; };
@@ -179,6 +183,9 @@
 		66300AFB1493148300246C89 /* EWHistoryGraphView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWHistoryGraphView.h; sourceTree = "<group>"; };
 		66300AFC1493148300246C89 /* EWHistoryGraphView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWHistoryGraphView.m; sourceTree = "<group>"; };
 		66416D20142D3EE20016501D /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		6660E23514F84A6C00D2F319 /* TestItemDiffMerge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestItemDiffMerge.m; sourceTree = "<group>"; };
+		6660E23914F84B3000D2F319 /* TestItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestItem.m; sourceTree = "<group>"; };
+		6660E23D14F84C2A00D2F319 /* TestPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestPath.m; sourceTree = "<group>"; };
 		668DA35E14E0E41A0062E6C2 /* COItemPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COItemPath.m; sourceTree = "<group>"; };
 		668DA36114E0E4210062E6C2 /* COItemPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COItemPath.h; sourceTree = "<group>"; };
 		669CADE61491844000D0CF5F /* COSubtreeDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COSubtreeDiff.h; sourceTree = "<group>"; };
@@ -228,7 +235,7 @@
 		66E7783914E6049E00D5DFFF /* UnitKit-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "UnitKit-Info.plist"; sourceTree = "<group>"; };
 		66E7785114E6062100D5DFFF /* NestedVersioning.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NestedVersioning.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		66E7785514E6062100D5DFFF /* NestedVersioning-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "NestedVersioning-Info.plist"; sourceTree = "<group>"; };
-		66E778AC14E6080700D5DFFF /* TestGeneral.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestGeneral.m; sourceTree = "<group>"; };
+		66E778AC14E6080700D5DFFF /* TestPersistentRootEditingContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestPersistentRootEditingContext.m; sourceTree = "<group>"; };
 		66E778B514E60E3C00D5DFFF /* Icon-Fail.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "Icon-Fail.tiff"; sourceTree = "<group>"; };
 		66E778B614E60E3C00D5DFFF /* Icon-Pass.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "Icon-Pass.tiff"; sourceTree = "<group>"; };
 		66E778BB14E60ED900D5DFFF /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = InfoPlist.strings; sourceTree = "<group>"; };
@@ -392,7 +399,6 @@
 				6628FBA2142FA7840072767A /* TestEditingContext.m */,
 				6628FBA4142FA7840072767A /* TestPerformance.m */,
 				6628FBA5142FA7840072767A /* TestRelationshipIntegrity.m */,
-				6628FBA6142FA7840072767A /* TestStore.m */,
 				6628FBA7142FA7840072767A /* TestSynchronization.m */,
 				6628FBA8142FA7840072767A /* TestUtilities.m */,
 			);
@@ -640,7 +646,10 @@
 			children = (
 				791A0EB7148AF39000334CB1 /* TestCommon.h */,
 				66DFAEBF142A726100623060 /* main.m */,
-				66E778AC14E6080700D5DFFF /* TestGeneral.m */,
+				66E778AC14E6080700D5DFFF /* TestPersistentRootEditingContext.m */,
+				6660E23D14F84C2A00D2F319 /* TestPath.m */,
+				6628FBA6142FA7840072767A /* TestStore.m */,
+				6660E23914F84B3000D2F319 /* TestItem.m */,
 				7978700E14D799A200B45FC6 /* TestSubtree.m */,
 				66EADD6414732AEE003181FC /* TestUndo.m */,
 				66F4E315147C59F0004FC1BA /* TestTagging.m */,
@@ -652,6 +661,7 @@
 				6628FB9D142FA7840072767A /* Tests - old */,
 				798763E114EB3B7A0064002F /* TestSequenceDiffMerge.m */,
 				7994684414EB9F7A008AC16E /* TestSetDiffMerge.m */,
+				6660E23514F84A6C00D2F319 /* TestItemDiffMerge.m */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -927,15 +937,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				66E778A114E607CD00D5DFFF /* main.m in Sources */,
+				6660E23B14F84BD500D2F319 /* TestStore.m in Sources */,
 				66E778A214E607CD00D5DFFF /* TestSubtree.m in Sources */,
 				66E778A314E607CD00D5DFFF /* TestUndo.m in Sources */,
 				66E778A414E607CD00D5DFFF /* TestTagging.m in Sources */,
 				66E778A514E607CD00D5DFFF /* TestCommon.m in Sources */,
 				66E778A614E607CD00D5DFFF /* TestPull.m in Sources */,
-				66E778AD14E6080700D5DFFF /* TestGeneral.m in Sources */,
+				66E778AD14E6080700D5DFFF /* TestPersistentRootEditingContext.m in Sources */,
 				791B6D6814E64F2100793BDE /* TestObjectGraphDiff.m in Sources */,
 				798763E214EB3B7A0064002F /* TestSequenceDiffMerge.m in Sources */,
 				7994684514EB9F7A008AC16E /* TestSetDiffMerge.m in Sources */,
+				6660E23614F84A6C00D2F319 /* TestItemDiffMerge.m in Sources */,
+				6660E23A14F84B3000D2F319 /* TestItem.m in Sources */,
+				6660E23E14F84C2A00D2F319 /* TestPath.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
