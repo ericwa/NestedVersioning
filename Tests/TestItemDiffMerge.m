@@ -11,23 +11,58 @@
 
 - (void) testBasic
 {
-	COItem *i1 = [[[COItem alloc] initWithUUID: [ETUUID UUID]
-							typesForAttributes: D([COType stringType], @"type",
-												  [COType setWithPrimitiveType: [COType stringType]], @"places")
-						   valuesForAttributes: D(@"test", @"type",
-												  S(@"home"), @"places")] autorelease];
+	COItem *i1 = [COItem itemWithTypesForAttributes: D([COType stringType], @"type",
+													   [COType setWithPrimitiveType: [COType stringType]], @"places")
+								valuesForAttributes: D(@"test", @"type",
+													   S(@"home"), @"places")];
 	
-	
-	COItem *i2 = [[[COItem alloc] initWithUUID: [ETUUID UUID]
-							typesForAttributes: D([COType stringType], @"name",
-												  [COType setWithPrimitiveType: [COType stringType]], @"places")
+	COItem *i2 = [COItem itemWithTypesForAttributes: D([COType stringType], @"name",
+													   [COType setWithPrimitiveType: [COType stringType]], @"places")
 						   valuesForAttributes: D(@"hello", @"name",
-												  S(@"work", @"home"), @"places")] autorelease];
+												  S(@"work", @"home"), @"places")];
 	
 	COItemDiff *diff = [COItemDiff diffItem: i1 withItem: i2];
 	COItem *i2_fromDiff = [diff itemWithDiffAppliedTo: i1];
 	
 	UKObjectsEqual(i2, i2_fromDiff);
+}
+
+- (void)testSelectiveUndoOfGroupOperation
+{
+	// snapshot the state: (line1, circle1, square1, image1) into doc2
+	
+	COItem *doc2 = [COItem itemWithTypesForAttributes: D([COType arrayWithPrimitiveType: [COType stringType]], @"objects")
+								  valuesForAttributes: D(A(@"line1", @"circle1", @"square1", @"image1"), @"objects")];
+		
+	// snapshot the state:  (line1, group1, image1) into doc3
+
+	COItem *doc3 = [COItem itemWithTypesForAttributes: D([COType arrayWithPrimitiveType: [COType stringType]], @"objects")
+								  valuesForAttributes: D(A(@"line1", @"group1", @"image1"), @"objects")];
+							
+	// doc1 state:  (triangl1, line1, group1, image1)
+
+	COItem *doc = [COItem itemWithTypesForAttributes: D([COType arrayWithPrimitiveType: [COType stringType]], @"objects")
+								 valuesForAttributes: D(A(@"triangle1", @"line1", @"group1", @"image1"), @"objects")];
+	
+	// ------------
+	
+	// Calculate diffs
+	
+	COItemDiff *diff_doc3_vs_doc2 = [COItemDiff diffItem: doc3 withItem: doc2];
+	COItemDiff *diff_doc3_vs_doc = [COItemDiff diffItem: doc3 withItem: doc];
+	
+	// Sanity check that the diffs work
+	
+	UKObjectsEqual(doc, [diff_doc3_vs_doc itemWithDiffAppliedTo: doc3]);
+	UKObjectsEqual(doc2, [diff_doc3_vs_doc2 itemWithDiffAppliedTo: doc3]);
+	
+	COItemDiff *diff_merged = [diff_doc3_vs_doc2 itemDiffByMergingWithDiff: diff_doc3_vs_doc];
+	
+	UKFalse([diff_merged hasConflicts]);
+	
+	COItem *merged = [diff_merged itemWithDiffAppliedTo: doc3];
+	
+	UKObjectsEqual(A(@"triangle1", @"line1", @"circle1", @"square1", @"image1"), [merged valueForAttribute: @"objects"]);
 }
 
 @end
