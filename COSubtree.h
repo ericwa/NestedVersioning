@@ -212,6 +212,7 @@ toUnorderedAttribute: (NSString*)anAttribute
  * it is located.) Throws an exception if the guven UUID is not present in the receiver.
  */
 - (void) removeSubtreeWithUUID: (ETUUID *)aUUID;
+- (void) removeSubtree: (COSubtree *)aSubtree;
 
 - (void) moveSubtreeWithUUID: (ETUUID *)aUUID
 				  toItemPath: (COItemPath *)aPath;

@@ -655,6 +655,13 @@ toUnorderedAttribute: (NSString*)anAttribute
 	[self debug];
 }
 
+- (void) removeSubtree: (COSubtree *)aSubtree
+{
+	// FIXME: make this the primitive method, since removeSubtreeWithUUID
+	// has to look up the subtree anyway
+	[self removeSubtreeWithUUID: [aSubtree UUID]];
+}
+
 - (void) moveSubtreeWithUUID: (ETUUID *)aUUID
 				  toItemPath: (COItemPath *)aPath
 {
