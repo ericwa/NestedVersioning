@@ -645,33 +645,31 @@ toUnorderedAttribute: (NSString*)anAttribute
  */
 - (void) removeSubtreeWithUUID: (ETUUID *)aUUID
 {
-	if ([[self UUID] isEqual: aUUID])
+	[self removeSubtree: [self subtreeWithUUID: aUUID]];
+}
+
+- (void) removeSubtree: (COSubtree *)aSubtree
+{
+	if (aSubtree == self)
 	{
 		[NSException raise: NSInvalidArgumentException
 					format: @"-removeSubtreeWithUUID: can not remove the receiver"];
 	}
-	COSubtree *subtreeToRemove = [self subtreeWithUUID: aUUID];
-	COSubtree *parentOfSubtreeToRemove = [subtreeToRemove parent];
-	if (parentOfSubtreeToRemove == nil)
+	if (![self containsSubtree: aSubtree])
 	{
 		[NSException raise: NSInvalidArgumentException
 					format: @"argument must be inside the reciever to remove it"];
 	}
 	
+	ETUUID *aUUID = [aSubtree UUID];
+	COSubtree *parentOfSubtreeToRemove = [aSubtree parent];
 	COItemPath *itemPath = [self itemPathOfSubtreeWithUUID: aUUID];	
 	NSAssert([[itemPath UUID] isEqual: [parentOfSubtreeToRemove UUID]], @"");
 	[itemPath removeValue: aUUID inStoreItem: parentOfSubtreeToRemove->root];
 	[parentOfSubtreeToRemove->embeddedSubtrees removeObjectForKey: aUUID];
-	subtreeToRemove->parent = nil;
+	aSubtree->parent = nil;
 	
 	[self debug];
-}
-
-- (void) removeSubtree: (COSubtree *)aSubtree
-{
-	// FIXME: make this the primitive method, since removeSubtreeWithUUID
-	// has to look up the subtree anyway
-	[self removeSubtreeWithUUID: [aSubtree UUID]];
 }
 
 - (void) moveSubtreeWithUUID: (ETUUID *)aUUID
