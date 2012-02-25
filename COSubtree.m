@@ -189,6 +189,18 @@
 	return nil != [self subtreeWithUUID: aUUID];
 }
 
+- (BOOL) containsSubtree: (COSubtree *)aSubtree
+{
+	for (; aSubtree != nil; aSubtree = [aSubtree parent])
+	{
+		if (aSubtree == self)
+		{
+			return YES;
+		}
+	}
+	return NO;
+}
+
 - (NSSet *)allUUIDs
 {
 	return [[self allDescendentSubtreeUUIDs] setByAddingObject: [self UUID]];

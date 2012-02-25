@@ -110,6 +110,8 @@
  */
 - (BOOL) containsSubtreeWithUUID: (ETUUID *)aUUID;
 
+- (BOOL) containsSubtree: (COSubtree *)aSubtree;
+
 - (NSSet *)allUUIDs;
 
 /**
