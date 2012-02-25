@@ -103,7 +103,7 @@
 		66F0C88C14C5440500C0B5A6 /* bullet_yellow.png in Resources */ = {isa = PBXBuildFile; fileRef = 66F0C88B14C5440500C0B5A6 /* bullet_yellow.png */; };
 		66F0C88E14C5444600C0B5A6 /* bullet_yellow_multiple.png in Resources */ = {isa = PBXBuildFile; fileRef = 66F0C88D14C5444600C0B5A6 /* bullet_yellow_multiple.png */; };
 		79016345148D4886005A9226 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E552B4146B7799008FDFAF /* libcrypto.dylib */; };
-		791B6D6814E64F2100793BDE /* TestObjectGraphDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 791B6D6714E64F2100793BDE /* TestObjectGraphDiff.m */; };
+		790574FC14F8A7D20007C67B /* TestSubtreeDiffMerge.m in Sources */ = {isa = PBXBuildFile; fileRef = 790574FB14F8A7D20007C67B /* TestSubtreeDiffMerge.m */; };
 		79284A7814F465890063B0BF /* EWIconTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 79284A7714F465890063B0BF /* EWIconTextFieldCell.m */; };
 		7968177914E7B3A400E5810C /* COSequenceDiff.h in Headers */ = {isa = PBXBuildFile; fileRef = 7968177814E7B3A400E5810C /* COSequenceDiff.h */; };
 		798763E214EB3B7A0064002F /* TestSequenceDiffMerge.m in Sources */ = {isa = PBXBuildFile; fileRef = 798763E114EB3B7A0064002F /* TestSequenceDiffMerge.m */; };
@@ -276,10 +276,10 @@
 		66F39B861490A8540097B7D5 /* COTypePrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COTypePrivate.h; sourceTree = "<group>"; };
 		66F4E315147C59F0004FC1BA /* TestTagging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestTagging.m; sourceTree = "<group>"; };
 		66F4E319147C606A004FC1BA /* TestGameEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestGameEditor.m; sourceTree = "<group>"; };
+		790574FB14F8A7D20007C67B /* TestSubtreeDiffMerge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSubtreeDiffMerge.m; sourceTree = "<group>"; };
 		790B1AE81485B184001ED869 /* TestSimpleUseOfNestedPersistentRoots.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSimpleUseOfNestedPersistentRoots.m; sourceTree = "<group>"; };
 		79156DB91484BE4D00AB66B1 /* TestConcurrentContextModification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestConcurrentContextModification.m; sourceTree = "<group>"; };
 		791A0EB7148AF39000334CB1 /* TestCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestCommon.h; sourceTree = "<group>"; };
-		791B6D6714E64F2100793BDE /* TestObjectGraphDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestObjectGraphDiff.m; sourceTree = "<group>"; };
 		79284A7614F465890063B0BF /* EWIconTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWIconTextFieldCell.h; sourceTree = "<group>"; };
 		79284A7714F465890063B0BF /* EWIconTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWIconTextFieldCell.m; sourceTree = "<group>"; };
 		792972ED148C4AC100FD35A9 /* TestReferencesBetweenPersistentRoots.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestReferencesBetweenPersistentRoots.m; sourceTree = "<group>"; };
@@ -654,7 +654,6 @@
 				66EADD6414732AEE003181FC /* TestUndo.m */,
 				66F4E315147C59F0004FC1BA /* TestTagging.m */,
 				79F8205614E26118008236F6 /* TestPull.m */,
-				791B6D6714E64F2100793BDE /* TestObjectGraphDiff.m */,
 				79CB302914C63E1C00ADAB77 /* TestCommon.m */,
 				79FB63BD1486ABEF00751E1E /* Tests - docs and code sketch */,
 				79FB63B81486ABC600751E1E /* Tests - documented only */,
@@ -662,6 +661,7 @@
 				798763E114EB3B7A0064002F /* TestSequenceDiffMerge.m */,
 				7994684414EB9F7A008AC16E /* TestSetDiffMerge.m */,
 				6660E23514F84A6C00D2F319 /* TestItemDiffMerge.m */,
+				790574FB14F8A7D20007C67B /* TestSubtreeDiffMerge.m */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -944,12 +944,12 @@
 				66E778A514E607CD00D5DFFF /* TestCommon.m in Sources */,
 				66E778A614E607CD00D5DFFF /* TestPull.m in Sources */,
 				66E778AD14E6080700D5DFFF /* TestPersistentRootEditingContext.m in Sources */,
-				791B6D6814E64F2100793BDE /* TestObjectGraphDiff.m in Sources */,
 				798763E214EB3B7A0064002F /* TestSequenceDiffMerge.m in Sources */,
 				7994684514EB9F7A008AC16E /* TestSetDiffMerge.m in Sources */,
 				6660E23614F84A6C00D2F319 /* TestItemDiffMerge.m in Sources */,
 				6660E23A14F84B3000D2F319 /* TestItem.m in Sources */,
 				6660E23E14F84C2A00D2F319 /* TestPath.m in Sources */,
+				790574FC14F8A7D20007C67B /* TestSubtreeDiffMerge.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

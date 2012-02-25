@@ -1,12 +1,50 @@
 #import "TestCommon.h"
+#import "COItemDiff.h"
 
-@interface TestObjectGraphDiff : NSObject <UKTest>
+@interface TestSubtreeDiffMerge : NSObject <UKTest>
 {
 }
 
 @end
 
-@implementation TestObjectGraphDiff
+@implementation TestSubtreeDiffMerge
+
+- (void) testBasic
+{
+	COSubtree *t1 = [COSubtree subtree];
+	COSubtree *t2 = [COSubtree subtree];	
+	COSubtree *t3a = [COSubtree subtree];
+	COSubtree *t3b = [COSubtree subtree];
+	[t1 addTree: t2];
+	[t2 addTree: t3a];
+	[t2 addTree: t3b];
+	
+	
+	// Create a copy and modify it.
+	COSubtree *u1 = [[t1 copy] autorelease];
+	
+	UKObjectsEqual(u1, t1);
+	
+	COSubtree *u2 = [u1 subtreeWithUUID: [t2 UUID]];
+	COSubtree *u3a = [u1 subtreeWithUUID: [t3a UUID]];
+	
+	[u2 removeSubtreeWithUUID: [t3b UUID]];
+	
+	COSubtree *u4 = [COSubtree subtree];
+	[u3a addTree: u4];
+	
+	[u4 setPrimitiveValue: @"This node was added"
+			 forAttribute: @"comment"
+					 type: [COType stringType]];
+	
+	
+	// Test creating a diff
+	COSubtreeDiff *diff_t1_u1 = [COSubtreeDiff diffSubtree: t1 withSubtree: u1];
+	
+	COSubtree *u1_generated_from_diff = [diff_t1_u1 subtreeWithDiffAppliedToSubtree: t1];
+	
+	UKObjectsEqual(u1, u1_generated_from_diff);
+}
 
 - (void)testSelectiveUndoOfGroupOperation
 {
@@ -54,15 +92,15 @@
 	
 	COSubtreeDiff *diff_doc3_vs_doc2 = [COSubtreeDiff diffSubtree: doc3 withSubtree: doc2];
 	COSubtreeDiff *diff_doc3_vs_doc = [COSubtreeDiff diffSubtree: doc3 withSubtree: doc];
-
+	
 	// Sanity check that the diffs work
 	
 	UKObjectsEqual(doc, [diff_doc3_vs_doc subtreeWithDiffAppliedToSubtree: doc3]);
 	UKObjectsEqual(doc2, [diff_doc3_vs_doc2 subtreeWithDiffAppliedToSubtree: doc3]);
 	
 	COSubtreeDiff *diff_merged = [COSubtreeDiff mergeDiff: diff_doc3_vs_doc2
-												withDiff: diff_doc3_vs_doc];
-
+												 withDiff: diff_doc3_vs_doc];
+	
 	// FIXME: Test that there are no conflicts
 	
 	COSubtree *merged = [diff_merged subtreeWithDiffAppliedToSubtree: doc3];

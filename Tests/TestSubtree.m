@@ -118,41 +118,4 @@
 	UKObjectsEqual(t2, t2a);
 }
 
-- (void) testSubtreeDiff
-{
-	COSubtree *t1 = [COSubtree subtree];
-	COSubtree *t2 = [COSubtree subtree];	
-	COSubtree *t3a = [COSubtree subtree];
-	COSubtree *t3b = [COSubtree subtree];
-	[t1 addTree: t2];
-	[t2 addTree: t3a];
-	[t2 addTree: t3b];
-	
-	
-	// Create a copy and modify it.
-	COSubtree *u1 = [[t1 copy] autorelease];
-	
-	UKObjectsEqual(u1, t1);
-	
-	COSubtree *u2 = [u1 subtreeWithUUID: [t2 UUID]];
-	COSubtree *u3a = [u1 subtreeWithUUID: [t3a UUID]];
-
-	[u2 removeSubtreeWithUUID: [t3b UUID]];
-	
-	COSubtree *u4 = [COSubtree subtree];
-	[u3a addTree: u4];
-	
-	[u4 setPrimitiveValue: @"This node was added"
-			 forAttribute: @"comment"
-					 type: [COType stringType]];
-	
-	
-	// Test creating a diff
-	COSubtreeDiff *diff_t1_u1 = [COSubtreeDiff diffSubtree: t1 withSubtree: u1];
-	
-	COSubtree *u1_generated_from_diff = [diff_t1_u1 subtreeWithDiffAppliedToSubtree: t1];
-	
-	UKObjectsEqual(u1, u1_generated_from_diff);
-}
-
 @end
