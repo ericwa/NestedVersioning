@@ -107,5 +107,50 @@
 	UKObjectsEqual(A(@"triangle1", @"line1", @"circle1", @"square1", @"image1"), [merged valueForAttribute: @"contents"]);
 }
 
+/**
+ * This test creates a conflict where 
+ */
+- (void)testTreeConflict
+{
+	COSubtree *docO, *docA, *docB;
+	
+	// 1. Setup docO, docA, docB
+	{
+		COSubtree *doc = [COSubtree subtree];
+		COSubtree *group1 = [COSubtree subtree];
+		COSubtree *group2 = [COSubtree subtree];
+		COSubtree *shape1 = [COSubtree subtree];
+		
+		[doc addTree: shape1];
+		
+		docO = [[doc copy] autorelease];
+		
+		[doc addTree: group1];
+		[group1 addTree: shape1];
+		
+		docA = [[doc copy] autorelease];
+		
+		[doc addTree: group2];
+		[group2 addTree: shape1];
+		[doc removeSubtree: group1];
+		
+		docB = [[doc copy] autorelease];
+	}
+	
+	COSubtreeDiff *diff_docO_vs_docA = [COSubtreeDiff diffSubtree: docO withSubtree: docA];
+	COSubtreeDiff *diff_docO_vs_docB = [COSubtreeDiff diffSubtree: docO withSubtree: docB];
+	
+	// Sanity check that the diffs work
+	
+	UKObjectsEqual(docA, [diff_docO_vs_docA subtreeWithDiffAppliedToSubtree: docA]);
+	UKObjectsEqual(docB, [diff_docO_vs_docB subtreeWithDiffAppliedToSubtree: docB]);
+	
+	COSubtreeDiff *diff_merged = [diff_docO_vs_docA subtreeDiffByMergingWithDiff: diff_docO_vs_docB];
+	
+	UKTrue([diff_merged hasConflicts]);
+	
+	// FIXME: finish test.
+}
+
 
 @end
