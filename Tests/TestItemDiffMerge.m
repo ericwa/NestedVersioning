@@ -31,18 +31,23 @@
 {
 	// snapshot the state: (line1, circle1, square1, image1) into doc2
 	
-	COItem *doc2 = [COItem itemWithTypesForAttributes: D([COType arrayWithPrimitiveType: [COType stringType]], @"objects")
-								  valuesForAttributes: D(A(@"line1", @"circle1", @"square1", @"image1"), @"objects")];
+	ETUUID *u1 = [ETUUID UUID];
+	
+	COItem *doc2 = [[COItem alloc] initWithUUID: u1
+							 typesForAttributes: D([COType arrayWithPrimitiveType: [COType stringType]], @"objects")
+							valuesForAttributes: D(A(@"line1", @"circle1", @"square1", @"image1"), @"objects")];
 		
 	// snapshot the state:  (line1, group1, image1) into doc3
 
-	COItem *doc3 = [COItem itemWithTypesForAttributes: D([COType arrayWithPrimitiveType: [COType stringType]], @"objects")
-								  valuesForAttributes: D(A(@"line1", @"group1", @"image1"), @"objects")];
+	COItem *doc3 = [[COItem alloc] initWithUUID: u1
+							  ypesForAttributes: D([COType arrayWithPrimitiveType: [COType stringType]], @"objects")
+							valuesForAttributes: D(A(@"line1", @"group1", @"image1"), @"objects")];
 							
 	// doc1 state:  (triangl1, line1, group1, image1)
 
-	COItem *doc = [COItem itemWithTypesForAttributes: D([COType arrayWithPrimitiveType: [COType stringType]], @"objects")
-								 valuesForAttributes: D(A(@"triangle1", @"line1", @"group1", @"image1"), @"objects")];
+	COItem *doc = [[COItem alloc] initWithUUID: u1
+							typesForAttributes: D([COType arrayWithPrimitiveType: [COType stringType]], @"objects")
+						   valuesForAttributes: D(A(@"triangle1", @"line1", @"group1", @"image1"), @"objects")];
 	
 	// ------------
 	
@@ -63,6 +68,11 @@
 	COItem *merged = [diff_merged itemWithDiffAppliedTo: doc3];
 	
 	UKObjectsEqual(A(@"triangle1", @"line1", @"circle1", @"square1", @"image1"), [merged valueForAttribute: @"objects"]);
+	
+	[doc release];
+	[doc2 release];
+	[doc3 release];
+}
 }
 
 @end
