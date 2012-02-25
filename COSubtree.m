@@ -68,9 +68,7 @@
 	embeddedSubtrees = [[NSMutableDictionary alloc] init];
 	
 	// WARNING: the receiver is in an inconsistent state right now
-	// so -directDescendentSubtreeUUIDs must not access embeddedSubtrees
-	// since it is not yet set up.
-	for (ETUUID *aUUID in [self directDescendentSubtreeUUIDs])
+	for (ETUUID *aUUID in [root embeddedItemUUIDs])
 	{
 		COSubtree *subTree = [[[self class] alloc] initWithItemDictionary: items
 																 rootUUID: aUUID];
@@ -225,22 +223,7 @@
 
 - (NSSet *)directDescendentSubtreeUUIDs
 {
-	// WARNING: See comment in initWithItemDictionary:rootUUID:.
-	// We call this method there before the embeddedSubtrees ivar is set up,
-	// so we must not access it here.
-	
-	NSMutableSet *set = [NSMutableSet set];
-	
-	for (NSString *attr in [root attributeNames])
-	{
-		COType *type = [root typeForAttribute: attr];
-		if ([type isPrimitiveTypeEqual: [COType embeddedItemType]])
-		{
-			[set addObjectsFromArray: [root allObjectsForAttribute: attr]];
-		}
-	}
-	
-	return [NSSet setWithSet: set];
+	return [root embeddedItemUUIDs];
 }
 
 - (NSArray *)directDescendentSubtrees;
