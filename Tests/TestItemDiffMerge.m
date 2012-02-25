@@ -73,6 +73,41 @@
 	[doc2 release];
 	[doc3 release];
 }
+
+- (void)testConflict
+{
+	ETUUID *u1 = [ETUUID UUID];
+	ETUUID *u2 = [ETUUID UUID];
+	
+	COItem *i1 = [[COMutableItem alloc] initWithUUID: u1];
+	COItem *i2 = [[COItem alloc] initWithUUID: u1
+						   typesForAttributes: D([COType setWithPrimitiveType: [COType embeddedItemType]], @"key1")
+						  valuesForAttributes: D(S(u2), @"key1")];
+	COItem *i3 = [[COItem alloc] initWithUUID: u1
+						   typesForAttributes: D([COType setWithPrimitiveType: [COType embeddedItemType]], @"key2")
+						  valuesForAttributes: D(S(u2), @"key2")];
+	
+	// ------------
+	
+	// Calculate diffs
+	
+	COItemDiff *diff_i1_i2 = [COItemDiff diffItem: i1 withItem: i2];
+	COItemDiff *diff_i1_i3 = [COItemDiff diffItem: i1 withItem: i3];
+	
+	// Sanity check that the diffs work
+	
+	UKObjectsEqual(i2, [diff_i1_i2 itemWithDiffAppliedTo: i1]);
+	UKObjectsEqual(i3, [diff_i1_i3 itemWithDiffAppliedTo: i1]);
+	
+	COItemDiff *diff_merged = [diff_i1_i2 itemDiffByMergingWithDiff: diff_i1_i3];
+	
+	UKTrue([diff_merged hasConflicts]);
+
+	// FIXME: ...
+	
+	[i1 release];
+	[i2 release];
+	[i3 release];
 }
 
 @end
