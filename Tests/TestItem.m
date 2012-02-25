@@ -23,8 +23,6 @@
 	forAttribute: @"contents"
 			type: [COType setWithPrimitiveType: [COType pathType]]];
 	
-	NSLog(@"%@", [i1 plist]);
-	
 	// test round trip to plist
 	{
 		id plist = [NSPropertyListSerialization propertyListFromData:
