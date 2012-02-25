@@ -20,7 +20,7 @@
 	UKNotNil([t1 UUID]);
 	UKNil([t1 parent]);
 	UKObjectsSame(t1, [t1 root]);
-	UKTrue([t1 containsSubtreeWithUUID: [t1 UUID]]);
+	UKTrue([t1 containsSubtree: t1]);
 	
 	[t1 addTree: t2];
 	
@@ -29,7 +29,7 @@
 	UKNil([t1 parent]);	
 	UKObjectsSame(t1, [t1 root]);
 	
-	UKTrue([t1 containsSubtreeWithUUID: [t2 UUID]]);
+	UKTrue([t1 containsSubtree: t2]);
 	UKObjectsEqual(S([t1 UUID], [t2 UUID]), [t1 allUUIDs]);
 	UKObjectsEqual(S([t2 UUID]), [t1 allDescendentSubtreeUUIDs]);
 	UKObjectsEqual(S([t2 UUID]), [t1 directDescendentSubtreeUUIDs]);
@@ -44,7 +44,7 @@
 	
 	[t2 addTree: t3];
 	
-	UKTrue([t1 containsSubtreeWithUUID: [t3 UUID]]);
+	UKTrue([t1 containsSubtree: t3]);
 	UKObjectsEqual(S([t1 UUID], [t2 UUID], [t3 UUID]), [t1 allUUIDs]);
 	UKObjectsEqual(S([t2 UUID], [t3 UUID]), [t1 allDescendentSubtreeUUIDs]);
 	UKObjectsEqual(S([t2 UUID]), [t1 directDescendentSubtreeUUIDs]);
