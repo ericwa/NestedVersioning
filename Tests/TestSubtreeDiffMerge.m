@@ -98,21 +98,22 @@
 	UKObjectsEqual(doc, [diff_doc3_vs_doc subtreeWithDiffAppliedToSubtree: doc3]);
 	UKObjectsEqual(doc2, [diff_doc3_vs_doc2 subtreeWithDiffAppliedToSubtree: doc3]);
 	
-	COSubtreeDiff *diff_merged = [COSubtreeDiff mergeDiff: diff_doc3_vs_doc2
-												 withDiff: diff_doc3_vs_doc];
+	COSubtreeDiff *diff_merged = [diff_doc3_vs_doc2 subtreeDiffByMergingWithDiff: diff_doc3_vs_doc];
 	
 	// FIXME: Test that there are no conflicts
 	
 	COSubtree *merged = [diff_merged subtreeWithDiffAppliedToSubtree: doc3];
 	
-	UKIntsEqual(5, [[doc3 valueForAttribute: @"contents"] count]);
-	if (5 == [[doc3 valueForAttribute: @"contents"] count])
+	UKFalse([diff_merged hasConflicts]);
+	
+	UKIntsEqual(5, [[merged valueForAttribute: @"contents"] count]);
+	if (5 == [[merged valueForAttribute: @"contents"] count])
 	{
-		UKStringsEqual(@"triangle1", [[[doc3 valueForAttribute: @"contents"] objectAtIndex: 0] valueForAttribute: @"label"]);
-		UKStringsEqual(@"line1", [[[doc3 valueForAttribute: @"contents"] objectAtIndex: 1] valueForAttribute: @"label"]);
-		UKStringsEqual(@"circle1", [[[doc3 valueForAttribute: @"contents"] objectAtIndex: 2] valueForAttribute: @"label"]);
-		UKStringsEqual(@"square1", [[[doc3 valueForAttribute: @"contents"] objectAtIndex: 3] valueForAttribute: @"label"]);	
-		UKStringsEqual(@"image1", [[[doc3 valueForAttribute: @"contents"] objectAtIndex: 4] valueForAttribute: @"label"]);
+		UKStringsEqual(@"triangle1", [[[merged valueForAttribute: @"contents"] objectAtIndex: 0] valueForAttribute: @"label"]);
+		UKStringsEqual(@"line1", [[[merged valueForAttribute: @"contents"] objectAtIndex: 1] valueForAttribute: @"label"]);
+		UKStringsEqual(@"circle1", [[[merged valueForAttribute: @"contents"] objectAtIndex: 2] valueForAttribute: @"label"]);
+		UKStringsEqual(@"square1", [[[merged valueForAttribute: @"contents"] objectAtIndex: 3] valueForAttribute: @"label"]);	
+		UKStringsEqual(@"image1", [[[merged valueForAttribute: @"contents"] objectAtIndex: 4] valueForAttribute: @"label"]);
 	}
 }
 

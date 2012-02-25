@@ -115,7 +115,7 @@
 								rootUUID: newRoot];
 }
 
-+ (COSubtreeDiff *) mergeDiff: (COSubtreeDiff*)diff1 withDiff: (COSubtreeDiff*)diff2
+- (COSubtreeDiff *)subtreeDiffByMergingWithDiff: (COSubtreeDiff *)other
 {
 	return nil;
 	
@@ -225,6 +225,9 @@
 #endif
 }
 
-
+- (BOOL) hasConflicts
+{
+	return NO;
+}
 
 @end

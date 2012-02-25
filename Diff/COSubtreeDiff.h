@@ -22,4 +22,9 @@
 
 - (COSubtree *) subtreeWithDiffAppliedToSubtree: (COSubtree *)aSubtree;
 
+- (COSubtreeDiff *)subtreeDiffByMergingWithDiff: (COSubtreeDiff *)other;
+
+- (BOOL) hasConflicts;
+
+
 @end
