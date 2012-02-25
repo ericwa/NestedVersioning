@@ -59,12 +59,10 @@
 	[square1 setValue: @"square1" forAttribute: @"label" type: [COType stringType]];	
 	[image1 setValue: @"image1" forAttribute: @"label" type: [COType stringType]];
 	
-	[doc addObject: line1 toOrderedAttribute: @"contents" type: [COType uniqueArrayWithPrimitiveType: [COType embeddedItemType]]];
-	[doc addObject: circle1 toOrderedAttribute: @"contents" type: [COType uniqueArrayWithPrimitiveType: [COType embeddedItemType]]];
-	[doc addObject: square1 toOrderedAttribute: @"contents" type: [COType uniqueArrayWithPrimitiveType: [COType embeddedItemType]]];
-	[doc addObject: image1 toOrderedAttribute: @"contents" type: [COType uniqueArrayWithPrimitiveType: [COType embeddedItemType]]];
-	
-	
+	[doc setValue: A(line1, circle1, square1, image1)
+	 forAttribute: @"contents"
+			 type: [COType uniqueArrayWithPrimitiveType: [COType embeddedItemType]]];
+
 	// snapshot the state: (line1, circle1, square1, image1) into doc2
 	COSubtree *doc2 = [[doc copy] autorelease];
 	
@@ -106,15 +104,7 @@
 	
 	UKFalse([diff_merged hasConflicts]);
 	
-	UKIntsEqual(5, [[merged valueForAttribute: @"contents"] count]);
-	if (5 == [[merged valueForAttribute: @"contents"] count])
-	{
-		UKStringsEqual(@"triangle1", [[[merged valueForAttribute: @"contents"] objectAtIndex: 0] valueForAttribute: @"label"]);
-		UKStringsEqual(@"line1", [[[merged valueForAttribute: @"contents"] objectAtIndex: 1] valueForAttribute: @"label"]);
-		UKStringsEqual(@"circle1", [[[merged valueForAttribute: @"contents"] objectAtIndex: 2] valueForAttribute: @"label"]);
-		UKStringsEqual(@"square1", [[[merged valueForAttribute: @"contents"] objectAtIndex: 3] valueForAttribute: @"label"]);	
-		UKStringsEqual(@"image1", [[[merged valueForAttribute: @"contents"] objectAtIndex: 4] valueForAttribute: @"label"]);
-	}
+	UKObjectsEqual(A(@"triangle1", @"line1", @"circle1", @"square1", @"image1"), [merged valueForAttribute: @"contents"]);
 }
 
 
