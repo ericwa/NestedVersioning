@@ -40,7 +40,7 @@
 	// snapshot the state:  (line1, group1, image1) into doc3
 
 	COItem *doc3 = [[COItem alloc] initWithUUID: u1
-							  ypesForAttributes: D([COType arrayWithPrimitiveType: [COType stringType]], @"objects")
+							 typesForAttributes: D([COType arrayWithPrimitiveType: [COType stringType]], @"objects")
 							valuesForAttributes: D(A(@"line1", @"group1", @"image1"), @"objects")];
 							
 	// doc1 state:  (triangl1, line1, group1, image1)
