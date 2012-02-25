@@ -18,9 +18,12 @@
 					 withItem: (COItem *)itemB;
 
 - (COItem *)itemWithDiffAppliedTo: (COItem *)anItem;
+- (void) applyTo: (COMutableItem*)aMutableItem;
 
 - (NSUInteger) editCount;
 
 - (COItemDiff *)itemDiffByMergingWithDiff: (COItemDiff *)other;
+
+- (BOOL) hasConflicts;
 
 @end

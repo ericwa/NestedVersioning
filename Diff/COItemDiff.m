@@ -301,13 +301,18 @@
 	return [[[self alloc] initWithEdits: edits] autorelease];
 }
 
+- (void) applyTo: (COMutableItem*)aMutableItem
+{
+	for (COStoreItemDiffOperation *op in edits)
+	{
+		[op applyTo: aMutableItem];
+	}
+}
+
 - (COItem *)itemWithDiffAppliedTo: (COItem *)anItem
 {
 	COMutableItem *newItem = [[anItem mutableCopy] autorelease];
-	for (COStoreItemDiffOperation *op in edits)
-	{
-		[op applyTo: newItem];
-	}
+	[self applyTo: newItem];
 	return newItem;
 }
 
@@ -319,6 +324,16 @@
 - (COItemDiff *)itemDiffByMergingWithDiff: (COItemDiff *)other
 {
 	return nil;
+}
+
+- (BOOL) hasConflicts
+{
+	// FIXME: The only way we have conflicts is if 
+	// a) one of the array diffs has conflicts
+	// or
+	// b) across all ways of resolving conflicts in array diffs,
+	//    there is an embedded item inserted in two places.
+	return NO;
 }
 
 @end
