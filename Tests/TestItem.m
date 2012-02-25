@@ -49,6 +49,44 @@
 															[COType embeddedItemType], @"key2")
 									 valuesForAttributes: D(u1, @"key1",	
 															u1, @"key2")]);
+
+	UKRaisesException({
+		COMutableItem *i1 = [COMutableItem item];
+		[i1 setValue: u1 forAttribute: @"key1" type: [COType embeddedItemType]];
+		[i1 setValue: u1 forAttribute: @"key2" type: [COType embeddedItemType]];
+	});
+	
+	
+	// It is illegal to create an embedded item collection which allows duplicates
+	
+	UKRaisesException([COItem itemWithTypesForAttributes: D([COType bagWithPrimitiveType: [COType embeddedItemType]], @"key1")
+									 valuesForAttributes: D([NSCountedSet setWithObject: u1], @"key1")]);
+
+	UKRaisesException([COItem itemWithTypesForAttributes: D([COType arrayWithPrimitiveType: [COType embeddedItemType]], @"key1")
+									 valuesForAttributes: D(A(u1), @"key1")]);
+	
+	
+	// Test setting objects of the wrong type
+	
+	UKRaisesException({
+		COMutableItem *i1 = [COMutableItem item];
+		[i1 setValue: S(u1) forAttribute: @"key1" type: [COType arrayWithPrimitiveType: [COType embeddedItemType]]];
+	});
+	UKRaisesException({
+		COMutableItem *i1 = [COMutableItem item];
+		[i1 setValue: A(u1) forAttribute: @"key1" type: [COType setWithPrimitiveType: [COType embeddedItemType]]];
+	});
+	
+	// Test an item which contains itself
+	
+	UKRaisesException([[[COItem alloc] initWithUUID: u1
+								 typesForAttributes: D([COType embeddedItemType], @"key1")
+								valuesForAttributes: D(u1, @"key1")] autorelease]);
+	
+	UKRaisesException({
+		COMutableItem *i1 = [[[COMutableItem alloc] initWithUUID: u1] autorelease];
+		[i1 setValue: u1 forAttribute: @"key1" type: [COType embeddedItemType]];
+	});
 }
 
 @end

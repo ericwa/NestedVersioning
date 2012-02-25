@@ -42,6 +42,15 @@
 				return NO;
 			}
 		}
+		
+		// An item can't contain itself.
+		for (ETUUID *embeddedItem in countedEmbeddedItems)
+		{
+			if ([embeddedItem isEqual: uuid])
+			{
+				return NO;
+			}
+		}
 	}
 	
 	return YES;
@@ -377,6 +386,12 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 {
 	NILARG_EXCEPTION_TEST(aUUID);
 	ASSIGN(uuid, aUUID);
+	
+	if (![self validate])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"validation failed"];
+	}
 }
 
 - (void) setValue: (id)aValue
@@ -389,6 +404,12 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 	
 	[(NSMutableDictionary *)types setObject: aType forKey: anAttribute];
 	[(NSMutableDictionary *)values setObject: aValue forKey: anAttribute];
+	
+	if (![self validate])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"validation failed"];
+	}
 }
 
 - (void)removeValueForAttribute: (NSString*)anAttribute
@@ -423,6 +444,12 @@ toUnorderedAttribute: (NSString*)anAttribute
 	  forAttribute: anAttribute
 			  type: aType];
 	[set release];
+	
+	if (![self validate])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"validation failed"];
+	}
 }
 
 - (void)   addObject: (id)aValue
@@ -451,6 +478,12 @@ toUnorderedAttribute: (NSString*)anAttribute
 	  forAttribute: anAttribute
 			  type: aType];
 	[array release];
+	
+	if (![self validate])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"validation failed"];
+	}
 }
 
 - (void) addObject: (id)aValue
@@ -463,7 +496,11 @@ toUnorderedAttribute: (NSString*)anAttribute
 	[(NSMutableDictionary *)values setObject: container forKey: anAttribute];
 	[container release];
 	
-	[self validate];
+	if (![self validate])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"validation failed"];
+	}
 }
 
 
@@ -474,7 +511,11 @@ toUnorderedAttribute: (NSString*)anAttribute
 	  forAttribute: anAttribute
 			  type: [self typeForAttribute: anAttribute]];
 	
-	[self validate];
+	if (![self validate])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"validation failed"];
+	}
 }
 
 - (id)copyWithZone:(NSZone *)zone
