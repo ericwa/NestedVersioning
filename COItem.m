@@ -22,6 +22,28 @@
 		if (![type validateValue: value])
 			return NO;
 	}
+	
+	// Test each embedded item UUID appears only once.
+	{
+		NSCountedSet *countedEmbeddedItems = [NSCountedSet set];
+		for (NSString *attribute in types)
+		{
+			if ([[[types objectForKey: attribute] primitiveType] isEqual: [COType embeddedItemType]])
+			{
+				NSArray *arr = [self allObjectsForAttribute: attribute];
+				[countedEmbeddedItems addObjectsFromArray: arr];
+			}
+		}
+
+		for (ETUUID *embeddedItem in countedEmbeddedItems)
+		{
+			if ([countedEmbeddedItems countForObject: embeddedItem] != 1)
+			{
+				return NO;
+			}
+		}
+	}
+	
 	return YES;
 }
 

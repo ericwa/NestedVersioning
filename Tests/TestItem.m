@@ -39,4 +39,16 @@
 	}
 }
 
+- (void) testConsistency
+{
+	ETUUID *u1 = [ETUUID UUID];
+	
+	// It is illegal to have the same embedded item in two places.
+	
+	UKRaisesException([COItem itemWithTypesForAttributes: D([COType embeddedItemType], @"key1",
+															[COType embeddedItemType], @"key2")
+									 valuesForAttributes: D(u1, @"key1",	
+															u1, @"key2")]);
+}
+
 @end

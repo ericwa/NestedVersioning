@@ -34,7 +34,7 @@
 valuesForAttributes: (NSDictionary *)valuesForAttributes;
 
 + (COItem *) itemWithTypesForAttributes: (NSDictionary *)typesForAttributes
-						 valuesForAttributes: (NSDictionary *)valuesForAttributes;
+					valuesForAttributes: (NSDictionary *)valuesForAttributes;
 
 - (ETUUID *) UUID;
 
@@ -75,6 +75,8 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes;
 
 - (id) initWithUUID: (ETUUID*)aUUID;
 
++ (COMutableItem *) itemWithTypesForAttributes: (NSDictionary *)typesForAttributes
+						   valuesForAttributes: (NSDictionary *)valuesForAttributes;
 /**
  * new item with new UIID
  */
