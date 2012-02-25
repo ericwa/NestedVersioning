@@ -28,7 +28,7 @@
 		NSCountedSet *countedEmbeddedItems = [NSCountedSet set];
 		for (NSString *attribute in types)
 		{
-			if ([[[types objectForKey: attribute] primitiveType] isEqual: [COType embeddedItemType]])
+			if ([[types objectForKey: attribute] isPrimitiveTypeEqual: [COType embeddedItemType]])
 			{
 				NSArray *arr = [self allObjectsForAttribute: attribute];
 				[countedEmbeddedItems addObjectsFromArray: arr];
@@ -233,7 +233,7 @@ static id importValueFromPlist(id aPlist)
 	for (NSString *key in [self attributeNames])
 	{
 		COType *type = [self typeForAttribute: key];
-		if ([[type primitiveType] isEqual: [COType embeddedItemType]])
+		if ([type isPrimitiveTypeEqual: [COType embeddedItemType]])
 		{		
 			for (ETUUID *embedded in [self allObjectsForAttribute: key])
 			{
@@ -273,7 +273,7 @@ static id importValueFromPlist(id aPlist)
 		id value = [aCopy valueForAttribute: attr];
 		COType *type = [aCopy typeForAttribute: attr];
 		
-		if ([[type primitiveType] isEqual: [COType embeddedItemType]])
+		if ([type isPrimitiveTypeEqual: [COType embeddedItemType]])
 		{
 			if ([type isPrimitive])
 			{
@@ -305,7 +305,7 @@ static id importValueFromPlist(id aPlist)
 						   type: type];
 			}
 		}
-		else if ([[type primitiveType] isEqual: [COType pathType]])
+		else if ([type isPrimitiveTypeEqual: [COType pathType]])
 		{
 			if ([type isPrimitive])
 			{

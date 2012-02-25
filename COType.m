@@ -560,4 +560,14 @@
 	return [self retain];
 }
 
+- (BOOL) isPrimitiveTypeEqual: (id)object
+{
+	if (![object isPrimitive])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"expected a primitive type as an argument"];
+	}
+	return [[self primitiveType] isEqual: object];
+}
+
 @end

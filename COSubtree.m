@@ -234,7 +234,7 @@
 	for (NSString *attr in [root attributeNames])
 	{
 		COType *type = [root typeForAttribute: attr];
-		if ([[type primitiveType] isEqual: [COType embeddedItemType]])
+		if ([type isPrimitiveTypeEqual: [COType embeddedItemType]])
 		{
 			[set addObjectsFromArray: [root allObjectsForAttribute: attr]];
 		}
@@ -359,7 +359,7 @@
 	id rootValue = [root valueForAttribute: anAttribute];
 	COType *type = [self typeForAttribute: anAttribute];
 	
-	if ([[type primitiveType] isEqual: [COType embeddedItemType]])
+	if ([type isPrimitiveTypeEqual: [COType embeddedItemType]])
 	{
 		if ([type isMultivalued])
 		{
@@ -431,7 +431,7 @@
 	 forAttribute: (NSString*)anAttribute
 			 type: (COType *)aType
 {
-	if ([[aType primitiveType] isEqual: [COType embeddedItemType]])
+	if ([aType isPrimitiveTypeEqual: [COType embeddedItemType]])
 	{
 		if (![aType isMultivalued])
 		{
@@ -484,7 +484,7 @@
 toUnorderedAttribute: (NSString*)anAttribute
 				type: (COType *)aType
 {
-	if ([[aType primitiveType] isEqual: [COType embeddedItemType]])
+	if ([aType isPrimitiveTypeEqual: [COType embeddedItemType]])
 	{
 		[self addSubtree: aValue atItemPath: [COItemPath pathWithItemUUID: [self UUID]
 												  unorderedCollectionName: anAttribute
@@ -505,7 +505,7 @@ toUnorderedAttribute: (NSString*)anAttribute
 			 atIndex: (NSUInteger)anIndex
 				type: (COType *)aType
 {
-	if ([[aType primitiveType] isEqual: [COType embeddedItemType]])
+	if ([aType isPrimitiveTypeEqual: [COType embeddedItemType]])
 	{
 		[self addSubtree: aValue atItemPath: [COItemPath pathWithItemUUID: [self UUID]
 																arrayName: anAttribute
@@ -537,7 +537,7 @@ toUnorderedAttribute: (NSString*)anAttribute
 
 - (void)removeValueForAttribute: (NSString*)anAttribute
 {
-	if ([[[root typeForAttribute: anAttribute] primitiveType] isEqual: [COType embeddedItemType]])
+	if ([[root typeForAttribute: anAttribute] isPrimitiveTypeEqual: [COType embeddedItemType]])
 	{
 		for (ETUUID *uuidToRemove in [root allObjectsForAttribute: anAttribute])
 		{

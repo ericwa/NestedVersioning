@@ -81,6 +81,12 @@
 
 - (BOOL) isEqual: (id)object;
 
+/**
+ * @returns YES if the primitiveType of the receiver is equal to the argument
+ * throws an exception if the argument is not a primitive type.
+ */
+- (BOOL) isPrimitiveTypeEqual: (id)object;
+
 
 /** @taskunit NSCopying protocol */
 

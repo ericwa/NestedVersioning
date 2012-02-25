@@ -167,7 +167,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 		}
 		
 		// if it contains embedded objects, just return their UUIDs.
-		if ([[type primitiveType] isEqual: [COType embeddedItemType]])
+		if ([type isPrimitiveTypeEqual: [COType embeddedItemType]])
 		{
 			NSMutableArray *result = [NSMutableArray array];
 			

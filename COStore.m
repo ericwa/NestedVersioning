@@ -323,8 +323,7 @@
 	{
 		for (NSString *attribute in [item attributeNames])
 		{
-			COType *primitiveType = [[item typeForAttribute: attribute] primitiveType];
-			if ([primitiveType isEqual: [COType commitUUIDType]])
+			if ([[item typeForAttribute: attribute] isPrimitiveTypeEqual: [COType commitUUIDType]])
 			{
 				for (ETUUID *aValue in [item allObjectsForAttribute: attribute])
 				{
