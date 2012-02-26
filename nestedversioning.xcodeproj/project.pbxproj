@@ -299,6 +299,7 @@
 		79B578E214ECCACE00B3563F /* DiffWindow.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = DiffWindow.nib; sourceTree = "<group>"; };
 		79CB302914C63E1C00ADAB77 /* TestCommon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCommon.m; sourceTree = "<group>"; };
 		79CB315014C6911400ADAB77 /* arrow_branch_purple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow_branch_purple.png; sourceTree = "<group>"; };
+		79E87A9314FA12C0005F6F70 /* merge and selective undo use cases.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = "merge and selective undo use cases.rtf"; path = "Docs/merge and selective undo use cases.rtf"; sourceTree = "<group>"; };
 		79F8202B14E25D85008236F6 /* COSubtreeFactory+Pull.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COSubtreeFactory+Pull.h"; sourceTree = "<group>"; };
 		79F8202C14E25D85008236F6 /* COSubtreeFactory+Pull.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "COSubtreeFactory+Pull.m"; sourceTree = "<group>"; };
 		79F8205614E26118008236F6 /* TestPull.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestPull.m; sourceTree = "<group>"; };
@@ -351,6 +352,7 @@
 				66E7785514E6062100D5DFFF /* NestedVersioning-Info.plist */,
 				66416D20142D3EE20016501D /* README */,
 				66E2A3031430569C00487419 /* TODO */,
+				79E87A9414FA12C6005F6F70 /* Docs */,
 				66DFAEC4142A726100623060 /* COMacros.h */,
 				669CADED1491C14300D0CF5F /* UUID & Path */,
 				669CADEE1491C15400D0CF5F /* Type System */,
@@ -704,6 +706,14 @@
 				79B578D814ECC94E00B3563F /* EWDiffWindowController.m */,
 			);
 			name = "Diff View";
+			sourceTree = "<group>";
+		};
+		79E87A9414FA12C6005F6F70 /* Docs */ = {
+			isa = PBXGroup;
+			children = (
+				79E87A9314FA12C0005F6F70 /* merge and selective undo use cases.rtf */,
+			);
+			name = Docs;
 			sourceTree = "<group>";
 		};
 		79FB63B81486ABC600751E1E /* Tests - documented only */ = {
