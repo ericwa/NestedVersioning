@@ -594,15 +594,17 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 	[controller orderFrontAndHighlightItem: [newRoot UUID]];
 }
 
-- (void) duplicatePersistentRoot: (id)sender
+- (void) duplicateEmbeddedItem: (id)sender
 {
 	COSubtree *newRoot = [[[self rowSubtree] subtreeCopyRenamingAllItems] subtree];
 	COSubtree *dest = [[self rowSubtree] parent];
 	
-	[newRoot setPrimitiveValue: [NSString stringWithFormat: @"Copy of %@", [newRoot valueForAttribute: @"name"]]
-				  forAttribute: @"name"
-						  type: [COType stringType]];
-	
+	if ([newRoot valueForAttribute: @"name"] != nil)
+	{
+		[newRoot setPrimitiveValue: [NSString stringWithFormat: @"Copy of %@", [newRoot valueForAttribute: @"name"]]
+					  forAttribute: @"name"
+							  type: [COType stringType]];
+	}	
 	[dest addTree: newRoot];
 	
 	EWPersistentRootWindowController *controller = windowController; // FIXME: ugly hack
@@ -672,6 +674,17 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 	[[NSApp delegate] reloadAllBrowsers]; // FIXME: ugly.. deallocates self...
 }
 
+- (void) addEmbeddedItem: (id)sender
+{
+	COSubtree *subtree = [self rowSubtree];
+	
+	[subtree addTree: [COSubtree subtree]];
+
+	[ctx commitWithMetadata: nil];
+	
+	[[NSApp delegate] reloadAllBrowsers]; // FIXME: ugly.. deallocates self...
+}
+
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem
 {
     SEL theAction = [anItem action];
@@ -702,9 +715,9 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 	{
         return [selIndexes count] == 1 && [self isBranch];
 	}
-	else if (theAction == @selector(duplicatePersistentRoot:))
+	else if (theAction == @selector(duplicateEmbeddedItem:))
 	{
-        return [selIndexes count] == 1 && [self isPersistentRoot];
+        return [selIndexes count] == 1 && [self isEmbeddedObject];
 	}
 	else if (theAction == @selector(openPersistentRoot:))
 	{
@@ -720,7 +733,8 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 		}
 		return NO;
 	}
-	else if (theAction == @selector(addStringKeyValue:))
+	else if (theAction == @selector(addStringKeyValue:)
+			 || theAction == @selector(addEmbeddedItem:))
 	{
         return ([selIndexes count] == 1 && [self isEmbeddedObject]);
 	}
@@ -736,6 +750,22 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 	[menu addItemWithTitle:@"Cut" action: @selector(cut:) keyEquivalent:@""];
 	[menu addItemWithTitle:@"Copy" action: @selector(copy:) keyEquivalent:@""];
 	[menu addItemWithTitle:@"Paste" action: @selector(paste:) keyEquivalent:@""];
+	
+	{
+		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Duplicate" 
+													   action: @selector(duplicateEmbeddedItem:) 
+												keyEquivalent: @""] autorelease];
+		[item setTarget: self];
+		[menu addItem: item];
+	}	
+	
+	{
+		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Delete" 
+													   action: @selector(delete:) 
+												keyEquivalent: @""] autorelease];
+		[item setTarget: self];
+		[menu addItem: item];
+	}
 	
 	[menu addItem: [NSMenuItem separatorItem]];
 	
@@ -754,6 +784,8 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 		[item setTarget: self];
 		[menu addItem: item];
 	}
+	
+	[menu addItem: [NSMenuItem separatorItem]];
 	
 	{
 		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Create Branch" 
@@ -778,30 +810,20 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 		[item setTarget: self];
 		[menu addItem: item];
 	}
-
-	{
-		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Duplicate Persistent Root" 
-													   action: @selector(duplicatePersistentRoot:) 
-												keyEquivalent: @""] autorelease];
-		[item setTarget: self];
-		[menu addItem: item];
-	}	
-	
-	[menu addItem: [NSMenuItem separatorItem]];
-	
-	{
-		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Delete" 
-													   action: @selector(delete:) 
-												keyEquivalent: @""] autorelease];
-		[item setTarget: self];
-		[menu addItem: item];
-	}	
 	
 	[menu addItem: [NSMenuItem separatorItem]];
 
 	{
 		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Add String Key/Value" 
 													   action: @selector(addStringKeyValue:) 
+												keyEquivalent: @""] autorelease];
+		[item setTarget: self];
+		[menu addItem: item];
+	}	
+
+	{
+		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Add Embedded Item" 
+													   action: @selector(addEmbeddedItem:) 
 												keyEquivalent: @""] autorelease];
 		[item setTarget: self];
 		[menu addItem: item];
