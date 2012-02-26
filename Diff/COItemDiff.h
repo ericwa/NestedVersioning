@@ -11,7 +11,9 @@
  */
 @interface COItemDiff : NSObject
 {
-	NSSet *edits;
+	NSMutableDictionary *editForAttribute;
+	// FIXME: temporary hack
+	BOOL conflicting;
 }
 
 + (COItemDiff *)diffItem: (COItem *)itemA

@@ -14,13 +14,6 @@
 
 @end
 
-@interface COStoreItemDiffOperationSetUUID : COStoreItemDiffOperation
-{
-	ETUUID *uuid;
-}
-- (id) initWithUUID: (ETUUID*)aUUID;
-@end
-
 @interface COStoreItemDiffOperationInsertAttribute : COStoreItemDiffOperation 
 {
 	id value;
@@ -79,28 +72,6 @@
 
 @end
 
-@implementation COStoreItemDiffOperationSetUUID
-
-- (id) initWithUUID: (ETUUID*)aUUID
-{
-	NILARG_EXCEPTION_TEST(aUUID);
-	SUPERINIT;
-	ASSIGN(uuid, aUUID);
-	return self;
-}
-
-- (void)dealloc
-{
-	[uuid release];
-	[super dealloc];
-}
-
-- (void) applyTo: (COMutableItem *)anItem
-{
-	[anItem setUUID: uuid];
-}
-
-@end
 
 @implementation COStoreItemDiffOperationInsertAttribute
 
@@ -229,10 +200,6 @@
 	{
 		NSLog(@"Warning, diffing items with different UUIDs (%@, %@)",
 				[itemA UUID], [itemB UUID]);
-		
-		COStoreItemDiffOperationSetUUID *setUUIDOp = [[COStoreItemDiffOperationSetUUID alloc] initWithUUID: [itemB UUID]];
-		[edits addObject: setUUIDOp];
-		[setUUIDOp release];
 	}
 	
 	NSMutableSet *removedAttrs = [NSMutableSet setWithArray: [itemA attributeNames]];
@@ -438,7 +405,7 @@
 	// or
 	// b) across all ways of resolving conflicts in array diffs,
 	//    there is an embedded item inserted in two places.
-	return NO;
+	return conflicting;
 }
 
 @end
