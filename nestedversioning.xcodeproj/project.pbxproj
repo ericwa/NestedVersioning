@@ -174,7 +174,6 @@
 		6628FBA2142FA7840072767A /* TestEditingContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestEditingContext.m; sourceTree = "<group>"; };
 		6628FBA3142FA7840072767A /* TestHistoryTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestHistoryTrack.m; sourceTree = "<group>"; };
 		6628FBA4142FA7840072767A /* TestPerformance.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestPerformance.m; sourceTree = "<group>"; };
-		6628FBA5142FA7840072767A /* TestRelationshipIntegrity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestRelationshipIntegrity.m; sourceTree = "<group>"; };
 		6628FBA6142FA7840072767A /* TestStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestStore.m; sourceTree = "<group>"; };
 		6628FBA7142FA7840072767A /* TestSynchronization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSynchronization.m; sourceTree = "<group>"; };
 		6628FBA8142FA7840072767A /* TestUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestUtilities.m; sourceTree = "<group>"; };
@@ -398,7 +397,6 @@
 				6628FB9E142FA7840072767A /* TestArrayDiff.m */,
 				6628FBA2142FA7840072767A /* TestEditingContext.m */,
 				6628FBA4142FA7840072767A /* TestPerformance.m */,
-				6628FBA5142FA7840072767A /* TestRelationshipIntegrity.m */,
 				6628FBA7142FA7840072767A /* TestSynchronization.m */,
 				6628FBA8142FA7840072767A /* TestUtilities.m */,
 			);
