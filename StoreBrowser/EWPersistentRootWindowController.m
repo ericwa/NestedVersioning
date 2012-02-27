@@ -275,12 +275,16 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
 	}
 }
 
-static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow *item)
+- (void) expandParentsOfItem: (EWPersistentRootOutlineRow *)item
 {
 	NSMutableArray *anArray = [NSMutableArray array];
+
+	// Note we must not try to expand outlineModel because it is
+	// not an item the NSOutlineView is aware of, and trying to
+	// do so seems to mess up the GNUstep outline view.
 	
 	for (EWPersistentRootOutlineRow *parent = [item parent]; 
-		 parent != nil;
+		 parent != nil && parent != outlineModel;
 		 parent = [parent parent])
 	{
 		[anArray addObject: parent];
@@ -288,8 +292,7 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 		 
 	for (id row in [anArray reverseObjectEnumerator])
 	{
-		NSLog(@"expand %p", row);
-		[aView expandItem: row];
+	  [outlineView expandItem: row];
 	}	
 }
 
@@ -308,10 +311,10 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 	NSLog(@"outlineModel first child: %p", [[outlineModel children] objectAtIndex: 0]);	
 	*/
 	
-	expandParentsOfItem(outlineView, row);
+	[self expandParentsOfItem: row];
 	
-	[outlineView selectRowIndexes: [NSIndexSet indexSetWithIndex: [outlineView rowForItem: row]]
-			 byExtendingSelection: NO];
+	//[outlineView selectRowIndexes: [NSIndexSet indexSetWithIndex: [outlineView rowForItem: row]]
+	//		 byExtendingSelection: NO];
 }
 
 /* convenience */
@@ -399,6 +402,12 @@ static void expandParentsOfItem(NSOutlineView *aView, EWPersistentRootOutlineRow
 
 - (NSInteger) outlineView: (NSOutlineView *)anOutlineView numberOfChildrenOfItem: (id)item
 {
+	if (item == nil)
+	{
+		id it = [self modelForItem: item];
+		NSLog(@"children of root: %@", [it children]);
+	}
+
 	return [[[self modelForItem: item] children] count];
 }
 
