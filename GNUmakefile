@@ -67,7 +67,8 @@ $(APP_NAME)_INCLUDE_DIRS=\
 	-I./Tests\
 	-I./Diff\
 	-I./StoreBrowser\
-	-I./Scraps
+	-I./Scraps\
+	-I.
 
 $(APP_NAME)_LIB_DIRS=
 
