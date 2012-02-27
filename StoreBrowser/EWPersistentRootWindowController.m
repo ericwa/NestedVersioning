@@ -313,8 +313,8 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
 	
 	[self expandParentsOfItem: row];
 	
-	//[outlineView selectRowIndexes: [NSIndexSet indexSetWithIndex: [outlineView rowForItem: row]]
-	//		 byExtendingSelection: NO];
+	[outlineView selectRowIndexes: [NSIndexSet indexSetWithIndex: [outlineView rowForItem: row]]
+			 byExtendingSelection: NO];
 }
 
 /* convenience */
@@ -402,12 +402,6 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
 
 - (NSInteger) outlineView: (NSOutlineView *)anOutlineView numberOfChildrenOfItem: (id)item
 {
-	if (item == nil)
-	{
-		id it = [self modelForItem: item];
-		NSLog(@"children of root: %@", [it children]);
-	}
-
 	return [[[self modelForItem: item] children] count];
 }
 
