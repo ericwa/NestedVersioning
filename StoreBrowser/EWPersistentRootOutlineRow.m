@@ -677,12 +677,16 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 - (void) addEmbeddedItem: (id)sender
 {
 	COSubtree *subtree = [self rowSubtree];
-	
-	[subtree addTree: [COSubtree subtree]];
+	COSubtree *newItem = [COSubtree subtree];
+	[subtree addTree: newItem];
 
 	[ctx commitWithMetadata: nil];
 	
+	EWPersistentRootWindowController *controller = windowController; // FIXME: ugly hack
+	
 	[[NSApp delegate] reloadAllBrowsers]; // FIXME: ugly.. deallocates self...
+
+	[controller orderFrontAndHighlightItem: [newItem UUID]];
 }
 
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem
