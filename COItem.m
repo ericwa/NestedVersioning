@@ -353,7 +353,25 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 	SUPERINIT;
 	ASSIGN(uuid, aUUID);
 	types = [[NSMutableDictionary alloc] initWithDictionary: typesForAttributes];
-	values = [[NSMutableDictionary alloc] initWithDictionary: valuesForAttributes];
+	values = [[NSMutableDictionary alloc] init];
+
+	// Deep copy valuesForAttributes
+	for (NSString *key in valuesForAttributes)
+	{
+		id obj = [valuesForAttributes objectForKey: key];
+		
+		if ([obj respondsToSelector: @selector(mutableCopyWithZone:)])
+		{
+			id copy = [obj mutableCopy];
+			[(NSMutableDictionary *)values setObject: copy forKey: key];
+			[copy release];
+		}
+		else
+		{
+			[(NSMutableDictionary *)values setObject: obj forKey: key];
+		}
+
+	}
 	
 	if (![self validate])
 	{
