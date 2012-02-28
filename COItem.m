@@ -4,6 +4,45 @@
 #import "COType.h"
 #import "COType+Plist.h"
 
+static NSDictionary *copyValueDictionary(NSDictionary *input, BOOL mutable)
+{
+	NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
+	
+	for (NSString *key in input)
+	{
+		id obj = [input objectForKey: key];
+		
+		if ([obj isKindOfClass: [NSCountedSet class]])
+		{
+			// FIXME: Always mutable
+			[result setObject: obj
+					   forKey: key];
+		}
+		else if ([obj isKindOfClass: [NSSet class]])
+		{
+			[result setObject: [(mutable ? [NSMutableSet class] : [NSSet class]) setWithSet: obj]
+					   forKey: key];
+		}
+		else if ([obj isKindOfClass: [NSArray class]])
+		{
+			[result setObject: [(mutable ? [NSMutableArray class] : [NSArray class]) arrayWithArray: obj]
+					   forKey: key];
+		}
+		else
+		{
+			[result setObject: obj forKey: key];
+		}
+	}
+	
+	if (!mutable)
+	{
+		NSDictionary *immutable = [[NSDictionary alloc] initWithDictionary: result];
+		[result release];
+		return immutable;
+	}
+	return result;
+}
+
 @implementation COItem
 
 - (BOOL) validate
@@ -67,7 +106,7 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 	SUPERINIT;
 	ASSIGN(uuid, aUUID);
 	types = [[NSDictionary alloc] initWithDictionary: typesForAttributes];
-	values = [[NSDictionary alloc] initWithDictionary: valuesForAttributes];
+	values = copyValueDictionary(valuesForAttributes, NO);
 	
 	if (![self validate])
 	{
@@ -353,25 +392,7 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 	SUPERINIT;
 	ASSIGN(uuid, aUUID);
 	types = [[NSMutableDictionary alloc] initWithDictionary: typesForAttributes];
-	values = [[NSMutableDictionary alloc] init];
-
-	// Deep copy valuesForAttributes
-	for (NSString *key in valuesForAttributes)
-	{
-		id obj = [valuesForAttributes objectForKey: key];
-		
-		if ([obj respondsToSelector: @selector(mutableCopyWithZone:)])
-		{
-			id copy = [obj mutableCopy];
-			[(NSMutableDictionary *)values setObject: copy forKey: key];
-			[copy release];
-		}
-		else
-		{
-			[(NSMutableDictionary *)values setObject: obj forKey: key];
-		}
-
-	}
+	values = copyValueDictionary(valuesForAttributes, YES);
 	
 	if (![self validate])
 	{

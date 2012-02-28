@@ -87,4 +87,33 @@
 	});
 }
 
+- (void) testMutability
+{	
+	COItem *immutable = [COItem itemWithTypesForAttributes: D([COType setWithPrimitiveType: [COType stringType]], @"key1",
+															  [COType arrayWithPrimitiveType: [COType stringType]], @"key2",
+															  [COType stringType], @"name")
+									   valuesForAttributes: D([NSMutableSet setWithObject: @"a"], @"key1",	
+															  [NSMutableArray arrayWithObject: @"A"], @"key2",
+															  @"my name", @"name")];
+
+	UKRaisesException([(COMutableItem *)immutable setValue: @"foo" forAttribute: @"bar" type: [COType stringType]]);
+
+	UKRaisesException([[immutable valueForAttribute: @"key1"] addObject: @"b"]);
+	UKRaisesException([[immutable valueForAttribute: @"key2"] addObject: @"B"]);
+	
+	COMutableItem *mutable = [[immutable mutableCopy] autorelease];
+	
+	UKDoesNotRaiseException([[mutable valueForAttribute: @"key1"] addObject: @"b"]);
+	UKDoesNotRaiseException([[mutable valueForAttribute: @"key2"] addObject: @"B"]);
+	
+	UKIntsEqual(1, [[immutable valueForAttribute: @"key1"] count]);
+	UKIntsEqual(1, [[immutable valueForAttribute: @"key2"] count]);
+	
+	UKIntsEqual(2, [[mutable valueForAttribute: @"key1"] count]);
+	UKIntsEqual(2, [[mutable valueForAttribute: @"key2"] count]);
+	
+	UKRaisesException([[mutable valueForAttribute: @"name"] appendString: @"xxx"]);
+}
+
+
 @end
