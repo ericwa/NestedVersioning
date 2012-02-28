@@ -37,6 +37,17 @@
 	
 	[self setFrameSize: [graphRenderer size]];
 	[self setNeedsDisplay: YES];
+	
+	// Update tooltips
+	
+	[self removeAllToolTips];
+	for (ETUUID *commit in [graphRenderer commits])
+	{
+		NSRect r = [graphRenderer rectForCommit: commit];
+		
+		// FIXME: relies on commit being owned by the array in graphRenderer
+		[self addToolTipRect:r owner:commit userData:nil];
+	}
 }
 
 - (void) setCurrentCommit: (ETUUID *)aCommit

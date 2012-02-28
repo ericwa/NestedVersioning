@@ -174,6 +174,11 @@ static NSInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSInt
 	}
 }
 
+- (NSArray *) commits
+{
+	return allCommitsSorted;
+}
+
 - (NSSize) size
 {
 	NSSize s = NSMakeSize(32 * [allCommitsSorted count], 32 * (maxLevelUsed + 1));

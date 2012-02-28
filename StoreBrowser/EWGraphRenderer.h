@@ -19,4 +19,7 @@
 
 - (ETUUID *)commitAtPoint: (NSPoint)aPoint;
 
+- (NSRect) rectForCommit:(ETUUID *)aCommit;
+- (NSArray *) commits;
+
 @end
