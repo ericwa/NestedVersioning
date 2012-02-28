@@ -342,7 +342,7 @@
 	NSMutableSet *unreachableVersions = [NSMutableSet setWithArray: [self allCommitUUIDs]];
 	[unreachableVersions minusSet: markedVersions];
 	
-	NSLog(@"GC found the following unreachable commits: %@", unreachableVersions);
+	//NSLog(@"GC found the following unreachable commits: %@", unreachableVersions);
 	
 	[self deleteCommitsWithUUIDs: unreachableVersions];
 }
