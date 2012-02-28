@@ -780,8 +780,10 @@ toUnorderedAttribute: (NSString*)anAttribute
 	
 	if (![contents isKindOfClass: [NSSet class]])
 	{
-		[NSException raise: NSInternalInconsistencyException
-					format: @"contents attribute not a set type"];
+		//[NSException raise: NSInternalInconsistencyException
+		//			format: @"contents attribute not a set type"];
+		NSLog(@"Warning, contents attribute of %@ not a set type: %@", [self UUID], contents);
+		return [NSSet set];
 	}
 	return contents;
 }
