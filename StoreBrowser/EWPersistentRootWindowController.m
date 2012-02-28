@@ -33,6 +33,8 @@
 		
 		[historyView setCurrentCommit: [self currentCommit]];	
 	}
+	
+	NSLog(@"%@", [ctx persistentRootTree]);
 }
 
 - (id)initWithPath: (COPath*)aPath

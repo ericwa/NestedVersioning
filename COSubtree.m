@@ -786,4 +786,35 @@ toUnorderedAttribute: (NSString*)anAttribute
 	return contents;
 }
 
+- (NSString *)selfDescription
+{
+	return [NSString stringWithFormat: @"%@ (%@)", [self valueForAttribute: @"name"], [self UUID]];
+}
+
+- (NSString *)tabs: (NSUInteger)i
+{
+	NSMutableString *result = [NSMutableString string];
+	for (NSUInteger j=0; j<i; j++)
+		[result appendFormat: @"\t"];
+	return result;
+}
+
+- (NSString *)descriptionWithIndent: (NSUInteger)i
+{
+	NSMutableString *result = [NSMutableString string];
+	[result appendFormat: @"%@%@\n", [self tabs: i], [self selfDescription]];
+	
+	for (COSubtree *content in [self contents])
+	{
+		[result appendFormat: @"%@", [content descriptionWithIndent: i+1]];
+	}
+	
+	return result;
+}
+
+- (NSString *)description
+{
+	return [self descriptionWithIndent: 0];
+}
+
 @end
