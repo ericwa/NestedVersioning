@@ -77,7 +77,7 @@
  */
 @interface COPersistentRootDiff : NSObject
 {
-	
+	NSMutableDictionary *subtreeDiffForPath;
 }
 
 + (COPersistentRootDiff *) diffPersistentRoot: (COSubtree *)rootA
