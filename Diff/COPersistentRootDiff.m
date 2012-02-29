@@ -70,9 +70,11 @@
 	}
 }
 
-+ (COPersistentRootDiff *) diffBranch: (COSubtree *)branchA
-						   withBranch: (COSubtree *)branchB
-								store: (COStore *)aStore
+
+- (void) _diffBranch: (COSubtree *)branchA
+		  withBranch: (COSubtree *)branchB
+			  atPath: (COPath *)currentPath
+			   store: (COStore *)aStore
 {
 	// PRECONDITIONS: assume branchA and branchB point to related (but divergent) versions of a persistent root
 	
@@ -85,18 +87,21 @@
 	COSubtree *contentsB = [aStore treeForCommit: versionB];
 	
 	// Diff them
-
+	
 	// FIXME: we need a way to make the subtree diff only look at the current branch of any embedded persistent roots.	
 	
 	COSubtreeDiff *contentsABDiff = [COSubtreeDiff diffSubtree: contentsA withSubtree: contentsB];
 	
+	[self recordPersistentRootContentsDiff: contentsABDiff forPath: currentPath];
+	
+	
 	// Search for all embedded persistent roots.
-
-	NSSet *allEmbeddedRootUUIDsA = [[COSubtreeFactory factory] allEmbeddedPersistentRootUUUIsInSubtree: contentsA];
+	
+	NSSet *allEmbeddedRootUUIDsA = [[COSubtreeFactory factory] allEmbeddedPersistentRootUUIDsInSubtree: contentsA];
 	NSSet *allEmbeddedRootUUIDsB = [[COSubtreeFactory factory] allEmbeddedPersistentRootUUIDsInSubtree: contentsB];
 	
 	// Those which are only in A or only in B are handled implicitly by contentsABDiff
-
+	
 	NSMutableSet *intersection = [NSMutableSet setWithSet: allEmbeddedRootUUIDsA];
 	[intersection intersectSet: allEmbeddedRootUUIDsB];
 	
@@ -121,9 +126,19 @@
 			
 			// FIXME: some kind of recursive call here
 			
-			[self diffBranch: branchInA withBranch: branchInB store: aStore];
+			[self _diffBranch: branchInA
+				   withBranch: branchInB
+					   atPath: [currentPath pathByAppendingPathComponent: branchUUID]
+						store: aStore];
 		}
 	}
+}
+
++ (COPersistentRootDiff *) diffBranch: (COSubtree *)branchA
+						   withBranch: (COSubtree *)branchB
+								store: (COStore *)aStore
+{
+
 	
 }
 
