@@ -2,6 +2,7 @@
 
 @class COPath;
 @class COStore;
+@class COSubtree;
 
 /*
  Since nested persistent roots are conceptually "embedded" inside their parent,
@@ -62,18 +63,31 @@
  2. two branches of photo-library where photo has diverging edits made on the same branch (Y-shaped commit graph)
  3. two branches of photo-library where photo has non-diverging edits made on the same branch (straight-line commit graph)
  4. ???
+  
+ -----
+ 
+ creation cases:
+- create on a pair of persistent roots. user selects "diff all branches"?
+- create on a pair of persistent roots. user selects "diff only current branch"?
+- only allow creation on a pair of branches?
+ 
+ tangent: there will need to be a UI option: "[ x ]  merge all branches of embedded persistent roots (as opposed to only merging current branches)"
+ 
  
  */
-
 @interface COPersistentRootDiff : NSObject
 {
-
+	
 }
 
-// FIXME: another constructor that takes an in-memory COPersistentRoot?
++ (COPersistentRootDiff *) diffPersistentRoot: (COSubtree *)rootA
+						   withPersistentRoot: (COSubtree *)rootB
+								  allBranches: (BOOL)allBranches
+										store: (COStore *)aStore;
 
-- (id) initWithPath: (COPath *)aRootOrBranchA
-			andPath: (COPath *)aRootOrBranchB
-			inStore: (COStore *)aStore; 
+
++ (COPersistentRootDiff *) diffBranch: (COSubtree *)branchA
+						   withBranch: (COSubtree *)branchB
+								store: (COStore *)aStore;
 
 @end
