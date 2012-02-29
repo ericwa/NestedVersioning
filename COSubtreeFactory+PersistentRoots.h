@@ -22,6 +22,7 @@
 									displayName: (NSString *)aName;
 
 - (NSSet *) branchesOfPersistentRoot: (COSubtree *)aRoot;
+- (NSSet *) brancheUUIDsOfPersistentRoot: (COSubtree *)aRoot;
 
 - (COSubtree *) currentBranchOfPersistentRoot: (COSubtree *)aRoot;
 
@@ -61,5 +62,13 @@
 										  store: (COStore *)aStore;
 
 - (NSString *) displayNameForBranchOrPersistentRoot: (COSubtree *)aRootOrBranch;
+
+/**
+ * Searches the receiver for embedded objects that are persistent roots.
+ * Returns them as COSubtree instances in an NSSet.
+ */
+- (NSSet *) allEmbeddedPersistentRootsInSubtree: (COSubtree *)aTree;
+
+- (NSSet *) allEmbeddedPersistentRootUUIDsInSubtree: (COSubtree *)aTree;
 
 @end

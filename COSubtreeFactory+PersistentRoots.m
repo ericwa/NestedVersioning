@@ -73,6 +73,16 @@ toUnorderedAttribute: @"contents"
 	return [NSSet setWithSet: set];
 }
 
+- (NSSet *) brancheUUIDsOfPersistentRoot: (COSubtree *)aRoot
+{
+	NSMutableSet *result = [NSMutableSet set];
+	for (COSubtree *branch in [self branchesOfPersistentRoot: aRoot])
+	{
+		[result addObject: [branch UUID]];
+	}
+	return [NSSet setWithSet: result];
+}
+
 - (COSubtree *) currentBranchOfPersistentRoot: (COSubtree *)aRoot
 {
 	COPath *aPath = [aRoot valueForAttribute: @"currentBranch"];
@@ -295,6 +305,35 @@ toUnorderedAttribute: @"contents"
 		return name;
 	}
 	return @"";
+}
+
+- (void) _gatherAllEmbeddedPersistentRootsInSubtree: (COSubtree *)aTree intoSet: (NSMutableSet *)dest
+{
+	if ([self isPersistentRoot: aTree])
+	{
+		[dest addObject: aTree];
+	}
+	for (COSubtree *child in [aTree directDescendentSubtrees])
+	{
+		[self _gatherAllEmbeddedPersistentRootsInSubtree: child intoSet: dest];
+	}
+}
+
+- (NSSet *) allEmbeddedPersistentRootsInSubtree: (COSubtree *)aTree
+{
+	NSMutableSet *result = [NSMutableSet set];
+	[self _gatherAllEmbeddedPersistentRootsInSubtree: aTree intoSet: result];
+	return [NSSet setWithSet: result];
+}
+
+- (NSSet *) allEmbeddedPersistentRootUUIDsInSubtree: (COSubtree *)aTree
+{
+	NSMutableSet *result = [NSMutableSet set];
+	for (COSubtree *aSubtree in [self allEmbeddedPersistentRootsInSubtree: aTree])
+	{
+		[result addObject: [aSubtree UUID]];
+	}
+	return [NSSet setWithSet: result];
 }
 
 @end
