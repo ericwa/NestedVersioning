@@ -104,7 +104,9 @@
 
 
 - (void) _mergeContentDiff: (COSubtreeDiff *)contentsAdiff
+			 sourceContent: (COSubtree *)contentsA
 		   withContentDiff: (COSubtreeDiff *)contentsBdiff
+			 sourceContent: (COSubtree *)contentsB
 					atPath: (COPath *)currentPath
 					 store: (COStore *)aStore
 {	
@@ -114,12 +116,38 @@
 	
 	if ([merged hasConflicts])
 	{
-		for (id conflict in [merged conflicts])
+		for (id conflict in [NSSet setWithSet: [merged conflicts]])
 		{
 			// This algorithm only really supports pairs of conflicting edits (i.e. merging exactly 2 roots and resolving all conflicts)
 			
-			if ([[conflict editA] editedItemUUID] 
+			// Look for conflicts where both sides modified the currentVersion of a branch
 			
+			if ([[conflict editA] isSetValueEdit] &&
+				[[conflict editB] isSetValueEdit] &&
+				[[[conflict editA] editedAttribute] isEqual: @"currentVersion"] &&
+				[[[conflict editB] editedAttribute] isEqual: @"currentVersion"])
+			{
+				COSubtree *branchA = [contentsA subtreeWithUUID: [[conflict editA] editedItemUUID]];
+				COSubtree *branchB = [contentsB subtreeWithUUID: [[conflict editB] editedItemUUID]];
+			
+				if ([[COSubtreeFactory factory] isBranch: branchA] &&
+					[[COSubtreeFactory factory] isBranch: branchB])
+				{
+					[merged removeConflict: conflict];
+					
+					NSAssert([[[conflict editA] editedItemUUID] isEqual:
+							  [[conflict editB] editedItemUUID]], @"");
+
+					
+					// create a new setValueEdit
+					id edit = nil;					
+					[edit setEditedItemUUID: [[conflict editA] editedItemUUID]]; 
+					[edit setEditedAttribute: @"currentVersion"];
+					[edit setValue: [ETUUID UUID]];
+					
+					
+				}
+			}
 		}
 	}
 }
