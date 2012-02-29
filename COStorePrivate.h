@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "ETUUID.h"
 #import "COItem.h"
+#import "COStore.h"
 
 @class COPersistentRootEditingContext;
 @class COMutableItem;
