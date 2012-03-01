@@ -649,6 +649,20 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 	[diffWindow showWindow: nil];
 }
 
+- (void) diffEmbeddedItems: (id)sender
+{
+	NSArray *selectedRows = [windowController selectedRows];
+	assert([selectedRows count] == 2);
+	
+	EWPersistentRootOutlineRow *row1 = [selectedRows objectAtIndex: 0];
+	EWPersistentRootOutlineRow *row2 = [selectedRows objectAtIndex: 1];
+	
+	COSubtreeDiff *diff = [COSubtreeDiff diffSubtree: [row1 rowSubtree]
+										 withSubtree: [row2 rowSubtree]];
+	// FIXME:
+	
+	NSLog(@"Embedded item diff: %@", diff);
+}
 
 - (void) delete: (id)sender
 {
@@ -711,6 +725,17 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 		}
 		return NO;
     }
+	else if (theAction == @selector(diffEmbeddedItems:))
+	{
+        if ([selIndexes count] == 2)
+		{	
+			EWPersistentRootOutlineRow *row1 = [outlineView itemAtRow: [selIndexes firstIndex]];
+			EWPersistentRootOutlineRow *row2 = [outlineView itemAtRow: [selIndexes indexGreaterThanIndex: [selIndexes firstIndex]]];
+			
+			return [row1 isEmbeddedObject] && [row2 isEmbeddedObject];
+		}
+		return NO;
+	}
 	else if (theAction == @selector(branch:))
     {
         return [selIndexes count] == 1 && [self isPersistentRoot];
@@ -788,6 +813,14 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 		[item setTarget: self];
 		[menu addItem: item];
 	}
+
+	{
+		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Diff Pair of Embedded Items" 
+													   action: @selector(diffEmbeddedItems:) 
+												keyEquivalent: @""] autorelease];
+		[item setTarget: self];
+		[menu addItem: item];
+	}	
 	
 	[menu addItem: [NSMenuItem separatorItem]];
 	
