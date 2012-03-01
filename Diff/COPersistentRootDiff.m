@@ -103,12 +103,19 @@
 }
 
 
-- (void) _mergeContentDiff: (COSubtreeDiff *)contentsAdiff
-			 sourceContent: (COSubtree *)contentsA
-		   withContentDiff: (COSubtreeDiff *)contentsBdiff
-			 sourceContent: (COSubtree *)contentsB
-					atPath: (COPath *)currentPath
-					 store: (COStore *)aStore
+/**
+ * Take 2 subtree diffs, as well as the corresponding subtrees they are based on,
+ * and merge the diffs.
+ *
+ * Look for conflicting changes to "currentVersion" of branch objects, and resolve
+ * them by setting the "currentVersion" to a new random UUID.
+ */
+- (COSubtreeDiff *) _mergeContentDiff: (COSubtreeDiff *)contentsAdiff
+						sourceContent: (COSubtree *)contentsA
+					  withContentDiff: (COSubtreeDiff *)contentsBdiff
+						sourceContent: (COSubtree *)contentsB
+							   atPath: (COPath *)currentPath
+//								store: (COStore *)aStore // FIXME: remove
 {	
 	COSubtreeDiff *merged = [contentsAdiff subtreeDiffByMergingWithDiff: contentsBdiff];
 	
@@ -138,24 +145,49 @@
 					NSAssert([[[conflict editA] editedItemUUID] isEqual:
 							  [[conflict editB] editedItemUUID]], @"");
 
+					ETUUID *branchUUID = [[conflict editA] editedItemUUID];
 					
 					// create a new setValueEdit
+					
+					ETUUID *tempCommitUUID = [ETUUID UUID];
 					id edit = nil;					
-					[edit setEditedItemUUID: [[conflict editA] editedItemUUID]]; 
+					[edit setEditedItemUUID: branchUUID]; 
 					[edit setEditedAttribute: @"currentVersion"];
-					[edit setValue: [ETUUID UUID]];
+					[edit setValue: tempCommitUUID];
 					
-					
+					[self recordTemporaryCommit: tempCommitUUID
+										forPath: [currentPath pathByAppendingPathComponent: branchUUID]];
 				}
 			}
 		}
 	}
+					 
+	return merged;
 }
 
 
 - (COPersistentRootDiff *)persistentRootDiffByMergingWithDiff: (COPersistentRootDiff *)other
 {
+	COSubtreeDiff *contentsAdiff = [self baseContentsDiff];
+	COSubtree *contentsA = [self baseContents];
+	COSubtreeDiff *contentsBdiff = [other baseContentsDiff];
+	COSubtree *contentsB = [other baseContents];
 	
+	// First, merge the top level diff
+	
+	COSubtreeDiff *mergetBaseContentsDiff = [self _mergeContentDiff: contentsAdiff
+													  sourceContent: contentsA	
+													withContentDiff: contentsBdiff
+													  sourceContent: contentsB
+															 atPath: [COPath path]];
+	
+	// Now, that will have called -recordTemporaryCommit:forPath: for every branch that needs to be merged.
+	// We will need to call _mergeContentDiff on each of those
+	
+	for (COPath *path in [self recordedPathsRequiringMerge])
+	{
+		
+	}
 }
 
 @end
