@@ -103,6 +103,24 @@
 }
 
 
+
+- (COSubtreeDiff *)contentsAdiffForPath: (COPath *)currentPath
+{
+}
+
+- (COSubtree *)contentsAForPath: (COPath *)currentPath
+{
+}
+
+- (COSubtreeDiff *)contentsBdiffForPath: (COPath *)currentPath
+{
+}
+
+- (COSubtree *)contentsBForPath: (COPath *)currentPath
+{
+}
+
+
 /**
  * Take 2 subtree diffs, as well as the corresponding subtrees they are based on,
  * and merge the diffs.
@@ -110,13 +128,13 @@
  * Look for conflicting changes to "currentVersion" of branch objects, and resolve
  * them by setting the "currentVersion" to a new random UUID.
  */
-- (COSubtreeDiff *) _mergeContentDiff: (COSubtreeDiff *)contentsAdiff
-						sourceContent: (COSubtree *)contentsA
-					  withContentDiff: (COSubtreeDiff *)contentsBdiff
-						sourceContent: (COSubtree *)contentsB
-							   atPath: (COPath *)currentPath
-//								store: (COStore *)aStore // FIXME: remove
+- (void) mergePath: (COPath *)currentPath
 {	
+	COSubtreeDiff *contentsAdiff = [self contentsAdiffForPath: currentPath];
+	COSubtree *contentsA = [self contentsAForPath: currentPath];
+	COSubtreeDiff *contentsBdiff: [self contentsBdiffForPath: currentPath];
+	COSubtree *contentsB = [self contentsBForPath: currentPath];
+	
 	COSubtreeDiff *merged = [contentsAdiff subtreeDiffByMergingWithDiff: contentsBdiff];
 	
 	// now look for conflicts...
@@ -157,6 +175,9 @@
 					
 					[self recordTemporaryCommit: tempCommitUUID
 										forPath: [currentPath pathByAppendingPathComponent: branchUUID]];
+					
+					// Recursive call
+					[self mergePath: [currentPath pathByAppendingPathComponent: branchUUID]];
 				}
 			}
 		}
@@ -168,26 +189,7 @@
 
 - (COPersistentRootDiff *)persistentRootDiffByMergingWithDiff: (COPersistentRootDiff *)other
 {
-	COSubtreeDiff *contentsAdiff = [self baseContentsDiff];
-	COSubtree *contentsA = [self baseContents];
-	COSubtreeDiff *contentsBdiff = [other baseContentsDiff];
-	COSubtree *contentsB = [other baseContents];
-	
-	// First, merge the top level diff
-	
-	COSubtreeDiff *mergetBaseContentsDiff = [self _mergeContentDiff: contentsAdiff
-													  sourceContent: contentsA	
-													withContentDiff: contentsBdiff
-													  sourceContent: contentsB
-															 atPath: [COPath path]];
-	
-	// Now, that will have called -recordTemporaryCommit:forPath: for every branch that needs to be merged.
-	// We will need to call _mergeContentDiff on each of those
-	
-	for (COPath *path in [self recordedPathsRequiringMerge])
-	{
-		
-	}
+	[self mergePath: [COPath path]];
 }
 
 @end
