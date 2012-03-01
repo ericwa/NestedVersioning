@@ -98,4 +98,16 @@
 	return nil;
 }
 
+- (void)mouseUp: (NSEvent *)theEvent
+{
+    if ([theEvent clickCount] == 2)
+	{
+		NSPoint pt = [self convertPoint: [theEvent locationInWindow] 
+							   fromView: nil];
+		
+		ETUUID *commit = [graphRenderer commitAtPoint: pt];
+		[NSApp sendAction: @selector(switchToCommit:) to: nil from: commit];
+	}
+}
+
 @end

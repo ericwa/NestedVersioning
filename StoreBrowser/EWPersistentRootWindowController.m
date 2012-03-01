@@ -241,7 +241,15 @@
 
 - (IBAction) switchToCommit: (id)sender
 {
-	ETUUID *commit = [sender representedObject];
+	ETUUID *commit;
+	if (![sender isKindOfClass: [ETUUID class]])
+	{
+		commit = [sender representedObject];
+	}
+	else
+	{
+		commit = sender;
+	}
 	
 	COPersistentRootEditingContext *parentCtx = [COPersistentRootEditingContext editingContextForEditingPath: [path pathByDeletingLastPathComponent] 
 																									 inStore: store];
