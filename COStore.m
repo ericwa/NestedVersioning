@@ -216,24 +216,29 @@
 }
 - (ETUUID *) parentForCommit: (ETUUID*)commit
 {
+	NILARG_EXCEPTION_TEST(commit);
 	return [[self _plistForCommit: commit] objectForKey: @"parent"];
 }
 - (id) metadataForCommit: (ETUUID*)commit
 {
+	NILARG_EXCEPTION_TEST(commit);
 	return [[self _plistForCommit: commit] objectForKey: @"metadata"];	
 }
 - (NSDate*) dateForCommit: (ETUUID*)commit
 {
+	NILARG_EXCEPTION_TEST(commit);
 	NSDate *aDate = [[self _plistForCommit: commit] objectForKey: @"date"];
 	assert([aDate isKindOfClass: [NSDate class]]);
 	return aDate;
 }
 - (NSDictionary *) UUIDsAndStoreItemsForCommit: (ETUUID*)commit
 {
+	NILARG_EXCEPTION_TEST(commit);
 	return [[self _plistForCommit: commit] objectForKey: @"objects"];	
 }
 - (COSubtree *) treeForCommit: (ETUUID *)aCommit
 {
+	NILARG_EXCEPTION_TEST(aCommit);
 	ETUUID *rootItemUUID = [self rootItemForCommit: aCommit];
 	if (rootItemUUID == nil)
 	{
@@ -247,6 +252,9 @@
 }
 - (COSubtree *) subtreeForUUID: (ETUUID *)aUUID inCommit: (ETUUID *)aCommit
 {
+	NILARG_EXCEPTION_TEST(aUUID);
+	NILARG_EXCEPTION_TEST(aCommit);
+	
 	// FIXME: naive implementation
 	COSubtree *entireTree = [self treeForCommit: aCommit];
 	COSubtree *subtree = [entireTree subtreeWithUUID: aUUID];
@@ -260,6 +268,7 @@
 }
 - (ETUUID *) rootItemForCommit: (ETUUID*)commit
 {
+	NILARG_EXCEPTION_TEST(commit);
 	return [[self _plistForCommit: commit] objectForKey: @"root"];	
 }
 - (COItem *) storeItemForEmbeddedObject: (ETUUID*)embeddedObject
