@@ -33,7 +33,7 @@
 {
 	ASSIGN(graphRenderer, aRenderer);
 	
-	NSLog(@"Graph renderer size: %@", NSStringFromSize([graphRenderer size]));
+	//NSLog(@"Graph renderer size: %@", NSStringFromSize([graphRenderer size]));
 	
 	[self setFrameSize: [graphRenderer size]];
 	[self setNeedsDisplay: YES];
