@@ -132,7 +132,7 @@
 {	
 	COSubtreeDiff *contentsAdiff = [self contentsAdiffForPath: currentPath];
 	COSubtree *contentsA = [self contentsAForPath: currentPath];
-	COSubtreeDiff *contentsBdiff: [self contentsBdiffForPath: currentPath];
+	COSubtreeDiff *contentsBdiff = [self contentsBdiffForPath: currentPath];
 	COSubtree *contentsB = [self contentsBForPath: currentPath];
 	
 	COSubtreeDiff *merged = [contentsAdiff subtreeDiffByMergingWithDiff: contentsBdiff];
