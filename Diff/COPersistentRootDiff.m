@@ -8,6 +8,20 @@
 
 @implementation COPersistentRootDiff
 
+- (id) initWithBranchOrPersistentRoot: (COSubtree *)branchOrPersistentRootA
+			   branchOrPersistentRoot: (COSubtree *)branchOrPersistentRootB
+								store: (COStore *)aStore
+{
+	SUPERINIT;
+	wasCreatedFromBranches = [[COSubtreeFactory factory] isBranch: branchOrPersistentRootA];
+		
+	ASSIGN(rootDiff, [COSubtreeDiff diffSubtree: branchOrPersistentRootA
+									withSubtree: branchOrPersistentRootB]);
+	
+	return self;
+}
+
+
 + (COPersistentRootDiff *) diffPersistentRoot: (COSubtree *)rootA
 						   withPersistentRoot: (COSubtree *)rootB
 								  allBranches: (BOOL)allBranches
@@ -22,10 +36,28 @@
 	}
 	else
 	{
-		// FIXME:
-		return nil;
+		return [[[self alloc] initWithBranchOrPersistentRoot: rootA
+									  branchOrPersistentRoot: rootB
+													   store: aStore] autorelease];
 	}
 }
+
+
++ (COPersistentRootDiff *) diffBranch: (COSubtree *)branchA
+						   withBranch: (COSubtree *)branchB
+								store: (COStore *)aStore
+{
+	return [[[self alloc] initWithBranchOrPersistentRoot: branchA
+								  branchOrPersistentRoot: branchB
+												   store: aStore] autorelease];
+	
+}
+
+
+
+
+
+
 
 - (void) recordPersistentRootContentsDiff: (COSubtreeDiff *)contentsDiff forPath: (COPath *)aPath
 {
@@ -94,13 +126,6 @@
 	}
 }
 
-+ (COPersistentRootDiff *) diffBranch: (COSubtree *)branchA
-						   withBranch: (COSubtree *)branchB
-								store: (COStore *)aStore
-{
-
-	
-}
 
 
 
@@ -190,6 +215,41 @@
 - (COPersistentRootDiff *)persistentRootDiffByMergingWithDiff: (COPersistentRootDiff *)other
 {
 	[self mergePath: [COPath path]];
+}
+
+
+#pragma mark access
+
+- (BOOL) hasConflicts
+{
+	if ([rootDiff hasConflicts])
+		return YES;
+	
+	for (COSubtreeDiff *diff in [subtreeDiffForPath allValues])
+	{
+		if ([diff hasConflicts])
+			return YES;
+	}
+	
+	return NO;
+}
+
+/**
+ * always returns the empty path, at a minimum
+ */
+- (NSSet *) paths
+{
+	return [NSSet setWithArray: [subtreeDiffForPath allKeys]];
+}
+
+- (COSubtreeDiff *) rootSubtreeDiff
+{
+	return rootDiff;
+}
+
+- (COSubtreeDiff *) subtreeDiffAtPath: (COPath *)aPath
+{
+	return [subtreeDiffForPath objectForKey: aPath];
 }
 
 @end

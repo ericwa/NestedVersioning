@@ -3,6 +3,9 @@
 @class ETUUID;
 @class COSubtree;
 
+@class COSubtreeEdit;
+@class COSubtreeConflict;
+
 /**
  * Concerns for COSubtreeDiff:
  * - conflicts arise when the same subtree is inserted in multiple places.

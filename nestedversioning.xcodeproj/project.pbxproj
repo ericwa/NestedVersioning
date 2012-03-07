@@ -37,7 +37,6 @@
 		66E7786814E6073100D5DFFF /* COSubtree.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E76735148B3D1C009937E8 /* COSubtree.m */; };
 		66E7786914E6073100D5DFFF /* COSubtreeCopy.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E8E93414D4BC7F00CBE2D8 /* COSubtreeCopy.m */; };
 		66E7786A14E6073100D5DFFF /* COSubtreeFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 79297308148C94FD00FD35A9 /* COSubtreeFactory.m */; };
-		66E7786B14E6073100D5DFFF /* COPersistentRoot.m in Sources */ = {isa = PBXBuildFile; fileRef = 66D516AA14E44F900055A6A2 /* COPersistentRoot.m */; };
 		66E7786C14E6073100D5DFFF /* COSubtreeFactory+PersistentRoots.m in Sources */ = {isa = PBXBuildFile; fileRef = 79999F1414DE597200FFBC99 /* COSubtreeFactory+PersistentRoots.m */; };
 		66E7786D14E6073100D5DFFF /* COSubtreeFactory+Undo.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E2FFB714899C7A00C66578 /* COSubtreeFactory+Undo.m */; };
 		66E7786E14E6073100D5DFFF /* COSubtreeFactory+Pull.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F8202C14E25D85008236F6 /* COSubtreeFactory+Pull.m */; };
@@ -61,7 +60,6 @@
 		66E7788314E6075B00D5DFFF /* COSubtree.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E76734148B3D1C009937E8 /* COSubtree.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7788414E6075B00D5DFFF /* COSubtreeCopy.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E8E93314D4BC7F00CBE2D8 /* COSubtreeCopy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7788514E6075B00D5DFFF /* COSubtreeFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 79297307148C94FD00FD35A9 /* COSubtreeFactory.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		66E7788614E6075B00D5DFFF /* COPersistentRoot.h in Headers */ = {isa = PBXBuildFile; fileRef = 66D516A914E44F900055A6A2 /* COPersistentRoot.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7788714E6075B00D5DFFF /* COSubtreeFactory+PersistentRoots.h in Headers */ = {isa = PBXBuildFile; fileRef = 79999F1314DE597200FFBC99 /* COSubtreeFactory+PersistentRoots.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7788814E6075B00D5DFFF /* COSubtreeFactory+Undo.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E2FFB614899C7A00C66578 /* COSubtreeFactory+Undo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7788914E6075B00D5DFFF /* COSubtreeFactory+Pull.h in Headers */ = {isa = PBXBuildFile; fileRef = 79F8202B14E25D85008236F6 /* COSubtreeFactory+Pull.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -186,8 +184,6 @@
 		668DA36114E0E4210062E6C2 /* COItemPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COItemPath.h; sourceTree = "<group>"; };
 		669CADE61491844000D0CF5F /* COSubtreeDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COSubtreeDiff.h; sourceTree = "<group>"; };
 		669CADE71491844000D0CF5F /* COSubtreeDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COSubtreeDiff.m; sourceTree = "<group>"; };
-		66D516A914E44F900055A6A2 /* COPersistentRoot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPersistentRoot.h; sourceTree = "<group>"; };
-		66D516AA14E44F900055A6A2 /* COPersistentRoot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COPersistentRoot.m; sourceTree = "<group>"; };
 		66DFAEBF142A726100623060 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		66DFAEC4142A726100623060 /* COMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COMacros.h; sourceTree = "<group>"; };
 		66DFAECA142A726100623060 /* test-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "test-Prefix.pch"; sourceTree = "<group>"; };
@@ -627,7 +623,6 @@
 				66E76734148B3D1C009937E8 /* COSubtree.h */,
 				66E8E93314D4BC7F00CBE2D8 /* COSubtreeCopy.h */,
 				79297307148C94FD00FD35A9 /* COSubtreeFactory.h */,
-				66D516A914E44F900055A6A2 /* COPersistentRoot.h */,
 				79999EAB14DE50CA00FFBC99 /* Implementation */,
 			);
 			name = "In-Memory Item Tree";
@@ -666,7 +661,6 @@
 				66E76735148B3D1C009937E8 /* COSubtree.m */,
 				66E8E93414D4BC7F00CBE2D8 /* COSubtreeCopy.m */,
 				79297308148C94FD00FD35A9 /* COSubtreeFactory.m */,
-				66D516AA14E44F900055A6A2 /* COPersistentRoot.m */,
 			);
 			name = Implementation;
 			sourceTree = "<group>";
@@ -769,7 +763,6 @@
 				66E7788314E6075B00D5DFFF /* COSubtree.h in Headers */,
 				66E7788414E6075B00D5DFFF /* COSubtreeCopy.h in Headers */,
 				66E7788514E6075B00D5DFFF /* COSubtreeFactory.h in Headers */,
-				66E7788614E6075B00D5DFFF /* COPersistentRoot.h in Headers */,
 				66E7788714E6075B00D5DFFF /* COSubtreeFactory+PersistentRoots.h in Headers */,
 				66E7788814E6075B00D5DFFF /* COSubtreeFactory+Undo.h in Headers */,
 				66E7788914E6075B00D5DFFF /* COSubtreeFactory+Pull.h in Headers */,
@@ -977,7 +970,6 @@
 				66E7786814E6073100D5DFFF /* COSubtree.m in Sources */,
 				66E7786914E6073100D5DFFF /* COSubtreeCopy.m in Sources */,
 				66E7786A14E6073100D5DFFF /* COSubtreeFactory.m in Sources */,
-				66E7786B14E6073100D5DFFF /* COPersistentRoot.m in Sources */,
 				66E7786C14E6073100D5DFFF /* COSubtreeFactory+PersistentRoots.m in Sources */,
 				66E7786D14E6073100D5DFFF /* COSubtreeFactory+Undo.m in Sources */,
 				66E7786E14E6073100D5DFFF /* COSubtreeFactory+Pull.m in Sources */,
