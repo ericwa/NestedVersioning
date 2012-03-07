@@ -8,25 +8,100 @@
 
 - (id) initWithOldRootUUID: (ETUUID*)anOldRoot
 			   newRootUUID: (ETUUID*)aNewRoot
-		   itemDiffForUUID: (NSDictionary *)anItemDiffForUUID
-	   insertedItemForUUID: (NSDictionary *)anInsertedItemForUUID
 {
 	SUPERINIT;
 	ASSIGN(oldRoot, anOldRoot);
 	ASSIGN(newRoot, aNewRoot);
-	ASSIGN(itemDiffForUUID, anItemDiffForUUID);
-	ASSIGN(insertedItemForUUID, anInsertedItemForUUID);
+	ASSIGN(edits, [NSMutableSet set]);
+	ASSIGN(insertedItemForUUID, [NSMutableDictionary dictionary]);
 	return self;
+}
+
+- (void) diffItem: (COItem *)itemA withItem: (COItem*)itemB
+{
+	NILARG_EXCEPTION_TEST(itemA);
+	NILARG_EXCEPTION_TEST(itemB);
+	
+	if (![[itemA UUID] isEqual: [itemB UUID]])
+	{
+		[NSException raise: NSInvalidArgumentException format: @"expected same UUID"];
+	}
+	
+	NSMutableSet *removedAttrs = [NSMutableSet setWithArray: [itemA attributeNames]];
+	[removedAttrs minusSet: [NSSet setWithArray: [itemB attributeNames]]];
+	
+	NSMutableSet *addedAttrs = [NSMutableSet setWithArray: [itemB attributeNames]];
+	[addedAttrs minusSet: [NSSet setWithArray: [itemA attributeNames]]];
+	
+	NSMutableSet *commonAttrs = [NSMutableSet setWithArray: [itemB attributeNames]];
+	[commonAttrs intersectSet: [NSSet setWithArray: [itemA attributeNames]]];
+	
+	
+	// process 'insert attribute's
+	
+	for (NSString *addedAttr in addedAttrs)
+	{
+		COStoreItemDiffOperationInsertAttribute *insertOp = [[COStoreItemDiffOperationInsertAttribute alloc] 
+															 initWithAttribute: addedAttr
+															 type: [itemB typeForAttribute: addedAttr]
+															 value: [itemB valueForAttribute:addedAttr]];
+		[edits addObject: insertOp];
+		[insertOp release];
+	}
+	
+	// process deletes
+	
+	for (NSString *removedAttr in removedAttrs)
+	{
+		COStoreItemDiffOperationDeleteAttribute *deleteOp = [[COStoreItemDiffOperationDeleteAttribute alloc] 
+															 initWithAttribute: removedAttr
+															 type: [itemA typeForAttribute: removedAttr]];
+		[edits addObject: deleteOp];
+		[deleteOp release];
+	}
+	
+	// process changes
+	
+	for (NSString *commonAttr in commonAttrs)
+	{
+		COType *typeA = [itemA typeForAttribute: commonAttr];
+		COType *typeB = [itemB typeForAttribute: commonAttr];
+		id valueA = [itemA valueForAttribute: commonAttr];
+		id valueB = [itemB valueForAttribute: commonAttr];
+		
+		if (![typeB isEqual: typeA])
+		{
+			COStoreItemDiffOperationReplaceAttribute *editOp = [[COStoreItemDiffOperationReplaceAttribute alloc]
+																initWithAttribute: commonAttr
+																type: [itemB typeForAttribute: commonAttr]
+																value: [itemB valueForAttribute:commonAttr]];
+			[edits addObject:editOp];
+			[editOp release];
+		}
+		else if (![valueB isEqual: valueA])
+		{
+			COStoreItemDiffOperationModifyAttribute *editOp = [[COStoreItemDiffOperationModifyAttribute alloc]
+															   initWithAttribute: commonAttr
+															   type: [itemB typeForAttribute: commonAttr]
+															   oldValue: [itemA valueForAttribute:commonAttr]
+															   newValue: [itemB valueForAttribute:commonAttr]];
+			[edits addObject:editOp];
+			[editOp release];
+		}
+	}
+	
+	
 }
 
 + (COSubtreeDiff *) diffSubtree: (COSubtree *)a
 					withSubtree: (COSubtree *)b
 {
+	COSubtreeDiff *result = [[[self alloc] initWithOldRootUUID: [a UUID]
+												   newRootUUID: [b UUID]] autorelease];
+
 	NSSet *rootA_UUIDs = [a allUUIDs];
 	NSSet *rootB_UUIDs = [b allUUIDs];
 
-	
-	NSMutableDictionary *itemDiffForUUID = [NSMutableDictionary dictionary];
 	{
 		NSMutableSet *commonUUIDs = [NSMutableSet setWithSet: rootA_UUIDs];
 		[commonUUIDs intersectSet: rootB_UUIDs];
@@ -36,21 +111,22 @@
 			COItem *commonItemA = [[a subtreeWithUUID: aUUID] item];
 			COItem *commonItemB = [[b subtreeWithUUID: aUUID] item];
 			
-			[self diffItem: commonItemA withItem: commonItemB];
+			[result diffItem: commonItemA withItem: commonItemB];
 		}
 	}
 	
-	NSMutableDictionary *insertedItemForUUID = [NSMutableDictionary dictionary];
 	{
 		NSMutableSet *insertedUUIDs = [NSMutableSet setWithSet: rootB_UUIDs];
 		[insertedUUIDs minusSet: rootA_UUIDs];
 		
 		for (ETUUID *aUUID in insertedUUIDs)
 		{
-			[insertedItemForUUID setObject: [[b subtreeWithUUID: aUUID] item]
-									forKey: aUUID];
+			[result->insertedItemForUUID setObject: [[b subtreeWithUUID: aUUID] item]
+											forKey: aUUID];
 		}		
 	}
+	
+	return result;
 }
 
 - (NSString *)description
@@ -226,61 +302,8 @@
 
 #pragma mark item diffs 
 
-// operation classes
-
-@interface COStoreItemDiffOperation : NSObject
-{
-	ETUUID *itemUUID;
-	NSString *attribute;
-	COType *type;
-}
-- (id) initWithAttribute: (NSString*)anAttribute type: (COType*)aType;
-- (void) applyTo: (COMutableItem *)anItem;
-
-@end
-
-@interface COStoreItemDiffOperationSetUUID : COStoreItemDiffOperation
-{
-	ETUUID *uuid;
-}
-- (id) initWithUUID: (ETUUID*)aUUID;
-@end
-
-@interface COStoreItemDiffOperationInsertAttribute : COStoreItemDiffOperation 
-{
-	id value;
-}
-- (id) initWithAttribute: (NSString*)anAttribute
-					type: (COType*)aType
-				   value: (id)aValue;
-
-@end
 
 
-
-@interface COStoreItemDiffOperationDeleteAttribute : COStoreItemDiffOperation
-@end
-
-/**
- * Type changes
- */
-@interface COStoreItemDiffOperationReplaceAttribute : COStoreItemDiffOperationInsertAttribute
-@end
-
-/**
- * Type stays the same
- */
-@interface COStoreItemDiffOperationModifyAttribute : COStoreItemDiffOperation
-{
-	id <COValueDiff> valueDiff;
-}
-
-- (id) initWithAttribute: (NSString*)anAttribute
-					type: (COType*)aType
-				oldValue: (id)valueA
-				newValue: (id)valueB;
-
-@end
 
 // operation implementations
 
@@ -445,84 +468,6 @@
 + (COItemDiff *)diffItem: (COItem *)itemA
 				withItem: (COItem *)itemB
 {
-	NILARG_EXCEPTION_TEST(itemA);
-	NILARG_EXCEPTION_TEST(itemB);
-	
-	NSMutableSet *edits = [NSMutableSet set];	
-	
-	if (![[itemA UUID] isEqual: [itemB UUID]])
-	{
-		NSLog(@"Warning, diffing items with different UUIDs (%@, %@)",
-			  [itemA UUID], [itemB UUID]);
-		
-		COStoreItemDiffOperationSetUUID *setUUIDOp = [[COStoreItemDiffOperationSetUUID alloc] initWithUUID: [itemB UUID]];
-		[edits addObject: setUUIDOp];
-		[setUUIDOp release];
-	}
-	
-	NSMutableSet *removedAttrs = [NSMutableSet setWithArray: [itemA attributeNames]];
-	[removedAttrs minusSet: [NSSet setWithArray: [itemB attributeNames]]];
-	
-	NSMutableSet *addedAttrs = [NSMutableSet setWithArray: [itemB attributeNames]];
-	[addedAttrs minusSet: [NSSet setWithArray: [itemA attributeNames]]];
-	
-	NSMutableSet *commonAttrs = [NSMutableSet setWithArray: [itemB attributeNames]];
-	[commonAttrs intersectSet: [NSSet setWithArray: [itemA attributeNames]]];
-	
-	
-	// process 'insert attribute's
-	
-	for (NSString *addedAttr in addedAttrs)
-	{
-		COStoreItemDiffOperationInsertAttribute *insertOp = [[COStoreItemDiffOperationInsertAttribute alloc] 
-															 initWithAttribute: addedAttr
-															 type: [itemB typeForAttribute: addedAttr]
-															 value: [itemB valueForAttribute:addedAttr]];
-		[edits addObject: insertOp];
-		[insertOp release];
-	}
-	
-	// process deletes
-	
-	for (NSString *removedAttr in removedAttrs)
-	{
-		COStoreItemDiffOperationDeleteAttribute *deleteOp = [[COStoreItemDiffOperationDeleteAttribute alloc] 
-															 initWithAttribute: removedAttr
-															 type: [itemA typeForAttribute: removedAttr]];
-		[edits addObject: deleteOp];
-		[deleteOp release];
-	}
-	
-	// process changes
-	
-	for (NSString *commonAttr in commonAttrs)
-	{
-		COType *typeA = [itemA typeForAttribute: commonAttr];
-		COType *typeB = [itemB typeForAttribute: commonAttr];
-		id valueA = [itemA valueForAttribute: commonAttr];
-		id valueB = [itemB valueForAttribute: commonAttr];
-		
-		if (![typeB isEqual: typeA])
-		{
-			COStoreItemDiffOperationReplaceAttribute *editOp = [[COStoreItemDiffOperationReplaceAttribute alloc]
-																initWithAttribute: commonAttr
-																type: [itemB typeForAttribute: commonAttr]
-																value: [itemB valueForAttribute:commonAttr]];
-			[edits addObject:editOp];
-			[editOp release];
-		}
-		else if (![valueB isEqual: valueA])
-		{
-			COStoreItemDiffOperationModifyAttribute *editOp = [[COStoreItemDiffOperationModifyAttribute alloc]
-															   initWithAttribute: commonAttr
-															   type: [itemB typeForAttribute: commonAttr]
-															   oldValue: [itemA valueForAttribute:commonAttr]
-															   newValue: [itemB valueForAttribute:commonAttr]];
-			[edits addObject:editOp];
-			[editOp release];
-		}
-	}
-	
 	return [[[self alloc] initWithEdits: edits] autorelease];
 }
 
