@@ -8,14 +8,24 @@
 
 @implementation COPersistentRootDiff
 
+#pragma mark initializers
+
 - (id) initWithBranchOrPersistentRoot: (COSubtree *)branchOrPersistentRootA
 			   branchOrPersistentRoot: (COSubtree *)branchOrPersistentRootB
 								store: (COStore *)aStore
 {
 	SUPERINIT;
+	
+	subtreeDiffForPath = [[NSMutableDictionary alloc] init];
+	
 	wasCreatedFromBranches = [[COSubtreeFactory factory] isBranch: branchOrPersistentRootA];
 		
 
+	// Diff the root item
+	
+	ASSIGN(rootDiff, [COSubtreeDiff diffSubtree: branchOrPersistentRootA
+									withSubtree: branchOrPersistentRootB]);
+	
 	// Initiate the recursive diff process
 
 	if (wasCreatedFromBranches)
@@ -32,7 +42,6 @@
 								 atPath: [COPath path]
 								  store: aStore];
 	}
-
 	
 	return self;
 }
@@ -70,15 +79,28 @@
 }
 
 
+#pragma mark diff application
 
-
-
-
-
-- (void) recordPersistentRootContentsDiff: (COSubtreeDiff *)contentsDiff forPath: (COPath *)aPath
+- (void) applyToPersistentRootOrBranch: (COSubtree *)dest
+								 store: (COStore *)aStore
 {
+	if (wasCreatedFromBranches != [[COSubtreeFactory factory] isBranch: dest])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"persistent root diff must be applied to the same type of object it was created from"];
+	}
+	
+	[rootDiff applyTo: dest];
+	
+	// If the receiver was created as a result of a merge, there will be
+	// "synthesized" commits referenced in the subtree that will not
+	// be present in the store. we need to commit them.
+	
 	
 }
+
+#pragma mark diff algorithm
+
 
 - (void) _diffCommonBranch: (COSubtree *)branchInA
 		  withCommonBranch: (COSubtree *)branchInB
@@ -102,7 +124,9 @@
 				 store: aStore];
 }
 
-
+/**
+ * diffs ALL branches of the given persistent root.
+ */
 - (void) _diffCommonPersistentRoot: (COSubtree *)persistentRootA
 		  withCommonPersistentRoot: (COSubtree *)persistentRootB
 							atPath: (COPath *)currentPath
@@ -132,14 +156,18 @@
 	}
 }
 
+- (void) recordPersistentRootContentsDiff: (COSubtreeDiff *)contentsDiff forPath: (COPath *)aPath
+{
+	[subtreeDiffForPath setObject: contentsDiff
+						   forKey: aPath];
+}
+
 - (void) _diffContent: (COSubtree *)contentsA
 		  withContent: (COSubtree *)contentsB
 			   atPath: (COPath *)currentPath
 				store: (COStore *)aStore
 {		
-	// Diff them
-	
-	// FIXME: we need a way to make the subtree diff only look at the current branch of any embedded persistent roots.	
+	// Diff them 
 	
 	COSubtreeDiff *contentsABDiff = [COSubtreeDiff diffSubtree: contentsA withSubtree: contentsB];
 	
@@ -164,7 +192,7 @@
 	}
 }
 
-
+#pragma mark merge algorithm
 
 
 - (COSubtreeDiff *)contentsAdiffForPath: (COPath *)currentPath

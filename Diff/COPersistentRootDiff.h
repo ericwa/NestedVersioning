@@ -83,6 +83,8 @@
 	 * never contains the empty path
 	 *
 	 * contains a single-element path for every currentVersion conflict in rootDiff
+	 *
+	 * this is only used for calculating merges.
 	 */
 	NSMutableDictionary *subtreeDiffForPath;
 }
@@ -96,6 +98,12 @@
 + (COPersistentRootDiff *) diffBranch: (COSubtree *)branchA
 						   withBranch: (COSubtree *)branchB
 								store: (COStore *)aStore;
+
+#pragma mark diff application
+
+- (void) applyToPersistentRootOrBranch: (COSubtree *)dest
+								 store: (COStore *)aStore;
+
 
 #pragma mark access
 

@@ -25,6 +25,11 @@
 - (COSubtree *) subtreeWithDiffAppliedToSubtree: (COSubtree *)aSubtree;
 
 /**
+ * apply in-place
+ */
+- (void) applyTo: (COSubtree *)aSubtree;
+
+/**
  * Throws an exception if either diff has conflicts
  */
 - (COSubtreeDiff *)subtreeDiffByMergingWithDiff: (COSubtreeDiff *)other;
