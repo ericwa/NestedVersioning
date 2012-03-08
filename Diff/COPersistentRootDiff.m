@@ -18,6 +18,12 @@
 	
 	subtreeDiffForPath = [[NSMutableDictionary alloc] init];
 	
+	// "pending" commits created by merge
+	
+	parentCommitForPendingCommitUUID = [[NSMutableDictionary alloc] init];
+	treeToCommitForPendingCommitUUID = [[NSMutableDictionary alloc] init];
+	
+	
 	wasCreatedFromBranches = [[COSubtreeFactory factory] isBranch: branchOrPersistentRootA];
 		
 
@@ -96,7 +102,12 @@
 	// "synthesized" commits referenced in the subtree that will not
 	// be present in the store. we need to commit them.
 	
-	
+	for (ETUUID *commitUUID in treeToCommitForPendingCommitUUID)
+	{
+		[aStore addCommitWithParent: [parentCommitForPendingCommitUUID objectForKey: commitUUID]
+						   metadata: nil
+							   tree: [treeToCommitForPendingCommitUUID objectForKey: commitUUID]];
+	}
 }
 
 #pragma mark diff algorithm

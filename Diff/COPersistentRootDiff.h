@@ -87,6 +87,16 @@
 	 * this is only used for calculating merges.
 	 */
 	NSMutableDictionary *subtreeDiffForPath;
+	
+	
+	
+	
+	// auxiliary stuff created when two diffs are merged
+	
+	
+
+	NSMutableDictionary *parentCommitForPendingCommitUUID;	
+	NSMutableDictionary *treeToCommitForPendingCommitUUID;
 }
 
 + (COPersistentRootDiff *) diffPersistentRoot: (COSubtree *)rootA
