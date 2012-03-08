@@ -9,27 +9,6 @@
 
 @implementation COSubtreeFactory (Pull)
 
-static ETUUID *FindCommonAncestor(ETUUID *commitA, ETUUID *commitB, COStore *store)
-{
-	NSMutableSet *ancestorsOfA = [NSMutableSet set];
-	
-	for (ETUUID *temp = commitA; temp != nil; temp = [store parentForCommit: temp])
-	{
-		[ancestorsOfA addObject: temp];
-	}
-	
-	for (ETUUID *temp = commitB; temp != nil; temp = [store parentForCommit: temp])
-	{
-		if ([ancestorsOfA containsObject: temp])
-		{
-			return temp;
-		}
-	}
-	
-	// No common ancestor
-	return nil;
-}
-
 - (void) pullChangesFromBranch: (COSubtree*)srcBranch
 					  toBranch: (COSubtree*)destBranch
 						 store: (COStore *)aStore
@@ -50,7 +29,8 @@ static ETUUID *FindCommonAncestor(ETUUID *commitA, ETUUID *commitB, COStore *sto
 	{
 		NSLog(@"pullChangesFromBranch: need to do full merge.");
 		
-		ETUUID *ancestor = FindCommonAncestor(srcCommit, destCommit, aStore);
+		ETUUID *ancestor = [aStore commonAncestorForCommit: srcCommit
+												 andCommit: destCommit];
 		
 		NSLog(@"common ancestor: %@", ancestor);
 		

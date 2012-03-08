@@ -409,4 +409,28 @@
 	return NO;
 }
 
+/** @taskunit common ancestor */
+
+- (ETUUID *)commonAncestorForCommit: (ETUUID *)commitA
+						  andCommit: (ETUUID *)commitB
+{
+	NSMutableSet *ancestorsOfA = [NSMutableSet set];
+	
+	for (ETUUID *temp = commitA; temp != nil; temp = [self parentForCommit: temp])
+	{
+		[ancestorsOfA addObject: temp];
+	}
+	
+	for (ETUUID *temp = commitB; temp != nil; temp = [self parentForCommit: temp])
+	{
+		if ([ancestorsOfA containsObject: temp])
+		{
+			return temp;
+		}
+	}
+	
+	// No common ancestor
+	return nil;
+}
+
 @end
