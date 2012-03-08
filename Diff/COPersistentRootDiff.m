@@ -23,7 +23,6 @@
 	parentCommitForPendingCommitUUID = [[NSMutableDictionary alloc] init];
 	treeToCommitForPendingCommitUUID = [[NSMutableDictionary alloc] init];
 	
-	
 	wasCreatedFromBranches = [[COSubtreeFactory factory] isBranch: branchOrPersistentRootA];
 		
 
@@ -52,6 +51,20 @@
 	return self;
 }
 
+- (id) copyWithZone:(NSZone *)zone
+{
+	COPersistentRootDiff *result = [[[self class] alloc] init];
+	result->subtreeDiffForPath = [[NSMutableDictionary alloc] initWithDictionary: subtreeDiffForPath 
+																	   copyItems: YES];
+	result->parentCommitForPendingCommitUUID = [[NSMutableDictionary alloc] initWithDictionary: parentCommitForPendingCommitUUID 
+																					 copyItems: YES];
+	result->treeToCommitForPendingCommitUUID = [[NSMutableDictionary alloc] initWithDictionary: treeToCommitForPendingCommitUUID 
+																					 copyItems: YES];
+
+	result->wasCreatedFromBranches = wasCreatedFromBranches;
+	result->rootDiff = [rootDiff copyWithZone: zone];
+	return result;
+}
 
 + (COPersistentRootDiff *) diffPersistentRoot: (COSubtree *)rootA
 						   withPersistentRoot: (COSubtree *)rootB

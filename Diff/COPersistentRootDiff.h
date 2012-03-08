@@ -55,7 +55,7 @@
  
  
  */
-@interface COPersistentRootDiff : NSObject
+@interface COPersistentRootDiff : NSObject <NSCopying>
 {
 	// diff of the persistent root metatata
 	

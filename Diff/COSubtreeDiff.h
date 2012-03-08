@@ -11,7 +11,7 @@
  * - conflicts arise when the same subtree is inserted in multiple places.
  * - note that a _COSubtree_ cannot exist in an inconsistent state.
  */
-@interface COSubtreeDiff : NSObject
+@interface COSubtreeDiff : NSObject <NSCopying>
 {
 	ETUUID *oldRoot;
 	ETUUID *newRoot;
