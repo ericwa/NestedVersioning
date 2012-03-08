@@ -89,6 +89,11 @@
 	NSMutableDictionary *subtreeDiffForPath;
 	
 	
+	/**
+	 * this is only used for calculating merges.
+	 */
+	NSMutableDictionary *initialSubtreeForPath;
+	
 	
 	
 	// auxiliary stuff created when two diffs are merged
@@ -133,5 +138,13 @@
  */
 - (COSubtreeDiff *) rootSubtreeDiff;
 - (COSubtreeDiff *) subtreeDiffAtPath: (COPath *)aPath;
+- (COSubtree *) initialSubtreeForPath: (COPath *)aPath;
+
+#pragma mark merge
+
+- (void)mergeWithDiff: (COPersistentRootDiff *)other
+				store: (COStore *)aStore;
+- (COPersistentRootDiff *)persistentRootDiffByMergingWithDiff: (COPersistentRootDiff *)other
+														store: (COStore *)aStore;
 
 @end

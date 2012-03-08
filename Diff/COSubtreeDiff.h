@@ -31,6 +31,9 @@
 
 /**
  * Throws an exception if either diff has conflicts
+ *
+ * Caller owns the return value with respect to mutation
+ * - they may freely modify it.
  */
 - (COSubtreeDiff *)subtreeDiffByMergingWithDiff: (COSubtreeDiff *)other;
 
