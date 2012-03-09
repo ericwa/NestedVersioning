@@ -579,6 +579,19 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
 
 - (NSDragOperation)outlineView:(NSOutlineView *)anOutlineView validateDrop:(id <NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)index
 {
+	// FIXME: gnustep should handle this
+	
+	id plist = [[info draggingPasteboard] propertyListForType: EWDragType];
+	if (plist == nil)
+	{
+		return NSDragOperationNone;
+	}
+	if ([[[item rowSubtree] UUID] isEqual: [[COSubtree subtreeWithPlist: plist] UUID]])
+	{
+		NSLog(@"Can't drop source onto itself");
+		return NSDragOperationNone;
+	}
+	
 	if ([item isEmbeddedObject]
 		|| [[[item rowSubtree] typeForAttribute: [item attribute]] isEqual: [COType setWithPrimitiveType: [COType embeddedItemType]]])
 	{
