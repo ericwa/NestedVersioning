@@ -2,6 +2,7 @@
 #import "EWPersistentRootWindowController.h"
 #import "COMacros.h"
 #import "EWGraphRenderer.h"
+#import "COSubtreeDiff.h"
 #import "COSubtreeFactory.h"
 #import "COSubtreeFactory+PersistentRoots.h"
 #import "COSubtreeFactory+Undo.h"
@@ -264,6 +265,22 @@
 	
 	[parentCtx commitWithMetadata: nil];
 	[[NSApp delegate] reloadAllBrowsers];
+}
+
+- (IBAction) diffCommits: (id)sender
+{
+	NSArray *commits = [sender representedObject];
+	if ([commits count] != 2)
+		[NSException raise: NSInvalidArgumentException format: @""];
+	
+	COSubtree *a = [store treeForCommit: [commits objectAtIndex: 0]];
+	COSubtree *b = [store treeForCommit: [commits objectAtIndex: 1]];
+	
+	COSubtreeDiff *diff = [COSubtreeDiff diffSubtree: a
+										 withSubtree: b];
+	// FIXME:
+	
+	NSLog(@"Commits diff: %@", diff);
 }
 
 static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *start, ETUUID *aUUID)

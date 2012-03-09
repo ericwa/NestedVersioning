@@ -66,6 +66,14 @@
 	if (nil != commit)
 	{
 		NSMenu *menu = [[[NSMenu alloc] initWithTitle: @""] autorelease];
+
+		{
+			NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Diff with Current Commit" 
+														   action: @selector(diffCommits:) 
+													keyEquivalent: @""] autorelease];
+			[item setRepresentedObject: A(currentCommit, commit)];
+			[menu addItem: item];
+		}		
 		
 		{
 			NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Selective Undo" 
