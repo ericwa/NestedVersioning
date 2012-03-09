@@ -421,6 +421,11 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
 	[self deleteForward: sender];
 }
 
+- (void)deleteBackward:(id)sender
+{
+	[self deleteForward: sender];
+}
+
 - (void)keyDown:(NSEvent *)theEvent
 {
 	[self interpretKeyEvents: [NSArray arrayWithObject:theEvent]];
