@@ -37,14 +37,12 @@
 		66E7786814E6073100D5DFFF /* COSubtree.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E76735148B3D1C009937E8 /* COSubtree.m */; };
 		66E7786914E6073100D5DFFF /* COSubtreeCopy.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E8E93414D4BC7F00CBE2D8 /* COSubtreeCopy.m */; };
 		66E7786A14E6073100D5DFFF /* COSubtreeFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 79297308148C94FD00FD35A9 /* COSubtreeFactory.m */; };
-		66E7786B14E6073100D5DFFF /* COPersistentRoot.m in Sources */ = {isa = PBXBuildFile; fileRef = 66D516AA14E44F900055A6A2 /* COPersistentRoot.m */; };
 		66E7786C14E6073100D5DFFF /* COSubtreeFactory+PersistentRoots.m in Sources */ = {isa = PBXBuildFile; fileRef = 79999F1414DE597200FFBC99 /* COSubtreeFactory+PersistentRoots.m */; };
 		66E7786D14E6073100D5DFFF /* COSubtreeFactory+Undo.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E2FFB714899C7A00C66578 /* COSubtreeFactory+Undo.m */; };
 		66E7786E14E6073100D5DFFF /* COSubtreeFactory+Pull.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F8202C14E25D85008236F6 /* COSubtreeFactory+Pull.m */; };
 		66E7786F14E6073100D5DFFF /* diff.cc in Sources */ = {isa = PBXBuildFile; fileRef = 66101A0914D09FAA00B50075 /* diff.cc */; };
 		66E7787014E6073100D5DFFF /* COArrayDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E503931495F9CF003C69C7 /* COArrayDiff.m */; };
 		66E7787214E6073100D5DFFF /* COSetDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E5039B1495F9CF003C69C7 /* COSetDiff.m */; };
-		66E7787414E6073100D5DFFF /* COItemDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E4BE561496956200B7024A /* COItemDiff.m */; };
 		66E7787514E6073100D5DFFF /* COSubtreeDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 669CADE71491844000D0CF5F /* COSubtreeDiff.m */; };
 		66E7787614E6073100D5DFFF /* COPersistentRootDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E777EB14E595F900D5DFFF /* COPersistentRootDiff.m */; };
 		66E7787714E6073100D5DFFF /* COPersistentRootEditingContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EE5D35146355A6008AA95B /* COPersistentRootEditingContext.m */; };
@@ -62,14 +60,12 @@
 		66E7788314E6075B00D5DFFF /* COSubtree.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E76734148B3D1C009937E8 /* COSubtree.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7788414E6075B00D5DFFF /* COSubtreeCopy.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E8E93314D4BC7F00CBE2D8 /* COSubtreeCopy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7788514E6075B00D5DFFF /* COSubtreeFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 79297307148C94FD00FD35A9 /* COSubtreeFactory.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		66E7788614E6075B00D5DFFF /* COPersistentRoot.h in Headers */ = {isa = PBXBuildFile; fileRef = 66D516A914E44F900055A6A2 /* COPersistentRoot.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7788714E6075B00D5DFFF /* COSubtreeFactory+PersistentRoots.h in Headers */ = {isa = PBXBuildFile; fileRef = 79999F1314DE597200FFBC99 /* COSubtreeFactory+PersistentRoots.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7788814E6075B00D5DFFF /* COSubtreeFactory+Undo.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E2FFB614899C7A00C66578 /* COSubtreeFactory+Undo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7788914E6075B00D5DFFF /* COSubtreeFactory+Pull.h in Headers */ = {isa = PBXBuildFile; fileRef = 79F8202B14E25D85008236F6 /* COSubtreeFactory+Pull.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7788A14E6075B00D5DFFF /* diff.h in Headers */ = {isa = PBXBuildFile; fileRef = 66101A0D14D09FB700B50075 /* diff.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7788B14E6075B00D5DFFF /* COArrayDiff.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E503921495F9CF003C69C7 /* COArrayDiff.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7788D14E6075B00D5DFFF /* COSetDiff.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E5039A1495F9CF003C69C7 /* COSetDiff.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		66E7788F14E6075B00D5DFFF /* COItemDiff.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E4BE551496956200B7024A /* COItemDiff.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7789014E6075B00D5DFFF /* COSubtreeDiff.h in Headers */ = {isa = PBXBuildFile; fileRef = 669CADE61491844000D0CF5F /* COSubtreeDiff.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7789114E6075B00D5DFFF /* COPersistentRootDiff.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E777EA14E595F900D5DFFF /* COPersistentRootDiff.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7789214E6075B00D5DFFF /* COPersistentRootEditingContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 66EE5D34146355A6008AA95B /* COPersistentRootEditingContext.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -188,8 +184,6 @@
 		668DA36114E0E4210062E6C2 /* COItemPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COItemPath.h; sourceTree = "<group>"; };
 		669CADE61491844000D0CF5F /* COSubtreeDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COSubtreeDiff.h; sourceTree = "<group>"; };
 		669CADE71491844000D0CF5F /* COSubtreeDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COSubtreeDiff.m; sourceTree = "<group>"; };
-		66D516A914E44F900055A6A2 /* COPersistentRoot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPersistentRoot.h; sourceTree = "<group>"; };
-		66D516AA14E44F900055A6A2 /* COPersistentRoot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COPersistentRoot.m; sourceTree = "<group>"; };
 		66DFAEBF142A726100623060 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		66DFAEC4142A726100623060 /* COMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COMacros.h; sourceTree = "<group>"; };
 		66DFAECA142A726100623060 /* test-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "test-Prefix.pch"; sourceTree = "<group>"; };
@@ -201,8 +195,6 @@
 		66E2FFB614899C7A00C66578 /* COSubtreeFactory+Undo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COSubtreeFactory+Undo.h"; sourceTree = "<group>"; };
 		66E2FFB714899C7A00C66578 /* COSubtreeFactory+Undo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "COSubtreeFactory+Undo.m"; sourceTree = "<group>"; };
 		66E46D47146A3D490042123E /* TestDeletion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestDeletion.m; sourceTree = "<group>"; };
-		66E4BE551496956200B7024A /* COItemDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COItemDiff.h; sourceTree = "<group>"; };
-		66E4BE561496956200B7024A /* COItemDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COItemDiff.m; sourceTree = "<group>"; };
 		66E4BE59149713CA00B7024A /* COType+Diff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COType+Diff.h"; sourceTree = "<group>"; };
 		66E4BE5A149713CA00B7024A /* COType+Diff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "COType+Diff.m"; sourceTree = "<group>"; };
 		66E4BE5C1497464100B7024A /* EWOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWOutlineView.h; sourceTree = "<group>"; };
@@ -454,7 +446,6 @@
 		66485D8914D236B2004C4431 /* Implementation */ = {
 			isa = PBXGroup;
 			children = (
-				66E4BE561496956200B7024A /* COItemDiff.m */,
 				669CADE71491844000D0CF5F /* COSubtreeDiff.m */,
 				66E777EB14E595F900D5DFFF /* COPersistentRootDiff.m */,
 			);
@@ -553,7 +544,6 @@
 		66E503911495F9CF003C69C7 /* Diff for Object Graph */ = {
 			isa = PBXGroup;
 			children = (
-				66E4BE551496956200B7024A /* COItemDiff.h */,
 				669CADE61491844000D0CF5F /* COSubtreeDiff.h */,
 				66E777EA14E595F900D5DFFF /* COPersistentRootDiff.h */,
 				66485D8914D236B2004C4431 /* Implementation */,
@@ -633,7 +623,6 @@
 				66E76734148B3D1C009937E8 /* COSubtree.h */,
 				66E8E93314D4BC7F00CBE2D8 /* COSubtreeCopy.h */,
 				79297307148C94FD00FD35A9 /* COSubtreeFactory.h */,
-				66D516A914E44F900055A6A2 /* COPersistentRoot.h */,
 				79999EAB14DE50CA00FFBC99 /* Implementation */,
 			);
 			name = "In-Memory Item Tree";
@@ -672,7 +661,6 @@
 				66E76735148B3D1C009937E8 /* COSubtree.m */,
 				66E8E93414D4BC7F00CBE2D8 /* COSubtreeCopy.m */,
 				79297308148C94FD00FD35A9 /* COSubtreeFactory.m */,
-				66D516AA14E44F900055A6A2 /* COPersistentRoot.m */,
 			);
 			name = Implementation;
 			sourceTree = "<group>";
@@ -775,14 +763,12 @@
 				66E7788314E6075B00D5DFFF /* COSubtree.h in Headers */,
 				66E7788414E6075B00D5DFFF /* COSubtreeCopy.h in Headers */,
 				66E7788514E6075B00D5DFFF /* COSubtreeFactory.h in Headers */,
-				66E7788614E6075B00D5DFFF /* COPersistentRoot.h in Headers */,
 				66E7788714E6075B00D5DFFF /* COSubtreeFactory+PersistentRoots.h in Headers */,
 				66E7788814E6075B00D5DFFF /* COSubtreeFactory+Undo.h in Headers */,
 				66E7788914E6075B00D5DFFF /* COSubtreeFactory+Pull.h in Headers */,
 				66E7788A14E6075B00D5DFFF /* diff.h in Headers */,
 				66E7788B14E6075B00D5DFFF /* COArrayDiff.h in Headers */,
 				66E7788D14E6075B00D5DFFF /* COSetDiff.h in Headers */,
-				66E7788F14E6075B00D5DFFF /* COItemDiff.h in Headers */,
 				66E7789014E6075B00D5DFFF /* COSubtreeDiff.h in Headers */,
 				66E7789114E6075B00D5DFFF /* COPersistentRootDiff.h in Headers */,
 				66E7789214E6075B00D5DFFF /* COPersistentRootEditingContext.h in Headers */,
@@ -984,14 +970,12 @@
 				66E7786814E6073100D5DFFF /* COSubtree.m in Sources */,
 				66E7786914E6073100D5DFFF /* COSubtreeCopy.m in Sources */,
 				66E7786A14E6073100D5DFFF /* COSubtreeFactory.m in Sources */,
-				66E7786B14E6073100D5DFFF /* COPersistentRoot.m in Sources */,
 				66E7786C14E6073100D5DFFF /* COSubtreeFactory+PersistentRoots.m in Sources */,
 				66E7786D14E6073100D5DFFF /* COSubtreeFactory+Undo.m in Sources */,
 				66E7786E14E6073100D5DFFF /* COSubtreeFactory+Pull.m in Sources */,
 				66E7786F14E6073100D5DFFF /* diff.cc in Sources */,
 				66E7787014E6073100D5DFFF /* COArrayDiff.m in Sources */,
 				66E7787214E6073100D5DFFF /* COSetDiff.m in Sources */,
-				66E7787414E6073100D5DFFF /* COItemDiff.m in Sources */,
 				66E7787614E6073100D5DFFF /* COPersistentRootDiff.m in Sources */,
 				66E7787714E6073100D5DFFF /* COPersistentRootEditingContext.m in Sources */,
 				66E7787814E6073100D5DFFF /* COStore.m in Sources */,

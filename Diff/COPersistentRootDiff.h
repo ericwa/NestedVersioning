@@ -3,29 +3,9 @@
 @class COPath;
 @class COStore;
 @class COSubtree;
+@class COSubtreeDiff;
 
 /*
- Since nested persistent roots are conceptually "embedded" inside their parent,
- as far as version control is concerned, we need a diff strategy that diffs
- nested persistent roots in an intelligent way.
- 
- This is analogous to git (et. al.) comparing two "tags" and merging them.
- 
- 
- aside: How about updating a branch with changes from another branch?
- 
- void pull_changes_from_branch(dest_branch_uuid, src_branch_path)
- {
- // first see if dest_branch_uuid can simply be fast-forwarded to src_branch_path.
- // if not, find LCA and do 3-way merge.
- }
- 
- 
- void diff_version_with_version(version_a_uuid, version_b_uuid)
- {
- 
- }
- 
  void diff_branch_with_branch(branch_a_path, branch_b_path)
  {
  // record metadata changes normally.
@@ -75,9 +55,53 @@
  
  
  */
-@interface COPersistentRootDiff : NSObject
+@interface COPersistentRootDiff : NSObject <NSCopying>
 {
+	// diff of the persistent root metatata
+	
+	
+	
+	/**
+	 * YES if the receiver was created by diffing two branch objects,
+	 * NO if created by diffing two persistent root objects
+	 */
+	BOOL wasCreatedFromBranches;
+	
+	/**
+	 * diff of the branches or persistent root objects the receiver 
+	 * was created with
+	 */
+	COSubtreeDiff *rootDiff;
+	
+	
+	
+	// diffs of the contents of the persistent root.
+	
+	
+	
+	/**
+	 * never contains the empty path
+	 *
+	 * contains a single-element path for every currentVersion conflict in rootDiff
+	 *
+	 * this is only used for calculating merges.
+	 */
 	NSMutableDictionary *subtreeDiffForPath;
+	
+	
+	/**
+	 * this is only used for calculating merges.
+	 */
+	NSMutableDictionary *initialSubtreeForPath;
+	
+	
+	
+	// auxiliary stuff created when two diffs are merged
+	
+	
+
+	NSMutableDictionary *parentCommitForPendingCommitUUID;	
+	NSMutableDictionary *treeToCommitForPendingCommitUUID;
 }
 
 + (COPersistentRootDiff *) diffPersistentRoot: (COSubtree *)rootA
@@ -89,5 +113,36 @@
 + (COPersistentRootDiff *) diffBranch: (COSubtree *)branchA
 						   withBranch: (COSubtree *)branchB
 								store: (COStore *)aStore;
+
+#pragma mark diff application
+
+- (void) applyToPersistentRootOrBranch: (COSubtree *)dest
+								 store: (COStore *)aStore;
+
+
+#pragma mark access
+
+/**
+ * YES iff. any subtree diffs have conflicts
+ */
+- (BOOL) hasConflicts;
+
+/**
+ * 
+ */
+- (NSSet *) paths;
+
+/**
+ * diff of the branches or persistent root objects the receiver 
+ * was created with
+ */
+- (COSubtreeDiff *) rootSubtreeDiff;
+- (COSubtreeDiff *) subtreeDiffAtPath: (COPath *)aPath;
+- (COSubtree *) initialSubtreeForPath: (COPath *)aPath;
+
+#pragma mark merge
+
+- (void)mergeWithDiff: (COPersistentRootDiff *)other;
+- (COPersistentRootDiff *)persistentRootDiffByMergingWithDiff: (COPersistentRootDiff *)other;
 
 @end

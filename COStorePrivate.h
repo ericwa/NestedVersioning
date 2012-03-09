@@ -92,4 +92,10 @@
  */
 
 
+
+/** @taskunit common ancestor */
+
+- (ETUUID *)commonAncestorForCommit: (ETUUID *)commitA
+						  andCommit: (ETUUID *)commitB;
+
 @end
