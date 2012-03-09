@@ -28,7 +28,7 @@ TODO
 					- anything else...?
 [ ] (Feb 15/2012) StoreBrowser: implement persistent root diff window, including showing changes in
 				  nested persistent roots, and showing conflicts
-[ ] (Feb 15/2012) StoreBrowser: implement diffing two arbitrary commits picked from the history graph
+[x] (Feb 15/2012) StoreBrowser: implement diffing two arbitrary commits picked from the history graph
 [ ] (Feb 15/2012) StoreBrowser: implement cherry-pick (selective apply) by right-clicking on a commit
                   in the commit graph.
 [ ] (Feb 15/2012) StoreBrowser: implement selective undo by right-clicking on a commit
@@ -61,7 +61,7 @@ TODO
 [ ] (dec 5)       search
 [x] (dec 5)       work on storebrowser
 [x] (dec 6)       make COStoreItem immutable. 
-[ ] (dec 6)       implement an efficient mutable tree
+[x] (dec 6)       implement an efficient mutable tree
                   by layering a diff together with an efficient immutable tree
                   this should be decoupled from the editing context code, and 
                   should become a thin wrapper around it.
