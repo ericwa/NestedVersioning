@@ -703,6 +703,28 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 	[controller orderFrontAndHighlightItem: [newItem UUID]];
 }
 
+- (void) addPersistentRoot: (id)sender
+{
+	COSubtree *subtree = [self rowSubtree];
+
+	COSubtree *dummyContents = [COSubtree subtree];
+	[dummyContents addTree: [[COSubtreeFactory factory] item: @"an item"]];
+	
+	COSubtree *newPersistentRoot = [[COSubtreeFactory factory] createPersistentRootWithRootItem: dummyContents
+																					displayName: @"New Persistent Root"
+																						  store: [ctx store]];
+	
+	[subtree addTree: newPersistentRoot];
+	
+	[ctx commitWithMetadata: nil];
+	
+	EWPersistentRootWindowController *controller = windowController; // FIXME: ugly hack
+	
+	[[NSApp delegate] reloadAllBrowsers]; // FIXME: ugly.. deallocates self...
+	
+	[controller orderFrontAndHighlightItem: [newPersistentRoot UUID]];
+}
+
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem
 {
     SEL theAction = [anItem action];
@@ -762,10 +784,14 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 		}
 		return NO;
 	}
-	else if (theAction == @selector(addStringKeyValue:)
-			 || theAction == @selector(addEmbeddedItem:))
+	else if (theAction == @selector(addStringKeyValue:))
 	{
         return ([selIndexes count] == 1 && [self isEmbeddedObject]);
+	}
+	else if (theAction == @selector(addEmbeddedItem:)
+			 || theAction == @selector(addPersistentRoot:))
+	{
+        return ([selIndexes count] == 1);
 	}
 	
 	return [self respondsToSelector: theAction];
@@ -861,6 +887,14 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 	{
 		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Add Embedded Item" 
 													   action: @selector(addEmbeddedItem:) 
+												keyEquivalent: @""] autorelease];
+		[item setTarget: self];
+		[menu addItem: item];
+	}	
+
+	{
+		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Add Persistent Root" 
+													   action: @selector(addPersistentRoot:) 
 												keyEquivalent: @""] autorelease];
 		[item setTarget: self];
 		[menu addItem: item];
