@@ -587,7 +587,9 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
 	{
 		return NSDragOperationNone;
 	}
-	if ([[[item rowSubtree] UUID] isEqual: [[COSubtree subtreeWithPlist: plist] UUID]])
+	
+	COSubtree *proposedSubtree = [COSubtree subtreeWithPlist: plist];
+	if ([[[item rowSubtree] UUID] isEqual: [proposedSubtree UUID]])
 	{
 		NSLog(@"Can't drop source onto itself");
 		return NSDragOperationNone;
@@ -596,7 +598,17 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
 	if ([item isEmbeddedObject]
 		|| [[[item rowSubtree] typeForAttribute: [item attribute]] isEqual: [COType setWithPrimitiveType: [COType embeddedItemType]]])
 	{
-		NSDragOperation mask = [info draggingSourceOperationMask];
+		NSDragOperation mask = NSDragOperationNone;
+		if ([[[item rowSubtree] root] containsSubtreeWithUUID: [proposedSubtree UUID]])
+		{
+			mask = [info draggingSourceOperationMask];
+		}
+		else
+		{
+			// cross-persistent-root; copy for familiarity's sake
+			mask = NSDragOperationCopy;
+		}
+		NSLog(@"returning %d", (int)mask);
 		return mask;
 	}
 	return NSDragOperationNone;
@@ -604,6 +616,8 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
 
 - (BOOL)outlineView:(NSOutlineView *)aOutlineView acceptDrop:(id <NSDraggingInfo>)info item:(id)newParent childIndex:(NSInteger)index
 {
+			NSLog(@"got %d", (int)[info draggingSourceOperationMask]);
+	
 	NSPasteboard *pb = [info draggingPasteboard];
 	NSString *bestType = [pb availableTypeFromArray: A(EWDragType)];
 	if (bestType == nil)
@@ -614,6 +628,8 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
 	id plist = [pb propertyListForType: EWDragType];		
 	COSubtree *pasteSubtree = [COSubtree subtreeWithPlist: plist];
 	COSubtree *destsubtree = [newParent rowSubtree];
+	
+	BOOL mustCopy = ![[destsubtree root] containsSubtreeWithUUID: [pasteSubtree UUID]];
 	
 	// special case: branch pull
 	
@@ -633,7 +649,7 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
 			return NO;
 		}
 		
-		if ([info draggingSourceOperationMask] == NSDragOperationCopy)
+		if (mustCopy || [info draggingSourceOperationMask] == NSDragOperationCopy)
 		{
 			NSLog(@"copy");
 		}
@@ -652,7 +668,8 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
 	NSLog(@"after %@", [ctx persistentRootTree]);	
 	
 	[ctx commitWithMetadata: nil];
-	[self reloadBrowser];
+	
+	[[NSApp delegate] performSelector: @selector(reloadAllBrowsers) withObject:nil afterDelay:0.1];
 	
 	return YES;
 }
