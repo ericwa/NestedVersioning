@@ -142,9 +142,7 @@
 
 #pragma mark merge
 
-- (void)mergeWithDiff: (COPersistentRootDiff *)other
-				store: (COStore *)aStore;
-- (COPersistentRootDiff *)persistentRootDiffByMergingWithDiff: (COPersistentRootDiff *)other
-														store: (COStore *)aStore;
+- (void)mergeWithDiff: (COPersistentRootDiff *)other;
+- (COPersistentRootDiff *)persistentRootDiffByMergingWithDiff: (COPersistentRootDiff *)other;
 
 @end

@@ -243,32 +243,6 @@
 
 #pragma mark merge algorithm
 
-- (void) mergeBranchUUID: (ETUUID *)branchAUUID
-		  withBranchUUID: (ETUUID *)branchBUUID
-		withSubtreeDiffA: (COSubtreeDiff *)subtreeDiffA
-		withSubtreeDiffB: (COSubtreeDiff *)subtreeDiffB
-		  initialSubtree: (COSubtree *)initalSubtree
-				  atPath: (COPath *)currentPath
-				   store: (COStore *)aStore
-{
-	ETUUID *branchAAndBInitialVersion = nil;
-	
-	ETUUID *branchACurrentVersion = [[COSubtreeFactory factory] currentVersionForBranch: branchA];
-	ETUUID *branchBCurrentVersion = [[COSubtreeFactory factory] currentVersionForBranch: branchB];
-
-
-	ETUUID *pendingCommitUUID = [ETUUID UUID];
-		
-	// our commit will be attached to branchACurrentVersion
-		
-	[parentCommitForPendingCommitUUID setObject: branchACurrentVersion
-										forKey: pendingCommitUUID];
-	
-	// we need to compute a diff which is based on branchAAndBInitialVersion
-		
-}
-
-
 /**
  * Take 2 subtree diffs, as well as the corresponding subtrees they are based on,
  * and merge the diffs.
@@ -278,12 +252,17 @@
  */
 - (void) mergePersistentRootDiff: (COPersistentRootDiff *)other
 						  atPath: (COPath *)currentPath
-						   store: (COStore *)aStore
 {	
 	COSubtreeDiff *contentsAdiff = [self subtreeDiffAtPath: currentPath];
 	COSubtree *contentsA = [self initialSubtreeForPath: currentPath];
 	COSubtreeDiff *contentsBdiff = [other subtreeDiffAtPath: currentPath];
 	COSubtree *contentsB = [other initialSubtreeForPath: currentPath];
+	
+	if (nil == contentsAdiff || nil == contentsA || nil == contentsBdiff || nil == contentsB)
+	{
+		[NSException raise: NSInternalInconsistencyException format: @"unexpected nil"];
+	}
+	
 	
 	COSubtreeDiff *merged = [contentsAdiff subtreeDiffByMergingWithDiff: contentsBdiff];
 	
@@ -332,10 +311,10 @@
 					[parentCommitForPendingCommitUUID setObject: parentOfCommit
 														 forKey: pendingCommitUUID];
 					
-
-					
 					// Recursive call
-					[self mergePath: [currentPath pathByAppendingPathComponent: branchUUID]];
+					[self mergePersistentRootDiff: other
+										   atPath: [currentPath pathByAppendingPathComponent: branchUUID]
+											store: aStore];
 				}
 			}
 		}
@@ -352,15 +331,12 @@
 
 
 - (void)mergeWithDiff: (COPersistentRootDiff *)other
-				store: (COStore *)aStore
 {
 	[self mergePersistentRootDiff: other
-						   atPath: [COPath path]
-							store: aStore];
+						   atPath: [COPath path]];
 }
 
 - (COPersistentRootDiff *)persistentRootDiffByMergingWithDiff: (COPersistentRootDiff *)other
-														store: (COStore *)aStore
 {
 	COPersistentRootDiff *result = [[self copy] autorelease];
 	[result mergeWithPersistentRootDiff: other];
