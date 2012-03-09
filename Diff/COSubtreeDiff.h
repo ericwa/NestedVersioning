@@ -46,6 +46,8 @@
 - (NSSet *)edits;
 - (NSSet *)conflicts;
 
+#pragma mark access
+
 - (NSSet *)modifiedItemUUIDs;
 
 #pragma mark mutation
