@@ -22,7 +22,6 @@ $(APP_NAME)_OBJC_FILES=\
 	COType.m\
 	Diff/COSubtreeDiff.m\
 	Diff/COArrayDiff.m\
-	Diff/COItemDiff.m\
 	Diff/COPersistentRootDiff.m\
 	Diff/COSequenceDiff.m\
 	Diff/COSetDiff.m\
