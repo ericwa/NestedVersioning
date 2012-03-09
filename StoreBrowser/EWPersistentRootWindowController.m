@@ -430,144 +430,6 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
 	return [[self modelForItem: item] valueForTableColumn: column];
 }
 
-/* Drag & Drop */
-
-- (BOOL)outlineView:(NSOutlineView *)anOutlineView writeItems:(NSArray *)items toPasteboard:(NSPasteboard *)pb
-{
-/*
-	NSMutableArray *pbItems = [NSMutableArray array];
-
-	if ([items count] == 0) return;
-	
-	EWPersistentRootOutlineRow *firstItem = [items objectAtIndex: 0];
-	
-	for (EWPersistentRootOutlineRow *row in items)
-	{    
-		if ([row parent] != [firstItem parent]) // Keep things simple by only allowing multiple rows if they are siblings
-		{
-			return NO;
-		}
-		
-		NSPasteboardItem *item = [[[NSPasteboardItem alloc] init] autorelease];
-		[item setPropertyList: [NSNumber numberWithInteger: (NSInteger)row]
-					  forType: EWDragType];
-		[pbItems addObject: item];
-	}
-	
-	[pb clearContents];
-	return [pb writeObjects: pbItems];
-*/
-	return NO;
-}
-
-- (NSDragOperation)outlineView:(NSOutlineView *)anOutlineView validateDrop:(id <NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)index
-{
-/*
-	if (item != nil && ![item isKindOfClass: [EWPersistentRootOutlineRow class]])
-	{
-		return NSDragOperationNone;
-	}
-	for (NSPasteboardItem *pbItem in [[info draggingPasteboard] pasteboardItems])
-	{
-		EWPersistentRootOutlineRow *srcItem = (EWPersistentRootOutlineRow*)[[pbItem propertyListForType: EWDragType] integerValue];
-		
-		// Ensure the destination isn't a child of, or equal to, the source    
-		for (EWPersistentRootOutlineRow *tempDest = item; tempDest != nil; tempDest = [tempDest parent])
-		{
-			if (tempDest == srcItem)
-			{
-				return NSDragOperationNone;
-			}
-		}
-	}
-	return NSDragOperationPrivate;
-*/	
-	return NSDragOperationNone;
-}
-
-- (BOOL)outlineView:(NSOutlineView *)outlineView acceptDrop:(id <NSDraggingInfo>)info item:(id)newParent childIndex:(NSInteger)index
-{
-	return NO;
-
-/*
-	newParent = [self modelForItem: newParent];
-	
-	NSUInteger insertionIndex = index;
-	
-	NSMutableIndexSet *newSelectedRows = [NSMutableIndexSet indexSet];
-	NSMutableArray *outlineItems = [NSMutableArray array];
-	
-	for (NSPasteboardItem *pbItem in [[info draggingPasteboard] pasteboardItems])
-	{
-		[outlineItems addObject: (EWPersistentRootOutlineRow*)[[pbItem propertyListForType: EWDragType] integerValue]];
-	}
-	
-	return NO;
-
-*/
-	
-	// Make a link if the user is holding control 
-	/*
-	if ([info draggingSourceOperationMask] == NSDragOperationLink &&
-		![[outlineItems objectAtIndex: 0] isKindOfClass: [ItemReference class]]) // Don't make links to link objects
-	{
-		OutlineItem *itemToLinkTo = [outlineItems objectAtIndex: 0];
-		
-		if (insertionIndex == -1) { insertionIndex = [[newParent contents] count]; }
-		
-		ItemReference *ref = [[ItemReference alloc] initWithParent: newParent
-													referencedItem: itemToLinkTo
-														   context: [[self rootObject] objectContext]];
-		[ref autorelease];
-		
-		[newParent addItem: ref 
-				   atIndex: insertionIndex]; 
-		
-		[self commitWithType: kCOTypeMinorEdit
-			shortDescription: @"Drop Link"
-			 longDescription: [NSString stringWithFormat: @"Drop Link to %@ on %@", [itemToLinkTo label], [newParent label]]];
-		
-		return;
-	}
-	
-	// Here we only work on the model.
-	
-	for (OutlineItem *outlineItem in outlineItems)
-	{
-		OutlineItem *oldParent = [outlineItem parent];
-		NSUInteger oldIndex = [[oldParent contents] indexOfObject: outlineItem];
-		
-		NSLog(@"Dropping %@ from %@", [outlineItem label], [oldParent label]);
-		if (insertionIndex == -1) { insertionIndex = [[newParent contents] count]; }
-		
-		if (oldParent == newParent && insertionIndex > oldIndex)
-		{
-			[oldParent removeItemAtIndex: oldIndex];
-			[newParent addItem: outlineItem atIndex: insertionIndex-1]; 
-		}
-		else
-		{
-			[oldParent removeItemAtIndex: oldIndex];
-			[newParent addItem: outlineItem atIndex: insertionIndex++]; 
-		}
-	}
-	
-	[self commitWithType: kCOTypeMinorEdit
-		shortDescription: @"Drop Items"
-		 longDescription: [NSString stringWithFormat: @"Drop %d items on %@", (int)[outlineItems count], [newParent label]]];
-	
-	[outlineView expandItem: newParent];
-	
-	for (OutlineItem *outlineItem in outlineItems)
-	{
-		[newSelectedRows addIndex: [outlineView rowForItem: outlineItem]];
-	}  
-	[outlineView selectRowIndexes: newSelectedRows byExtendingSelection: NO];
-	
-	return YES;*/
-}
-
-
 /* NSOutlineView delegate */
 
 - (void)outlineView:(NSOutlineView *)anOutlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
@@ -690,6 +552,84 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
 	[self copy: sender];
 	[self delete: sender];
 }
+
+
+/* Drag & Drop */
+
+- (BOOL)outlineView:(NSOutlineView *)anOutlineView writeItems:(NSArray *)items toPasteboard:(NSPasteboard *)pb
+{
+	if ([items count] != 1)
+	{
+		return NO;
+	}
+
+	EWPersistentRootOutlineRow *row = [items objectAtIndex: 0];
+	if (![row isEmbeddedObject])
+	{
+		NSLog(@"Only embedded objects can be copied.");
+		return NO;
+	}
+	
+	COSubtree *subtreeToCopy = [row rowSubtree];
+	id plistToCopy = [subtreeToCopy plist];
+	
+	[pb declareTypes: A(EWDragType) owner: self];
+	return [pb setPropertyList: plistToCopy forType: EWDragType];
+}
+
+- (NSDragOperation)outlineView:(NSOutlineView *)anOutlineView validateDrop:(id <NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)index
+{
+	if ([item isEmbeddedObject]
+		|| [[[item rowSubtree] typeForAttribute: [item attribute]] isEqual: [COType setWithPrimitiveType: [COType embeddedItemType]]])
+	{
+		NSDragOperation mask = [info draggingSourceOperationMask];
+		return mask;
+	}
+	return NSDragOperationNone;
+}
+
+- (BOOL)outlineView:(NSOutlineView *)aOutlineView acceptDrop:(id <NSDraggingInfo>)info item:(id)newParent childIndex:(NSInteger)index
+{
+	NSPasteboard *pb = [info draggingPasteboard];
+	NSString *bestType = [pb availableTypeFromArray: A(EWDragType)];
+	if (bestType == nil)
+	{
+		return NO;
+	}
+
+	id plist = [pb propertyListForType: EWDragType];		
+	COSubtree *pasteSubtree = [COSubtree subtreeWithPlist: plist];
+		
+	if ([info draggingSourceOperationMask] == NSDragOperationLink)
+	{
+		NSLog(@"Link unsupported");
+		return NO;
+	}
+	
+	if ([info draggingSourceOperationMask] == NSDragOperationCopy)
+	{
+		NSLog(@"copy");
+	}
+	else
+	{
+		NSLog(@"remove %@", pasteSubtree);
+		NSLog(@"before %@", [[newParent rowSubtree] root]);
+		[[[newParent rowSubtree] root] removeSubtreeWithUUID: [pasteSubtree UUID]];
+	}
+	
+	COSubtree *destsubtree = [newParent rowSubtree];
+	[destsubtree addTree: pasteSubtree];
+
+	NSLog(@"after %@", [ctx persistentRootTree]);	
+	
+	[ctx commitWithMetadata: nil];
+	[self reloadBrowser];
+	
+	return YES;
+}
+
+
+
 
 // User interface validation
 
