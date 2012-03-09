@@ -5,6 +5,7 @@
 #import "COSubtreeFactory.h"
 #import "COSubtreeFactory+PersistentRoots.h"
 #import "COSubtreeFactory+Undo.h"
+#import "COSubtreeFactory+Pull.h"
 #import "AppDelegate.h"
 #import "COType.h"
 #import "EWIconTextFieldCell.h"
@@ -612,26 +613,41 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
 
 	id plist = [pb propertyListForType: EWDragType];		
 	COSubtree *pasteSubtree = [COSubtree subtreeWithPlist: plist];
-		
-	if ([info draggingSourceOperationMask] == NSDragOperationLink)
-	{
-		NSLog(@"Link unsupported");
-		return NO;
-	}
+	COSubtree *destsubtree = [newParent rowSubtree];
 	
-	if ([info draggingSourceOperationMask] == NSDragOperationCopy)
+	// special case: branch pull
+	
+	if ([[COSubtreeFactory factory] isBranch: pasteSubtree]
+		&& [[COSubtreeFactory factory] isBranch: destsubtree])
 	{
-		NSLog(@"copy");
+		[[COSubtreeFactory factory] pullChangesFromBranch: pasteSubtree
+												 toBranch: destsubtree 
+													store: [ctx store]];
+		
 	}
 	else
 	{
-		NSLog(@"remove %@", pasteSubtree);
-		NSLog(@"before %@", [[newParent rowSubtree] root]);
-		[[[newParent rowSubtree] root] removeSubtreeWithUUID: [pasteSubtree UUID]];
+		if ([info draggingSourceOperationMask] == NSDragOperationLink)
+		{
+			NSLog(@"Link unsupported");
+			return NO;
+		}
+		
+		if ([info draggingSourceOperationMask] == NSDragOperationCopy)
+		{
+			NSLog(@"copy");
+		}
+		else
+		{
+			NSLog(@"remove %@", pasteSubtree);
+			NSLog(@"before %@", [[newParent rowSubtree] root]);
+			[[[newParent rowSubtree] root] removeSubtreeWithUUID: [pasteSubtree UUID]];
+		}
+		
+		
+		[destsubtree addTree: pasteSubtree];
 	}
 	
-	COSubtree *destsubtree = [newParent rowSubtree];
-	[destsubtree addTree: pasteSubtree];
 
 	NSLog(@"after %@", [ctx persistentRootTree]);	
 	
