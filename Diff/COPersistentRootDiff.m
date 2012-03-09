@@ -296,13 +296,13 @@
 					
 					// create a new setValueEdit
 					
-					ETUUID *tempCommitUUID = [ETUUID UUID];
+					ETUUID *pendingCommitUUID = [ETUUID UUID];
 					id edit = nil;					
 					[edit setEditedItemUUID: branchUUID]; 
 					[edit setEditedAttribute: @"currentVersion"];
-					[edit setValue: tempCommitUUID];
+					[edit setValue: pendingCommitUUID];
 					
-					[self recordTemporaryCommit: tempCommitUUID
+					[self recordTemporaryCommit: pendingCommitUUID
 										forPath: [currentPath pathByAppendingPathComponent: branchUUID]];
 					
 					
@@ -313,8 +313,7 @@
 					
 					// Recursive call
 					[self mergePersistentRootDiff: other
-										   atPath: [currentPath pathByAppendingPathComponent: branchUUID]
-											store: aStore];
+										   atPath: [currentPath pathByAppendingPathComponent: branchUUID]];
 				}
 			}
 		}

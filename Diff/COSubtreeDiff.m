@@ -1,10 +1,11 @@
 #import "COSubtreeDiff.h"
-#import "COItemDiff.h"
 #import "COMacros.h"
 #import "ETUUID.h"
 #import "COSubtree.h"
 
 @implementation COSubtreeDiff
+
+#if 0
 
 - (id) initWithOldRootUUID: (ETUUID*)anOldRoot
 			   newRootUUID: (ETUUID*)aNewRoot
@@ -610,6 +611,8 @@
 	//    there is an embedded item inserted in two places.
 	return NO;
 }
+
+#endif
 
 @end
 

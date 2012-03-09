@@ -6,6 +6,8 @@
 @class COSubtreeEdit;
 @class COSubtreeConflict;
 
+@class COType;
+
 /**
  * Concerns for COSubtreeDiff:
  * - conflicts arise when the same subtree is inserted in multiple places.
@@ -68,7 +70,7 @@
 	NSString *attribute;
 }
 - (id) initWithItemUUID: (ETUUID*)aUUID attribute: (NSString*)anAttribute;
-- (void) applyTo: (COMutableItem *)anItem;
+- (void) applyTo: (COSubtree *)anItem;
 
 @end
 
