@@ -46,7 +46,7 @@
 	NILARG_EXCEPTION_TEST(aUUID);
 	
 	SUPERINIT
-	root = [[COMutableItem alloc] initWithUUID: aUUID];
+	item = [[COMutableItem alloc] initWithUUID: aUUID];
 	embeddedSubtrees = [[NSMutableDictionary alloc] init];
 	return self;
 }
@@ -64,11 +64,11 @@
 	}
 	
 	SUPERINIT;
-	root = [[items objectForKey: aRootUUID] mutableCopy];
+	item = [[items objectForKey: aRootUUID] mutableCopy];
 	embeddedSubtrees = [[NSMutableDictionary alloc] init];
 	
 	// WARNING: the receiver is in an inconsistent state right now
-	for (ETUUID *aUUID in [root embeddedItemUUIDs])
+	for (ETUUID *aUUID in [item embeddedItemUUIDs])
 	{
 		COSubtree *subTree = [[[self class] alloc] initWithItemDictionary: items
 																 rootUUID: aUUID];
@@ -89,7 +89,7 @@
 	{
 		aSubtree->parent = nil;
 	}
-	DESTROY(root);
+	DESTROY(item);
 	DESTROY(embeddedSubtrees);
 	[super dealloc];
 }
@@ -116,7 +116,7 @@
 
 - (id)copyWithNameMapping: (NSDictionary *)aMapping
 {
-	COMutableItem *newRoot = [[root mutableCopyWithNameMapping: aMapping] autorelease];
+	COMutableItem *newItem = [[item mutableCopyWithNameMapping: aMapping] autorelease];
 
 	NSMutableDictionary *newItems = [NSMutableDictionary dictionary];
 	
@@ -130,7 +130,7 @@
 		[treeCopy release];
 	}
 	
-	ASSIGN(newCopy->root, newRoot);
+	ASSIGN(newCopy->item, newItem);
 	ASSIGN(newCopy->embeddedSubtrees, newItems);
 	
 	[newCopy debug];
@@ -210,7 +210,7 @@
 {
 	NSMutableSet *result = [NSMutableSet set];
 	
-	[result addObject: [[root copy] autorelease]];
+	[result addObject: [[item copy] autorelease]];
 	
 	for (COSubtree *node in [self directDescendentSubtrees])
 	{
@@ -235,7 +235,7 @@
 
 - (NSSet *)directDescendentSubtreeUUIDs
 {
-	return [root embeddedItemUUIDs];
+	return [item embeddedItemUUIDs];
 }
 
 - (NSArray *)directDescendentSubtrees;
@@ -290,14 +290,14 @@
 	
 	for (NSString *attr in [destSubtreeParent attributeNames])
 	{
-		if ([[destSubtreeParent->root allObjectsForAttribute: attr] containsObject: [destSubtree UUID]])
+		if ([[destSubtreeParent->item allObjectsForAttribute: attr] containsObject: [destSubtree UUID]])
 		{
 			COType *type = [destSubtreeParent typeForAttribute: attr];
 			if ([type isMultivalued])
 			{
 				if ([type isOrdered])
 				{
-					NSUInteger index = [[destSubtreeParent->root allObjectsForAttribute: attr] indexOfObject: [destSubtree UUID]];
+					NSUInteger index = [[destSubtreeParent->item allObjectsForAttribute: attr] indexOfObject: [destSubtree UUID]];
 					
 					return [COItemPath pathWithItemUUID: [destSubtreeParent UUID]
 											  arrayName: attr
@@ -332,26 +332,26 @@
 
 - (COItem *) item
 {
-	return [[root copy] autorelease];
+	return [[item copy] autorelease];
 }
 
 - (ETUUID *) UUID
 {
-	return [root UUID];
+	return [item UUID];
 }
 
 - (NSArray *) attributeNames
 {
-	return [root attributeNames];
+	return [item attributeNames];
 }
 
 - (COType *) typeForAttribute: (NSString *)anAttribute
 {
-	return [root typeForAttribute: anAttribute];
+	return [item typeForAttribute: anAttribute];
 }
 - (id) valueForAttribute: (NSString*)anAttribute
 {
-	id rootValue = [root valueForAttribute: anAttribute];
+	id rootValue = [item valueForAttribute: anAttribute];
 	COType *type = [self typeForAttribute: anAttribute];
 	
 	if ([type isPrimitiveTypeEqual: [COType embeddedItemType]])
@@ -467,7 +467,7 @@
 	}
 	else
 	{
-		[root setValue: aValue
+		[item setValue: aValue
 		  forAttribute: anAttribute
 				  type: aType];
 	}
@@ -487,7 +487,7 @@ toUnorderedAttribute: (NSString*)anAttribute
 	}
 	else
 	{
-		[root addObject: aValue
+		[item addObject: aValue
    toUnorderedAttribute: anAttribute
 				   type: aType];
 	}
@@ -509,7 +509,7 @@ toUnorderedAttribute: (NSString*)anAttribute
 	}
 	else
 	{
-		[root addObject: aValue
+		[item addObject: aValue
 	 toOrderedAttribute: anAttribute
 				atIndex: anIndex
 				   type: aType];
@@ -522,7 +522,7 @@ toUnorderedAttribute: (NSString*)anAttribute
   toOrderedAttribute: (NSString*)anAttribute
 				type: (COType *)aType
 {
-	NSUInteger anIndex = [[root valueForAttribute: anAttribute] count];
+	NSUInteger anIndex = [[item valueForAttribute: anAttribute] count];
 						  
 	[self addObject: aValue
  toOrderedAttribute: anAttribute
@@ -532,15 +532,15 @@ toUnorderedAttribute: (NSString*)anAttribute
 
 - (void)removeValueForAttribute: (NSString*)anAttribute
 {
-	if ([[root typeForAttribute: anAttribute] isPrimitiveTypeEqual: [COType embeddedItemType]])
+	if ([[item typeForAttribute: anAttribute] isPrimitiveTypeEqual: [COType embeddedItemType]])
 	{
-		for (ETUUID *uuidToRemove in [root allObjectsForAttribute: anAttribute])
+		for (ETUUID *uuidToRemove in [item allObjectsForAttribute: anAttribute])
 		{
 			[embeddedSubtrees removeObjectForKey: uuidToRemove];
 		}
 	}
 		
-	[root removeValueForAttribute: anAttribute];
+	[item removeValueForAttribute: anAttribute];
 	
 	[self debug];
 }
@@ -605,7 +605,7 @@ toUnorderedAttribute: (NSString*)anAttribute
 	[aSubtree->parent->embeddedSubtrees setObject: aSubtree
 										   forKey: [aSubtree UUID]];
 	[aPath insertValue: [aSubtree UUID]
-		   inStoreItem: aSubtree->parent->root];  
+		   inStoreItem: aSubtree->parent->item];  
 	
 	[aSubtree release]; // balance retain at start of method
 	
@@ -665,7 +665,7 @@ toUnorderedAttribute: (NSString*)anAttribute
 	COSubtree *parentOfSubtreeToRemove = [aSubtree parent];
 	COItemPath *itemPath = [self itemPathOfSubtreeWithUUID: aUUID];	
 	NSAssert([[itemPath UUID] isEqual: [parentOfSubtreeToRemove UUID]], @"");
-	[itemPath removeValue: aUUID inStoreItem: parentOfSubtreeToRemove->root];
+	[itemPath removeValue: aUUID inStoreItem: parentOfSubtreeToRemove->item];
 	[parentOfSubtreeToRemove->embeddedSubtrees removeObjectForKey: aUUID];
 	aSubtree->parent = nil;
 	
@@ -682,8 +682,8 @@ toUnorderedAttribute: (NSString*)anAttribute
 
 - (void) renameWithNameMapping_internal: (NSDictionary *)aMapping
 {
-	COMutableItem *newRoot = [[root mutableCopyWithNameMapping: aMapping] autorelease];
-	ASSIGN(root, newRoot);
+	COMutableItem *newItem = [[item mutableCopyWithNameMapping: aMapping] autorelease];
+	ASSIGN(item, newItem);
 	
 	NSMutableDictionary *newItems = [NSMutableDictionary dictionary];
 	for (COSubtree *tree in [embeddedSubtrees allValues])
@@ -716,14 +716,14 @@ toUnorderedAttribute: (NSString*)anAttribute
 	}
 	COSubtree *otherItemTree = (COSubtree*)object;
 	
-	if (![otherItemTree->root isEqual: root]) return NO;
+	if (![otherItemTree->item isEqual: item]) return NO;
 	if (![otherItemTree->embeddedSubtrees isEqual: embeddedSubtrees]) return NO;
 	return YES;
 }
 
 - (NSUInteger) hash
 {
-	return [root hash] ^ [embeddedSubtrees hash];
+	return [item hash] ^ [embeddedSubtrees hash];
 }
 
 

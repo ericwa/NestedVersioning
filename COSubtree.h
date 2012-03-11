@@ -23,7 +23,7 @@
 @interface COSubtree : NSObject <NSCopying>
 {
 	@private
-	COMutableItem *root;
+	COMutableItem *item;
 	NSMutableDictionary *embeddedSubtrees;
 	COSubtree *parent; // weak reference
 }
