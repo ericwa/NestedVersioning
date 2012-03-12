@@ -23,7 +23,7 @@
 	COSubtreeDiff *result = [[[self class] alloc] init];
 	result->oldRoot = [oldRoot copyWithZone: zone];
 	result->newRoot = [newRoot copyWithZone: zone];
-	result->edits = [[NSMutableArray alloc] initWithArray: edits copyItems: YES];
+	result->edits = [[NSMutableSet alloc] initWithSet: edits copyItems: YES];
 	return result;
 }
 
@@ -220,77 +220,7 @@
 
 - (void) mergeWith: (COSubtreeDiff *)other
 {
-
-	/*
-	NSSet *allUUIDs = [[NSSet setWithArray: [diff1->_editsByPropertyAndUUID allKeys]]
-					   setByAddingObjectsFromArray: [diff2->_editsByPropertyAndUUID allKeys]];
-	
-	
-	for (ETUUID *uuid in allUUIDs)
-	{
-		NSDictionary *propDict1 = [diff1->_editsByPropertyAndUUID objectForKey: uuid];
-		NSDictionary *propDict2 = [diff2->_editsByPropertyAndUUID objectForKey: uuid];
-		NSSet *allProperties = [[NSSet setWithArray: [propDict1 allKeys]]
-								setByAddingObjectsFromArray: [propDict2 allKeys]];
-		
-		for (NSString *prop in allProperties)
-		{
-			COObjectGraphEdit *edit1 = [propDict1 objectForKey: prop]; // possibly nil
-			COObjectGraphEdit *edit2 = [propDict2 objectForKey: prop]; // possibly nil
-			
-			// FIXME: modularize this
-			
-			if (edit1 != nil && edit2 != nil) 
-			{
-				if ([edit1 isKindOfClass: [COObjectGraphRemoveProperty class]] && [edit2 isKindOfClass: [COObjectGraphRemoveProperty class]])
-				{
-					//NSLog(@"Both are remove %@ (no conflict)", prop);
-					[result record: edit1];
-				}
-				else if ([edit1 isKindOfClass: [COObjectGraphSetProperty class]] && [edit2 isKindOfClass: [COObjectGraphSetProperty class]]
-						 && [[(COObjectGraphSetProperty*)edit1 newlySetValue] isEqual: [(COObjectGraphSetProperty*)edit2 newlySetValue]])
-				{
-					//NSLog(@"Both are set %@ to %@ (no conflict)", prop, [(COObjectGraphSetProperty*)edit1 newValue]);
-					[result record: edit1];
-				}
-				else if ([edit1 isKindOfClass: [COObjectGraphModifyArray class]] && [edit2 isKindOfClass: [COObjectGraphModifyArray class]])
-				{
-					//NSLog(@"Both are modifying array %@.. trying array merge", prop);
-					COMergeResult *merge = [[(COObjectGraphModifyArray*)edit1 diff] mergeWith: [(COObjectGraphModifyArray*)edit2 diff]];
-					
-					[result recordModifyArray: [[[COArrayDiff alloc] initWithOperations: [merge nonconflictingOps]] autorelease] forProperty: prop ofObjectUUID: uuid];
-				}
-				else if ([edit1 isKindOfClass: [COObjectGraphModifySet class]] && [edit2 isKindOfClass: [COObjectGraphModifySet class]])
-				{
-					//NSLog(@"Both are modifying set %@.. trying set merge", prop);
-					COMergeResult *merge = [[(COObjectGraphModifySet*)edit1 diff] mergeWith: [(COObjectGraphModifySet*)edit2 diff]];
-					
-					[result recordModifySet: [[[COSetDiff alloc] initWithOperations: [merge nonconflictingOps]] autorelease] forProperty: prop ofObjectUUID: uuid];
-				}
-				else
-				{
-					// FIXME: handle modifying arrays
-					//NSLog(@"Conflict: {\n\t%@\n\t%@\n}", edit1, edit2);
-					//NSLog(@"WARNING: accepting left-hand-side..");
-					[result record: edit1]; // FIXME: decide on output format...
-				}
-			}
-			else if (edit1 != nil)
-			{
-				//NSLog(@"Accept/reject: {\n\t%@\n\t%@\n}", edit1, edit2);      
-				[result record: edit1];
-			}
-			else if (edit2 != nil)
-			{
-				//NSLog(@"Reject/accept: {\n\t%@\n\t%@\n}", edit1, edit2);      
-				[result record: edit2];
-			}
-			else assert(0);
-		}
-	}
-	
-	return result;
-	 */
+	[edits unionSet: other->edits];
 }
 
 - (COSubtreeDiff *)subtreeDiffByMergingWithDiff: (COSubtreeDiff *)other

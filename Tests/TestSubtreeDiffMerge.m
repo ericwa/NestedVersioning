@@ -97,13 +97,11 @@
 	
 	COSubtreeDiff *diff_merged = [diff_doc3_vs_doc2 subtreeDiffByMergingWithDiff: diff_doc3_vs_doc];
 	
-	// FIXME: Test that there are no conflicts
-	
 	COSubtree *merged = [diff_merged subtreeWithDiffAppliedToSubtree: doc3];
 	
 	UKFalse([diff_merged hasConflicts]);
 	
-	UKObjectsEqual(A(@"triangle1", @"line1", @"circle1", @"square1", @"image1"), [merged valueForAttribute: @"contents"]);
+	UKObjectsEqual(A(triangle1, line1, circle1, square1, image1), [merged valueForAttribute: @"contents"]);
 }
 
 /**
