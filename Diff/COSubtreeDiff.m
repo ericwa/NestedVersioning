@@ -235,6 +235,41 @@
 	return NO;
 }
 
+#pragma mark access (sub-objects may be mutated by caller)
+
+- (NSSet *)edits
+{
+	return nil;
+}
+- (NSSet *)conflicts
+{
+	return nil;
+}
+
+#pragma mark access
+
+- (NSSet *)modifiedItemUUIDs
+{
+	return nil;
+}
+
+#pragma mark mutation
+
+/**
+ * removes conflict (by extension, all the conflicting changes)... 
+ * caller should subsequently insert or update edits to reflect the
+ * resolution of the conflict.
+ */
+- (void) removeConflict: (COSubtreeConflict *)aConflict
+{
+}
+- (void) addEdit: (COStoreItemDiffOperation *)anEdit
+{
+}
+- (void) removeEdit: (COStoreItemDiffOperation *)anEdit
+{
+}
+
 @end
 
 

@@ -27,11 +27,6 @@
 - (COSubtree *) subtreeWithDiffAppliedToSubtree: (COSubtree *)aSubtree;
 
 /**
- * apply in-place
- */
-- (void) applyTo: (COSubtree *)aSubtree;
-
-/**
  * Throws an exception if either diff has conflicts
  *
  * Caller owns the return value with respect to mutation
