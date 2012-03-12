@@ -19,7 +19,6 @@
 	ETUUID *oldRoot;
 	ETUUID *newRoot;
 	NSMutableSet *edits;
-	NSMutableDictionary *insertedItemForUUID; // ETUUID : COItem
 }
 
 + (COSubtreeDiff *) diffSubtree: (COSubtree *)a

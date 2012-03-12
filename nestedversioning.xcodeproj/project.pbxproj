@@ -11,7 +11,6 @@
 		6607F95D14D0CD7F00F1E7C6 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6607F95A14D0CD7F00F1E7C6 /* InfoPlist.strings */; };
 		6607F95E14D0CD7F00F1E7C6 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6607F95B14D0CD7F00F1E7C6 /* MainMenu.xib */; };
 		6607F97014D0DD9900F1E7C6 /* PersistentRootWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = 6607F96F14D0DD9900F1E7C6 /* PersistentRootWindow.nib */; };
-		6660E23614F84A6C00D2F319 /* TestItemDiffMerge.m in Sources */ = {isa = PBXBuildFile; fileRef = 6660E23514F84A6C00D2F319 /* TestItemDiffMerge.m */; };
 		6660E23A14F84B3000D2F319 /* TestItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 6660E23914F84B3000D2F319 /* TestItem.m */; };
 		6660E23B14F84BD500D2F319 /* TestStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 6628FBA6142FA7840072767A /* TestStore.m */; };
 		6660E23E14F84C2A00D2F319 /* TestPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 6660E23D14F84C2A00D2F319 /* TestPath.m */; };
@@ -177,7 +176,6 @@
 		66300AFB1493148300246C89 /* EWHistoryGraphView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWHistoryGraphView.h; sourceTree = "<group>"; };
 		66300AFC1493148300246C89 /* EWHistoryGraphView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWHistoryGraphView.m; sourceTree = "<group>"; };
 		66416D20142D3EE20016501D /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
-		6660E23514F84A6C00D2F319 /* TestItemDiffMerge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestItemDiffMerge.m; sourceTree = "<group>"; };
 		6660E23914F84B3000D2F319 /* TestItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestItem.m; sourceTree = "<group>"; };
 		6660E23D14F84C2A00D2F319 /* TestPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestPath.m; sourceTree = "<group>"; };
 		668DA35E14E0E41A0062E6C2 /* COItemPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COItemPath.m; sourceTree = "<group>"; };
@@ -647,7 +645,6 @@
 				6628FB9D142FA7840072767A /* Tests - old */,
 				798763E114EB3B7A0064002F /* TestSequenceDiffMerge.m */,
 				7994684414EB9F7A008AC16E /* TestSetDiffMerge.m */,
-				6660E23514F84A6C00D2F319 /* TestItemDiffMerge.m */,
 				790574FB14F8A7D20007C67B /* TestSubtreeDiffMerge.m */,
 			);
 			path = Tests;
@@ -938,7 +935,6 @@
 				66E778AD14E6080700D5DFFF /* TestPersistentRootEditingContext.m in Sources */,
 				798763E214EB3B7A0064002F /* TestSequenceDiffMerge.m in Sources */,
 				7994684514EB9F7A008AC16E /* TestSetDiffMerge.m in Sources */,
-				6660E23614F84A6C00D2F319 /* TestItemDiffMerge.m in Sources */,
 				6660E23A14F84B3000D2F319 /* TestItem.m in Sources */,
 				6660E23E14F84C2A00D2F319 /* TestPath.m in Sources */,
 				790574FC14F8A7D20007C67B /* TestSubtreeDiffMerge.m in Sources */,

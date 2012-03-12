@@ -15,26 +15,35 @@
 	ASSIGN(oldRoot, anOldRoot);
 	ASSIGN(newRoot, aNewRoot);
 	ASSIGN(edits, [NSMutableSet set]);
-	ASSIGN(insertedItemForUUID, [NSMutableDictionary dictionary]);
 	return self;
 }
 
-- (void) _diffItem: (COItem *)itemA withItem: (COItem*)itemB
+- (id) copyWithZone:(NSZone *)zone
 {
-	NILARG_EXCEPTION_TEST(itemA);
+	COSubtreeDiff *result = [[[self class] alloc] init];
+	result->oldRoot = [oldRoot copyWithZone: zone];
+	result->newRoot = [newRoot copyWithZone: zone];
+	result->edits = [[NSMutableArray alloc] initWithArray: edits copyItems: YES];
+	return result;
+}
+
+
+- (void) _diffItemBefore: (COItem *)itemA after: (COItem*)itemB
+{
 	NILARG_EXCEPTION_TEST(itemB);
 	
-	if (![[itemA UUID] isEqual: [itemB UUID]])
+	if (itemA != nil 
+		&& ![[itemA UUID] isEqual: [itemB UUID]])
 	{
 		[NSException raise: NSInvalidArgumentException format: @"expected same UUID"];
 	}
 	
-	ETUUID *uuid = [itemA UUID];
+	ETUUID *uuid = [itemB UUID];
 	
-	NSMutableSet *removedAttrs = [NSMutableSet setWithArray: [itemA attributeNames]];
+	NSMutableSet *removedAttrs = [NSMutableSet setWithArray: [itemA attributeNames]]; // itemA may be nil => may be empty set
 	[removedAttrs minusSet: [NSSet setWithArray: [itemB attributeNames]]];
 	
-	NSMutableSet *addedAttrs = [NSMutableSet setWithArray: [itemB attributeNames]];
+	NSMutableSet *addedAttrs = [NSMutableSet setWithArray: [itemB attributeNames]]; 
 	[addedAttrs minusSet: [NSSet setWithArray: [itemA attributeNames]]];
 	
 	NSMutableSet *commonAttrs = [NSMutableSet setWithArray: [itemB attributeNames]];
@@ -74,6 +83,9 @@
 		COType *typeB = [itemB typeForAttribute: commonAttr];
 		id valueA = [itemA valueForAttribute: commonAttr];
 		id valueB = [itemB valueForAttribute: commonAttr];
+		
+		NSAssert(valueA != nil, @"value should not be nil");
+		NSAssert(valueB != nil, @"value should not be nil");
 		
 		if (![typeB isEqual: typeA])
 		{
@@ -133,31 +145,12 @@
 	COSubtreeDiff *result = [[[self alloc] initWithOldRootUUID: [a UUID]
 												   newRootUUID: [b UUID]] autorelease];
 
-	NSSet *rootA_UUIDs = [a allUUIDs];
-	NSSet *rootB_UUIDs = [b allUUIDs];
-
+	for (ETUUID *aUUID in [b allUUIDs])
 	{
-		NSMutableSet *commonUUIDs = [NSMutableSet setWithSet: rootA_UUIDs];
-		[commonUUIDs intersectSet: rootB_UUIDs];
+		COItem *commonItemA = [[a subtreeWithUUID: aUUID] item]; // may be nil if the item was inserted in b
+		COItem *commonItemB = [[b subtreeWithUUID: aUUID] item];
 		
-		for (ETUUID *aUUID in commonUUIDs)
-		{
-			COItem *commonItemA = [[a subtreeWithUUID: aUUID] item];
-			COItem *commonItemB = [[b subtreeWithUUID: aUUID] item];
-			
-			[result _diffItem: commonItemA withItem: commonItemB];
-		}
-	}
-	
-	{
-		NSMutableSet *insertedUUIDs = [NSMutableSet setWithSet: rootB_UUIDs];
-		[insertedUUIDs minusSet: rootA_UUIDs];
-		
-		for (ETUUID *aUUID in insertedUUIDs)
-		{
-			[result->insertedItemForUUID setObject: [[b subtreeWithUUID: aUUID] item]
-											forKey: aUUID];
-		}		
+		[result _diffItemBefore: commonItemA after: commonItemB];
 	}
 	
 	return result;
@@ -188,6 +181,10 @@
 	 COSubtree object but change its UUID. sounds like applying 
 	 diff in-place doesn't make much sense.
 	 
+		 => or we could require that subtree diffs don't change the root UUID.
+		 so if you want to diff/merge two subtrees with different roots, 
+		 you would have to wrap them in a container. not sure if that is good....
+	 
 	 */
 
 	NSMutableDictionary *newItems = [NSMutableDictionary dictionary];
@@ -206,54 +203,25 @@
 	for (COStoreItemDiffOperation *edit in edits)
 	{
 		COMutableItem *item = [newItems objectForKey: [edit UUID]];
+		
+		if (item == nil)
+		{
+			item = [[COMutableItem alloc] initWithUUID: [edit UUID]]; // FIXME: hack for inserted items
+			[newItems setObject: item forKey: [edit UUID]];
+			[item release];
+		}
+		
 		[edit applyTo: item];
 	}
-	
-	[newItems addEntriesFromDictionary: insertedItemForUUID];
 	
 	return [COSubtree subtreeWithItemSet: [NSSet setWithArray: [newItems allValues]]
 								rootUUID: newRoot];
 }
 
-- (COSubtreeDiff *)subtreeDiffByMergingWithDiff: (COSubtreeDiff *)other
+- (void) mergeWith: (COSubtreeDiff *)other
 {
-	return nil;
-	
-#if 0
-	COObjectGraphDiff *result = [[[COObjectGraphDiff alloc] init] autorelease];
-	//NSLog(@"Merging %@ and %@...", diff1, diff2);
-	
-	NILARG_EXCEPTION_TEST(diff1);
-	NILARG_EXCEPTION_TEST(diff2);
-	
-	// Merge inserts and deletes
-	
-	NSSet *diff1Inserts = [NSSet setWithArray: [diff1->_insertedObjectsByUUID allKeys]];
-	NSSet *diff2Inserts = [NSSet setWithArray: [diff2->_insertedObjectsByUUID allKeys]];	
-	
-	NSMutableSet *insertConflicts = [NSMutableSet setWithSet: diff1Inserts];
-	[insertConflicts intersectSet: diff2Inserts];
-	for (ETUUID *aUUID in insertConflicts)
-	{
-		// Warn about conflicts
-		if ([[diff1->_insertedObjectsByUUID objectForKey: aUUID] editingContext] != 
-			[[diff2->_insertedObjectsByUUID objectForKey: aUUID] editingContext])
-		{
-			//NSLog(@"ERROR: Insert/Insert conflict with UUID %@. LHS wins.", aUUID);
-		}
-	}
-	
-	NSMutableDictionary *allInserts = [NSMutableDictionary dictionary];
-	[allInserts addEntriesFromDictionary: diff2->_insertedObjectsByUUID];
-	[allInserts addEntriesFromDictionary: diff1->_insertedObjectsByUUID]; // If there are duplicate keys diff1 wins
-	[result->_insertedObjectsByUUID setDictionary: allInserts];
-	
-	NSSet *allDeletedUUIDs = [diff1->_deletedObjectUUIDs setByAddingObjectsFromSet: diff2->_deletedObjectUUIDs];
-	[result->_deletedObjectUUIDs setSet: allDeletedUUIDs];
-	
-	
-	// Merge edits
-	
+
+	/*
 	NSSet *allUUIDs = [[NSSet setWithArray: [diff1->_editsByPropertyAndUUID allKeys]]
 					   setByAddingObjectsFromArray: [diff2->_editsByPropertyAndUUID allKeys]];
 	
@@ -322,15 +290,22 @@
 	}
 	
 	return result;
-#endif
+	 */
+}
+
+- (COSubtreeDiff *)subtreeDiffByMergingWithDiff: (COSubtreeDiff *)other
+{
+	COSubtreeDiff *result = [self copy];
+	[result mergeWith: other];
+	return result;
 }
 
 - (BOOL) hasConflicts
 {	
 	return NO;
 }
-@end
 
+@end
 
 
 
@@ -350,6 +325,11 @@
 	ASSIGN(type, aType);
 	ASSIGN(uuid, aUUID);
 	return self;
+}
+
+- (id) copyWithZone: (NSZone *)aZone
+{
+	return [[[self class] alloc] initWithUUID: uuid attribute: attribute type:type];
 }
 
 - (void)dealloc
@@ -384,6 +364,13 @@
 	return self;
 }
 
+- (id) copyWithZone: (NSZone *)aZone
+{
+	COStoreItemDiffOperationSetAttribute *result = [[[self class] alloc] initWithUUID: uuid attribute: attribute type:type];
+	result->value = [value copyWithZone: aZone];
+	return result;
+}
+
 - (void)dealloc
 {
 	[value release];
@@ -392,11 +379,6 @@
 
 - (void) applyTo: (COMutableItem *)anItem
 {
-	if (nil != [anItem valueForAttribute: attribute])
-	{
-		[NSException raise: NSInternalInconsistencyException
-					format: @"expeted attribute %@ to be unset", attribute];
-	}
 	[anItem setValue: value
 		forAttribute: attribute
 				type: type];
@@ -430,6 +412,13 @@
 	return self;
 }
 
+- (id) copyWithZone: (NSZone *)aZone
+{
+	COStoreItemDiffOperationModifyArray *result = [[[self class] alloc] initWithUUID: uuid attribute: attribute type:type];
+	result->arrayDiff = [arrayDiff retain]; // FIXME!!!
+	return result;
+}
+
 - (void)dealloc
 {
 	[arrayDiff release];
@@ -457,6 +446,13 @@
 	
 	ASSIGN(setDiff, aDiff);
 	return self;
+}
+
+- (id) copyWithZone: (NSZone *)aZone
+{
+	COStoreItemDiffOperationModifySet *result = [[[self class] alloc] initWithUUID: uuid attribute: attribute type:type];
+	result->setDiff = [setDiff retain]; // FIXME!!!
+	return result;
 }
 
 - (void)dealloc
