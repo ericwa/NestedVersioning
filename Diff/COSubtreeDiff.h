@@ -2,10 +2,11 @@
 
 @class ETUUID;
 @class COSubtree;
+@class COMutableItem;
 
-@class COSubtreeEdit;
+@class COStoreItemDiffOperation;
 @class COSubtreeConflict;
-
+@class COSetDiff, COArrayDiff;
 @class COType;
 
 /**
@@ -58,40 +59,62 @@
  * resolution of the conflict.
  */
 - (void) removeConflict: (COSubtreeConflict *)aConflict;
-- (void) addEdit: (COSubtreeEdit *)anEdit;
-- (void) removeEdit: (COSubtreeEdit *)anEdit;
+- (void) addEdit: (COStoreItemDiffOperation *)anEdit;
+- (void) removeEdit: (COStoreItemDiffOperation *)anEdit;
 
 @end
 
 
 
-// edit classes
+// operation classes
 
-
-@interface COSubtreeEdit : NSObject
+@interface COStoreItemDiffOperation : NSObject
 {
-	ETUUID *itemUUID;
+	ETUUID *uuid;
 	NSString *attribute;
+	COType *type;
 }
-- (id) initWithItemUUID: (ETUUID*)aUUID attribute: (NSString*)anAttribute;
-- (void) applyTo: (COSubtree *)anItem;
+- (id) initWithUUID: (ETUUID*)aUUID attribute: (NSString*)anAttribute type: (COType*)aType;
+- (void) applyTo: (COMutableItem *)anItem;
+
+- (NSString *) attribute;
+- (ETUUID *) UUID;
 
 @end
 
-
-
-@interface COSubtreeSetAttribute : COSubtreeEdit 
+@interface COStoreItemDiffOperationSetAttribute : COStoreItemDiffOperation 
 {
 	id value;
 }
-- (id) initWithItemUUID: (ETUUID*)aUUID
-			  attribute: (NSString*)anAttribute
-				   type: (COType*)aType
-				  value: (id)aValue;
+- (id) initWithUUID: (ETUUID*)aUUID
+		  attribute: (NSString*)anAttribute
+			   type: (COType*)aType
+			  value: (id)aValue;
+
+@end
+
+@interface COStoreItemDiffOperationDeleteAttribute : COStoreItemDiffOperation
+@end
+
+
+@interface COStoreItemDiffOperationModifyArray : COStoreItemDiffOperation
+{
+	COArrayDiff *arrayDiff;
+}
+
+- (id) initWithUUID: (ETUUID*)aUUID attribute: (NSString*)anAttribute type: (COType*)aType arrayDiff: (COArrayDiff *)aDiff;
+
+@end
+
+
+@interface COStoreItemDiffOperationModifySet : COStoreItemDiffOperation
+{
+	COSetDiff *setDiff;
+}
+
+- (id) initWithUUID: (ETUUID*)aUUID attribute: (NSString*)anAttribute type: (COType*)aType setDiff: (COSetDiff *)aDiff;
 
 @end
 
 
 
-@interface COSubtreeDeleteAttribute : COSubtreeEdit
-@end

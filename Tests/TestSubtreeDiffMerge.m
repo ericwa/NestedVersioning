@@ -1,5 +1,4 @@
 #import "TestCommon.h"
-#import "COItemDiff.h"
 
 @interface TestSubtreeDiffMerge : NSObject <UKTest>
 {

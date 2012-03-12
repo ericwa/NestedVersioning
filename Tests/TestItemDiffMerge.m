@@ -1,5 +1,5 @@
 #import "TestCommon.h"
-#import "COItemDiff.h"
+#if 0
 
 @interface TestItemDiffMerge : NSObject <UKTest>
 {
@@ -111,3 +111,6 @@
 }
 
 @end
+
+
+#endif
