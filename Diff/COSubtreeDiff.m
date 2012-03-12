@@ -6,6 +6,119 @@
 #import "COSetDiff.h"
 #import "COArrayDiff.h"
 
+
+@implementation COUUIDAttributeTuple
+
++ (COUUIDAttributeTuple *) tupleWithUUID: (ETUUID *)aUUID attribute: (NSString *)anAttribute
+{
+	COUUIDAttributeTuple *result = [[[[self class] alloc] init] autorelease];
+	result->uuid = [aUUID copy];
+	result->attribute = [anAttribute copy];
+	return result;
+}
+
+- (void) dealloc
+{
+	[uuid release];
+	[attribute release];
+	[super dealloc];
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+	return [self retain];
+}
+
+- (BOOL) isEqual:(id)object
+{
+	return [object isKindOfClass: [self class]]
+		&& [uuid isEqual: [(COUUIDAttributeTuple *)object UUID]]
+		&& [attribute isEqual: [(COUUIDAttributeTuple *)object attribute]];
+}
+
+- (NSUInteger) hash
+{
+	return 12878773850431782441ULL | [uuid hash] |  [attribute hash];
+}
+
+- (ETUUID *)UUID
+{
+	return uuid;
+}
+
+- (NSString *)attribute
+{
+	return attribute;
+}
+
+@end
+
+
+#pragma mark diff dictionary
+
+
+@implementation CODiffDictionary
+
+- (id) init
+{
+	SUPERINIT;
+	dict = [[NSMutableDictionary alloc] init];
+	return self;
+}
+
+- (void)dealloc
+{
+	[dict release];
+	[super dealloc];
+}
+
+- (id) copyWithZone:(NSZone *)zone
+{
+	CODiffDictionary *result = [[[self class] alloc] init];
+	for (COUUIDAttributeTuple *tuple in dict)
+	{
+		NSMutableArray *array = [[NSMutableArray alloc] initWithArray: [dict objectForKey: tuple]
+															copyItems: YES];
+		[result->dict setObject: array forKey: tuple];
+		[array release];		
+	}
+	return result;
+}
+
+- (NSArray *) editsForUUID: (ETUUID *)aUUID attribute: (NSString *)aString
+{
+	return [self editsForTuple: [COUUIDAttributeTuple tupleWithUUID: aUUID attribute: aString]];
+}
+
+- (NSArray *) editsForTuple: (COUUIDAttributeTuple *)aTuple
+{
+	return [dict objectForKey: aTuple];
+}
+
+- (void) addEdit: (COStoreItemDiffOperation *)anEdit forUUID: (ETUUID *)aUUID attribute: (NSString *)aString
+{
+	COUUIDAttributeTuple *aTuple = [COUUIDAttributeTuple tupleWithUUID: aUUID attribute: aString];
+	NSMutableArray *array = [dict objectForKey: aTuple];
+	if (array == nil)
+	{
+		array = [NSMutableArray array];
+	}
+	[array addObject: anEdit];
+	[dict setObject: array forKey: aTuple];
+}
+
+- (NSArray *)allTuples
+{
+	return [dict allKeys];
+}
+
+@end
+
+
+
+
+
+
 @implementation COSubtreeDiff
 
 - (id) initWithOldRootUUID: (ETUUID*)anOldRoot
@@ -14,7 +127,7 @@
 	SUPERINIT;
 	ASSIGN(oldRoot, anOldRoot);
 	ASSIGN(newRoot, aNewRoot);
-	ASSIGN(edits, [NSMutableSet set]);
+	diffDict = [[CODiffDictionary alloc] init];
 	return self;
 }
 
@@ -23,7 +136,7 @@
 	COSubtreeDiff *result = [[[self class] alloc] init];
 	result->oldRoot = [oldRoot copyWithZone: zone];
 	result->newRoot = [newRoot copyWithZone: zone];
-	result->edits = [[NSMutableSet alloc] initWithSet: edits copyItems: YES];
+	result->diffDict = [diffDict copyWithZone: zone];
 	return result;
 }
 
@@ -55,11 +168,9 @@
 	for (NSString *addedAttr in addedAttrs)
 	{
 		COStoreItemDiffOperationSetAttribute *insertOp = [[COStoreItemDiffOperationSetAttribute alloc] 
-														  initWithUUID: uuid
-														  attribute: addedAttr
-														  type: [itemB typeForAttribute: addedAttr]
-														  value: [itemB valueForAttribute:addedAttr]];
-		[edits addObject: insertOp];
+														  initWithType: [itemB typeForAttribute: addedAttr]
+															value: [itemB valueForAttribute:addedAttr]];
+		[diffDict addEdit: insertOp forUUID: uuid attribute: addedAttr];
 		[insertOp release];
 	}
 	
@@ -67,11 +178,8 @@
 	
 	for (NSString *removedAttr in removedAttrs)
 	{
-		COStoreItemDiffOperationDeleteAttribute *deleteOp = [[COStoreItemDiffOperationDeleteAttribute alloc] 
-															 initWithUUID: uuid
-															 attribute: removedAttr
-															 type: [itemA typeForAttribute: removedAttr]];
-		[edits addObject: deleteOp];
+		COStoreItemDiffOperationDeleteAttribute *deleteOp = [[COStoreItemDiffOperationDeleteAttribute alloc] init];
+		[diffDict addEdit: deleteOp forUUID: uuid attribute: removedAttr];
 		[deleteOp release];
 	}
 	
@@ -90,11 +198,9 @@
 		if (![typeB isEqual: typeA])
 		{
 			COStoreItemDiffOperationSetAttribute *insertOp = [[COStoreItemDiffOperationSetAttribute alloc] 
-															  initWithUUID: uuid
-															  attribute: commonAttr
-															  type: typeB
-															  value: valueB];
-			[edits addObject: insertOp];
+															  initWithType: typeB
+																value: valueB];
+			[diffDict addEdit: insertOp forUUID: uuid attribute: commonAttr];
 			[insertOp release];
 		}
 		else if (![valueB isEqual: valueA])
@@ -105,11 +211,8 @@
 																secondSet: valueB
 														 sourceIdentifier: @"FIXME"] autorelease];
 				COStoreItemDiffOperationSetAttribute *editOp = [[COStoreItemDiffOperationModifySet alloc] 
-																  initWithUUID: uuid
-																  attribute: commonAttr
-																  type: typeB
-																  setDiff: setDiff];
-				[edits addObject: editOp];
+																  initWithSetDiff: setDiff];
+				[diffDict addEdit: editOp forUUID: uuid attribute: commonAttr];
 				[editOp release];
 			}
 			else if ([typeA isMultivalued] && [typeA isOrdered])
@@ -118,21 +221,16 @@
 																	  secondArray: valueB
 																 sourceIdentifier: @"FIXME"] autorelease];
 				COStoreItemDiffOperationModifyArray *editOp = [[COStoreItemDiffOperationModifyArray alloc] 
-																	initWithUUID: uuid
-																	attribute: commonAttr
-																	type: typeB
-																arrayDiff: arrayDiff];
-				[edits addObject: editOp];
+																	initWithArrayDiff: arrayDiff];
+				[diffDict addEdit: editOp forUUID: uuid attribute: commonAttr];
 				[editOp release];
 			}
 			else
 			{
 				COStoreItemDiffOperationSetAttribute *editOp = [[COStoreItemDiffOperationSetAttribute alloc] 
-																  initWithUUID: uuid
-																  attribute: commonAttr
-																  type: typeB
+																  initWithType: typeB
 																  value: valueB];
-				[edits addObject: editOp];
+				[diffDict addEdit: editOp forUUID: uuid attribute: commonAttr];
 				[editOp release];
 			}
 		}
@@ -159,12 +257,12 @@
 - (NSString *)description
 {
 	NSMutableString *desc = [NSMutableString stringWithString: [super description]];
-	[desc appendFormat: @" {\n"];
+	/*[desc appendFormat: @" {\n"];
 	for (COStoreItemDiffOperation *edit in edits)
 	{
 		[desc appendFormat: @"\t%@:%@ %@\n", [edit UUID], [edit attribute], NSStringFromClass([edit class])];
 	}
- 	[desc appendFormat: @"}"];
+ 	[desc appendFormat: @"}"];*/
 	return desc;
 }
 
@@ -200,18 +298,21 @@
 		NSLog(@"WARNING: diff was created from a subtree with UUID %@ and being applied to a subtree with UUID %@", oldRoot, [[aSubtree root] UUID]);
 	}
 	
-	for (COStoreItemDiffOperation *edit in edits)
+	for (COUUIDAttributeTuple *tuple in [diffDict allTuples])
 	{
-		COMutableItem *item = [newItems objectForKey: [edit UUID]];
+		COMutableItem *item = [newItems objectForKey: [tuple UUID]];
 		
 		if (item == nil)
 		{
-			item = [[COMutableItem alloc] initWithUUID: [edit UUID]]; // FIXME: hack for inserted items
-			[newItems setObject: item forKey: [edit UUID]];
+			item = [[COMutableItem alloc] initWithUUID: [tuple UUID]]; // FIXME: hack for inserted items
+			[newItems setObject: item forKey: [tuple UUID]];
 			[item release];
 		}
 		
-		[edit applyTo: item];
+		for (COStoreItemDiffOperation *op in [diffDict editsForTuple: tuple])
+		{
+			[op applyTo: item attribute: [tuple attribute]];
+		}
 	}
 	
 	return [COSubtree subtreeWithItemSet: [NSSet setWithArray: [newItems allValues]]
@@ -220,7 +321,7 @@
 
 - (void) mergeWith: (COSubtreeDiff *)other
 {
-	[edits unionSet: other->edits];
+	
 }
 
 - (COSubtreeDiff *)subtreeDiffByMergingWithDiff: (COSubtreeDiff *)other
@@ -279,88 +380,56 @@
 
 
 @implementation COStoreItemDiffOperation
-
-- (id) initWithUUID: (ETUUID*)aUUID attribute: (NSString*)anAttribute type: (COType*)aType
+- (void) applyTo: (COMutableItem *)anItem attribute: (NSString *)anAttribute
 {
-	NILARG_EXCEPTION_TEST(aUUID);
-	NILARG_EXCEPTION_TEST(anAttribute);
-	NILARG_EXCEPTION_TEST(aType);
-	SUPERINIT;
-	ASSIGN(attribute, anAttribute);
-	ASSIGN(type, aType);
-	ASSIGN(uuid, aUUID);
-	return self;
+	[NSException raise: NSGenericException format: @"subclass should have overridden"];
 }
-
-- (id) copyWithZone: (NSZone *)aZone
-{
-	return [[[self class] alloc] initWithUUID: uuid attribute: attribute type:type];
-}
-
-- (void)dealloc
-{
-	[uuid release];
-	[attribute release];
-	[type release];
-	[super dealloc];
-}
-- (NSString *) attribute
-{
-	return attribute;
-}
-- (ETUUID *) UUID
-{
-	return uuid;
-}
-
 @end
 
 @implementation COStoreItemDiffOperationSetAttribute
 
-- (id) initWithUUID: (ETUUID*)aUUID
-		  attribute: (NSString*)anAttribute
-			   type: (COType*)aType
+- (id) initWithType: (COType*)aType
 			  value: (id)aValue
 {
-	if (nil == (self = [super initWithUUID: aUUID attribute: anAttribute type: aType]))
-		return nil;
-	
+	SUPERINIT;
 	ASSIGN(value, aValue);
+	ASSIGN(type, aType);
 	return self;
 }
 
 - (id) copyWithZone: (NSZone *)aZone
 {
-	COStoreItemDiffOperationSetAttribute *result = [[[self class] alloc] initWithUUID: uuid attribute: attribute type:type];
-	result->value = [value copyWithZone: aZone];
+	COStoreItemDiffOperationSetAttribute *result = [[[self class] alloc] initWithType: type value: value];
 	return result;
 }
 
 - (void)dealloc
 {
 	[value release];
+	[type release];
 	[super dealloc];
 }
 
-- (void) applyTo: (COMutableItem *)anItem
+- (void) applyTo: (COMutableItem *)anItem attribute: (NSString *)anAttribute
 {
 	[anItem setValue: value
-		forAttribute: attribute
+		forAttribute: anAttribute
 				type: type];
 }
 
 @end
 
+
 @implementation COStoreItemDiffOperationDeleteAttribute
 
-- (void) applyTo: (COMutableItem *)anItem
+- (void) applyTo: (COMutableItem *)anItem attribute: (NSString *)anAttribute
 {
-	if (nil == [anItem valueForAttribute: attribute])
+	if (nil == [anItem valueForAttribute: anAttribute])
 	{
 		[NSException raise: NSInternalInconsistencyException
-					format: @"expeted attribute %@ to be already set", attribute];
+					format: @"expeted attribute %@ to be already set", anAttribute];
 	}
-	[anItem removeValueForAttribute: attribute];
+	[anItem removeValueForAttribute: anAttribute];
 }
 
 @end
@@ -368,18 +437,16 @@
 
 @implementation COStoreItemDiffOperationModifyArray
 
-- (id) initWithUUID: (ETUUID*)aUUID attribute: (NSString*)anAttribute type: (COType*)aType arrayDiff: (COArrayDiff *)aDiff
+- (id) initWithArrayDiff: (COArrayDiff *)aDiff
 {
-	if (nil == (self = [super initWithUUID: aUUID attribute: anAttribute type: aType]))
-		return nil;
-	
+	SUPERINIT;
 	ASSIGN(arrayDiff, aDiff);
 	return self;
 }
 
 - (id) copyWithZone: (NSZone *)aZone
 {
-	COStoreItemDiffOperationModifyArray *result = [[[self class] alloc] initWithUUID: uuid attribute: attribute type:type];
+	COStoreItemDiffOperationModifyArray *result = [[[self class] alloc] init];
 	result->arrayDiff = [arrayDiff retain]; // FIXME!!!
 	return result;
 }
@@ -390,13 +457,13 @@
 	[super dealloc];
 }
 
-- (void) applyTo: (COMutableItem *)anItem
+- (void) applyTo: (COMutableItem *)anItem attribute: (NSString *)anAttribute
 {
-	NSArray *oldValue = [anItem valueForAttribute: attribute];
+	NSArray *oldValue = [anItem valueForAttribute: anAttribute];
 	NSArray *newValue = [arrayDiff arrayWithDiffAppliedTo: oldValue];
 	[anItem setValue: newValue
-		forAttribute: attribute
-				type: type];
+		forAttribute: anAttribute
+				type: [anItem typeForAttribute: anAttribute]];
 }
 
 @end
@@ -404,18 +471,16 @@
 
 @implementation COStoreItemDiffOperationModifySet
 
-- (id) initWithUUID: (ETUUID*)aUUID attribute: (NSString*)anAttribute type: (COType*)aType setDiff: (COSetDiff *)aDiff
+- (id) initWithSetDiff: (COSetDiff *)aDiff
 {
-	if (nil == (self = [super initWithUUID: aUUID attribute: anAttribute type: aType]))
-		return nil;
-	
+	SUPERINIT;
 	ASSIGN(setDiff, aDiff);
 	return self;
 }
 
 - (id) copyWithZone: (NSZone *)aZone
 {
-	COStoreItemDiffOperationModifySet *result = [[[self class] alloc] initWithUUID: uuid attribute: attribute type:type];
+	COStoreItemDiffOperationModifySet *result = [[[self class] alloc] init];
 	result->setDiff = [setDiff retain]; // FIXME!!!
 	return result;
 }
@@ -426,13 +491,13 @@
 	[super dealloc];
 }
 
-- (void) applyTo: (COMutableItem *)anItem
+- (void) applyTo: (COMutableItem *)anItem attribute: (NSString *)anAttribute
 {
-	NSSet *oldValue = [anItem valueForAttribute: attribute];
+	NSSet *oldValue = [anItem valueForAttribute: anAttribute];
 	NSSet *newValue = [setDiff setWithDiffAppliedTo: oldValue];
 	[anItem setValue: newValue
-		forAttribute: attribute
-				type: type];
+		forAttribute: anAttribute
+				type: [anItem typeForAttribute: anAttribute]];
 }
 
 @end

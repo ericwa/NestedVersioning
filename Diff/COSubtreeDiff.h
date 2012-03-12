@@ -9,6 +9,32 @@
 @class COSetDiff, COArrayDiff;
 @class COType;
 
+@interface COUUIDAttributeTuple : NSObject <NSCopying>
+{
+	ETUUID *uuid;
+	NSString *attribute;
+}
+
++ (COUUIDAttributeTuple *) tupleWithUUID: (ETUUID *)aUUID attribute: (NSString *)anAttribute;
+- (ETUUID *) UUID;
+- (NSString *) attribute;
+
+@end
+
+
+@interface CODiffDictionary : NSObject <NSCopying>
+{
+	NSMutableDictionary *dict;
+}
+
+- (NSArray *) editsForTuple: (COUUIDAttributeTuple *)aTuple;
+- (NSArray *) editsForUUID: (ETUUID *)aUUID attribute: (NSString *)aString;
+- (void) addEdit: (COStoreItemDiffOperation *)anEdit forUUID: (ETUUID *)aUUID attribute: (NSString *)aString;
+- (NSArray *)allTuples;
+
+@end
+
+
 /**
  * Concerns for COSubtreeDiff:
  * - conflicts arise when the same subtree is inserted in multiple places.
@@ -18,7 +44,7 @@
 {
 	ETUUID *oldRoot;
 	ETUUID *newRoot;
-	NSMutableSet *edits;
+	CODiffDictionary *diffDict;
 }
 
 + (COSubtreeDiff *) diffSubtree: (COSubtree *)a
@@ -63,26 +89,17 @@
 // operation classes
 
 @interface COStoreItemDiffOperation : NSObject
-{
-	ETUUID *uuid;
-	NSString *attribute;
-	COType *type;
-}
-- (id) initWithUUID: (ETUUID*)aUUID attribute: (NSString*)anAttribute type: (COType*)aType;
-- (void) applyTo: (COMutableItem *)anItem;
 
-- (NSString *) attribute;
-- (ETUUID *) UUID;
+- (void) applyTo: (COMutableItem *)anItem attribute: (NSString *)anAttribute;
 
 @end
 
 @interface COStoreItemDiffOperationSetAttribute : COStoreItemDiffOperation 
 {
+	COType *type;
 	id value;
 }
-- (id) initWithUUID: (ETUUID*)aUUID
-		  attribute: (NSString*)anAttribute
-			   type: (COType*)aType
+- (id) initWithType: (COType*)aType
 			  value: (id)aValue;
 
 @end
@@ -96,7 +113,7 @@
 	COArrayDiff *arrayDiff;
 }
 
-- (id) initWithUUID: (ETUUID*)aUUID attribute: (NSString*)anAttribute type: (COType*)aType arrayDiff: (COArrayDiff *)aDiff;
+- (id) initWithArrayDiff: (COArrayDiff *)aDiff;
 
 @end
 
@@ -106,7 +123,7 @@
 	COSetDiff *setDiff;
 }
 
-- (id) initWithUUID: (ETUUID*)aUUID attribute: (NSString*)anAttribute type: (COType*)aType setDiff: (COSetDiff *)aDiff;
+- (id) initWithSetDiff: (COSetDiff *)aDiff;
 
 @end
 
