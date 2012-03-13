@@ -3,7 +3,7 @@
 #include "diff.h"
 
 #import "COMacros.h"
-
+#import "COSequenceMerge.h"
 
 static bool comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
 {
@@ -57,8 +57,10 @@ NSArray *CODiffArrays(NSArray *a, NSArray *b, id sourceIdentifier)
 
 void COApplyEditsToArray(NSMutableArray *array, NSArray *edits)
 {
+	NSArray *uniqueEdits = COEditsByUniquingNonconflictingDuplicates(edits);
+	
 	NSInteger i = 0;
-	for (COSequenceEdit *op in edits)
+	for (COSequenceEdit *op in uniqueEdits)
 	{
 		if ([op isKindOfClass: [COSequenceInsertion class]])
 		{
