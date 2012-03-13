@@ -13,7 +13,6 @@
 	[super dealloc];
 }
 
-
 - (NSComparisonResult) compare: (COSequenceEdit*)other
 {
 	if ([other range].location > [self range].location)
@@ -37,30 +36,9 @@
 	return NO;
 }
 
-- (BOOL) overlaps: (COSequenceEdit *)other
-{
-	NSRange r1 = [self range];
-	NSRange r2 = [other range];
-	
-	// FIXME: revisit this calculation
-	
-	return (r1.location >= r2.location && r1.location < (r2.location + r2.length) && r1.length > 0)
-    || (r2.location >= r1.location && r2.location < (r1.location + r1.length) && r2.length > 0);
-}
-
 - (id)copyWithZone:(NSZone *)zone
 {
 	return [self retain];
-}
-
-- (NSSet *)allEdits
-{
-	return [NSSet setWithObject: self];
-}
-
-- (BOOL) hasConflicts
-{
-	return NO;
 }
 
 @end
@@ -102,7 +80,7 @@
 
 - (NSUInteger) hash
 {
-	return [NSStringFromClass([self class]) hash] ^ [insertedObject hash] ^ range.location ^ range.length ^ [sourceIdentifier hash];
+	return 16354992415397012214ULL ^ [insertedObject hash] ^ range.location ^ range.length ^ [sourceIdentifier hash];
 }
 
 @end
@@ -134,7 +112,7 @@
 
 - (NSUInteger) hash
 {
-	return [NSStringFromClass([self class]) hash] ^ range.location ^ range.length ^ [sourceIdentifier hash];
+	return 15546910606417742031ULL ^ range.location ^ range.length ^ [sourceIdentifier hash];
 }
 
 @end
@@ -178,7 +156,7 @@
 
 - (NSUInteger) hash
 {
-	return [NSStringFromClass([self class]) hash] ^ [insertedObject hash] ^ range.location ^ range.length ^ [sourceIdentifier hash];
+	return 13045144732696269143ULL ^ [insertedObject hash] ^ range.location ^ range.length ^ [sourceIdentifier hash];
 }
 
 @end
