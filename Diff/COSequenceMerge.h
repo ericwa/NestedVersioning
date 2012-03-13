@@ -23,3 +23,7 @@ NSArray *COMergeSortedArraysUsingSelector(NSArray *sortredArrayA, NSArray *sorte
  * linear time.
  */
 NSSet *COFindConflicts(NSArray *sortedOps);
+
+/**
+ */
+NSArray *COEditsByUniquingNonconflictingDuplicates(NSArray *edits);

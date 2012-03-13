@@ -100,3 +100,42 @@ NSSet *COFindConflicts(NSArray *sortedOps)
 		
 	return conflicts;
 }
+
+NSArray *COEditsByUniquingNonconflictingDuplicates(NSArray *edits)
+{
+	NSSet *conflicts = COFindConflicts(edits);
+	
+	NSMutableIndexSet *duplicateEditsToRemove = [NSMutableIndexSet indexSet];
+	
+	for (NSIndexSet *conflict in conflicts)
+	{
+		id<COEdit> edit = nil;
+		for (NSUInteger i = [conflict firstIndex]; i = [conflict indexGreaterThanIndex: i]; i != NSNotFound)
+		{
+			id<COEdit> edit_i = [edits objectAtIndex: i];
+			if (edit == nil)
+			{
+				edit = edit_i;
+			}
+			else
+			{
+				if (![edit isEqual: edit_i])
+				{
+					[NSException raise: NSInvalidArgumentException
+								format: @"COEditsByUniquingNonconflictingDuplicates() should only be called on edit sequences with no real conflicts"];
+				}
+				else
+				{
+					[duplicateEditsToRemove addIndex: i];
+				}
+			}
+		}
+	}
+	
+	NSMutableArray *result = [NSMutableArray arrayWithArray: edits];
+	for (NSUInteger i = [duplicateEditsToRemove firstIndex]; i = [duplicateEditsToRemove indexGreaterThanIndex: i]; i != NSNotFound)
+	{
+		[result removeObjectAtIndex: i];
+	}
+	return result;
+}
