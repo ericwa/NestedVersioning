@@ -38,7 +38,7 @@
 
 - (NSUInteger) hash
 {
-	return 12878773850431782441ULL | [uuid hash] |  [attribute hash];
+	return 12878773850431782441ULL ^ [uuid hash] ^ [attribute hash];
 }
 
 - (ETUUID *)UUID
