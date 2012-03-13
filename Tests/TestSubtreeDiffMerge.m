@@ -87,8 +87,8 @@
 	
 	// Calculate diffs
 	
-	COSubtreeDiff *diff_doc3_vs_doc2 = [COSubtreeDiff diffSubtree: doc3 withSubtree: doc2];
-	COSubtreeDiff *diff_doc3_vs_doc = [COSubtreeDiff diffSubtree: doc3 withSubtree: doc];
+	COSubtreeDiff *diff_doc3_vs_doc2 = [COSubtreeDiff diffSubtree: doc3 withSubtree: doc2 sourceIdentifier: @"fixme"];
+	COSubtreeDiff *diff_doc3_vs_doc = [COSubtreeDiff diffSubtree: doc3 withSubtree: doc sourceIdentifier: @"fixme"];
 	
 	// Sanity check that the diffs work
 	
@@ -134,8 +134,8 @@
 		docB = [[doc copy] autorelease];
 	}
 	
-	COSubtreeDiff *diff_docO_vs_docA = [COSubtreeDiff diffSubtree: docO withSubtree: docA];
-	COSubtreeDiff *diff_docO_vs_docB = [COSubtreeDiff diffSubtree: docO withSubtree: docB];
+	COSubtreeDiff *diff_docO_vs_docA = [COSubtreeDiff diffSubtree: docO withSubtree: docA sourceIdentifier: @"fixme"];
+	COSubtreeDiff *diff_docO_vs_docB = [COSubtreeDiff diffSubtree: docO withSubtree: docB sourceIdentifier: @"fixme"];
 	
 	// Sanity check that the diffs work
 	
