@@ -321,6 +321,11 @@
 
 - (void) mergeWith: (COSubtreeDiff *)other
 {
+	/**
+	 things that conflict:
+	 - same embedded item inserted in more than one place
+	 
+	 */
 	
 }
 
