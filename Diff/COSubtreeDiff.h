@@ -2,11 +2,38 @@
 
 @class ETUUID;
 @class COSubtree;
+@class COMutableItem;
 
-@class COSubtreeEdit;
+@class COStoreItemDiffOperation;
 @class COSubtreeConflict;
-
+@class COSetDiff, COArrayDiff;
 @class COType;
+
+@interface COUUIDAttributeTuple : NSObject <NSCopying>
+{
+	ETUUID *uuid;
+	NSString *attribute;
+}
+
++ (COUUIDAttributeTuple *) tupleWithUUID: (ETUUID *)aUUID attribute: (NSString *)anAttribute;
+- (ETUUID *) UUID;
+- (NSString *) attribute;
+
+@end
+
+
+@interface CODiffDictionary : NSObject <NSCopying>
+{
+	NSMutableDictionary *dict;
+}
+
+- (NSArray *) editsForTuple: (COUUIDAttributeTuple *)aTuple;
+- (NSArray *) editsForUUID: (ETUUID *)aUUID attribute: (NSString *)aString;
+- (void) addEdit: (COStoreItemDiffOperation *)anEdit forUUID: (ETUUID *)aUUID attribute: (NSString *)aString;
+- (NSArray *)allTuples;
+
+@end
+
 
 /**
  * Concerns for COSubtreeDiff:
@@ -17,19 +44,14 @@
 {
 	ETUUID *oldRoot;
 	ETUUID *newRoot;
-	NSMutableSet *edits;
-	NSMutableDictionary *insertedItemForUUID; // ETUUID : COItem
+	CODiffDictionary *diffDict;
 }
 
 + (COSubtreeDiff *) diffSubtree: (COSubtree *)a
-					withSubtree: (COSubtree *)b;
+					withSubtree: (COSubtree *)b
+			   sourceIdentifier: (id)aSource;
 
 - (COSubtree *) subtreeWithDiffAppliedToSubtree: (COSubtree *)aSubtree;
-
-/**
- * apply in-place
- */
-- (void) applyTo: (COSubtree *)aSubtree;
 
 /**
  * Throws an exception if either diff has conflicts
@@ -58,40 +80,30 @@
  * resolution of the conflict.
  */
 - (void) removeConflict: (COSubtreeConflict *)aConflict;
-- (void) addEdit: (COSubtreeEdit *)anEdit;
-- (void) removeEdit: (COSubtreeEdit *)anEdit;
+- (void) addEdit: (COStoreItemDiffOperation *)anEdit;
+- (void) removeEdit: (COStoreItemDiffOperation *)anEdit;
 
 @end
 
 
 
-// edit classes
+// operation classes
 
+@interface COStoreItemDiffOperation : NSObject
 
-@interface COSubtreeEdit : NSObject
-{
-	ETUUID *itemUUID;
-	NSString *attribute;
-}
-- (id) initWithItemUUID: (ETUUID*)aUUID attribute: (NSString*)anAttribute;
-- (void) applyTo: (COSubtree *)anItem;
+- (void) applyTo: (COMutableItem *)anItem attribute: (NSString *)anAttribute;
 
 @end
 
-
-
-@interface COSubtreeSetAttribute : COSubtreeEdit 
+@interface COStoreItemDiffOperationSetAttribute : COStoreItemDiffOperation 
 {
+	COType *type;
 	id value;
 }
-- (id) initWithItemUUID: (ETUUID*)aUUID
-			  attribute: (NSString*)anAttribute
-				   type: (COType*)aType
-				  value: (id)aValue;
+- (id) initWithType: (COType*)aType
+			  value: (id)aValue;
 
 @end
 
-
-
-@interface COSubtreeDeleteAttribute : COSubtreeEdit
+@interface COStoreItemDiffOperationDeleteAttribute : COStoreItemDiffOperation
 @end

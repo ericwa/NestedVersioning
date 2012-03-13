@@ -135,7 +135,7 @@
 
 
 
-#pragma mark Access to the receiver's attributes/values
+#pragma mark Access to the receivers attributes/values
 
 
 

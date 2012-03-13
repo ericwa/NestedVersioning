@@ -1,10 +1,9 @@
 #import <Foundation/Foundation.h>
-#import "COType+Diff.h"
 
 /**
  * Set diffs can always be merged without conflict
  */
-@interface COSetDiff : NSObject <COValueDiff>
+@interface COSetDiff : NSObject
 {
 	NSDictionary *insertionsForSourceIdentifier;
 	NSDictionary *deletionsForSourceIdentifier;

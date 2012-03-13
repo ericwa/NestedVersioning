@@ -327,7 +327,7 @@
 
 
 
-#pragma mark Access to the receiver's attributes/values
+#pragma mark Access to the receivers attributes/values
 
 
 - (COItem *) item
@@ -735,9 +735,9 @@ toUnorderedAttribute: (NSString*)anAttribute
 {
 	NSMutableArray *itemPlists = [NSMutableArray array];
 	
-	for (COItem *item in [self allContainedStoreItems])
+	for (COItem *anItem in [self allContainedStoreItems])
 	{
-		[itemPlists addObject: [item plist]];
+		[itemPlists addObject: [anItem plist]];
 	}
 	
 	return D([[self UUID] stringValue], @"rootUUID",

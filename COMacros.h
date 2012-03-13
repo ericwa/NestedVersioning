@@ -51,3 +51,15 @@
     [NSSet setWithObjects: __objects \
 					count: (sizeof(__objects)/sizeof(id))]; \
 })
+
+#define INDEXSET(...) ({ \
+	NSMutableIndexSet *__result = [NSMutableIndexSet indexSet]; \
+	const NSUInteger __indices[] = {__VA_ARGS__}; \
+    const size_t __indices_count = sizeof(__indices) / sizeof(NSUInteger); \
+	size_t __indices_iterator; \
+	for (__indices_iterator = 0; __indices_iterator < __indices_count; __indices_iterator++) \
+	{ \
+		[__result addIndex: __indices[__indices_iterator]]; \
+	} \
+	[[[NSIndexSet alloc] initWithIndexSet: __result] autorelease]; \
+})

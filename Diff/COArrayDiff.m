@@ -1,9 +1,9 @@
 #import "COArrayDiff.h"
+#import "COSequenceDiff.h"
 #include "diff.h"
 
 #import "COMacros.h"
-
-@implementation COArrayDiff
+#import "COSequenceMerge.h"
 
 static bool comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
 {
@@ -11,9 +11,7 @@ static bool comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
 			[(NSArray*)userdata2 objectAtIndex: j]];
 }
 
-- (NSArray *)opsWithFirstArray: (NSArray *)a
-				   secondArray: (NSArray *)b
-			  sourceIdentifier: (id)aSource
+NSArray *CODiffArrays(NSArray *a, NSArray *b, id sourceIdentifier)
 {
 	NSMutableArray *resultArray = [NSMutableArray array];
 	
@@ -35,17 +33,17 @@ static bool comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
 				{
 					[resultArray addObject: [COSequenceInsertion insertionWithLocation: firstRange.location
 																		insertedObject: [b subarrayWithRange: secondRange]
-																	  sourceIdentifier: aSource]];
+																	  sourceIdentifier: sourceIdentifier]];
 				}
 				break;
 			case difftype_deletion:
 				[resultArray addObject: [COSequenceDeletion deletionWithRange: firstRange
-															 sourceIdentifier: aSource]];
+															 sourceIdentifier: sourceIdentifier]];
 				break;
 			case difftype_modification:
 				[resultArray addObject: [COSequenceModification modificationWithRange: firstRange
 																	   insertedObject: [b subarrayWithRange: secondRange]
-																	 sourceIdentifier: aSource]];
+																	 sourceIdentifier: sourceIdentifier]];
 																				  
 				break;
 		}
@@ -57,33 +55,13 @@ static bool comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
 }
 
 
-- (id) initWithFirstArray: (NSArray *)first
-			  secondArray: (NSArray *)second
-		 sourceIdentifier: (id)aSource
+void COApplyEditsToArray(NSMutableArray *array, NSArray *edits)
 {
-	self = [super initWithOperations: [self opsWithFirstArray: first
-												  secondArray: second
-											 sourceIdentifier: aSource]];	
-	return self;
-}
-
-/**
- * Applys the receiver to the given mutable array
- */
-- (void) applyTo: (NSMutableArray*)array
-{
-	if ([self hasConflicts])
-	{
-		[NSException raise: NSGenericException
-					format: @"Cannot apply diff with conflicts"];
-	}
+	NSArray *uniqueEdits = COEditsByUniquingNonconflictingDuplicates(edits);
 	
 	NSInteger i = 0;
-	for (COSequenceEdit *op in ops)
+	for (COSequenceEdit *op in uniqueEdits)
 	{
-		// Handle overlapping nonconflicting edit groups
-		op = [op anyNonconflictingEdit];
-		
 		if ([op isKindOfClass: [COSequenceInsertion class]])
 		{
 			COSequenceInsertion *opp = (COSequenceInsertion*)op;
@@ -120,17 +98,9 @@ static bool comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
 	}
 }
 
-- (NSArray *)arrayWithDiffAppliedTo: (NSArray *)array
+NSArray *COArrayByApplyingEditsToArray(NSArray *array, NSArray *edits)
 {
 	NSMutableArray *mutableArray = [NSMutableArray arrayWithArray: array];
-	[self applyTo: mutableArray];
-	return mutableArray;
+	COApplyEditsToArray(mutableArray, edits);
+	return [NSArray arrayWithArray: mutableArray];
 }
-
-- (id) valueWithDiffAppliedToValue: (id)aValue
-{
-	return [self arrayWithDiffAppliedTo: aValue];
-}
-
-@end
-

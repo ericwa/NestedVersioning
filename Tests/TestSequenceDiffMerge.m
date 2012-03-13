@@ -1,6 +1,8 @@
 #import "TestCommon.h"
 #import "COSequenceDiff.h"
 
+#if 0
+
 @interface TestSequenceDiffMerge : NSObject <UKTest>
 {
 }
@@ -176,3 +178,6 @@
 }
 
 @end
+
+#endif
+
