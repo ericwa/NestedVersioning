@@ -47,7 +47,8 @@
 	// Diff the root item
 	
 	ASSIGN(rootDiff, [COSubtreeDiff diffSubtree: branchOrPersistentRootA
-									withSubtree: branchOrPersistentRootB]);
+									withSubtree: branchOrPersistentRootB
+							   sourceIdentifier: @"fixme"]);
 	
 	// Initiate the recursive diff process
 
@@ -213,7 +214,9 @@
 {		
 	// Diff them 
 	
-	COSubtreeDiff *contentsABDiff = [COSubtreeDiff diffSubtree: contentsA withSubtree: contentsB];
+	COSubtreeDiff *contentsABDiff = [COSubtreeDiff diffSubtree: contentsA 
+												   withSubtree: contentsB
+											  sourceIdentifier: @"fixme"];
 	
 	[initialSubtreeForPath setObject: [[contentsA copy] autorelease]
 							  forKey: currentPath];

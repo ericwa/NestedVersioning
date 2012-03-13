@@ -277,7 +277,8 @@
 	COSubtree *b = [store treeForCommit: [commits objectAtIndex: 1]];
 	
 	COSubtreeDiff *diff = [COSubtreeDiff diffSubtree: a
-										 withSubtree: b];
+										 withSubtree: b
+									sourceIdentifier: @"fixme"];
 	// FIXME:
 	
 	NSLog(@"Commits diff: %@", diff);

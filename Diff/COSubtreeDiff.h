@@ -48,7 +48,8 @@
 }
 
 + (COSubtreeDiff *) diffSubtree: (COSubtree *)a
-					withSubtree: (COSubtree *)b;
+					withSubtree: (COSubtree *)b
+			   sourceIdentifier: (id)aSource;
 
 - (COSubtree *) subtreeWithDiffAppliedToSubtree: (COSubtree *)aSubtree;
 

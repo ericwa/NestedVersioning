@@ -239,6 +239,7 @@
 
 + (COSubtreeDiff *) diffSubtree: (COSubtree *)a
 					withSubtree: (COSubtree *)b
+			   sourceIdentifier: (id)aSource
 {
 	COSubtreeDiff *result = [[[self alloc] initWithOldRootUUID: [a UUID]
 												   newRootUUID: [b UUID]] autorelease];

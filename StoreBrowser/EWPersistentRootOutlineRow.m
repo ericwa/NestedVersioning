@@ -658,7 +658,8 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 	EWPersistentRootOutlineRow *row2 = [selectedRows objectAtIndex: 1];
 	
 	COSubtreeDiff *diff = [COSubtreeDiff diffSubtree: [row1 rowSubtree]
-										 withSubtree: [row2 rowSubtree]];
+										 withSubtree: [row2 rowSubtree]
+									sourceIdentifier: @"fixme"];
 	// FIXME:
 	
 	NSLog(@"Embedded item diff: %@", diff);
