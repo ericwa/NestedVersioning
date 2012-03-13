@@ -324,8 +324,10 @@
 	/**
 	 things that conflict:
 	 - same embedded item inserted in more than one place
-	 
+	 - deleting and setting the same attribute of the same object
 	 */
+	
+	
 	
 }
 
@@ -439,39 +441,6 @@
 
 @end
 
-
-@implementation COStoreItemDiffOperationModifyArray
-
-- (id) initWithArrayDiff: (COArrayDiff *)aDiff
-{
-	SUPERINIT;
-	ASSIGN(arrayDiff, aDiff);
-	return self;
-}
-
-- (id) copyWithZone: (NSZone *)aZone
-{
-	COStoreItemDiffOperationModifyArray *result = [[[self class] alloc] init];
-	result->arrayDiff = [arrayDiff retain]; // FIXME!!!
-	return result;
-}
-
-- (void)dealloc
-{
-	[arrayDiff release];
-	[super dealloc];
-}
-
-- (void) applyTo: (COMutableItem *)anItem attribute: (NSString *)anAttribute
-{
-	NSArray *oldValue = [anItem valueForAttribute: anAttribute];
-	NSArray *newValue = [arrayDiff arrayWithDiffAppliedTo: oldValue];
-	[anItem setValue: newValue
-		forAttribute: anAttribute
-				type: [anItem typeForAttribute: anAttribute]];
-}
-
-@end
 
 
 @implementation COStoreItemDiffOperationModifySet

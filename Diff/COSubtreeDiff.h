@@ -108,16 +108,6 @@
 @end
 
 
-@interface COStoreItemDiffOperationModifyArray : COStoreItemDiffOperation
-{
-	COArrayDiff *arrayDiff;
-}
-
-- (id) initWithArrayDiff: (COArrayDiff *)aDiff;
-
-@end
-
-
 @interface COStoreItemDiffOperationModifySet : COStoreItemDiffOperation
 {
 	COSetDiff *setDiff;
