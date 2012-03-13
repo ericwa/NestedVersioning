@@ -16,7 +16,6 @@ $(APP_NAME)_OBJC_FILES=\
 	COPath.m\
 	COPersistentRootEditingContext.m\
 	COStore.m\
-	COType+Diff.m\
 	COType+Plist.m\
 	COType+String.m\
 	COType.m\
@@ -24,6 +23,7 @@ $(APP_NAME)_OBJC_FILES=\
 	Diff/COArrayDiff.m\
 	Diff/COPersistentRootDiff.m\
 	Diff/COSequenceDiff.m\
+	Diff/COSequenceMerge.m\
 	Diff/COSetDiff.m\
 	ETUUID.m\
 	StoreBrowser/AppDelegate.m\
@@ -74,7 +74,7 @@ $(APP_NAME)_LIB_DIRS=
 ADDITIONAL_NATIVE_LIBS+= crypto
 
 ADDITIONAL_CFLAGS += -std=c99
-ADDITIONAL_OBJCFLAGS += -std=c99 -Wno-unknown-pragmas
+ADDITIONAL_OBJCFLAGS += -std=c99
 
 ADDITIONAL_CPPFLAGS+= -DGNUSTEP
 
