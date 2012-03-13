@@ -106,16 +106,3 @@
 
 @interface COStoreItemDiffOperationDeleteAttribute : COStoreItemDiffOperation
 @end
-
-
-@interface COStoreItemDiffOperationModifySet : COStoreItemDiffOperation
-{
-	COSetDiff *setDiff;
-}
-
-- (id) initWithSetDiff: (COSetDiff *)aDiff;
-
-@end
-
-
-

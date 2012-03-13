@@ -440,39 +440,3 @@
 }
 
 @end
-
-
-
-@implementation COStoreItemDiffOperationModifySet
-
-- (id) initWithSetDiff: (COSetDiff *)aDiff
-{
-	SUPERINIT;
-	ASSIGN(setDiff, aDiff);
-	return self;
-}
-
-- (id) copyWithZone: (NSZone *)aZone
-{
-	COStoreItemDiffOperationModifySet *result = [[[self class] alloc] init];
-	result->setDiff = [setDiff retain]; // FIXME!!!
-	return result;
-}
-
-- (void)dealloc
-{
-	[setDiff release];
-	[super dealloc];
-}
-
-- (void) applyTo: (COMutableItem *)anItem attribute: (NSString *)anAttribute
-{
-	NSSet *oldValue = [anItem valueForAttribute: anAttribute];
-	NSSet *newValue = [setDiff setWithDiffAppliedTo: oldValue];
-	[anItem setValue: newValue
-		forAttribute: anAttribute
-				type: [anItem typeForAttribute: anAttribute]];
-}
-
-@end
-
