@@ -207,13 +207,13 @@
 		{
 			if ([typeA isMultivalued] && ![typeA isOrdered])
 			{
-				COSetDiff *setDiff = [[[COSetDiff alloc] initWithFirstSet: valueA
+				/*COSetDiff *setDiff = [[[COSetDiff alloc] initWithFirstSet: valueA
 																secondSet: valueB
 														 sourceIdentifier: @"FIXME"] autorelease];
 				COStoreItemDiffOperationSetAttribute *editOp = [[COStoreItemDiffOperationModifySet alloc] 
 																  initWithSetDiff: setDiff];
 				[diffDict addEdit: editOp forUUID: uuid attribute: commonAttr];
-				[editOp release];
+				[editOp release];*/
 			}
 			else if ([typeA isMultivalued] && [typeA isOrdered])
 			{
