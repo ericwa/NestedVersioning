@@ -424,11 +424,10 @@
 			isa = PBXGroup;
 			children = (
 				7968177814E7B3A400E5810C /* COSequenceDiff.h */,
+				79626465150EE07E009A0686 /* COSequenceMerge.h */,
 				66E503921495F9CF003C69C7 /* COArrayDiff.h */,
 				66E5039A1495F9CF003C69C7 /* COSetDiff.h */,
 				66485D8814D23658004C4431 /* Implementation */,
-				79626465150EE07E009A0686 /* COSequenceMerge.h */,
-				79626466150EE07E009A0686 /* COSequenceMerge.m */,
 			);
 			name = "Primitive Diff for Objective-C Containers";
 			sourceTree = "<group>";
@@ -437,6 +436,7 @@
 			isa = PBXGroup;
 			children = (
 				7968177614E7B39E00E5810C /* COSequenceDiff.m */,
+				79626466150EE07E009A0686 /* COSequenceMerge.m */,
 				66E503931495F9CF003C69C7 /* COArrayDiff.m */,
 				66E5039B1495F9CF003C69C7 /* COSetDiff.m */,
 			);
