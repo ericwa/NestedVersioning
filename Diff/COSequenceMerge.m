@@ -110,7 +110,7 @@ NSArray *COEditsByUniquingNonconflictingDuplicates(NSArray *edits)
 	for (NSIndexSet *conflict in conflicts)
 	{
 		id<COEdit> edit = nil;
-		for (NSUInteger i = [conflict firstIndex]; i = [conflict indexGreaterThanIndex: i]; i != NSNotFound)
+		for (NSUInteger i = [conflict firstIndex]; i != NSNotFound; i = [conflict indexGreaterThanIndex: i])
 		{
 			id<COEdit> edit_i = [edits objectAtIndex: i];
 			if (edit == nil)
@@ -133,7 +133,7 @@ NSArray *COEditsByUniquingNonconflictingDuplicates(NSArray *edits)
 	}
 	
 	NSMutableArray *result = [NSMutableArray arrayWithArray: edits];
-	for (NSUInteger i = [duplicateEditsToRemove firstIndex]; i = [duplicateEditsToRemove indexGreaterThanIndex: i]; i != NSNotFound)
+	for (NSUInteger i = [duplicateEditsToRemove firstIndex]; i != NSNotFound; i = [duplicateEditsToRemove indexGreaterThanIndex: i])
 	{
 		[result removeObjectAtIndex: i];
 	}
