@@ -30,7 +30,6 @@
 		66E7786214E6073100D5DFFF /* COType.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EDFD95148EF73200D0DC0B /* COType.m */; };
 		66E7786314E6073100D5DFFF /* COType+Plist.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F39B851490A8540097B7D5 /* COType+Plist.m */; };
 		66E7786414E6073100D5DFFF /* COType+String.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E503891495E6EF003C69C7 /* COType+String.m */; };
-		66E7786514E6073100D5DFFF /* COType+Diff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E4BE5A149713CA00B7024A /* COType+Diff.m */; };
 		66E7786614E6073100D5DFFF /* COItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EADD68147345B9003181FC /* COItem.m */; };
 		66E7786714E6073100D5DFFF /* COItemPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 668DA35E14E0E41A0062E6C2 /* COItemPath.m */; };
 		66E7786814E6073100D5DFFF /* COSubtree.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E76735148B3D1C009937E8 /* COSubtree.m */; };
@@ -52,7 +51,6 @@
 		66E7787C14E6075B00D5DFFF /* COType.h in Headers */ = {isa = PBXBuildFile; fileRef = 66EDFD94148EF73200D0DC0B /* COType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7787D14E6075B00D5DFFF /* COType+Plist.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F39B841490A8540097B7D5 /* COType+Plist.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7787E14E6075B00D5DFFF /* COType+String.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E503881495E6EF003C69C7 /* COType+String.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		66E7787F14E6075B00D5DFFF /* COType+Diff.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E4BE59149713CA00B7024A /* COType+Diff.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7788014E6075B00D5DFFF /* COTypePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F39B861490A8540097B7D5 /* COTypePrivate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7788114E6075B00D5DFFF /* COItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 66EADD67147345B9003181FC /* COItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7788214E6075B00D5DFFF /* COItemPath.h in Headers */ = {isa = PBXBuildFile; fileRef = 668DA36114E0E4210062E6C2 /* COItemPath.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -195,8 +193,6 @@
 		66E2FFB614899C7A00C66578 /* COSubtreeFactory+Undo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COSubtreeFactory+Undo.h"; sourceTree = "<group>"; };
 		66E2FFB714899C7A00C66578 /* COSubtreeFactory+Undo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "COSubtreeFactory+Undo.m"; sourceTree = "<group>"; };
 		66E46D47146A3D490042123E /* TestDeletion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestDeletion.m; sourceTree = "<group>"; };
-		66E4BE59149713CA00B7024A /* COType+Diff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COType+Diff.h"; sourceTree = "<group>"; };
-		66E4BE5A149713CA00B7024A /* COType+Diff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "COType+Diff.m"; sourceTree = "<group>"; };
 		66E4BE5C1497464100B7024A /* EWOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWOutlineView.h; sourceTree = "<group>"; };
 		66E4BE5D1497464100B7024A /* EWOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWOutlineView.m; sourceTree = "<group>"; };
 		66E503881495E6EF003C69C7 /* COType+String.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COType+String.h"; sourceTree = "<group>"; };
@@ -463,7 +459,6 @@
 				66EDFD95148EF73200D0DC0B /* COType.m */,
 				66F39B851490A8540097B7D5 /* COType+Plist.m */,
 				66E503891495E6EF003C69C7 /* COType+String.m */,
-				66E4BE5A149713CA00B7024A /* COType+Diff.m */,
 			);
 			name = Implementation;
 			sourceTree = "<group>";
@@ -529,7 +524,6 @@
 				66EDFD94148EF73200D0DC0B /* COType.h */,
 				66F39B841490A8540097B7D5 /* COType+Plist.h */,
 				66E503881495E6EF003C69C7 /* COType+String.h */,
-				66E4BE59149713CA00B7024A /* COType+Diff.h */,
 				66485D8A14D236EE004C4431 /* Implementation */,
 			);
 			name = "Type System";
@@ -759,7 +753,6 @@
 				66E7787C14E6075B00D5DFFF /* COType.h in Headers */,
 				66E7787D14E6075B00D5DFFF /* COType+Plist.h in Headers */,
 				66E7787E14E6075B00D5DFFF /* COType+String.h in Headers */,
-				66E7787F14E6075B00D5DFFF /* COType+Diff.h in Headers */,
 				66E7788014E6075B00D5DFFF /* COTypePrivate.h in Headers */,
 				66E7788114E6075B00D5DFFF /* COItem.h in Headers */,
 				66E7788214E6075B00D5DFFF /* COItemPath.h in Headers */,
@@ -967,7 +960,6 @@
 				66E7786214E6073100D5DFFF /* COType.m in Sources */,
 				66E7786314E6073100D5DFFF /* COType+Plist.m in Sources */,
 				66E7786414E6073100D5DFFF /* COType+String.m in Sources */,
-				66E7786514E6073100D5DFFF /* COType+Diff.m in Sources */,
 				66E7786614E6073100D5DFFF /* COItem.m in Sources */,
 				66E7786714E6073100D5DFFF /* COItemPath.m in Sources */,
 				66E7786814E6073100D5DFFF /* COSubtree.m in Sources */,

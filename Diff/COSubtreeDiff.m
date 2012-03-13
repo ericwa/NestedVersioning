@@ -217,13 +217,13 @@
 			}
 			else if ([typeA isMultivalued] && [typeA isOrdered])
 			{
-				COArrayDiff *arrayDiff = [[[COArrayDiff alloc] initWithFirstArray: valueA
+				/*COArrayDiff *arrayDiff = [[[COArrayDiff alloc] initWithFirstArray: valueA
 																	  secondArray: valueB
 																 sourceIdentifier: @"FIXME"] autorelease];
 				COStoreItemDiffOperationModifyArray *editOp = [[COStoreItemDiffOperationModifyArray alloc] 
 																	initWithArrayDiff: arrayDiff];
 				[diffDict addEdit: editOp forUUID: uuid attribute: commonAttr];
-				[editOp release];
+				[editOp release];*/
 			}
 			else
 			{
