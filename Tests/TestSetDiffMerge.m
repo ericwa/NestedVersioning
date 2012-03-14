@@ -1,5 +1,4 @@
 #import "TestCommon.h"
-#import "COSetDiff.h"
 
 @interface TestSetDiffMerge : NSObject <UKTest>
 {
@@ -9,6 +8,7 @@
 
 @implementation TestSetDiffMerge
 
+/*
 - (void) testBasic
 {
 	NSSet *set2 = S(@"A", @"b", @"d", @"zoo", @"e");
@@ -35,5 +35,6 @@
 	UKObjectsEqual(S(@"A", @"foo"), [merged insertionSetForSourceIdentifier: @"diff13"]);
 	UKObjectsEqual(S(@"a", @"d"), [merged deletionSetForSourceIdentifier: @"diff13"]);	
 }
+*/
 
 @end

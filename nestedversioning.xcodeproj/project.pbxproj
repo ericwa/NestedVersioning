@@ -40,7 +40,6 @@
 		66E7786E14E6073100D5DFFF /* COSubtreeFactory+Pull.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F8202C14E25D85008236F6 /* COSubtreeFactory+Pull.m */; };
 		66E7786F14E6073100D5DFFF /* diff.cc in Sources */ = {isa = PBXBuildFile; fileRef = 66101A0914D09FAA00B50075 /* diff.cc */; };
 		66E7787014E6073100D5DFFF /* COArrayDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E503931495F9CF003C69C7 /* COArrayDiff.m */; };
-		66E7787214E6073100D5DFFF /* COSetDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E5039B1495F9CF003C69C7 /* COSetDiff.m */; };
 		66E7787514E6073100D5DFFF /* COSubtreeDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 669CADE71491844000D0CF5F /* COSubtreeDiff.m */; };
 		66E7787614E6073100D5DFFF /* COPersistentRootDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E777EB14E595F900D5DFFF /* COPersistentRootDiff.m */; };
 		66E7787714E6073100D5DFFF /* COPersistentRootEditingContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EE5D35146355A6008AA95B /* COPersistentRootEditingContext.m */; };
@@ -62,7 +61,6 @@
 		66E7788914E6075B00D5DFFF /* COSubtreeFactory+Pull.h in Headers */ = {isa = PBXBuildFile; fileRef = 79F8202B14E25D85008236F6 /* COSubtreeFactory+Pull.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7788A14E6075B00D5DFFF /* diff.h in Headers */ = {isa = PBXBuildFile; fileRef = 66101A0D14D09FB700B50075 /* diff.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7788B14E6075B00D5DFFF /* COArrayDiff.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E503921495F9CF003C69C7 /* COArrayDiff.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		66E7788D14E6075B00D5DFFF /* COSetDiff.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E5039A1495F9CF003C69C7 /* COSetDiff.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7789014E6075B00D5DFFF /* COSubtreeDiff.h in Headers */ = {isa = PBXBuildFile; fileRef = 669CADE61491844000D0CF5F /* COSubtreeDiff.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7789114E6075B00D5DFFF /* COPersistentRootDiff.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E777EA14E595F900D5DFFF /* COPersistentRootDiff.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7789214E6075B00D5DFFF /* COPersistentRootEditingContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 66EE5D34146355A6008AA95B /* COPersistentRootEditingContext.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -199,8 +197,6 @@
 		66E503891495E6EF003C69C7 /* COType+String.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "COType+String.m"; sourceTree = "<group>"; };
 		66E503921495F9CF003C69C7 /* COArrayDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = COArrayDiff.h; path = Diff/COArrayDiff.h; sourceTree = "<group>"; };
 		66E503931495F9CF003C69C7 /* COArrayDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = COArrayDiff.m; path = Diff/COArrayDiff.m; sourceTree = "<group>"; };
-		66E5039A1495F9CF003C69C7 /* COSetDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = COSetDiff.h; path = Diff/COSetDiff.h; sourceTree = "<group>"; };
-		66E5039B1495F9CF003C69C7 /* COSetDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = COSetDiff.m; path = Diff/COSetDiff.m; sourceTree = "<group>"; };
 		66E5039E1495F9CF003C69C7 /* diff.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = diff.hh; path = Diff/diff.hh; sourceTree = "<group>"; };
 		66E552B4146B7799008FDFAF /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = usr/lib/libcrypto.dylib; sourceTree = SDKROOT; };
 		66E5CABB147B4E42002DE8FD /* TestPhotoManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestPhotoManager.m; sourceTree = "<group>"; };
@@ -428,7 +424,6 @@
 				7968177814E7B3A400E5810C /* COSequenceDiff.h */,
 				79626465150EE07E009A0686 /* COSequenceMerge.h */,
 				66E503921495F9CF003C69C7 /* COArrayDiff.h */,
-				66E5039A1495F9CF003C69C7 /* COSetDiff.h */,
 				66485D8814D23658004C4431 /* Implementation */,
 			);
 			name = "Primitive Diff for Objective-C Containers";
@@ -440,7 +435,6 @@
 				7968177614E7B39E00E5810C /* COSequenceDiff.m */,
 				79626466150EE07E009A0686 /* COSequenceMerge.m */,
 				66E503931495F9CF003C69C7 /* COArrayDiff.m */,
-				66E5039B1495F9CF003C69C7 /* COSetDiff.m */,
 			);
 			name = Implementation;
 			sourceTree = "<group>";
@@ -766,7 +760,6 @@
 				66E7788914E6075B00D5DFFF /* COSubtreeFactory+Pull.h in Headers */,
 				66E7788A14E6075B00D5DFFF /* diff.h in Headers */,
 				66E7788B14E6075B00D5DFFF /* COArrayDiff.h in Headers */,
-				66E7788D14E6075B00D5DFFF /* COSetDiff.h in Headers */,
 				66E7789014E6075B00D5DFFF /* COSubtreeDiff.h in Headers */,
 				66E7789114E6075B00D5DFFF /* COPersistentRootDiff.h in Headers */,
 				66E7789214E6075B00D5DFFF /* COPersistentRootEditingContext.h in Headers */,
@@ -972,7 +965,6 @@
 				66E7786E14E6073100D5DFFF /* COSubtreeFactory+Pull.m in Sources */,
 				66E7786F14E6073100D5DFFF /* diff.cc in Sources */,
 				66E7787014E6073100D5DFFF /* COArrayDiff.m in Sources */,
-				66E7787214E6073100D5DFFF /* COSetDiff.m in Sources */,
 				66E7787614E6073100D5DFFF /* COPersistentRootDiff.m in Sources */,
 				66E7787714E6073100D5DFFF /* COPersistentRootEditingContext.m in Sources */,
 				66E7787814E6073100D5DFFF /* COStore.m in Sources */,

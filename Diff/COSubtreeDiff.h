@@ -4,8 +4,9 @@
 @class COSubtree;
 @class COMutableItem;
 
-@class COStoreItemDiffOperation;
+@class COSubtreeEdit;
 @class COSubtreeConflict;
+@class COSubtreeDiff;
 @class COSetDiff, COArrayDiff;
 @class COType;
 
@@ -27,12 +28,38 @@
 	NSMutableDictionary *dict;
 }
 
-- (NSArray *) editsForTuple: (COUUIDAttributeTuple *)aTuple;
-- (NSArray *) editsForUUID: (ETUUID *)aUUID attribute: (NSString *)aString;
-- (void) addEdit: (COStoreItemDiffOperation *)anEdit forUUID: (ETUUID *)aUUID attribute: (NSString *)aString;
+- (NSSet *) editsForTuple: (COUUIDAttributeTuple *)aTuple;
+- (NSSet *) editsForUUID: (ETUUID *)aUUID attribute: (NSString *)aString;
+- (void) addEdit: (COSubtreeEdit *)anEdit;
+- (void) removeEdit: (COSubtreeEdit *)anEdit;
 - (NSArray *)allTuples;
 
 @end
+
+
+@interface COSubtreeConflict : NSObject <NSCopying>
+{
+	COSubtreeDiff *parentDiff; /* weak reference */
+	NSMutableDictionary *editsForSourceIdentifier;
+	BOOL isReallyConflicting;
+}
+
+- (COSubtreeDiff *) parentDiff;
+
+- (NSSet *) sourceIdentifiers;
+
+/**
+ * @returns a set of COEdit objects owned by the parent
+ * diff. the caller could for example, modify them, 
+ * or remove some from the parent diff
+ */
+- (NSSet *) editsForSourceIdentifier: (id)anIdentifier;
+
+- (BOOL) isReallyConflicting;
+
+@end
+
+
 
 
 /**
@@ -45,6 +72,7 @@
 	ETUUID *oldRoot;
 	ETUUID *newRoot;
 	CODiffDictionary *diffDict;
+	NSMutableSet *conflicts;
 }
 
 + (COSubtreeDiff *) diffSubtree: (COSubtree *)a
@@ -80,22 +108,29 @@
  * resolution of the conflict.
  */
 - (void) removeConflict: (COSubtreeConflict *)aConflict;
-- (void) addEdit: (COStoreItemDiffOperation *)anEdit;
-- (void) removeEdit: (COStoreItemDiffOperation *)anEdit;
+- (void) addEdit: (COSubtreeEdit *)anEdit;
+- (void) removeEdit: (COSubtreeEdit *)anEdit;
 
 @end
 
 
 
-// operation classes
+#pragma mark operation classes
 
-@interface COStoreItemDiffOperation : NSObject
+@interface COSubtreeEdit : NSObject <NSCopying>
+{
+	ETUUID *UUID;
+	NSString *attribute;
+}
 
-- (void) applyTo: (COMutableItem *)anItem attribute: (NSString *)anAttribute;
+@property (readwrite, nonatomic, copy) ETUUID *UUID;
+@property (readwrite, nonatomic, copy) NSString *attribute;
+
+- (void) applyTo: (COMutableItem *)anItem;
 
 @end
 
-@interface COStoreItemDiffOperationSetAttribute : COStoreItemDiffOperation 
+@interface COStoreItemDiffOperationSetAttribute : COSubtreeEdit 
 {
 	COType *type;
 	id value;
@@ -105,5 +140,42 @@
 
 @end
 
-@interface COStoreItemDiffOperationDeleteAttribute : COStoreItemDiffOperation
+@interface COStoreItemDiffOperationDeleteAttribute : COSubtreeEdit
+@end
+
+
+
+/**
+ * Set diffs can always be merged without conflict
+ */
+@interface COSetDiff : COSubtreeEdit
+{
+	NSDictionary *insertionsForSourceIdentifier;
+	NSDictionary *deletionsForSourceIdentifier;
+}
+
+// Creating
+
+- (id) initWithFirstSet: (NSSet *)first
+              secondSet: (NSSet *)second
+	   sourceIdentifier: (id)aSource;
+
+// Examining
+
+- (NSSet *)insertionSet;
+- (NSSet *)deletionSet;
+
+- (NSSet *)insertionSetForSourceIdentifier: (id)anIdentifier;
+- (NSSet *)deletionSetForSourceIdentifier: (id)anIdentifier;
+
+// Applying
+
+- (void) applyTo: (NSMutableSet*)array;
+- (NSSet *)setWithDiffAppliedTo: (NSSet *)array;
+- (id) valueWithDiffAppliedToValue: (id)aValue;
+
+// Merging with another COSetDiff
+
+- (COSetDiff *)setDiffByMergingWithDiff: (COSetDiff *)other;
+
 @end

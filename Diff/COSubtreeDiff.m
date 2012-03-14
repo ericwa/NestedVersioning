@@ -3,7 +3,6 @@
 #import "ETUUID.h"
 #import "COSubtree.h"
 #import "COItem.h"
-#import "COSetDiff.h"
 #import "COArrayDiff.h"
 
 
@@ -77,34 +76,50 @@
 	CODiffDictionary *result = [[[self class] alloc] init];
 	for (COUUIDAttributeTuple *tuple in dict)
 	{
-		NSMutableArray *array = [[NSMutableArray alloc] initWithArray: [dict objectForKey: tuple]
-															copyItems: YES];
-		[result->dict setObject: array forKey: tuple];
-		[array release];		
+		NSMutableSet *set = [[NSMutableSet alloc] initWithSet: [dict objectForKey: tuple]
+													copyItems: YES];
+		[result->dict setObject: set forKey: tuple];
+		[set release];		
 	}
 	return result;
 }
 
-- (NSArray *) editsForUUID: (ETUUID *)aUUID attribute: (NSString *)aString
+- (NSSet *) editsForUUID: (ETUUID *)aUUID attribute: (NSString *)aString
 {
 	return [self editsForTuple: [COUUIDAttributeTuple tupleWithUUID: aUUID attribute: aString]];
 }
 
-- (NSArray *) editsForTuple: (COUUIDAttributeTuple *)aTuple
+- (NSSet *) editsForTuple: (COUUIDAttributeTuple *)aTuple
 {
 	return [dict objectForKey: aTuple];
 }
 
-- (void) addEdit: (COStoreItemDiffOperation *)anEdit forUUID: (ETUUID *)aUUID attribute: (NSString *)aString
+- (void) addEdit: (COSubtreeEdit *)anEdit
 {
-	COUUIDAttributeTuple *aTuple = [COUUIDAttributeTuple tupleWithUUID: aUUID attribute: aString];
-	NSMutableArray *array = [dict objectForKey: aTuple];
-	if (array == nil)
+	COUUIDAttributeTuple *aTuple = [COUUIDAttributeTuple tupleWithUUID: [anEdit UUID]
+															 attribute: [anEdit attribute]];
+	NSMutableSet *set = [dict objectForKey: aTuple];
+	if (set == nil)
 	{
-		array = [NSMutableArray array];
+		set = [NSMutableSet set];
 	}
-	[array addObject: anEdit];
-	[dict setObject: array forKey: aTuple];
+	[set addObject: anEdit];
+	[dict setObject: set forKey: aTuple];
+}
+
+- (void) removeEdit: (COSubtreeEdit *)anEdit
+{
+	for (NSMutableSet *set in [dict allValues])
+	{
+		if ([set containsObject: anEdit])
+		{
+			[set removeObject: anEdit];
+			return;
+		}
+	}
+	
+	[NSException raise: NSInvalidArgumentException
+				format: @"asked to remove edit %@ not in diff", anEdit];
 }
 
 - (NSArray *)allTuples
@@ -115,6 +130,36 @@
 @end
 
 
+
+@implementation COSubtreeConflict
+- (COSubtreeDiff *) parentDiff
+{
+	return parentDiff;
+}
+
+- (NSSet *) sourceIdentifiers
+{
+	return [NSSet setWithArray: [editsForSourceIdentifier allKeys]];
+}
+
+/**
+ * @returns a set of COEdit objects owned by the parent
+ * diff. the caller could for example, modify them, 
+ * or remove some from the parent diff
+ */
+- (NSSet *) editsForSourceIdentifier: (id)anIdentifier
+{
+	return [editsForSourceIdentifier objectForKey: anIdentifier];
+}
+
+- (BOOL) isReallyConflicting
+{
+	return isReallyConflicting;
+}
+
+// FIXME
+
+@end
 
 
 
@@ -151,8 +196,6 @@
 		[NSException raise: NSInvalidArgumentException format: @"expected same UUID"];
 	}
 	
-	ETUUID *uuid = [itemB UUID];
-	
 	NSMutableSet *removedAttrs = [NSMutableSet setWithArray: [itemA attributeNames]]; // itemA may be nil => may be empty set
 	[removedAttrs minusSet: [NSSet setWithArray: [itemB attributeNames]]];
 	
@@ -170,7 +213,7 @@
 		COStoreItemDiffOperationSetAttribute *insertOp = [[COStoreItemDiffOperationSetAttribute alloc] 
 														  initWithType: [itemB typeForAttribute: addedAttr]
 															value: [itemB valueForAttribute:addedAttr]];
-		[diffDict addEdit: insertOp forUUID: uuid attribute: addedAttr];
+		[diffDict addEdit: insertOp];
 		[insertOp release];
 	}
 	
@@ -179,7 +222,7 @@
 	for (NSString *removedAttr in removedAttrs)
 	{
 		COStoreItemDiffOperationDeleteAttribute *deleteOp = [[COStoreItemDiffOperationDeleteAttribute alloc] init];
-		[diffDict addEdit: deleteOp forUUID: uuid attribute: removedAttr];
+		[diffDict addEdit: deleteOp];
 		[deleteOp release];
 	}
 	
@@ -200,7 +243,7 @@
 			COStoreItemDiffOperationSetAttribute *insertOp = [[COStoreItemDiffOperationSetAttribute alloc] 
 															  initWithType: typeB
 																value: valueB];
-			[diffDict addEdit: insertOp forUUID: uuid attribute: commonAttr];
+			[diffDict addEdit: insertOp];
 			[insertOp release];
 		}
 		else if (![valueB isEqual: valueA])
@@ -230,7 +273,7 @@
 				COStoreItemDiffOperationSetAttribute *editOp = [[COStoreItemDiffOperationSetAttribute alloc] 
 																  initWithType: typeB
 																  value: valueB];
-				[diffDict addEdit: editOp forUUID: uuid attribute: commonAttr];
+				[diffDict addEdit: editOp];
 				[editOp release];
 			}
 		}
@@ -310,7 +353,7 @@
 			[item release];
 		}
 		
-		for (COStoreItemDiffOperation *op in [diffDict editsForTuple: tuple])
+		for (COSubtreeEdit *op in [diffDict editsForTuple: tuple])
 		{
 			[op applyTo: item attribute: [tuple attribute]];
 		}
@@ -341,6 +384,11 @@
 
 - (BOOL) hasConflicts
 {	
+	for (COSubtreeConflict *conflict in conflicts)
+	{
+		if ([conflict isReallyConflicting])
+			return YES;
+	}
 	return NO;
 }
 
@@ -348,18 +396,28 @@
 
 - (NSSet *)edits
 {
-	return nil;
+	NSMutableSet *allEdits = [NSMutableSet set];
+	for (COUUIDAttributeTuple *tuple in [diffDict allTuples])
+	{
+		[allEdits unionSet: [diffDict editsForTuple: tuple]];
+	}
+	return [NSSet setWithSet: allEdits];
 }
 - (NSSet *)conflicts
 {
-	return nil;
+	return conflicts;
 }
 
 #pragma mark access
 
 - (NSSet *)modifiedItemUUIDs
 {
-	return nil;
+	NSMutableSet *modifiedItemUUIDs = [NSMutableSet set];
+	for (COUUIDAttributeTuple *tuple in [diffDict allTuples])
+	{
+		[modifiedItemUUIDs addObject: [tuple UUID]];
+	}
+	return [NSSet setWithSet: modifiedItemUUIDs];
 }
 
 #pragma mark mutation
@@ -371,28 +429,44 @@
  */
 - (void) removeConflict: (COSubtreeConflict *)aConflict
 {
+	[conflicts removeObject: aConflict];
 }
-- (void) addEdit: (COStoreItemDiffOperation *)anEdit
+- (void) addEdit: (COSubtreeEdit *)anEdit
 {
+	[diffDict addEdit: anEdit];
 }
-- (void) removeEdit: (COStoreItemDiffOperation *)anEdit
+- (void) removeEdit: (COSubtreeEdit *)anEdit
 {
+	[diffDict removeEdit: anEdit];
 }
 
 @end
 
 
 
-#pragma mark item diffs 
+#pragma mark operation classes
 
 
 
-@implementation COStoreItemDiffOperation
+@implementation COSubtreeEdit
+
+@synthesize UUID;
+@synthesize attribute;
+
+- (void) dealloc
+{
+	[UUID release];
+	[attribute release];
+	[super dealloc];
+}
+
 - (void) applyTo: (COMutableItem *)anItem attribute: (NSString *)anAttribute
 {
 	[NSException raise: NSGenericException format: @"subclass should have overridden"];
 }
+
 @end
+
 
 @implementation COStoreItemDiffOperationSetAttribute
 
@@ -441,3 +515,118 @@
 }
 
 @end
+
+
+@implementation COSetDiff
+
+- (id) initWithFirstSet: (NSSet *)first
+              secondSet: (NSSet *)second
+	   sourceIdentifier: (id)aSource
+{
+	NILARG_EXCEPTION_TEST(aSource);
+	
+	NSMutableSet *insertions = [NSMutableSet setWithSet: second];
+	[insertions minusSet: first];
+	
+	NSMutableSet *deletions = [NSMutableSet setWithSet: first];
+	[deletions minusSet: second];
+	
+	SUPERINIT;
+	ASSIGN(insertionsForSourceIdentifier, [NSDictionary dictionaryWithObject: insertions forKey: aSource]);
+	ASSIGN(deletionsForSourceIdentifier, [NSDictionary dictionaryWithObject: deletions forKey: aSource]);
+	return self;
+}
+
+- (void) dealloc
+{
+	[insertionsForSourceIdentifier release];
+	[deletionsForSourceIdentifier release];
+	[super dealloc];
+}
+
+- (NSSet *)insertionSet
+{
+	NSMutableSet *added = [NSMutableSet set];
+	for (NSSet *addition in [insertionsForSourceIdentifier allValues])
+	{
+		[added unionSet: addition];
+	}
+	return added;
+}
+
+- (NSSet *)deletionSet
+{
+	NSMutableSet *removed = [NSMutableSet set];
+	for (NSSet *removal in [deletionsForSourceIdentifier allValues])
+	{
+		[removed unionSet: removal];
+	}
+	return removed;
+}
+
+- (NSSet *)insertionSetForSourceIdentifier: (id)anIdentifier
+{
+	return [insertionsForSourceIdentifier objectForKey: anIdentifier];
+}
+
+- (NSSet *)deletionSetForSourceIdentifier: (id)anIdentifier
+{
+	return [deletionsForSourceIdentifier objectForKey: anIdentifier];
+}
+
+- (void) applyTo: (NSMutableSet*)set
+{
+	for (NSSet *addition in [insertionsForSourceIdentifier allValues])
+	{
+		[set unionSet: addition];
+	}
+	for (NSSet *removal in [deletionsForSourceIdentifier allValues])
+	{
+		[set minusSet: removal];
+	}
+}
+
+- (NSSet *)setWithDiffAppliedTo: (NSSet *)set;
+{
+	NSMutableSet *mutableSet = [NSMutableSet setWithSet: set];
+	[self applyTo: mutableSet];
+	return mutableSet;
+}
+
+- (id) valueWithDiffAppliedToValue: (id)aValue
+{
+	return [self setWithDiffAppliedTo: aValue];
+}
+
+- (COSetDiff *)setDiffByMergingWithDiff: (COSetDiff *)other
+{  
+	if ([[self deletionSet] intersectsSet: [other insertionSet]]
+		|| [[self insertionSet] intersectsSet: [other deletionSet]])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"set diffs being merged could not have originated from the same set and are illegal to merge"];
+	}
+	
+	if ([[NSSet setWithArray: [insertionsForSourceIdentifier allKeys]] intersectsSet: 
+		 [NSSet setWithArray: [other->insertionsForSourceIdentifier allKeys]]]
+		|| [[NSSet setWithArray: [deletionsForSourceIdentifier allKeys]] intersectsSet: 
+			[NSSet setWithArray: [other->deletionsForSourceIdentifier allKeys]]])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"set diffs being merged should have unique source identifiers"];
+	}
+	
+	NSMutableDictionary *newInsertions = [NSMutableDictionary dictionaryWithDictionary: insertionsForSourceIdentifier];
+	[newInsertions addEntriesFromDictionary: other->insertionsForSourceIdentifier];
+	
+	NSMutableDictionary *newDeletions = [NSMutableDictionary dictionaryWithDictionary: deletionsForSourceIdentifier];
+	[newDeletions addEntriesFromDictionary: other->deletionsForSourceIdentifier];
+	
+	COSetDiff *result = [[[COSetDiff alloc] init] autorelease];
+	ASSIGN(result->insertionsForSourceIdentifier, newInsertions);
+	ASSIGN(result->deletionsForSourceIdentifier, newDeletions);
+	return result;
+}
+
+@end
+
