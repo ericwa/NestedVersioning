@@ -1,55 +1,5 @@
 #import "COSequenceMerge.h"
 
-NSArray *COMergeSortedArraysUsingSelector(NSArray *sortredArrayA, NSArray *sortredArrayB, SEL cmpSel)
-{
-	const NSUInteger arrayACount = [sortredArrayA count];
-	const NSUInteger arrayBCount = [sortredArrayB count];
-	NSMutableArray *result = [NSMutableArray arrayWithCapacity: arrayACount + arrayBCount];
-	
-	NSUInteger arrayAIndex = 0;
-	NSUInteger arrayBIndex = 0;
-	while (arrayAIndex < arrayACount || arrayBIndex < arrayBCount)
-	{
-		if (arrayAIndex == arrayACount)
-		{
-			[result addObject: [sortredArrayB objectAtIndex: arrayBIndex++]];
-		}
-		else if (arrayBIndex == arrayBCount)
-		{
-			[result addObject: [sortredArrayA objectAtIndex: arrayAIndex++]];
-		}
-		else
-		{
-			id arrayAElement = [sortredArrayA objectAtIndex: arrayAIndex];
-			id arrayBElement = [sortredArrayB objectAtIndex: arrayBIndex];
-			
-			IMP cmpImp = [arrayAElement methodForSelector: cmpSel];
-			NSComparisonResult cmpResult = ((NSComparisonResult (*)(id, SEL, id))cmpImp)(arrayAElement, cmpSel, arrayBElement);
-			
-			if (cmpResult == NSOrderedAscending || cmpResult == NSOrderedSame)
-			{
-				[result addObject: arrayAElement];
-				[result addObject: arrayBElement];
-			}
-			else if (cmpResult == NSOrderedDescending)
-			{
-				[result addObject: arrayBElement];
-				[result addObject: arrayAElement];
-			}
-			else
-			{
-				[NSException raise: NSInternalInconsistencyException
-							format: @"comparison method returned invalid value"];
-			}
-			
-			arrayAIndex++;
-			arrayBIndex++;
-		}
-	}
-	
-	return result;
-}
-
 static inline BOOL COOverlappingRanges(NSRange r1, NSRange r2)
 {
 	return (r1.location >= r2.location && r1.location < (r2.location + r2.length) && r1.length > 0)
