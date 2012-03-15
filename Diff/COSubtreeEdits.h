@@ -1,24 +1,63 @@
 #import <Foundation/Foundation.h>
 
-/**
- * Abstract superclass for a sequence edit. Has a range (in the source sequence)
- * to which it applies.
- *
- * For now, all subclasses are immutable.
- *
- * source identifier property, used to indicate where (which user/branch/commit etc)
- * a change originates.
- *
- * sourceIdentifier must be non-nil and sutible as a dictionary key.
- */
-@interface COSequenceEdit : NSObject <NSCopying>
+@class ETUUID;
+
+@interface COSubtreeEdit : NSObject <NSCopying>
 {
-	NSRange range;
+	ETUUID *UUID;
+	NSString *attribute;
 	id sourceIdentifier;
 }
 
+@property (readwrite, nonatomic, copy) ETUUID *UUID;
+@property (readwrite, nonatomic, copy) NSString *attribute;
+@property (readwrite, nonatomic, copy) id sourceIdentifier;
+
+- (void) applyTo: (COMutableItem *)anItem;
+
+@end
+
+@interface COStoreItemDiffOperationSetAttribute : COSubtreeEdit 
+{
+	COType *type;
+	id value;
+}
+- (id) initWithType: (COType*)aType
+			  value: (id)aValue;
+
+@end
+
+@interface COStoreItemDiffOperationDeleteAttribute : COSubtreeEdit
+@end
+
+
+
+
+@interface COSetInsert : COSubtreeEdit
+{
+	id object;
+}
+
+
+@end
+
+
+@interface COSetDeletion : COSubtreeEdit
+{
+	id object;
+}
+
+
+@end
+
+
+
+@interface COSequenceEdit : COSubtreeEdit
+{
+	NSRange range;	
+}
+
 @property (nonatomic, readonly) NSRange range;
-@property (nonatomic, readonly) id sourceIdentifier;
 
 - (NSComparisonResult) compare: (id)otherObject;
 
@@ -36,7 +75,7 @@
  */
 @interface COSequenceInsertion : COSequenceEdit 
 {
-	id insertedObject;
+	NSArray *insertedObject;
 }
 @property (nonatomic, readonly)  id insertedObject;
 + (COSequenceInsertion*)insertionWithLocation: (NSUInteger)aLocation
@@ -56,7 +95,7 @@
 
 @interface COSequenceModification : COSequenceEdit
 {
-	id insertedObject;
+	NSArray *insertedObjects;
 }
 @property (nonatomic, retain, readonly)  id insertedObject;
 + (COSequenceModification*)modificationWithRange: (NSRange)aRange

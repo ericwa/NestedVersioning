@@ -10,18 +10,6 @@
 @class COSetDiff, COArrayDiff;
 @class COType;
 
-@interface COUUIDAttributeTuple : NSObject <NSCopying>
-{
-	ETUUID *uuid;
-	NSString *attribute;
-}
-
-+ (COUUIDAttributeTuple *) tupleWithUUID: (ETUUID *)aUUID attribute: (NSString *)anAttribute;
-- (ETUUID *) UUID;
-- (NSString *) attribute;
-
-@end
-
 
 @interface CODiffDictionary : NSObject <NSCopying>
 {
@@ -116,66 +104,3 @@
 
 
 #pragma mark operation classes
-
-@interface COSubtreeEdit : NSObject <NSCopying>
-{
-	ETUUID *UUID;
-	NSString *attribute;
-}
-
-@property (readwrite, nonatomic, copy) ETUUID *UUID;
-@property (readwrite, nonatomic, copy) NSString *attribute;
-
-- (void) applyTo: (COMutableItem *)anItem;
-
-@end
-
-@interface COStoreItemDiffOperationSetAttribute : COSubtreeEdit 
-{
-	COType *type;
-	id value;
-}
-- (id) initWithType: (COType*)aType
-			  value: (id)aValue;
-
-@end
-
-@interface COStoreItemDiffOperationDeleteAttribute : COSubtreeEdit
-@end
-
-
-
-/**
- * Set diffs can always be merged without conflict
- */
-@interface COSetDiff : COSubtreeEdit
-{
-	NSDictionary *insertionsForSourceIdentifier;
-	NSDictionary *deletionsForSourceIdentifier;
-}
-
-// Creating
-
-- (id) initWithFirstSet: (NSSet *)first
-              secondSet: (NSSet *)second
-	   sourceIdentifier: (id)aSource;
-
-// Examining
-
-- (NSSet *)insertionSet;
-- (NSSet *)deletionSet;
-
-- (NSSet *)insertionSetForSourceIdentifier: (id)anIdentifier;
-- (NSSet *)deletionSetForSourceIdentifier: (id)anIdentifier;
-
-// Applying
-
-- (void) applyTo: (NSMutableSet*)array;
-- (NSSet *)setWithDiffAppliedTo: (NSSet *)array;
-- (id) valueWithDiffAppliedToValue: (id)aValue;
-
-// Merging with another COSetDiff
-
-- (COSetDiff *)setDiffByMergingWithDiff: (COSetDiff *)other;
-
-@end

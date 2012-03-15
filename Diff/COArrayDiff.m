@@ -11,7 +11,7 @@ static bool comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
 			[(NSArray*)userdata2 objectAtIndex: j]];
 }
 
-NSArray *CODiffArrays(NSArray *a, NSArray *b, id sourceIdentifier)
+NSArray *CODiffArrays(NSArray *a, NSArray *b, id<CODiffArraysDelegate>delegate, id sourceIdentifier)
 {
 	NSMutableArray *resultArray = [NSMutableArray array];
 	
@@ -31,19 +31,19 @@ NSArray *CODiffArrays(NSArray *a, NSArray *b, id sourceIdentifier)
 			case difftype_insertion:
 				if (secondRange.length > 0)
 				{
-					[resultArray addObject: [COSequenceInsertion insertionWithLocation: firstRange.location
-																		insertedObject: [b subarrayWithRange: secondRange]
-																	  sourceIdentifier: sourceIdentifier]];
+					[resultArray addObject: [delegate insertionWithLocation: firstRange.location
+															 insertedObject: [b subarrayWithRange: secondRange]
+														   sourceIdentifier: sourceIdentifier]];
 				}
 				break;
 			case difftype_deletion:
-				[resultArray addObject: [COSequenceDeletion deletionWithRange: firstRange
-															 sourceIdentifier: sourceIdentifier]];
+				[resultArray addObject: [delegate deletionWithRange: firstRange
+												   sourceIdentifier: sourceIdentifier]];
 				break;
 			case difftype_modification:
-				[resultArray addObject: [COSequenceModification modificationWithRange: firstRange
-																	   insertedObject: [b subarrayWithRange: secondRange]
-																	 sourceIdentifier: sourceIdentifier]];
+				[resultArray addObject: [delegate modificationWithRange: firstRange
+														 insertedObject: [b subarrayWithRange: secondRange]
+													   sourceIdentifier: sourceIdentifier]];
 																				  
 				break;
 		}
