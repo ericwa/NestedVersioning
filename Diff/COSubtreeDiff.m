@@ -10,80 +10,6 @@
 #pragma mark diff dictionary
 
 
-@implementation CODiffDictionary
-
-- (id) init
-{
-	SUPERINIT;
-	dict = [[NSMutableDictionary alloc] init];
-	return self;
-}
-
-- (void)dealloc
-{
-	[dict release];
-	[super dealloc];
-}
-
-- (id) copyWithZone:(NSZone *)zone
-{
-	CODiffDictionary *result = [[[self class] alloc] init];
-	for (COUUIDAttributeTuple *tuple in dict)
-	{
-		NSMutableSet *set = [[NSMutableSet alloc] initWithSet: [dict objectForKey: tuple]
-													copyItems: YES];
-		[result->dict setObject: set forKey: tuple];
-		[set release];		
-	}
-	return result;
-}
-
-- (NSSet *) editsForUUID: (ETUUID *)aUUID attribute: (NSString *)aString
-{
-	return [self editsForTuple: [COUUIDAttributeTuple tupleWithUUID: aUUID attribute: aString]];
-}
-
-- (NSSet *) editsForTuple: (COUUIDAttributeTuple *)aTuple
-{
-	return [dict objectForKey: aTuple];
-}
-
-- (void) addEdit: (COSubtreeEdit *)anEdit
-{
-	COUUIDAttributeTuple *aTuple = [COUUIDAttributeTuple tupleWithUUID: [anEdit UUID]
-															 attribute: [anEdit attribute]];
-	NSMutableSet *set = [dict objectForKey: aTuple];
-	if (set == nil)
-	{
-		set = [NSMutableSet set];
-	}
-	[set addObject: anEdit];
-	[dict setObject: set forKey: aTuple];
-}
-
-- (void) removeEdit: (COSubtreeEdit *)anEdit
-{
-	for (NSMutableSet *set in [dict allValues])
-	{
-		if ([set containsObject: anEdit])
-		{
-			[set removeObject: anEdit];
-			return;
-		}
-	}
-	
-	[NSException raise: NSInvalidArgumentException
-				format: @"asked to remove edit %@ not in diff", anEdit];
-}
-
-- (NSArray *)allTuples
-{
-	return [dict allKeys];
-}
-
-@end
-
-
 
 @implementation COSubtreeConflict
 
@@ -107,9 +33,32 @@
 	return [editsForSourceIdentifier objectForKey: anIdentifier];
 }
 
-- (BOOL) isReallyConflicting
+- (NSSet *) allEdits
 {
-	return isReallyConflicting;
+	NSMutableSet *result = [NSMutableSet set];
+	for (NSSet *edits in [editsForSourceIdentifier allValues])
+	{
+		[result unionSet: edits];
+	}
+	return result;
+}
+
+/**
+ * Defined based on -[COSubtreeEdit isNonconflictingWith:]
+ */
+- (BOOL) isNonconflicting
+{
+	NSSet *allEdits = [self allEdits];
+	if ([allEdits count] > 0)
+	{
+		COSubtreeEdit *referenceEdit = [allEdits anyObject];
+		for (COSubtreeEdit *edit in allEdits)
+		{
+			if (![referenceEdit isEqualIgnoringSourceIdentifier: edit])
+				return NO;
+		}
+	}
+	return YES;
 }
 
 // FIXME
@@ -121,14 +70,24 @@
 
 @implementation COSubtreeDiff
 
+#pragma mark other stuff
+
 - (id) initWithOldRootUUID: (ETUUID*)anOldRoot
 			   newRootUUID: (ETUUID*)aNewRoot
 {
 	SUPERINIT;
 	ASSIGN(oldRoot, anOldRoot);
 	ASSIGN(newRoot, aNewRoot);
-	diffDict = [[CODiffDictionary alloc] init];
+	dict = [[NSMutableDictionary alloc] init];
 	return self;
+}
+
+- (void) dealloc
+{
+	[oldRoot release];
+	[newRoot release];
+	[dict release];
+	[super dealloc];
 }
 
 - (id) copyWithZone:(NSZone *)zone
@@ -136,12 +95,20 @@
 	COSubtreeDiff *result = [[[self class] alloc] init];
 	result->oldRoot = [oldRoot copyWithZone: zone];
 	result->newRoot = [newRoot copyWithZone: zone];
-	result->diffDict = [diffDict copyWithZone: zone];
+	
+	// copy dict
+	
+	for (COUUIDAttributeTuple *tuple in dict)
+	{
+		NSMutableSet *set = [[NSMutableSet alloc] initWithSet: [dict objectForKey: tuple]
+													copyItems: YES];
+		[result->dict setObject: set forKey: tuple];
+		[set release];		
+	}
+	
 	return result;
 }
 
-
-@protocol CODiffArraysDelegate
 
 - (id)insertionWithLocation: (NSUInteger)aLocation
 			 insertedObject: (id)anObject
@@ -370,7 +337,7 @@ i
 {	
 	for (COSubtreeConflict *conflict in conflicts)
 	{
-		if ([conflict isReallyConflicting])
+		if (![conflict isNonconflicting])
 			return YES;
 	}
 	return NO;
@@ -415,13 +382,37 @@ i
 {
 	[conflicts removeObject: aConflict];
 }
+
 - (void) addEdit: (COSubtreeEdit *)anEdit
 {
-	[diffDict addEdit: anEdit];
+	COUUIDAttributeTuple *aTuple = [COUUIDAttributeTuple tupleWithUUID: [anEdit UUID]
+															 attribute: [anEdit attribute]];
+	NSMutableSet *set = [dict objectForKey: aTuple];
+	if (set == nil)
+	{
+		set = [NSMutableSet set];
+	}
+	[set addObject: anEdit];
+	[dict setObject: set forKey: aTuple];
+	
+	[self _updateConflictsForAddingEdit: anEdit];
 }
+
 - (void) removeEdit: (COSubtreeEdit *)anEdit
 {
-	[diffDict removeEdit: anEdit];
+	for (NSMutableSet *set in [dict allValues])
+	{
+		if ([set containsObject: anEdit])
+		{
+			[self _updateConflictsForRemovingEdit: anEdit];
+			
+			[set removeObject: anEdit];
+			return;
+		}
+	}
+	
+	[NSException raise: NSInvalidArgumentException
+				format: @"asked to remove edit %@ not in diff", anEdit];
 }
 
 @end

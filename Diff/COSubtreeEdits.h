@@ -13,7 +13,10 @@
 @property (readwrite, nonatomic, copy) NSString *attribute;
 @property (readwrite, nonatomic, copy) id sourceIdentifier;
 
-- (void) applyTo: (COMutableItem *)anItem;
+// NO applyTo: (applying a set of array edits requires a special procedure)
+// NO doesntConflictWith: (checking a set of array edits for conflicts requires a special procedure)
+
+- (BOOL) isEqualIgnoringSourceIdentifier: (id)other;
 
 @end
 

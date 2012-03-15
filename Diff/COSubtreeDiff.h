@@ -11,25 +11,11 @@
 @class COType;
 
 
-@interface CODiffDictionary : NSObject <NSCopying>
-{
-	NSMutableDictionary *dict;
-}
-
-- (NSSet *) editsForTuple: (COUUIDAttributeTuple *)aTuple;
-- (NSSet *) editsForUUID: (ETUUID *)aUUID attribute: (NSString *)aString;
-- (void) addEdit: (COSubtreeEdit *)anEdit;
-- (void) removeEdit: (COSubtreeEdit *)anEdit;
-- (NSArray *)allTuples;
-
-@end
-
 
 @interface COSubtreeConflict : NSObject <NSCopying>
 {
 	COSubtreeDiff *parentDiff; /* weak reference */
 	NSMutableDictionary *editsForSourceIdentifier;
-	BOOL isReallyConflicting;
 }
 
 - (COSubtreeDiff *) parentDiff;
@@ -43,7 +29,9 @@
  */
 - (NSSet *) editsForSourceIdentifier: (id)anIdentifier;
 
-- (BOOL) isReallyConflicting;
+- (NSSet *) allEdits;
+
+- (BOOL) isNonconflicting;
 
 @end
 
@@ -59,7 +47,7 @@
 {
 	ETUUID *oldRoot;
 	ETUUID *newRoot;
-	CODiffDictionary *diffDict;
+	NSMutableDictionary *dict;
 	NSMutableSet *conflicts;
 }
 
@@ -79,9 +67,13 @@
 
 - (BOOL) hasConflicts;
 
+- (void) _applyEdits: (NSSet *)edits;
+
+
 #pragma mark access (sub-objects may be mutated by caller)
 
 - (NSSet *)edits;
+- (NSSet *) editsForUUID: (ETUUID *)aUUID attribute: (NSString *)aString;
 - (NSSet *)conflicts;
 
 #pragma mark access
