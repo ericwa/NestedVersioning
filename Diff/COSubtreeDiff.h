@@ -11,6 +11,19 @@
 @class COType;
 
 
+@interface CODiffDictionary : NSObject <NSCopying>
+{
+	NSMutableDictionary *dict;
+}
+
+- (NSSet *) editsForTuple: (COUUIDAttributeTuple *)aTuple;
+- (NSSet *) editsForUUID: (ETUUID *)aUUID attribute: (NSString *)aString;
+- (void) addEdit: (COSubtreeEdit *)anEdit;
+- (void) removeEdit: (COSubtreeEdit *)anEdit;
+- (NSArray *)allTuples;
+
+@end
+
 
 @interface COSubtreeConflict : NSObject // not publically copyable.
 {
@@ -52,7 +65,7 @@
 {
 	ETUUID *oldRoot;
 	ETUUID *newRoot;
-	NSMutableDictionary *dict;
+	CODiffDictionary *diffDict;
 	NSMutableSet *conflicts;
 }
 
