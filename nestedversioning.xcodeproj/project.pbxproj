@@ -98,8 +98,6 @@
 		79284A7814F465890063B0BF /* EWIconTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 79284A7714F465890063B0BF /* EWIconTextFieldCell.m */; };
 		79626467150EE07E009A0686 /* COSequenceMerge.h in Headers */ = {isa = PBXBuildFile; fileRef = 79626465150EE07E009A0686 /* COSequenceMerge.h */; };
 		79626468150EE07E009A0686 /* COSequenceMerge.m in Sources */ = {isa = PBXBuildFile; fileRef = 79626466150EE07E009A0686 /* COSequenceMerge.m */; };
-		798763E214EB3B7A0064002F /* TestSequenceDiffMerge.m in Sources */ = {isa = PBXBuildFile; fileRef = 798763E114EB3B7A0064002F /* TestSequenceDiffMerge.m */; };
-		7994684514EB9F7A008AC16E /* TestSetDiffMerge.m in Sources */ = {isa = PBXBuildFile; fileRef = 7994684414EB9F7A008AC16E /* TestSetDiffMerge.m */; };
 		79B578D914ECC94E00B3563F /* EWDiffWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B578D814ECC94E00B3563F /* EWDiffWindowController.m */; };
 		79B578E314ECCACE00B3563F /* DiffWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = 79B578E214ECCACE00B3563F /* DiffWindow.nib */; };
 		79CB315114C6911400ADAB77 /* arrow_branch_purple.png in Resources */ = {isa = PBXBuildFile; fileRef = 79CB315014C6911400ADAB77 /* arrow_branch_purple.png */; };
@@ -273,10 +271,8 @@
 		79626466150EE07E009A0686 /* COSequenceMerge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = COSequenceMerge.m; path = Diff/COSequenceMerge.m; sourceTree = "<group>"; };
 		7978700E14D799A200B45FC6 /* TestSubtree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSubtree.m; sourceTree = "<group>"; };
 		79837D8C151024EB004EDD21 /* ODDS_AND_ENDS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ODDS_AND_ENDS; sourceTree = "<group>"; };
-		798763E114EB3B7A0064002F /* TestSequenceDiffMerge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSequenceDiffMerge.m; sourceTree = "<group>"; };
 		79926C17148CADF80095A665 /* EWPersistentRootWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWPersistentRootWindowController.h; sourceTree = "<group>"; };
 		79926C18148CADF80095A665 /* EWPersistentRootWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWPersistentRootWindowController.m; sourceTree = "<group>"; };
-		7994684414EB9F7A008AC16E /* TestSetDiffMerge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSetDiffMerge.m; sourceTree = "<group>"; };
 		79999F1314DE597200FFBC99 /* COSubtreeFactory+PersistentRoots.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COSubtreeFactory+PersistentRoots.h"; sourceTree = "<group>"; };
 		79999F1414DE597200FFBC99 /* COSubtreeFactory+PersistentRoots.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "COSubtreeFactory+PersistentRoots.m"; sourceTree = "<group>"; };
 		79B578D714ECC94E00B3563F /* EWDiffWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWDiffWindowController.h; sourceTree = "<group>"; };
@@ -639,8 +635,6 @@
 				79FB63BD1486ABEF00751E1E /* Tests - docs and code sketch */,
 				79FB63B81486ABC600751E1E /* Tests - documented only */,
 				6628FB9D142FA7840072767A /* Tests - old */,
-				798763E114EB3B7A0064002F /* TestSequenceDiffMerge.m */,
-				7994684414EB9F7A008AC16E /* TestSetDiffMerge.m */,
 				790574FB14F8A7D20007C67B /* TestSubtreeDiffMerge.m */,
 			);
 			path = Tests;
@@ -928,8 +922,6 @@
 				66E778A514E607CD00D5DFFF /* TestCommon.m in Sources */,
 				66E778A614E607CD00D5DFFF /* TestPull.m in Sources */,
 				66E778AD14E6080700D5DFFF /* TestPersistentRootEditingContext.m in Sources */,
-				798763E214EB3B7A0064002F /* TestSequenceDiffMerge.m in Sources */,
-				7994684514EB9F7A008AC16E /* TestSetDiffMerge.m in Sources */,
 				6660E23A14F84B3000D2F319 /* TestItem.m in Sources */,
 				6660E23E14F84C2A00D2F319 /* TestPath.m in Sources */,
 				790574FC14F8A7D20007C67B /* TestSubtreeDiffMerge.m in Sources */,
