@@ -15,13 +15,13 @@
 - (id) init
 {
 	SUPERINIT;
-	dict = [[NSMutableSet alloc] init];
+	diffDictStorage = [[NSMutableSet alloc] init];
 	return self;
 }
 
 - (void)dealloc
 {
-	[dict release];
+	[diffDictStorage release];
 	[super dealloc];
 }
 
@@ -29,7 +29,7 @@
 {
 	CODiffDictionary *result = [[[self class] alloc] init];
 	
-	ASSIGN(result->dict, [[NSMutableSet alloc] initWithSet: dict copyItems: YES]);
+	ASSIGN(result->diffDictStorage, [[NSMutableSet alloc] initWithSet: diffDictStorage copyItems: YES]);
 	
 	//for (COUUIDAttributeTuple *tuple in dict)
 	//{
@@ -45,7 +45,7 @@
 - (NSSet *) editsForUUID: (ETUUID *)aUUID attribute: (NSString *)aString
 {
 	NSMutableSet *result = [NSMutableSet set];
-	for (COSubtreeEdit *edit in dict)
+	for (COSubtreeEdit *edit in diffDictStorage)
 	{
 		if ([[edit UUID] isEqual: aUUID] && [[edit attribute] isEqual: aString])
 		{
@@ -58,7 +58,7 @@
 - (NSSet *) editsForUUID: (ETUUID *)aUUID
 {
 	NSMutableSet *result = [NSMutableSet set];
-	for (COSubtreeEdit *edit in dict)
+	for (COSubtreeEdit *edit in diffDictStorage)
 	{
 		if ([[edit UUID] isEqual: aUUID])
 		{
@@ -70,18 +70,18 @@
 
 - (void) addEdit: (COSubtreeEdit *)anEdit
 {
-	[dict addObject: anEdit];
+	[diffDictStorage addObject: anEdit];
 }
 
 - (void) removeEdit: (COSubtreeEdit *)anEdit
 {
-	[dict removeObject: anEdit];
+	[diffDictStorage removeObject: anEdit];
 }
 
 - (NSSet *)allEditedUUIDs
 {
 	NSMutableSet *result = [NSMutableSet set];
-	for (COSubtreeEdit *edit in dict)
+	for (COSubtreeEdit *edit in diffDictStorage)
 	{
 		[result addObject: [edit UUID]];
 	}
@@ -89,7 +89,7 @@
 }
 - (NSSet *)allEdits
 {
-	return [NSSet setWithSet: dict];
+	return [NSSet setWithSet: diffDictStorage];
 }
 
 @end
@@ -246,7 +246,7 @@
 			
 			for (COSubtreeEdit *edit in sourceEditsForSourceIdentifier)
 			{
-				[destEditsForSourceIdentifier addObject: [result->diffDict->dict member: edit]];
+				[destEditsForSourceIdentifier addObject: [result->diffDict->diffDictStorage member: edit]];
 			}
 			
 			[dest->editsForSourceIdentifier setObject: destEditsForSourceIdentifier forKey: sourceIdentifier];
