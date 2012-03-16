@@ -18,11 +18,6 @@
 	[super dealloc];
 }
 
-- (void) applyTo: (COMutableItem *)anItem
-{
-	[NSException raise: NSGenericException format: @"subclass should have overridden"];
-}
-
 @end
 
 
@@ -50,27 +45,10 @@
 	[super dealloc];
 }
 
-- (void) applyTo: (COMutableItem *)anItem attribute: (NSString *)anAttribute
-{
-	[anItem setValue: value
-		forAttribute: anAttribute
-				type: type];
-}
-
 @end
 
 
 @implementation COStoreItemDiffOperationDeleteAttribute
-
-- (void) applyTo: (COMutableItem *)anItem attribute: (NSString *)anAttribute
-{
-	if (nil == [anItem valueForAttribute: anAttribute])
-	{
-		[NSException raise: NSInternalInconsistencyException
-					format: @"expeted attribute %@ to be already set", anAttribute];
-	}
-	[anItem removeValueForAttribute: anAttribute];
-}
 
 @end
 
@@ -84,13 +62,6 @@
 @implementation COSequenceEdit
 
 @synthesize range;
-@synthesize sourceIdentifier;
-
-- (void) dealloc
-{
-	[sourceIdentifier release];
-	[super dealloc];
-}
 
 - (NSComparisonResult) compare: (COSequenceEdit*)other
 {

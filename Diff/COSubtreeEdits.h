@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+#import "COType.h"
 
 @class ETUUID;
 

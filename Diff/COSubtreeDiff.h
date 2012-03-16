@@ -15,7 +15,8 @@
  */
 @interface CODiffDictionary : NSObject <NSCopying>
 {
-	NSMutableSet *dict;
+	@public
+	NSMutableSet *diffDictStorage;
 }
 
 - (NSSet *) editsForUUID: (ETUUID *)aUUID;
@@ -30,6 +31,7 @@
 
 @interface COSubtreeConflict : NSObject // not publically copyable.
 {
+	@public
 	COSubtreeDiff *parentDiff; /* weak reference */
 	NSMutableDictionary *editsForSourceIdentifier; /* id => NSMutableSet of COSubtreeEdit*/
 }
