@@ -3,6 +3,8 @@
 #import "COSubtreeEdits.h"
 
 
+#pragma mark base class
+
 @implementation COSubtreeEdit
 
 @synthesize UUID;
@@ -47,6 +49,8 @@
 @end
 
 
+#pragma mark set, delete attribute
+
 @implementation COSetAttribute
 
 @synthesize type;
@@ -86,6 +90,8 @@
 @end
 
 
+#pragma mark editing set multivalueds
+
 @implementation COSetInsertion
 @synthesize object;
 
@@ -119,6 +125,7 @@
 @end
 
 
+#pragma mark editing array multivalueds
 
 
 @implementation COSequenceEdit

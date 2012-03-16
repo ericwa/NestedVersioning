@@ -27,6 +27,7 @@
 
 - (BOOL) isEqualIgnoringSourceIdentifier: (id)other;
 
+
 @end
 
 #pragma mark set, delete attribute
