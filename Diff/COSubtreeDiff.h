@@ -12,7 +12,7 @@
 
 
 
-@interface COSubtreeConflict : NSObject <NSCopying>
+@interface COSubtreeConflict : NSObject // not publically copyable.
 {
 	COSubtreeDiff *parentDiff; /* weak reference */
 	NSMutableDictionary *editsForSourceIdentifier;
@@ -32,6 +32,10 @@
 - (NSSet *) allEdits;
 
 - (BOOL) isNonconflicting;
+
+// private
+
+- (void) removeEdit: (COSubtreeEdit *)anEdit
 
 @end
 
@@ -93,6 +97,3 @@
 
 @end
 
-
-
-#pragma mark operation classes

@@ -44,6 +44,20 @@
 }
 
 /**
+ * private
+ */
+- (void) removeEdit: (COSubtreeEdit *)anEdit
+{
+	for (NSMutableSet *edits in [editsForSourceIdentifier allValues])
+	{
+		if ([edits containsObject: anEdit])
+		{
+			[edits removeObject: anEdit];
+		}
+	}
+}
+
+/**
  * Defined based on -[COSubtreeEdit isNonconflictingWith:]
  */
 - (BOOL) isNonconflicting
@@ -241,7 +255,7 @@ i
 		COItem *commonItemA = [[a subtreeWithUUID: aUUID] item]; // may be nil if the item was inserted in b
 		COItem *commonItemB = [[b subtreeWithUUID: aUUID] item];
 		
-		[result _diffItemBefore: commonItemA after: commonItemB];
+		[result _diffItemBefore: commonItemA after: commonItemB sourceIdentifier: aSource];
 	}
 	
 	return result;
@@ -377,11 +391,21 @@ i
  * removes conflict (by extension, all the conflicting changes)... 
  * caller should subsequently insert or update edits to reflect the
  * resolution of the conflict.
+ *
+ * note that if an edit is part of two confclits, removing one
+ * conflict will also delete all of its edits, including any
+ * that are in other conflicts.
  */
 - (void) removeConflict: (COSubtreeConflict *)aConflict
 {
+	for (COSubtreeEdit *edit in [aConflict allEdits])
+	{
+		[self removeEdit: edit];
+	}
 	[conflicts removeObject: aConflict];
 }
+
+
 
 - (void) addEdit: (COSubtreeEdit *)anEdit
 {
@@ -396,6 +420,20 @@ i
 	[dict setObject: set forKey: aTuple];
 	
 	[self _updateConflictsForAddingEdit: anEdit];
+}
+
+- (void) _updateConflictsForRemovingEdit: (COSubtreeEdit *)anEdit
+{
+	for (COSubtreeConflict *conflict in [NSSet setWithSet: conflicts])
+	{
+		for (COSubtreeEdit *edit in [conflict allEdits])
+		{
+			if (edit == anEdit)
+			{
+				[conflict removeEdit: edit];
+			}
+		}
+	}
 }
 
 - (void) removeEdit: (COSubtreeEdit *)anEdit

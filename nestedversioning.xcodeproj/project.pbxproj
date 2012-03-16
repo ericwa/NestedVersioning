@@ -632,10 +632,10 @@
 				66F4E315147C59F0004FC1BA /* TestTagging.m */,
 				79F8205614E26118008236F6 /* TestPull.m */,
 				79CB302914C63E1C00ADAB77 /* TestCommon.m */,
+				790574FB14F8A7D20007C67B /* TestSubtreeDiffMerge.m */,
 				79FB63BD1486ABEF00751E1E /* Tests - docs and code sketch */,
 				79FB63B81486ABC600751E1E /* Tests - documented only */,
 				6628FB9D142FA7840072767A /* Tests - old */,
-				790574FB14F8A7D20007C67B /* TestSubtreeDiffMerge.m */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
