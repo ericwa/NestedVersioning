@@ -15,7 +15,7 @@
 - (id) init
 {
 	SUPERINIT;
-	dict = [[NSMutableDictionary alloc] init];
+	dict = [[NSMutableSet alloc] init];
 	return self;
 }
 
@@ -28,57 +28,68 @@
 - (id) copyWithZone:(NSZone *)zone
 {
 	CODiffDictionary *result = [[[self class] alloc] init];
-	for (COUUIDAttributeTuple *tuple in dict)
-	{
-		NSMutableSet *set = [[NSMutableSet alloc] initWithSet: [dict objectForKey: tuple]
-													copyItems: YES];
-		[result->dict setObject: set forKey: tuple];
-		[set release];		
-	}
+	
+	ASSIGN(result->dict, [[NSMutableSet alloc] initWithSet: dict copyItems: YES]);
+	
+	//for (COUUIDAttributeTuple *tuple in dict)
+	//{
+	//	NSMutableSet *set = [[NSMutableSet alloc] initWithSet: [dict objectForKey: tuple]
+	//												copyItems: YES];
+	//	[result->dict setObject: set forKey: tuple];
+	//	[set release];		
+	//}
+	
 	return result;
 }
 
 - (NSSet *) editsForUUID: (ETUUID *)aUUID attribute: (NSString *)aString
 {
-	return [self editsForTuple: [COUUIDAttributeTuple tupleWithUUID: aUUID attribute: aString]];
+	NSMutableSet *result = [NSMutableSet set];
+	for (COSubtreeEdit *edit in dict)
+	{
+		if ([[edit UUID] isEqual: aUUID] && [[edit attribute] isEqual: aString])
+		{
+			[result addObject: edit];
+		}
+	}
+	return result;
 }
 
-- (NSSet *) editsForTuple: (COUUIDAttributeTuple *)aTuple
+- (NSSet *) editsForUUID: (ETUUID *)aUUID
 {
-	return [dict objectForKey: aTuple];
+	NSMutableSet *result = [NSMutableSet set];
+	for (COSubtreeEdit *edit in dict)
+	{
+		if ([[edit UUID] isEqual: aUUID])
+		{
+			[result addObject: edit];
+		}
+	}
+	return result;
 }
 
 - (void) addEdit: (COSubtreeEdit *)anEdit
 {
-	COUUIDAttributeTuple *aTuple = [COUUIDAttributeTuple tupleWithUUID: [anEdit UUID]
-															 attribute: [anEdit attribute]];
-	NSMutableSet *set = [dict objectForKey: aTuple];
-	if (set == nil)
-	{
-		set = [NSMutableSet set];
-	}
-	[set addObject: anEdit];
-	[dict setObject: set forKey: aTuple];
+	[dict addObject: anEdit];
 }
 
 - (void) removeEdit: (COSubtreeEdit *)anEdit
 {
-	for (NSMutableSet *set in [dict allValues])
-	{
-		if ([set containsObject: anEdit])
-		{
-			[set removeObject: anEdit];
-			return;
-		}
-	}
-	
-	[NSException raise: NSInvalidArgumentException
-				format: @"asked to remove edit %@ not in diff", anEdit];
+	[dict removeObject: anEdit];
 }
 
-- (NSArray *)allTuples
+- (NSSet *)allEditedUUIDs
 {
-	return [dict allKeys];
+	NSMutableSet *result = [NSMutableSet set];
+	for (COSubtreeEdit *edit in dict)
+	{
+		[result addObject: [edit UUID]];
+	}
+	return result;
+}
+- (NSSet *)allEdits
+{
+	return [NSSet setWithSet: dict];
 }
 
 @end
@@ -205,7 +216,7 @@
 {
 	[oldRoot release];
 	[newRoot release];
-	[dict release];
+	[diffDict release];
 	[super dealloc];
 }
 

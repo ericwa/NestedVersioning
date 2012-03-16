@@ -10,17 +10,20 @@
 @class COSetDiff, COArrayDiff;
 @class COType;
 
-
+/**
+ * abstracts the storage of edits... currently just an NSSet.
+ */
 @interface CODiffDictionary : NSObject <NSCopying>
 {
-	NSMutableDictionary *dict;
+	NSMutableSet *dict;
 }
 
-- (NSSet *) editsForTuple: (COUUIDAttributeTuple *)aTuple;
+- (NSSet *) editsForUUID: (ETUUID *)aUUID;
 - (NSSet *) editsForUUID: (ETUUID *)aUUID attribute: (NSString *)aString;
 - (void) addEdit: (COSubtreeEdit *)anEdit;
 - (void) removeEdit: (COSubtreeEdit *)anEdit;
-- (NSArray *)allTuples;
+- (NSSet *)allEditedUUIDs;
+- (NSSet *)allEdits;
 
 @end
 
