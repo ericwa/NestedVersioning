@@ -1,9 +1,9 @@
 #import "COArrayDiff.h"
-#import "COSequenceDiff.h"
 #include "diff.h"
 
 #import "COMacros.h"
 #import "COSequenceMerge.h"
+#import "COSubtreeEdits.h"
 
 static bool comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
 {

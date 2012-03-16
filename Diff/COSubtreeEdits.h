@@ -20,6 +20,7 @@
 
 @end
 
+
 @interface COStoreItemDiffOperationSetAttribute : COSubtreeEdit 
 {
 	COType *type;
@@ -29,6 +30,7 @@
 			  value: (id)aValue;
 
 @end
+
 
 @interface COStoreItemDiffOperationDeleteAttribute : COSubtreeEdit
 @end
@@ -41,7 +43,6 @@
 	id object;
 }
 
-
 @end
 
 
@@ -49,15 +50,13 @@
 {
 	id object;
 }
-
-
 @end
 
 
 
 @interface COSequenceEdit : COSubtreeEdit
 {
-	NSRange range;	
+	
 }
 
 @property (nonatomic, readonly) NSRange range;

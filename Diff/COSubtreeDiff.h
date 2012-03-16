@@ -15,7 +15,7 @@
 @interface COSubtreeConflict : NSObject // not publically copyable.
 {
 	COSubtreeDiff *parentDiff; /* weak reference */
-	NSMutableDictionary *editsForSourceIdentifier;
+	NSMutableDictionary *editsForSourceIdentifier; /* id => NSMutableSet of COSubtreeEdit*/
 }
 
 - (COSubtreeDiff *) parentDiff;
@@ -35,7 +35,8 @@
 
 // private
 
-- (void) removeEdit: (COSubtreeEdit *)anEdit
+- (void) removeEdit: (COSubtreeEdit *)anEdit;
+- (void) addEdit: (COSubtreeEdit *)anEdit;
 
 @end
 

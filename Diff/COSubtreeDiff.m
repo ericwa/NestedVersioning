@@ -13,6 +13,22 @@
 
 @implementation COSubtreeConflict
 
+- (id) initWithParentDiff: (COSubtreeDiff *)aParent
+{
+	SUPERINIT;
+	
+	parentDiff = aParent;
+	editsForSourceIdentifier = [[NSMutableDictionary alloc] init];
+
+	return self;
+}
+
+- (void) dealloc
+{
+	[editsForSourceIdentifier release];
+	[super dealloc];
+}
+
 - (COSubtreeDiff *) parentDiff
 {
 	return parentDiff;
@@ -56,6 +72,21 @@
 		}
 	}
 }
+
+/**
+ * private
+ */
+- (void) addEdit: (COSubtreeEdit *)anEdit
+{
+	NSMutableSet *set = [editsForSourceIdentifier objectForKey: [anEdit sourceIdentifier]];
+	if (nil == set)
+	{
+		set = [NSMutableSet set];
+		[editsForSourceIdentifier setObject: set forKey: [anEdit sourceIdentifier]];
+	}
+	[set addObject: anEdit];
+}
+
 
 /**
  * Defined based on -[COSubtreeEdit isNonconflictingWith:]
@@ -112,13 +143,14 @@
 	
 	// copy dict
 	
+	/*
 	for (COUUIDAttributeTuple *tuple in dict)
 	{
 		NSMutableSet *set = [[NSMutableSet alloc] initWithSet: [dict objectForKey: tuple]
 													copyItems: YES];
 		[result->dict setObject: set forKey: tuple];
 		[set release];		
-	}
+	}*/
 	
 	return result;
 }
@@ -126,19 +158,22 @@
 
 - (id)insertionWithLocation: (NSUInteger)aLocation
 			 insertedObject: (id)anObject
-		   sourceIdentifier: (id)aSource;
+		   sourceIdentifier: (id)aSource
+{
+}
 
 - (id)deletionWithRange: (NSRange)aRange
-	   sourceIdentifier: (id)aSource;
+	   sourceIdentifier: (id)aSource
+{
+}
 
 - (id)modificationWithRange: (NSRange)aRange
 			 insertedObject: (id)anObject
-		   sourceIdentifier: (id)aSource;
+		   sourceIdentifier: (id)aSource
+{
+}
 
 
-
-
-i
 
 
 - (void) _diffValueBefore: (id)valueA
