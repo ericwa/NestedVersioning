@@ -3,12 +3,20 @@
 #import "COSubtreeEdits.h"
 
 
-
 @implementation COSubtreeEdit
 
 @synthesize UUID;
 @synthesize attribute;
 @synthesize sourceIdentifier;
+
+- (id) copyWithZone: (NSZone *)aZone
+{
+	COSubtreeEdit *result = [[[self class] alloc] init];
+	result.UUID = UUID;
+	result.attribute = attribute;
+	result.sourceIdentifier = sourceIdentifier;
+	return result;
+}
 
 - (void) dealloc
 {
@@ -18,23 +26,37 @@
 	[super dealloc];
 }
 
+- (BOOL) isEqualIgnoringSourceIdentifier: (id)other
+{
+	return [other isKindOfClass: [self class]]
+		&&	[UUID isEqual: ((COSubtreeEdit*)other).UUID]
+		&&	[attribute isEqual: ((COSubtreeEdit*)other).attribute];
+}
+
+- (NSUInteger) hash
+{
+	return [UUID hash] ^ [attribute hash] ^ [sourceIdentifier hash];
+}
+
+- (BOOL) isEqual: (id)other
+{
+	return [self isEqualIgnoringSourceIdentifier: other]
+		&& [sourceIdentifier isEqual: ((COSubtreeEdit*)other).sourceIdentifier];
+}
+
 @end
 
 
-@implementation COStoreItemDiffOperationSetAttribute
+@implementation COSetAttribute
 
-- (id) initWithType: (COType*)aType
-			  value: (id)aValue
-{
-	SUPERINIT;
-	ASSIGN(value, aValue);
-	ASSIGN(type, aType);
-	return self;
-}
+@synthesize type;
+@synthesize value;
 
 - (id) copyWithZone: (NSZone *)aZone
 {
-	COStoreItemDiffOperationSetAttribute *result = [[[self class] alloc] initWithType: type value: value];
+	COSetAttribute *result = [super copyWithZone: aZone];
+	result.type = type;
+	result.value = value;
 	return result;
 }
 
@@ -45,23 +67,71 @@
 	[super dealloc];
 }
 
+- (BOOL) isEqualIgnoringSourceIdentifier: (id)other
+{
+	return [super isEqualIgnoringSourceIdentifier: other]
+	&&	[type isEqual: ((COSetAttribute*)other).type]
+	&&	[value isEqual: ((COSetAttribute*)other).value];
+}
+
+- (NSUInteger) hash
+{
+	return [super hash] ^ [type hash] ^ [value hash];
+}
+
 @end
 
 
-@implementation COStoreItemDiffOperationDeleteAttribute
-
+@implementation CODeleteAttribute
 @end
 
 
-@implementation COSetDiff
+@implementation COSetInsertion
+@synthesize object;
 
+- (id) copyWithZone: (NSZone *)aZone
+{
+	COSetInsertion *result = [super copyWithZone: aZone];
+	result.object = object;
+	return result;
+}
+
+- (void)dealloc
+{
+	[object release];
+	[super dealloc];
+}
+
+- (BOOL) isEqualIgnoringSourceIdentifier: (id)other
+{
+	return [super isEqualIgnoringSourceIdentifier: other]
+	&&	[object isEqual: ((COSetInsertion*)other).object];
+}
+
+- (NSUInteger) hash
+{
+	return [super hash] ^ [object hash];
+}
 @end
+
+
+@implementation COSetDeletion
+@end
+
 
 
 
 @implementation COSequenceEdit
 
 @synthesize range;
+
+- (id) copyWithZone: (NSZone *)aZone
+{
+	COSequenceEdit *result = [super copyWithZone: aZone];
+	result.range = range;
+	return result;
+}
+
 
 - (NSComparisonResult) compare: (COSequenceEdit*)other
 {
@@ -79,16 +149,15 @@
 	}
 }
 
-- (BOOL) isEqualIgnoringSourceIdentifier:(id)object
+- (BOOL) isEqualIgnoringSourceIdentifier:(id)other
 {
-	[NSException raise: NSGenericException
-				format: @"-[%@ %@] unimplemented", [self class], NSStringFromSelector(_cmd)];
-	return NO;
+	return [super isEqualIgnoringSourceIdentifier: other]
+		&& NSEqualRanges(range, ((COSequenceEdit*)other).range);
 }
 
-- (id)copyWithZone:(NSZone *)zone
+- (NSUInteger) hash
 {
-	return [self retain];
+	return [super hash] ^ range.location ^ range.length;
 }
 
 @end
@@ -96,117 +165,38 @@
 
 @implementation COSequenceInsertion
 
-@synthesize insertedObject;
+@synthesize insertedObjects;
 
-+ (COSequenceInsertion*)insertionWithLocation: (NSUInteger)aLocation
-							   insertedObject: (id)anObject
-							 sourceIdentifier: (id)aSource
+- (id) copyWithZone: (NSZone *)aZone
 {
-	COSequenceInsertion *result = [[COSequenceInsertion alloc] init];
-	result->range = NSMakeRange(aLocation, 0);
-	ASSIGN(result->insertedObject, anObject);
-	ASSIGN(result->sourceIdentifier, aSource);
-	return [result autorelease];
+	COSequenceInsertion *result = [super copyWithZone: aZone];
+	result.insertedObjects = insertedObjects;
+	return result;
 }
-
-- (void) dealloc
+					  
+- (void)dealloc
 {
-	[insertedObject release];
+	[insertedObjects release];
 	[super dealloc];
 }
-
-- (BOOL) isEqualIgnoringSourceIdentifier:(id)object
+					  
+- (BOOL) isEqualIgnoringSourceIdentifier: (id)other
 {
-	return [object isKindOfClass: [self class]] && 
-	[insertedObject isEqual: [object insertedObject]] &&
-	NSEqualRanges(range, [object range]);
+	return [super isEqualIgnoringSourceIdentifier: other]
+	&&	[insertedObjects isEqual: ((COSequenceInsertion*)other).insertedObjects];
 }
-
-- (BOOL) isEqual:(id)object
-{
-	return [self isEqualIgnoringSourceIdentifier: object]
-	&& [sourceIdentifier isEqual: [object sourceIdentifier]];
-}
-
+					  
 - (NSUInteger) hash
 {
-	return 16354992415397012214ULL ^ [insertedObject hash] ^ range.location ^ range.length ^ [sourceIdentifier hash];
+	return [super hash] ^ [insertedObjects hash];
 }
 
 @end
-
 
 
 @implementation COSequenceDeletion
-
-+ (COSequenceDeletion*)deletionWithRange: (NSRange)aRange
-						sourceIdentifier: (id)aSource
-{
-	COSequenceDeletion *result = [[COSequenceDeletion alloc] init];
-	result->range = aRange;
-	ASSIGN(result->sourceIdentifier, aSource);
-	return [result autorelease];
-}
-
-- (BOOL) isEqualIgnoringSourceIdentifier:(id)object
-{
-	return [object isKindOfClass: [self class]] && 
-	NSEqualRanges(range, [object range]);
-}
-
-- (BOOL) isEqual:(id)object
-{
-	return [self isEqualIgnoringSourceIdentifier: object]
-	&& [sourceIdentifier isEqual: [object sourceIdentifier]];
-}
-
-- (NSUInteger) hash
-{
-	return 15546910606417742031ULL ^ range.location ^ range.length ^ [sourceIdentifier hash];
-}
-
 @end
 
 
-
-
 @implementation COSequenceModification
-
-@synthesize insertedObject;
-
-+ (COSequenceModification*)modificationWithRange: (NSRange)aRange
-								  insertedObject: (id)anObject
-								sourceIdentifier: (id)aSource
-{
-	COSequenceModification *result = [[COSequenceModification alloc] init];
-	result->range = aRange;
-	ASSIGN(result->insertedObject, anObject);
-	ASSIGN(result->sourceIdentifier, aSource);
-	return [result autorelease];
-}
-
-- (void) dealloc
-{
-	[insertedObject release];
-	[super dealloc];
-}
-
-- (BOOL) isEqualIgnoringSourceIdentifier:(id)object
-{
-	return [object isKindOfClass: [self class]]
-	&& [insertedObject isEqual: [object insertedObject]]
-	&& NSEqualRanges(range, [object range]);
-}
-
-- (BOOL) isEqual:(id)object
-{
-	return [self isEqualIgnoringSourceIdentifier: object]
-	&& [sourceIdentifier isEqual: [object sourceIdentifier]];
-}
-
-- (NSUInteger) hash
-{
-	return 13045144732696269143ULL ^ [insertedObject hash] ^ range.location ^ range.length ^ [sourceIdentifier hash];
-}
-
 @end

@@ -3,6 +3,14 @@
 
 @class ETUUID;
 
+/**
+ 
+ since we store these in NSSets, the should really be immutable (hash must not change)
+ 
+ */
+
+#pragma mark base class
+
 @interface COSubtreeEdit : NSObject <NSCopying>
 {
 	ETUUID *UUID;
@@ -21,87 +29,64 @@
 
 @end
 
+#pragma mark set, delete attribute
 
-@interface COStoreItemDiffOperationSetAttribute : COSubtreeEdit 
+@interface COSetAttribute : COSubtreeEdit 
 {
 	COType *type;
 	id value;
 }
-- (id) initWithType: (COType*)aType
-			  value: (id)aValue;
+@property (readwrite, nonatomic, copy) COType *type;
+@property (readwrite, nonatomic, copy) id value;
 
 @end
 
 
-@interface COStoreItemDiffOperationDeleteAttribute : COSubtreeEdit
+@interface CODeleteAttribute : COSubtreeEdit
 @end
 
 
+#pragma mark editing set multivalueds
 
-
-@interface COSetInsert : COSubtreeEdit
+@interface COSetInsertion : COSubtreeEdit
 {
 	id object;
 }
-
+@property (readwrite, nonatomic, copy) id object;
 @end
 
 
-@interface COSetDeletion : COSubtreeEdit
-{
-	id object;
-}
+@interface COSetDeletion : COSetInsertion
 @end
 
+
+#pragma mark editing array multivalueds
 
 
 @interface COSequenceEdit : COSubtreeEdit
 {
-	
+	NSRange range;
 }
 
-@property (nonatomic, readonly) NSRange range;
+@property (readwrite, nonatomic) NSRange range;
 
 - (NSComparisonResult) compare: (id)otherObject;
-
-/**
- * Ignores sourceIdentifier
- */
-- (BOOL) isEqualIgnoringSourceIdentifier:(id)object;
 
 @end
 
 
-/**
- * Concrete subclass of COPrimitiveSequenceEdit which represents
- * an insertion of one or more elements into the sequence.
- */
 @interface COSequenceInsertion : COSequenceEdit 
 {
-	NSArray *insertedObject;
+	NSArray *insertedObjects;
 }
-@property (nonatomic, readonly)  id insertedObject;
-+ (COSequenceInsertion*)insertionWithLocation: (NSUInteger)aLocation
-							   insertedObject: (id)anObject
-							 sourceIdentifier: (id)aSource;
+@property (readwrite, nonatomic, copy)  NSArray *insertedObjects; // shallow copy => you must not modify objects in the array
 @end
 
 
 
 @interface COSequenceDeletion : COSequenceEdit
-+ (COSequenceDeletion*)deletionWithRange: (NSRange)aRange
-						sourceIdentifier: (id)aSource;
 @end
 
 
-
-
-@interface COSequenceModification : COSequenceEdit
-{
-	NSArray *insertedObjects;
-}
-@property (nonatomic, retain, readonly)  id insertedObject;
-+ (COSequenceModification*)modificationWithRange: (NSRange)aRange
-								  insertedObject: (id)anObject
-								sourceIdentifier: (id)aSource;
+@interface COSequenceModification : COSequenceInsertion
 @end
