@@ -174,7 +174,7 @@
 
 
 /**
- * Defined based on -[COSubtreeEdit isNonconflictingWith:]
+ * Defined based on -[COSubtreeEdit isEqualIgnoringSourceIdentifier:]
  */
 - (BOOL) isNonconflicting
 {
@@ -209,6 +209,7 @@
 	ASSIGN(oldRoot, anOldRoot);
 	ASSIGN(newRoot, aNewRoot);
 	diffDict = [[CODiffDictionary alloc] init];
+	conflicts = [[NSMutableSet alloc] init];
 	return self;
 }
 
@@ -225,17 +226,36 @@
 	COSubtreeDiff *result = [[[self class] alloc] init];
 	result->oldRoot = [oldRoot copyWithZone: zone];
 	result->newRoot = [newRoot copyWithZone: zone];
+	result->diffDict = [diffDict copyWithZone: zone];
+	result->conflicts = [[NSMutableSet alloc] init];
 	
-	// copy dict
+	// copy conflicts. this is complicated because it has to map
+	// references to the receiver's COSubtreeEdits in the receiver's COSubtreeConflicts
+	// to COSubtreeEdits in 'result'.
 	
-	/*
-	for (COUUIDAttributeTuple *tuple in dict)
+	for (COSubtreeConflict *source in conflicts)
 	{
-		NSMutableSet *set = [[NSMutableSet alloc] initWithSet: [dict objectForKey: tuple]
-													copyItems: YES];
-		[result->dict setObject: set forKey: tuple];
-		[set release];		
-	}*/
+		COSubtreeConflict *dest = [[COSubtreeConflict alloc] init];
+		dest->parentDiff = result;
+		dest->editsForSourceIdentifier = [[NSMutableDictionary alloc] init];
+		
+		for (id sourceIdentifier in source->editsForSourceIdentifier)
+		{
+			NSMutableSet *sourceEditsForSourceIdentifier = [source->editsForSourceIdentifier objectForKey: sourceIdentifier];
+			NSMutableSet *destEditsForSourceIdentifier = [[NSMutableSet alloc] init];
+			
+			for (COSubtreeEdit *edit in sourceEditsForSourceIdentifier)
+			{
+				[destEditsForSourceIdentifier addObject: [result->diffDict->dict member: edit]];
+			}
+			
+			[dest->editsForSourceIdentifier setObject: destEditsForSourceIdentifier forKey: sourceIdentifier];
+			[destEditsForSourceIdentifier release];
+		}
+		
+		[result->conflicts addObject: dest];
+		[dest release];
+	}
 	
 	return result;
 }
