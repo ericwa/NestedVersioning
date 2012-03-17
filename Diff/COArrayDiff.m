@@ -55,7 +55,7 @@ void COApplyEditsToArray(NSMutableArray *array, NSArray *edits)
 	NSInteger i = 0;
 	for (COSequenceEdit *op in uniqueEdits)
 	{
-		if ([op isKindOfClass: [COSequenceInsertion class]])
+		if ([op isMemberOfClass: [COSequenceInsertion class]])
 		{
 			COSequenceInsertion *opp = (COSequenceInsertion*)op;
 			NSRange range = NSMakeRange([op range].location + i, [[opp objects] count]);
@@ -65,14 +65,14 @@ void COApplyEditsToArray(NSMutableArray *array, NSArray *edits)
 			
 			i += range.length;
 		}
-		else if ([op isKindOfClass: [COSequenceDeletion class]])
+		else if ([op isMemberOfClass: [COSequenceDeletion class]])
 		{
 			NSRange range = NSMakeRange([op range].location + i, [op range].length);
 			
 			[array removeObjectsAtIndexes: [NSIndexSet indexSetWithIndexesInRange: range]];
 			i -= range.length;
 		}
-		else if ([op isKindOfClass: [COSequenceModification class]])
+		else if ([op isMemberOfClass: [COSequenceModification class]])
 		{
 			COSequenceModification *opp = (COSequenceModification*)op;
 			NSRange deleteRange = NSMakeRange([opp range].location + i, [opp range].length);

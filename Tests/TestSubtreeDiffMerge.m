@@ -54,11 +54,12 @@
 	COSubtree *circle1 = [COSubtree subtree];
 	COSubtree *square1 = [COSubtree subtree];
 	COSubtree *image1 = [COSubtree subtree];
-	
-	[line1 setValue: @"line1" forAttribute: @"label" type: [COType stringType]];	
-	[circle1 setValue: @"circle1" forAttribute: @"label" type: [COType stringType]];
-	[square1 setValue: @"square1" forAttribute: @"label" type: [COType stringType]];	
-	[image1 setValue: @"image1" forAttribute: @"label" type: [COType stringType]];
+
+	[doc setValue: @"doc" forAttribute: @"name" type: [COType stringType]];		
+	[line1 setValue: @"line1" forAttribute: @"name" type: [COType stringType]];	
+	[circle1 setValue: @"circle1" forAttribute: @"name" type: [COType stringType]];
+	[square1 setValue: @"square1" forAttribute: @"name" type: [COType stringType]];	
+	[image1 setValue: @"image1" forAttribute: @"name" type: [COType stringType]];
 	
 	[doc setValue: A(line1, circle1, square1, image1)
 	 forAttribute: @"contents"
@@ -68,7 +69,7 @@
 	COSubtree *doc2 = [[doc copy] autorelease];
 	
 	COSubtree *group1 = [COSubtree subtree];
-	[group1 setValue: @"group1" forAttribute: @"label" type: [COType stringType]];
+	[group1 setValue: @"group1" forAttribute: @"name" type: [COType stringType]];
 	[doc addObject: group1 toOrderedAttribute: @"contents" atIndex: 1 type: [COType uniqueArrayWithPrimitiveType: [COType embeddedItemType]]];
 	[group1 addTree: circle1];
 	[group1 addTree: square1];
@@ -77,11 +78,20 @@
 	COSubtree *doc3 = [[doc copy] autorelease];
 	
 	COSubtree *triangle1 = [COSubtree subtree];
-	[triangle1 setValue: @"triangle1" forAttribute: @"label" type: [COType stringType]];
+	[triangle1 setValue: @"triangle1" forAttribute: @"name" type: [COType stringType]];
 	[doc addObject: triangle1 toOrderedAttribute: @"contents" atIndex: 0 type: [COType uniqueArrayWithPrimitiveType: [COType embeddedItemType]]];
 	
 	
 	// doc state:  (triangl1, line1, group1=(circle1, square1), image1)
+	
+	/**
+	 
+	 doc2->doc3: -replace doc.contents[1:2] (circle, square) with group1.
+	             -set group1.contents to { circle, square } (unordered)
+	 
+	 doc3->doc2: -replace doc.contents[1:1] (group1) with (circle1, square1)
+	              (group1 becomes disconnected from the subtree)
+	*/
 	
 	
 	// ------------
