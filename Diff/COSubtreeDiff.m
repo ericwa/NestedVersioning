@@ -711,7 +711,8 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 	/**
 	 things that conflict:
 	 - same embedded item inserted in more than one place
-	 - deleting and setting the same attribute of the same object
+	 - deleting conflicts with any other ops on that attr
+	 - setting to a primitive value conflicts with all other ops
 	 */
 
 	NSSet *existingEditsForSameAttribute = [diffDict editsForUUID: [anEdit UUID]
