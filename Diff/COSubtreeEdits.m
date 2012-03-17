@@ -99,6 +99,11 @@
 	return self;
 }
 
+- (NSString *) description
+{
+	return [NSString stringWithFormat: @"%@.%@ set attribute to %@ (%@)", aUUID, anAttribute, aValue, aSourceIdentifier];
+}
+
 @end
 
 
@@ -107,6 +112,11 @@
 - (NSUInteger) hash
 {
 	return 10002940502939600064ULL;
+}
+
+- (NSString *) description
+{
+	return [NSString stringWithFormat: @"%@.%@ delete attribute (%@)", aUUID, anAttribute, aSourceIdentifier];
 }
 
 @end
@@ -145,6 +155,11 @@
 	return 595258568559201742ULL ^ [super hash] ^ [object hash];
 }
 
+- (NSString *) description
+{
+	return [NSString stringWithFormat: @"%@.%@ insert into set value %@ (%@)", aUUID, anAttribute, object, aSourceIdentifier];
+}
+
 @end
 
 
@@ -153,6 +168,11 @@
 - (NSUInteger) hash
 {
 	return 1310827214389984141ULL ^ [super hash];
+}
+
+- (NSString *) description
+{
+	return [NSString stringWithFormat: @"%@.%@ delete from set value %@ (%@)", aUUID, anAttribute, object, aSourceIdentifier];
 }
 
 @end
@@ -236,6 +256,11 @@
 	return 14584168390782580871ULL ^ [super hash] ^ [objects hash];
 }
 
+- (NSString *) description
+{
+	return [NSString stringWithFormat: @"%@.%@[%d] insert into array value %@ (%@)", aUUID, anAttribute, (int)range.location, objects, aSourceIdentifier];
+}
+
 @end
 
 
@@ -244,6 +269,11 @@
 - (NSUInteger) hash
 {
 	return 17441750424377234775ULL ^ [super hash];
+}
+
+- (NSString *) description
+{
+	return [NSString stringWithFormat: @"%@.%@[%d:%d] delete from array (%@)", aUUID, anAttribute, (int)range.location, (int)range.length, aSourceIdentifier];
 }
 
 @end
@@ -266,6 +296,11 @@
 - (NSUInteger) hash
 {
 	return 11773746616539821587ULL ^ [super hash];
+}
+
+- (NSString *) description
+{
+	return [NSString stringWithFormat: @"%@.%@[%d:%d] replace range with %@ (%@)", aUUID, anAttribute, (int)range.location, (int)range.length, objects, aSourceIdentifier];
 }
 
 @end
