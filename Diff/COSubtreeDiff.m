@@ -521,11 +521,15 @@
 			{
 				[newSet addObject: [(COSetInsertion *)edit object]];
 			}
-			else if ([anyEdit isMemberOfClass: [COSetDeletion class]])
+			else if ([edit isMemberOfClass: [COSetDeletion class]])
 			{
 				[newSet removeObject: [(COSetDeletion *)edit object]];
 			}
-			else assert(0);
+			else
+			{
+				[NSException raise: NSInternalInconsistencyException
+							format: @"unknown set edit type: %@", edit];
+			}
 		}
 		
 		[anItem setValue: newSet
@@ -536,7 +540,30 @@
 	
 	// editing array multivalue
 	
-	 // FIXME:
+	if ([anyEdit isKindOfClass: [COSequenceEdit class]])
+	{
+		for (COSubtreeEdit *edit in [edits allObjects])
+		{
+			if (![edit isKindOfClass: [COSequenceEdit class]])
+			{
+				[NSException raise: NSInternalInconsistencyException
+							format: @"all edits should be sequence edits"];
+			}
+		}
+		
+		NSArray *editsSorted = [[edits allObjects] sortedArrayUsingSelector: @selector(compare:)];
+		
+		NSArray *originalArray = [anItem valueForAttribute: [anyEdit attribute]];
+		NSArray *newArray = COArrayByApplyingEditsToArray(originalArray, editsSorted);
+		
+		[anItem setValue: newArray
+			forAttribute: [anyEdit attribute]
+					type: [anItem typeForAttribute: [anyEdit attribute]]];
+		return;
+	}
+	
+	[NSException raise: NSInternalInconsistencyException
+				format: @"unknown edit type %@", anyEdit];
 }
 
 - (COSubtree *) subtreeWithDiffAppliedToSubtree: (COSubtree *)aSubtree
