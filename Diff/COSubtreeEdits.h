@@ -100,7 +100,7 @@
 - (id) initWithUUID: (ETUUID *)aUUID
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier
-			  range: (NSRange)aRange
+		   location: (NSUInteger)aLocation
 			objects: (NSArray *)anArray;
 
 @end
@@ -112,4 +112,10 @@
 
 
 @interface COSequenceModification : COSequenceInsertion
+
+- (id) initWithUUID: (ETUUID *)aUUID
+		  attribute: (NSString *)anAttribute
+   sourceIdentifier: (id)aSourceIdentifier
+			  range: (NSRange)aRange
+			objects: (NSArray *)anArray;
 @end

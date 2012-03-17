@@ -2,20 +2,20 @@
 
 @protocol CODiffArraysDelegate
 
-- (id)insertionWithLocation: (NSUInteger)aLocation
-			 insertedObject: (id)anObject
-		   sourceIdentifier: (id)aSource;
+- (void)recordInsertionWithLocation: (NSUInteger)aLocation
+					insertedObjects: (id)anArray
+						   userInfo: (id)info;
 
-- (id)deletionWithRange: (NSRange)aRange
-	   sourceIdentifier: (id)aSource;
+- (void)recordDeletionWithRange: (NSRange)aRange
+					   userInfo: (id)info;
 
-- (id)modificationWithRange: (NSRange)aRange
-			 insertedObject: (id)anObject
-		   sourceIdentifier: (id)aSource;
+- (void)recordModificationWithRange: (NSRange)aRange
+					insertedObjects: (id)anArray
+						   userInfo: (id)info;
 
 @end
 
-NSArray *CODiffArrays(NSArray *arrayA, NSArray *arrayB, id<CODiffArraysDelegate>delegate, id sourceIdentifier);
+void CODiffArrays(NSArray *arrayA, NSArray *arrayB, id<CODiffArraysDelegate>delegate, id userInfo);
 
 void COApplyEditsToArray(NSMutableArray *array, NSArray *edits);
 

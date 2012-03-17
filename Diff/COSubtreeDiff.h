@@ -1,5 +1,7 @@
 #import <Foundation/Foundation.h>
 
+#import "COArrayDiff.h"
+
 @class ETUUID;
 @class COSubtree;
 @class COMutableItem;
@@ -66,11 +68,17 @@
  * - conflicts arise when the same subtree is inserted in multiple places.
  * - note that a _COSubtree_ cannot exist in an inconsistent state.
  */
-@interface COSubtreeDiff : NSObject <NSCopying>
+@interface COSubtreeDiff : NSObject <NSCopying, CODiffArraysDelegate>
 {
 	ETUUID *oldRoot;
 	ETUUID *newRoot;
 	CODiffDictionary *diffDict;
+	
+	// right now, the conflicts are purely derived from the set of edits.
+	// it could be conceivably useful to be able to insert conflicts
+	// that weren't auto-detected by COSubtreeDiff from looking at the edits, 
+	// but that is not currently supported.
+	
 	NSMutableSet *conflicts;
 }
 
@@ -80,12 +88,6 @@
 
 - (COSubtree *) subtreeWithDiffAppliedToSubtree: (COSubtree *)aSubtree;
 
-/**
- * Throws an exception if either diff has conflicts
- *
- * Caller owns the return value with respect to mutation
- * - they may freely modify it.
- */
 - (COSubtreeDiff *)subtreeDiffByMergingWithDiff: (COSubtreeDiff *)other;
 
 - (BOOL) hasConflicts;

@@ -15,6 +15,9 @@
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier
 {
+	NILARG_EXCEPTION_TEST(aUUID);
+	NILARG_EXCEPTION_TEST(anAttribute);
+	NILARG_EXCEPTION_TEST(aSourceIdentifier);	
 	SUPERINIT;
 	UUID = [aUUID copy];
 	attribute = [anAttribute copy];
@@ -88,6 +91,8 @@
 			   type: (COType *)aType
 			  value: (id)aValue
 {
+	NILARG_EXCEPTION_TEST(aType);
+	NILARG_EXCEPTION_TEST(aValue);
 	self = [super initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier];
 	type = [aType copy];
 	value = [aValue copy];
@@ -117,6 +122,7 @@
    sourceIdentifier: (id)aSourceIdentifier
 			 object: (id)anObject
 {
+	NILARG_EXCEPTION_TEST(anObject);
 	self = [super initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier];
 	object = [anObject copy];
 	return self;
@@ -204,10 +210,11 @@
 - (id) initWithUUID: (ETUUID *)aUUID
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier
-			  range: (NSRange)aRange
+		   location: (NSUInteger)aLocation
 			objects: (NSArray *)anArray
 {
-	self = [super initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier range: aRange];
+	NILARG_EXCEPTION_TEST(anArray);
+	self = [super initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier range: NSMakeRange(aLocation, 0)];
 	objects = [[NSArray alloc] initWithArray: anArray copyItems: YES];
 	return self;
 }
@@ -243,6 +250,18 @@
 
 
 @implementation COSequenceModification
+
+- (id) initWithUUID: (ETUUID *)aUUID
+		  attribute: (NSString *)anAttribute
+   sourceIdentifier: (id)aSourceIdentifier
+			  range: (NSRange)aRange
+			objects: (NSArray *)anArray
+{
+	NILARG_EXCEPTION_TEST(anArray);
+	self = [super initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier range: aRange];
+	objects = [[NSArray alloc] initWithArray: anArray copyItems: YES];
+	return self;
+}
 
 - (NSUInteger) hash
 {

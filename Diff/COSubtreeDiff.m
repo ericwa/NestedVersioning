@@ -260,38 +260,75 @@
 	return result;
 }
 
+// begin CODiffArraysDelegate
 
-- (id)insertionWithLocation: (NSUInteger)aLocation
-			 insertedObject: (id)anObject
-		   sourceIdentifier: (id)aSource
+- (void)recordInsertionWithLocation: (NSUInteger)aLocation
+					insertedObjects: (id)anArray
+						   userInfo: (id)info
 {
+	COSequenceInsertion *op = [[COSequenceInsertion alloc] initWithUUID: [info objectForKey: @"UUID"]
+															  attribute: [info objectForKey: @"attribute"]
+													   sourceIdentifier: [info objectForKey: @"sourceIdentifier"]
+															   location: aLocation
+																objects: anArray];
+	[self addEdit: op];
+	[op release];
 }
 
-- (id)deletionWithRange: (NSRange)aRange
-	   sourceIdentifier: (id)aSource
+- (void)recordDeletionWithRange: (NSRange)aRange
+					   userInfo: (id)info
 {
+	COSequenceDeletion *op = [[COSequenceDeletion alloc] initWithUUID: [info objectForKey: @"UUID"]
+															attribute: [info objectForKey: @"attribute"]
+													 sourceIdentifier: [info objectForKey: @"sourceIdentifier"]
+																range: aRange];
+	[self addEdit: op];
+	[op release];
 }
 
-- (id)modificationWithRange: (NSRange)aRange
-			 insertedObject: (id)anObject
-		   sourceIdentifier: (id)aSource
+- (void)recordModificationWithRange: (NSRange)aRange
+					insertedObjects: (id)anArray
+						   userInfo: (id)info
 {
+	COSequenceModification *op = [[COSequenceModification alloc] initWithUUID: [info objectForKey: @"UUID"]
+																	attribute: [info objectForKey: @"attribute"]
+															 sourceIdentifier: [info objectForKey: @"sourceIdentifier"]
+																		range: aRange
+																	  objects: anArray];
+	[self addEdit: op];
+	[op release];
 }
 
+// end CODiffArraysDelegate
 
-- (void) _recordSetValue: (id)aValue type: (COType *)aType forAttribute: (NSString*)anAttribute UUID: (ETUUID *)aUUID sourceIdentifier: (id)aSource
+- (void) _recordSetValue: (id)aValue type: (COType *)aType forAttribute: (NSString*)anAttribute UUID: (ETUUID *)aUUID sourceIdentifier: (id)aSourceIdentifier
 {
-	COStoreItemDiffOperationSetAttribute *insertOp = nil;
-	[diffDict addEdit: insertOp];
-	[insertOp release];
+	COSetAttribute *op = [[COSetAttribute alloc] initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier type: aType value: aValue];
+	[self addEdit: op];
+	[op release];
 }
 
-- (void) _recordDeleteAttribute: (NSString*)anAttribute UUID: (ETUUID *)aUUID sourceIdentifier: (id)aSource
+- (void) _recordDeleteAttribute: (NSString*)anAttribute UUID: (ETUUID *)aUUID sourceIdentifier: (id)aSourceIdentifier
 {
-	COStoreItemDiffOperationDeleteAttribute *deleteOp = nil;
-	[diffDict addEdit: deleteOp];
-	[deleteOp release];
+	CODeleteAttribute *op = [[COSetAttribute alloc] initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier];
+	[self addEdit: op];
+	[op release];
 }
+
+- (void) _recordSetInsertionOfValue: (id)aValue forAttribute: (NSString*)anAttribute UUID: (ETUUID *)aUUID sourceIdentifier: (id)aSourceIdentifier
+{
+	COSetInsertion *op = [[COSetInsertion alloc] initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier object: aValue];
+	[self addEdit: op];
+	[op release];
+}
+
+- (void) _recordSetDeletionOfValue: (id)aValue forAttribute: (NSString*)anAttribute UUID: (ETUUID *)aUUID sourceIdentifier: (id)aSourceIdentifier
+{
+	COSetDeletion *op = [[COSetDeletion alloc] initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier object: aValue];
+	[self addEdit: op];
+	[op release];
+}
+
 
 - (void) _diffValueBefore: (id)valueA
 					after: (id)valueB
@@ -302,11 +339,25 @@
 {
 	if ([type isMultivalued] && ![type isOrdered])
 	{
-
+		NSMutableSet *insertions = [NSMutableSet setWithSet: (NSSet *)valueB];
+		[insertions minusSet: (NSSet *)valueA];
+		
+		for (id value in insertions)
+		{
+			[self _recordSetInsertionOfValue: value forAttribute: anAttribute UUID: itemUUID sourceIdentifier: aSource];
+		}
+		
+		NSMutableSet *deletions = [NSMutableSet setWithSet: (NSSet *)valueA];
+		[deletions minusSet: (NSSet *)valueB];
+		
+		for (id value in deletions)
+		{
+			[self _recordSetDeletionOfValue: value forAttribute: anAttribute UUID: itemUUID sourceIdentifier: aSource];
+		}
 	}
 	else if ([type isMultivalued] && [type isOrdered])
 	{
-		
+		CODiffArrays(valueA, valueB, self, D(itemUUID, @"UUID", anAttribute, @"attribute", aSource, @"sourceIdentifier"));
 	}
 	else
 	{
@@ -317,8 +368,6 @@
 			 sourceIdentifier: aSource];
 	}
 }
-
-
 
 - (void) _diffItemBefore: (COItem *)itemA after: (COItem*)itemB sourceIdentifier: (id)aSource
 {
@@ -453,8 +502,10 @@
 	
 	if (![[[aSubtree root] UUID] isEqual: oldRoot])
 	{
-		NSLog(@"WARNING: diff was created from a subtree with UUID %@ and being applied to a subtree with UUID %@", oldRoot, [[aSubtree root] UUID]);
+		[NSException raise: NSInvalidArgumentException
+					format: @"diff was created from a subtree with UUID %@ and being applied to a subtree with UUID %@", oldRoot, [[aSubtree root] UUID]];
 	}
+	
 	// FIXME
 	/*
 	for (COUUIDAttributeTuple *tuple in [diffDict allTuples])
@@ -482,14 +533,23 @@
 
 - (void) mergeWith: (COSubtreeDiff *)other
 {
+	if (![other->oldRoot isEqual: self->oldRoot]
+		|| ![other->newRoot isEqual: self->newRoot])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"for now, merging subtree diffs with conflicting changes to the root UUID of the tree is unsupported."];
+	}
+	
 	/**
 	 things that conflict:
 	 - same embedded item inserted in more than one place
 	 - deleting and setting the same attribute of the same object
 	 */
 	
-	
-	
+	for (COSubtreeEdit *edit in [other allEdits])
+	{
+		[self addEdit: edit];
+	}
 }
 
 - (COSubtreeDiff *)subtreeDiffByMergingWithDiff: (COSubtreeDiff *)other
@@ -513,11 +573,11 @@
 
 - (NSSet *)edits
 {
-	return [diffDict allEdit];
+	return [diffDict allEdits];
 }
 - (NSSet *)conflicts
 {
-	return conflicts;
+	return [NSSet setWithSet: conflicts];
 }
 
 #pragma mark access
@@ -536,7 +596,9 @@
  *
  * note that if an edit is part of two confclits, removing one
  * conflict will also delete all of its edits, including any
- * that are in other conflicts.
+ * that are in other conflicts. (but this method uses
+ * -[self removeEdit:] which will handle updating those
+ * other conflicts.)
  */
 - (void) removeConflict: (COSubtreeConflict *)aConflict
 {
@@ -547,7 +609,12 @@
 	[conflicts removeObject: aConflict];
 }
 
-
+- (void) _updateConflictsForAddingEdit: (COSubtreeEdit *)anEdit
+{
+	// FIXME:
+	
+	
+}
 
 - (void) addEdit: (COSubtreeEdit *)anEdit
 {

@@ -11,12 +11,8 @@ static bool comparefn(size_t i, size_t j, void *userdata1, void *userdata2)
 			[(NSArray*)userdata2 objectAtIndex: j]];
 }
 
-NSArray *CODiffArrays(NSArray *a, NSArray *b, id<CODiffArraysDelegate>delegate, id sourceIdentifier)
+void CODiffArrays(NSArray *a, NSArray *b, id<CODiffArraysDelegate>delegate, id userInfo)
 {
-	NSMutableArray *resultArray = [NSMutableArray array];
-	
-	//NSLog(@"ArrayDiffing %d vs %d objects", [a count], [b count]);
-	
 	diffresult_t *result = diff_arrays([a count], [b count], comparefn, a, b);
 	
 	for (size_t i=0; i<diff_editcount(result); i++)
@@ -31,27 +27,24 @@ NSArray *CODiffArrays(NSArray *a, NSArray *b, id<CODiffArraysDelegate>delegate, 
 			case difftype_insertion:
 				if (secondRange.length > 0)
 				{
-					[resultArray addObject: [delegate insertionWithLocation: firstRange.location
-															 insertedObject: [b subarrayWithRange: secondRange]
-														   sourceIdentifier: sourceIdentifier]];
+					[delegate recordInsertionWithLocation: firstRange.location
+										  insertedObjects: [b subarrayWithRange: secondRange]
+												 userInfo: userInfo];
 				}
 				break;
 			case difftype_deletion:
-				[resultArray addObject: [delegate deletionWithRange: firstRange
-												   sourceIdentifier: sourceIdentifier]];
+				[delegate recordDeletionWithRange: firstRange
+										 userInfo: userInfo];
 				break;
 			case difftype_modification:
-				[resultArray addObject: [delegate modificationWithRange: firstRange
-														 insertedObject: [b subarrayWithRange: secondRange]
-													   sourceIdentifier: sourceIdentifier]];
+				[delegate recordModificationWithRange: firstRange
+									  insertedObjects: [b subarrayWithRange: secondRange]
+											 userInfo: userInfo];
 																				  
 				break;
 		}
-	}
-	
+	}	
 	diff_free(result);
-	
-	return resultArray;
 }
 
 
@@ -65,9 +58,9 @@ void COApplyEditsToArray(NSMutableArray *array, NSArray *edits)
 		if ([op isKindOfClass: [COSequenceInsertion class]])
 		{
 			COSequenceInsertion *opp = (COSequenceInsertion*)op;
-			NSRange range = NSMakeRange([op range].location + i, [[opp insertedObject] count]);
+			NSRange range = NSMakeRange([op range].location + i, [[opp objects] count]);
 			
-			[array insertObjects: (NSArray *)[opp insertedObject]
+			[array insertObjects: [opp objects]
 					   atIndexes: [NSIndexSet indexSetWithIndexesInRange: range]];
 			
 			i += range.length;
@@ -83,10 +76,10 @@ void COApplyEditsToArray(NSMutableArray *array, NSArray *edits)
 		{
 			COSequenceModification *opp = (COSequenceModification*)op;
 			NSRange deleteRange = NSMakeRange([opp range].location + i, [opp range].length);
-			NSRange insertRange = NSMakeRange([opp range].location + i, [(NSArray *)[opp insertedObject] count]);
+			NSRange insertRange = NSMakeRange([opp range].location + i, [[opp objects] count]);
 			
 			[array removeObjectsAtIndexes: [NSIndexSet indexSetWithIndexesInRange: deleteRange]];
-			[array insertObjects: (NSArray *)[opp insertedObject]
+			[array insertObjects: [opp objects]
 					   atIndexes: [NSIndexSet indexSetWithIndexesInRange: insertRange]];
 			i += (insertRange.length - deleteRange.length);
 		}
