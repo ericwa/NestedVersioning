@@ -486,7 +486,7 @@
 	return desc;
 }
 
-- (void) _applyEdits:(NSSet *)edits toMutableItem: (COMutableItem *)anItem
+static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 {
 	COSubtreeEdit *anyEdit = [edits anyObject];
 	
@@ -626,7 +626,7 @@
 			
 			assert([edits count] > 0);
 		
-			[self _applyEdits: edits toMutableItem: item];
+			COApplyEditsToMutableItem(edits, item);
 		}
 	}
 	
