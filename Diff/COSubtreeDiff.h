@@ -97,7 +97,7 @@
 
 #pragma mark access (sub-objects may be mutated by caller)
 
-- (NSSet *)edits;
+- (NSSet *)allEdits;
 - (NSSet *) editsForUUID: (ETUUID *)aUUID attribute: (NSString *)aString;
 - (NSSet *)conflicts;
 

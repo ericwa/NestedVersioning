@@ -571,7 +571,7 @@
 
 #pragma mark access (sub-objects may be mutated by caller)
 
-- (NSSet *)edits
+- (NSSet *)allEdits
 {
 	return [diffDict allEdits];
 }
