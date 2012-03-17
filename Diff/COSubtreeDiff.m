@@ -730,6 +730,17 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 		}
 	}
 
+	// check for same embedded item inserted in more than one place
+	
+	NSSet *anEditEmbeddedItemInsertions = [anEdit insertedEmbeddedItemUUIDs];
+	for (COSubtreeEdit *edit in [self allEdits])
+	{
+		NSSet *editEmbeddedItemInsertions = [edit insertedEmbeddedItemUUIDs];
+		if ([anEditEmbeddedItemInsertions intersectsSet: editEmbeddedItemInsertions])
+		{
+			// edit and anEdit conflict! create a new conflict or update an existing one.
+		}
+	}
 
 }
 
