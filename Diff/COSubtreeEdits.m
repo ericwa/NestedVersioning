@@ -101,7 +101,7 @@
 
 - (NSString *) description
 {
-	return [NSString stringWithFormat: @"%@.%@ set attribute to %@ (%@)", aUUID, anAttribute, aValue, aSourceIdentifier];
+	return [NSString stringWithFormat: @"%@.%@ set attribute to %@ (%@)", UUID, attribute, value, sourceIdentifier];
 }
 
 @end
@@ -116,7 +116,7 @@
 
 - (NSString *) description
 {
-	return [NSString stringWithFormat: @"%@.%@ delete attribute (%@)", aUUID, anAttribute, aSourceIdentifier];
+	return [NSString stringWithFormat: @"%@.%@ delete attribute (%@)", UUID, attribute, sourceIdentifier];
 }
 
 @end
@@ -157,7 +157,7 @@
 
 - (NSString *) description
 {
-	return [NSString stringWithFormat: @"%@.%@ insert into set value %@ (%@)", aUUID, anAttribute, object, aSourceIdentifier];
+	return [NSString stringWithFormat: @"%@.%@ insert into set value %@ (%@)", UUID, attribute, object, sourceIdentifier];
 }
 
 @end
@@ -172,7 +172,7 @@
 
 - (NSString *) description
 {
-	return [NSString stringWithFormat: @"%@.%@ delete from set value %@ (%@)", aUUID, anAttribute, object, aSourceIdentifier];
+	return [NSString stringWithFormat: @"%@.%@ delete from set value %@ (%@)", UUID, attribute, object, sourceIdentifier];
 }
 
 @end
@@ -258,7 +258,7 @@
 
 - (NSString *) description
 {
-	return [NSString stringWithFormat: @"%@.%@[%d] insert into array value %@ (%@)", aUUID, anAttribute, (int)range.location, objects, aSourceIdentifier];
+	return [NSString stringWithFormat: @"%@.%@[%d] insert into array value %@ (%@)", UUID, attribute, (int)range.location, objects, sourceIdentifier];
 }
 
 @end
@@ -273,7 +273,7 @@
 
 - (NSString *) description
 {
-	return [NSString stringWithFormat: @"%@.%@[%d:%d] delete from array (%@)", aUUID, anAttribute, (int)range.location, (int)range.length, aSourceIdentifier];
+	return [NSString stringWithFormat: @"%@.%@[%d:%d] delete from array (%@)", UUID, attribute, (int)range.location, (int)range.length, sourceIdentifier];
 }
 
 @end
@@ -300,7 +300,7 @@
 
 - (NSString *) description
 {
-	return [NSString stringWithFormat: @"%@.%@[%d:%d] replace range with %@ (%@)", aUUID, anAttribute, (int)range.location, (int)range.length, objects, aSourceIdentifier];
+	return [NSString stringWithFormat: @"%@.%@[%d:%d] replace range with %@ (%@)", UUID, attribute, (int)range.location, (int)range.length, objects, sourceIdentifier];
 }
 
 @end
