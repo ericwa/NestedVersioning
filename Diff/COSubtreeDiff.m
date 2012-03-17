@@ -464,12 +464,12 @@
 - (NSString *)description
 {
 	NSMutableString *desc = [NSMutableString stringWithString: [super description]];
-	/*[desc appendFormat: @" {\n"];
-	for (COStoreItemDiffOperation *edit in edits)
+	[desc appendFormat: @" {\n"];
+	for (COSubtreeEdit *edit in [self allEdits])
 	{
-		[desc appendFormat: @"\t%@:%@ %@\n", [edit UUID], [edit attribute], NSStringFromClass([edit class])];
+		[desc appendFormat: @"\t%@\n", [edit description]];
 	}
- 	[desc appendFormat: @"}"];*/
+ 	[desc appendFormat: @"}"];
 	return desc;
 }
 

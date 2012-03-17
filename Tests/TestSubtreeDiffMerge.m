@@ -40,6 +40,8 @@
 	// Test creating a diff
 	COSubtreeDiff *diff_t1_u1 = [COSubtreeDiff diffSubtree: t1 withSubtree: u1 sourceIdentifier: @"fixme"];
 	
+	NSLog(@"diff_t1_u1: %@", diff_t1_u1);
+	
 	COSubtree *u1_generated_from_diff = [diff_t1_u1 subtreeWithDiffAppliedToSubtree: t1];
 	
 	UKObjectsEqual(u1, u1_generated_from_diff);
