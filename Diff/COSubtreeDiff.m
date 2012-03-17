@@ -641,13 +641,7 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 	{
 		[NSException raise: NSInvalidArgumentException
 					format: @"for now, merging subtree diffs with conflicting changes to the root UUID of the tree is unsupported."];
-	}
-	
-	/**
-	 things that conflict:
-	 - same embedded item inserted in more than one place
-	 - deleting and setting the same attribute of the same object
-	 */
+	}	
 	
 	for (COSubtreeEdit *edit in [other allEdits])
 	{
@@ -714,9 +708,26 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 
 - (void) _updateConflictsForAddingEdit: (COSubtreeEdit *)anEdit
 {
-	// FIXME:
+	/**
+	 things that conflict:
+	 - same embedded item inserted in more than one place
+	 - deleting and setting the same attribute of the same object
+	 */
+
+	NSSet *existingEditsForSameAttribute = [diffDict editsForUUID: [anEdit UUID]
+														attribute: [anEdit attribute]];
 	
-	
+	if ([anEdit isMemberOfClass: [CODeleteAttribute class]])
+	{
+		if ([existingEditsForSameAttribute count] > 0)
+		{
+			// create a conflict
+			
+			
+		}
+	}
+
+
 }
 
 - (void) addEdit: (COSubtreeEdit *)anEdit
@@ -737,6 +748,7 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 				[conflict removeEdit: edit];
 			}
 		}
+		// FIXME: remove the conflict if it has no edits left?
 	}
 }
 
