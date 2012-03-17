@@ -42,6 +42,19 @@
 	return result;
 }
 
+- (NSSet *) modifiedAttributesForUUID: (ETUUID *)aUUID
+{
+	NSMutableSet *result = [NSMutableSet set];
+	for (COSubtreeEdit *edit in diffDictStorage)
+	{
+		if ([[edit UUID] isEqual: aUUID])
+		{
+			[result addObject: [edit attribute]];
+		}
+	}
+	return [NSSet setWithSet: result];
+}
+
 - (NSSet *) editsForUUID: (ETUUID *)aUUID attribute: (NSString *)aString
 {
 	NSMutableSet *result = [NSMutableSet set];
@@ -52,7 +65,7 @@
 			[result addObject: edit];
 		}
 	}
-	return result;
+	return [NSSet setWithSet: result];
 }
 
 - (NSSet *) editsForUUID: (ETUUID *)aUUID
@@ -65,7 +78,7 @@
 			[result addObject: edit];
 		}
 	}
-	return result;
+	return [NSSet setWithSet: result];
 }
 
 - (void) addEdit: (COSubtreeEdit *)anEdit
@@ -85,7 +98,7 @@
 	{
 		[result addObject: [edit UUID]];
 	}
-	return result;
+	return [NSSet setWithSet: result];
 }
 - (NSSet *)allEdits
 {

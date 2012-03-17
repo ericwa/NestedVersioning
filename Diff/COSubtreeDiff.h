@@ -21,6 +21,7 @@
 	NSMutableSet *diffDictStorage;
 }
 
+- (NSSet *) modifiedAttributesForUUID: (ETUUID *)aUUID;
 - (NSSet *) editsForUUID: (ETUUID *)aUUID;
 - (NSSet *) editsForUUID: (ETUUID *)aUUID attribute: (NSString *)aString;
 - (void) addEdit: (COSubtreeEdit *)anEdit;
