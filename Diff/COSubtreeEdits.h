@@ -3,11 +3,6 @@
 
 @class ETUUID;
 
-/**
- 
- since we store these in NSSets, the should really be immutable (hash must not change)
- 
- */
 
 #pragma mark base class
 
@@ -18,15 +13,18 @@
 	id sourceIdentifier;
 }
 
-@property (readwrite, nonatomic, copy) ETUUID *UUID;
-@property (readwrite, nonatomic, copy) NSString *attribute;
-@property (readwrite, nonatomic, copy) id sourceIdentifier;
+@property (readonly, nonatomic) ETUUID *UUID;
+@property (readonly, nonatomic) NSString *attribute;
+@property (readonly, nonatomic) id sourceIdentifier;
 
 // NO applyTo: (applying a set of array edits requires a special procedure)
 // NO doesntConflictWith: (checking a set of array edits for conflicts requires a special procedure)
 
 - (BOOL) isEqualIgnoringSourceIdentifier: (id)other;
 
+- (id) initWithUUID: (ETUUID *)aUUID
+		  attribute: (NSString *)anAttribute
+   sourceIdentifier: (id)aSourceIdentifier;
 
 @end
 
@@ -37,8 +35,14 @@
 	COType *type;
 	id value;
 }
-@property (readwrite, nonatomic, copy) COType *type;
-@property (readwrite, nonatomic, copy) id value;
+@property (readonly, nonatomic) COType *type;
+@property (readonly, nonatomic) id value;
+
+- (id) initWithUUID: (ETUUID *)aUUID
+		  attribute: (NSString *)anAttribute
+   sourceIdentifier: (id)aSourceIdentifier
+			   type: (COType *)aType
+			  value: (id)aValue;
 
 @end
 
@@ -53,7 +57,13 @@
 {
 	id object;
 }
-@property (readwrite, nonatomic, copy) id object;
+@property (readonly, nonatomic) id object;
+
+- (id) initWithUUID: (ETUUID *)aUUID
+		  attribute: (NSString *)anAttribute
+   sourceIdentifier: (id)aSourceIdentifier
+			 object: (id)anObject;
+
 @end
 
 
@@ -69,18 +79,30 @@
 	NSRange range;
 }
 
-@property (readwrite, nonatomic) NSRange range;
+@property (readonly, nonatomic) NSRange range;
 
 - (NSComparisonResult) compare: (id)otherObject;
+
+- (id) initWithUUID: (ETUUID *)aUUID
+		  attribute: (NSString *)anAttribute
+   sourceIdentifier: (id)aSourceIdentifier
+			  range: (NSRange)aRange;
 
 @end
 
 
 @interface COSequenceInsertion : COSequenceEdit 
 {
-	NSArray *insertedObjects;
+	NSArray *objects;
 }
-@property (readwrite, nonatomic, copy)  NSArray *insertedObjects; // shallow copy => you must not modify objects in the array
+@property (readonly, nonatomic)  NSArray *objects;
+
+- (id) initWithUUID: (ETUUID *)aUUID
+		  attribute: (NSString *)anAttribute
+   sourceIdentifier: (id)aSourceIdentifier
+			  range: (NSRange)aRange
+			objects: (NSArray *)anArray;
+
 @end
 
 

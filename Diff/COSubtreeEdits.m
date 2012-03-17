@@ -11,13 +11,20 @@
 @synthesize attribute;
 @synthesize sourceIdentifier;
 
+- (id) initWithUUID: (ETUUID *)aUUID
+		  attribute: (NSString *)anAttribute
+   sourceIdentifier: (id)aSourceIdentifier
+{
+	SUPERINIT;
+	UUID = [aUUID copy];
+	attribute = [anAttribute copy];
+	sourceIdentifier = [aSourceIdentifier copy];
+	return self;
+}
+
 - (id) copyWithZone: (NSZone *)aZone
 {
-	COSubtreeEdit *result = [[[self class] alloc] init];
-	result.UUID = UUID;
-	result.attribute = attribute;
-	result.sourceIdentifier = sourceIdentifier;
-	return result;
+	return [self retain];
 }
 
 - (void) dealloc
@@ -37,7 +44,7 @@
 
 - (NSUInteger) hash
 {
-	return [UUID hash] ^ [attribute hash] ^ [sourceIdentifier hash];
+	return 17540461545992478206ULL ^ [UUID hash] ^ [attribute hash] ^ [sourceIdentifier hash];
 }
 
 - (BOOL) isEqual: (id)other
@@ -56,14 +63,6 @@
 @synthesize type;
 @synthesize value;
 
-- (id) copyWithZone: (NSZone *)aZone
-{
-	COSetAttribute *result = [super copyWithZone: aZone];
-	result.type = type;
-	result.value = value;
-	return result;
-}
-
 - (void)dealloc
 {
 	[value release];
@@ -80,13 +79,31 @@
 
 - (NSUInteger) hash
 {
-	return [super hash] ^ [type hash] ^ [value hash];
+	return 4265092495078449026ULL ^ [super hash] ^ [type hash] ^ [value hash];
+}
+
+- (id) initWithUUID: (ETUUID *)aUUID
+		  attribute: (NSString *)anAttribute
+   sourceIdentifier: (id)aSourceIdentifier
+			   type: (COType *)aType
+			  value: (id)aValue
+{
+	self = [super initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier];
+	type = [aType copy];
+	value = [aValue copy];
+	return self;
 }
 
 @end
 
 
 @implementation CODeleteAttribute
+
+- (NSUInteger) hash
+{
+	return 10002940502939600064ULL;
+}
+
 @end
 
 
@@ -95,11 +112,14 @@
 @implementation COSetInsertion
 @synthesize object;
 
-- (id) copyWithZone: (NSZone *)aZone
+- (id) initWithUUID: (ETUUID *)aUUID
+		  attribute: (NSString *)anAttribute
+   sourceIdentifier: (id)aSourceIdentifier
+			 object: (id)anObject
 {
-	COSetInsertion *result = [super copyWithZone: aZone];
-	result.object = object;
-	return result;
+	self = [super initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier];
+	object = [anObject copy];
+	return self;
 }
 
 - (void)dealloc
@@ -116,12 +136,19 @@
 
 - (NSUInteger) hash
 {
-	return [super hash] ^ [object hash];
+	return 595258568559201742ULL ^ [super hash] ^ [object hash];
 }
+
 @end
 
 
 @implementation COSetDeletion
+
+- (NSUInteger) hash
+{
+	return 1310827214389984141ULL ^ [super hash];
+}
+
 @end
 
 
@@ -129,16 +156,17 @@
 
 
 @implementation COSequenceEdit
-
 @synthesize range;
 
-- (id) copyWithZone: (NSZone *)aZone
+- (id) initWithUUID: (ETUUID *)aUUID
+		  attribute: (NSString *)anAttribute
+   sourceIdentifier: (id)aSourceIdentifier
+			  range: (NSRange)aRange
 {
-	COSequenceEdit *result = [super copyWithZone: aZone];
-	result.range = range;
-	return result;
+	self = [super initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier];
+	range = aRange;
+	return self;
 }
-
 
 - (NSComparisonResult) compare: (COSequenceEdit*)other
 {
@@ -164,46 +192,61 @@
 
 - (NSUInteger) hash
 {
-	return [super hash] ^ range.location ^ range.length;
+	return 9723954873297612448ULL ^ [super hash] ^ range.location ^ range.length;
 }
 
 @end
 
 
 @implementation COSequenceInsertion
+@synthesize objects;
 
-@synthesize insertedObjects;
-
-- (id) copyWithZone: (NSZone *)aZone
+- (id) initWithUUID: (ETUUID *)aUUID
+		  attribute: (NSString *)anAttribute
+   sourceIdentifier: (id)aSourceIdentifier
+			  range: (NSRange)aRange
+			objects: (NSArray *)anArray
 {
-	COSequenceInsertion *result = [super copyWithZone: aZone];
-	result.insertedObjects = insertedObjects;
-	return result;
+	self = [super initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier range: aRange];
+	objects = [[NSArray alloc] initWithArray: anArray copyItems: YES];
+	return self;
 }
-					  
+
 - (void)dealloc
 {
-	[insertedObjects release];
+	[objects release];
 	[super dealloc];
 }
 					  
 - (BOOL) isEqualIgnoringSourceIdentifier: (id)other
 {
 	return [super isEqualIgnoringSourceIdentifier: other]
-	&&	[insertedObjects isEqual: ((COSequenceInsertion*)other).insertedObjects];
+	&&	[objects isEqual: ((COSequenceInsertion*)other).objects];
 }
 					  
 - (NSUInteger) hash
 {
-	return [super hash] ^ [insertedObjects hash];
+	return 14584168390782580871ULL ^ [super hash] ^ [objects hash];
 }
 
 @end
 
 
 @implementation COSequenceDeletion
+
+- (NSUInteger) hash
+{
+	return 17441750424377234775ULL ^ [super hash];
+}
+
 @end
 
 
 @implementation COSequenceModification
+
+- (NSUInteger) hash
+{
+	return 11773746616539821587ULL ^ [super hash];
+}
+
 @end
