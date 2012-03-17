@@ -26,6 +26,10 @@
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier;
 
+// information
+
+- (NSSet *) insertedEmbeddedItemUUIDs;
+
 @end
 
 #pragma mark set, delete attribute
@@ -55,13 +59,16 @@
 
 @interface COSetInsertion : COSubtreeEdit
 {
+	COType *type;
 	id object;
 }
+@property (readonly, nonatomic) COType *type;
 @property (readonly, nonatomic) id object;
 
 - (id) initWithUUID: (ETUUID *)aUUID
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier
+			   type: (COType *)aType
 			 object: (id)anObject;
 
 @end
@@ -78,7 +85,6 @@
 {
 	NSRange range;
 }
-
 @property (readonly, nonatomic) NSRange range;
 
 - (NSComparisonResult) compare: (id)otherObject;
@@ -90,17 +96,30 @@
 
 @end
 
-
-@interface COSequenceInsertion : COSequenceEdit 
+@interface COSequenceModification : COSequenceEdit
 {
+	COType *type;
 	NSArray *objects;
 }
-@property (readonly, nonatomic)  NSArray *objects;
+@property (readonly, nonatomic) COType *type;
+@property (readonly, nonatomic) NSArray *objects;
+
+- (id) initWithUUID: (ETUUID *)aUUID
+		  attribute: (NSString *)anAttribute
+   sourceIdentifier: (id)aSourceIdentifier
+			  range: (NSRange)aRange
+			   type: (COType *)aType
+			objects: (NSArray *)anArray;
+@end
+
+
+@interface COSequenceInsertion : COSequenceModification 
 
 - (id) initWithUUID: (ETUUID *)aUUID
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier
 		   location: (NSUInteger)aLocation
+			   type: (COType *)aType
 			objects: (NSArray *)anArray;
 
 @end
@@ -111,11 +130,3 @@
 @end
 
 
-@interface COSequenceModification : COSequenceInsertion
-
-- (id) initWithUUID: (ETUUID *)aUUID
-		  attribute: (NSString *)anAttribute
-   sourceIdentifier: (id)aSourceIdentifier
-			  range: (NSRange)aRange
-			objects: (NSArray *)anArray;
-@end

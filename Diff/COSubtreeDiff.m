@@ -283,6 +283,7 @@
 															  attribute: [info objectForKey: @"attribute"]
 													   sourceIdentifier: [info objectForKey: @"sourceIdentifier"]
 															   location: aLocation
+																   type: [info objectForKey: @"type"]
 																objects: anArray];
 	[self addEdit: op];
 	[op release];
@@ -307,6 +308,7 @@
 																	attribute: [info objectForKey: @"attribute"]
 															 sourceIdentifier: [info objectForKey: @"sourceIdentifier"]
 																		range: aRange
+																		 type: [info objectForKey: @"type"]
 																	  objects: anArray];
 	[self addEdit: op];
 	[op release];
@@ -328,16 +330,16 @@
 	[op release];
 }
 
-- (void) _recordSetInsertionOfValue: (id)aValue forAttribute: (NSString*)anAttribute UUID: (ETUUID *)aUUID sourceIdentifier: (id)aSourceIdentifier
+- (void) _recordSetInsertionOfValue: (id)aValue type: (COType *)aType forAttribute: (NSString*)anAttribute UUID: (ETUUID *)aUUID sourceIdentifier: (id)aSourceIdentifier
 {
-	COSetInsertion *op = [[COSetInsertion alloc] initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier object: aValue];
+	COSetInsertion *op = [[COSetInsertion alloc] initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier type: aType object: aValue];
 	[self addEdit: op];
 	[op release];
 }
 
-- (void) _recordSetDeletionOfValue: (id)aValue forAttribute: (NSString*)anAttribute UUID: (ETUUID *)aUUID sourceIdentifier: (id)aSourceIdentifier
+- (void) _recordSetDeletionOfValue: (id)aValue type: (COType *)aType forAttribute: (NSString*)anAttribute UUID: (ETUUID *)aUUID sourceIdentifier: (id)aSourceIdentifier
 {
-	COSetDeletion *op = [[COSetDeletion alloc] initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier object: aValue];
+	COSetDeletion *op = [[COSetDeletion alloc] initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier type: aType object: aValue];
 	[self addEdit: op];
 	[op release];
 }
@@ -357,7 +359,7 @@
 		
 		for (id value in insertions)
 		{
-			[self _recordSetInsertionOfValue: value forAttribute: anAttribute UUID: itemUUID sourceIdentifier: aSource];
+			[self _recordSetInsertionOfValue: value type: type forAttribute: anAttribute UUID: itemUUID sourceIdentifier: aSource];
 		}
 		
 		NSMutableSet *deletions = [NSMutableSet setWithSet: (NSSet *)valueA];
@@ -365,12 +367,12 @@
 		
 		for (id value in deletions)
 		{
-			[self _recordSetDeletionOfValue: value forAttribute: anAttribute UUID: itemUUID sourceIdentifier: aSource];
+			[self _recordSetDeletionOfValue: value type: type forAttribute: anAttribute UUID: itemUUID sourceIdentifier: aSource];
 		}
 	}
 	else if ([type isMultivalued] && [type isOrdered])
 	{
-		CODiffArrays(valueA, valueB, self, D(itemUUID, @"UUID", anAttribute, @"attribute", aSource, @"sourceIdentifier"));
+		CODiffArrays(valueA, valueB, self, D(itemUUID, @"UUID", anAttribute, @"attribute", aSource, @"sourceIdentifier", type, @"type"));
 	}
 	else
 	{

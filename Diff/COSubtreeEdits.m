@@ -56,6 +56,11 @@
 		&& [sourceIdentifier isEqual: ((COSubtreeEdit*)other).sourceIdentifier];
 }
 
+- (NSSet *) insertedEmbeddedItemUUIDs
+{
+	return [NSSet set];
+}
+
 @end
 
 
@@ -93,6 +98,10 @@
 {
 	NILARG_EXCEPTION_TEST(aType);
 	NILARG_EXCEPTION_TEST(aValue);
+	if (![aType validateValue: aValue])
+	{
+		[NSException raise: NSInvalidArgumentException format: @"value %@ did not conform to type %@", aValue, aType];
+	}
 	self = [super initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier];
 	type = [aType copy];
 	value = [aValue copy];
@@ -125,21 +134,30 @@
 #pragma mark editing set multivalueds
 
 @implementation COSetInsertion
+
+@synthesize type;
 @synthesize object;
 
 - (id) initWithUUID: (ETUUID *)aUUID
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier
+			   type: (COType *)aType
 			 object: (id)anObject
 {
 	NILARG_EXCEPTION_TEST(anObject);
+	if (![[aType primitiveType] validateValue: anObject])
+	{
+		[NSException raise: NSInvalidArgumentException format: @"value %@ did not conform to type %@", anObject, aType];
+	}
 	self = [super initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier];
+	type = [aType copy];
 	object = [anObject copy];
 	return self;
 }
 
 - (void)dealloc
 {
+	[type release];
 	[object release];
 	[super dealloc];
 }
@@ -147,12 +165,13 @@
 - (BOOL) isEqualIgnoringSourceIdentifier: (id)other
 {
 	return [super isEqualIgnoringSourceIdentifier: other]
-	&&	[object isEqual: ((COSetInsertion*)other).object];
+	&& [type isEqual: ((COSetInsertion*)other).type]
+	&& [object isEqual: ((COSetInsertion*)other).object];
 }
 
 - (NSUInteger) hash
 {
-	return 595258568559201742ULL ^ [super hash] ^ [object hash];
+	return 595258568559201742ULL ^ [super hash] ^ [type hash] ^ [object hash];
 }
 
 - (NSString *) description
@@ -182,6 +201,7 @@
 
 
 @implementation COSequenceEdit
+
 @synthesize range;
 
 - (id) initWithUUID: (ETUUID *)aUUID
@@ -223,37 +243,73 @@
 
 @end
 
+@implementation COSequenceModification
 
-@implementation COSequenceInsertion
+@synthesize type;
 @synthesize objects;
 
 - (id) initWithUUID: (ETUUID *)aUUID
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier
-		   location: (NSUInteger)aLocation
+			  range: (NSRange)aRange
+			   type: (COType *)aType
 			objects: (NSArray *)anArray
 {
 	NILARG_EXCEPTION_TEST(anArray);
-	self = [super initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier range: NSMakeRange(aLocation, 0)];
+	if (![aType validateValue: anArray])
+	{
+		[NSException raise: NSInvalidArgumentException format: @"value %@ did not conform to type %@", anArray, aType];
+	}
+	self = [super initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier range: aRange];	
+	type = [aType copy];
 	objects = [[NSArray alloc] initWithArray: anArray copyItems: YES];
 	return self;
 }
 
 - (void)dealloc
 {
+	[type release];
 	[objects release];
 	[super dealloc];
 }
-					  
+
 - (BOOL) isEqualIgnoringSourceIdentifier: (id)other
 {
 	return [super isEqualIgnoringSourceIdentifier: other]
-	&&	[objects isEqual: ((COSequenceInsertion*)other).objects];
+	&& [type isEqual: ((COSequenceInsertion*)other).type]
+	&& [objects isEqual: ((COSequenceInsertion*)other).objects];
 }
-					  
+
 - (NSUInteger) hash
 {
-	return 14584168390782580871ULL ^ [super hash] ^ [objects hash];
+	return 11773746616539821587ULL ^ [super hash] ^ [type hash] ^ [objects hash];
+}
+
+- (NSString *) description
+{
+	return [NSString stringWithFormat: @"%@.%@[%d:%d] replace range with %@ (%@)", UUID, attribute, (int)range.location, (int)range.length, objects, sourceIdentifier];
+}
+
+@end
+
+
+
+@implementation COSequenceInsertion
+
+- (id) initWithUUID: (ETUUID *)aUUID
+		  attribute: (NSString *)anAttribute
+   sourceIdentifier: (id)aSourceIdentifier
+		   location: (NSUInteger)aLocation
+			   type: (COType *)aType
+			objects: (NSArray *)anArray
+{
+	self = [super initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier range: NSMakeRange(aLocation, 0) type: aType objects: anArray];
+	return self;
+}
+			  
+- (NSUInteger) hash
+{
+	return 14584168390782580871ULL ^ [super hash];
 }
 
 - (NSString *) description
@@ -262,6 +318,8 @@
 }
 
 @end
+
+
 
 
 @implementation COSequenceDeletion
@@ -274,33 +332,6 @@
 - (NSString *) description
 {
 	return [NSString stringWithFormat: @"%@.%@[%d:%d] delete from array (%@)", UUID, attribute, (int)range.location, (int)range.length, sourceIdentifier];
-}
-
-@end
-
-
-@implementation COSequenceModification
-
-- (id) initWithUUID: (ETUUID *)aUUID
-		  attribute: (NSString *)anAttribute
-   sourceIdentifier: (id)aSourceIdentifier
-			  range: (NSRange)aRange
-			objects: (NSArray *)anArray
-{
-	NILARG_EXCEPTION_TEST(anArray);
-	self = [super initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier range: aRange];
-	objects = [[NSArray alloc] initWithArray: anArray copyItems: YES];
-	return self;
-}
-
-- (NSUInteger) hash
-{
-	return 11773746616539821587ULL ^ [super hash];
-}
-
-- (NSString *) description
-{
-	return [NSString stringWithFormat: @"%@.%@[%d:%d] replace range with %@ (%@)", UUID, attribute, (int)range.location, (int)range.length, objects, sourceIdentifier];
 }
 
 @end
