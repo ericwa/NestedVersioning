@@ -111,7 +111,7 @@
 
 - (NSUInteger) hash
 {
-	return 10002940502939600064ULL;
+	return 10002940502939600064ULL ^ [super hash];
 }
 
 - (NSString *) description
