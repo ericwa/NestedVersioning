@@ -113,6 +113,18 @@
 	return [NSString stringWithFormat: @"%@.%@ set attribute to %@ (%@)", UUID, attribute, value, sourceIdentifier];
 }
 
+- (NSSet *) insertedEmbeddedItemUUIDs
+{
+	if ([type isKindOfClass: [COType embeddedItemType]])
+	{
+		return [NSSet setWithObject: value];
+	}
+	else
+	{
+		return [NSSet set];
+	}
+}
+
 @end
 
 
@@ -177,6 +189,18 @@
 - (NSString *) description
 {
 	return [NSString stringWithFormat: @"%@.%@ insert into set value %@ (%@)", UUID, attribute, object, sourceIdentifier];
+}
+
+- (NSSet *) insertedEmbeddedItemUUIDs
+{
+	if ([[type primitiveType] isKindOfClass: [COType embeddedItemType]])
+	{
+		return [NSSet setWithObject: object];
+	}
+	else
+	{
+		return [NSSet set];
+	}
 }
 
 @end
@@ -288,6 +312,18 @@
 - (NSString *) description
 {
 	return [NSString stringWithFormat: @"%@.%@[%d:%d] replace range with %@ (%@)", UUID, attribute, (int)range.location, (int)range.length, objects, sourceIdentifier];
+}
+
+- (NSSet *) insertedEmbeddedItemUUIDs
+{
+	if ([[type primitiveType] isKindOfClass: [COType embeddedItemType]])
+	{
+		return [NSSet setWithArray: objects];
+	}
+	else
+	{
+		return [NSSet set];
+	}
 }
 
 @end
