@@ -715,6 +715,18 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 	 - same embedded item inserted in more than one place
 	 - deleting conflicts with any other ops on that attr
 	 - setting to a primitive value conflicts with all other ops
+	 
+	 
+	 two types of conflicts:
+	  - A. all edits in the conflict belong to the same UUID.attribute
+	  - B. not all edits in the conflict belong to the same UUID.attribute
+	 
+	 -type B conflicts are all "embedded item inserted in more than one place" conflicts.
+	 -"embedded item inserted in more than one place" conflicts can also be type A conflicts
+	   (diff x inserts Q at index 0, diff y inserts Q at index 3...)
+	 
+	 
+	 
 	 */
 
 	NSSet *existingEditsForSameAttribute = [diffDict editsForUUID: [anEdit UUID]
