@@ -115,7 +115,7 @@
 
 - (NSSet *) insertedEmbeddedItemUUIDs
 {
-	if ([type isKindOfClass: [COType embeddedItemType]])
+	if ([type isEqual: [COType embeddedItemType]])
 	{
 		return [NSSet setWithObject: value];
 	}
@@ -193,7 +193,7 @@
 
 - (NSSet *) insertedEmbeddedItemUUIDs
 {
-	if ([[type primitiveType] isKindOfClass: [COType embeddedItemType]])
+	if ([type isPrimitiveTypeEqual: [COType embeddedItemType]])
 	{
 		return [NSSet setWithObject: object];
 	}
@@ -316,7 +316,7 @@
 
 - (NSSet *) insertedEmbeddedItemUUIDs
 {
-	if ([[type primitiveType] isKindOfClass: [COType embeddedItemType]])
+	if ([type isPrimitiveTypeEqual: [COType embeddedItemType]])
 	{
 		return [NSSet setWithArray: objects];
 	}
