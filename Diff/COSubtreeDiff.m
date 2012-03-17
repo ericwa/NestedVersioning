@@ -486,6 +486,59 @@
 	return desc;
 }
 
+- (void) _applyEdits:(NSSet *)edits toMutableItem: (COMutableItem *)anItem
+{
+	COSubtreeEdit *anyEdit = [edits anyObject];
+	
+	// set, delete attribute
+	
+	if ([anyEdit isKindOfClass: [COSetAttribute class]])
+	{
+		assert([edits count] == 1);
+		[anItem setValue: [(COSetAttribute *)anyEdit value]
+			forAttribute: [anyEdit attribute]
+					type: [(COSetAttribute *)anyEdit type]];
+		return;
+	}
+	
+	if ([anyEdit isKindOfClass: [CODeleteAttribute class]])
+	{
+		assert([edits count] == 1);
+		[anItem removeValueForAttribute: [anyEdit attribute]];
+		return;
+	}
+	
+	// editing set multivalueds
+	
+	if ([anyEdit isKindOfClass: [COSetInsertion class]] || 
+		[anyEdit isKindOfClass: [COSetDeletion class]])
+	{
+		NSMutableSet *newSet = [NSMutableSet setWithSet: [anItem valueForAttribute: [anyEdit attribute]]];
+		
+		for (COSubtreeEdit *edit in edits)
+		{
+			if ([edit isMemberOfClass: [COSetInsertion class]])
+			{
+				[newSet addObject: [(COSetInsertion *)edit object]];
+			}
+			else if ([anyEdit isMemberOfClass: [COSetDeletion class]])
+			{
+				[newSet removeObject: [(COSetDeletion *)edit object]];
+			}
+			else assert(0);
+		}
+		
+		[anItem setValue: newSet
+			forAttribute: [anyEdit attribute]
+					type: [anItem typeForAttribute: [anyEdit attribute]]];
+		return;
+	}
+	
+	// editing array multivalue
+	
+	 // FIXME:
+}
+
 - (COSubtree *) subtreeWithDiffAppliedToSubtree: (COSubtree *)aSubtree
 {
 	/**
@@ -505,6 +558,20 @@
 	 
 	 */
 
+	if (![[[aSubtree root] UUID] isEqual: oldRoot])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"diff was created from a subtree with UUID %@ and being applied to a subtree with UUID %@", oldRoot, [[aSubtree root] UUID]];
+	}
+	
+	if ([self hasConflicts])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"resolve conflicts before applying diff"];	
+	}
+	
+	// set up dictionary to store items in
+	
 	NSMutableDictionary *newItems = [NSMutableDictionary dictionary];
 	
 	for (COItem *oldItem in [aSubtree allContainedStoreItems])
@@ -513,33 +580,29 @@
 					 forKey: [oldItem UUID]];
 	}
 	
-	if (![[[aSubtree root] UUID] isEqual: oldRoot])
-	{
-		[NSException raise: NSInvalidArgumentException
-					format: @"diff was created from a subtree with UUID %@ and being applied to a subtree with UUID %@", oldRoot, [[aSubtree root] UUID]];
-	}
+	// apply all of the edits
 	
-	// FIXME
-	/*
-	for (COUUIDAttributeTuple *tuple in [diffDict allTuples])
+	for (ETUUID *modifiedUUID in [diffDict allEditedUUIDs])
 	{
-		COMutableItem *item = [newItems objectForKey: [tuple UUID]];
+		COMutableItem *item = [newItems objectForKey: modifiedUUID];
 		
 		if (item == nil)
 		{
-			item = [[COMutableItem alloc] initWithUUID: [tuple UUID]]; // FIXME: hack for inserted items
-			[newItems setObject: item forKey: [tuple UUID]];
+			item = [[COMutableItem alloc] initWithUUID: modifiedUUID];
+			[newItems setObject: item forKey: modifiedUUID];
 			[item release];
-		}
+		}		
 		
-		// FIXME: special handling for array edits.
-		
-		for (COSubtreeEdit *op in [diffDict editsForTuple: tuple])
+		for (NSString *modifiedAttribute in [diffDict modifiedAttributesForUUID: modifiedUUID])
 		{
-			[op applyTo: item];
+			NSSet *edits = [diffDict editsForUUID: modifiedUUID attribute: modifiedAttribute];
+			
+			assert([edits count] > 0);
+		
+			[self _applyEdits: edits toMutableItem: item];
 		}
 	}
-	*/
+	
 	return [COSubtree subtreeWithItemSet: [NSSet setWithArray: [newItems allValues]]
 								rootUUID: newRoot];
 }
