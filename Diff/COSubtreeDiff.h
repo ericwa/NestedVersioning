@@ -93,13 +93,9 @@
 
 - (BOOL) hasConflicts;
 
-- (void) _applyEdits: (NSSet *)edits;
-
-
 #pragma mark access (sub-objects may be mutated by caller)
 
 - (NSSet *)allEdits;
-- (NSSet *) editsForUUID: (ETUUID *)aUUID attribute: (NSString *)aString;
 - (NSSet *)conflicts;
 
 #pragma mark access
