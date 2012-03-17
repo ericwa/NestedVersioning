@@ -103,6 +103,32 @@
 	UKObjectsEqual(t2, t2a);
 }
 
+- (void) testSubtreeCreationFromItemsWithCycle
+{
+	COMutableItem *parent = [COMutableItem item];
+	COMutableItem *child = [COMutableItem item];
+	[parent setValue: [child UUID] forAttribute: @"cycle" type: [COType embeddedItemType]];
+	[child setValue: [parent UUID] forAttribute: @"cycle" type: [COType embeddedItemType]];
+	
+	UKRaisesException([COSubtree subtreeWithItemSet: S(parent, child) rootUUID: [parent UUID]]);
+}
+
+- (void) testSubtreeCreationFromItemsWithEmbeddedItemUsedTwice
+{
+	COMutableItem *parent = [COMutableItem item];
+	COMutableItem *child1 = [COMutableItem item];
+	COMutableItem *child2 = [COMutableItem item];
+	COMutableItem *shared = [COMutableItem item];
+	
+	[parent setValue: S([child1 UUID], [child2 UUID]) forAttribute: @"contents" type: [COType setWithPrimitiveType: [COType embeddedItemType]]];
+	[child1 setValue: [shared UUID] forAttribute: @"shared" type: [COType embeddedItemType]];
+	[child2 setValue: [shared UUID] forAttribute: @"shared" type: [COType embeddedItemType]];
+	
+	// illegal, because "shared" is embedded in two places
+	
+	UKRaisesException([COSubtree subtreeWithItemSet: S(parent, child1, child2, shared) rootUUID: [parent UUID]]);
+}
+
 - (void) testSubtreePlistRoundTrip
 {
 	COSubtree *t1 = [COSubtree subtree];

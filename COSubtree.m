@@ -52,6 +52,7 @@
 }
 
 - (id) initWithItemDictionary: (NSDictionary *)items
+			subtreeDictionary: (NSMutableDictionary *)subtrees
 					 rootUUID: (ETUUID *)aRootUUID
 {
 	NILARG_EXCEPTION_TEST(items);
@@ -63,7 +64,14 @@
 					format: @"items do not form a valid tree"];
 	}
 	
+	if ([subtrees objectForKey: aRootUUID] != nil)
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"items contain a cycle"];
+	}
+	
 	SUPERINIT;
+	[subtrees setObject: self forKey: aRootUUID];
 	item = [[items objectForKey: aRootUUID] mutableCopy];
 	embeddedSubtrees = [[NSMutableDictionary alloc] init];
 	
@@ -71,6 +79,7 @@
 	for (ETUUID *aUUID in [item embeddedItemUUIDs])
 	{
 		COSubtree *subTree = [[[self class] alloc] initWithItemDictionary: items
+														subtreeDictionary: subtrees
 																 rootUUID: aUUID];
 		subTree->parent = self;
 		[embeddedSubtrees setObject: subTree
@@ -111,7 +120,9 @@
 		[dict setObject: item forKey: [item UUID]];
 	}
 	
-	return [[[self alloc] initWithItemDictionary: dict rootUUID: aRootUUID] autorelease];
+	return [[[self alloc] initWithItemDictionary: dict
+							   subtreeDictionary: [NSMutableDictionary dictionaryWithCapacity: [dict count]]
+										rootUUID: aRootUUID] autorelease];
 }
 
 - (id)copyWithNameMapping: (NSDictionary *)aMapping
