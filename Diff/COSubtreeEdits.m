@@ -61,6 +61,11 @@
 	return [NSSet set];
 }
 
+- (BOOL) isSameKindOfEdit: (COSubtreeEdit*)anEdit
+{
+	return [anEdit isMemberOfClass: [self class]];
+}
+
 @end
 
 
@@ -203,6 +208,12 @@
 	}
 }
 
+- (BOOL) isSameKindOfEdit: (COSubtreeEdit*)anEdit
+{
+	return [anEdit isKindOfClass: [COSetInsertion class]]
+		|| [anEdit isKindOfClass: [COSetDeletion class]];
+}
+
 @end
 
 
@@ -216,6 +227,12 @@
 - (NSString *) description
 {
 	return [NSString stringWithFormat: @"%@.%@ delete from set value %@ (%@)", UUID, attribute, object, sourceIdentifier];
+}
+
+- (BOOL) isSameKindOfEdit: (COSubtreeEdit*)anEdit
+{
+	return [anEdit isKindOfClass: [COSetInsertion class]]
+	|| [anEdit isKindOfClass: [COSetDeletion class]];
 }
 
 @end
@@ -263,6 +280,11 @@
 - (NSUInteger) hash
 {
 	return 9723954873297612448ULL ^ [super hash] ^ range.location ^ range.length;
+}
+
+- (BOOL) isSameKindOfEdit: (COSubtreeEdit*)anEdit
+{
+	return [anEdit isKindOfClass: [COSequenceEdit class]];
 }
 
 @end

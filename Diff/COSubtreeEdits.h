@@ -30,6 +30,8 @@
 
 - (NSSet *) insertedEmbeddedItemUUIDs;
 
+- (BOOL) isSameKindOfEdit: (COSubtreeEdit*)anEdit;
+
 @end
 
 #pragma mark set, delete attribute
