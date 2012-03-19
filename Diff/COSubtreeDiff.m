@@ -708,6 +708,33 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 	[conflicts removeObject: aConflict];
 }
 
+- (void) _updateConflictForConflictingEmbeddedItemInsertion: (COSubtreeEdit *)anEdit
+								   conflictingWithInsertion: (COSubtreeEdit *)anotherEdit
+{
+	
+}
+
+- (NSSet *) embeddedItemInsertionConfclits // insert item uuid X at two different places
+{
+	
+}
+
+- (NSSet *) equalEditConfclits // e.g. set [4:2] to ("h", "i") and [4:2] to ("h", "i")
+{
+	
+}
+
+- (NSSet *) sequenceEditConflicts // e.g. set [4:5] and [4:3]. doesn't include equal sequence edit conflicts
+{
+	
+}
+
+- (NSSet *) editTypeConflicts // e.g. delete + set
+{
+	
+}
+
+
 - (void) _updateConflictsForAddingEdit: (COSubtreeEdit *)anEdit
 {
 	/**
@@ -725,21 +752,45 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 	 -"embedded item inserted in more than one place" conflicts can also be type A conflicts
 	   (diff x inserts Q at index 0, diff y inserts Q at index 3...)
 	 
+	 -conflict uniqueness:
 	 
+		= each edit can belong to at most 1 "embedded item inserted in more than one place" conflict
+	    = "equal edit" conflicts should be separate from other conflicts
+        = overlapping, but non-equal, sequence edit conflicts should be separate from other conflicts (?)
+		= "conflicting edit types for UUID.attribute" conflicts should be separate from other conflicts.
+	 
+	 so, each edit could be in up to 4 conflicts.
 	 
 	 */
 
+	// check for existing edits for that same attribute
+	
 	NSSet *existingEditsForSameAttribute = [diffDict editsForUUID: [anEdit UUID]
 														attribute: [anEdit attribute]];
 	
-	if ([anEdit isMemberOfClass: [CODeleteAttribute class]])
+	if ([existingEditsForSameAttribute count] > 0)
 	{
-		if ([existingEditsForSameAttribute count] > 0)
+		// first, check for the existing edits being of a different type (automatic conflict)
+		
+		for (COSubtreeEdit *edit in existingEditsForSameAttribute)
 		{
-			// create a conflict
-			
-			
+			if (![anEdit isSameKindOfEdit: edit])
+			{
+				
+
+			}
 		}
+		
+		// now check for, if it is a sequence edit, overlapping edits
+		
+		if ([anEdit isKindOfClass: [COSequenceEdit class]])
+		{
+			
+			// remember, some of these might be "equal"
+		}
+		
+		// create a conflict for equal edits
+		
 	}
 
 	// check for same embedded item inserted in more than one place
@@ -751,9 +802,11 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 		if ([anEditEmbeddedItemInsertions intersectsSet: editEmbeddedItemInsertions])
 		{
 			// edit and anEdit conflict! create a new conflict or update an existing one.
+			[self _updateConflictForConflictingEmbeddedItemInsertion: anEdit
+											conflictingWithInsertion: edit];
+			break;
 		}
 	}
-
 }
 
 - (void) addEdit: (COSubtreeEdit *)anEdit
