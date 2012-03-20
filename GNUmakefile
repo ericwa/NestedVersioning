@@ -22,9 +22,8 @@ $(APP_NAME)_OBJC_FILES=\
 	Diff/COSubtreeDiff.m\
 	Diff/COArrayDiff.m\
 	Diff/COPersistentRootDiff.m\
-	Diff/COSequenceDiff.m\
 	Diff/COSequenceMerge.m\
-	Diff/COSetDiff.m\
+	Diff/COSubtreeEdits.m\
 	ETUUID.m\
 	StoreBrowser/AppDelegate.m\
 	StoreBrowser/EWGraphRenderer.m\
