@@ -121,15 +121,15 @@
  */
 - (void)testTreeConflict
 {
-	COSubtree *docO, *docA, *docB;
-	
+	COSubtree *docO, *docA, *docB, *docMergeResolved;
+
+	COSubtree *doc = [COSubtree subtree];
+	COSubtree *group1 = [COSubtree subtree];
+	COSubtree *group2 = [COSubtree subtree];
+	COSubtree *shape1 = [COSubtree subtree];
+
 	// 1. Setup docO, docA, docB
-	{
-		COSubtree *doc = [COSubtree subtree];
-		COSubtree *group1 = [COSubtree subtree];
-		COSubtree *group2 = [COSubtree subtree];
-		COSubtree *shape1 = [COSubtree subtree];
-		
+	{		
 		[doc setValue: @"doc" forAttribute: @"name" type: [COType stringType]];		
 		[group1 setValue: @"group1" forAttribute: @"name" type: [COType stringType]];	
 		[group2 setValue: @"group2" forAttribute: @"name" type: [COType stringType]];
@@ -149,10 +149,16 @@
 		[doc removeSubtree: group1];
 		
 		docB = [[doc copy] autorelease];   // docB -> group2 -> shape1
+		
+		[doc addTree: group1];		
+		[group1 addTree: shape1];
+		[group2 removeValueForAttribute: @"contents"]; // FIXME: Hack to make equality test later work
+
+		docMergeResolved = [[doc copy] autorelease];   // docMergeResolved -> ((group1 -> shape1), group2)
 	}
 	
-	COSubtreeDiff *diff_docO_vs_docA = [COSubtreeDiff diffSubtree: docO withSubtree: docA sourceIdentifier: @"fixme"];
-	COSubtreeDiff *diff_docO_vs_docB = [COSubtreeDiff diffSubtree: docO withSubtree: docB sourceIdentifier: @"fixme"];
+	COSubtreeDiff *diff_docO_vs_docA = [COSubtreeDiff diffSubtree: docO withSubtree: docA sourceIdentifier: @"OA"];
+	COSubtreeDiff *diff_docO_vs_docB = [COSubtreeDiff diffSubtree: docO withSubtree: docB sourceIdentifier: @"OB"];
 	
 	// Sanity check that the diffs work
 	
@@ -164,9 +170,56 @@
 	// merged: doc -> ((group1 -> shape1), (group2 -> shape1))
 	// there is one conflict: shape1 is being inserted in two places.
 		
-	UKTrue([diff_merged hasConflicts]);
+	UKTrue([diff_merged hasConflicts]);	
+	UKIntsEqual(1, [[diff_merged conflicts] count]);
 	
-	// FIXME: finish test.
+	COSubtreeConflict *conflict = [[diff_merged conflicts] anyObject];
+	
+	UKIntsEqual(2, [[conflict allEdits] count]);
+	UKIntsEqual(1, [[conflict editsForSourceIdentifier: @"OA"] count]);
+	UKIntsEqual(1, [[conflict editsForSourceIdentifier: @"OB"] count]);
+	
+	COSubtreeEdit *OAConflictingEdit = [[conflict editsForSourceIdentifier: @"OA"] anyObject];
+	COSubtreeEdit *OBConflictingEdit = [[conflict editsForSourceIdentifier: @"OB"] anyObject];
+	
+	COSubtreeEdit *OAConflictingExpected = [[[COSetAttribute alloc] initWithUUID: [group1 UUID]
+																	   attribute: @"contents"
+																sourceIdentifier: @"OA"
+																			type: [COType setWithPrimitiveType: [COType embeddedItemType]]
+																		   value: S([shape1 UUID])] autorelease];
+	
+	COSubtreeEdit *OBConflictingExpected = [[[COSetAttribute alloc] initWithUUID: [group2 UUID]
+																	   attribute: @"contents"
+																sourceIdentifier: @"OB"
+																			type: [COType setWithPrimitiveType: [COType embeddedItemType]]
+																		   value: S([shape1 UUID])] autorelease];
+	
+	UKObjectsEqual(OAConflictingExpected, OAConflictingEdit);
+	UKObjectsEqual(OBConflictingExpected, OBConflictingEdit);
+	
+	
+	// now remove the conflict
+	
+	
+	[diff_merged removeConflict: conflict];
+	
+	UKFalse([diff_merged hasConflicts]);	
+	UKIntsEqual(0, [[diff_merged conflicts] count]);
+
+	[diff_merged addEdit: OAConflictingEdit];
+	
+	UKFalse([diff_merged hasConflicts]);	
+	UKIntsEqual(0, [[diff_merged conflicts] count]);
+
+	
+	COSubtree *actualMergeResolved = [diff_merged subtreeWithDiffAppliedToSubtree: docO];
+	
+	COSubtree *group2lhs = [docMergeResolved subtreeWithUUID: [group2 UUID]];
+	COSubtree *group2rhs = [actualMergeResolved subtreeWithUUID: [group2 UUID]];
+	
+	// FIXME: refine semantics for a COItem having an empty set vs no set.
+	UKObjectsEqual(group2lhs, group2rhs);
+	UKObjectsEqual(docMergeResolved, actualMergeResolved);
 }
 
 - (NSSet *) insertionSetForUUID: (ETUUID *)aUUID attribute: (NSString *)attribute diff: (COSubtreeDiff *)aDiff sourceID: (id)source
