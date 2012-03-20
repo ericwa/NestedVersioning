@@ -288,33 +288,43 @@
 
 
 #pragma mark sequence diff merged
-#if 0
-- (void) testBasic
+
+- (void) testBasicSequenceDiff
 {
+	COSubtree *doc2 = [COSubtree subtree];	
+	COSubtree *doc1 = [[doc2 copy] autorelease];
+	COSubtree *doc3 = [[doc2 copy] autorelease];;
+	
 	NSArray *array2 = A(@"A", @"b", @"d", @"zoo", @"e");
 	NSArray *array1 = A(@"a", @"b", @"c", @"d", @"e");
 	NSArray *array3 = A(@"A", @"b", @"c", @"e", @"foo");
 	
+	[doc2 setValue: array2 forAttribute: @"array" type: [COType arrayWithPrimitiveType: [COType stringType]]];
+	[doc1 setValue: array1 forAttribute: @"array" type: [COType arrayWithPrimitiveType: [COType stringType]]];
+	[doc3 setValue: array3 forAttribute: @"array" type: [COType arrayWithPrimitiveType: [COType stringType]]];
+
+	
 	/**
 	 * modify a->A, remove c, insert 'zoo' after d
 	 */
-	COArrayDiff *diff12 = [[COArrayDiff alloc] initWithFirstArray: array1 secondArray: array2 sourceIdentifier: @"diff12"];
+	COSubtreeDiff *diff12 = [COSubtreeDiff diffSubtree: doc1 withSubtree:doc2 sourceIdentifier: @"diff12"];
 	
 	/**
 	 * modify a->A, remove d, insert 'foo' after e
 	 */
-	COArrayDiff *diff13 = [[COArrayDiff alloc] initWithFirstArray: array1 secondArray: array3 sourceIdentifier: @"diff13"];
+	COSubtreeDiff *diff13 = [COSubtreeDiff diffSubtree: doc1 withSubtree:doc3 sourceIdentifier: @"diff13"];
 	
-	UKObjectsEqual(array2, [diff12 arrayWithDiffAppliedTo: array1]);
-	UKObjectsEqual(array3, [diff13 arrayWithDiffAppliedTo: array1]);
+	UKObjectsEqual(array2, [[diff12 subtreeWithDiffAppliedToSubtree: doc1] valueForAttribute: @"array"]);
+	UKObjectsEqual(array3, [[diff13 subtreeWithDiffAppliedToSubtree: doc1] valueForAttribute: @"array"]);
 	
-	COArrayDiff *merged = (COArrayDiff *)[diff12 sequenceDiffByMergingWithDiff: diff13];
+	COSubtreeDiff *merged = [diff12 subtreeDiffByMergingWithDiff: diff13];
 	UKFalse([merged hasConflicts]);
 	
 	// Expected: {a->A nonconflicting}, remove c, remove d,  insert 'zoo', insert 'foo'
 	
-	UKObjectsEqual(A(@"A", @"b", @"zoo", @"e", @"foo"), [merged arrayWithDiffAppliedTo: array1]);
+	UKObjectsEqual(A(@"A", @"b", @"zoo", @"e", @"foo"), [[merged subtreeWithDiffAppliedToSubtree: doc1] valueForAttribute: @"array"]);
 	
+	/*
 	// Examine the a->A change group
 	
 	COOverlappingSequenceEditGroup *edit1 = (COOverlappingSequenceEditGroup *)[[merged operations] objectAtIndex: 0];
@@ -346,9 +356,10 @@
 	UKObjectsEqual(@"diff13", [edit1diff13 sourceIdentifier]);
 	
 	UKObjectsNotEqual(edit1diff12, edit1diff13); // because their sourceIdentifiers are different
-	UKTrue([edit1diff12 isEqualIgnoringSourceIdentifier: edit1diff13]);	
+	UKTrue([edit1diff12 isEqualIgnoringSourceIdentifier: edit1diff13]);	*/
 }
 
+#if 0
 - (void) testSimpleConflict
 {
 	NSArray *array2 = A(@"c");
