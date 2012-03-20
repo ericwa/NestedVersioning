@@ -136,7 +136,7 @@
 	
 	COMutableItem *item2 = [COMutableItem item];
 	
-	UKObjectsEqual(item2, item1); // FIXME: ???	
+	UKObjectsNotEqual(item2, item1);
 }
 
 @end
