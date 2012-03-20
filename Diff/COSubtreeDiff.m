@@ -9,6 +9,25 @@
 
 #pragma mark diff dictionary
 
+/**
+ * abstracts the storage of edits... currently just an NSSet.
+ */
+@interface CODiffDictionary : NSObject <NSCopying>
+{
+@public
+	NSMutableSet *diffDictStorage;
+}
+
+- (NSSet *) modifiedAttributesForUUID: (ETUUID *)aUUID;
+- (NSSet *) editsForUUID: (ETUUID *)aUUID;
+- (NSSet *) editsForUUID: (ETUUID *)aUUID attribute: (NSString *)aString;
+- (void) addEdit: (COSubtreeEdit *)anEdit;
+- (void) removeEdit: (COSubtreeEdit *)anEdit;
+- (NSSet *)allEditedUUIDs;
+- (NSSet *)allEdits;
+
+@end
+
 
 @implementation CODiffDictionary
 

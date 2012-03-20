@@ -11,26 +11,7 @@
 @class COSubtreeDiff;
 @class COSetDiff, COArrayDiff;
 @class COType;
-
-/**
- * abstracts the storage of edits... currently just an NSSet.
- */
-@interface CODiffDictionary : NSObject <NSCopying>
-{
-	@public
-	NSMutableSet *diffDictStorage;
-}
-
-- (NSSet *) modifiedAttributesForUUID: (ETUUID *)aUUID;
-- (NSSet *) editsForUUID: (ETUUID *)aUUID;
-- (NSSet *) editsForUUID: (ETUUID *)aUUID attribute: (NSString *)aString;
-- (void) addEdit: (COSubtreeEdit *)anEdit;
-- (void) removeEdit: (COSubtreeEdit *)anEdit;
-- (NSSet *)allEditedUUIDs;
-- (NSSet *)allEdits;
-
-@end
-
+@class CODiffDictionary;
 
 @interface COSubtreeConflict : NSObject // not publically copyable.
 {
