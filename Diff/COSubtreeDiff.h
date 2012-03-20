@@ -99,6 +99,9 @@
 #pragma mark access (sub-objects may be mutated by caller)
 
 - (NSSet *)allEdits;
+/**
+ * FIXME: Should this return "equal edit" conflicts?
+ */
 - (NSSet *)conflicts;
 
 #pragma mark access

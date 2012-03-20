@@ -740,7 +740,10 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 {
 	NSMutableSet *result = [NSMutableSet set];
 	[result unionSet: embeddedItemInsertionConflicts];
-	[result unionSet: equalEditConflicts];
+	
+	// FIXME: See header comment. Should this return "equal edit" conflicts? No for now.
+	//[result unionSet: equalEditConflicts];
+	
 	[result unionSet: sequenceEditConflicts];
 	[result unionSet: editTypeConflicts];
 	return [NSSet setWithSet: result];
@@ -883,8 +886,15 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 
 	// check for existing edits for that same attribute
 	
-	NSSet *existingEditsForSameAttribute = [diffDict editsForUUID: [anEdit UUID]
-														attribute: [anEdit attribute]];
+	NSMutableSet *existingEditsForSameAttribute = [NSMutableSet setWithSet: [diffDict editsForUUID: [anEdit UUID]
+																						 attribute: [anEdit attribute]]];
+	
+	NSAssert([existingEditsForSameAttribute containsObject: anEdit], @"expected argument to _updateConflictsForAddingEdit to have been already inserted.");
+	
+	[existingEditsForSameAttribute removeObject: anEdit];
+	
+	// Now the set truly contains only the existing edits, minus the one just inserted, anEdit.
+	
 	
 	if ([existingEditsForSameAttribute count] > 0)
 	{
@@ -902,12 +912,29 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 		
 		if ([anEdit isKindOfClass: [COSequenceEdit class]])
 		{
+			// remember, some of these might be "equal" - they don't count as overlapping sequence edits
 			
-			// remember, some of these might be "equal" - they don't count as sequence edits
+			for (COSubtreeEdit *edit in existingEditsForSameAttribute)
+			{
+				if ([edit isKindOfClass: [COSequenceEdit class]])
+				{
+					if ([(COSequenceEdit *)anEdit overlaps: (COSequenceEdit *)edit])
+					{
+						[self recordSequenceEditConflictEdit: anEdit withEdit: edit];
+					}
+				}
+			}
 		}
 		
 		// create a conflict for equal edits
 		
+		for (COSubtreeEdit *edit in existingEditsForSameAttribute)
+		{
+			if ([(COSequenceEdit *)anEdit isEqualIgnoringSourceIdentifier: edit])
+			{
+				[self recordEqualEditConflictEdit: anEdit withEdit: edit];
+			}
+		}
 	}
 
 	// check for same embedded item inserted in more than one place
