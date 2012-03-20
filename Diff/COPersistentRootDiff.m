@@ -341,7 +341,7 @@
 - (COPersistentRootDiff *)persistentRootDiffByMergingWithDiff: (COPersistentRootDiff *)other
 {
 	COPersistentRootDiff *result = [[self copy] autorelease];
-	[result mergeWithPersistentRootDiff: other];
+	[result mergeWithDiff: other];
 	return result;
 }
 
