@@ -2,6 +2,7 @@
 #import "COMacros.h"
 #import "COSubtreeEdits.h"
 #import "COType.h"
+#import "COSequenceMerge.h"
 
 #pragma mark base class
 
@@ -281,6 +282,11 @@
 	{
 		return NSOrderedDescending;
 	}
+}
+
+- (BOOL) overlaps: (COSequenceEdit *)other
+{
+	return COOverlappingRanges(range, other.range);
 }
 
 - (BOOL) isEqualIgnoringSourceIdentifier:(id)other

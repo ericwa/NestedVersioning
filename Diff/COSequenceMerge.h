@@ -5,6 +5,8 @@
 - (BOOL) isEqualIgnoringSourceIdentifier: (id)other;
 @end
 
+BOOL COOverlappingRanges(NSRange r1, NSRange r2);
+
 /**
  * @returns an NSSet of NSIndexSets, where each index set is one set of conflicting indices in the
  * provided array.

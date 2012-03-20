@@ -1,6 +1,6 @@
 #import "COSequenceMerge.h"
 
-static inline BOOL COOverlappingRanges(NSRange r1, NSRange r2)
+BOOL COOverlappingRanges(NSRange r1, NSRange r2)
 {
 	return (r1.location >= r2.location && r1.location < (r2.location + r2.length) && r1.length > 0)
 		|| (r2.location >= r1.location && r2.location < (r1.location + r1.length) && r2.length > 0);
