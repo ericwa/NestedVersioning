@@ -115,5 +115,18 @@
 	UKRaisesException([[mutable valueForAttribute: @"name"] appendString: @"xxx"]);
 }
 
+- (void) testEquality
+{
+	COItem *immutable = [COItem itemWithTypesForAttributes: D([COType setWithPrimitiveType: [COType stringType]], @"key1",
+															  [COType arrayWithPrimitiveType: [COType stringType]], @"key2",
+															  [COType stringType], @"name")
+									   valuesForAttributes: D([NSMutableSet setWithObject: @"a"], @"key1",	
+															  [NSMutableArray arrayWithObject: @"A"], @"key2",
+															  @"my name", @"name")];
+	COMutableItem *mutable = [[immutable mutableCopy] autorelease];
+	
+	UKObjectsEqual(immutable, mutable);
+	UKObjectsEqual(mutable, immutable);
+}
 
 @end

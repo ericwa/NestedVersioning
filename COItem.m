@@ -221,7 +221,7 @@ static id importValueFromPlist(id aPlist)
 	{
 		return YES;
 	}
-	if (![object isKindOfClass: [self class]])
+	if (![object isKindOfClass: [COItem class]])
 	{
 		return NO;
 	}
