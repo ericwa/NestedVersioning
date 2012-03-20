@@ -47,6 +47,22 @@
 	UKObjectsEqual(u1, u1_generated_from_diff);
 }
 
+- (void) testDeleteAttribute
+{
+	COSubtree *t1 = [COSubtree subtree];
+	COSubtree *t2 = [[t1 copy] autorelease];
+	
+	[t1 setPrimitiveValue: @"This node was added"
+			 forAttribute: @"comment"
+					 type: [COType stringType]];
+		
+	COSubtreeDiff *diff_t1_t2 = [COSubtreeDiff diffSubtree: t1 withSubtree: t2 sourceIdentifier: @"my source"];
+	
+	COSubtree *t2_generated_from_diff = [diff_t1_t2 subtreeWithDiffAppliedToSubtree: t1];
+	
+	UKObjectsEqual(t2, t2_generated_from_diff);
+}
+
 - (void)testSelectiveUndoOfGroupOperation
 {
 	COSubtree *doc = [COSubtree subtree];
