@@ -219,7 +219,17 @@
 	return YES;
 }
 
-// FIXME
+- (NSString *)description
+{
+	NSMutableString *desc = [NSMutableString stringWithString: [super description]];
+	[desc appendFormat: @" {\n"];
+	for (COSubtreeEdit *edit in [self allEdits])
+	{
+		[desc appendFormat: @"\t%@\n", [edit description]];
+	}
+ 	[desc appendFormat: @"}"];
+	return desc;
+}
 
 @end
 
