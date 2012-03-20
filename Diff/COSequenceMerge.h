@@ -2,6 +2,7 @@
 
 @protocol COEdit <NSObject>
 - (NSRange) range;
+- (BOOL) isEqualIgnoringSourceIdentifier: (id)other;
 @end
 
 /**

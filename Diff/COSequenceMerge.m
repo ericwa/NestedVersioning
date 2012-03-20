@@ -69,7 +69,7 @@ NSArray *COEditsByUniquingNonconflictingDuplicates(NSArray *edits)
 			}
 			else
 			{
-				if (![edit isEqual: edit_i])
+				if (![edit isEqualIgnoringSourceIdentifier: edit_i])
 				{
 					[NSException raise: NSInvalidArgumentException
 								format: @"COEditsByUniquingNonconflictingDuplicates() should only be called on edit sequences with no real conflicts"];
