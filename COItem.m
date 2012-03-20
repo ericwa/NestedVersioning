@@ -283,6 +283,25 @@ static id importValueFromPlist(id aPlist)
 	return [NSSet setWithSet: result];
 }
 
+- (NSString *)description
+{
+	NSMutableString *result = [NSMutableString string];
+		
+	[result appendFormat: @"{\n"];
+	
+	for (NSString *attrib in [self attributeNames])
+	{
+		[result appendFormat: @"\t%@ <%@> = '%@'\n",
+			attrib,
+			[self typeForAttribute: attrib],
+			[self valueForAttribute:attrib]];
+	}
+	
+	[result appendFormat: @"}"];
+	
+	return result;
+}
+
 /** @taskunit copy */
 
 - (id) copyWithZone: (NSZone *)zone
