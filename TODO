@@ -1,7 +1,7 @@
 TODO
 ====
 
-[ ] (Mar 13/2012) finish COSubtreeDiff
+[x] (Mar 13/2012) finish COSubtreeDiff
 [ ] (Feb 22/2012) StoreBrowser: don't abort when deleting a branch/proot that was previously opened
 [ ] (Feb 22/2012) StoreBrowser: don't abort when corrupting a branch/proot's metadata
 [x] (Feb 21/2012) investigate why undo of deleting an embedded item from the tag library is broken
