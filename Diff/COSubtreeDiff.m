@@ -892,11 +892,14 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 	NSSet *anEditEmbeddedItemInsertions = [anEdit insertedEmbeddedItemUUIDs];
 	for (COSubtreeEdit *edit in [self allEdits])
 	{
-		NSSet *editEmbeddedItemInsertions = [edit insertedEmbeddedItemUUIDs];
-		if ([anEditEmbeddedItemInsertions intersectsSet: editEmbeddedItemInsertions])
+		if (![edit isEqual: anEdit])
 		{
-			// edit and anEdit conflict! create a new conflict or update an existing one.
-			[self recordEmbeddedItemInsertionConflictEdit: anEdit withEdit: edit];
+			NSSet *editEmbeddedItemInsertions = [edit insertedEmbeddedItemUUIDs];
+			if ([anEditEmbeddedItemInsertions intersectsSet: editEmbeddedItemInsertions])
+			{
+				// edit and anEdit conflict! create a new conflict or update an existing one.
+				[self recordEmbeddedItemInsertionConflictEdit: anEdit withEdit: edit];
+			}
 		}
 	}
 }
