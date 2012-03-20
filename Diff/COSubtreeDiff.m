@@ -550,6 +550,18 @@
 	return desc;
 }
 
+static void COAssertEditsEquivelant(NSSet *edits)
+{
+	if ([edits count] > 0)
+	{
+		COSubtreeEdit *anyEdit = [edits anyObject];
+		for (COSubtreeEdit *edit in edits)
+		{
+			assert([edit isEqualIgnoringSourceIdentifier: anyEdit]);
+		}
+	}
+}
+
 static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 {
 	COSubtreeEdit *anyEdit = [edits anyObject];
@@ -558,7 +570,7 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 	
 	if ([anyEdit isKindOfClass: [COSetAttribute class]])
 	{
-		assert([edits count] == 1);
+		COAssertEditsEquivelant(edits);
 		[anItem setValue: [(COSetAttribute *)anyEdit value]
 			forAttribute: [anyEdit attribute]
 					type: [(COSetAttribute *)anyEdit type]];
@@ -567,7 +579,7 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 	
 	if ([anyEdit isKindOfClass: [CODeleteAttribute class]])
 	{
-		assert([edits count] == 1);
+		COAssertEditsEquivelant(edits);
 		[anItem removeValueForAttribute: [anyEdit attribute]];
 		return;
 	}

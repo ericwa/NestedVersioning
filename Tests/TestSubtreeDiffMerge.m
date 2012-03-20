@@ -238,6 +238,31 @@
 	UKObjectsEqual(docMergeResolved, actualMergeResolved);
 }
 
+- (void) testMergingEqualEdits
+{
+	COSubtree *t2 = [COSubtree subtree];
+	COSubtree *t1 = [[t2 copy] autorelease];
+	COSubtree *t3 = [[t2 copy] autorelease];
+		
+	[t2 setPrimitiveValue: @"This node was added"
+			 forAttribute: @"comment"
+					 type: [COType stringType]];
+	[t3 setPrimitiveValue: @"This node was added"
+			 forAttribute: @"comment"
+					 type: [COType stringType]];
+	
+	UKObjectsEqual(t2, t3);
+	
+	COSubtreeDiff *diff12 = [COSubtreeDiff diffSubtree: t1 withSubtree: t2 sourceIdentifier: @"diff12"];
+	COSubtreeDiff *diff13 = [COSubtreeDiff diffSubtree: t1 withSubtree: t3 sourceIdentifier: @"diff13"];
+	
+	COSubtreeDiff *merged = [diff12 subtreeDiffByMergingWithDiff: diff13];
+	UKFalse([merged hasConflicts]);
+	UKObjectsEqual(t2, [merged subtreeWithDiffAppliedToSubtree: t1]);
+	UKObjectsEqual(t3, [merged subtreeWithDiffAppliedToSubtree: t1]);
+}
+
+
 - (NSSet *) insertionSetForUUID: (ETUUID *)aUUID attribute: (NSString *)attribute diff: (COSubtreeDiff *)aDiff sourceID: (id)source
 {
 	NSMutableSet *result = [NSMutableSet set];
