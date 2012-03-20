@@ -129,4 +129,14 @@
 	UKObjectsEqual(mutable, immutable);
 }
 
+- (void) testEmptySet
+{
+	COMutableItem *item1 = [COMutableItem item];
+	[item1 setValue: [NSSet set] forAttribute: @"set" type: [COType setWithPrimitiveType: [COType stringType]]];
+	
+	COMutableItem *item2 = [COMutableItem item];
+	
+	UKObjectsEqual(item2, item1); // FIXME: ???	
+}
+
 @end
