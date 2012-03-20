@@ -839,13 +839,7 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 - (void) _updateConflictsForAddingEdit: (COSubtreeEdit *)anEdit
 {
 	/**
-	 things that conflict:
-	 - same embedded item inserted in more than one place
-	 - deleting conflicts with any other ops on that attr
-	 - setting to a primitive value conflicts with all other ops
-	 
-	 
-	 two types of conflicts:
+	two types of conflicts:
 	  - A. all edits in the conflict belong to the same UUID.attribute
 	  - B. not all edits in the conflict belong to the same UUID.attribute
 	 
