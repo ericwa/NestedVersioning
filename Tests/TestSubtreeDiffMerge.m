@@ -130,20 +130,25 @@
 		COSubtree *group2 = [COSubtree subtree];
 		COSubtree *shape1 = [COSubtree subtree];
 		
+		[doc setValue: @"doc" forAttribute: @"name" type: [COType stringType]];		
+		[group1 setValue: @"group1" forAttribute: @"name" type: [COType stringType]];	
+		[group2 setValue: @"group2" forAttribute: @"name" type: [COType stringType]];
+		[shape1 setValue: @"shape1" forAttribute: @"name" type: [COType stringType]];	
+		
 		[doc addTree: shape1];
 		
-		docO = [[doc copy] autorelease];
+		docO = [[doc copy] autorelease];    // doc0 -> shape1
 		
 		[doc addTree: group1];
 		[group1 addTree: shape1];
 		
-		docA = [[doc copy] autorelease];
+		docA = [[doc copy] autorelease];   // docA -> group1 -> shape1
 		
 		[doc addTree: group2];
 		[group2 addTree: shape1];
 		[doc removeSubtree: group1];
 		
-		docB = [[doc copy] autorelease];
+		docB = [[doc copy] autorelease];   // docB -> group2 -> shape1
 	}
 	
 	COSubtreeDiff *diff_docO_vs_docA = [COSubtreeDiff diffSubtree: docO withSubtree: docA sourceIdentifier: @"fixme"];
@@ -156,6 +161,9 @@
 	
 	COSubtreeDiff *diff_merged = [diff_docO_vs_docA subtreeDiffByMergingWithDiff: diff_docO_vs_docB];
 	
+	// merged: doc -> ((group1 -> shape1), (group2 -> shape1))
+	// there is one conflict: shape1 is being inserted in two places.
+		
 	UKTrue([diff_merged hasConflicts]);
 	
 	// FIXME: finish test.
