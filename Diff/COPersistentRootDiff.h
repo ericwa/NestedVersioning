@@ -118,8 +118,8 @@
 
 #pragma mark diff application
 
-- (void) applyToPersistentRootOrBranch: (COSubtree *)dest
-								 store: (COStore *)aStore;
+- (COSubtree *) subtreeByApplyingToPersistentRootOrBranch: (COSubtree *)dest
+													store: (COStore *)aStore;
 
 
 #pragma mark access

@@ -132,8 +132,8 @@
 
 #pragma mark diff application
 
-- (void) applyToPersistentRootOrBranch: (COSubtree *)dest
-								 store: (COStore *)aStore
+- (COSubtree *) subtreeByApplyingToPersistentRootOrBranch: (COSubtree *)dest
+													store: (COStore *)aStore
 {
 	if (wasCreatedFromBranches != [[COSubtreeFactory factory] isBranch: dest])
 	{
@@ -146,7 +146,7 @@
 					format: @"conflicts must be resolved before the diff can be applied"];
 	}
 	
-	[rootDiff applyTo: dest];
+	COSubtree *result = [rootDiff subtreeWithDiffAppliedToSubtree: dest];
 	
 	// If the receiver was created as a result of a merge, there will be
 	// "synthesized" commits referenced in the subtree that will not
@@ -158,6 +158,7 @@
 						   metadata: nil
 							   tree: [treeToCommitForPendingCommitUUID objectForKey: commitUUID]];
 	}
+	return result;
 }
 
 #pragma mark diff algorithm
