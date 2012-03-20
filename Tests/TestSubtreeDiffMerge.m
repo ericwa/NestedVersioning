@@ -169,41 +169,73 @@
 	// FIXME: finish test.
 }
 
+- (NSSet *) insertionSetForUUID: (ETUUID *)aUUID attribute: (NSString *)attribute diff: (COSubtreeDiff *)aDiff sourceID: (id)source
+{
+	NSMutableSet *result = [NSMutableSet set];
+	for (COSubtreeEdit *edit in [aDiff editsForUUID: aUUID attribute: attribute])
+	{
+		if ([edit isMemberOfClass: [COSetInsertion class]]
+			&& (source == nil || [[edit sourceIdentifier] isEqual: source]))
+		{
+			[result addObject: [(COSetInsertion *)edit object]];
+		}
+	}
+	return result;
+}
 
-/*
- - (void) testSetPropertyDiffMerge
- {
- NSSet *set2 = S(@"A", @"b", @"d", @"zoo", @"e");
- NSSet *set1 = S(@"a", @"b", @"c", @"d", @"e");
- NSSet *set3 = S(@"A", @"b", @"c", @"e", @"foo");
- 
- COSetDiff *diff12 = [[COSetDiff alloc] initWithFirstSet: set1 secondSet: set2 sourceIdentifier: @"diff12"];
- UKObjectsEqual(S(@"A", @"zoo"), [diff12 insertionSet]);
- UKObjectsEqual(S(@"a", @"c"), [diff12 deletionSet]);
- UKObjectsEqual(set2, [diff12 setWithDiffAppliedTo: set1]);
- 
- COSetDiff *diff13 = [[COSetDiff alloc] initWithFirstSet: set1 secondSet: set3 sourceIdentifier: @"diff13"];
- UKObjectsEqual(S(@"A", @"foo"), [diff13 insertionSet]);
- UKObjectsEqual(S(@"a", @"d"), [diff13 deletionSet]);
- UKObjectsEqual(set3, [diff13 setWithDiffAppliedTo: set1]);
- 
- COSetDiff *merged = [diff12 setDiffByMergingWithDiff: diff13];
- UKObjectsEqual(S(@"A", @"foo", @"zoo"), [merged insertionSet]);
- UKObjectsEqual(S(@"a", @"d", @"c"), [merged deletionSet]);
- UKObjectsEqual(S(@"A", @"b", @"zoo", @"e", @"foo"), [merged setWithDiffAppliedTo: set1]);
- 
- UKObjectsEqual(S(@"A", @"zoo"), [merged insertionSetForSourceIdentifier: @"diff12"]);
- UKObjectsEqual(S(@"a", @"c"), [merged deletionSetForSourceIdentifier: @"diff12"]);
- UKObjectsEqual(S(@"A", @"foo"), [merged insertionSetForSourceIdentifier: @"diff13"]);
- UKObjectsEqual(S(@"a", @"d"), [merged deletionSetForSourceIdentifier: @"diff13"]);	
- }
- */
+- (NSSet *) deletionSetForUUID: (ETUUID *)aUUID attribute: (NSString *)attribute diff: (COSubtreeDiff *)aDiff sourceID: (id)source
+{
+	NSMutableSet *result = [NSMutableSet set];
+	for (COSubtreeEdit *edit in [aDiff editsForUUID: aUUID attribute: attribute])
+	{
+		if ([edit isMemberOfClass: [COSetDeletion class]]
+			&& (source == nil || [[edit sourceIdentifier] isEqual: source]))
+		{
+			[result addObject: [(COSetDeletion *)edit object]];
+		}
+	}
+	return result;
+}
+
+- (void) testUnorderedMultivaluesPropertyDiffMerge
+{
+	COSubtree *doc1 = [COSubtree subtree];	
+	COSubtree *doc2 = [[doc1 copy] autorelease];
+	COSubtree *doc3 = [[doc1 copy] autorelease];;
+
+	NSSet *set2 = S(@"A", @"b", @"d", @"zoo", @"e");
+	NSSet *set1 = S(@"a", @"b", @"c", @"d", @"e");
+	NSSet *set3 = S(@"A", @"b", @"c", @"e", @"foo");
+
+	[doc2 setValue: set2 forAttribute: @"set" type: [COType setWithPrimitiveType: [COType stringType]]];
+	[doc1 setValue: set1 forAttribute: @"set" type: [COType setWithPrimitiveType: [COType stringType]]];
+	[doc3 setValue: set3 forAttribute: @"set" type: [COType setWithPrimitiveType: [COType stringType]]];
+
+	COSubtreeDiff *diff12 = [COSubtreeDiff diffSubtree: doc1 withSubtree:doc2 sourceIdentifier: @"diff12"];
+	
+	UKObjectsEqual(S(@"A", @"zoo"), [self insertionSetForUUID: [doc1 UUID] attribute: @"set" diff: diff12 sourceID: nil]);
+	UKObjectsEqual(S(@"a", @"c"), [self deletionSetForUUID: [doc1 UUID] attribute: @"set" diff: diff12 sourceID: nil]);
+	UKObjectsEqual(set2, [[diff12 subtreeWithDiffAppliedToSubtree: doc1] valueForAttribute: @"set"]);
+	
+	COSubtreeDiff *diff13 = [COSubtreeDiff diffSubtree: doc1 withSubtree:doc3 sourceIdentifier: @"diff13"];
+	UKObjectsEqual(S(@"A", @"foo"), [self insertionSetForUUID: [doc1 UUID] attribute: @"set" diff: diff13 sourceID: nil]);
+	UKObjectsEqual(S(@"a", @"d"), [self deletionSetForUUID: [doc1 UUID] attribute: @"set" diff: diff13 sourceID: nil]);
+	UKObjectsEqual(set3, [[diff13 subtreeWithDiffAppliedToSubtree: doc1] valueForAttribute: @"set"]);
+
+	COSubtreeDiff *merged = [diff12 subtreeDiffByMergingWithDiff: diff13];
+	UKObjectsEqual(S(@"A", @"foo", @"zoo"), [self insertionSetForUUID: [doc1 UUID] attribute: @"set" diff: merged sourceID: nil]);
+	UKObjectsEqual(S(@"a", @"d", @"c"), [self deletionSetForUUID: [doc1 UUID] attribute: @"set" diff: merged sourceID: nil]);
+	UKObjectsEqual(S(@"A", @"b", @"zoo", @"e", @"foo"), [[merged subtreeWithDiffAppliedToSubtree: doc1] valueForAttribute: @"set"]);
+
+	UKObjectsEqual(S(@"A", @"zoo"), [self insertionSetForUUID: [doc1 UUID] attribute: @"set" diff: merged sourceID: @"diff12"]);
+	UKObjectsEqual(S(@"a", @"c"), [self deletionSetForUUID: [doc1 UUID] attribute: @"set" diff: merged sourceID: @"diff12"]);
+	UKObjectsEqual(S(@"A", @"foo"), [self insertionSetForUUID: [doc1 UUID] attribute: @"set" diff: merged sourceID: @"diff13"]);
+	UKObjectsEqual(S(@"a", @"d"), [self deletionSetForUUID: [doc1 UUID] attribute: @"set" diff: merged sourceID: @"diff13"]);	
+}
 
 
 #pragma mark sequence diff merged
-
 #if 0
-
 - (void) testBasic
 {
 	NSArray *array2 = A(@"A", @"b", @"d", @"zoo", @"e");
@@ -369,8 +401,5 @@
 	UKTrue(NSEqualRanges(NSMakeRange(3, 1), [edit1diff13_2 range]));
 	UKObjectsEqual(@"diff13", [edit1diff13_2 sourceIdentifier]);
 }
-
-
 #endif
-
 @end

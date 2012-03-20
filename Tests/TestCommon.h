@@ -14,6 +14,7 @@
 #import "COSubtreeFactory+Pull.h"
 
 #import "COSubtreeDiff.h"
+#import "COSubtreeEdits.h"
 
 #define STOREPATH [@"~/om5teststore" stringByExpandingTildeInPath]
 
