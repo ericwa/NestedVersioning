@@ -121,6 +121,21 @@
 	return self;
 }
 
+- (id) copyWithZone: (NSZone *)aZone
+{
+	COSubtreeConflict *aCopy = [[[self class] allocWithZone: aZone] init];
+	aCopy->parentDiff = nil;
+	aCopy->editsForSourceIdentifier = [[NSMutableDictionary alloc] init];
+	for (id aSource in editsForSourceIdentifier)
+	{
+		NSMutableSet *aSet = [editsForSourceIdentifier objectForKey: aSource];
+		[aCopy->editsForSourceIdentifier setObject: [NSMutableSet setWithSet: aSet]
+											forKey: aSource];
+	}
+	
+	return aCopy;
+}
+
 - (void) dealloc
 {
 	[editsForSourceIdentifier release];
@@ -222,7 +237,10 @@
 	ASSIGN(oldRoot, anOldRoot);
 	ASSIGN(newRoot, aNewRoot);
 	diffDict = [[CODiffDictionary alloc] init];
-	conflicts = [[NSMutableSet alloc] init];
+	embeddedItemInsertionConflicts = [[NSMutableSet alloc] init];
+	equalEditConflicts = [[NSMutableSet alloc] init];
+	sequenceEditConflicts = [[NSMutableSet alloc] init];
+	editTypeConflicts = [[NSMutableSet alloc] init];
 	return self;
 }
 
@@ -231,6 +249,10 @@
 	[oldRoot release];
 	[newRoot release];
 	[diffDict release];
+	[embeddedItemInsertionConflicts release];
+	[equalEditConflicts release];
+	[sequenceEditConflicts release];
+	[editTypeConflicts release];
 	[super dealloc];
 }
 
@@ -240,6 +262,34 @@
 	result->oldRoot = [oldRoot copyWithZone: zone];
 	result->newRoot = [newRoot copyWithZone: zone];
 	result->diffDict = [diffDict copyWithZone: zone];
+	
+	result->embeddedItemInsertionConflicts = [[NSMutableSet alloc] initWithSet: embeddedItemInsertionConflicts
+																	 copyItems: YES];
+	result->equalEditConflicts = [[NSMutableSet alloc] initWithSet: equalEditConflicts
+														 copyItems: YES];
+	result->sequenceEditConflicts = [[NSMutableSet alloc] initWithSet: sequenceEditConflicts
+															copyItems: YES];
+	result->editTypeConflicts = [[NSMutableSet alloc] initWithSet: editTypeConflicts
+														copyItems: YES];
+
+	for (COSubtreeConflict *conflict in result->embeddedItemInsertionConflicts)
+	{
+		conflict->parentDiff = result;
+	}
+	for (COSubtreeConflict *conflict in result->equalEditConflicts)
+	{
+		conflict->parentDiff = result;
+	}
+	for (COSubtreeConflict *conflict in result->sequenceEditConflicts)
+	{
+		conflict->parentDiff = result;
+	}
+	for (COSubtreeConflict *conflict in result->editTypeConflicts)
+	{
+		conflict->parentDiff = result;
+	}
+	
+	/*
 	result->conflicts = [[NSMutableSet alloc] init];
 	
 	// copy conflicts. this is complicated because it has to map
@@ -269,6 +319,8 @@
 		[result->conflicts addObject: dest];
 		[dest release];
 	}
+	*/
+	
 	
 	return result;
 }
@@ -660,7 +712,7 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 
 - (BOOL) hasConflicts
 {	
-	for (COSubtreeConflict *conflict in conflicts)
+	for (COSubtreeConflict *conflict in [self conflicts])
 	{
 		if (![conflict isNonconflicting])
 			return YES;
@@ -676,7 +728,12 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 }
 - (NSSet *)conflicts
 {
-	return [NSSet setWithSet: conflicts];
+	NSMutableSet *result = [NSMutableSet set];
+	[result unionSet: embeddedItemInsertionConflicts];
+	[result unionSet: equalEditConflicts];
+	[result unionSet: sequenceEditConflicts];
+	[result unionSet: editTypeConflicts];
+	return [NSSet setWithSet: result];
 }
 
 #pragma mark access
@@ -705,35 +762,79 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 	{
 		[self removeEdit: edit];
 	}
-	[conflicts removeObject: aConflict];
+	[embeddedItemInsertionConflicts removeObject: aConflict];
+	[equalEditConflicts removeObject: aConflict];
+	[sequenceEditConflicts removeObject: aConflict];
+	[editTypeConflicts removeObject: aConflict];
 }
 
-- (void) _updateConflictForConflictingEmbeddedItemInsertion: (COSubtreeEdit *)anEdit
-								   conflictingWithInsertion: (COSubtreeEdit *)anotherEdit
+- (COSubtreeConflict *) findOrCreateConflictInMutableSet: (NSMutableSet *)aSet containingEdit: (COSubtreeEdit *)existingEdit
 {
+	COSubtreeConflict *conflict = nil;
 	
+	for (COSubtreeConflict *aConflict in aSet)
+	{
+		if ([[aConflict allEdits] containsObject: existingEdit])
+		{
+			conflict = aConflict;
+			break;
+		}
+	}
+	
+	if (conflict == nil)
+	{
+		conflict = [[[COSubtreeConflict alloc] initWithParentDiff: self] autorelease];
+		[conflict addEdit: existingEdit];
+		[aSet addObject: conflict];
+	}
+	
+	return conflict;
 }
 
-- (NSSet *) embeddedItemInsertionConfclits // insert item uuid X at two different places
+
+- (NSSet *) embeddedItemInsertionConflicts // insert item uuid X at two different places
 {
-	
+	return embeddedItemInsertionConflicts;
 }
 
-- (NSSet *) equalEditConfclits // e.g. set [4:2] to ("h", "i") and [4:2] to ("h", "i")
+- (void) recordEmbeddedItemInsertionConflictEdit: (COSubtreeEdit *)newEdit withEdit: (COSubtreeEdit *)existingEdit
 {
-	
+	COSubtreeConflict *conflict = [self findOrCreateConflictInMutableSet: embeddedItemInsertionConflicts containingEdit: existingEdit];
+	[conflict addEdit: newEdit];
+}
+
+- (NSSet *) equalEditConflicts // e.g. set [4:2] to ("h", "i") and [4:2] to ("h", "i")
+{
+	return equalEditConflicts;
+}
+
+- (void) recordEqualEditConflictEdit: (COSubtreeEdit *)newEdit withEdit: (COSubtreeEdit *)existingEdit
+{
+	COSubtreeConflict *conflict = [self findOrCreateConflictInMutableSet: equalEditConflicts containingEdit: existingEdit];
+	[conflict addEdit: newEdit];
 }
 
 - (NSSet *) sequenceEditConflicts // e.g. set [4:5] and [4:3]. doesn't include equal sequence edit conflicts
 {
-	
+	return sequenceEditConflicts;
+}
+
+- (void) recordSequenceEditConflictEdit: (COSubtreeEdit *)newEdit withEdit: (COSubtreeEdit *)existingEdit
+{
+	COSubtreeConflict *conflict = [self findOrCreateConflictInMutableSet: sequenceEditConflicts containingEdit: existingEdit];
+	[conflict addEdit: newEdit];
 }
 
 - (NSSet *) editTypeConflicts // e.g. delete + set
 {
-	
+	return editTypeConflicts;
 }
 
+- (void) recordEditTypeConflictEdit: (COSubtreeEdit *)newEdit withEdit: (COSubtreeEdit *)existingEdit
+{
+	COSubtreeConflict *conflict = [self findOrCreateConflictInMutableSet: editTypeConflicts containingEdit: existingEdit];
+	[conflict addEdit: newEdit];
+}
 
 - (void) _updateConflictsForAddingEdit: (COSubtreeEdit *)anEdit
 {
@@ -776,8 +877,7 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 		{
 			if (![anEdit isSameKindOfEdit: edit])
 			{
-				
-
+				[self recordEditTypeConflictEdit: anEdit withEdit: edit];
 			}
 		}
 		
@@ -786,7 +886,7 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 		if ([anEdit isKindOfClass: [COSequenceEdit class]])
 		{
 			
-			// remember, some of these might be "equal"
+			// remember, some of these might be "equal" - they don't count as sequence edits
 		}
 		
 		// create a conflict for equal edits
@@ -802,9 +902,7 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 		if ([anEditEmbeddedItemInsertions intersectsSet: editEmbeddedItemInsertions])
 		{
 			// edit and anEdit conflict! create a new conflict or update an existing one.
-			[self _updateConflictForConflictingEmbeddedItemInsertion: anEdit
-											conflictingWithInsertion: edit];
-			break;
+			[self recordEmbeddedItemInsertionConflictEdit: anEdit withEdit: edit];
 		}
 	}
 }
@@ -818,7 +916,7 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 
 - (void) _updateConflictsForRemovingEdit: (COSubtreeEdit *)anEdit
 {
-	for (COSubtreeConflict *conflict in [NSSet setWithSet: conflicts])
+	for (COSubtreeConflict *conflict in [self conflicts])
 	{
 		for (COSubtreeEdit *edit in [conflict allEdits])
 		{

@@ -80,7 +80,10 @@
 	// that weren't auto-detected by COSubtreeDiff from looking at the edits, 
 	// but that is not currently supported.
 	
-	NSMutableSet *conflicts;
+	NSMutableSet *embeddedItemInsertionConflicts; // insert item uuid X at two different places
+	NSMutableSet *equalEditConflicts; // e.g. set [4:2] to ("h", "i") and [4:2] to ("h", "i")
+	NSMutableSet *sequenceEditConflicts; // e.g. set [4:5] and [4:3]. doesn't include equal sequence edit conflicts
+	NSMutableSet *editTypeConflicts; // e.g. set-value and delete-attribute
 }
 
 + (COSubtreeDiff *) diffSubtree: (COSubtree *)a
