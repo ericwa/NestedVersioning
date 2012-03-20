@@ -105,4 +105,6 @@
 
 - (void) setPersistentRootTree: (COSubtree *)aSubtree;
 
+- (ETUUID *) baseCommit;
+
 @end

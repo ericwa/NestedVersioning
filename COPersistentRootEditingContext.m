@@ -295,4 +295,9 @@
 	ASSIGN(tree, aSubtree);
 }
 
+- (ETUUID *) baseCommit
+{
+	return baseCommit;
+}
+
 @end

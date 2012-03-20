@@ -79,7 +79,7 @@
 			NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Selective Undo" 
 														   action: @selector(selectiveUndo:) 
 													keyEquivalent: @""] autorelease];
-			[item setTarget: self];
+			[item setRepresentedObject: commit];
 			[menu addItem: item];
 		}
 
@@ -87,7 +87,7 @@
 			NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Selective Apply" 
 														   action: @selector(selectiveApply:) 
 													keyEquivalent: @""] autorelease];
-			[item setTarget: self];
+			[item setRepresentedObject: commit];
 			[menu addItem: item];
 		}
 

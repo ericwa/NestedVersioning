@@ -10,6 +10,7 @@
 #import "AppDelegate.h"
 #import "COType.h"
 #import "EWIconTextFieldCell.h"
+#import "COStorePrivate.h"
 
 @implementation EWPersistentRootWindowController
 
@@ -283,6 +284,65 @@
 	
 	NSLog(@"Commits diff: %@", diff);
 }
+
+- (IBAction) selectiveUndo: (id)sender
+{
+	ETUUID *commitToUndo = [sender representedObject];
+	ETUUID *commitToUndoParent = [store parentForCommit: commitToUndo];
+	
+	if (![store isCommit: commitToUndo parentOfCommit: [ctx baseCommit]])
+	{
+		NSLog(@"Selective undo failed: commit %@ is not a parent of current commit %@", 
+			  commitToUndo, [ctx baseCommit]);
+		return;
+	}
+	if (commitToUndoParent == nil)
+	{
+		NSLog(@"Selective undo failed: commit %@ has nil parent", commitToUndo);
+		return;
+	}
+	
+	COSubtree *commitToUndoSubtree = [store treeForCommit: commitToUndo];
+	COSubtree *commitToUndoParentSubtree = [store treeForCommit: commitToUndoParent];
+	COSubtree *currentCommitSubtree = [store treeForCommit: [ctx baseCommit]];
+	
+	COSubtreeDiff *diffBackout = [COSubtreeDiff diffSubtree: commitToUndoSubtree
+												withSubtree: commitToUndoParentSubtree 
+										   sourceIdentifier: @"back-out-change"];	
+	COSubtreeDiff *diffReapply = [COSubtreeDiff diffSubtree: commitToUndoSubtree
+												withSubtree: currentCommitSubtree 
+										   sourceIdentifier: @"reapply-changes-up-to-present"];
+	
+	COSubtreeDiff *merged = [diffBackout subtreeDiffByMergingWithDiff: diffReapply];
+	
+	if ([merged hasConflicts])
+	{
+		NSLog(@"Selective undo failed: merged diff has conflicts");
+	}
+	
+	COSubtree *newCurrentState = [merged subtreeWithDiffAppliedToSubtree: commitToUndoSubtree];
+
+	NSLog(@"selective undo success.");
+	
+	{
+		// Just for debugging, diff the current state against the new state
+		COSubtreeDiff *diffCurrentStateToNewCurrentState = [COSubtreeDiff diffSubtree: currentCommitSubtree
+																		  withSubtree: newCurrentState
+																	 sourceIdentifier: @""];
+		
+		NSLog(@"Selective undo diff: %@", diffCurrentStateToNewCurrentState);
+	}
+	
+	[ctx setPersistentRootTree: newCurrentState];
+	[ctx commitWithMetadata: nil];
+	[[NSApp delegate] reloadAllBrowsers];
+}
+
+- (IBAction) selectiveApply: (id)sender
+{
+	NSLog(@"FIXME: implement selective apply");
+}
+
 
 static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *start, ETUUID *aUUID)
 {
