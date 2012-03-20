@@ -107,12 +107,14 @@
 + (COPersistentRootDiff *) diffPersistentRoot: (COSubtree *)rootA
 						   withPersistentRoot: (COSubtree *)rootB
 								  allBranches: (BOOL)allBranches
-										store: (COStore *)aStore;
+										store: (COStore *)aStore
+							 sourceIdentifier: (id)aSource;
 
 
 + (COPersistentRootDiff *) diffBranch: (COSubtree *)branchA
 						   withBranch: (COSubtree *)branchB
-								store: (COStore *)aStore;
+								store: (COStore *)aStore
+					 sourceIdentifier: (id)aSource;
 
 #pragma mark diff application
 

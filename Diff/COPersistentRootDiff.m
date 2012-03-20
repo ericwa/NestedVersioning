@@ -10,16 +10,19 @@
 - (void) _diffCommonBranch: (COSubtree *)branchInA
 		  withCommonBranch: (COSubtree *)branchInB
 					atPath: (COPath *)currentPath
-					 store: (COStore *)aStore;
+					 store: (COStore *)aStore
+		  sourceIdentifier: (id)aSource;
 - (void) _diffCommonPersistentRoot: (COSubtree *)persistentRootA
 		  withCommonPersistentRoot: (COSubtree *)persistentRootB
 							atPath: (COPath *)currentPath
-							 store: (COStore *)aStore;
+							 store: (COStore *)aStore
+				  sourceIdentifier: (id)aSource;
 - (void) recordPersistentRootContentsDiff: (COSubtreeDiff *)contentsDiff forPath: (COPath *)aPath;
 - (void) _diffContent: (COSubtree *)contentsA
 		  withContent: (COSubtree *)contentsB
 			   atPath: (COPath *)currentPath
-				store: (COStore *)aStore;
+				store: (COStore *)aStore
+	 sourceIdentifier: (id)aSource;
 @end
 
 
@@ -30,6 +33,7 @@
 - (id) initWithBranchOrPersistentRoot: (COSubtree *)branchOrPersistentRootA
 			   branchOrPersistentRoot: (COSubtree *)branchOrPersistentRootB
 								store: (COStore *)aStore
+					 sourceIdentifier: (id)aSource
 {
 	SUPERINIT;
 	
@@ -48,7 +52,7 @@
 	
 	ASSIGN(rootDiff, [COSubtreeDiff diffSubtree: branchOrPersistentRootA
 									withSubtree: branchOrPersistentRootB
-							   sourceIdentifier: @"fixme"]);
+							   sourceIdentifier: aSource]);
 	
 	// Initiate the recursive diff process
 
@@ -57,14 +61,16 @@
 		[self _diffCommonBranch: branchOrPersistentRootA
 			   withCommonBranch: branchOrPersistentRootB
 						 atPath: [COPath path]
-						  store: aStore];
+						  store: aStore
+			   sourceIdentifier: aSource];
 	}
 	else
 	{
 		[self _diffCommonPersistentRoot: branchOrPersistentRootA
 			   withCommonPersistentRoot: branchOrPersistentRootB
 								 atPath: [COPath path]
-								  store: aStore];
+								  store: aStore
+					   sourceIdentifier: aSource];
 	}
 	
 	return self;
@@ -92,19 +98,21 @@
 						   withPersistentRoot: (COSubtree *)rootB
 								  allBranches: (BOOL)allBranches
 										store: (COStore *)aStore
+							 sourceIdentifier: (id)aSource
 {
 	if (!allBranches)
 	{
 		COSubtree *branchA = [[COSubtreeFactory factory] currentBranchOfPersistentRoot: rootA];
 		COSubtree *branchB = [[COSubtreeFactory factory] currentBranchOfPersistentRoot: rootB];
 		
-		return [self diffBranch: branchA withBranch: branchB store: aStore];
+		return [self diffBranch: branchA withBranch: branchB store: aStore sourceIdentifier: aSource];
 	}
 	else
 	{
 		return [[[self alloc] initWithBranchOrPersistentRoot: rootA
 									  branchOrPersistentRoot: rootB
-													   store: aStore] autorelease];
+													   store: aStore
+											sourceIdentifier: aSource] autorelease];
 	}
 }
 
@@ -112,10 +120,12 @@
 + (COPersistentRootDiff *) diffBranch: (COSubtree *)branchA
 						   withBranch: (COSubtree *)branchB
 								store: (COStore *)aStore
+					 sourceIdentifier: (id)aSource
 {
 	return [[[self alloc] initWithBranchOrPersistentRoot: branchA
 								  branchOrPersistentRoot: branchB
-												   store: aStore] autorelease];
+												   store: aStore
+										sourceIdentifier: aSource] autorelease];
 	
 }
 
@@ -157,6 +167,7 @@
 		  withCommonBranch: (COSubtree *)branchInB
 					atPath: (COPath *)currentPath
 					 store: (COStore *)aStore
+		  sourceIdentifier: (id)aSource
 {
 	// PRECONDITIONS: assume branchA and branchB point to related (but divergent) versions of a persistent root
 	
@@ -172,7 +183,8 @@
 	[self _diffContent: subcontentsA
 		   withContent: subcontentsB
 				atPath: [currentPath pathByAppendingPathComponent: [branchInA UUID]]
-				 store: aStore];
+				 store: aStore
+	  sourceIdentifier: aSource];
 }
 
 /**
@@ -182,6 +194,7 @@
 		  withCommonPersistentRoot: (COSubtree *)persistentRootB
 							atPath: (COPath *)currentPath
 							 store: (COStore *)aStore
+				  sourceIdentifier: (id)aSource
 {
 	// OK, for now we'll implement the diff all branches policy.
 	
@@ -203,7 +216,8 @@
 		[self _diffCommonBranch: branchInA
 			   withCommonBranch: branchInB
 						 atPath: currentPath
-						  store: aStore];
+						  store: aStore
+			   sourceIdentifier: aSource];
 	}
 }
 
@@ -211,12 +225,13 @@
 		  withContent: (COSubtree *)contentsB
 			   atPath: (COPath *)currentPath
 				store: (COStore *)aStore
+	 sourceIdentifier: (id)aSource
 {		
 	// Diff them 
 	
 	COSubtreeDiff *contentsABDiff = [COSubtreeDiff diffSubtree: contentsA 
 												   withSubtree: contentsB
-											  sourceIdentifier: @"fixme"];
+											  sourceIdentifier: aSource];
 	
 	[initialSubtreeForPath setObject: [[contentsA copy] autorelease]
 							  forKey: currentPath];
@@ -240,7 +255,8 @@
 		[self _diffCommonPersistentRoot: [contentsA subtreeWithUUID: commonUUID]
 			   withCommonPersistentRoot: [contentsB subtreeWithUUID: commonUUID]
 								 atPath: currentPath
-								  store: aStore];
+								  store: aStore
+					   sourceIdentifier: aSource];
 	}
 }
 
