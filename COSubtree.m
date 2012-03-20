@@ -817,9 +817,13 @@ toUnorderedAttribute: (NSString*)anAttribute
 	NSMutableString *result = [NSMutableString string];
 	[result appendFormat: @"%@%@\n", [self tabs: i], [self selfDescription]];
 	
-	for (COSubtree *content in [self contents])
+	if ([[self typeForAttribute: @"contents"] isPrimitiveTypeEqual: [COType embeddedItemType]]
+		&& [[self typeForAttribute: @"contents"] isMultivalued])
 	{
-		[result appendFormat: @"%@", [content descriptionWithIndent: i+1]];
+		for (COSubtree *content in [self valueForAttribute: @"contents"])
+		{
+			[result appendFormat: @"%@", [content descriptionWithIndent: i+1]];
+		}
 	}
 	
 	return result;

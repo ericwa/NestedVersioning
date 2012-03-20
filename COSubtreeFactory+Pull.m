@@ -18,7 +18,7 @@
 	
 	if ([aStore isCommit: destCommit parentOfCommit: srcCommit])
 	{
-		NSLog(@"pullChangesFromBranch: fast-forward");
+		//NSLog(@"pullChangesFromBranch: fast-forward");
 		
 		[self setCurrentVersion: srcCommit
 					  forBranch: destBranch
@@ -27,12 +27,12 @@
 	}
 	else
 	{
-		NSLog(@"pullChangesFromBranch: need to do full merge.");
+		//NSLog(@"pullChangesFromBranch: need to do full merge.");
 		
 		ETUUID *ancestor = [aStore commonAncestorForCommit: srcCommit
 												 andCommit: destCommit];
 		
-		NSLog(@"common ancestor: %@", ancestor);
+		//NSLog(@"common ancestor: %@", ancestor);
 		
 		/**
 		 * now, open up the two branches, and do a merge.
