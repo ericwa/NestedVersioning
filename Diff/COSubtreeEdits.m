@@ -116,7 +116,7 @@
 
 - (NSString *) description
 {
-	return [NSString stringWithFormat: @"%@.%@ set attribute to %@ (%@)", UUID, attribute, value, sourceIdentifier];
+	return [NSString stringWithFormat: @"set %@.%@ = %@ (%@)", UUID, attribute, value, sourceIdentifier];
 }
 
 - (NSSet *) insertedEmbeddedItemUUIDs
@@ -157,7 +157,7 @@
 
 - (NSString *) description
 {
-	return [NSString stringWithFormat: @"%@.%@ delete attribute (%@)", UUID, attribute, sourceIdentifier];
+	return [NSString stringWithFormat: @"delete %@.%@ (%@)", UUID, attribute, sourceIdentifier];
 }
 
 @end
@@ -208,7 +208,7 @@
 
 - (NSString *) description
 {
-	return [NSString stringWithFormat: @"%@.%@ insert into set value %@ (%@)", UUID, attribute, object, sourceIdentifier];
+	return [NSString stringWithFormat: @"insert into set %@.%@ value %@ (%@)", UUID, attribute, object, sourceIdentifier];
 }
 
 - (NSSet *) insertedEmbeddedItemUUIDs
@@ -240,7 +240,7 @@
 
 - (NSString *) description
 {
-	return [NSString stringWithFormat: @"%@.%@ delete from set value %@ (%@)", UUID, attribute, object, sourceIdentifier];
+	return [NSString stringWithFormat: @"delete from set %@.%@ value %@ (%@)", UUID, attribute, object, sourceIdentifier];
 }
 
 - (NSSet *) insertedEmbeddedItemUUIDs
@@ -351,7 +351,7 @@
 
 - (NSString *) description
 {
-	return [NSString stringWithFormat: @"%@.%@[%d:%d] replace range with %@ (%@)", UUID, attribute, (int)range.location, (int)range.length, objects, sourceIdentifier];
+	return [NSString stringWithFormat: @"replace %@.%@[%d:%d] with %@ (%@)", UUID, attribute, (int)range.location, (int)range.length, objects, sourceIdentifier];
 }
 
 - (NSSet *) insertedEmbeddedItemUUIDs
@@ -390,7 +390,7 @@
 
 - (NSString *) description
 {
-	return [NSString stringWithFormat: @"%@.%@[%d] insert into array value %@ (%@)", UUID, attribute, (int)range.location, objects, sourceIdentifier];
+	return [NSString stringWithFormat: @"insert at %@.%@[%d] value %@ (%@)", UUID, attribute, (int)range.location, objects, sourceIdentifier];
 }
 
 @end
@@ -407,7 +407,7 @@
 
 - (NSString *) description
 {
-	return [NSString stringWithFormat: @"%@.%@[%d:%d] delete from array (%@)", UUID, attribute, (int)range.location, (int)range.length, sourceIdentifier];
+	return [NSString stringWithFormat: @"delete range %@.%@[%d:%d] (%@)", UUID, attribute, (int)range.location, (int)range.length, sourceIdentifier];
 }
 
 @end
