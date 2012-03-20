@@ -1,7 +1,7 @@
 #import "ETUUID.h"
 #import "COMacros.h"
 #import "COSubtreeEdits.h"
-
+#import "COType.h"
 
 #pragma mark base class
 
@@ -120,9 +120,23 @@
 
 - (NSSet *) insertedEmbeddedItemUUIDs
 {
-	if ([type isEqual: [COType embeddedItemType]])
+	if ([type isPrimitiveTypeEqual: [COType embeddedItemType]])
 	{
-		return [NSSet setWithObject: value];
+		if ([type isPrimitive])
+		{
+			return [NSSet setWithObject: value];
+		}
+		else
+		{
+			if ([type isOrdered])
+			{
+				return [NSSet setWithArray: value];
+			}
+			else 
+			{
+				return [NSSet setWithSet: value];
+			}
+		}
 	}
 	else
 	{
@@ -210,8 +224,7 @@
 
 - (BOOL) isSameKindOfEdit: (COSubtreeEdit*)anEdit
 {
-	return [anEdit isKindOfClass: [COSetInsertion class]]
-		|| [anEdit isKindOfClass: [COSetDeletion class]];
+	return [anEdit isKindOfClass: [COSetInsertion class]]; // COSetDeletion is a subclass
 }
 
 @end
@@ -229,10 +242,9 @@
 	return [NSString stringWithFormat: @"%@.%@ delete from set value %@ (%@)", UUID, attribute, object, sourceIdentifier];
 }
 
-- (BOOL) isSameKindOfEdit: (COSubtreeEdit*)anEdit
+- (NSSet *) insertedEmbeddedItemUUIDs
 {
-	return [anEdit isKindOfClass: [COSetInsertion class]]
-	|| [anEdit isKindOfClass: [COSetDeletion class]];
+	return [NSSet set];
 }
 
 @end
