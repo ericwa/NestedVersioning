@@ -105,6 +105,10 @@
 
 - (NSSet *)modifiedItemUUIDs;
 
+- (NSSet *) modifiedAttributesForUUID: (ETUUID *)aUUID;
+- (NSSet *) editsForUUID: (ETUUID *)aUUID;
+- (NSSet *) editsForUUID: (ETUUID *)aUUID attribute: (NSString *)aString;
+
 #pragma mark mutation
 
 /**

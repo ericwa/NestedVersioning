@@ -742,6 +742,19 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 {
 	return [diffDict allEditedUUIDs];
 }
+- (NSSet *) modifiedAttributesForUUID: (ETUUID *)aUUID
+{
+	return [diffDict modifiedAttributesForUUID: aUUID];
+}
+- (NSSet *) editsForUUID: (ETUUID *)aUUID
+{
+	return [diffDict editsForUUID: aUUID];
+}
+- (NSSet *) editsForUUID: (ETUUID *)aUUID attribute: (NSString *)aString
+{
+	return [diffDict editsForUUID: aUUID attribute: aString];
+}
+
 
 #pragma mark mutation
 
