@@ -86,6 +86,12 @@
  */
 - (NSSet *)conflicts;
 
+- (NSSet *) embeddedItemInsertionConflicts; // insert item uuid X at two different places
+- (NSSet *) equalEditConflicts; // e.g. set [4:2] to ("h", "i") and [4:2] to ("h", "i")
+- (NSSet *) sequenceEditConflicts; // e.g. set [4:5] and [4:3]. doesn't include equal sequence edit conflicts
+- (NSSet *) editTypeConflicts; // e.g. delete + set
+- (NSSet *) valueConflicts; // e.g. set attr to 'x' + set attr to 'y'
+
 #pragma mark access
 
 - (NSSet *)modifiedItemUUIDs;
