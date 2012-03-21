@@ -318,6 +318,7 @@
 	if ([merged hasConflicts])
 	{
 		NSLog(@"Selective undo failed: merged diff has conflicts");
+		return;
 	}
 	
 	COSubtree *newCurrentState = [merged subtreeWithDiffAppliedToSubtree: commitToUndoSubtree];
@@ -365,6 +366,7 @@
 	if ([merged hasConflicts])
 	{
 		NSLog(@"Selective do failed: merged diff has conflicts");
+		return;
 	}
 	
 	COSubtree *newCurrentState = [merged subtreeWithDiffAppliedToSubtree: commitToDoParentSubtree];
