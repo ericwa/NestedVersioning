@@ -65,6 +65,7 @@
 	NSMutableSet *equalEditConflicts; // e.g. set [4:2] to ("h", "i") and [4:2] to ("h", "i")
 	NSMutableSet *sequenceEditConflicts; // e.g. set [4:5] and [4:3]. doesn't include equal sequence edit conflicts
 	NSMutableSet *editTypeConflicts; // e.g. set-value and delete-attribute
+	NSMutableSet *valueConflicts; // e.g. set attr to "x" and set attr to "y"
 }
 
 + (COSubtreeDiff *) diffSubtree: (COSubtree *)a
