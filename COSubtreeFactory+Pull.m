@@ -6,6 +6,7 @@
 #import "COSubtreeFactory.h"
 #import "COSubtreeFactory+PersistentRoots.h"
 #import "COSubtree.h"
+#import "COSubtreeDiff.h"
 
 @implementation COSubtreeFactory (Pull)
 
@@ -18,7 +19,7 @@
 	
 	if ([aStore isCommit: destCommit parentOfCommit: srcCommit])
 	{
-		//NSLog(@"pullChangesFromBranch: fast-forward");
+		NSLog(@"pullChangesFromBranch: fast-forward");
 		
 		[self setCurrentVersion: srcCommit
 					  forBranch: destBranch
@@ -27,12 +28,12 @@
 	}
 	else
 	{
-		//NSLog(@"pullChangesFromBranch: need to do full merge.");
+		NSLog(@"pullChangesFromBranch: need to do full merge.");
 		
 		ETUUID *ancestor = [aStore commonAncestorForCommit: srcCommit
 												 andCommit: destCommit];
 		
-		//NSLog(@"common ancestor: %@", ancestor);
+		NSLog(@"common ancestor: %@", ancestor);
 		
 		/**
 		 * now, open up the two branches, and do a merge.
@@ -40,8 +41,54 @@
 		 * note that we need a special merge strategy for merging branch objects:
 		 * call this method recursively!
 		 */
+		
+		COSubtree *ancestorSubtree = [aStore treeForCommit: ancestor];
+		COSubtree *srcCommitSubtree = [aStore treeForCommit: srcCommit];
+		COSubtree *destCommitSubtree = [aStore treeForCommit: destCommit];
+		
+		COSubtreeDiff *diffAncestorToSrc = [COSubtreeDiff diffSubtree: ancestorSubtree
+														withSubtree: srcCommitSubtree 
+												   sourceIdentifier: @"ancestor-src"];	
+		COSubtreeDiff *diffAncestorToDest = [COSubtreeDiff diffSubtree: ancestorSubtree
+															 withSubtree: destCommitSubtree 
+														sourceIdentifier: @"ancestor-dest"];
+		
+		NSLog(@"ancestor-src diff: %@", diffAncestorToSrc);
+		NSLog(@"ancestor-dest diff: %@", diffAncestorToDest);
+		
+		COSubtreeDiff *merged = [diffAncestorToSrc subtreeDiffByMergingWithDiff: diffAncestorToDest];
+		
+		if ([merged hasConflicts])
+		{
+			NSLog(@"Pull failed: merged diff has conflicts");
+		}
+		
+		NSLog(@"diff from %@ to %@ + %@: %@", ancestor, srcCommit, destCommit, merged);
+		
+		COSubtree *newCurrentState = [merged subtreeWithDiffAppliedToSubtree: ancestorSubtree];
+		
+		NSLog(@"selective undo success.");
+		
+		{
+			// Just for debugging, diff the current state against the new state
+			COSubtreeDiff *diffCurrentStateToNewCurrentState = [COSubtreeDiff diffSubtree: destCommitSubtree
+																			  withSubtree: newCurrentState
+																		 sourceIdentifier: @""];
+			
+			NSLog(@"Finished pull diff: %@", diffCurrentStateToNewCurrentState);
+		}
+		
+		// commit the changes
+		
+		ETUUID *newCommitUUID = [aStore addCommitWithParent: destCommit
+												   metadata: nil
+													   tree: newCurrentState];
+		
+		[self setCurrentVersion: newCommitUUID
+					  forBranch: destBranch
+				updateRedoLimit: YES
+				updateUndoLimit: NO];
 	}
-
 }
 
 @end
