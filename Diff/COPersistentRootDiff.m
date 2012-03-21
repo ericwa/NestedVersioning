@@ -265,10 +265,12 @@
 
 - (BOOL) isConflictEditingCurrentVersionAttribute: (COSubtreeConflict *)aConflict
 {
-	return [[aConflict editA] isSetValueEdit] &&
-	[[aConflict editB] isSetValueEdit] &&
-	[[[aConflict editA] editedAttribute] isEqual: @"currentVersion"] &&
-	[[[aConflict editB] editedAttribute] isEqual: @"currentVersion"];
+	for (COSubtreeEdit *edit in [aConflict allEdits])
+	{
+		if (![[edit attribute] isEqualToString: @"currentVersion"])
+			return NO;
+	}
+	return YES;
 }
 
 /**
@@ -298,7 +300,7 @@
 	
 	if ([merged hasConflicts])
 	{
-		for (id conflict in [NSSet setWithSet: [merged conflicts]])
+		for (COSubtreeConflict *conflict in [NSSet setWithSet: [merged valueConflicts]])
 		{
 			// This algorithm only really supports pairs of conflicting edits (i.e. merging exactly 2 roots and resolving all conflicts)
 			
