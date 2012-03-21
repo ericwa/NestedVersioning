@@ -60,7 +60,8 @@
 		
 		if ([merged hasConflicts])
 		{
-			NSLog(@"Pull failed: merged diff has conflicts");
+			NSLog(@"Pull failed: merged diff has conflicts: %@", [merged conflicts]);
+			return;
 		}
 		
 		NSLog(@"diff from %@ to %@ + %@: %@", ancestor, srcCommit, destCommit, merged);

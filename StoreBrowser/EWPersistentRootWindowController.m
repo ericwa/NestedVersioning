@@ -317,7 +317,7 @@
 	
 	if ([merged hasConflicts])
 	{
-		NSLog(@"Selective undo failed: merged diff has conflicts");
+		NSLog(@"Selective undo failed: merged diff has conflicts %@", [merged conflicts]);
 		return;
 	}
 	
@@ -365,7 +365,7 @@
 	
 	if ([merged hasConflicts])
 	{
-		NSLog(@"Selective do failed: merged diff has conflicts");
+		NSLog(@"Selective do failed: merged diff has conflicts %@", [merged conflicts]);
 		return;
 	}
 	
