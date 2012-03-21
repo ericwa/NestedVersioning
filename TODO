@@ -1,6 +1,7 @@
 TODO
 ====
 
+[ ] (Mar 20/2012) make selective do/undo aware of nested persistent roots
 [x] (Mar 13/2012) finish COSubtreeDiff
 [ ] (Feb 22/2012) StoreBrowser: don't abort when deleting a branch/proot that was previously opened
 [ ] (Feb 22/2012) StoreBrowser: don't abort when corrupting a branch/proot's metadata
@@ -30,11 +31,11 @@ TODO
 [ ] (Feb 15/2012) StoreBrowser: implement persistent root diff window, including showing changes in
 				  nested persistent roots, and showing conflicts
 [x] (Feb 15/2012) StoreBrowser: implement diffing two arbitrary commits picked from the history graph
-[ ] (Feb 15/2012) StoreBrowser: implement cherry-pick (selective apply) by right-clicking on a commit
+[x] (Feb 15/2012) StoreBrowser: implement cherry-pick (selective apply) by right-clicking on a commit
                   in the commit graph.
-[ ] (Feb 15/2012) StoreBrowser: implement selective undo by right-clicking on a commit
+[x] (Feb 15/2012) StoreBrowser: implement selective undo by right-clicking on a commit
                   in the commit graph.
-[ ] (Feb 15/2012) implement merge for item and subtree. handle conflicts caused by an
+[x] (Feb 15/2012) implement merge for item and subtree. handle conflicts caused by an
                   embedded item being moved to two different places at once.
 [x] (Feb 12/2012) port over merge code for all the basic containers.
 [ ] (Feb 11/2012) add a feature like Quentin's COSCustomTrack. of particular interest
