@@ -262,6 +262,28 @@
 	UKObjectsEqual(t3, [merged subtreeWithDiffAppliedToSubtree: t1]);
 }
 
+- (void) testMergingSetValue
+{
+	COSubtree *t2 = [COSubtree subtree];
+	COSubtree *t1 = [[t2 copy] autorelease];
+	COSubtree *t3 = [[t2 copy] autorelease];
+	
+	[t2 setPrimitiveValue: @"abc"
+			 forAttribute: @"string"
+					 type: [COType stringType]];
+	[t3 setPrimitiveValue: @"def"
+			 forAttribute: @"string"
+					 type: [COType stringType]];
+
+	COSubtreeDiff *diff12 = [COSubtreeDiff diffSubtree: t1 withSubtree: t2 sourceIdentifier: @"diff12"];
+	COSubtreeDiff *diff13 = [COSubtreeDiff diffSubtree: t1 withSubtree: t3 sourceIdentifier: @"diff13"];
+	UKObjectsEqual(t2, [diff12 subtreeWithDiffAppliedToSubtree: t1]);
+	UKObjectsEqual(t3, [diff13 subtreeWithDiffAppliedToSubtree: t1]);
+	
+	COSubtreeDiff *merged = [diff12 subtreeDiffByMergingWithDiff: diff13];
+	UKTrue([merged hasConflicts]);
+}
+
 
 - (NSSet *) insertionSetForUUID: (ETUUID *)aUUID attribute: (NSString *)attribute diff: (COSubtreeDiff *)aDiff sourceID: (id)source
 {
