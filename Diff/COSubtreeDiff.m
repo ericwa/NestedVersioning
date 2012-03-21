@@ -753,7 +753,7 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 
 - (COSubtreeDiff *)subtreeDiffByMergingWithDiff: (COSubtreeDiff *)other
 {
-	COSubtreeDiff *result = [self copy];
+	COSubtreeDiff *result = [[self copy] autorelease];
 	[result mergeWith: other];
 	return result;
 }
