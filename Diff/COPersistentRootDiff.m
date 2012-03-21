@@ -263,6 +263,14 @@
 
 #pragma mark merge algorithm
 
+- (BOOL) isConflictEditingCurrentVersionAttribute: (COSubtreeConflict *)aConflict
+{
+	return [[aConflict editA] isSetValueEdit] &&
+	[[aConflict editB] isSetValueEdit] &&
+	[[[aConflict editA] editedAttribute] isEqual: @"currentVersion"] &&
+	[[[aConflict editB] editedAttribute] isEqual: @"currentVersion"];
+}
+
 /**
  * Take 2 subtree diffs, as well as the corresponding subtrees they are based on,
  * and merge the diffs.
@@ -296,10 +304,7 @@
 			
 			// Look for conflicts where both sides modified the currentVersion of a branch
 			
-			if ([[conflict editA] isSetValueEdit] &&
-				[[conflict editB] isSetValueEdit] &&
-				[[[conflict editA] editedAttribute] isEqual: @"currentVersion"] &&
-				[[[conflict editB] editedAttribute] isEqual: @"currentVersion"])
+			if ([self isConflictEditingCurrentVersionAttribute: conflict])
 			{
 				COSubtree *branchA = [contentsA subtreeWithUUID: [[conflict editA] editedItemUUID]];
 				COSubtree *branchB = [contentsB subtreeWithUUID: [[conflict editB] editedItemUUID]];
