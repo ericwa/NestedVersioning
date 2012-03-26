@@ -1,5 +1,6 @@
 #import "EWProjectWindowController.h"
 #import "EWCenteredTextFieldCell.h"
+#import "COMacros.h"
 
 @implementation EWProjectWindowController
 
@@ -53,6 +54,45 @@
 		return @"Hello";
 	}
 	return nil;
+}
+
+// NSOutlineViewDataSource
+
+
+- (NSInteger) outlineView: (NSOutlineView *)anOutlineView numberOfChildrenOfItem: (id)item
+{
+	if (item == nil)
+	{
+		return 2;
+	}
+	if ([item isEqual: @"Trash"])
+	{
+		return 1;
+	}
+	return 0;
+}
+
+- (id) outlineView: (NSOutlineView *)anOutlineView child: (NSInteger)index ofItem: (id)item
+{
+	if (item == nil)
+	{
+		return [A(@"All Drawings", @"Trash") objectAtIndex: index];
+	}
+	if ([item isEqual: @"Trash"])
+	{
+		return @"Hi";
+	}
+	return nil;
+}
+
+- (BOOL) outlineView: (NSOutlineView *)anOutlineView isItemExpandable: (id)item
+{
+	return [self outlineView: anOutlineView numberOfChildrenOfItem: item] > 0;
+}
+
+- (id) outlineView: (NSOutlineView *)anOutlineView objectValueForTableColumn: (NSTableColumn *)column byItem: (id)item
+{
+	return item;
 }
 
 
