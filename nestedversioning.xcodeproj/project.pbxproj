@@ -94,6 +94,12 @@
 		66F0C88C14C5440500C0B5A6 /* bullet_yellow.png in Resources */ = {isa = PBXBuildFile; fileRef = 66F0C88B14C5440500C0B5A6 /* bullet_yellow.png */; };
 		66F0C88E14C5444600C0B5A6 /* bullet_yellow_multiple.png in Resources */ = {isa = PBXBuildFile; fileRef = 66F0C88D14C5444600C0B5A6 /* bullet_yellow_multiple.png */; };
 		79016345148D4886005A9226 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E552B4146B7799008FDFAF /* libcrypto.dylib */; };
+		79052AFE1520F8F300B481C1 /* NestedVersioning.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E7785114E6062100D5DFFF /* NestedVersioning.framework */; };
+		79052AFF1520F8F300B481C1 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E552B4146B7799008FDFAF /* libcrypto.dylib */; };
+		79052B001520F8F300B481C1 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66EB756B148CA9D300C2114B /* Cocoa.framework */; };
+		79052B011520F8F300B481C1 /* UnitKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E7783514E6049E00D5DFFF /* UnitKit.framework */; };
+		79052B701520FA1800B481C1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 79052B6E1520FA1800B481C1 /* main.m */; };
+		79052B711520FA1800B481C1 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79052B6F1520FA1800B481C1 /* MainMenu.xib */; };
 		790574FC14F8A7D20007C67B /* TestSubtreeDiffMerge.m in Sources */ = {isa = PBXBuildFile; fileRef = 790574FB14F8A7D20007C67B /* TestSubtreeDiffMerge.m */; };
 		79284A7814F465890063B0BF /* EWIconTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 79284A7714F465890063B0BF /* EWIconTextFieldCell.m */; };
 		79626467150EE07E009A0686 /* COSequenceMerge.h in Headers */ = {isa = PBXBuildFile; fileRef = 79626465150EE07E009A0686 /* COSequenceMerge.h */; };
@@ -124,6 +130,13 @@
 			remoteInfo = UnitKit;
 		};
 		66E778A914E607D400D5DFFF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 662811ED13F8B5000075BBC2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 66E7785014E6062100D5DFFF;
+			remoteInfo = NestedVersioning;
+		};
+		79052AEE1520F8F300B481C1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662811ED13F8B5000075BBC2 /* Project object */;
 			proxyType = 1;
@@ -256,6 +269,9 @@
 		66F39B861490A8540097B7D5 /* COTypePrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COTypePrivate.h; sourceTree = "<group>"; };
 		66F4E315147C59F0004FC1BA /* TestTagging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestTagging.m; sourceTree = "<group>"; };
 		66F4E319147C606A004FC1BA /* TestGameEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestGameEditor.m; sourceTree = "<group>"; };
+		79052B111520F8F300B481C1 /* Sketch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sketch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		79052B6E1520FA1800B481C1 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		79052B6F1520FA1800B481C1 /* MainMenu.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 		790574FB14F8A7D20007C67B /* TestSubtreeDiffMerge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSubtreeDiffMerge.m; sourceTree = "<group>"; };
 		790B1AE81485B184001ED869 /* TestSimpleUseOfNestedPersistentRoots.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSimpleUseOfNestedPersistentRoots.m; sourceTree = "<group>"; };
 		79156DB91484BE4D00AB66B1 /* TestConcurrentContextModification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestConcurrentContextModification.m; sourceTree = "<group>"; };
@@ -326,6 +342,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		79052AFD1520F8F300B481C1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				79052AFE1520F8F300B481C1 /* NestedVersioning.framework in Frameworks */,
+				79052AFF1520F8F300B481C1 /* libcrypto.dylib in Frameworks */,
+				79052B001520F8F300B481C1 /* Cocoa.framework in Frameworks */,
+				79052B011520F8F300B481C1 /* UnitKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -346,6 +373,7 @@
 				79999EFD14DE517C00FFBC99 /* Editing Context */,
 				66E2A305143057A100487419 /* Store */,
 				791A0EBD148AF3C200334CB1 /* Tests */,
+				79052B6B1520F9EE00B481C1 /* Sketch */,
 				66DFAECA142A726100623060 /* test-Prefix.pch */,
 				66EB7571148CA9D300C2114B /* StoreBrowser */,
 				662811F913F8B5010075BBC2 /* Frameworks */,
@@ -361,6 +389,7 @@
 				66EB7569148CA9D300C2114B /* StoreBrowser.app */,
 				66E7783514E6049E00D5DFFF /* UnitKit.framework */,
 				66E7785114E6062100D5DFFF /* NestedVersioning.framework */,
+				79052B111520F8F300B481C1 /* Sketch.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -618,6 +647,15 @@
 			name = "In-Memory Item Tree";
 			sourceTree = "<group>";
 		};
+		79052B6B1520F9EE00B481C1 /* Sketch */ = {
+			isa = PBXGroup;
+			children = (
+				79052B6E1520FA1800B481C1 /* main.m */,
+				79052B6F1520FA1800B481C1 /* MainMenu.xib */,
+			);
+			path = Sketch;
+			sourceTree = "<group>";
+		};
 		791A0EBD148AF3C200334CB1 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -841,6 +879,24 @@
 			productReference = 66EB7569148CA9D300C2114B /* StoreBrowser.app */;
 			productType = "com.apple.product-type.application";
 		};
+		79052AEC1520F8F300B481C1 /* Sketch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 79052B0E1520F8F300B481C1 /* Build configuration list for PBXNativeTarget "Sketch" */;
+			buildPhases = (
+				79052AF11520F8F300B481C1 /* Sources */,
+				79052AFD1520F8F300B481C1 /* Frameworks */,
+				79052B021520F8F300B481C1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				79052AED1520F8F300B481C1 /* PBXTargetDependency */,
+			);
+			name = Sketch;
+			productName = StoreBrowser;
+			productReference = 79052B111520F8F300B481C1 /* Sketch.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -866,6 +922,7 @@
 				66EB7568148CA9D300C2114B /* StoreBrowser */,
 				66E7783414E6049E00D5DFFF /* UnitKit */,
 				66E7785014E6062100D5DFFF /* NestedVersioning */,
+				79052AEC1520F8F300B481C1 /* Sketch */,
 			);
 		};
 /* End PBXProject section */
@@ -904,6 +961,14 @@
 				6607F95E14D0CD7F00F1E7C6 /* MainMenu.xib in Resources */,
 				6607F97014D0DD9900F1E7C6 /* PersistentRootWindow.nib in Resources */,
 				79B578E314ECCACE00B3563F /* DiffWindow.nib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		79052B021520F8F300B481C1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				79052B711520FA1800B481C1 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -984,6 +1049,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		79052AF11520F8F300B481C1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				79052B701520FA1800B481C1 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1001,6 +1074,11 @@
 			isa = PBXTargetDependency;
 			target = 66E7785014E6062100D5DFFF /* NestedVersioning */;
 			targetProxy = 66E778A914E607D400D5DFFF /* PBXContainerItemProxy */;
+		};
+		79052AED1520F8F300B481C1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 66E7785014E6062100D5DFFF /* NestedVersioning */;
+			targetProxy = 79052AEE1520F8F300B481C1 /* PBXContainerItemProxy */;
 		};
 		79F0CEE114E617A6001D440B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1166,6 +1244,26 @@
 			};
 			name = Release;
 		};
+		79052B0F1520F8F300B481C1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = "Sketch/Sketch-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		79052B101520F8F300B481C1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = "Sketch/Sketch-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1210,6 +1308,15 @@
 			buildConfigurations = (
 				66EB7584148CA9D400C2114B /* Debug */,
 				66EB7585148CA9D400C2114B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		79052B0E1520F8F300B481C1 /* Build configuration list for PBXNativeTarget "Sketch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				79052B0F1520F8F300B481C1 /* Debug */,
+				79052B101520F8F300B481C1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
