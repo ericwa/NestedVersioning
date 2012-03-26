@@ -46,4 +46,9 @@
 	return wc;
 }
 
+- (void)newDocument:(id)sender
+{
+	NSLog(@"New doc");
+}
+
 @end

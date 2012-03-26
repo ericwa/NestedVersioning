@@ -105,6 +105,7 @@
 		79052B7D15210AA300B481C1 /* ProjectWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79052B7C15210AA300B481C1 /* ProjectWindow.xib */; };
 		79052B8215210AD900B481C1 /* EWDrawingWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79052B8115210AD900B481C1 /* EWDrawingWindowController.m */; };
 		79052B8515210AE200B481C1 /* EWProjectWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79052B8415210AE200B481C1 /* EWProjectWindowController.m */; };
+		79052BC615211EC300B481C1 /* EWCenteredTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 79052BC515211EC300B481C1 /* EWCenteredTextFieldCell.m */; };
 		790574FC14F8A7D20007C67B /* TestSubtreeDiffMerge.m in Sources */ = {isa = PBXBuildFile; fileRef = 790574FB14F8A7D20007C67B /* TestSubtreeDiffMerge.m */; };
 		79284A7814F465890063B0BF /* EWIconTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 79284A7714F465890063B0BF /* EWIconTextFieldCell.m */; };
 		79626467150EE07E009A0686 /* COSequenceMerge.h in Headers */ = {isa = PBXBuildFile; fileRef = 79626465150EE07E009A0686 /* COSequenceMerge.h */; };
@@ -285,6 +286,8 @@
 		79052B8115210AD900B481C1 /* EWDrawingWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWDrawingWindowController.m; sourceTree = "<group>"; };
 		79052B8315210AE200B481C1 /* EWProjectWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWProjectWindowController.h; sourceTree = "<group>"; };
 		79052B8415210AE200B481C1 /* EWProjectWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWProjectWindowController.m; sourceTree = "<group>"; };
+		79052BC415211EC300B481C1 /* EWCenteredTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWCenteredTextFieldCell.h; sourceTree = "<group>"; };
+		79052BC515211EC300B481C1 /* EWCenteredTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWCenteredTextFieldCell.m; sourceTree = "<group>"; };
 		790574FB14F8A7D20007C67B /* TestSubtreeDiffMerge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSubtreeDiffMerge.m; sourceTree = "<group>"; };
 		790B1AE81485B184001ED869 /* TestSimpleUseOfNestedPersistentRoots.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSimpleUseOfNestedPersistentRoots.m; sourceTree = "<group>"; };
 		79156DB91484BE4D00AB66B1 /* TestConcurrentContextModification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestConcurrentContextModification.m; sourceTree = "<group>"; };
@@ -673,6 +676,8 @@
 				79052B8115210AD900B481C1 /* EWDrawingWindowController.m */,
 				79052B8315210AE200B481C1 /* EWProjectWindowController.h */,
 				79052B8415210AE200B481C1 /* EWProjectWindowController.m */,
+				79052BC415211EC300B481C1 /* EWCenteredTextFieldCell.h */,
+				79052BC515211EC300B481C1 /* EWCenteredTextFieldCell.m */,
 			);
 			path = Sketch;
 			sourceTree = "<group>";
@@ -1080,6 +1085,7 @@
 				79052B781520FAC800B481C1 /* SketchAppDelegate.m in Sources */,
 				79052B8215210AD900B481C1 /* EWDrawingWindowController.m in Sources */,
 				79052B8515210AE200B481C1 /* EWProjectWindowController.m in Sources */,
+				79052BC615211EC300B481C1 /* EWCenteredTextFieldCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
