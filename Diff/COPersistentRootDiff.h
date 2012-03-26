@@ -6,31 +6,6 @@
 @class COSubtreeDiff;
 
 /*
- void diff_branch_with_branch(branch_a_path, branch_b_path)
- {
- // record metadata changes normally.
- 
- // for the branch contents:
- // first compute the referenced versions: branch_a_version, branch_b_version
- 
- // IDEA:
- // next see if branch_b_version is a ancestor or descendent of branch_a_version.
- // --->problem is, that doesn't give any useful information when merging.
- //     i.e. 'branch diff A->B says "fast forward to X", branch diff A->C says
- //     "fast forward to Y"' is useless for merging. so we have to actually
- //     open the destination versions and diff them.
- 
- // so next just do:
- // diff_version_with_version(branch_a_version, branch_b_version);
- }
- 
- void diff_proot_with_proot(proot_a_path, proot_b_path)
- {
- // call diff_branch_with_branch on branches that appear in both proots.
- // otherwise, record the added/removed branches, and any other metadata changes, normally.
- } 
- 
- 
  test cases:
  
  
