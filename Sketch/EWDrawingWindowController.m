@@ -12,4 +12,9 @@
 	return self;
 }
 
+- (void) changeSize: (id)sender
+{
+	NSLog(@"width: %f height: %f", [widthField doubleValue], [heightField doubleValue]);
+}
+
 @end

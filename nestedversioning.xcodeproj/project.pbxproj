@@ -11,6 +11,7 @@
 		6607F95D14D0CD7F00F1E7C6 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6607F95A14D0CD7F00F1E7C6 /* InfoPlist.strings */; };
 		6607F95E14D0CD7F00F1E7C6 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6607F95B14D0CD7F00F1E7C6 /* MainMenu.xib */; };
 		6607F97014D0DD9900F1E7C6 /* PersistentRootWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = 6607F96F14D0DD9900F1E7C6 /* PersistentRootWindow.nib */; };
+		661169FB1522397C00806C12 /* EWSketchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 661169FA1522397C00806C12 /* EWSketchView.m */; };
 		6660E23A14F84B3000D2F319 /* TestItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 6660E23914F84B3000D2F319 /* TestItem.m */; };
 		6660E23B14F84BD500D2F319 /* TestStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 6628FBA6142FA7840072767A /* TestStore.m */; };
 		6660E23E14F84C2A00D2F319 /* TestPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 6660E23D14F84C2A00D2F319 /* TestPath.m */; };
@@ -179,6 +180,8 @@
 		660E66E3148D92E00062308D /* EWPersistentRootOutlineRow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWPersistentRootOutlineRow.m; sourceTree = "<group>"; };
 		66101A0914D09FAA00B50075 /* diff.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = diff.cc; path = Diff/diff.cc; sourceTree = "<group>"; };
 		66101A0D14D09FB700B50075 /* diff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = diff.h; path = Diff/diff.h; sourceTree = "<group>"; };
+		661169F91522397C00806C12 /* EWSketchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWSketchView.h; sourceTree = "<group>"; };
+		661169FA1522397C00806C12 /* EWSketchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWSketchView.m; sourceTree = "<group>"; };
 		6628FBA1142FA7840072767A /* TestCopyEmbeddedObjects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCopyEmbeddedObjects.m; sourceTree = "<group>"; };
 		6628FBA2142FA7840072767A /* TestEditingContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestEditingContext.m; sourceTree = "<group>"; };
 		6628FBA3142FA7840072767A /* TestHistoryTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestHistoryTrack.m; sourceTree = "<group>"; };
@@ -678,6 +681,8 @@
 				79052B8415210AE200B481C1 /* EWProjectWindowController.m */,
 				79052BC415211EC300B481C1 /* EWCenteredTextFieldCell.h */,
 				79052BC515211EC300B481C1 /* EWCenteredTextFieldCell.m */,
+				661169F91522397C00806C12 /* EWSketchView.h */,
+				661169FA1522397C00806C12 /* EWSketchView.m */,
 			);
 			path = Sketch;
 			sourceTree = "<group>";
@@ -1086,6 +1091,7 @@
 				79052B8215210AD900B481C1 /* EWDrawingWindowController.m in Sources */,
 				79052B8515210AE200B481C1 /* EWProjectWindowController.m in Sources */,
 				79052BC615211EC300B481C1 /* EWCenteredTextFieldCell.m in Sources */,
+				661169FB1522397C00806C12 /* EWSketchView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

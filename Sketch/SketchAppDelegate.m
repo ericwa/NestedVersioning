@@ -49,6 +49,9 @@
 - (void)newDocument:(id)sender
 {
 	NSLog(@"New doc");
+	
+	EWDrawingWindowController *wc = [[EWDrawingWindowController alloc] init];
+	[wc showWindow: nil];
 }
 
 @end
