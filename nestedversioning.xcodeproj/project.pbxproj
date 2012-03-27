@@ -13,6 +13,9 @@
 		6607F97014D0DD9900F1E7C6 /* PersistentRootWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = 6607F96F14D0DD9900F1E7C6 /* PersistentRootWindow.nib */; };
 		661169FB1522397C00806C12 /* EWSketchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 661169FA1522397C00806C12 /* EWSketchView.m */; };
 		661169FF1522512900806C12 /* EWZoomView.m in Sources */ = {isa = PBXBuildFile; fileRef = 661169FE1522512900806C12 /* EWZoomView.m */; };
+		66116A011522738A00806C12 /* DrawingWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = 66116A001522738900806C12 /* DrawingWindow.nib */; };
+		6615DFAA1522760C005C590F /* ProjectWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = 6615DFA91522760C005C590F /* ProjectWindow.nib */; };
+		6615DFAC15227618005C590F /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 6615DFAB15227618005C590F /* MainMenu.nib */; };
 		6660E23A14F84B3000D2F319 /* TestItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 6660E23914F84B3000D2F319 /* TestItem.m */; };
 		6660E23B14F84BD500D2F319 /* TestStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 6628FBA6142FA7840072767A /* TestStore.m */; };
 		6660E23E14F84C2A00D2F319 /* TestPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 6660E23D14F84C2A00D2F319 /* TestPath.m */; };
@@ -101,10 +104,7 @@
 		79052B001520F8F300B481C1 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66EB756B148CA9D300C2114B /* Cocoa.framework */; };
 		79052B011520F8F300B481C1 /* UnitKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E7783514E6049E00D5DFFF /* UnitKit.framework */; };
 		79052B701520FA1800B481C1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 79052B6E1520FA1800B481C1 /* main.m */; };
-		79052B711520FA1800B481C1 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79052B6F1520FA1800B481C1 /* MainMenu.xib */; };
 		79052B781520FAC800B481C1 /* SketchAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 79052B771520FAC800B481C1 /* SketchAppDelegate.m */; };
-		79052B7A15210A7E00B481C1 /* DrawingWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79052B7915210A7E00B481C1 /* DrawingWindow.xib */; };
-		79052B7D15210AA300B481C1 /* ProjectWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79052B7C15210AA300B481C1 /* ProjectWindow.xib */; };
 		79052B8215210AD900B481C1 /* EWDrawingWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79052B8115210AD900B481C1 /* EWDrawingWindowController.m */; };
 		79052B8515210AE200B481C1 /* EWProjectWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79052B8415210AE200B481C1 /* EWProjectWindowController.m */; };
 		79052BC615211EC300B481C1 /* EWCenteredTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 79052BC515211EC300B481C1 /* EWCenteredTextFieldCell.m */; };
@@ -185,6 +185,9 @@
 		661169FA1522397C00806C12 /* EWSketchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWSketchView.m; sourceTree = "<group>"; };
 		661169FD1522512800806C12 /* EWZoomView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWZoomView.h; sourceTree = "<group>"; };
 		661169FE1522512900806C12 /* EWZoomView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWZoomView.m; sourceTree = "<group>"; };
+		66116A001522738900806C12 /* DrawingWindow.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = DrawingWindow.nib; sourceTree = "<group>"; };
+		6615DFA91522760C005C590F /* ProjectWindow.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = ProjectWindow.nib; sourceTree = "<group>"; };
+		6615DFAB15227618005C590F /* MainMenu.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = MainMenu.nib; sourceTree = "<group>"; };
 		6628FBA1142FA7840072767A /* TestCopyEmbeddedObjects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCopyEmbeddedObjects.m; sourceTree = "<group>"; };
 		6628FBA2142FA7840072767A /* TestEditingContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestEditingContext.m; sourceTree = "<group>"; };
 		6628FBA3142FA7840072767A /* TestHistoryTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestHistoryTrack.m; sourceTree = "<group>"; };
@@ -283,11 +286,8 @@
 		66F4E319147C606A004FC1BA /* TestGameEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestGameEditor.m; sourceTree = "<group>"; };
 		79052B111520F8F300B481C1 /* Sketch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sketch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		79052B6E1520FA1800B481C1 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		79052B6F1520FA1800B481C1 /* MainMenu.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 		79052B761520FAC800B481C1 /* SketchAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SketchAppDelegate.h; sourceTree = "<group>"; };
 		79052B771520FAC800B481C1 /* SketchAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SketchAppDelegate.m; sourceTree = "<group>"; };
-		79052B7915210A7E00B481C1 /* DrawingWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DrawingWindow.xib; sourceTree = "<group>"; };
-		79052B7C15210AA300B481C1 /* ProjectWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProjectWindow.xib; sourceTree = "<group>"; };
 		79052B8015210AD900B481C1 /* EWDrawingWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWDrawingWindowController.h; sourceTree = "<group>"; };
 		79052B8115210AD900B481C1 /* EWDrawingWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWDrawingWindowController.m; sourceTree = "<group>"; };
 		79052B8315210AE200B481C1 /* EWProjectWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWProjectWindowController.h; sourceTree = "<group>"; };
@@ -675,9 +675,9 @@
 				79052B761520FAC800B481C1 /* SketchAppDelegate.h */,
 				79052B771520FAC800B481C1 /* SketchAppDelegate.m */,
 				79052B6E1520FA1800B481C1 /* main.m */,
-				79052B6F1520FA1800B481C1 /* MainMenu.xib */,
-				79052B7915210A7E00B481C1 /* DrawingWindow.xib */,
-				79052B7C15210AA300B481C1 /* ProjectWindow.xib */,
+				6615DFAB15227618005C590F /* MainMenu.nib */,
+				66116A001522738900806C12 /* DrawingWindow.nib */,
+				6615DFA91522760C005C590F /* ProjectWindow.nib */,
 				79052B8015210AD900B481C1 /* EWDrawingWindowController.h */,
 				79052B8115210AD900B481C1 /* EWDrawingWindowController.m */,
 				79052B8315210AE200B481C1 /* EWProjectWindowController.h */,
@@ -1004,9 +1004,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				79052B711520FA1800B481C1 /* MainMenu.xib in Resources */,
-				79052B7A15210A7E00B481C1 /* DrawingWindow.xib in Resources */,
-				79052B7D15210AA300B481C1 /* ProjectWindow.xib in Resources */,
+				66116A011522738A00806C12 /* DrawingWindow.nib in Resources */,
+				6615DFAA1522760C005C590F /* ProjectWindow.nib in Resources */,
+				6615DFAC15227618005C590F /* MainMenu.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
