@@ -1,5 +1,6 @@
 #import "COSubtreeFactory.h"
 #import "COStore.h"
+#import "COSubtreeDiff.h"
 
 @interface COSubtreeFactory (Undo)
 
@@ -44,5 +45,23 @@
 			  store: (COStore *)aStore;
 - (void) redoBranch: (COSubtree*)aBranch
 			  store: (COStore *)aStore;
+
+#pragma mark selective undo
+
+/**
+ * Returns a diff which can be applied to the contents of 'target',
+ * or returns nil if the selective undo is impossible or
+ * there is nothing to undo.
+ */
+- (COSubtreeDiff *) selectiveUndoCommit: (ETUUID *) commitToUndo
+							  forCommit: (ETUUID*) target
+								  store: (COStore *)aStore;
+
+/**
+ * Returns a diff which can be applied to the contents of 'target'
+ */
+- (COSubtreeDiff *) selectiveApplyCommit: (ETUUID *) commitToDo
+							   forCommit: (ETUUID*) target
+								   store: (COStore *)aStore;
 
 @end

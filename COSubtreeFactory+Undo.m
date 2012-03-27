@@ -260,4 +260,98 @@
 	assert(0);
 }
 
+- (COSubtreeDiff *) selectiveUndoCommit: (ETUUID *) commitToUndo
+							  forCommit: (ETUUID*) target
+								  store: (COStore *)aStore
+{
+	ETUUID *commitToUndoParent = [aStore parentForCommit: commitToUndo];
+	
+	if (commitToUndoParent == nil)
+	{
+		NSLog(@"Selective undo failed: commit %@ has nil parent", commitToUndo);
+		return nil;
+	}
+	
+	COSubtree *commitToUndoSubtree = [aStore treeForCommit: commitToUndo];
+	COSubtree *commitToUndoParentSubtree = [aStore treeForCommit: commitToUndoParent];
+	COSubtree *targetSubtree = [aStore treeForCommit: target];
+	
+	COSubtreeDiff *diffBackout = [COSubtreeDiff diffSubtree: commitToUndoSubtree
+												withSubtree: commitToUndoParentSubtree 
+										   sourceIdentifier: @"backout"];	
+	COSubtreeDiff *diffReapply = [COSubtreeDiff diffSubtree: commitToUndoSubtree
+												withSubtree: targetSubtree 
+										   sourceIdentifier: @"reapply"];
+	
+	COSubtreeDiff *merged = [diffBackout subtreeDiffByMergingWithDiff: diffReapply];
+	
+	if ([merged hasConflicts])
+	{
+		NSLog(@"Selective undo failed: merged diff has conflicts %@", [merged conflicts]);
+		return nil;
+	}
+	
+	COSubtree *newTarget = [merged subtreeWithDiffAppliedToSubtree: commitToUndoSubtree];
+
+	COSubtreeDiff *diffTargetToNewTarget = [COSubtreeDiff diffSubtree: targetSubtree
+														  withSubtree: newTarget
+													 sourceIdentifier: @""];
+	assert(![diffTargetToNewTarget hasConflicts]);
+	
+	if ([[diffTargetToNewTarget allEdits] count] == 0)
+	{
+		NSLog(@"Selective undo failed: final diff is empty (there was nothing to undo)");
+		return nil;
+	}
+	
+	return diffTargetToNewTarget;
+}
+
+- (COSubtreeDiff *) selectiveApplyCommit: (ETUUID *) commitToDo
+							   forCommit: (ETUUID*) target
+								   store: (COStore *)aStore
+{
+	ETUUID *commitToDoParent = [aStore parentForCommit: commitToDo];
+	
+	if (commitToDoParent == nil)
+	{
+		NSLog(@"Selective apply failed: commit %@ has nil parent", commitToDo);
+		return nil;
+	}
+	
+	COSubtree *commitToDoSubtree = [aStore treeForCommit: commitToDo];
+	COSubtree *commitToDoParentSubtree = [aStore treeForCommit: commitToDoParent];
+	COSubtree *targetSubtree = [aStore treeForCommit: target];
+	
+	COSubtreeDiff *diffApplyChange = [COSubtreeDiff diffSubtree: commitToDoParentSubtree
+													withSubtree: commitToDoSubtree 
+											   sourceIdentifier: @"apply-selected-change"];	
+	COSubtreeDiff *diffApplyUpToTarget = [COSubtreeDiff diffSubtree: commitToDoParentSubtree
+														withSubtree: targetSubtree 
+												   sourceIdentifier: @"apply-changes-up-to-target"];
+	
+	COSubtreeDiff *merged = [diffApplyChange subtreeDiffByMergingWithDiff: diffApplyUpToTarget];
+	
+	if ([merged hasConflicts])
+	{
+		NSLog(@"Selective apply failed: merged diff has conflicts %@", [merged conflicts]);
+		return nil;
+	}
+	
+	COSubtree *newTarget = [merged subtreeWithDiffAppliedToSubtree: commitToDoParentSubtree];
+	
+	COSubtreeDiff *diffTargetToNewTarget = [COSubtreeDiff diffSubtree: targetSubtree
+														  withSubtree: newTarget
+													 sourceIdentifier: @""];
+	assert(![diffTargetToNewTarget hasConflicts]);
+	
+	if ([[diffTargetToNewTarget allEdits] count] == 0)
+	{
+		NSLog(@"Selective apply failed: final diff is empty (there was nothing to apply)");
+		return nil;
+	}
+	
+	return diffTargetToNewTarget;
+}
+
 @end
