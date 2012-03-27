@@ -47,7 +47,7 @@
 {
 	if ([[tableColumn identifier] isEqual: @"image"])
 	{
-		return [NSImage imageNamed: NSImageNameComputer];
+		return [NSImage imageNamed: @"NSComputer"];
 	}
 	else if ([[tableColumn identifier] isEqual: @"label"])
 	{
