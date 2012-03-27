@@ -14,6 +14,8 @@
 - (id) initWithStore: (COStore*)aStore;
 - (void) layoutGraph;
 
+- (ETUUID *)store;
+
 - (NSSize) size;
 - (void) drawWithHighlightedCommit: (ETUUID*)aCommit;
 

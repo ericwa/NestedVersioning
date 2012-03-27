@@ -1,6 +1,7 @@
 #import "EWHistoryGraphView.h"
 #import "EWGraphRenderer.h"
 #import "COMacros.h"
+#import "COSubtreeDiff.h"
 
 @implementation EWHistoryGraphView
 
@@ -29,6 +30,33 @@
 	}
 }
 
+- (NSString *)view:(NSView *)view stringForToolTip:(NSToolTipTag)tag point:(NSPoint)point userData:(void *)userData
+{
+	COStore *store = [graphRenderer store];
+	ETUUID *commit = [graphRenderer commitAtPoint: point];
+	
+	if (commit == nil)
+	{
+		return nil;
+	}
+	
+	NSMutableString *desc = [NSMutableString string];
+	
+	[desc appendFormat: @"%@", commit];
+	
+	ETUUID *parent = [store parentForCommit: commit];
+	if (nil != parent)
+	{
+		COSubtree *before = [store treeForCommit: parent];
+		COSubtree *after = [store treeForCommit: commit];
+		COSubtreeDiff *diff = [COSubtreeDiff diffSubtree: before withSubtree: after sourceIdentifier: @""];
+		
+		[desc appendFormat: @"\n\n%@", diff];
+	}
+	
+	return desc;
+}
+
 - (void) setGraphRenderer: (EWGraphRenderer *)aRenderer
 {
 	ASSIGN(graphRenderer, aRenderer);
@@ -44,9 +72,7 @@
 	for (ETUUID *commit in [graphRenderer commits])
 	{
 		NSRect r = [graphRenderer rectForCommit: commit];
-		
-		// FIXME: relies on commit being owned by the array in graphRenderer
-		[self addToolTipRect:r owner:commit userData:nil];
+		[self addToolTipRect:r owner:self userData:commit];
 	}
 }
 
