@@ -288,103 +288,41 @@
 - (IBAction) selectiveUndo: (id)sender
 {
 	ETUUID *commitToUndo = [sender representedObject];
-	ETUUID *commitToUndoParent = [store parentForCommit: commitToUndo];
+	COSubtreeDiff *diff = [[COSubtreeFactory factory] selectiveUndoCommit: commitToUndo
+																forCommit: [ctx baseCommit]
+																	store: store];
 	
-	if (![store isCommit: commitToUndo parentOfCommit: [ctx baseCommit]])
+	if (diff)
 	{
-		NSLog(@"Selective undo failed: commit %@ is not a parent of current commit %@", 
-			  commitToUndo, [ctx baseCommit]);
-		return;
-	}
-	if (commitToUndoParent == nil)
-	{
-		NSLog(@"Selective undo failed: commit %@ has nil parent", commitToUndo);
-		return;
-	}
-	
-	COSubtree *commitToUndoSubtree = [store treeForCommit: commitToUndo];
-	COSubtree *commitToUndoParentSubtree = [store treeForCommit: commitToUndoParent];
-	COSubtree *currentCommitSubtree = [store treeForCommit: [ctx baseCommit]];
-	
-	COSubtreeDiff *diffBackout = [COSubtreeDiff diffSubtree: commitToUndoSubtree
-												withSubtree: commitToUndoParentSubtree 
-										   sourceIdentifier: @"back-out-change"];	
-	COSubtreeDiff *diffReapply = [COSubtreeDiff diffSubtree: commitToUndoSubtree
-												withSubtree: currentCommitSubtree 
-										   sourceIdentifier: @"reapply-changes-up-to-present"];
-	
-	COSubtreeDiff *merged = [diffBackout subtreeDiffByMergingWithDiff: diffReapply];
-	
-	if ([merged hasConflicts])
-	{
-		NSLog(@"Selective undo failed: merged diff has conflicts %@", [merged conflicts]);
-		return;
-	}
-	
-	COSubtree *newCurrentState = [merged subtreeWithDiffAppliedToSubtree: commitToUndoSubtree];
-
-	NSLog(@"selective undo success.");
-	
-	{
-		// Just for debugging, diff the current state against the new state
-		COSubtreeDiff *diffCurrentStateToNewCurrentState = [COSubtreeDiff diffSubtree: currentCommitSubtree
-																		  withSubtree: newCurrentState
-																	 sourceIdentifier: @""];
+		NSLog(@"Selective undo diff: %@", diff);
 		
-		NSLog(@"Selective undo diff: %@", diffCurrentStateToNewCurrentState);
+		COSubtree *currentCommitSubtree = [store treeForCommit: [ctx baseCommit]];
+		COSubtree *newCurrentState = [diff subtreeWithDiffAppliedToSubtree: currentCommitSubtree];
+
+		[ctx setPersistentRootTree: newCurrentState];
+		[ctx commitWithMetadata: nil];
+		[[NSApp delegate] reloadAllBrowsers];
 	}
-	
-	[ctx setPersistentRootTree: newCurrentState];
-	[ctx commitWithMetadata: nil];
-	[[NSApp delegate] reloadAllBrowsers];
 }
 
 - (IBAction) selectiveApply: (id)sender
 {
 	ETUUID *commitToDo = [sender representedObject];
-	ETUUID *commitToDoParent = [store parentForCommit: commitToDo];
+	COSubtreeDiff *diff = [[COSubtreeFactory factory] selectiveApplyCommit: commitToDo
+																 forCommit: [ctx baseCommit]
+																	 store: store];
 	
-	if (commitToDoParent == nil)
+	if (diff)
 	{
-		NSLog(@"Selective do failed: commit %@ has nil parent", commitToDo);
-		return;
-	}
-	
-	COSubtree *commitToDoSubtree = [store treeForCommit: commitToDo];
-	COSubtree *commitToDoParentSubtree = [store treeForCommit: commitToDoParent];
-	COSubtree *currentCommitSubtree = [store treeForCommit: [ctx baseCommit]];
-	
-	COSubtreeDiff *diffApplyChange = [COSubtreeDiff diffSubtree: commitToDoParentSubtree
-													withSubtree: commitToDoSubtree 
-											   sourceIdentifier: @"apply-selected-change"];	
-	COSubtreeDiff *diffApplyUpToPresent = [COSubtreeDiff diffSubtree: commitToDoParentSubtree
-														 withSubtree: currentCommitSubtree 
-													sourceIdentifier: @"apply-changes-up-to-present"];
-	
-	COSubtreeDiff *merged = [diffApplyChange subtreeDiffByMergingWithDiff: diffApplyUpToPresent];
-	
-	if ([merged hasConflicts])
-	{
-		NSLog(@"Selective do failed: merged diff has conflicts %@", [merged conflicts]);
-		return;
-	}
-	
-	COSubtree *newCurrentState = [merged subtreeWithDiffAppliedToSubtree: commitToDoParentSubtree];
-	
-	NSLog(@"selective undo success.");
-	
-	{
-		// Just for debugging, diff the current state against the new state
-		COSubtreeDiff *diffCurrentStateToNewCurrentState = [COSubtreeDiff diffSubtree: currentCommitSubtree
-																		  withSubtree: newCurrentState
-																	 sourceIdentifier: @""];
+		NSLog(@"Selective apply diff: %@", diff);
 		
-		NSLog(@"Selective do diff: %@", diffCurrentStateToNewCurrentState);
+		COSubtree *currentCommitSubtree = [store treeForCommit: [ctx baseCommit]];
+		COSubtree *newCurrentState = [diff subtreeWithDiffAppliedToSubtree: currentCommitSubtree];
+		
+		[ctx setPersistentRootTree: newCurrentState];
+		[ctx commitWithMetadata: nil];
+		[[NSApp delegate] reloadAllBrowsers];
 	}
-	
-	[ctx setPersistentRootTree: newCurrentState];
-	[ctx commitWithMetadata: nil];
-	[[NSApp delegate] reloadAllBrowsers];
 }
 
 
