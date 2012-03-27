@@ -46,7 +46,7 @@ static NSInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSInt
 	return self;
 }
 
-- (ETUUID *)store
+- (COStore *)store
 {
 	return store;
 }
