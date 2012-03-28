@@ -123,6 +123,48 @@
 	return NO;
 }
 
+- (COSubtree *) currentBranch
+{
+	COSubtree *branch = [self persistentRootItem];
+	
+	if (branch == nil) return nil;
+	
+	if (![[COSubtreeFactory factory] isBranch: branch])
+	{
+		branch = [[COSubtreeFactory factory] currentBranchOfPersistentRoot: branch];
+	}
+	return branch;
+}
+
+- (NSString *) undoLabel
+{
+	COSubtree *branch = [self currentBranch];
+	 
+	if (nil != branch)
+	{
+		if ([[COSubtreeFactory factory] canUndoBranch: branch store: store])
+		{
+			return [NSString stringWithFormat: @"Undo %@", [[COSubtreeFactory factory] undoMessageForBranch: branch store: store]];
+		}
+	}
+	return @"Undo";
+}
+
+- (NSString *) redoLabel
+{
+	COSubtree *branch = [self currentBranch];
+	
+	if (nil != branch)
+	{
+		if ([[COSubtreeFactory factory] canRedoBranch: branch store: store])
+		{
+			return [NSString stringWithFormat: @"Redo %@", [[COSubtreeFactory factory] redoMessageForBranch: branch store: store]];
+		}
+	}
+	return @"Redo";
+}
+
+
 - (void)windowDidLoad
 {
 	[outlineView registerForDraggedTypes:
@@ -156,6 +198,8 @@
 	}
 	
 	[[self window] setTitle: [self persistentRootTitle]];
+	
+	[self updateUndoRedoLabels];
 }
 
 - (BOOL) isExpanded: (EWPersistentRootOutlineRow*)aRow
@@ -180,14 +224,26 @@
 	}
 }
 
+- (void) updateUndoRedoLabels
+{
+	[undoButton setEnabled: [self canUndo]];
+	[redoButton setEnabled: [self canRedo]];
+
+	NSMenu *mainMenu = [[[NSApp mainMenu] itemWithTitle: @"Edit"] submenu];
+	NSMenuItem *undoItem = [mainMenu itemWithTag: 1111];
+	NSMenuItem *redoItem = [mainMenu itemWithTag: 1112];
+	
+	[undoItem setTitle: [self undoLabel]];
+	[redoItem setTitle: [self redoLabel]];	
+}
+
 - (void) reloadBrowser
 {
 	[self setupCtx];
 	[outlineView reloadData];
 	[self doExpansion: outlineModel];
 	
-	[undoButton setEnabled: [self canUndo]];
-	[redoButton setEnabled: [self canRedo]];
+	[self updateUndoRedoLabels];
 }
 
 - (IBAction) highlightInParent: (id)sender
