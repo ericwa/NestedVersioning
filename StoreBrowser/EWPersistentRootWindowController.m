@@ -11,6 +11,7 @@
 #import "COType.h"
 #import "EWIconTextFieldCell.h"
 #import "COStorePrivate.h"
+#import "EWUndoManager.h"
 
 @implementation EWPersistentRootWindowController
 
@@ -139,7 +140,7 @@
 - (NSString *) undoLabel
 {
 	COSubtree *branch = [self currentBranch];
-	 
+	
 	if (nil != branch)
 	{
 		if ([[COSubtreeFactory factory] canUndoBranch: branch store: store])
@@ -148,6 +149,11 @@
 		}
 	}
 	return @"Undo";
+}
+
+- (COStore *)store
+{
+	return store;
 }
 
 - (NSString *) redoLabel
@@ -164,6 +170,11 @@
 	return @"Redo";
 }
 
+- (void) updateUndoRedoButtons
+{
+	[undoButton setEnabled: [[self undoManager]  canUndo]];
+	[redoButton setEnabled: [[self undoManager]  canRedo]];
+}
 
 - (void)windowDidLoad
 {
@@ -179,8 +190,7 @@
 		[[outlineView tableColumnWithIdentifier: @"name"] setDataCell: cell];
 	}
 	
-	[undoButton setEnabled: [self canUndo]];
-	[redoButton setEnabled: [self canRedo]];
+	[self updateUndoRedoButtons];
 	
 	if ([path isEmpty])
 	{
@@ -198,8 +208,6 @@
 	}
 	
 	[[self window] setTitle: [self persistentRootTitle]];
-	
-	[self updateUndoRedoLabels];
 }
 
 - (BOOL) isExpanded: (EWPersistentRootOutlineRow*)aRow
@@ -224,26 +232,13 @@
 	}
 }
 
-- (void) updateUndoRedoLabels
-{
-	[undoButton setEnabled: [self canUndo]];
-	[redoButton setEnabled: [self canRedo]];
-
-	NSMenu *mainMenu = [[[NSApp mainMenu] itemWithTitle: @"Edit"] submenu];
-	NSMenuItem *undoItem = [mainMenu itemWithTag: 1111];
-	NSMenuItem *redoItem = [mainMenu itemWithTag: 1112];
-	
-	[undoItem setTitle: [self undoLabel]];
-	[redoItem setTitle: [self redoLabel]];	
-}
-
 - (void) reloadBrowser
 {
 	[self setupCtx];
 	[outlineView reloadData];
 	[self doExpansion: outlineModel];
 	
-	[self updateUndoRedoLabels];
+	[self updateUndoRedoButtons];
 }
 
 - (IBAction) highlightInParent: (id)sender
@@ -843,6 +838,16 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
 	}
 	
 	return [self respondsToSelector: theAction];
+}
+
+- (NSUndoManager *)undoManager
+{
+	return [[[EWUndoManager alloc] initWithWindowController: self] autorelease];
+}
+
+- (NSUndoManager *)windowWillReturnUndoManager:(NSWindow *)sender
+{
+	return [self undoManager];
 }
 
 @end

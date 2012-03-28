@@ -112,6 +112,7 @@
 		79284A7814F465890063B0BF /* EWIconTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 79284A7714F465890063B0BF /* EWIconTextFieldCell.m */; };
 		79626467150EE07E009A0686 /* COSequenceMerge.h in Headers */ = {isa = PBXBuildFile; fileRef = 79626465150EE07E009A0686 /* COSequenceMerge.h */; };
 		79626468150EE07E009A0686 /* COSequenceMerge.m in Sources */ = {isa = PBXBuildFile; fileRef = 79626466150EE07E009A0686 /* COSequenceMerge.m */; };
+		798A7CA71523C30400319B1B /* EWUndoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 798A7CA61523C30400319B1B /* EWUndoManager.m */; };
 		79B578D914ECC94E00B3563F /* EWDiffWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B578D814ECC94E00B3563F /* EWDiffWindowController.m */; };
 		79B578E314ECCACE00B3563F /* DiffWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = 79B578E214ECCACE00B3563F /* DiffWindow.nib */; };
 		79CB315114C6911400ADAB77 /* arrow_branch_purple.png in Resources */ = {isa = PBXBuildFile; fileRef = 79CB315014C6911400ADAB77 /* arrow_branch_purple.png */; };
@@ -309,6 +310,8 @@
 		79626466150EE07E009A0686 /* COSequenceMerge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = COSequenceMerge.m; path = Diff/COSequenceMerge.m; sourceTree = "<group>"; };
 		7978700E14D799A200B45FC6 /* TestSubtree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSubtree.m; sourceTree = "<group>"; };
 		79837D8C151024EB004EDD21 /* ODDS_AND_ENDS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ODDS_AND_ENDS; sourceTree = "<group>"; };
+		798A7CA51523C30400319B1B /* EWUndoManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWUndoManager.h; sourceTree = "<group>"; };
+		798A7CA61523C30400319B1B /* EWUndoManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWUndoManager.m; sourceTree = "<group>"; };
 		79926C17148CADF80095A665 /* EWPersistentRootWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWPersistentRootWindowController.h; sourceTree = "<group>"; };
 		79926C18148CADF80095A665 /* EWPersistentRootWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWPersistentRootWindowController.m; sourceTree = "<group>"; };
 		79999F1314DE597200FFBC99 /* COSubtreeFactory+PersistentRoots.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COSubtreeFactory+PersistentRoots.h"; sourceTree = "<group>"; };
@@ -652,6 +655,8 @@
 				79284A7614F465890063B0BF /* EWIconTextFieldCell.h */,
 				66485D8C14D2399A004C4431 /* Implementation */,
 				79B578DC14ECC95B00B3563F /* Diff View */,
+				798A7CA51523C30400319B1B /* EWUndoManager.h */,
+				798A7CA61523C30400319B1B /* EWUndoManager.m */,
 			);
 			path = StoreBrowser;
 			sourceTree = "<group>";
@@ -1084,6 +1089,7 @@
 				66E7789E14E6079600D5DFFF /* EWOutlineView.m in Sources */,
 				79B578D914ECC94E00B3563F /* EWDiffWindowController.m in Sources */,
 				79284A7814F465890063B0BF /* EWIconTextFieldCell.m in Sources */,
+				798A7CA71523C30400319B1B /* EWUndoManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

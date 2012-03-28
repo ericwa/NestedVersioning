@@ -27,35 +27,4 @@
 	[super rightMouseDown: theEvent];
 }
 
-// FIXME: Hack. NSWindow seems to implement -validateUserInterfaceItem:
-// to check if the undo/redo menu items should be enabled, based on
-// querying NSUndoManager. Since we don't use NSUndoManager, they're always
-// disabled even though EWPersistentRootWindowController implements undo:/redo:.
-
-- (IBAction) undo: (id)sender
-{
-	[[[self window] windowController] undo: sender];
-}
-
-- (IBAction) redo: (id)sender
-{
-	[[[self window] windowController] redo: sender];
-}
-
-- (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem
-{
-    SEL theAction = [anItem action];
-	
-	if (theAction == @selector(undo:))
-	{
-		return [[[self window] windowController] canUndo];
-	}
-	else if (theAction == @selector(redo:))
-	{
-		return [[[self window] windowController] canRedo];
-	}
-	
-	return YES;
-}
-
 @end
