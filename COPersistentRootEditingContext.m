@@ -271,8 +271,8 @@
 		
 		// See COSubtreeFactory+Undo
 		ETUUID *resultUUID = [parentCtx commitWithMetadata: 
-								[NSDictionary dictionaryWithObject: @"commitInChild"
-															forKey: @"type"]];
+									D(@"commitInChild", @"type",
+									  @"commit in child", @"menuLabel")];
 		assert (resultUUID != nil);
 		
 		[parentCtx release];
