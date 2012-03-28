@@ -77,7 +77,7 @@
 															  store: store];
 	[iroot addTree: photolib];
 	
-	[rootCtx commitWithMetadata: nil];
+	[rootCtx commitWithMetadata: D(@"create libraries", @"menuLabel")];
 	
 	// set up some tags
 	
@@ -97,7 +97,7 @@
 		COSubtree *brazil = [factory item: @"brazil"];
 		[southamerica addTree: brazil];
 	
-		[taglibCtx commitWithMetadata: nil];
+		[taglibCtx commitWithMetadata: D(@"add tags", @"menuLabel")];
 	
 
 
@@ -174,7 +174,7 @@
 				forAttribute: @"contents" 
 						type: [COType arrayWithPrimitiveType: [COType pathType]]];
 		
-		[photolibCtx commitWithMetadata: nil];
+		[photolibCtx commitWithMetadata: D(@"setup photo library", @"menuLabel")];
 		
 		// set up tags on photo1
 
@@ -201,7 +201,7 @@
 							forAttribute: @"tags"
 									type: [COType setWithPrimitiveType: [COType pathType]]];
 			
-			[photo1Ctx commitWithMetadata: nil];
+			[photo1Ctx commitWithMetadata: D(@"add photo tags", @"menuLabel")];
 		}
 	
 		// set up tags on photo2
@@ -229,7 +229,7 @@
 							forAttribute: @"tags"
 									type: [COType setWithPrimitiveType: [COType pathType]]];
 			
-			[photo2Ctx commitWithMetadata: nil];
+			[photo2Ctx commitWithMetadata: D(@"add photo tags", @"menuLabel")];
 		}
 	
 		// set up tags on photo3
@@ -258,7 +258,7 @@
 							forAttribute: @"tags"
 									type: [COType setWithPrimitiveType: [COType pathType]]];
 			
-			[photo3Ctx commitWithMetadata: nil];
+			[photo3Ctx commitWithMetadata: D(@"add photo tags", @"menuLabel")];
 		}
 	
 	// create branch of photo library
@@ -274,7 +274,7 @@
 	[photolibBranchB setValue: @"Test Branch"
 				 forAttribute: @"name"
 						 type: [COType stringType]];
-	[rootCtx commitWithMetadata: nil];
+	[rootCtx commitWithMetadata: D(@"create branch", @"menuLabel")];
 	
 	
 	// do some searches
