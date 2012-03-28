@@ -33,6 +33,7 @@ $(APP_NAME)_OBJC_FILES=\
 	StoreBrowser/EWPersistentRootWindowController.m\
 	StoreBrowser/EWDiffWindowController.m\
 	StoreBrowser/EWIconTextFieldCell.m\
+	StoreBrowser/EWUndoManager.m\
 	StoreBrowser/main.m\
 	Tests/TestCommon.m\
 	Tests/TestTagging.m\

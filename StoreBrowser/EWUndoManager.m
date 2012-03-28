@@ -37,6 +37,18 @@
 	return [winController redoLabel];
 }
 
+- (NSString *)undoMenuTitleForUndoActionName: (NSString *)action
+{
+	// FIXME: Hack...
+	return [self undoMenuItemTitle];
+}
+
+- (NSString *)redoMenuTitleForUndoActionName: (NSString *)action
+{
+	// FIXME: Hack...
+	return [self redoMenuItemTitle];
+}
+
 - (void) undo
 {
 	[winController undo: nil];
