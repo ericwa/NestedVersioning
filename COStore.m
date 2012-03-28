@@ -235,7 +235,7 @@
 {
 	NILARG_EXCEPTION_TEST(commit);
 	
-	NSString *string = [[self _plistForCommit: commit] objectForKey: @"menuString"];
+	NSString *string = [[self metadataForCommit: commit] objectForKey: @"menuLabel"];
 	
 	if (string == nil)
 		string = @"<menuString not provided>";
