@@ -35,6 +35,11 @@
 - (NSDictionary *) UUIDsAndStoreItemsForCommit: (ETUUID*)commit;
 
 /**
+ * Returns a string which can be used in the undo/redo menu item for this commit
+ */
+- (NSString *)menuStringForCommit: (ETUUID *)commit;
+
+/**
  * Returns the entire item tree for a commit
  */
 - (COSubtree *) treeForCommit: (ETUUID *)aCommit;

@@ -238,6 +238,23 @@
 	}
 }
 
+- (NSString *) undoMessageForBranch: (COSubtree*)aBranch
+							  store: (COStore *)aStore
+{
+	ETUUID *version = [self redoVersionForBranch: aBranch store: aStore];
+	return [aStore menuStringForCommit: version];
+}
+
+- (NSString *) redoMessageForBranch: (COSubtree*)aBranch
+							  store: (COStore *)aStore
+{
+	ETUUID *version = [self redoVersionForBranch: aBranch store: aStore];
+	return [aStore menuStringForCommit: version];
+}
+
+
+#pragma mark selective undo and apply
+
 - (COSubtreeDiff *) selectiveUndoCommit: (ETUUID *) commitToUndo
 							  forCommit: (ETUUID*) target
 								  store: (COStore *)aStore

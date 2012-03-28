@@ -46,6 +46,11 @@
 - (void) redoBranch: (COSubtree*)aBranch
 			  store: (COStore *)aStore;
 
+- (NSString *) undoMessageForBranch: (COSubtree*)aBranch
+							  store: (COStore *)aStore;
+- (NSString *) redoMessageForBranch: (COSubtree*)aBranch
+							  store: (COStore *)aStore;
+
 #pragma mark selective undo
 
 /**

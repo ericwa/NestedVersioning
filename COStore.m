@@ -231,6 +231,18 @@
 	assert([aDate isKindOfClass: [NSDate class]]);
 	return aDate;
 }
+- (NSString *)menuStringForCommit: (ETUUID *)commit
+{
+	NILARG_EXCEPTION_TEST(commit);
+	
+	NSString *string = [[self _plistForCommit: commit] objectForKey: @"menuString"];
+	
+	if (string == nil)
+		string = @"<menuString not provided>";
+	
+	return string;
+}
+
 - (NSDictionary *) UUIDsAndStoreItemsForCommit: (ETUUID*)commit
 {
 	NILARG_EXCEPTION_TEST(commit);
