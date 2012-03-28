@@ -241,7 +241,7 @@
 - (NSString *) undoMessageForBranch: (COSubtree*)aBranch
 							  store: (COStore *)aStore
 {
-	ETUUID *version = [self undoVersionForBranch: aBranch store: aStore];
+	ETUUID *version = [self currentVersionForBranch: aBranch];
 	return [aStore menuStringForCommit: version];
 }
 
