@@ -103,6 +103,15 @@ toUnorderedAttribute: @"contents"
 	return branch;
 }
 
+- (COSubtree *) currentBranch: (COSubtree *)aRootOrBranch
+{
+	if ([self isBranch: aRootOrBranch])
+	{
+		return aRootOrBranch;
+	}
+	return [self currentBranchOfPersistentRoot: aRootOrBranch];
+}
+
 - (void) setCurrentBranch: (COSubtree *)aBranch
 		forPersistentRoot: (COSubtree *)aRoot
 {

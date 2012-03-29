@@ -144,7 +144,7 @@
 	u1BranchB = [[ctx persistentRootTree] subtreeWithUUID: [u1BranchB UUID]];
 	
 	
-	[[COSubtreeFactory factory] undoPersistentRoot: i1 store: store];
+	[[COSubtreeFactory factory] undoBranch: [[COSubtreeFactory factory] currentBranch: i1] store: store];
 	[ctx commitWithMetadata: nil];
 	
 	UKStringsEqual(@"yellow", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
@@ -155,7 +155,7 @@
 	
 	
 	
-	[[COSubtreeFactory factory] undoPersistentRoot: i1 store: store];
+	[[COSubtreeFactory factory] undoBranch: [[COSubtreeFactory factory] currentBranch: i1] store: store];
 	[ctx commitWithMetadata: nil];
 	
 	UKStringsEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
@@ -164,7 +164,7 @@
 	
 	
 	
-	[[COSubtreeFactory factory] undoPersistentRoot: i1 store: store]; // does nothing - because we can't undo past the point where Branch B was created
+	[[COSubtreeFactory factory] undoBranch: [[COSubtreeFactory factory] currentBranch: i1] store: store]; // does nothing - because we can't undo past the point where Branch B was created
 	[ctx commitWithMetadata: nil];
 	
 	UKStringsEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
@@ -199,7 +199,7 @@
 	
 	
 	
-	[[COSubtreeFactory factory] redoPersistentRoot: i1 store: store]; // does nothing - because we can't redo past the end of the branch
+	[[COSubtreeFactory factory] redoBranch: [[COSubtreeFactory factory] currentBranch: i1] store: store]; // does nothing - because we can't redo past the end of the branch
 	[ctx commitWithMetadata: nil];
 	
 	UKStringsEqual(@"green", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
@@ -209,8 +209,8 @@
 	
 	
 	
-	[[COSubtreeFactory factory] undoPersistentRoot: i1 store: store]; 
-	[[COSubtreeFactory factory] undoPersistentRoot: i1 store: store];
+	[[COSubtreeFactory factory] undoBranch: [[COSubtreeFactory factory] currentBranch: i1] store: store]; 
+	[[COSubtreeFactory factory] undoBranch: [[COSubtreeFactory factory] currentBranch: i1] store: store];
 	[ctx commitWithMetadata: nil];
 	
 	UKStringsEqual(@"orange", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);

@@ -42,6 +42,8 @@
 
 - (void) orderFrontAndHighlightItem: (ETUUID*)aUUID;
 
+- (COSubtree *)branchItem;
+
 /**
  * Temporary hack...
  */

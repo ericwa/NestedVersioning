@@ -24,6 +24,8 @@
 - (NSSet *) branchesOfPersistentRoot: (COSubtree *)aRoot;
 - (NSSet *) brancheUUIDsOfPersistentRoot: (COSubtree *)aRoot;
 
+- (COSubtree *) currentBranch: (COSubtree *)aRootOrBranch;
+
 - (COSubtree *) currentBranchOfPersistentRoot: (COSubtree *)aRoot;
 
 - (void) setCurrentBranch: (COSubtree *)aBranch

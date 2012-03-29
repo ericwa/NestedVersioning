@@ -74,6 +74,16 @@
 	}
 }
 
+- (COSubtree *)branchItem
+{
+	COSubtree *item = [self persistentRootItem];
+	if (item != nil)
+	{
+		return [[COSubtreeFactory factory] currentBranch: item];
+	}
+	return nil;
+}
+
 - (NSString *)persistentRootTitle
 {
 	if ([path isEmpty])
@@ -106,40 +116,27 @@
 
 - (BOOL) canUndo
 {
-	COSubtree *item = [self persistentRootItem];
+	COSubtree *item = [self branchItem];
 	if (nil != item)
 	{
-		return [[COSubtreeFactory factory] canUndo: item store: store];
+		return [[COSubtreeFactory factory] canUndoBranch: item store: store];
 	}
 	return NO;
 }
 
 - (BOOL) canRedo
 {
-	COSubtree *item = [self persistentRootItem];
+	COSubtree *item = [self branchItem];
 	if (nil != item)
 	{
-		return [[COSubtreeFactory factory] canRedo: item store: store];
+		return [[COSubtreeFactory factory] canRedoBranch: item store: store];
 	}
 	return NO;
 }
 
-- (COSubtree *) currentBranch
-{
-	COSubtree *branch = [self persistentRootItem];
-	
-	if (branch == nil) return nil;
-	
-	if (![[COSubtreeFactory factory] isBranch: branch])
-	{
-		branch = [[COSubtreeFactory factory] currentBranchOfPersistentRoot: branch];
-	}
-	return branch;
-}
-
 - (NSString *) undoLabel
 {
-	COSubtree *branch = [self currentBranch];
+	COSubtree *branch = [self branchItem];
 	
 	if (nil != branch)
 	{
@@ -158,7 +155,7 @@
 
 - (NSString *) redoLabel
 {
-	COSubtree *branch = [self currentBranch];
+	COSubtree *branch = [self branchItem];
 	
 	if (nil != branch)
 	{
@@ -275,8 +272,9 @@
 																									 inStore: store];
 	
 	COSubtree *item = [[parentCtx persistentRootTree] subtreeWithUUID: [path lastPathComponent]];
+	item = [[COSubtreeFactory factory] currentBranch: item];
 	
-	[[COSubtreeFactory factory] undo: item store: store];
+	[[COSubtreeFactory factory] undoBranch: item store: store];
 	[parentCtx commitWithMetadata: nil];
 	[[NSApp delegate] reloadAllBrowsers];
 }
@@ -287,8 +285,9 @@
 																									 inStore: store];
 	
 	COSubtree *item = [[parentCtx persistentRootTree] subtreeWithUUID: [path lastPathComponent]];
+	item = [[COSubtreeFactory factory] currentBranch: item];
 	
-	[[COSubtreeFactory factory] redo: item store: store];
+	[[COSubtreeFactory factory] redoBranch: item store: store];
 	[parentCtx commitWithMetadata: nil];
 	[[NSApp delegate] reloadAllBrowsers];
 }
