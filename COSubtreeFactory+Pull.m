@@ -7,6 +7,7 @@
 #import "COSubtreeFactory+PersistentRoots.h"
 #import "COSubtree.h"
 #import "COSubtreeDiff.h"
+#import "COPersistentRootDiff.h"
 
 @implementation COSubtreeFactory (Pull)
 
@@ -14,8 +15,8 @@
 					  toBranch: (COSubtree*)destBranch
 						 store: (COStore *)aStore
 {
-	COUUID *srcCommit = [self currentVersionForBranch: srcBranch];
-	COUUID *destCommit = [self currentVersionForBranch: destBranch];
+	ETUUID *srcCommit = [self currentVersionForBranch: srcBranch];
+	ETUUID *destCommit = [self currentVersionForBranch: destBranch];
 	
 	if ([aStore isCommit: destCommit parentOfCommit: srcCommit])
 	{
@@ -30,7 +31,7 @@
 	{
 		NSLog(@"pullChangesFromBranch: need to do full merge.");
 		
-		COUUID *ancestor = [aStore commonAncestorForCommit: srcCommit
+		ETUUID *ancestor = [aStore commonAncestorForCommit: srcCommit
 												 andCommit: destCommit];
 		
 		NSLog(@"common ancestor: %@", ancestor);
@@ -46,44 +47,32 @@
 		COSubtree *srcCommitSubtree = [aStore treeForCommit: srcCommit];
 		COSubtree *destCommitSubtree = [aStore treeForCommit: destCommit];
 		
-		COSubtreeDiff *diffAncestorToSrc = [COSubtreeDiff diffSubtree: ancestorSubtree
-														withSubtree: srcCommitSubtree 
-												   sourceIdentifier: @"ancestor-src"];	
-		COSubtreeDiff *diffAncestorToDest = [COSubtreeDiff diffSubtree: ancestorSubtree
-															 withSubtree: destCommitSubtree 
-														sourceIdentifier: @"ancestor-dest"];
+		COPersistentRootDiff *diffAncestorToSrc = [COPersistentRootDiff diffSubtree: ancestorSubtree
+																		withSubtree: srcCommitSubtree 
+																			  store: aStore
+																   sourceIdentifier: @"ancestor-src"];	
+		COPersistentRootDiff *diffAncestorToDest = [COPersistentRootDiff diffSubtree: ancestorSubtree
+																		 withSubtree: destCommitSubtree 
+																			   store: aStore
+																	sourceIdentifier: @"ancestor-dest"];
 		
 		NSLog(@"ancestor-src diff: %@", diffAncestorToSrc);
 		NSLog(@"ancestor-dest diff: %@", diffAncestorToDest);
 		
-		COSubtreeDiff *merged = [diffAncestorToSrc subtreeDiffByMergingWithDiff: diffAncestorToDest];
+		COPersistentRootDiff *merged = [diffAncestorToSrc persistentRootDiffByMergingWithDiff: diffAncestorToDest];
 		
 		if ([merged hasConflicts])
 		{
 			NSLog(@"Pull failed: merged diff has conflicts: %@", [merged conflicts]);
 			return;
 		}
-		
+				
 		NSLog(@"diff from %@ to %@ + %@: %@", ancestor, srcCommit, destCommit, merged);
-		
-		COSubtree *newCurrentState = [merged subtreeWithDiffAppliedToSubtree: ancestorSubtree];
-		
-		NSLog(@"selective undo success.");
-		
-		{
-			// Just for debugging, diff the current state against the new state
-			COSubtreeDiff *diffCurrentStateToNewCurrentState = [COSubtreeDiff diffSubtree: destCommitSubtree
-																			  withSubtree: newCurrentState
-																		 sourceIdentifier: @""];
-			
-			NSLog(@"Finished pull diff: %@", diffCurrentStateToNewCurrentState);
-		}
-		
+	
 		// commit the changes
 		
-		COUUID *newCommitUUID = [aStore addCommitWithParent: destCommit
-												   metadata: nil
-													   tree: newCurrentState];
+		COUUID *newCommitUUID = [merged commitAppliedToParent: destCommit
+														store: aStore];
 		
 		[self setCurrentVersion: newCommitUUID
 					  forBranch: destBranch

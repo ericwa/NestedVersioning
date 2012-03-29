@@ -32,28 +32,6 @@
  */
 @interface COPersistentRootDiff : NSObject <NSCopying>
 {
-	// diff of the persistent root metatata
-	
-	
-	
-	/**
-	 * YES if the receiver was created by diffing two branch objects,
-	 * NO if created by diffing two persistent root objects
-	 */
-	BOOL wasCreatedFromBranches;
-	
-	/**
-	 * diff of the branches or persistent root objects the receiver 
-	 * was created with
-	 */
-	COSubtreeDiff *rootDiff;
-	
-	
-	
-	// diffs of the contents of the persistent root.
-	
-	
-	
 	/**
 	 * never contains the empty path
 	 *
@@ -63,39 +41,18 @@
 	 */
 	NSMutableDictionary *subtreeDiffForPath;
 	
-	
-	/**
-	 * this is only used for calculating merges.
-	 */
-	NSMutableDictionary *initialSubtreeForPath;
-	
-	
-	
-	// auxiliary stuff created when two diffs are merged
-	
-	
-
-	NSMutableDictionary *parentCommitForPendingCommitUUID;	
-	NSMutableDictionary *treeToCommitForPendingCommitUUID;
+	NSMutableDictionary *mergeParentsForNewCommitUUID;
 }
 
-+ (COPersistentRootDiff *) diffPersistentRoot: (COSubtree *)rootA
-						   withPersistentRoot: (COSubtree *)rootB
-								  allBranches: (BOOL)allBranches
-										store: (COStore *)aStore
-							 sourceIdentifier: (id)aSource;
-
-
-+ (COPersistentRootDiff *) diffBranch: (COSubtree *)branchA
-						   withBranch: (COSubtree *)branchB
-								store: (COStore *)aStore
-					 sourceIdentifier: (id)aSource;
++ (COPersistentRootDiff *) diffSubtree: (COSubtree *)subtreeA
+						   withSubtree: (COSubtree *)subtreeB
+								 store: (COStore *)aStore
+					  sourceIdentifier: (id)aSource;
 
 #pragma mark diff application
 
-- (COSubtree *) subtreeByApplyingToPersistentRootOrBranch: (COSubtree *)dest
-													store: (COStore *)aStore;
-
+- (COUUID *) commitAppliedToParent: (COUUID *)aParent
+							 store: (COStore *)aStore;
 
 #pragma mark access
 
@@ -109,11 +66,6 @@
  */
 - (NSSet *) paths;
 
-/**
- * diff of the branches or persistent root objects the receiver 
- * was created with
- */
-- (COSubtreeDiff *) rootSubtreeDiff;
 - (COSubtreeDiff *) subtreeDiffAtPath: (COPath *)aPath;
 - (COSubtree *) initialSubtreeForPath: (COPath *)aPath;
 
