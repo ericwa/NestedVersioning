@@ -7,18 +7,61 @@
 #import "COPath.h"
 #import "COStorePrivate.h"
 
+NSString *kCOType = @"type";
+NSString *kCOName = @"name";
+NSString *kCOContents = @"contents";
+NSString *kCOCurrentBranch = @"currentBranch";
+NSString *kCOCurrentVersion = @"currentVersion";
+NSString *kCOHead = @"head";
+NSString *kCOTail = @"tail";
+
+NSString *kCOTypePersistentRoot = @"persistentRoot";
+NSString *kCOTypeBranch = @"branch";
+
+
 @implementation COSubtreeFactory (PersistentRoots)
 
 - (BOOL) isValidPersistentRoot: (COSubtree *)aRoot
 {
-	// FIXME: Implement
+	if (![[aRoot valueForAttribute: kCOType] isEqual: kCOTypePersistentRoot])
+		return NO;
+	
+	if (![[aRoot typeForAttribute: kCOCurrentBranch] isEqual: [COType pathType]])
+		return NO;
+
+	if (![[aRoot typeForAttribute: kCOContents] isEqual: [COType setWithPrimitiveType: [COType embeddedItemType]]])
+		return NO;
+
+	COPath *currentBranch = [aRoot valueForAttribute: kCOCurrentBranch];
+	
+	if (![currentBranch hasComponents] || ![[currentBranch pathByDeletingLastPathComponent] isEmpty])
+		return NO;
+	
+	NSArray *branches = [aRoot valueForAttribute: kCOContents];
+	for (COSubtree *branch in branches)
+	{
+		if ([[branch UUID] isEqual: [currentBranch lastPathComponent]])
+			return YES;
+	}
+	
 	return NO;
 }
 
-- (BOOL) isValidBranch: (COSubtree *)aRoot
+- (BOOL) isValidBranch: (COSubtree *)aBranch
 {
-	// FIXME: Implement
-	return NO;
+	if (![[aBranch valueForAttribute: kCOType] isEqual: kCOTypeBranch])
+		return NO;
+
+	if (![[aBranch typeForAttribute: kCOCurrentVersion] isEqual: [COType commitUUIDType]])
+		return NO;
+
+	if (![[aBranch typeForAttribute: kCOHead] isEqual: [COType commitUUIDType]])
+		return NO;
+	
+	if (![[aBranch typeForAttribute: kCOTail] isEqual: [COType commitUUIDType]])
+		return NO;
+	
+	return YES;
 }
 
 - (COSubtree *)persistentRootWithInitialVersion: (COUUID *)aVersion
@@ -30,26 +73,26 @@
 	COSubtree *i1 = [COSubtree subtree];
 	COSubtree *i2 = [COSubtree subtree];
 	
-	[i1 setPrimitiveValue: @"persistentRoot"
-			 forAttribute: @"type"
+	[i1 setPrimitiveValue: kCOTypePersistentRoot
+			 forAttribute: kCOType
 					 type: [COType stringType]];
 	
 	[i1 setPrimitiveValue: aName
-			 forAttribute: @"name"
+			 forAttribute: kCOName
 					 type: [COType stringType]];		
 	
 	[i1    addObject: i2
-toUnorderedAttribute: @"contents"
+toUnorderedAttribute: kCOContents
 				type: [COType setWithPrimitiveType: [COType embeddedItemType]]];
 	
 	// setup branch
 	
-	[i2 setPrimitiveValue: @"branch"
-			 forAttribute: @"type"
+	[i2 setPrimitiveValue: kCOTypeBranch
+			 forAttribute: kCOType
 					 type: [COType stringType]];
 
 	[i2 setPrimitiveValue: @"Main Branch"
-			 forAttribute: @"name"
+			 forAttribute: kCOName
 					 type: [COType stringType]];	
 	
 	[self setCurrentVersion: aVersion
@@ -65,7 +108,7 @@ toUnorderedAttribute: @"contents"
 
 - (NSSet *) branchesOfPersistentRoot: (COSubtree *)aRoot
 {
-	NSSet *set = [aRoot valueForAttribute: @"contents"];
+	NSSet *set = [aRoot valueForAttribute: kCOContents];
 	
 	assert([set isKindOfClass: [NSSet class]]);
 	assert(![set isKindOfClass: [NSCountedSet class]]);
@@ -85,7 +128,7 @@ toUnorderedAttribute: @"contents"
 
 - (COSubtree *) currentBranchOfPersistentRoot: (COSubtree *)aRoot
 {
-	COPath *aPath = [aRoot valueForAttribute: @"currentBranch"];
+	COPath *aPath = [aRoot valueForAttribute: kCOCurrentBranch];
 	
 	assert([aPath isKindOfClass: [COPath class]]);
 	// FIXME: check it is a single-element path
@@ -122,7 +165,7 @@ toUnorderedAttribute: @"contents"
 	}
 	
 	[aRoot setPrimitiveValue: [COPath pathWithPathComponent: [aBranch UUID]]
-				forAttribute: @"currentBranch"
+				forAttribute: kCOCurrentBranch
 						type: [COType pathType]];
 }
 
@@ -133,7 +176,7 @@ toUnorderedAttribute: @"contents"
 		[NSException raise: NSInvalidArgumentException
 					format: @"expected branch"];
 	}
-	return [aBranch valueForAttribute: @"currentVersion"];
+	return [aBranch valueForAttribute: kCOCurrentVersion];
 }
 
 - (COUUID *) currentVersionForBranchOrPersistentRoot: (COSubtree *)aRootOrBranch
@@ -187,12 +230,12 @@ toUnorderedAttribute: @"contents"
 
 - (COUUID *) headForBranch: (COSubtree*)aBranch
 {
-	return [aBranch valueForAttribute: @"head"];
+	return [aBranch valueForAttribute: kCOHead];
 }
 
 - (COUUID *) tailForBranch: (COSubtree*)aBranch
 {
-	return [aBranch valueForAttribute: @"tail"];
+	return [aBranch valueForAttribute: kCOTail];
 }
 
 - (void) setCurrentVersion: (COUUID*)aVersion
@@ -201,60 +244,60 @@ toUnorderedAttribute: @"contents"
 		   updateUndoLimit: (BOOL)setUndoLimit
 {
 	[aBranch setPrimitiveValue: aVersion
-				  forAttribute: @"currentVersion"
+				  forAttribute: kCOCurrentVersion
 						  type: [COType commitUUIDType]];
 	if (setRedoLimit)
 	{
 		[aBranch setPrimitiveValue: aVersion
-					  forAttribute: @"head"
+					  forAttribute: kCOHead
 							  type: [COType commitUUIDType]];
 	}
 	if (setUndoLimit)
 	{
 		[aBranch setPrimitiveValue: aVersion
-					  forAttribute: @"tail"
+					  forAttribute: kCOTail
 							  type: [COType commitUUIDType]];
 	}
 }
 
 - (BOOL) isBranch: (COSubtree *)anEmbeddedObject
 {
-	NSString *type = [anEmbeddedObject valueForAttribute: @"type"];
-	return [type isEqual: @"branch"];
+	NSString *type = [anEmbeddedObject valueForAttribute: kCOType];
+	return [type isEqual:kCOTypeBranch];
 }
 
 - (BOOL) isPersistentRoot: (COSubtree *)anEmbeddedObject
 {
-	NSString *type = [anEmbeddedObject valueForAttribute: @"type"];
-	return [type isEqual: @"persistentRoot"];
+	NSString *type = [anEmbeddedObject valueForAttribute: kCOType];
+	return [type isEqual:kCOTypePersistentRoot];
 }
 
 - (COSubtree *)persistentRootByCopyingBranch: (COSubtree *)aBranch
 {
 	COSubtree *srcPersistentRoot = [aBranch parent];
 	
-	NSString *srcName = [srcPersistentRoot valueForAttribute: @"name"];
+	NSString *srcName = [srcPersistentRoot valueForAttribute: kCOName];
 	NSString *name = [NSString stringWithFormat: @"%@ - copy of branch %@", srcName, [[aBranch UUID] stringValue]];
 	
 	COSubtree *i1 = [COSubtree subtree];
 	
 	COSubtree *i2 = [[aBranch subtreeCopyRenamingAllItems] subtree];
 	
-	[i1 setPrimitiveValue: @"persistentRoot"
-			 forAttribute: @"type"
+	[i1 setPrimitiveValue:kCOTypePersistentRoot
+			 forAttribute: kCOType
 					 type: [COType stringType]];	
 	[i1 setPrimitiveValue: name
-			 forAttribute: @"name"
+			 forAttribute: kCOName
 					 type: [COType stringType]];
 	[i1    addObject: i2
-toUnorderedAttribute: @"contents"
+toUnorderedAttribute: kCOContents
 				type: [COType setWithPrimitiveType: [COType embeddedItemType]]];
 	[self setCurrentBranch:i2
 		 forPersistentRoot:i1];
 	
 	// Reset the limits for undo/redo
 	{
-		COUUID *currentVersion = [i2 valueForAttribute: @"currentVersion"];
+		COUUID *currentVersion = [i2 valueForAttribute: kCOCurrentVersion];
 		assert(currentVersion != nil);
 		
 		[self setCurrentVersion: currentVersion
@@ -263,8 +306,8 @@ toUnorderedAttribute: @"contents"
 				updateUndoLimit: YES];
 	}
 	
-	assert([[i2 valueForAttribute: @"type"] isEqual: @"branch"]);
-	assert([[i2 typeForAttribute: @"currentVersion"] isEqual: [COType commitUUIDType]]);
+	assert([[i2 valueForAttribute: kCOType] isEqual:kCOTypeBranch]);
+	assert([[i2 typeForAttribute: kCOCurrentVersion] isEqual: [COType commitUUIDType]]);
 	
 	return i1;
 }
@@ -275,7 +318,7 @@ toUnorderedAttribute: @"contents"
 		
 	// Reset the limits for undo/redo
 	{
-		COUUID *currentVersion = [branch valueForAttribute: @"currentVersion"];
+		COUUID *currentVersion = [branch valueForAttribute: kCOCurrentVersion];
 		assert(currentVersion != nil);
 		
 		[self setCurrentVersion: currentVersion
@@ -285,7 +328,7 @@ toUnorderedAttribute: @"contents"
 	}
 	
 	[aRoot addObject: branch
-toUnorderedAttribute: @"contents"
+toUnorderedAttribute: kCOContents
 				type: [COType setWithPrimitiveType: [COType embeddedItemType]]];
 	
 	return branch;
@@ -308,7 +351,7 @@ toUnorderedAttribute: @"contents"
 
 - (NSString *) displayNameForBranchOrPersistentRoot: (COSubtree *)aRootOrBranch
 {
-	NSString *name = [aRootOrBranch valueForAttribute: @"name"];
+	NSString *name = [aRootOrBranch valueForAttribute: kCOName];
 	if ([name isKindOfClass: [NSString class]])
 	{
 		return name;

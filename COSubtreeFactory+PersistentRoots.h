@@ -1,6 +1,17 @@
 #import "COSubtreeFactory.h"
 #import "COStore.h"
 
+extern NSString *kCOType;
+extern NSString *kCOName;
+extern NSString *kCOContents;
+extern NSString *kCOCurrentBranch;
+extern NSString *kCOCurrentVersion;
+extern NSString *kCOHead;
+extern NSString *kCOTail;
+
+extern NSString *kCOTypePersistentRoot;
+extern NSString *kCOTypeBranch;
+
 /**
  * This is a set of methods for manipulating the items
  * in an item tree representing persistent roots.
