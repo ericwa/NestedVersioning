@@ -15,8 +15,8 @@
 					  toBranch: (COSubtree*)destBranch
 						 store: (COStore *)aStore
 {
-	ETUUID *srcCommit = [self currentVersionForBranch: srcBranch];
-	ETUUID *destCommit = [self currentVersionForBranch: destBranch];
+	COUUID *srcCommit = [self currentVersionForBranch: srcBranch];
+	COUUID *destCommit = [self currentVersionForBranch: destBranch];
 	
 	if ([aStore isCommit: destCommit parentOfCommit: srcCommit])
 	{
@@ -31,7 +31,7 @@
 	{
 		NSLog(@"pullChangesFromBranch: need to do full merge.");
 		
-		ETUUID *ancestor = [aStore commonAncestorForCommit: srcCommit
+		COUUID *ancestor = [aStore commonAncestorForCommit: srcCommit
 												 andCommit: destCommit];
 		
 		NSLog(@"common ancestor: %@", ancestor);

@@ -4,6 +4,7 @@
 @class COStore;
 @class COSubtree;
 @class COSubtreeDiff;
+@class COUUID;
 
 /*
  test cases:
@@ -32,16 +33,12 @@
  */
 @interface COPersistentRootDiff : NSObject <NSCopying>
 {
-	/**
-	 * never contains the empty path
-	 *
-	 * contains a single-element path for every currentVersion conflict in rootDiff
-	 *
-	 * this is only used for calculating merges.
-	 */
 	NSMutableDictionary *subtreeDiffForPath;
 	
-	NSMutableDictionary *mergeParentsForNewCommitUUID;
+	// FIXME: we will need to record the merge parents when
+	// resolving a "set currentVersion" conflict
+	//
+	//NSMutableDictionary *mergeParentsForNewCommitUUID;
 }
 
 + (COPersistentRootDiff *) diffSubtree: (COSubtree *)subtreeA
@@ -67,7 +64,6 @@
 - (NSSet *) paths;
 
 - (COSubtreeDiff *) subtreeDiffAtPath: (COPath *)aPath;
-- (COSubtree *) initialSubtreeForPath: (COPath *)aPath;
 
 #pragma mark merge
 

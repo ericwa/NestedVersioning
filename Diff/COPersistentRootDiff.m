@@ -55,7 +55,7 @@
 	COPersistentRootDiff *result = [[[self class] alloc] init];
 
 	result->subtreeDiffForPath = [[NSMutableDictionary alloc] initWithDictionary: subtreeDiffForPath 
-																	   copyItems: YES];																					 copyItems: YES];
+																	   copyItems: YES];
 	return result;
 }
 
@@ -187,12 +187,8 @@
 												   withSubtree: contentsB
 											  sourceIdentifier: aSource];
 	
-	[initialSubtreeForPath setObject: [[contentsA copy] autorelease]
-							  forKey: currentPath];
-	
 	[subtreeDiffForPath setObject: contentsABDiff
 						   forKey: currentPath];
-	
 	
 	// Search for all embedded persistent roots.
 	
