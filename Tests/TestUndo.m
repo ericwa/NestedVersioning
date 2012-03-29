@@ -180,7 +180,7 @@
 		UKTrue(commitsAfter < commitsBefore);
 	}
 	
-	[[COSubtreeFactory factory] redoPersistentRoot: i1 store: store];
+	[[COSubtreeFactory factory] redoBranch: [[COSubtreeFactory factory] currentBranch: i1] store: store];
 	[ctx commitWithMetadata: nil];
 	
 	UKStringsEqual(@"yellow", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
@@ -189,7 +189,7 @@
 	
 	
 	
-	[[COSubtreeFactory factory] redoPersistentRoot: i1 store: store];
+	[[COSubtreeFactory factory] redoBranch: [[COSubtreeFactory factory] currentBranch: i1] store: store];
 	[ctx commitWithMetadata: nil];
 	
 	UKStringsEqual(@"green", [[[ctx editingContextForEditingEmbdeddedPersistentRoot: i1] persistentRootTree] valueForAttribute: @"color"]);
