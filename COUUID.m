@@ -19,7 +19,7 @@
 #define CLOCK_SEQ_LOW(uuid) (*(&(uuid)[9]))
 #define NODE(uuid) ((char*)(&(uuid)[10]))
 
-#if defined(__FreeBSD__) || defined(__OpenBSD) || defined(__DragonFly__) || defined(__APPLE__)
+#ifdef HAVE_ARC4RANDOM
 static void COUUIDGet16RandomBytes(unsigned char bytes[16])
 {
 	*((uint32_t*)&bytes[0]) = arc4random();
