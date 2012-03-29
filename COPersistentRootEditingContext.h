@@ -41,7 +41,7 @@
 	 * if the branch we are editing has been changed from this value,
 	 * we will need to do a merge
 	 */
-	ETUUID *baseCommit;
+	COUUID *baseCommit;
 		
 	// -- in-memory mutable state:
 	
@@ -96,7 +96,7 @@
  *     the contents of that persistent root.
  *
  */
-- (ETUUID *) commitWithMetadata: (COSubtree *)theMetadata;
+- (COUUID *) commitWithMetadata: (COSubtree *)theMetadata;
 
 /**
  * access the mutable tree, through which users can modify the current state of the persistent root
@@ -105,6 +105,6 @@
 
 - (void) setPersistentRootTree: (COSubtree *)aSubtree;
 
-- (ETUUID *) baseCommit;
+- (COUUID *) baseCommit;
 
 @end

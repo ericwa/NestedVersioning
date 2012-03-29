@@ -72,7 +72,7 @@
 	
 	for (NSString *uuidString in arr)
 	{
-		ETUUID *uuid = [ETUUID UUIDWithString: uuidString];			
+		COUUID *uuid = [COUUID UUIDWithString: uuidString];			
 		[uuids addObject: uuid];
 	}
 	return uuids;
@@ -81,7 +81,7 @@
 - (void) setAllCommitUUIDs: (NSArray*)uuids
 {
 	NSMutableArray *uuidStrings = [NSMutableArray array];
-	for (ETUUID *uuid in uuids)
+	for (COUUID *uuid in uuids)
 	{
 		[uuidStrings addObject: [uuid stringValue]];
 	}
@@ -89,20 +89,20 @@
 				  atomically: YES];
 }
 
-- (ETUUID*) addCommitWithParent: (ETUUID*)parent
+- (COUUID*) addCommitWithParent: (COUUID*)parent
                        metadata: (id)metadataPlist
 			 UUIDsAndStoreItems: (NSDictionary*)objects
-					   rootItem: (ETUUID*)root
+					   rootItem: (COUUID*)root
 {
 	NILARG_EXCEPTION_TEST(objects);
 	NILARG_EXCEPTION_TEST(root);
 	assert([objects objectForKey: root] != nil);
 	
-	ETUUID *commitUUID = [ETUUID UUID];
+	COUUID *commitUUID = [COUUID UUID];
 	
 	NSMutableDictionary *objectsWithStringUUID = [NSMutableDictionary dictionary];
 	{
-		for (ETUUID *uuid in objects)
+		for (COUUID *uuid in objects)
 		{
 			assert([[objects objectForKey: uuid] isKindOfClass: [COItem class]]);
 			assert([[[objects objectForKey: uuid] UUID] isEqual: uuid]);
@@ -148,7 +148,7 @@
 }
 
 
-- (ETUUID*) addCommitWithParent: (ETUUID*)parent
+- (COUUID*) addCommitWithParent: (COUUID*)parent
                        metadata: (id)metadataPlist
 						   tree: (COSubtree*)aTree
 {
@@ -167,7 +167,7 @@
 							rootItem: [[aTree root] UUID]];
 }
 
-- (NSDictionary *) _plistForCommit: (ETUUID*)commit
+- (NSDictionary *) _plistForCommit: (COUUID*)commit
 {
 	{
 		id cached = [plistForCommitCache objectForKey: commit];
@@ -190,7 +190,7 @@
 			id objectPlist = [[plist objectForKey: @"objects"] objectForKey: uuidString];
 			COItem *item = [[[COItem alloc] initWithPlist: objectPlist] autorelease];
 			[objectsWithUUID setObject: item
-								forKey: [ETUUID UUIDWithString: uuidString]];
+								forKey: [COUUID UUIDWithString: uuidString]];
 		}
 	}
 	[plist setObject: objectsWithUUID
@@ -200,11 +200,11 @@
 
 	if ([plist objectForKey: @"parent"] != nil)
 	{
-		[plist setObject: [ETUUID UUIDWithString: [plist objectForKey: @"parent"]]
+		[plist setObject: [COUUID UUIDWithString: [plist objectForKey: @"parent"]]
 				  forKey: @"parent"];
 	}
 	
-	[plist setObject: [ETUUID UUIDWithString: [plist objectForKey: @"root"]]
+	[plist setObject: [COUUID UUIDWithString: [plist objectForKey: @"root"]]
 			  forKey: @"root"];
 	
 	// Cache the result in memory to avoid reading from disk in the future
@@ -214,24 +214,24 @@
 	
 	return plist;
 }
-- (ETUUID *) parentForCommit: (ETUUID*)commit
+- (COUUID *) parentForCommit: (COUUID*)commit
 {
 	NILARG_EXCEPTION_TEST(commit);
 	return [[self _plistForCommit: commit] objectForKey: @"parent"];
 }
-- (id) metadataForCommit: (ETUUID*)commit
+- (id) metadataForCommit: (COUUID*)commit
 {
 	NILARG_EXCEPTION_TEST(commit);
 	return [[self _plistForCommit: commit] objectForKey: @"metadata"];	
 }
-- (NSDate*) dateForCommit: (ETUUID*)commit
+- (NSDate*) dateForCommit: (COUUID*)commit
 {
 	NILARG_EXCEPTION_TEST(commit);
 	NSDate *aDate = [[self _plistForCommit: commit] objectForKey: @"date"];
 	assert([aDate isKindOfClass: [NSDate class]]);
 	return aDate;
 }
-- (NSString *)menuStringForCommit: (ETUUID *)commit
+- (NSString *)menuStringForCommit: (COUUID *)commit
 {
 	NILARG_EXCEPTION_TEST(commit);
 	
@@ -243,15 +243,15 @@
 	return string;
 }
 
-- (NSDictionary *) UUIDsAndStoreItemsForCommit: (ETUUID*)commit
+- (NSDictionary *) UUIDsAndStoreItemsForCommit: (COUUID*)commit
 {
 	NILARG_EXCEPTION_TEST(commit);
 	return [[self _plistForCommit: commit] objectForKey: @"objects"];	
 }
-- (COSubtree *) treeForCommit: (ETUUID *)aCommit
+- (COSubtree *) treeForCommit: (COUUID *)aCommit
 {
 	NILARG_EXCEPTION_TEST(aCommit);
-	ETUUID *rootItemUUID = [self rootItemForCommit: aCommit];
+	COUUID *rootItemUUID = [self rootItemForCommit: aCommit];
 	if (rootItemUUID == nil)
 	{
 		return nil;
@@ -262,7 +262,7 @@
 	return [COSubtree subtreeWithItemSet: itemSet
 								rootUUID: rootItemUUID];
 }
-- (COSubtree *) subtreeForUUID: (ETUUID *)aUUID inCommit: (ETUUID *)aCommit
+- (COSubtree *) subtreeForUUID: (COUUID *)aUUID inCommit: (COUUID *)aCommit
 {
 	NILARG_EXCEPTION_TEST(aUUID);
 	NILARG_EXCEPTION_TEST(aCommit);
@@ -278,13 +278,13 @@
 	}
 	return subtree;
 }
-- (ETUUID *) rootItemForCommit: (ETUUID*)commit
+- (COUUID *) rootItemForCommit: (COUUID*)commit
 {
 	NILARG_EXCEPTION_TEST(commit);
 	return [[self _plistForCommit: commit] objectForKey: @"root"];	
 }
-- (COItem *) storeItemForEmbeddedObject: (ETUUID*)embeddedObject
-									inCommit: (ETUUID*)aCommitUUID
+- (COItem *) storeItemForEmbeddedObject: (COUUID*)embeddedObject
+									inCommit: (COUUID*)aCommitUUID
 {
 	NILARG_EXCEPTION_TEST(embeddedObject);
 	NILARG_EXCEPTION_TEST(aCommitUUID);
@@ -300,7 +300,7 @@
 
 - (void) deleteCommitsWithUUIDs: (NSSet*)uuids
 {
-	for (ETUUID *commit in uuids)
+	for (COUUID *commit in uuids)
 	{
 		NSString *commitFile = [[self commitsDirectory] stringByAppendingPathComponent:
 								[commit stringValue]];
@@ -316,13 +316,13 @@
 	[self setAllCommitUUIDs: allCommits];
 }
 
-- (void) deleteParentsOfCommit: (ETUUID*)aCommit
+- (void) deleteParentsOfCommit: (COUUID*)aCommit
 				 olderThanDate: (NSDate*)aDate
 {
 	assert(0); // unimplemented
 }
 
-- (void) _gcMarkVersion: (ETUUID *)aVersion recordInSet: (NSMutableSet *)markedVersions
+- (void) _gcMarkVersion: (COUUID *)aVersion recordInSet: (NSMutableSet *)markedVersions
 {
 	if ([markedVersions containsObject: aVersion])
 	{
@@ -333,7 +333,7 @@
 		[markedVersions addObject: aVersion];
 	}
 
-	ETUUID *parent = [self parentForCommit: aVersion];
+	COUUID *parent = [self parentForCommit: aVersion];
 	if (parent != nil)
 	{
 		[self _gcMarkVersion: parent recordInSet: markedVersions];
@@ -346,7 +346,7 @@
 		{
 			if ([[item typeForAttribute: attribute] isPrimitiveTypeEqual: [COType commitUUIDType]])
 			{
-				for (ETUUID *aValue in [item allObjectsForAttribute: attribute])
+				for (COUUID *aValue in [item allObjectsForAttribute: attribute])
 				{
 					[self _gcMarkVersion: aValue recordInSet: markedVersions];
 				}
@@ -368,21 +368,21 @@
 	[self deleteCommitsWithUUIDs: unreachableVersions];
 }
 
-- (ETUUID *) rootVersion
+- (COUUID *) rootVersion
 {
 	NSString *str = [NSString stringWithContentsOfFile: [self rootVersionFile] 
 											  encoding: NSUTF8StringEncoding
 												 error: NULL];
 	if (str != nil)
 	{
-		return [ETUUID UUIDWithString: str];
+		return [COUUID UUIDWithString: str];
 	}
 	else
 	{
 		return nil;
 	}
 }
-- (void) setRootVersion: (ETUUID*)version
+- (void) setRootVersion: (COUUID*)version
 {
 	NILARG_EXCEPTION_TEST(version);
 	[[version stringValue] writeToFile: [self rootVersionFile] 
@@ -404,9 +404,9 @@
 	return nil;
 }
 
-- (BOOL) isCommit: (ETUUID *)testParent parentOfCommit: (ETUUID *)testChild
+- (BOOL) isCommit: (COUUID *)testParent parentOfCommit: (COUUID *)testChild
 {	
-	ETUUID *temp = testChild;
+	COUUID *temp = testChild;
 	
 	do
 	{
@@ -423,17 +423,17 @@
 
 /** @taskunit common ancestor */
 
-- (ETUUID *)commonAncestorForCommit: (ETUUID *)commitA
-						  andCommit: (ETUUID *)commitB
+- (COUUID *)commonAncestorForCommit: (COUUID *)commitA
+						  andCommit: (COUUID *)commitB
 {
 	NSMutableSet *ancestorsOfA = [NSMutableSet set];
 	
-	for (ETUUID *temp = commitA; temp != nil; temp = [self parentForCommit: temp])
+	for (COUUID *temp = commitA; temp != nil; temp = [self parentForCommit: temp])
 	{
 		[ancestorsOfA addObject: temp];
 	}
 	
-	for (ETUUID *temp = commitB; temp != nil; temp = [self parentForCommit: temp])
+	for (COUUID *temp = commitB; temp != nil; temp = [self parentForCommit: temp])
 	{
 		if ([ancestorsOfA containsObject: temp])
 		{

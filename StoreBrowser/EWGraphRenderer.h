@@ -17,11 +17,11 @@
 - (COStore *)store;
 
 - (NSSize) size;
-- (void) drawWithHighlightedCommit: (ETUUID*)aCommit;
+- (void) drawWithHighlightedCommit: (COUUID*)aCommit;
 
-- (ETUUID *)commitAtPoint: (NSPoint)aPoint;
+- (COUUID *)commitAtPoint: (NSPoint)aPoint;
 
-- (NSRect) rectForCommit:(ETUUID *)aCommit;
+- (NSRect) rectForCommit:(COUUID *)aCommit;
 - (NSArray *) commits;
 
 @end

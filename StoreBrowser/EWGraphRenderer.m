@@ -5,7 +5,7 @@
 
 @implementation EWGraphRenderer
 
-static NSInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSInteger currentLevel, NSMutableDictionary *levelForUUID)
+static NSInteger visit(NSDictionary *childrenForUUID, COUUID *currentUUID, NSInteger currentLevel, NSMutableDictionary *levelForUUID)
 {
 	//NSLog(@"visiting %@", currentUUID);
 	
@@ -26,7 +26,7 @@ static NSInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSInt
 	assert(children != nil);
 	
 	NSInteger maxLevelUsed = currentLevel - 1;
-	for (ETUUID *child in children)
+	for (COUUID *child in children)
 	{
 		NSInteger childMax = 
 			visit(childrenForUUID, child, maxLevelUsed + 1, levelForUUID);
@@ -73,13 +73,13 @@ static NSInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSInt
 		
 	ASSIGN(childrenForUUID, [NSMutableDictionary dictionaryWithCapacity: [allCommitsSorted count]]);
 	
-	for (ETUUID *aCommit in allCommitsSorted)
+	for (COUUID *aCommit in allCommitsSorted)
 	{
 		[childrenForUUID setObject: [NSMutableArray array] forKey: aCommit];
 	}
-	for (ETUUID *aCommit in allCommitsSorted)
+	for (COUUID *aCommit in allCommitsSorted)
 	{
-		ETUUID *aParent = [store parentForCommit: aCommit];
+		COUUID *aParent = [store parentForCommit: aCommit];
 		if (aParent != nil)
 		{
 			NSMutableArray *children = [childrenForUUID objectForKey: aParent];
@@ -90,7 +90,7 @@ static NSInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSInt
 
 	// remove commits which have no children/parents
 	
-	for (ETUUID *aCommit in [NSArray arrayWithArray: allCommitsSorted])
+	for (COUUID *aCommit in [NSArray arrayWithArray: allCommitsSorted])
 	{
 		if ([[childrenForUUID objectForKey: aCommit] count] == 0 &&
 			[store parentForCommit: aCommit] == nil)
@@ -105,7 +105,7 @@ static NSInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSInt
 	
 	// some nodes should have more than 1 child
 	
-	for (ETUUID *aCommit in allCommitsSorted)
+	for (COUUID *aCommit in allCommitsSorted)
 	{
 		//NSLog(@"%@ children: %@", aCommit, [childrenForUUID objectForKey: aCommit]);
 	}
@@ -114,9 +114,9 @@ static NSInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSInt
 	// find roots
 	
 	NSMutableArray *roots = [NSMutableArray array];
-	for (ETUUID *aCommit in allCommitsSorted)
+	for (COUUID *aCommit in allCommitsSorted)
 	{
-		ETUUID *aParent = [store parentForCommit: aCommit];
+		COUUID *aParent = [store parentForCommit: aCommit];
 		if (nil == aParent)
 		{
 			[roots addObject: aCommit];
@@ -141,7 +141,7 @@ static NSInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSInt
 	ASSIGN(levelForUUID, [NSMutableDictionary dictionary]);
 
 	NSInteger maxLevel = 0;
-	for (ETUUID *root in roots)
+	for (COUUID *root in roots)
 	{
 		//NSLog(@"Starting root %@ at %d", root, (int)maxLevel);
 		maxLevel = visit(childrenForUUID, root, maxLevel, levelForUUID) + 1;
@@ -150,7 +150,7 @@ static NSInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSInt
 	//NSLog(@"graph output:");
 	
 	maxLevelUsed = 0;
-	for (ETUUID *aCommit in allCommitsSorted)
+	for (COUUID *aCommit in allCommitsSorted)
 	{
 		NSInteger level = [[levelForUUID objectForKey: aCommit] integerValue];
 		
@@ -166,8 +166,8 @@ static NSInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSInt
 		NSInteger i;
 		for (i=0; i<[allCommitsSorted count]; i++)
 		{
-			ETUUID *aCommit = [allCommitsSorted objectAtIndex: i];
-			ETUUID *aCommitParent = [store parentForCommit: aCommit];
+			COUUID *aCommit = [allCommitsSorted objectAtIndex: i];
+			COUUID *aCommitParent = [store parentForCommit: aCommit];
 			
 			if (aCommitParent != nil)
 			{
@@ -191,7 +191,7 @@ static NSInteger visit(NSDictionary *childrenForUUID, ETUUID *currentUUID, NSInt
 	return s;
 }
 
-- (NSRect) rectForCommit: (ETUUID*)aCommit
+- (NSRect) rectForCommit: (COUUID*)aCommit
 {
 	NSNumber *rowObj = [levelForUUID objectForKey: aCommit];
 	assert(rowObj != nil);
@@ -237,7 +237,7 @@ static void EWDrawArrowFromTo(NSPoint p1, NSPoint p2)
 	[NSGraphicsContext restoreGraphicsState];
 }
 
-- (NSColor *)colorForCommit: (ETUUID *)aCommit
+- (NSColor *)colorForCommit: (COUUID *)aCommit
 {
 	if ([[COSubtreeFactory factory] shouldSkipVersion: aCommit
 											forBranch: nil
@@ -251,11 +251,11 @@ static void EWDrawArrowFromTo(NSPoint p1, NSPoint p2)
 	}
 }
 
-- (void) drawWithHighlightedCommit: (ETUUID*)aCommit
+- (void) drawWithHighlightedCommit: (COUUID*)aCommit
 {
 	for (NSUInteger col = 0; col < [allCommitsSorted count]; col++)
 	{
-		ETUUID *commit = [allCommitsSorted objectAtIndex: col];		
+		COUUID *commit = [allCommitsSorted objectAtIndex: col];		
 		
 		NSColor *color = [self colorForCommit: commit];
 		
@@ -274,7 +274,7 @@ static void EWDrawArrowFromTo(NSPoint p1, NSPoint p2)
 			[circle stroke];
 		}
 		
-		for (ETUUID *child in [childrenForUUID objectForKey: commit])
+		for (COUUID *child in [childrenForUUID objectForKey: commit])
 		{
 			NSRect r2 = [self rectForCommit: child];
 			
@@ -290,9 +290,9 @@ static void EWDrawArrowFromTo(NSPoint p1, NSPoint p2)
 	}
 }
 
-- (ETUUID *)commitAtPoint: (NSPoint)aPoint
+- (COUUID *)commitAtPoint: (NSPoint)aPoint
 {
-	for (ETUUID *commit in allCommitsSorted)
+	for (COUUID *commit in allCommitsSorted)
 	{
 		if (NSPointInRect(aPoint, [self rectForCommit: commit]))
 		{

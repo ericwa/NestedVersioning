@@ -37,14 +37,14 @@ void test()
 		drawingUUID = [libCtx insertNewPersistentRootWithRootItem: [factory newFolder: @"drawing"]];
 		// implict inContainer: [libCtx rootUUID]
 
-		ETUUID *drawing_b1 = [factory currentBranchForPersistentRoot: drawingUUID inContext: libCtx];
-		ETUUID *drawing_b2 = [factory createBranchForPersistentRoot: drawingUUID inContext: libCtx];
-		ETUUID *drawing_b3 = [factory createBranchForPersistentRoot: drawingUUID inContext: libCtx];
+		COUUID *drawing_b1 = [factory currentBranchForPersistentRoot: drawingUUID inContext: libCtx];
+		COUUID *drawing_b2 = [factory createBranchForPersistentRoot: drawingUUID inContext: libCtx];
+		COUUID *drawing_b3 = [factory createBranchForPersistentRoot: drawingUUID inContext: libCtx];
 		// current branch is still drawing_b1
 		
 		// copy r -> r' (a', b', c'), current branch: a'
 
-		ETUUID *drawing1 = [factory copyEmbeddedObject: drawingUUID
+		COUUID *drawing1 = [factory copyEmbeddedObject: drawingUUID
 										  insertInto: libFolder
 										   inContext: libCtx];
 		
@@ -53,9 +53,9 @@ void test()
 		// FIXME!!!: We shouldn't use this hack.
 		// we need a way to get drawing1_b3 cleanly. The copy method should also return a mapping dictionary?
 		
-		//ETUUID *drawing1_b3 = [[[libCtx storeItemForUUID: drawing1] valueForAttribute: @"contents"] objectAtIndex: 2];
+		//COUUID *drawing1_b3 = [[[libCtx storeItemForUUID: drawing1] valueForAttribute: @"contents"] objectAtIndex: 2];
 
-		ETUUID *drawing1_b3copy = [factory newPersistentRootCopyingBranch: drawing1_b3
+		COUUID *drawing1_b3copy = [factory newPersistentRootCopyingBranch: drawing1_b3
 												   insertInto: libFolder
 													inContext: libCtx];
 		

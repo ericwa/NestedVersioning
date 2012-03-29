@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "ETUUID.h"
+#import "COUUID.h"
 #import "COItem.h"
 #import "COPersistentRootEditingContext.h"
 
@@ -67,7 +67,7 @@
  *   this avoids mutating the history graph.
  *    
  */
-- (void) deleteParentsOfCommit: (ETUUID*)aCommit
+- (void) deleteParentsOfCommit: (COUUID*)aCommit
 				 olderThanDate: (NSDate*)aDate;
 
 /**
@@ -107,6 +107,6 @@
 #pragma mark Convenience
 
 
-- (BOOL) isCommit: (ETUUID *)testParent parentOfCommit: (ETUUID *)testChild;
+- (BOOL) isCommit: (COUUID *)testParent parentOfCommit: (COUUID *)testChild;
 
 @end

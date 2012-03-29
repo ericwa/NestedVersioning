@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "ETUUID.h"
+#import "COUUID.h"
 #import "COType.h"
 
 /**
@@ -12,7 +12,7 @@
  *
  * *NOTE*: COItem does not participate in an object graph with other COItem
  * objects; it's basically a "value" object. It can contain NSSet/NSDictionary/NSArray,
- * but these containers can only contain ETUUID/NSData/NSNumber/NSString/COPath.
+ * but these containers can only contain COUUID/NSData/NSNumber/NSString/COPath.
  *
  * See COSubtree for a higher-level model object, which uses COItem internally
  * but lets you manipulate a set of COItem's as the corresponding tree of ObjC objects, 
@@ -21,7 +21,7 @@
  */
 @interface COItem : NSObject <NSCopying, NSMutableCopying>
 {
-	ETUUID *uuid;
+	COUUID *uuid;
 	NSDictionary *types;
 	NSDictionary *values;
 }
@@ -29,14 +29,14 @@
 /**
  * designated initializer.
  */
-- (id) initWithUUID: (ETUUID *)aUUID
+- (id) initWithUUID: (COUUID *)aUUID
  typesForAttributes: (NSDictionary *)typesForAttributes
 valuesForAttributes: (NSDictionary *)valuesForAttributes;
 
 + (COItem *) itemWithTypesForAttributes: (NSDictionary *)typesForAttributes
 					valuesForAttributes: (NSDictionary *)valuesForAttributes;
 
-- (ETUUID *) UUID;
+- (COUUID *) UUID;
 
 - (NSArray *) attributeNames;
 
@@ -73,7 +73,7 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes;
 {
 }
 
-- (id) initWithUUID: (ETUUID*)aUUID;
+- (id) initWithUUID: (COUUID*)aUUID;
 
 + (COMutableItem *) itemWithTypesForAttributes: (NSDictionary *)typesForAttributes
 						   valuesForAttributes: (NSDictionary *)valuesForAttributes;
@@ -82,7 +82,7 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes;
  */
 + (COMutableItem *) item;
 
-- (void) setUUID: (ETUUID *)aUUID;
+- (void) setUUID: (COUUID *)aUUID;
 
 - (void) setValue: (id)aValue
 	 forAttribute: (NSString*)anAttribute

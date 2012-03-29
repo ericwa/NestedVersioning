@@ -8,7 +8,7 @@
 	return subtree;
 }
 
-- (ETUUID *) replacementUUIDForUUID: (ETUUID*)aUUID
+- (COUUID *) replacementUUIDForUUID: (COUUID*)aUUID
 {
 	return [mappingDictionary objectForKey: aUUID];
 }

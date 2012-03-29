@@ -80,7 +80,7 @@
 	// 2d. commit changes
 	//
 	
-	ETUUID *firstVersion = [ctx commitWithMetadata: nil];
+	COUUID *firstVersion = [ctx commitWithMetadata: nil];
 	UKNotNil(firstVersion);
 	UKObjectsEqual(firstVersion, [store rootVersion]);
 	
@@ -104,7 +104,7 @@
 						forAttribute: @"color"
 								type: [COType stringType]];
 	
-	ETUUID *commitInNestedDocCtx2 = [ctx2 commitWithMetadata: nil];
+	COUUID *commitInNestedDocCtx2 = [ctx2 commitWithMetadata: nil];
 	
 	UKNotNil(commitInNestedDocCtx2);
 	

@@ -23,7 +23,7 @@
  * opening a filesystem path that does not exist), or if the path has
  * -[COPath hasLeadingPathsToParent] == TRUE or is nil.
  */
-+ (ETUUID *) _baseCommitForPath: (COPath*)aPath store: (COStore *)aStore
++ (COUUID *) _baseCommitForPath: (COPath*)aPath store: (COStore *)aStore
 {
 	NILARG_EXCEPTION_TEST(aPath);
 	NILARG_EXCEPTION_TEST(aStore);
@@ -40,17 +40,17 @@
 	}
 
 	COPath *parentPath = [aPath pathByDeletingLastPathComponent];
-	ETUUID *lastPathComponent = [aPath lastPathComponent];
-	ETUUID *parentCommit = [self _baseCommitForPath: parentPath store: aStore]; // recursive call
+	COUUID *lastPathComponent = [aPath lastPathComponent];
+	COUUID *parentCommit = [self _baseCommitForPath: parentPath store: aStore]; // recursive call
 
 	// item may be a persistent root or a branch.
 
 	COSubtree *item = [aStore subtreeForUUID: lastPathComponent inCommit: parentCommit];
 	
-	ETUUID *trackedVersion = [[COSubtreeFactory factory] currentVersionForBranchOrPersistentRoot: item];	
+	COUUID *trackedVersion = [[COSubtreeFactory factory] currentVersionForBranchOrPersistentRoot: item];	
 	
 	if (nil == trackedVersion ||
-		![trackedVersion isKindOfClass: [ETUUID class]])
+		![trackedVersion isKindOfClass: [COUUID class]])
 	{
 		[NSException raise: NSInvalidArgumentException
 					format: @"persistent root or branch item invalid/has no current version set", [item UUID]];
@@ -174,7 +174,7 @@
 											  inStore: [self store]];
 }
 
-- (ETUUID *) commitWithMetadata: (NSDictionary *)theMetadata
+- (COUUID *) commitWithMetadata: (NSDictionary *)theMetadata
 {
 
 	//
@@ -184,7 +184,7 @@
 	// we need to check if we need to merge, first.
 	
 	
-	ETUUID *newBase;
+	COUUID *newBase;
 	
 	@try
 	{
@@ -214,13 +214,13 @@
 	// This is kind of a hack. If we are committing to the top-level of the store,
 	// which is conceptually unversioned, don't set a parent pointer on the commit.
 	// This will ensure old versions get GC'ed.
-	ETUUID *commitParent = baseCommit;
+	COUUID *commitParent = baseCommit;
 	if ([path isEmpty])
 	{
 		commitParent = nil;
 	}
 	
-	ETUUID *newCommitUUID = [store addCommitWithParent: commitParent
+	COUUID *newCommitUUID = [store addCommitWithParent: commitParent
 											  metadata: theMetadata
 												  tree: tree];
 	
@@ -244,7 +244,7 @@
 	if (![path isEmpty])
 	{
 		COPath *parentPath = [path pathByDeletingLastPathComponent];
-		ETUUID *ourUUID = [path lastPathComponent];
+		COUUID *ourUUID = [path lastPathComponent];
 		
 		COPersistentRootEditingContext *parentCtx = [[[self class] alloc] initWithPath: parentPath
 																			   inStore: store];
@@ -261,7 +261,7 @@
 		
 		assert([[COSubtreeFactory factory] isBranch: item]);
 		
-		ETUUID *trackedVersion = [[COSubtreeFactory factory] currentVersionForBranch: item];
+		COUUID *trackedVersion = [[COSubtreeFactory factory] currentVersionForBranch: item];
 		assert([trackedVersion isEqual: baseCommit]); // we already checked this earlier
 		
 		[[COSubtreeFactory factory] setCurrentVersion: newCommitUUID
@@ -270,7 +270,7 @@
 								   updateUndoLimit: NO];
 		
 		// See COSubtreeFactory+Undo
-		ETUUID *resultUUID = [parentCtx commitWithMetadata: 
+		COUUID *resultUUID = [parentCtx commitWithMetadata: 
 									D(@"commitInChild", @"type",
 									  @"commit in child", @"menuLabel")];
 		assert (resultUUID != nil);
@@ -295,7 +295,7 @@
 	ASSIGN(tree, aSubtree);
 }
 
-- (ETUUID *) baseCommit
+- (COUUID *) baseCommit
 {
 	return baseCommit;
 }

@@ -41,10 +41,10 @@
 
 - (id) init
 {
-	return [self initWithUUID: [ETUUID UUID]];
+	return [self initWithUUID: [COUUID UUID]];
 }
 
-- (id) initWithUUID: (ETUUID*)aUUID
+- (id) initWithUUID: (COUUID*)aUUID
 {
 	NILARG_EXCEPTION_TEST(aUUID);
 	
@@ -56,7 +56,7 @@
 
 - (id) initWithItemDictionary: (NSDictionary *)items
 			subtreeDictionary: (NSMutableDictionary *)subtrees
-					 rootUUID: (ETUUID *)aRootUUID
+					 rootUUID: (COUUID *)aRootUUID
 {
 	NILARG_EXCEPTION_TEST(items);
 	NILARG_EXCEPTION_TEST(aRootUUID);
@@ -79,7 +79,7 @@
 	embeddedSubtrees = [[NSMutableDictionary alloc] init];
 	
 	// WARNING: the receiver is in an inconsistent state right now
-	for (ETUUID *aUUID in [item embeddedItemUUIDs])
+	for (COUUID *aUUID in [item embeddedItemUUIDs])
 	{
 		COSubtree *subTree = [[[self class] alloc] initWithItemDictionary: items
 														subtreeDictionary: subtrees
@@ -112,7 +112,7 @@
 }
 
 + (COSubtree *)subtreeWithItemSet: (NSSet*)items
-						 rootUUID: (ETUUID *)aRootUUID
+						 rootUUID: (COUUID *)aRootUUID
 {
 	// We put the items in a temporary dictionary by UUID 
 	// to make constructing the tree more convenient
@@ -162,9 +162,9 @@
 	NSSet *oldNames = [self allUUIDs];
 	NSMutableDictionary *mapping = [NSMutableDictionary dictionaryWithCapacity: [oldNames count]];
 	
-	for (ETUUID *oldName in oldNames)
+	for (COUUID *oldName in oldNames)
 	{
-		[mapping setObject: [ETUUID UUID]
+		[mapping setObject: [COUUID UUID]
 					forKey: oldName];
 	}
 	
@@ -198,7 +198,7 @@
 	return aRoot;
 }
 
-- (BOOL) containsSubtreeWithUUID: (ETUUID *)aUUID
+- (BOOL) containsSubtreeWithUUID: (COUUID *)aUUID
 {
 	return nil != [self subtreeWithUUID: aUUID];
 }
@@ -261,7 +261,7 @@
  * Searches the receiver for the subtree with the givent UUID.
  * Returns nil if not present
  */
-- (COSubtree *) subtreeWithUUID: (ETUUID *)aUUID
+- (COSubtree *) subtreeWithUUID: (COUUID *)aUUID
 {
 	if ([[self UUID] isEqual: aUUID])
 	{
@@ -288,7 +288,7 @@
 	return nil;
 }
 
-- (COItemPath *) itemPathOfSubtreeWithUUID: (ETUUID *)aUUID
+- (COItemPath *) itemPathOfSubtreeWithUUID: (COUUID *)aUUID
 {
 	COSubtree *destSubtree = [self subtreeWithUUID: aUUID];
 	
@@ -349,7 +349,7 @@
 	return [[item copy] autorelease];
 }
 
-- (ETUUID *) UUID
+- (COUUID *) UUID
 {
 	return [item UUID];
 }
@@ -383,7 +383,7 @@
 				container = [NSMutableSet set];
 			}
 			
-			for (ETUUID *uuid in rootValue)
+			for (COUUID *uuid in rootValue)
 			{
 				COSubtree *node = [embeddedSubtrees objectForKey: uuid];
 				if (node == nil)
@@ -548,7 +548,7 @@ toUnorderedAttribute: (NSString*)anAttribute
 {
 	if ([[item typeForAttribute: anAttribute] isPrimitiveTypeEqual: [COType embeddedItemType]])
 	{
-		for (ETUUID *uuidToRemove in [item allObjectsForAttribute: anAttribute])
+		for (COUUID *uuidToRemove in [item allObjectsForAttribute: anAttribute])
 		{
 			[embeddedSubtrees removeObjectForKey: uuidToRemove];
 		}
@@ -595,9 +595,9 @@ toUnorderedAttribute: (NSString*)anAttribute
 		NSLog(@"names %@ need to be remapped", conflictingNames);
 		
 		NSMutableDictionary *mapping = [NSMutableDictionary dictionary];
-		for (ETUUID *name in conflictingNames)
+		for (COUUID *name in conflictingNames)
 		{
-			[mapping setObject: [ETUUID UUID]
+			[mapping setObject: [COUUID UUID]
 						forKey: name];
 		}
 		
@@ -636,9 +636,9 @@ toUnorderedAttribute: (NSString*)anAttribute
 	
 	NSLog(@"Renaming conflicting UUIDS: %@", conflictingNames);
 	NSMutableDictionary *renameDict = [NSMutableDictionary dictionaryWithCapacity: [conflictingNames count]];
-	for (ETUUID *conflictingName in conflictingNames)
+	for (COUUID *conflictingName in conflictingNames)
 	{
-		[renameDict setObject: [ETUUID UUID] forKey: conflictingName];
+		[renameDict setObject: [COUUID UUID] forKey: conflictingName];
 	}
 	
 	COSubtree *aSubtreeRenamed = [[aSubtree copyWithNameMapping: renameDict] autorelease];
@@ -657,7 +657,7 @@ toUnorderedAttribute: (NSString*)anAttribute
  * Removes a subtree (regardless of where in the receiver or the receiver's children
  * it is located.) Throws an exception if the guven UUID is not present in the receiver.
  */
-- (void) removeSubtreeWithUUID: (ETUUID *)aUUID
+- (void) removeSubtreeWithUUID: (COUUID *)aUUID
 {
 	[self removeSubtree: [self subtreeWithUUID: aUUID]];
 }
@@ -675,7 +675,7 @@ toUnorderedAttribute: (NSString*)anAttribute
 					format: @"argument must be inside the reciever to remove it"];
 	}
 	
-	ETUUID *aUUID = [aSubtree UUID];
+	COUUID *aUUID = [aSubtree UUID];
 	COSubtree *parentOfSubtreeToRemove = [aSubtree parent];
 	COItemPath *itemPath = [self itemPathOfSubtreeWithUUID: aUUID];	
 	NSAssert([[itemPath UUID] isEqual: [parentOfSubtreeToRemove UUID]], @"");
@@ -686,7 +686,7 @@ toUnorderedAttribute: (NSString*)anAttribute
 	[self debug];
 }
 
-- (void) moveSubtreeWithUUID: (ETUUID *)aUUID
+- (void) moveSubtreeWithUUID: (COUUID *)aUUID
 				  toItemPath: (COItemPath *)aPath
 {
 	COSubtree *subtreeToMove = [self subtreeWithUUID: aUUID];
@@ -760,7 +760,7 @@ toUnorderedAttribute: (NSString*)anAttribute
 
 + (COSubtree *)subtreeWithPlist: (id)aPlist
 {
-	ETUUID *rootUUID = [ETUUID UUIDWithString: [aPlist objectForKey: @"rootUUID"]];
+	COUUID *rootUUID = [COUUID UUIDWithString: [aPlist objectForKey: @"rootUUID"]];
 	NSMutableSet *itemSet = [NSMutableSet set];
 	
 	for (id itemPlist in [aPlist objectForKey: @"items"])

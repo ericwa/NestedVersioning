@@ -46,7 +46,7 @@
 			}
 			else
 			{
-				ETUUID *uuid = [ETUUID UUIDWithString: component];
+				COUUID *uuid = [COUUID UUIDWithString: component];
 				result = [result pathByAppendingPathComponent: uuid];
 			}
 		}
@@ -54,7 +54,7 @@
 	return result;
 }
 
-+ (COPath *) pathWithPathComponent: (ETUUID*) aUUID
++ (COPath *) pathWithPathComponent: (COUUID*) aUUID
 {
 	return [[COPath path] pathByAppendingPathComponent: aUUID];
 }
@@ -88,7 +88,7 @@
 	}
 }
 
-- (COPath *) pathByAppendingPathComponent: (ETUUID *)aUUID
+- (COPath *) pathByAppendingPathComponent: (COUUID *)aUUID
 {
 	NILARG_EXCEPTION_TEST(aUUID);
 	
@@ -149,7 +149,7 @@
 	return [elements count] != 0;
 }
 
-- (ETUUID *) lastPathComponent
+- (COUUID *) lastPathComponent
 {
 	return [elements lastObject];
 }
@@ -172,9 +172,9 @@
 - (COPath *) pathByRenamingComponents: (NSDictionary *)aMapping
 {
 	NSMutableArray *newElements = [NSMutableArray array];
-	for (ETUUID *element in elements)
+	for (COUUID *element in elements)
 	{
-		ETUUID *newElement = element;
+		COUUID *newElement = element;
 		if ([aMapping objectForKey: element] != nil)
 		{
 			newElement = [aMapping objectForKey: element];

@@ -12,10 +12,10 @@
 {
 	// commits in the persistent root
 	
-	ETUUID *commit1 = nil; // initial commit, "red"
-	ETUUID *commit2 = nil; // "orange"
-	ETUUID *commit3 = nil; // "yellow"
-	ETUUID *commit4 = nil; // "green"
+	COUUID *commit1 = nil; // initial commit, "red"
+	COUUID *commit2 = nil; // "orange"
+	COUUID *commit3 = nil; // "yellow"
+	COUUID *commit4 = nil; // "green"
 	
 	
 	// setup a simple persistent root containing { "color" : "red" }

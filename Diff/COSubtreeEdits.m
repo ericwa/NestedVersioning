@@ -1,4 +1,4 @@
-#import "ETUUID.h"
+#import "COUUID.h"
 #import "COMacros.h"
 #import "COSubtreeEdits.h"
 #import "COType.h"
@@ -12,7 +12,7 @@
 @synthesize attribute;
 @synthesize sourceIdentifier;
 
-- (id) initWithUUID: (ETUUID *)aUUID
+- (id) initWithUUID: (COUUID *)aUUID
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier
 {
@@ -96,7 +96,7 @@
 	return 4265092495078449026ULL ^ [super hash] ^ [type hash] ^ [value hash];
 }
 
-- (id) initWithUUID: (ETUUID *)aUUID
+- (id) initWithUUID: (COUUID *)aUUID
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier
 			   type: (COType *)aType
@@ -170,7 +170,7 @@
 @synthesize type;
 @synthesize object;
 
-- (id) initWithUUID: (ETUUID *)aUUID
+- (id) initWithUUID: (COUUID *)aUUID
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier
 			   type: (COType *)aType
@@ -258,7 +258,7 @@
 
 @synthesize range;
 
-- (id) initWithUUID: (ETUUID *)aUUID
+- (id) initWithUUID: (COUUID *)aUUID
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier
 			  range: (NSRange)aRange
@@ -312,7 +312,7 @@
 @synthesize type;
 @synthesize objects;
 
-- (id) initWithUUID: (ETUUID *)aUUID
+- (id) initWithUUID: (COUUID *)aUUID
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier
 			  range: (NSRange)aRange
@@ -372,7 +372,7 @@
 
 @implementation COSequenceInsertion
 
-- (id) initWithUUID: (ETUUID *)aUUID
+- (id) initWithUUID: (COUUID *)aUUID
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier
 		   location: (NSUInteger)aLocation

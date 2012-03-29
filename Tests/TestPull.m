@@ -103,7 +103,7 @@
 /**
  * { "letters" : ("b", "c", "d") }
  */
-static COSubtree *subtreeInitialVersion(ETUUID *aUUID) 
+static COSubtree *subtreeInitialVersion(COUUID *aUUID) 
 {
 	COSubtree *tree = [[[COSubtree alloc] initWithUUID: aUUID] autorelease];
 	
@@ -117,7 +117,7 @@ static COSubtree *subtreeInitialVersion(ETUUID *aUUID)
 /**
  * { "letters" : ("a", "b", "c", "d") }
  */
-static COSubtree *subtreeVariantA(ETUUID *aUUID)
+static COSubtree *subtreeVariantA(COUUID *aUUID)
 {
 	COSubtree *tree = subtreeInitialVersion(aUUID);
 		
@@ -132,7 +132,7 @@ static COSubtree *subtreeVariantA(ETUUID *aUUID)
 /**
  * { "letters" : ("b", "c", "d", "e") }
  */
-static COSubtree *subtreeVariantB(ETUUID *aUUID)
+static COSubtree *subtreeVariantB(COUUID *aUUID)
 {
 	COSubtree *tree = subtreeInitialVersion(aUUID);
 	
@@ -159,7 +159,7 @@ static COSubtree *subtreeVariantB(ETUUID *aUUID)
 	
 	[ctx setPersistentRootTree: iroot];
 	
-	ETUUID *contentsUUID = [ETUUID UUID];
+	COUUID *contentsUUID = [COUUID UUID];
 	
 	COSubtree *i1 = [[COSubtreeFactory factory] createPersistentRootWithRootItem: subtreeInitialVersion(contentsUUID)
 																	 displayName: @"My Document"
@@ -267,7 +267,7 @@ static COSubtree *subtreeVariantB(ETUUID *aUUID)
 - (void) testPullWithNestedPersistentRootMerge
 {
 	COStore *store = setupStore();
-	ETUUID *innerContentsUUID = [ETUUID UUID];
+	COUUID *innerContentsUUID = [COUUID UUID];
 	
 	COSubtree *innerdoc = [[COSubtreeFactory factory] createPersistentRootWithRootItem: subtreeInitialVersion(innerContentsUUID)
 																		   displayName: @"My Inner Document"

@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "ETUUID.h"
+#import "COUUID.h"
 
 
 /**
@@ -38,7 +38,7 @@
 
 + (COPath *) pathWithString: (NSString*) pathString;
 
-+ (COPath *) pathWithPathComponent: (ETUUID*) aUUID;
++ (COPath *) pathWithPathComponent: (COUUID*) aUUID;
 
 + (COPath *) pathToParent;
 
@@ -49,7 +49,7 @@
 
 - (COPath *) pathByAppendingPath: (COPath *)aPath;
 
-- (COPath *) pathByAppendingPathComponent: (ETUUID *)aPersistentRoot;
+- (COPath *) pathByAppendingPathComponent: (COUUID *)aPersistentRoot;
 
 - (NSString *) stringValue;
 
@@ -62,7 +62,7 @@
  */
 - (BOOL) hasLeadingPathsToParent;
 
-- (ETUUID *) lastPathComponent;
+- (COUUID *) lastPathComponent;
 - (COPath *) pathByDeletingLastPathComponent;
 
 - (COPath *) pathByRenamingComponents: (NSDictionary *)aMapping;

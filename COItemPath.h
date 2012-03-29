@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "ETUUID.h"
+#import "COUUID.h"
 
 @class COMutableItem;
 @class COType;
@@ -12,21 +12,21 @@
  */
 @interface COItemPath : NSObject <NSCopying>
 {
-	ETUUID *uuid;
+	COUUID *uuid;
 	NSString *attribute;
 	COType *type;
 }
 
-+ (COItemPath *) pathWithItemUUID: (ETUUID *)aUUID
++ (COItemPath *) pathWithItemUUID: (COUUID *)aUUID
 		  unorderedCollectionName: (NSString *)collection
 							 type: (COType *)aType;
 
-+ (COItemPath *) pathWithItemUUID: (ETUUID *)aUUID
++ (COItemPath *) pathWithItemUUID: (COUUID *)aUUID
 						arrayName: (NSString *)collection
 				   insertionIndex: (NSUInteger)index
 							 type: (COType *)aType;
 
-+ (COItemPath *) pathWithItemUUID: (ETUUID *)aUUID
++ (COItemPath *) pathWithItemUUID: (COUUID *)aUUID
 						valueName: (NSString *)aName
 							 type: (COType *)aType;
 
@@ -34,7 +34,7 @@
 
 @interface COItemPath (Private)
 
-- (ETUUID *)UUID;
+- (COUUID *)UUID;
 
 - (void) insertValue: (id)aValue
 		 inStoreItem: (COMutableItem *)aStoreItem;

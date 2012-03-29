@@ -1,6 +1,6 @@
 #import "COSubtreeDiff.h"
 #import "COMacros.h"
-#import "ETUUID.h"
+#import "COUUID.h"
 #import "COSubtree.h"
 #import "COItem.h"
 #import "COArrayDiff.h"
@@ -18,9 +18,9 @@
 	NSMutableSet *diffDictStorage;
 }
 
-- (NSSet *) modifiedAttributesForUUID: (ETUUID *)aUUID;
-- (NSSet *) editsForUUID: (ETUUID *)aUUID;
-- (NSSet *) editsForUUID: (ETUUID *)aUUID attribute: (NSString *)aString;
+- (NSSet *) modifiedAttributesForUUID: (COUUID *)aUUID;
+- (NSSet *) editsForUUID: (COUUID *)aUUID;
+- (NSSet *) editsForUUID: (COUUID *)aUUID attribute: (NSString *)aString;
 - (void) addEdit: (COSubtreeEdit *)anEdit;
 - (void) removeEdit: (COSubtreeEdit *)anEdit;
 - (NSSet *)allEditedUUIDs;
@@ -61,7 +61,7 @@
 	return result;
 }
 
-- (NSSet *) modifiedAttributesForUUID: (ETUUID *)aUUID
+- (NSSet *) modifiedAttributesForUUID: (COUUID *)aUUID
 {
 	NSMutableSet *result = [NSMutableSet set];
 	for (COSubtreeEdit *edit in diffDictStorage)
@@ -74,7 +74,7 @@
 	return [NSSet setWithSet: result];
 }
 
-- (NSSet *) editsForUUID: (ETUUID *)aUUID attribute: (NSString *)aString
+- (NSSet *) editsForUUID: (COUUID *)aUUID attribute: (NSString *)aString
 {
 	NSMutableSet *result = [NSMutableSet set];
 	for (COSubtreeEdit *edit in diffDictStorage)
@@ -87,7 +87,7 @@
 	return [NSSet setWithSet: result];
 }
 
-- (NSSet *) editsForUUID: (ETUUID *)aUUID
+- (NSSet *) editsForUUID: (COUUID *)aUUID
 {
 	NSMutableSet *result = [NSMutableSet set];
 	for (COSubtreeEdit *edit in diffDictStorage)
@@ -259,8 +259,8 @@
 
 #pragma mark other stuff
 
-- (id) initWithOldRootUUID: (ETUUID*)anOldRoot
-			   newRootUUID: (ETUUID*)aNewRoot
+- (id) initWithOldRootUUID: (COUUID*)anOldRoot
+			   newRootUUID: (COUUID*)aNewRoot
 {
 	SUPERINIT;
 	ASSIGN(oldRoot, anOldRoot);
@@ -404,28 +404,28 @@
 
 // end CODiffArraysDelegate
 
-- (void) _recordSetValue: (id)aValue type: (COType *)aType forAttribute: (NSString*)anAttribute UUID: (ETUUID *)aUUID sourceIdentifier: (id)aSourceIdentifier
+- (void) _recordSetValue: (id)aValue type: (COType *)aType forAttribute: (NSString*)anAttribute UUID: (COUUID *)aUUID sourceIdentifier: (id)aSourceIdentifier
 {
 	COSetAttribute *op = [[COSetAttribute alloc] initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier type: aType value: aValue];
 	[self addEdit: op];
 	[op release];
 }
 
-- (void) _recordDeleteAttribute: (NSString*)anAttribute UUID: (ETUUID *)aUUID sourceIdentifier: (id)aSourceIdentifier
+- (void) _recordDeleteAttribute: (NSString*)anAttribute UUID: (COUUID *)aUUID sourceIdentifier: (id)aSourceIdentifier
 {
 	CODeleteAttribute *op = [[CODeleteAttribute alloc] initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier];
 	[self addEdit: op];
 	[op release];
 }
 
-- (void) _recordSetInsertionOfValue: (id)aValue type: (COType *)aType forAttribute: (NSString*)anAttribute UUID: (ETUUID *)aUUID sourceIdentifier: (id)aSourceIdentifier
+- (void) _recordSetInsertionOfValue: (id)aValue type: (COType *)aType forAttribute: (NSString*)anAttribute UUID: (COUUID *)aUUID sourceIdentifier: (id)aSourceIdentifier
 {
 	COSetInsertion *op = [[COSetInsertion alloc] initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier type: aType object: aValue];
 	[self addEdit: op];
 	[op release];
 }
 
-- (void) _recordSetDeletionOfValue: (id)aValue type: (COType *)aType forAttribute: (NSString*)anAttribute UUID: (ETUUID *)aUUID sourceIdentifier: (id)aSourceIdentifier
+- (void) _recordSetDeletionOfValue: (id)aValue type: (COType *)aType forAttribute: (NSString*)anAttribute UUID: (COUUID *)aUUID sourceIdentifier: (id)aSourceIdentifier
 {
 	COSetDeletion *op = [[COSetDeletion alloc] initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier type: aType object: aValue];
 	[self addEdit: op];
@@ -436,7 +436,7 @@
 - (void) _diffValueBefore: (id)valueA
 					after: (id)valueB
 					 type: (COType *)type
-				 itemUUID: (ETUUID *)itemUUID
+				 itemUUID: (COUUID *)itemUUID
 				attribute: (NSString *)anAttribute
 		 sourceIdentifier: (id)aSource
 {
@@ -482,7 +482,7 @@
 		[NSException raise: NSInvalidArgumentException format: @"expected same UUID"];
 	}
 	
-	ETUUID *uuid = [itemB UUID];
+	COUUID *uuid = [itemB UUID];
 	
 	NSMutableSet *removedAttrs = [NSMutableSet setWithArray: [itemA attributeNames]]; // itemA may be nil => may be empty set
 	[removedAttrs minusSet: [NSSet setWithArray: [itemB attributeNames]]];
@@ -553,7 +553,7 @@
 	COSubtreeDiff *result = [[[self alloc] initWithOldRootUUID: [a UUID]
 												   newRootUUID: [b UUID]] autorelease];
 
-	for (ETUUID *aUUID in [b allUUIDs])
+	for (COUUID *aUUID in [b allUUIDs])
 	{
 		COItem *commonItemA = [[a subtreeWithUUID: aUUID] item]; // may be nil if the item was inserted in b
 		COItem *commonItemB = [[b subtreeWithUUID: aUUID] item];
@@ -711,7 +711,7 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 	
 	// apply all of the edits
 	
-	for (ETUUID *modifiedUUID in [diffDict allEditedUUIDs])
+	for (COUUID *modifiedUUID in [diffDict allEditedUUIDs])
 	{
 		COMutableItem *item = [newItems objectForKey: modifiedUUID];
 		
@@ -794,15 +794,15 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 {
 	return [diffDict allEditedUUIDs];
 }
-- (NSSet *) modifiedAttributesForUUID: (ETUUID *)aUUID
+- (NSSet *) modifiedAttributesForUUID: (COUUID *)aUUID
 {
 	return [diffDict modifiedAttributesForUUID: aUUID];
 }
-- (NSSet *) editsForUUID: (ETUUID *)aUUID
+- (NSSet *) editsForUUID: (COUUID *)aUUID
 {
 	return [diffDict editsForUUID: aUUID];
 }
-- (NSSet *) editsForUUID: (ETUUID *)aUUID attribute: (NSString *)aString
+- (NSSet *) editsForUUID: (COUUID *)aUUID attribute: (NSString *)aString
 {
 	return [diffDict editsForUUID: aUUID attribute: aString];
 }

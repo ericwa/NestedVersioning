@@ -1,7 +1,7 @@
 #import "COSubtreeFactory+Undo.h"
 #import "COMacros.h"
 #import "COItem.h"
-#import "ETUUID.h"
+#import "COUUID.h"
 #import "COStorePrivate.h"
 #import "COSubtreeFactory.h"
 #import "COSubtreeFactory+PersistentRoots.h"
@@ -23,7 +23,7 @@
 			 [[COSubtreeFactory factory] headForBranch: aBranch]];
 }
 
-- (BOOL) shouldSkipVersion: (ETUUID *) aCommit
+- (BOOL) shouldSkipVersion: (COUUID *) aCommit
 				 forBranch: (COSubtree *) aBranch
 					 store: (COStore *) aStore
 {
@@ -40,11 +40,11 @@
 	return NO;
 }
 
-- (ETUUID *) undoVersionForBranch: (COSubtree*)aBranch
+- (COUUID *) undoVersionForBranch: (COSubtree*)aBranch
 						store: (COStore *)aStore
 {
-	ETUUID *currentVersion = [[COSubtreeFactory factory] currentVersionForBranch: aBranch];
-	ETUUID *tail = [[COSubtreeFactory factory] tailForBranch: aBranch];
+	COUUID *currentVersion = [[COSubtreeFactory factory] currentVersionForBranch: aBranch];
+	COUUID *tail = [[COSubtreeFactory factory] tailForBranch: aBranch];
 	
 	assert(aBranch != nil);
 	assert(currentVersion != nil);
@@ -56,7 +56,7 @@
 		return nil;
 	}
 	
-	ETUUID *potentialVersion = [aStore parentForCommit: currentVersion];
+	COUUID *potentialVersion = [aStore parentForCommit: currentVersion];
 	
 	// FIXME: if this assertion fails, it just means the 
 	// persistent root's current version and tail pointers
@@ -69,7 +69,7 @@
 - (void) undoBranch: (COSubtree*)aBranch
 			  store: (COStore *)aStore
 {
-	ETUUID *version = [self undoVersionForBranch: aBranch store: aStore];
+	COUUID *version = [self undoVersionForBranch: aBranch store: aStore];
 	
 	if (version != nil)
 	{
@@ -82,7 +82,7 @@
 
 
 
-- (ETUUID *) redoVersionForBranch: (COSubtree*)aBranch
+- (COUUID *) redoVersionForBranch: (COSubtree*)aBranch
 							store: (COStore *)aStore
 {
 	/*
@@ -99,8 +99,8 @@
 	 
 	 **/
 	
-	ETUUID *currentVersion = [[COSubtreeFactory factory] currentVersionForBranch: aBranch];
-	ETUUID *head = [[COSubtreeFactory factory] headForBranch: aBranch];
+	COUUID *currentVersion = [[COSubtreeFactory factory] currentVersionForBranch: aBranch];
+	COUUID *head = [[COSubtreeFactory factory] headForBranch: aBranch];
 	
 	assert(head != nil);
 	assert(aBranch != nil);
@@ -113,10 +113,10 @@
 	}
 	
 
-	ETUUID *newCurrentVersion = head;
+	COUUID *newCurrentVersion = head;
 	while (1)
 	{
-		ETUUID *parentOfNewCurrentVersion = [aStore parentForCommit: newCurrentVersion];
+		COUUID *parentOfNewCurrentVersion = [aStore parentForCommit: newCurrentVersion];
 	
 		// FIXME: not a hard error
 		assert(parentOfNewCurrentVersion != nil);
@@ -136,7 +136,7 @@
 - (void) redoBranch: (COSubtree*)aBranch
 			  store: (COStore *)aStore
 {
-	ETUUID *version = [self redoVersionForBranch: aBranch store: aStore];
+	COUUID *version = [self redoVersionForBranch: aBranch store: aStore];
 	
 	if (version != nil)
 	{
@@ -150,25 +150,25 @@
 - (NSString *) undoMessageForBranch: (COSubtree*)aBranch
 							  store: (COStore *)aStore
 {
-	ETUUID *version = [self currentVersionForBranch: aBranch];
+	COUUID *version = [self currentVersionForBranch: aBranch];
 	return [aStore menuStringForCommit: version];
 }
 
 - (NSString *) redoMessageForBranch: (COSubtree*)aBranch
 							  store: (COStore *)aStore
 {
-	ETUUID *version = [self redoVersionForBranch: aBranch store: aStore];
+	COUUID *version = [self redoVersionForBranch: aBranch store: aStore];
 	return [aStore menuStringForCommit: version];
 }
 
 
 #pragma mark selective undo and apply
 
-- (COSubtreeDiff *) selectiveUndoCommit: (ETUUID *) commitToUndo
-							  forCommit: (ETUUID*) target
+- (COSubtreeDiff *) selectiveUndoCommit: (COUUID *) commitToUndo
+							  forCommit: (COUUID*) target
 								  store: (COStore *)aStore
 {
-	ETUUID *commitToUndoParent = [aStore parentForCommit: commitToUndo];
+	COUUID *commitToUndoParent = [aStore parentForCommit: commitToUndo];
 	
 	if (commitToUndoParent == nil)
 	{
@@ -211,11 +211,11 @@
 	return diffTargetToNewTarget;
 }
 
-- (COSubtreeDiff *) selectiveApplyCommit: (ETUUID *) commitToDo
-							   forCommit: (ETUUID*) target
+- (COSubtreeDiff *) selectiveApplyCommit: (COUUID *) commitToDo
+							   forCommit: (COUUID*) target
 								   store: (COStore *)aStore
 {
-	ETUUID *commitToDoParent = [aStore parentForCommit: commitToDo];
+	COUUID *commitToDoParent = [aStore parentForCommit: commitToDo];
 	
 	if (commitToDoParent == nil)
 	{

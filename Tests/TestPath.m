@@ -10,9 +10,9 @@
 
 - (void) testPath
 {
-	ETUUID *u1 = [ETUUID UUIDWithString: @"cdf68e39-8f4b-4afa-9f81-ba2f7cdf50e6"];
-	ETUUID *u2 = [ETUUID UUIDWithString: @"8a099b84-09eb-4a3e-828d-9a897778e5e3"];
-	ETUUID *u3 = [ETUUID UUIDWithString: @"5764ce91-3061-4289-b7d8-7e9f4c1cd975"];
+	COUUID *u1 = [COUUID UUIDWithString: @"cdf68e39-8f4b-4afa-9f81-ba2f7cdf50e6"];
+	COUUID *u2 = [COUUID UUIDWithString: @"8a099b84-09eb-4a3e-828d-9a897778e5e3"];
+	COUUID *u3 = [COUUID UUIDWithString: @"5764ce91-3061-4289-b7d8-7e9f4c1cd975"];
 	
 	NSString *pathStr = [NSString stringWithFormat: @"%@/%@", u1, u2];
 	

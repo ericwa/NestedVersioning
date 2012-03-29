@@ -30,7 +30,7 @@
 		66E7784A14E604ED00D5DFFF /* UKTestHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E7782514E6041900D5DFFF /* UKTestHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7784B14E604ED00D5DFFF /* UnitKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E7782714E6041900D5DFFF /* UnitKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7785214E6062100D5DFFF /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66EB756B148CA9D300C2114B /* Cocoa.framework */; };
-		66E7786014E6073100D5DFFF /* ETUUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E8776A1455FE67006CBE7E /* ETUUID.m */; };
+		66E7786014E6073100D5DFFF /* COUUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E8776A1455FE67006CBE7E /* COUUID.m */; };
 		66E7786114E6073100D5DFFF /* COPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EE5D3914637418008AA95B /* COPath.m */; };
 		66E7786214E6073100D5DFFF /* COType.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EDFD95148EF73200D0DC0B /* COType.m */; };
 		66E7786314E6073100D5DFFF /* COType+Plist.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F39B851490A8540097B7D5 /* COType+Plist.m */; };
@@ -50,7 +50,7 @@
 		66E7787714E6073100D5DFFF /* COPersistentRootEditingContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EE5D35146355A6008AA95B /* COPersistentRootEditingContext.m */; };
 		66E7787814E6073100D5DFFF /* COStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E877561455F0CB006CBE7E /* COStore.m */; };
 		66E7787914E6075B00D5DFFF /* COMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 66DFAEC4142A726100623060 /* COMacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		66E7787A14E6075B00D5DFFF /* ETUUID.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E877691455FE5B006CBE7E /* ETUUID.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		66E7787A14E6075B00D5DFFF /* COUUID.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E877691455FE5B006CBE7E /* COUUID.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7787B14E6075B00D5DFFF /* COPath.h in Headers */ = {isa = PBXBuildFile; fileRef = 66EE5D3814637418008AA95B /* COPath.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7787C14E6075B00D5DFFF /* COType.h in Headers */ = {isa = PBXBuildFile; fileRef = 66EDFD94148EF73200D0DC0B /* COType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7787D14E6075B00D5DFFF /* COType+Plist.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F39B841490A8540097B7D5 /* COType+Plist.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -251,8 +251,8 @@
 		66E778BD14E60ED900D5DFFF /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = UKTestHandler.strings; sourceTree = "<group>"; };
 		66E877551455F0CB006CBE7E /* COStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COStore.h; sourceTree = "<group>"; };
 		66E877561455F0CB006CBE7E /* COStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COStore.m; sourceTree = "<group>"; };
-		66E877691455FE5B006CBE7E /* ETUUID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETUUID.h; sourceTree = "<group>"; };
-		66E8776A1455FE67006CBE7E /* ETUUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETUUID.m; sourceTree = "<group>"; };
+		66E877691455FE5B006CBE7E /* COUUID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COUUID.h; sourceTree = "<group>"; };
+		66E8776A1455FE67006CBE7E /* COUUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COUUID.m; sourceTree = "<group>"; };
 		66E8E93314D4BC7F00CBE2D8 /* COSubtreeCopy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COSubtreeCopy.h; sourceTree = "<group>"; };
 		66E8E93414D4BC7F00CBE2D8 /* COSubtreeCopy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COSubtreeCopy.m; sourceTree = "<group>"; };
 		66EADD6414732AEE003181FC /* TestUndo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestUndo.m; sourceTree = "<group>"; wrapsLines = 1; };
@@ -556,8 +556,8 @@
 		669CADED1491C14300D0CF5F /* UUID & Path */ = {
 			isa = PBXGroup;
 			children = (
-				66E877691455FE5B006CBE7E /* ETUUID.h */,
-				66E8776A1455FE67006CBE7E /* ETUUID.m */,
+				66E877691455FE5B006CBE7E /* COUUID.h */,
+				66E8776A1455FE67006CBE7E /* COUUID.m */,
 				66EE5D3814637418008AA95B /* COPath.h */,
 				66EE5D3914637418008AA95B /* COPath.m */,
 			);
@@ -817,7 +817,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				66E7787914E6075B00D5DFFF /* COMacros.h in Headers */,
-				66E7787A14E6075B00D5DFFF /* ETUUID.h in Headers */,
+				66E7787A14E6075B00D5DFFF /* COUUID.h in Headers */,
 				66E7787B14E6075B00D5DFFF /* COPath.h in Headers */,
 				66E7787C14E6075B00D5DFFF /* COType.h in Headers */,
 				66E7787D14E6075B00D5DFFF /* COType+Plist.h in Headers */,
@@ -1050,7 +1050,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				66E7786014E6073100D5DFFF /* ETUUID.m in Sources */,
+				66E7786014E6073100D5DFFF /* COUUID.m in Sources */,
 				66E7786114E6073100D5DFFF /* COPath.m in Sources */,
 				66E7786214E6073100D5DFFF /* COType.m in Sources */,
 				66E7786314E6073100D5DFFF /* COType+Plist.m in Sources */,

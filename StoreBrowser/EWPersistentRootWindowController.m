@@ -249,7 +249,7 @@
 /**
  * FIXME: This is a bit ugly
  */
-- (ETUUID *) currentCommit
+- (COUUID *) currentCommit
 {
 	if (![path isEmpty])
 	{
@@ -258,7 +258,7 @@
 		
 		COSubtree *item = [[parentCtx persistentRootTree] subtreeWithUUID: [path lastPathComponent]];
 		
-		ETUUID *currentCommit = [[COSubtreeFactory factory] currentVersionForBranchOrPersistentRoot: item];
+		COUUID *currentCommit = [[COSubtreeFactory factory] currentVersionForBranchOrPersistentRoot: item];
 		assert(currentCommit != nil);
 		
 		return currentCommit;
@@ -294,8 +294,8 @@
 
 - (IBAction) switchToCommit: (id)sender
 {
-	ETUUID *commit;
-	if (![sender isKindOfClass: [ETUUID class]])
+	COUUID *commit;
+	if (![sender isKindOfClass: [COUUID class]])
 	{
 		commit = [sender representedObject];
 	}
@@ -337,7 +337,7 @@
 
 - (IBAction) selectiveUndo: (id)sender
 {
-	ETUUID *commitToUndo = [sender representedObject];
+	COUUID *commitToUndo = [sender representedObject];
 	COSubtreeDiff *diff = [[COSubtreeFactory factory] selectiveUndoCommit: commitToUndo
 																forCommit: [ctx baseCommit]
 																	store: store];
@@ -357,7 +357,7 @@
 
 - (IBAction) selectiveApply: (id)sender
 {
-	ETUUID *commitToDo = [sender representedObject];
+	COUUID *commitToDo = [sender representedObject];
 	COSubtreeDiff *diff = [[COSubtreeFactory factory] selectiveApplyCommit: commitToDo
 																 forCommit: [ctx baseCommit]
 																	 store: store];
@@ -376,7 +376,7 @@
 }
 
 
-static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *start, ETUUID *aUUID)
+static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *start, COUUID *aUUID)
 {
 	if ([[start UUID] isEqual: aUUID] && [start attribute] == nil)
 	{
@@ -417,7 +417,7 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
 	}	
 }
 
-- (void) orderFrontAndHighlightItem: (ETUUID*)aUUID
+- (void) orderFrontAndHighlightItem: (COUUID*)aUUID
 {
 	[self showWindow: nil];	
 	

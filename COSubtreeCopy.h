@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-@class ETUUID;
+@class COUUID;
 @class COSubtree;
 
 /**
@@ -16,7 +16,7 @@
 }
 
 - (COSubtree *) subtree;
-- (ETUUID *) replacementUUIDForUUID: (ETUUID*)aUUID;
+- (COUUID *) replacementUUIDForUUID: (COUUID*)aUUID;
 
 @end
 

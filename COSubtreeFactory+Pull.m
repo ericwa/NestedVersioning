@@ -1,7 +1,7 @@
 #import "COSubtreeFactory+Undo.h"
 #import "COMacros.h"
 #import "COItem.h"
-#import "ETUUID.h"
+#import "COUUID.h"
 #import "COStorePrivate.h"
 #import "COSubtreeFactory.h"
 #import "COSubtreeFactory+PersistentRoots.h"
@@ -14,8 +14,8 @@
 					  toBranch: (COSubtree*)destBranch
 						 store: (COStore *)aStore
 {
-	ETUUID *srcCommit = [self currentVersionForBranch: srcBranch];
-	ETUUID *destCommit = [self currentVersionForBranch: destBranch];
+	COUUID *srcCommit = [self currentVersionForBranch: srcBranch];
+	COUUID *destCommit = [self currentVersionForBranch: destBranch];
 	
 	if ([aStore isCommit: destCommit parentOfCommit: srcCommit])
 	{
@@ -30,7 +30,7 @@
 	{
 		NSLog(@"pullChangesFromBranch: need to do full merge.");
 		
-		ETUUID *ancestor = [aStore commonAncestorForCommit: srcCommit
+		COUUID *ancestor = [aStore commonAncestorForCommit: srcCommit
 												 andCommit: destCommit];
 		
 		NSLog(@"common ancestor: %@", ancestor);
@@ -81,7 +81,7 @@
 		
 		// commit the changes
 		
-		ETUUID *newCommitUUID = [aStore addCommitWithParent: destCommit
+		COUUID *newCommitUUID = [aStore addCommitWithParent: destCommit
 												   metadata: nil
 													   tree: newCurrentState];
 		

@@ -2,7 +2,7 @@
 
 #import "COArrayDiff.h"
 
-@class ETUUID;
+@class COUUID;
 @class COSubtree;
 @class COMutableItem;
 
@@ -52,8 +52,8 @@
  */
 @interface COSubtreeDiff : NSObject <NSCopying, CODiffArraysDelegate>
 {
-	ETUUID *oldRoot;
-	ETUUID *newRoot;
+	COUUID *oldRoot;
+	COUUID *newRoot;
 	CODiffDictionary *diffDict;
 	
 	// right now, the conflicts are purely derived from the set of edits.
@@ -96,9 +96,9 @@
 
 - (NSSet *)modifiedItemUUIDs;
 
-- (NSSet *) modifiedAttributesForUUID: (ETUUID *)aUUID;
-- (NSSet *) editsForUUID: (ETUUID *)aUUID;
-- (NSSet *) editsForUUID: (ETUUID *)aUUID attribute: (NSString *)aString;
+- (NSSet *) modifiedAttributesForUUID: (COUUID *)aUUID;
+- (NSSet *) editsForUUID: (COUUID *)aUUID;
+- (NSSet *) editsForUUID: (COUUID *)aUUID attribute: (NSString *)aString;
 
 #pragma mark mutation
 

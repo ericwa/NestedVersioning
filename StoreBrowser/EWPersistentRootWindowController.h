@@ -40,7 +40,7 @@
 - (IBAction) undo: (id)sender;
 - (IBAction) redo: (id)sender;
 
-- (void) orderFrontAndHighlightItem: (ETUUID*)aUUID;
+- (void) orderFrontAndHighlightItem: (COUUID*)aUUID;
 
 - (COSubtree *)branchItem;
 
@@ -49,7 +49,7 @@
  */
 - (void) reloadBrowser;
 
-- (ETUUID *) currentCommit;
+- (COUUID *) currentCommit;
 
 - (NSArray *)selectedRows;
 

@@ -34,7 +34,7 @@
 - (NSString *)view:(NSView *)view stringForToolTip:(NSToolTipTag)tag point:(NSPoint)point userData:(void *)userData
 {
 	COStore *store = [graphRenderer store];
-	ETUUID *commit = [graphRenderer commitAtPoint: point];
+	COUUID *commit = [graphRenderer commitAtPoint: point];
 	
 	if (commit == nil)
 	{
@@ -45,7 +45,7 @@
 	
 	[desc appendFormat: @"%@", commit];
 	
-	ETUUID *parent = [store parentForCommit: commit];
+	COUUID *parent = [store parentForCommit: commit];
 	if (nil != parent)
 	{
 		COSubtree *before = [store treeForCommit: parent];
@@ -70,14 +70,14 @@
 	// Update tooltips
 	
 	[self removeAllToolTips];
-	for (ETUUID *commit in [graphRenderer commits])
+	for (COUUID *commit in [graphRenderer commits])
 	{
 		NSRect r = [graphRenderer rectForCommit: commit];
 		[self addToolTipRect:r owner:self userData:commit];
 	}
 }
 
-- (void) setCurrentCommit: (ETUUID *)aCommit
+- (void) setCurrentCommit: (COUUID *)aCommit
 {
 	ASSIGN(currentCommit, aCommit);
 	[self setNeedsDisplay: YES];
@@ -88,7 +88,7 @@
     NSPoint pt = [self convertPoint: [theEvent locationInWindow] 
 						   fromView: nil];
 	
-    ETUUID *commit = [graphRenderer commitAtPoint: pt];
+    COUUID *commit = [graphRenderer commitAtPoint: pt];
 	
 	if (nil != commit)
 	{
@@ -140,7 +140,7 @@
 		NSPoint pt = [self convertPoint: [theEvent locationInWindow] 
 							   fromView: nil];
 		
-		ETUUID *commit = [graphRenderer commitAtPoint: pt];
+		COUUID *commit = [graphRenderer commitAtPoint: pt];
 		[NSApp sendAction: @selector(switchToCommit:) to: nil from: commit];
 	}
 }

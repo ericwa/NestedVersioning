@@ -98,7 +98,7 @@ void test()
 	
 	// creates a new parentless version in the store *right now*
 	// (if the context doesn't get committed, the version will eventually get GC'ed)
-	ETUUID *library1 = [ctxt newPersistentRootAtItemPath: 
+	COUUID *library1 = [ctxt newPersistentRootAtItemPath: 
 								[COItemPath itemPathWithUUID: [ctxt rootObject]
 									 unorderedCollectionName: @"contents"]
 												rootItem: [factory newFolderNamed: @"library1"]];
@@ -119,15 +119,15 @@ void test()
 	
 	
 	
-	ETUUID *folder1 = [library1ctxt insertItem: [factory newFolderNamed: @"folder1"]
+	COUUID *folder1 = [library1ctxt insertItem: [factory newFolderNamed: @"folder1"]
 								   inContainer: [library1ctxt rootItem]];
 
-	ETUUID *project2 = [library1ctxt insertItem: [factory newFolderNamed: @"project2"]
+	COUUID *project2 = [library1ctxt insertItem: [factory newFolderNamed: @"project2"]
 								   inContainer: [library1ctxt rootItem]];
 
 	// before committing library1ctxt, try making a change in the root ctxt
 	
-	ETUUID *library2 = [ctxt newPersistentRootAtItemPath: 
+	COUUID *library2 = [ctxt newPersistentRootAtItemPath: 
 						[COItemPath itemPathWithUUID: [ctxt rootObject]
 							 unorderedCollectionName: @"contents"]
 												rootItem: [factory newFolderNamed: @"library2"]];

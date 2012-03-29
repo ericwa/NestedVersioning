@@ -18,7 +18,7 @@
 - (BOOL) isValidPersistentRoot: (COSubtree *)aRoot;
 - (BOOL) isValidBranch: (COSubtree *)aRoot;
 
-- (COSubtree *)persistentRootWithInitialVersion: (ETUUID *)aVersion
+- (COSubtree *)persistentRootWithInitialVersion: (COUUID *)aVersion
 									displayName: (NSString *)aName;
 
 - (NSSet *) branchesOfPersistentRoot: (COSubtree *)aRoot;
@@ -31,22 +31,22 @@
 - (void) setCurrentBranch: (COSubtree *)aBranch
 		forPersistentRoot: (COSubtree *)aRoot;
 
-- (ETUUID *) currentVersionForBranch: (COSubtree *)aBranch;
+- (COUUID *) currentVersionForBranch: (COSubtree *)aBranch;
 
-- (ETUUID *) currentVersionForBranchOrPersistentRoot: (COSubtree *)aRootOrBranch;
+- (COUUID *) currentVersionForBranchOrPersistentRoot: (COSubtree *)aRootOrBranch;
 
 /**
  * Tries to "intelligently" reset the undo/redo limits based on the current
  * limits.
  */
-- (void) setCurrentVersion: (ETUUID*)aVersion
+- (void) setCurrentVersion: (COUUID*)aVersion
  forBranchOrPersistentRoot: (COSubtree *)aRootOrBranch
 					 store: (COStore *)aStore;
 
-- (ETUUID *) headForBranch: (COSubtree*)aBranch;
-- (ETUUID *) tailForBranch: (COSubtree*)aBranch;
+- (COUUID *) headForBranch: (COSubtree*)aBranch;
+- (COUUID *) tailForBranch: (COSubtree*)aBranch;
 
-- (void) setCurrentVersion: (ETUUID*)aVersion
+- (void) setCurrentVersion: (COUUID*)aVersion
 				 forBranch: (COSubtree*)aBranch
 		   updateRedoLimit: (BOOL)setRedoLimit
 		   updateUndoLimit: (BOOL)setUndoLimit;

@@ -13,7 +13,7 @@
 {
 	COStore *store = setupStore();
 	
-	COItem *i1 = [[[COItem alloc] initWithUUID: [ETUUID UUID]
+	COItem *i1 = [[[COItem alloc] initWithUUID: [COUUID UUID]
 							typesForAttributes: D([COType stringType], @"name")
 						   valuesForAttributes: D(@"hello", @"name")] autorelease];
 	
@@ -23,7 +23,7 @@
 	
 	NSDictionary *md = [NSDictionary dictionaryWithObjectsAndKeys: @"today", @"date", nil];
 	
-	ETUUID *uuid = [store addCommitWithParent: nil
+	COUUID *uuid = [store addCommitWithParent: nil
 									 metadata: md
 						   UUIDsAndStoreItems: uuidsanditems
 									 rootItem: [i1 UUID]];
@@ -47,7 +47,7 @@
 
 - (void)testReopenStore
 {
-	ETUUID *o1 = [ETUUID UUID];
+	COUUID *o1 = [COUUID UUID];
 	NSDictionary *sampleMetadata = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool: YES] forKey:@"metadataWorks"];
 	uint64_t revisionNumber = 0;
 	
@@ -95,7 +95,7 @@
 {
 	COStore *s = SetUpStore();
 	
-	ETUUID *o1 = [ETUUID UUID];
+	COUUID *o1 = [COUUID UUID];
 
 	[s insertRootObjectUUIDs: S(o1)];	
 	
@@ -156,7 +156,7 @@
 {
 	COStore *s = SetUpStore();
 	
-	ETUUID *o1 = [ETUUID UUID];
+	COUUID *o1 = [COUUID UUID];
 
 	[s insertRootObjectUUIDs: S(o1)];	
 	[s beginCommitWithMetadata: nil rootObjectUUID: o1];
@@ -174,9 +174,9 @@
 {
 	COStore *s = SetUpStore();
 	
-	ETUUID *o1 = [ETUUID UUID];
-	ETUUID *o2 = [ETUUID UUID];
-	ETUUID *o3 = [ETUUID UUID];
+	COUUID *o1 = [COUUID UUID];
+	COUUID *o2 = [COUUID UUID];
+	COUUID *o3 = [COUUID UUID];
 	[s insertRootObjectUUIDs: S(o1)];
 	[s beginCommitWithMetadata: nil rootObjectUUID: o1];
 	[s beginChangesForObjectUUID: o2];
@@ -204,7 +204,7 @@
 {
 	COStore *s = SetUpStore();
 	
-	ETUUID *o1 = [ETUUID UUID];
+	COUUID *o1 = [COUUID UUID];
 
 	[s insertRootObjectUUIDs: S(o1)];	
 	[s beginCommitWithMetadata: nil rootObjectUUID: o1];

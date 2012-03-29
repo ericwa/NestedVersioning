@@ -21,7 +21,7 @@
 }
 
 - (id) initWithContext: (COPersistentRootEditingContext *)aContext
-			  itemUUID: (ETUUID *)aUUID
+			  itemUUID: (COUUID *)aUUID
 			 attribute: (NSString*)anAttribute
 isPrimitiveInContainer: (BOOL)aFlag
 				 index: (NSUInteger)anIndex
@@ -66,7 +66,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 
 
 - (id) initWithContext: (COPersistentRootEditingContext *)aContext
-			  itemUUID: (ETUUID *)aUUID
+			  itemUUID: (COUUID *)aUUID
 			 attribute: (NSString*)anAttribute
 				parent: (EWPersistentRootOutlineRow *)aParent
 	  windowController: (EWPersistentRootWindowController *)aController
@@ -81,7 +81,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 }
 
 - (id) initWithContext: (COPersistentRootEditingContext *)aContext
-			  itemUUID: (ETUUID *)aUUID
+			  itemUUID: (COUUID *)aUUID
 				parent: (EWPersistentRootOutlineRow *)aParent
 	  windowController: (EWPersistentRootWindowController *)aController
 {
@@ -113,7 +113,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 	[super dealloc];
 }
 
-- (ETUUID *)UUID
+- (COUUID *)UUID
 {
 	return UUID;
 }
@@ -171,7 +171,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 		{
 			NSMutableArray *result = [NSMutableArray array];
 			
-			for (ETUUID *embeddedUUID in [[subtree item] allObjectsForAttribute: attribute])
+			for (COUUID *embeddedUUID in [[subtree item] allObjectsForAttribute: attribute])
 			{
 				EWPersistentRootOutlineRow *obj = [[EWPersistentRootOutlineRow alloc] initWithContext: ctx
 																							 itemUUID: embeddedUUID
@@ -341,7 +341,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 	}
 }
 
-+ (NSComparisonResult) compareUUID: (ETUUID*)uuid1 withUUID: (ETUUID *)uuid2
++ (NSComparisonResult) compareUUID: (COUUID*)uuid1 withUUID: (COUUID *)uuid2
 {
 	int diff = memcmp([uuid1 UUIDValue], [uuid2 UUIDValue], 16);
 	
@@ -430,7 +430,7 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 				return;
 			}
 			
-			id value = [type valueForStringValue: object]; // e.g. converts string -> ETUUID
+			id value = [type valueForStringValue: object]; // e.g. converts string -> COUUID
 			
 			[storeItem setPrimitiveValue: value
 							forAttribute: [self attribute]
@@ -535,7 +535,7 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 
 - (id)identifier
 {
-	ETUUID *aUUID = [self UUID];
+	COUUID *aUUID = [self UUID];
 	NSString *attr = [self attribute];
 	NSNumber *isPrimitiveInContainerObj = [NSNumber numberWithBool: [self isPrimitiveInContainer]];
 	

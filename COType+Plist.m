@@ -1,6 +1,6 @@
 #import "COType+Plist.h"
 #import "COTypePrivate.h"
-#import "ETUUID.h"
+#import "COUUID.h"
 #import "COPath.h"
 
 @interface COInt64Type (Plist)
@@ -102,12 +102,12 @@
 
 - (id) plistValueForValue: (id)aValue
 {
-	return [(ETUUID *)aValue stringValue];
+	return [(COUUID *)aValue stringValue];
 }
 
 - (id) valueForPlistValue: (id)aPlist
 {
-	return [ETUUID UUIDWithString: aPlist];
+	return [COUUID UUIDWithString: aPlist];
 }
 
 @end
@@ -132,12 +132,12 @@
 
 - (id) plistValueForValue: (id)aValue
 {
-	return [(ETUUID *)aValue stringValue];
+	return [(COUUID *)aValue stringValue];
 }
 
 - (id) valueForPlistValue: (id)aPlist
 {
-	return [ETUUID UUIDWithString: aPlist];
+	return [COUUID UUIDWithString: aPlist];
 }
 
 @end

@@ -64,7 +64,7 @@ void test()
 
 - (void)testBasicPersistence
 {
-	ETUUID *objUUID;
+	COUUID *objUUID;
 	
 	{
 		COStore *store = [[COStore alloc] initWithURL: STORE_URL];
@@ -101,7 +101,7 @@ void test()
 	UKFalse([ctx hasChanges]);
 		
 	COObject *o1 = [ctx insertObjectWithEntityName: @"Anonymous.OutlineItem"];
-	ETUUID *u1 = [[o1 UUID] retain];
+	COUUID *u1 = [[o1 UUID] retain];
 	
 	// FIXME: It's not entirely clear what this should do
 	[ctx discardAllChanges];

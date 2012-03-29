@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 
 #import "COItem.h"
-#import "ETUUID.h"
+#import "COUUID.h"
 
 @class COSubtreeCopy;
 @class COItemPath;
@@ -30,7 +30,7 @@
 
 #pragma mark Creation
 
-- (id) initWithUUID: (ETUUID*)aUUID;
+- (id) initWithUUID: (COUUID*)aUUID;
 
 /**
  * init with a new UUID
@@ -49,7 +49,7 @@
  *  - items contains more than one item with the same UUID
  */
 + (COSubtree *)subtreeWithItemSet: (NSSet*)items
-						 rootUUID: (ETUUID *)aRootUUID;
+						 rootUUID: (COUUID *)aRootUUID;
 
 /**
  * @returns a mutable copy, with UUID's unmodified.
@@ -108,7 +108,7 @@
  * Returns YES if the uuid is contained
  * in the receiver (or if it is the receiver's UUID)
  */
-- (BOOL) containsSubtreeWithUUID: (ETUUID *)aUUID;
+- (BOOL) containsSubtreeWithUUID: (COUUID *)aUUID;
 
 - (BOOL) containsSubtree: (COSubtree *)aSubtree;
 
@@ -129,9 +129,9 @@
  * Returns nil if not present.
  * Returns self if given self's uuid
  */
-- (COSubtree *) subtreeWithUUID: (ETUUID *)aUUID;
+- (COSubtree *) subtreeWithUUID: (COUUID *)aUUID;
 
-- (COItemPath *) itemPathOfSubtreeWithUUID: (ETUUID *)aUUID;
+- (COItemPath *) itemPathOfSubtreeWithUUID: (COUUID *)aUUID;
 
 
 
@@ -141,7 +141,7 @@
 
 - (COItem *) item;
 
-- (ETUUID *) UUID;
+- (COUUID *) UUID;
 
 - (NSArray *) attributeNames;
 
@@ -213,10 +213,10 @@ toUnorderedAttribute: (NSString*)anAttribute
  * Removes a subtree (regardless of where in the receiver or the receiver's children
  * it is located.) Throws an exception if the guven UUID is not present in the receiver.
  */
-- (void) removeSubtreeWithUUID: (ETUUID *)aUUID;
+- (void) removeSubtreeWithUUID: (COUUID *)aUUID;
 - (void) removeSubtree: (COSubtree *)aSubtree;
 
-- (void) moveSubtreeWithUUID: (ETUUID *)aUUID
+- (void) moveSubtreeWithUUID: (COUUID *)aUUID
 				  toItemPath: (COItemPath *)aPath;
 
 /**

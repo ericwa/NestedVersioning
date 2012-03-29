@@ -1,6 +1,6 @@
 #import "COType.h"
 #import "COMacros.h"
-#import "ETUUID.h"
+#import "COUUID.h"
 #import "COPath.h"
 #import "COTypePrivate.h"
 
@@ -163,7 +163,7 @@
 
 - (BOOL) validateValue: (id)aValue
 {
-	return [aValue isKindOfClass: [ETUUID class]];
+	return [aValue isKindOfClass: [COUUID class]];
 }
 
 @end
@@ -193,7 +193,7 @@
 
 - (BOOL) validateValue: (id)aValue
 {
-	return [aValue isKindOfClass: [ETUUID class]];
+	return [aValue isKindOfClass: [COUUID class]];
 }
 
 @end

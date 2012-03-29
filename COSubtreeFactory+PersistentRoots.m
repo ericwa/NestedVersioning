@@ -1,7 +1,7 @@
 #import "COSubtreeFactory+PersistentRoots.h"
 #import "COMacros.h"
 #import "COItem.h"
-#import "ETUUID.h"
+#import "COUUID.h"
 #import "COSubtree.h"
 #import "COSubtreeCopy.h"
 #import "COPath.h"
@@ -21,7 +21,7 @@
 	return NO;
 }
 
-- (COSubtree *)persistentRootWithInitialVersion: (ETUUID *)aVersion
+- (COSubtree *)persistentRootWithInitialVersion: (COUUID *)aVersion
 									displayName: (NSString *)aName
 {
 	NILARG_EXCEPTION_TEST(aVersion);
@@ -90,7 +90,7 @@ toUnorderedAttribute: @"contents"
 	assert([aPath isKindOfClass: [COPath class]]);
 	// FIXME: check it is a single-element path
 	
-	ETUUID *branchUUID = [aPath lastPathComponent];	
+	COUUID *branchUUID = [aPath lastPathComponent];	
 	
 	COSubtree *branch = [aRoot subtreeWithUUID: branchUUID];
 	
@@ -126,7 +126,7 @@ toUnorderedAttribute: @"contents"
 						type: [COType pathType]];
 }
 
-- (ETUUID *) currentVersionForBranch: (COSubtree *)aBranch
+- (COUUID *) currentVersionForBranch: (COSubtree *)aBranch
 {
 	if (![self isBranch: aBranch])
 	{
@@ -136,7 +136,7 @@ toUnorderedAttribute: @"contents"
 	return [aBranch valueForAttribute: @"currentVersion"];
 }
 
-- (ETUUID *) currentVersionForBranchOrPersistentRoot: (COSubtree *)aRootOrBranch
+- (COUUID *) currentVersionForBranchOrPersistentRoot: (COSubtree *)aRootOrBranch
 {
 	if ([self isBranch: aRootOrBranch])
 	{
@@ -153,7 +153,7 @@ toUnorderedAttribute: @"contents"
 	return nil;
 }
 
-- (void) setCurrentVersion: (ETUUID*)aVersion
+- (void) setCurrentVersion: (COUUID*)aVersion
  forBranchOrPersistentRoot: (COSubtree *)aRootOrBranch
 					 store: (COStore *)aStore
 {
@@ -185,17 +185,17 @@ toUnorderedAttribute: @"contents"
 			updateUndoLimit: updateUndo];
 }
 
-- (ETUUID *) headForBranch: (COSubtree*)aBranch
+- (COUUID *) headForBranch: (COSubtree*)aBranch
 {
 	return [aBranch valueForAttribute: @"head"];
 }
 
-- (ETUUID *) tailForBranch: (COSubtree*)aBranch
+- (COUUID *) tailForBranch: (COSubtree*)aBranch
 {
 	return [aBranch valueForAttribute: @"tail"];
 }
 
-- (void) setCurrentVersion: (ETUUID*)aVersion
+- (void) setCurrentVersion: (COUUID*)aVersion
 				 forBranch: (COSubtree*)aBranch
 		   updateRedoLimit: (BOOL)setRedoLimit
 		   updateUndoLimit: (BOOL)setUndoLimit
@@ -254,7 +254,7 @@ toUnorderedAttribute: @"contents"
 	
 	// Reset the limits for undo/redo
 	{
-		ETUUID *currentVersion = [i2 valueForAttribute: @"currentVersion"];
+		COUUID *currentVersion = [i2 valueForAttribute: @"currentVersion"];
 		assert(currentVersion != nil);
 		
 		[self setCurrentVersion: currentVersion
@@ -275,7 +275,7 @@ toUnorderedAttribute: @"contents"
 		
 	// Reset the limits for undo/redo
 	{
-		ETUUID *currentVersion = [branch valueForAttribute: @"currentVersion"];
+		COUUID *currentVersion = [branch valueForAttribute: @"currentVersion"];
 		assert(currentVersion != nil);
 		
 		[self setCurrentVersion: currentVersion
@@ -295,7 +295,7 @@ toUnorderedAttribute: @"contents"
 									displayName: (NSString *)aName
 										  store: (COStore *)aStore
 {
-	ETUUID *nestedDocumentInitialVersion = [aStore addCommitWithParent: nil
+	COUUID *nestedDocumentInitialVersion = [aStore addCommitWithParent: nil
 															  metadata: nil
 																  tree: anItem];
 	assert(nestedDocumentInitialVersion != nil);

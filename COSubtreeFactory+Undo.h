@@ -13,7 +13,7 @@
 
 #pragma mark helper methods
 
-- (BOOL) shouldSkipVersion: (ETUUID*) aCommit
+- (BOOL) shouldSkipVersion: (COUUID*) aCommit
 				 forBranch: (COSubtree *) aBranch
 					 store: (COStore *) aStore;
 
@@ -36,15 +36,15 @@
  * or returns nil if the selective undo is impossible or
  * there is nothing to undo.
  */
-- (COSubtreeDiff *) selectiveUndoCommit: (ETUUID *) commitToUndo
-							  forCommit: (ETUUID*) target
+- (COSubtreeDiff *) selectiveUndoCommit: (COUUID *) commitToUndo
+							  forCommit: (COUUID*) target
 								  store: (COStore *)aStore;
 
 /**
  * Returns a diff which can be applied to the contents of 'target'
  */
-- (COSubtreeDiff *) selectiveApplyCommit: (ETUUID *) commitToDo
-							   forCommit: (ETUUID*) target
+- (COSubtreeDiff *) selectiveApplyCommit: (COUUID *) commitToDo
+							   forCommit: (COUUID*) target
 								   store: (COStore *)aStore;
 
 @end

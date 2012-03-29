@@ -74,7 +74,7 @@ static NSDictionary *copyValueDictionary(NSDictionary *input, BOOL mutable)
 			}
 		}
 
-		for (ETUUID *embeddedItem in countedEmbeddedItems)
+		for (COUUID *embeddedItem in countedEmbeddedItems)
 		{
 			if ([countedEmbeddedItems countForObject: embeddedItem] != 1)
 			{
@@ -83,7 +83,7 @@ static NSDictionary *copyValueDictionary(NSDictionary *input, BOOL mutable)
 		}
 		
 		// An item can't contain itself.
-		for (ETUUID *embeddedItem in countedEmbeddedItems)
+		for (COUUID *embeddedItem in countedEmbeddedItems)
 		{
 			if ([embeddedItem isEqual: uuid])
 			{
@@ -95,7 +95,7 @@ static NSDictionary *copyValueDictionary(NSDictionary *input, BOOL mutable)
 	return YES;
 }
 
-- (id) initWithUUID: (ETUUID *)aUUID
+- (id) initWithUUID: (COUUID *)aUUID
  typesForAttributes: (NSDictionary *)typesForAttributes
 valuesForAttributes: (NSDictionary *)valuesForAttributes
 {
@@ -129,12 +129,12 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 + (COItem *) itemWithTypesForAttributes: (NSDictionary *)typesForAttributes
 						 valuesForAttributes: (NSDictionary *)valuesForAttributes
 {
-	return [[[self alloc] initWithUUID: [ETUUID UUID]
+	return [[[self alloc] initWithUUID: [COUUID UUID]
 					typesForAttributes: typesForAttributes
 				   valuesForAttributes: valuesForAttributes] autorelease];
 }
 
-- (ETUUID *)UUID
+- (COUUID *)UUID
 {
 	return uuid;
 }
@@ -193,7 +193,7 @@ static id importValueFromPlist(id aPlist)
 
 - (id) initWithPlist: (id)aPlist
 {
-	ETUUID *aUUID = [ETUUID UUIDWithString: [aPlist objectForKey: @"uuid"]];
+	COUUID *aUUID = [COUUID UUIDWithString: [aPlist objectForKey: @"uuid"]];
 		
 	NSMutableDictionary *importedValues = [NSMutableDictionary dictionary];
 	NSMutableDictionary *importedTypes = [NSMutableDictionary dictionary];
@@ -274,7 +274,7 @@ static id importValueFromPlist(id aPlist)
 		COType *type = [self typeForAttribute: key];
 		if ([type isPrimitiveTypeEqual: [COType embeddedItemType]])
 		{		
-			for (ETUUID *embedded in [self allObjectsForAttribute: key])
+			for (COUUID *embedded in [self allObjectsForAttribute: key])
 			{
 				[result addObject: embedded];
 			}
@@ -320,7 +320,7 @@ static id importValueFromPlist(id aPlist)
 {
 	COMutableItem *aCopy = [self mutableCopy];
 	
-	ETUUID *newUUIDForSelf = [aMapping objectForKey: [self UUID]];
+	COUUID *newUUIDForSelf = [aMapping objectForKey: [self UUID]];
 	if (newUUIDForSelf != nil)
 	{
 		[aCopy setUUID: newUUIDForSelf];
@@ -335,7 +335,7 @@ static id importValueFromPlist(id aPlist)
 		{
 			if ([type isPrimitive])
 			{
-				ETUUID *UUIDValue = (ETUUID*)value;
+				COUUID *UUIDValue = (COUUID*)value;
 				if ([aMapping objectForKey: UUIDValue] != nil)
 				{
 					[aCopy setValue: [aMapping objectForKey: UUIDValue]
@@ -348,9 +348,9 @@ static id importValueFromPlist(id aPlist)
 				id newCollection = [[value mutableCopy] autorelease];
 				[newCollection removeAllObjects];
 				
-				for (ETUUID *UUIDValue in value)
+				for (COUUID *UUIDValue in value)
 				{
-					ETUUID *newUUIDValue = UUIDValue;
+					COUUID *newUUIDValue = UUIDValue;
 					if ([aMapping objectForKey: UUIDValue] != nil)
 					{
 						newUUIDValue = [aMapping objectForKey: UUIDValue];
@@ -400,7 +400,7 @@ static id importValueFromPlist(id aPlist)
 
 @implementation COMutableItem
 
-- (id) initWithUUID: (ETUUID *)aUUID
+- (id) initWithUUID: (COUUID *)aUUID
  typesForAttributes: (NSDictionary *)typesForAttributes
 valuesForAttributes: (NSDictionary *)valuesForAttributes
 {
@@ -423,7 +423,7 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 	return self;
 }
 
-- (id) initWithUUID: (ETUUID*)aUUID
+- (id) initWithUUID: (COUUID*)aUUID
 {
 	return [self initWithUUID: aUUID
 		   typesForAttributes: [NSDictionary dictionary]
@@ -432,7 +432,7 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 
 - (id) init
 {
-	return [self initWithUUID: [ETUUID UUID]];
+	return [self initWithUUID: [COUUID UUID]];
 }
 
 + (COMutableItem *) item
@@ -440,7 +440,7 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 	return [[[self alloc] init] autorelease];
 }
 
-- (void) setUUID: (ETUUID *)aUUID
+- (void) setUUID: (COUUID *)aUUID
 {
 	NILARG_EXCEPTION_TEST(aUUID);
 	ASSIGN(uuid, aUUID);

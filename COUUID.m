@@ -9,7 +9,7 @@
 
 #import <Foundation/Foundation.h>
 #import "COMacros.h"
-#import "ETUUID.h"
+#import "COUUID.h"
 
 
 #define TIME_LOW(uuid) (*(uint32_t*)(uuid))
@@ -20,7 +20,7 @@
 #define NODE(uuid) ((char*)(&(uuid)[10]))
 
 #if defined(__FreeBSD__) || defined(__OpenBSD) || defined(__DragonFly__) || defined(__APPLE__)
-static void ETUUIDGet16RandomBytes(unsigned char bytes[16])
+static void COUUIDGet16RandomBytes(unsigned char bytes[16])
 {
 	*((uint32_t*)&bytes[0]) = arc4random();
 	*((uint32_t*)&bytes[4]) = arc4random();
@@ -29,7 +29,7 @@ static void ETUUIDGet16RandomBytes(unsigned char bytes[16])
 }
 #else
 #include <openssl/rand.h>
-static void ETUUIDGet16RandomBytes(unsigned char bytes[16])
+static void COUUIDGet16RandomBytes(unsigned char bytes[16])
 {
 	if (1 != RAND_pseudo_bytes(bytes, 16))
 	{
@@ -40,14 +40,14 @@ static void ETUUIDGet16RandomBytes(unsigned char bytes[16])
 #endif
 
 
-@implementation ETUUID
+@implementation COUUID
 
-+ (ETUUID *) UUID
++ (COUUID *) UUID
 {
 	return [[[self alloc] init] autorelease];
 }
 
-+ (ETUUID *) UUIDWithString: (NSString *)aString
++ (COUUID *) UUIDWithString: (NSString *)aString
 {
 	return [[[self alloc] initWithString: aString] autorelease];
 }
@@ -56,7 +56,7 @@ static void ETUUIDGet16RandomBytes(unsigned char bytes[16])
 {
     SUPERINIT;
     
-	ETUUIDGet16RandomBytes(uuid);
+	COUUIDGet16RandomBytes(uuid);
 	
 	// Clear bits 6 and 7
 	CLOCK_SEQ_HI_AND_RESERVED(uuid) &= (unsigned char)63;
@@ -146,7 +146,7 @@ static void ETUUIDGet16RandomBytes(unsigned char bytes[16])
 	}
 	if ([anObject isKindOfClass: [self class]])
 	{
-		return (0 == memcmp(uuid, ((ETUUID *)anObject)->uuid, 16));
+		return (0 == memcmp(uuid, ((COUUID *)anObject)->uuid, 16));
 	}
 	return NO;
 }

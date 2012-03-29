@@ -1,6 +1,6 @@
 #import "COType+String.h"
 #import "COTypePrivate.h"
-#import "ETUUID.h"
+#import "COUUID.h"
 #import "COPath.h"
 
 @interface COInt64Type (String)
@@ -142,10 +142,10 @@
 
 - (BOOL) isValidStringValue: (NSString *)aString
 {
-	ETUUID *aUUID = nil;
+	COUUID *aUUID = nil;
 	@try
 	{
-		aUUID = [ETUUID UUIDWithString: aString];
+		aUUID = [COUUID UUIDWithString: aString];
 	}
 	@catch (NSException *exception)
 	{
@@ -156,12 +156,12 @@
 
 - (NSString *) stringValueForValue: (id)aValue
 {
-	return [(ETUUID *)aValue stringValue];
+	return [(COUUID *)aValue stringValue];
 }
 
 - (id) valueForStringValue: (NSString *)aString
 {
-	return [ETUUID UUIDWithString: aString];
+	return [COUUID UUIDWithString: aString];
 }
 
 - (BOOL) supportsRepresentationAsString

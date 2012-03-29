@@ -285,7 +285,7 @@
 }
 
 
-- (NSSet *) insertionSetForUUID: (ETUUID *)aUUID attribute: (NSString *)attribute diff: (COSubtreeDiff *)aDiff sourceID: (id)source
+- (NSSet *) insertionSetForUUID: (COUUID *)aUUID attribute: (NSString *)attribute diff: (COSubtreeDiff *)aDiff sourceID: (id)source
 {
 	NSMutableSet *result = [NSMutableSet set];
 	for (COSubtreeEdit *edit in [aDiff editsForUUID: aUUID attribute: attribute])
@@ -299,7 +299,7 @@
 	return result;
 }
 
-- (NSSet *) deletionSetForUUID: (ETUUID *)aUUID attribute: (NSString *)attribute diff: (COSubtreeDiff *)aDiff sourceID: (id)source
+- (NSSet *) deletionSetForUUID: (COUUID *)aUUID attribute: (NSString *)attribute diff: (COSubtreeDiff *)aDiff sourceID: (id)source
 {
 	NSMutableSet *result = [NSMutableSet set];
 	for (COSubtreeEdit *edit in [aDiff editsForUUID: aUUID attribute: attribute])

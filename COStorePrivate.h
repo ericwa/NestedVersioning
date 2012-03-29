@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "ETUUID.h"
+#import "COUUID.h"
 #import "COItem.h"
 #import "COStore.h"
 
@@ -18,40 +18,40 @@
 
 /** @taskunit commits */
 
-- (ETUUID*) addCommitWithParent: (ETUUID*)parent
+- (COUUID*) addCommitWithParent: (COUUID*)parent
                        metadata: (id)metadataPlist
-			 UUIDsAndStoreItems: (NSDictionary*)objects // ETUUID : COStoreItem
-					   rootItem: (ETUUID*)root;
+			 UUIDsAndStoreItems: (NSDictionary*)objects // COUUID : COStoreItem
+					   rootItem: (COUUID*)root;
 
-- (ETUUID*) addCommitWithParent: (ETUUID*)parent
+- (COUUID*) addCommitWithParent: (COUUID*)parent
                        metadata: (id)metadataPlist
 						   tree: (COSubtree*)aTree;
 
 - (NSArray*) allCommitUUIDs;
 
-- (ETUUID *) parentForCommit: (ETUUID*)commit;
-- (id) metadataForCommit: (ETUUID*)commit;
-- (NSDate*) dateForCommit: (ETUUID*)commit;
-- (NSDictionary *) UUIDsAndStoreItemsForCommit: (ETUUID*)commit;
+- (COUUID *) parentForCommit: (COUUID*)commit;
+- (id) metadataForCommit: (COUUID*)commit;
+- (NSDate*) dateForCommit: (COUUID*)commit;
+- (NSDictionary *) UUIDsAndStoreItemsForCommit: (COUUID*)commit;
 
 /**
  * Returns a string which can be used in the undo/redo menu item for this commit
  */
-- (NSString *)menuStringForCommit: (ETUUID *)commit;
+- (NSString *)menuStringForCommit: (COUUID *)commit;
 
 /**
  * Returns the entire item tree for a commit
  */
-- (COSubtree *) treeForCommit: (ETUUID *)aCommit;
+- (COSubtree *) treeForCommit: (COUUID *)aCommit;
 /**
  * Returns the subtree of the entire item tree for a commit, starting from aUUID
  */
-- (COSubtree *) subtreeForUUID: (ETUUID *)aUUID inCommit: (ETUUID *)aCommit;
+- (COSubtree *) subtreeForUUID: (COUUID *)aUUID inCommit: (COUUID *)aCommit;
 
-- (ETUUID *) rootItemForCommit: (ETUUID*)commit;
+- (COUUID *) rootItemForCommit: (COUUID*)commit;
 
-- (COItem *) storeItemForEmbeddedObject: (ETUUID*)embeddedObject
-									inCommit: (ETUUID*)aCommitUUID;
+- (COItem *) storeItemForEmbeddedObject: (COUUID*)embeddedObject
+									inCommit: (COUUID*)aCommitUUID;
 
 
 /**
@@ -68,7 +68,7 @@
 /**
  * may return nil on first use.
  */
-- (ETUUID *) rootVersion;
+- (COUUID *) rootVersion;
 
 /**
  * The versions set as the root version should not have parent pointers set,
@@ -77,7 +77,7 @@
  * If no parent version pointers are set, running gc will delete all but the
  * rootVersion, which is what we want.
  */
-- (void) setRootVersion: (ETUUID*)version;
+- (void) setRootVersion: (COUUID*)version;
 
 /** @taskunit one-to-many/many-to-many relationship caching */
 
@@ -100,7 +100,7 @@
 
 /** @taskunit common ancestor */
 
-- (ETUUID *)commonAncestorForCommit: (ETUUID *)commitA
-						  andCommit: (ETUUID *)commitB;
+- (COUUID *)commonAncestorForCommit: (COUUID *)commitA
+						  andCommit: (COUUID *)commitB;
 
 @end

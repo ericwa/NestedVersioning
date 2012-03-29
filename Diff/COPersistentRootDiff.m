@@ -152,7 +152,7 @@
 	// "synthesized" commits referenced in the subtree that will not
 	// be present in the store. we need to commit them.
 	
-	for (ETUUID *commitUUID in treeToCommitForPendingCommitUUID)
+	for (COUUID *commitUUID in treeToCommitForPendingCommitUUID)
 	{
 		[aStore addCommitWithParent: [parentCommitForPendingCommitUUID objectForKey: commitUUID]
 						   metadata: nil
@@ -172,8 +172,8 @@
 {
 	// PRECONDITIONS: assume branchA and branchB point to related (but divergent) versions of a persistent root
 	
-	ETUUID *versionA = [[COSubtreeFactory factory] currentVersionForBranch: branchInA];
-	ETUUID *versionB = [[COSubtreeFactory factory] currentVersionForBranch: branchInB];
+	COUUID *versionA = [[COSubtreeFactory factory] currentVersionForBranch: branchInA];
+	COUUID *versionB = [[COSubtreeFactory factory] currentVersionForBranch: branchInB];
 	
 	// Get the subtrees referenced by these commits.
 	
@@ -209,7 +209,7 @@
 	NSMutableSet *branchesIntersection = [NSMutableSet setWithSet: allBranchUUIDsA];
 	[branchesIntersection intersectSet: allBranchUUIDsB];
 	
-	for (ETUUID *branchUUID in branchesIntersection)
+	for (COUUID *branchUUID in branchesIntersection)
 	{
 		COSubtree *branchInA = [persistentRootA subtreeWithUUID: branchUUID];
 		COSubtree *branchInB = [persistentRootB subtreeWithUUID: branchUUID];
@@ -251,7 +251,7 @@
 	NSMutableSet *commonEmbeddedPersistentRootUUIDs = [NSMutableSet setWithSet: allEmbeddedRootUUIDsA];
 	[commonEmbeddedPersistentRootUUIDs intersectSet: allEmbeddedRootUUIDsB];
 	
-	for (ETUUID *commonUUID in commonEmbeddedPersistentRootUUIDs)
+	for (COUUID *commonUUID in commonEmbeddedPersistentRootUUIDs)
 	{
 		[self _diffCommonPersistentRoot: [contentsA subtreeWithUUID: commonUUID]
 			   withCommonPersistentRoot: [contentsB subtreeWithUUID: commonUUID]
@@ -319,11 +319,11 @@
 					NSAssert([[[conflict editA] editedItemUUID] isEqual: 
 							  [[conflict editB] editedItemUUID]], @"");  // a concequence of the validity of the conflict
 
-					ETUUID *branchUUID = [[conflict editA] editedItemUUID];
+					COUUID *branchUUID = [[conflict editA] editedItemUUID];
 					
 					// create a new setValueEdit
 					
-					ETUUID *pendingCommitUUID = [ETUUID UUID];
+					COUUID *pendingCommitUUID = [COUUID UUID];
 					id edit = nil;					
 					[edit setEditedItemUUID: branchUUID]; 
 					[edit setEditedAttribute: @"currentVersion"];
@@ -333,7 +333,7 @@
 										forPath: [currentPath pathByAppendingPathComponent: branchUUID]];
 					
 					
-					ETUUID *parentOfCommit = [[conflict editA] value];
+					COUUID *parentOfCommit = [[conflict editA] value];
 					
 					[parentCommitForPendingCommitUUID setObject: parentOfCommit
 														 forKey: pendingCommitUUID];

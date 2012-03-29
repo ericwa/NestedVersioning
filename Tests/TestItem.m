@@ -16,8 +16,8 @@
 	COMutableItem *i1 = [COMutableItem item];
 	
 	COPath *p1 = [[[COPath path]
-				   pathByAppendingPathComponent:[ETUUID UUIDWithString: @"cdf68e39-8f4b-4afa-9f81-ba2f7cdf50e6"]]
-				  pathByAppendingPathComponent:[ETUUID UUIDWithString: @"8a099b84-09eb-4a3e-828d-9a897778e5e3"]];
+				   pathByAppendingPathComponent:[COUUID UUIDWithString: @"cdf68e39-8f4b-4afa-9f81-ba2f7cdf50e6"]]
+				  pathByAppendingPathComponent:[COUUID UUIDWithString: @"8a099b84-09eb-4a3e-828d-9a897778e5e3"]];
 	
 	[i1 setValue: S(p1)
 	forAttribute: @"contents"
@@ -39,7 +39,7 @@
 
 - (void) testConsistency
 {
-	ETUUID *u1 = [ETUUID UUID];
+	COUUID *u1 = [COUUID UUID];
 	
 	// It is illegal to have the same embedded item in two places.
 	
