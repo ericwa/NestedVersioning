@@ -343,7 +343,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 
 + (NSComparisonResult) compareUUID: (COUUID*)uuid1 withUUID: (COUUID *)uuid2
 {
-	int diff = memcmp([uuid1 UUIDValue], [uuid2 UUIDValue], 16);
+	int diff = memcmp([uuid1 bytes], [uuid2 bytes], 16);
 	
     if (diff < 0)
 	{
