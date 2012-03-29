@@ -304,6 +304,12 @@
 		commit = sender;
 	}
 	
+	if (commit == nil)
+	{
+		return;
+	}
+
+	
 	COPersistentRootEditingContext *parentCtx = [COPersistentRootEditingContext editingContextForEditingPath: [path pathByDeletingLastPathComponent] 
 																									 inStore: store];
 	
