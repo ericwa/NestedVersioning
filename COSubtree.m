@@ -5,6 +5,8 @@
 
 @implementation COSubtree
 
+/* @taskunit Debugging */
+
 - (void) debugInternal
 {
 	// check consistency of parent pointers
@@ -31,6 +33,7 @@
 - (void) debug
 {
 	[[self root] debugInternal];
+	assert([[self root] containsSubtreeWithUUID: [self UUID]]);
 }
 
 /* @taskunit Creation */
