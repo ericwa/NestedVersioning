@@ -36,16 +36,16 @@ ETUUID does not have a designated initializer. */
  * Returns a new autoreleased UUID object initialized with a random 128-bit 
  * binary value.
  */
-+ (id) UUID;
++ (ETUUID *) UUID;
 /**
  * Returns an autoreleased UUID object for the given UUID string representation. 
  */
-+ (id) UUIDWithString: (NSString *)aString;
++ (ETUUID *) UUIDWithString: (NSString *)aString;
 
 /**
  * Initializes the UUID object with a 128-bit binary value.
  */
-- (id) initWithUUIDBytes: (const unsigned char *)aUUID;
+- (id) initWithBytes: (const unsigned char *)aUUID;
 /**
  * Initializes the UUID object from a string representation.
  */
@@ -64,7 +64,7 @@ ETUUID does not have a designated initializer. */
 /**
  * Returns a 128-bit binary value representation of the receiver.
  */
-- (const unsigned char *) UUIDValue;
+- (const unsigned char *) bytes;
 
 /** @taskunit Comparison */
 

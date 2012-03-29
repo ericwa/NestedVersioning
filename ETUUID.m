@@ -41,12 +41,12 @@ static void ETUUIDGet16RandomBytes(unsigned char bytes[16])
 
 @implementation ETUUID
 
-+ (id) UUID
++ (ETUUID *) UUID
 {
 	return [[[self alloc] init] autorelease];
 }
 
-+ (id) UUIDWithString: (NSString *)aString
++ (ETUUID *) UUIDWithString: (NSString *)aString
 {
 	return [[[self alloc] initWithString: aString] autorelease];
 }
@@ -69,7 +69,7 @@ static void ETUUIDGet16RandomBytes(unsigned char bytes[16])
 	return self;
 }
 
-- (id) initWithUUIDBytes: (const unsigned char *)aUUID
+- (id) initWithBytes: (const unsigned char *)aUUID
 {
     SUPERINIT;
 
@@ -167,7 +167,7 @@ static void ETUUIDGet16RandomBytes(unsigned char bytes[16])
 		   NODE(uuid)[5]];
 }
 
-- (const unsigned char *) UUIDValue
+- (const unsigned char *) bytes
 {
 	return uuid;
 }
@@ -176,4 +176,5 @@ static void ETUUIDGet16RandomBytes(unsigned char bytes[16])
 {
 	return [self stringValue];
 }
+
 @end
