@@ -1,6 +1,6 @@
 /*
    Copyright (C) 2007 Yen-Ju Chen <yjchenx gmail>
-   Copyright (C) 2011 Eric Wasylishen <ewasylishen gmail>
+   Copyright (C) 2012 Eric Wasylishen <ewasylishen gmail>
 
    This application is free software; you can redistribute it and/or 
    modify it under the terms of the MIT license. See COPYING.
