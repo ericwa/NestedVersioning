@@ -9,21 +9,25 @@
 #import <Foundation/NSObject.h>
 #import <Foundation/NSString.h>
 
-/** @group UUID
-
-An implementation of the <uref url="http://en.wikipedia.org/wiki/Universally_unique_identifier">
-Universally Unique Identifier</uref> standard. 
-
-When an COUUID is instantiated, the underlying UUID is generated with the 
-version 4 (aka random) generation scheme.<br /> 
-Take note the random scheme used on Linux and BSD platforms is based on a 
-strong random number, unlike other platforms where a simpler random scheme is 
-used. Which means collisions can occur on these platforms if you try to 
-generate COUUID in a tight loop.
-
-You can use -isEqual: to check the equality between two COUUID instances.
-
-COUUID does not have a designated initializer. */
+/**
+ * An implementation of the <a href="http://en.wikipedia.org/wiki/Universally_unique_identifier">
+ * Universally Unique Identifier</a> standard. 
+ * 
+ * When a COUUID is instantiated, the underlying UUID is generated with the 
+ * version 4 (aka random) generation scheme.
+ * 
+ * Two random number generators are supported:
+ * 
+ * - the BSD function arc4random() is used if HAVE_ARC4RANDOM is defined.
+ * - otherwise, the OpenSSL function RAND_pseudo_bytes is used. Note that
+ *   this code assumes the OpenSSL RNG has seeded itself, which the OpenSSL
+ *   documentation specifically warns against doing. It's beyond the scope
+ *   of this code to try to seed the RNG.
+ * 
+ * You can use -isEqual: to check equality of two COUUID instances.
+ * 
+ * COUUID does not have a designated initializer.
+ */
 @interface COUUID : NSObject <NSCopying>
 {
 	@private

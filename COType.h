@@ -1,15 +1,20 @@
 #import <Foundation/Foundation.h>
 
 /**
- * Every key/value pair of a COItem has a COType associated with it 
- * specifying what values are allowed. This creates a lightweight
- * schema/metamodel.
+ * Each key/value pair of a COItem has a COType associated with it.
  *
- * The COType class provides a central place to put various bits 
- * of code such as:
+ * The type defines the set of permissible values which can be set for
+ * that attribute, and possibly additional semantics of the value
+ * which aren't captured by the Objective-C object alone - for example,
+ * one value in a COItem might be an NSArray instance, but the corresponding
+ * COType might additionally indicate that the array contains embedded item
+ * UUIDs, and the array has a restriction that its elements must be unique.
+ *
+ * COType is designed with a few things in mind:
+ *  - being able to store the values of a COItem in an SQL database,
+ *    so the primitive types map cleanly to SQL types.
  *  - validation of ObjC objects against the schema
  *  - plist import/export of ObjC objects of a known COType
- *  - diff of a pair of ObjC objects of a known COType
  */
 @interface COType : NSObject <NSCopying>
 
