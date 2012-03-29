@@ -1,6 +1,7 @@
 /*
    Copyright (C) 2007 Yen-Ju Chen <yjchenx gmail>
-
+   Copyright (C) 2011 Eric Wasylishen <ewasylishen gmail>
+ 
    This application is free software; you can redistribute it and/or 
    modify it under the terms of the MIT license. See COPYING.
 
@@ -21,8 +22,9 @@
  * - the BSD function arc4random() is used if HAVE_ARC4RANDOM is defined.
  * - otherwise, the OpenSSL function RAND_pseudo_bytes is used. Note that
  *   this code assumes the OpenSSL RNG has seeded itself, which the OpenSSL
- *   documentation specifically warns against doing. It's beyond the scope
- *   of this code to try to seed the RNG.
+ *   documentation specifically warns against doing. However, in practice,
+ *   it should handle seeding itself on Windows and Linux. It's beyond the
+ *   scope of this code to try to seed the RNG.
  * 
  * You can use -isEqual: to check equality of two COUUID instances.
  * 
