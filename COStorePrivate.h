@@ -27,6 +27,11 @@
                        metadata: (id)metadataPlist
 						   tree: (COSubtree*)aTree;
 
+- (COUUID*) addCommitWithUUID: (COUUID *)aUUID
+					   parent: (COUUID*)parent
+					 metadata: (id)metadataPlist
+						 tree: (COSubtree*)aTree;
+
 - (NSArray*) allCommitUUIDs;
 
 - (COUUID *) parentForCommit: (COUUID*)commit;

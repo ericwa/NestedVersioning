@@ -36,23 +36,12 @@
 		
 		NSLog(@"common ancestor: %@", ancestor);
 		
-		/**
-		 * now, open up the two branches, and do a merge.
-		 *
-		 * note that we need a special merge strategy for merging branch objects:
-		 * call this method recursively!
-		 */
-		
-		COSubtree *ancestorSubtree = [aStore treeForCommit: ancestor];
-		COSubtree *srcCommitSubtree = [aStore treeForCommit: srcCommit];
-		COSubtree *destCommitSubtree = [aStore treeForCommit: destCommit];
-		
-		COPersistentRootDiff *diffAncestorToSrc = [COPersistentRootDiff diffSubtree: ancestorSubtree
-																		withSubtree: srcCommitSubtree 
+		COPersistentRootDiff *diffAncestorToSrc = [COPersistentRootDiff diffCommit: ancestor
+																		withCommit: srcCommit
 																			  store: aStore
 																   sourceIdentifier: @"ancestor-src"];	
-		COPersistentRootDiff *diffAncestorToDest = [COPersistentRootDiff diffSubtree: ancestorSubtree
-																		 withSubtree: destCommitSubtree 
+		COPersistentRootDiff *diffAncestorToDest = [COPersistentRootDiff diffCommit: ancestor
+																		 withCommit: destCommit
 																			   store: aStore
 																	sourceIdentifier: @"ancestor-dest"];
 		
@@ -63,7 +52,7 @@
 		
 		if ([merged hasConflicts])
 		{
-			NSLog(@"Pull failed: merged diff has conflicts: %@", [merged conflicts]);
+			NSLog(@"Pull failed: merged diff has conflicts");
 			return;
 		}
 				
@@ -71,8 +60,7 @@
 	
 		// commit the changes
 		
-		COUUID *newCommitUUID = [merged commitAppliedToParent: destCommit
-														store: aStore];
+		COUUID *newCommitUUID = [merged commitInStore: aStore];
 		
 		[self setCurrentVersion: newCommitUUID
 					  forBranch: destBranch

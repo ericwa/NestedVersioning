@@ -89,16 +89,16 @@
 				  atomically: YES];
 }
 
-- (COUUID*) addCommitWithParent: (COUUID*)parent
-                       metadata: (id)metadataPlist
-			 UUIDsAndStoreItems: (NSDictionary*)objects
-					   rootItem: (COUUID*)root
+- (COUUID*) addCommitWithUUID: (COUUID *)commitUUID
+					   parent: (COUUID*)parent
+                     metadata: (id)metadataPlist
+		   UUIDsAndStoreItems: (NSDictionary*)objects
+					 rootItem: (COUUID*)root
 {
+	NILARG_EXCEPTION_TEST(commitUUID);
 	NILARG_EXCEPTION_TEST(objects);
 	NILARG_EXCEPTION_TEST(root);
 	assert([objects objectForKey: root] != nil);
-	
-	COUUID *commitUUID = [COUUID UUID];
 	
 	NSMutableDictionary *objectsWithStringUUID = [NSMutableDictionary dictionary];
 	{
@@ -147,10 +147,33 @@
 	return commitUUID;			
 }
 
+- (COUUID*) addCommitWithParent: (COUUID*)parent
+                       metadata: (id)metadataPlist
+			 UUIDsAndStoreItems: (NSDictionary*)objects
+					   rootItem: (COUUID*)root
+{
+	return [self addCommitWithUUID: [COUUID UUID]
+					 parent: parent
+				   metadata: metadataPlist
+		 UUIDsAndStoreItems: objects
+				   rootItem: root];
+}
+
 
 - (COUUID*) addCommitWithParent: (COUUID*)parent
                        metadata: (id)metadataPlist
 						   tree: (COSubtree*)aTree
+{
+	return [self addCommitWithUUID: [COUUID UUID]
+					 parent: parent
+				   metadata: metadataPlist
+					   tree: aTree];
+}
+
+- (COUUID*) addCommitWithUUID: (COUUID *)aUUID
+					   parent: (COUUID*)parent
+					 metadata: (id)metadataPlist
+						 tree: (COSubtree*)aTree
 {
 	NSMutableDictionary *uuidsanditems = [NSMutableDictionary dictionary];
 	{
@@ -161,10 +184,11 @@
 		}
 	}
 	
-	return [self addCommitWithParent: parent
-							metadata: metadataPlist
-				  UUIDsAndStoreItems: uuidsanditems
-							rootItem: [[aTree root] UUID]];
+	return [self addCommitWithUUID: aUUID
+							parent: parent
+						  metadata: metadataPlist
+				UUIDsAndStoreItems: uuidsanditems
+						  rootItem: [[aTree root] UUID]];
 }
 
 - (NSDictionary *) _plistForCommit: (COUUID*)commit

@@ -5,8 +5,10 @@
 #import "COPersistentRootEditingContext.h"
 #import "COSubtreeFactory+PersistentRoots.h"
 #import "COSubtreeDiff.h"
+#import "COSubtreeEdits.h"
 
 @interface COPersistentRootDiff (Private)
+
 - (void) _diffCommonBranch: (COSubtree *)branchInA
 		  withCommonBranch: (COSubtree *)branchInB
 					atPath: (COPath *)currentPath
@@ -134,50 +136,6 @@
 
 #pragma mark diff algorithm
 
-- (void) _diffCommonBranch: (COSubtree *)branchInA
-		  withCommonBranch: (COSubtree *)branchInB
-					atPath: (COPath *)currentPath
-					 store: (COStore *)aStore
-		  sourceIdentifier: (id)aSource
-{
-	[self _diffCommit: [[COSubtreeFactory factory] currentVersionForBranch: branchInA]
-		   withCommit: [[COSubtreeFactory factory] currentVersionForBranch: branchInB]
-			   atPath: [currentPath pathByAppendingPathComponent: [branchInA UUID]]
-				store: aStore
-	 sourceIdentifier: aSource];
-}
-
-/**
- * diffs ALL branches of the given persistent root.
- */
-- (void) _diffCommonPersistentRoot: (COSubtree *)persistentRootA
-		  withCommonPersistentRoot: (COSubtree *)persistentRootB
-							atPath: (COPath *)currentPath
-							 store: (COStore *)aStore
-				  sourceIdentifier: (id)aSource
-{
-	// OK, for now we'll implement the diff all branches policy.
-	
-	// Find all common branches (non-in-common ones handled implicitly)		
-	
-	NSSet *allBranchUUIDsA = [[COSubtreeFactory factory] brancheUUIDsOfPersistentRoot: persistentRootA];
-	NSSet *allBranchUUIDsB = [[COSubtreeFactory factory] brancheUUIDsOfPersistentRoot: persistentRootB];
-	
-	// Those which are only in A or only in B are handled implicitly by contentsABDiff
-	
-	NSMutableSet *branchesIntersection = [NSMutableSet setWithSet: allBranchUUIDsA];
-	[branchesIntersection intersectSet: allBranchUUIDsB];
-	
-	for (COUUID *branchUUID in branchesIntersection)
-	{
-		[self _diffCommonBranch: [persistentRootA subtreeWithUUID: branchUUID]
-			   withCommonBranch: [persistentRootB subtreeWithUUID: branchUUID]
-						 atPath: currentPath
-						  store: aStore
-			   sourceIdentifier: aSource];
-	}
-}
-
 - (void) _diffCommit: (COUUID *)commitA
 		  withCommit: (COUUID *)commitB
 			  atPath: (COPath *)currentPath
@@ -194,7 +152,6 @@
 	COSubtreeDiff *contentsABDiff = [COSubtreeDiff diffSubtree: contentsA 
 												   withSubtree: contentsB
 											  sourceIdentifier: aSource];
-	
 	// Save stuff
 	
 	[subtreeDiffForPath setObject: contentsABDiff
@@ -202,24 +159,16 @@
 	
 	[diffBaseUUIDForPath setObject: commitA
 							forKey: currentPath];
-	
-	// Search for all embedded persistent roots.
-	
-	NSSet *allEmbeddedRootUUIDsA = [[COSubtreeFactory factory] allEmbeddedPersistentRootUUIDsInSubtree: contentsA];
-	NSSet *allEmbeddedRootUUIDsB = [[COSubtreeFactory factory] allEmbeddedPersistentRootUUIDsInSubtree: contentsB];
-	
-	// Those which are only in A or only in B are handled implicitly by contentsABDiff
-	
-	NSMutableSet *commonEmbeddedPersistentRootUUIDs = [NSMutableSet setWithSet: allEmbeddedRootUUIDsA];
-	[commonEmbeddedPersistentRootUUIDs intersectSet: allEmbeddedRootUUIDsB];
-	
-	for (COUUID *commonUUID in commonEmbeddedPersistentRootUUIDs)
+		
+	for (COPath *childPath in [self embeddedPathsAtPath: currentPath])
 	{
-		[self _diffCommonPersistentRoot: [contentsA subtreeWithUUID: commonUUID]
-			   withCommonPersistentRoot: [contentsB subtreeWithUUID: commonUUID]
-								 atPath: currentPath
-								  store: aStore
-					   sourceIdentifier: aSource];
+		COUUID *branchUUID = [childPath lastPathComponent];
+		
+		[self _diffCommit: [[COSubtreeFactory factory] currentVersionForBranch: [contentsA subtreeWithUUID: branchUUID]]
+			   withCommit: [[COSubtreeFactory factory] currentVersionForBranch: [contentsB subtreeWithUUID: branchUUID]]
+				   atPath: childPath
+					store: aStore
+		 sourceIdentifier: aSource];
 	}
 }
 
@@ -235,82 +184,64 @@
 	return YES;
 }
 
-/**
- * Take 2 subtree diffs, as well as the corresponding subtrees they are based on,
- * and merge the diffs.
- *
- * Look for conflicting changes to "currentVersion" of branch objects, and resolve
- * them by setting the "currentVersion" to a new random UUID.
- */
-- (void) mergePersistentRootDiff: (COPersistentRootDiff *)other
-						  atPath: (COPath *)currentPath
+- (void) _mergePersistentRootDiff: (COPersistentRootDiff *)other
+						   atPath: (COPath *)currentPath
 {	
 	COSubtreeDiff *contentsAdiff = [self subtreeDiffAtPath: currentPath];
-	COSubtree *contentsA = [self initialSubtreeForPath: currentPath];
 	COSubtreeDiff *contentsBdiff = [other subtreeDiffAtPath: currentPath];
-	COSubtree *contentsB = [other initialSubtreeForPath: currentPath];
 	
-	if (nil == contentsAdiff || nil == contentsA || nil == contentsBdiff || nil == contentsB)
+	if (nil == contentsAdiff || nil == contentsBdiff)
 	{
 		[NSException raise: NSInternalInconsistencyException format: @"unexpected nil"];
 	}
 	
-	
 	COSubtreeDiff *merged = [contentsAdiff subtreeDiffByMergingWithDiff: contentsBdiff];
-	
-	// now look for conflicts...
-	
+
 	if ([merged hasConflicts])
 	{
 		for (COSubtreeConflict *conflict in [NSSet setWithSet: [merged valueConflicts]])
 		{
-			// This algorithm only really supports pairs of conflicting edits (i.e. merging exactly 2 roots and resolving all conflicts)
-			
-			// Look for conflicts where both sides modified the currentVersion of a branch
-			
 			if ([self isConflictEditingCurrentVersionAttribute: conflict])
 			{
-				COSubtree *branchA = [contentsA subtreeWithUUID: [[conflict editA] editedItemUUID]];
-				COSubtree *branchB = [contentsB subtreeWithUUID: [[conflict editB] editedItemUUID]];
-			
-				if ([[COSubtreeFactory factory] isBranch: branchA] &&
-					[[COSubtreeFactory factory] isBranch: branchB])
-				{
-					[merged removeConflict: conflict];
+				[conflict retain];
+				[merged removeConflict: conflict];
 					
-					NSAssert([[[conflict editA] editedItemUUID] isEqual: 
-							  [[conflict editB] editedItemUUID]], @"");  // a concequence of the validity of the conflict
-
-					COUUID *branchUUID = [[conflict editA] editedItemUUID];
-					
-					// create a new setValueEdit
-					
-					COUUID *pendingCommitUUID = [COUUID UUID];
-					id edit = nil;					
-					[edit setEditedItemUUID: branchUUID]; 
-					[edit setEditedAttribute: @"currentVersion"];
-					[edit setValue: pendingCommitUUID];
-					
-					[self recordTemporaryCommit: pendingCommitUUID
-										forPath: [currentPath pathByAppendingPathComponent: branchUUID]];
-					
-					
-					COUUID *parentOfCommit = [[conflict editA] value];
-					
-					[parentCommitForPendingCommitUUID setObject: parentOfCommit
-														 forKey: pendingCommitUUID];
-					
-					// Recursive call
-					[self mergePersistentRootDiff: other
-										   atPath: [currentPath pathByAppendingPathComponent: branchUUID]];
+				COUUID *branchUUID = [[[conflict allEdits] anyObject] UUID];					
+				NSAssert(branchUUID != nil, @"");
+				
+				COPath *branchPath = [currentPath pathByAppendingPathComponent: branchUUID];
+				
+				// record merge parents
+				
+				// FIXME: only works for one merge right now, because we assume the currentVersion changes
+				// were all real commits.
+				
+				for (COSetAttribute *edit in [conflict allEdits])
+				{					
+					COUUID *commitUUID = [edit value];
+					NSAssert([commitUUID isKindOfClass: [COUUID class]], @"");
+					[self addMergeParent: commitUUID forPath: branchPath];
 				}
+				
+				// create a new setValueEdit
+				
+				COUUID *pendingCommitUUID = [COUUID UUID];
+				COSetAttribute *newEdit = [[[COSetAttribute alloc] initWithUUID: branchUUID
+																	  attribute: @"currentVersion"
+															   sourceIdentifier: @"virtual"
+																		   type: [COType commitUUIDType]
+																		  value: pendingCommitUUID] autorelease];
+				[merged addEdit: newEdit];				
+				
+				[newCommitUUIDForPath setObject: pendingCommitUUID
+										 forKey: branchPath];
+					
+				// Recursive call
+				[self _mergePersistentRootDiff: other
+									   atPath: branchPath];
+				[conflict release];
 			}
 		}
-	}
-	else
-	{
-		// FIXME: ... recursive children won't be visited.
-		// remove them from subtreeDiffForPath?
 	}
 					 
 	[subtreeDiffForPath setObject: merged
@@ -320,8 +251,8 @@
 
 - (void)mergeWithDiff: (COPersistentRootDiff *)other
 {
-	[self mergePersistentRootDiff: other
-						   atPath: [COPath path]];
+	[self _mergePersistentRootDiff: other
+							atPath: [COPath path]];
 }
 
 - (COPersistentRootDiff *)persistentRootDiffByMergingWithDiff: (COPersistentRootDiff *)other
@@ -366,7 +297,7 @@
 	COSubtreeDiff *diff = [subtreeDiffForPath objectForKey: aPath];
 	NSAssert(diff != nil, @"expected diff");
 	
-	for (COSubtreeEdit *edit in diff)
+	for (COSubtreeEdit *edit in [diff allEdits])
 	{
 		if ([[edit attribute] isEqual: @"currentVersion"])
 		{
@@ -383,7 +314,30 @@
 - (COUUID *) _applyAtPath: (COPath *)aPath
 					store: (COStore *)aStore
 {
+	COSubtreeDiff *diff = [self subtreeDiffAtPath: aPath];
+	COUUID *commit = [diffBaseUUIDForPath objectForKey: aPath];
 	
+	COSubtree *dest = [aStore treeForCommit: commit];
+	COSubtree *result = [diff subtreeWithDiffAppliedToSubtree: dest];
+
+	COUUID *targetUUID = [newCommitUUIDForPath objectForKey: aPath];
+	
+	if (targetUUID == nil)
+	{
+		NSLog(@"generate new commit UUID for %@", aPath);
+		targetUUID = [COUUID UUID];
+	}
+	else
+	{
+		NSLog(@"using %@ for %@", targetUUID, aPath);
+	}
+
+	
+	COUUID *newCommitUUID = [aStore addCommitWithUUID: targetUUID
+										   parent: commit
+											 metadata: nil
+												 tree: result];
+	return newCommitUUID;
 }
 
 
@@ -395,18 +349,7 @@
 					format: @"conflicts must be resolved before the diff can be applied"];
 	}
 	
-	COSubtree *dest = [aStore treeForCommit: aParent];
-	
-	COSubtreeDiff *rootDiff = [subtreeDiffForPath objectForKey: [COPath path]];
-	assert(rootDiff != nil);
-	assert(![rootDiff hasConflicts]);
-	
-	COSubtree *result = [rootDiff subtreeWithDiffAppliedToSubtree: dest];
-	
-	COUUID *newCommitUUID = [aStore addCommitWithParent: aParent
-											   metadata: nil
-												   tree: result];
-	return newCommitUUID;
+	return [self _applyAtPath: [COPath path] store: aStore];
 }
 
 
