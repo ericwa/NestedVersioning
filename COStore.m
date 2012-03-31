@@ -207,6 +207,12 @@
 	
 	NSMutableDictionary *plist = [NSMutableDictionary dictionaryWithContentsOfFile: commitFile];
 	
+	if (plist == nil)
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"requested commit %@ not in store", commit];
+	}
+	
 	NSMutableDictionary *objectsWithUUID = [NSMutableDictionary dictionary];
 	{
 		for (NSString *uuidString in [plist objectForKey: @"objects"])

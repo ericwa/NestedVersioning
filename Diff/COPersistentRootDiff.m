@@ -174,13 +174,18 @@
 
 #pragma mark merge algorithm
 
-- (BOOL) isConflictEditingCurrentVersionAttribute: (COSubtreeConflict *)aConflict
+- (BOOL) isConflict: (COSubtreeConflict *)aConflict
+   editingAttribute: (NSString *)attribute
 {
+	if ([[aConflict allEdits] count] == 0)
+		return NO;
+	
 	for (COSubtreeEdit *edit in [aConflict allEdits])
 	{
-		if (![[edit attribute] isEqualToString: @"currentVersion"])
+		if (![[edit attribute] isEqualToString: attribute])
 			return NO;
 	}
+	
 	return YES;
 }
 
@@ -201,20 +206,23 @@
 	{
 		for (COSubtreeConflict *conflict in [NSSet setWithSet: [merged valueConflicts]])
 		{
-			if ([self isConflictEditingCurrentVersionAttribute: conflict])
-			{
-				[conflict retain];
-				[merged removeConflict: conflict];
-					
+			if ([self isConflict: conflict editingAttribute: @"currentVersion"])
+			{					
 				COUUID *branchUUID = [[[conflict allEdits] anyObject] UUID];					
 				NSAssert(branchUUID != nil, @"");
 				
 				COPath *branchPath = [currentPath pathByAppendingPathComponent: branchUUID];
 				
-				// record merge parents
-				
+
 				// FIXME: only works for one merge right now, because we assume the currentVersion changes
 				// were all real commits.
+				
+				COUUID *pendingCommitUUID = [COUUID UUID];
+				// needed by addMergeParent:forPath:
+				[newCommitUUIDForPath setObject: pendingCommitUUID
+										 forKey: branchPath];
+
+				// record merge parents				
 				
 				for (COSetAttribute *edit in [conflict allEdits])
 				{					
@@ -225,21 +233,42 @@
 				
 				// create a new setValueEdit
 				
-				COUUID *pendingCommitUUID = [COUUID UUID];
+				
 				COSetAttribute *newEdit = [[[COSetAttribute alloc] initWithUUID: branchUUID
 																	  attribute: @"currentVersion"
 															   sourceIdentifier: @"virtual"
 																		   type: [COType commitUUIDType]
 																		  value: pendingCommitUUID] autorelease];
+				
+				[merged removeConflict: conflict];
 				[merged addEdit: newEdit];				
 				
-				[newCommitUUIDForPath setObject: pendingCommitUUID
-										 forKey: branchPath];
+
 					
 				// Recursive call
 				[self _mergePersistentRootDiff: other
 									   atPath: branchPath];
-				[conflict release];
+			}
+		}
+		
+		for (COSubtreeConflict *conflict in [NSSet setWithSet: [merged valueConflicts]])
+		{
+			if ([self isConflict: conflict editingAttribute: @"head"])
+			{					
+				COUUID *branchUUID = [[[conflict allEdits] anyObject] UUID];					
+				NSAssert(branchUUID != nil, @"");
+				
+				COPath *branchPath = [currentPath pathByAppendingPathComponent: branchUUID];
+				COUUID *pendingCommitUUID = [newCommitUUIDForPath objectForKey: branchPath];
+				
+				COSetAttribute *newEdit = [[[COSetAttribute alloc] initWithUUID: branchUUID
+																	  attribute: @"head"
+															   sourceIdentifier: @"virtual"
+																		   type: [COType commitUUIDType]
+																		  value: pendingCommitUUID] autorelease];
+				
+				[merged removeConflict: conflict];
+				[merged addEdit: newEdit];
 			}
 		}
 	}
@@ -314,6 +343,15 @@
 - (COUUID *) _applyAtPath: (COPath *)aPath
 					store: (COStore *)aStore
 {
+	// recursively apply the child commits
+	
+	for (COPath *childPath in [self embeddedPathsAtPath: aPath])
+	{
+		[self _applyAtPath: childPath store: aStore];
+	}
+	
+	// apply self
+	
 	COSubtreeDiff *diff = [self subtreeDiffAtPath: aPath];
 	COUUID *commit = [diffBaseUUIDForPath objectForKey: aPath];
 	
@@ -337,6 +375,7 @@
 										   parent: commit
 											 metadata: nil
 												 tree: result];
+	
 	return newCommitUUID;
 }
 
