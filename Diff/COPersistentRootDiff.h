@@ -6,50 +6,35 @@
 @class COSubtreeDiff;
 @class COUUID;
 
-/*
- test cases:
- 
- 
- photo-library (persistent root)
-  |
-   \-- photo (persistent root)
- 
- 
- 1. two branches of photo-library where the _current branch of photo_ differs
- 2. two branches of photo-library where photo has diverging edits made on the same branch (Y-shaped commit graph)
- 3. two branches of photo-library where photo has non-diverging edits made on the same branch (straight-line commit graph)
- 4. ???
-  
- -----
- 
- creation cases:
-- create on a pair of persistent roots. user selects "diff all branches"?
-- create on a pair of persistent roots. user selects "diff only current branch"?
-- only allow creation on a pair of branches?
- 
- tangent: there will need to be a UI option: "[ x ]  merge all branches of embedded persistent roots (as opposed to only merging current branches)"
- 
- 
+/**
+ * the whole point of this class is supporting merging;
+ * if you don't need merging you can just use COSubtreeDiff
+ * and it will handle changes in embedded persistent roots for free.
+ *
  */
 @interface COPersistentRootDiff : NSObject <NSCopying>
 {
+	// populated on diff
 	NSMutableDictionary *subtreeDiffForPath;
+
+	// populated on diff	
+	NSMutableDictionary *diffBaseUUIDForPath;
 	
-	// FIXME: we will need to record the merge parents when
-	// resolving a "set currentVersion" conflict
-	//
-	//NSMutableDictionary *mergeParentsForNewCommitUUID;
+	// populated on merge
+	NSMutableDictionary *mergeParentsForNewCommitUUID;
+
+	// populated on merge	
+	NSMutableDictionary *newCommitUUIDForPath;
 }
 
-+ (COPersistentRootDiff *) diffSubtree: (COSubtree *)subtreeA
-						   withSubtree: (COSubtree *)subtreeB
-								 store: (COStore *)aStore
-					  sourceIdentifier: (id)aSource;
++ (COPersistentRootDiff *) diffCommit: (COUUID *)commitA
+						   withCommit: (COUUID *)commitA
+								store: (COStore *)aStore
+					 sourceIdentifier: (id)aSource;
 
 #pragma mark diff application
 
-- (COUUID *) commitAppliedToParent: (COUUID *)aParent
-							 store: (COStore *)aStore;
+- (COUUID *) commitInStore: (COStore *)aStore;
 
 #pragma mark access
 
@@ -64,6 +49,8 @@
 - (NSSet *) paths;
 
 - (COSubtreeDiff *) subtreeDiffAtPath: (COPath *)aPath;
+
+
 
 #pragma mark merge
 

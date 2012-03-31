@@ -17,12 +17,14 @@
 							atPath: (COPath *)currentPath
 							 store: (COStore *)aStore
 				  sourceIdentifier: (id)aSource;
-- (void) recordPersistentRootContentsDiff: (COSubtreeDiff *)contentsDiff forPath: (COPath *)aPath;
-- (void) _diffContent: (COSubtree *)contentsA
-		  withContent: (COSubtree *)contentsB
-			   atPath: (COPath *)currentPath
-				store: (COStore *)aStore
-	 sourceIdentifier: (id)aSource;
+- (void) _diffCommit: (COUUID *)commitA
+		  withCommit: (COUUID *)commitB
+			  atPath: (COPath *)currentPath
+			   store: (COStore *)aStore
+	sourceIdentifier: (id)aSource;
+
+- (NSSet *) embeddedPathsAtPath: (COPath *) aPath;
+
 @end
 
 
@@ -30,92 +32,107 @@
 
 #pragma mark initializers
 
-- (id) initWithSubtree: (COSubtree *)subtreeA
-			   subtree: (COSubtree *)subtreeB
-				 store: (COStore *)aStore
-	  sourceIdentifier: (id)aSource
+- (id) initWithCommit: (COUUID *)commitA
+			   commit: (COUUID *)commitB
+				store: (COStore *)aStore
+	 sourceIdentifier: (id)aSource
 {
 	SUPERINIT;
 	
 	subtreeDiffForPath = [[NSMutableDictionary alloc] init];
+	diffBaseUUIDForPath = [[NSMutableDictionary alloc] init];
+	mergeParentsForNewCommitUUID  = [[NSMutableDictionary alloc] init];
+	newCommitUUIDForPath = [[NSMutableDictionary alloc] init];
 	
 	// Initiate the recursive diff process
 
-	[self _diffContent: subtreeA
-		   withContent: subtreeB
-				atPath: [COPath path]
-				 store: aStore
-	  sourceIdentifier: aSource];
+	[self _diffCommit: commitA
+		   withCommit: commitB
+			   atPath: [COPath path]
+				store: aStore
+	 sourceIdentifier: aSource];
 	
 	return self;
 }
 
-- (id) copyWithZone:(NSZone *)zone
+- (void) dealloc
+{
+	[subtreeDiffForPath release];
+	[diffBaseUUIDForPath release];
+	[mergeParentsForNewCommitUUID release];
+	[newCommitUUIDForPath release];
+	[super dealloc];
+}
+
+- (id) copyWithZone: (NSZone *)zone
 {
 	COPersistentRootDiff *result = [[[self class] alloc] init];
-
+	
 	result->subtreeDiffForPath = [[NSMutableDictionary alloc] initWithDictionary: subtreeDiffForPath 
-																	   copyItems: YES];
+																	   copyItems: YES];	
+	result->diffBaseUUIDForPath = [[NSMutableDictionary alloc] initWithDictionary: diffBaseUUIDForPath 
+																		copyItems: YES];	
+	result->mergeParentsForNewCommitUUID = [[NSMutableDictionary alloc] initWithDictionary: mergeParentsForNewCommitUUID 
+																				 copyItems: YES];
+	result->newCommitUUIDForPath = [[NSMutableDictionary alloc] initWithDictionary: newCommitUUIDForPath 
+																		 copyItems: YES];
+	
 	return result;
 }
 
-+ (COPersistentRootDiff *) diffSubtree: (COSubtree *)subtreeA
-						   withSubtree: (COSubtree *)subtreeB
-								 store: (COStore *)aStore
-					  sourceIdentifier: (id)aSource
++ (COPersistentRootDiff *) diffCommit: (COUUID *)commitA
+						   withCommit: (COUUID *)commitB
+								store: (COStore *)aStore
+					 sourceIdentifier: (id)aSource
 {
-	return [[[self alloc] initWithSubtree: subtreeA
-								  subtree: subtreeB
-									store: aStore
-						 sourceIdentifier: aSource] autorelease];
+	return [[[self alloc] initWithCommit: commitA
+								  commit: commitB
+								   store: aStore
+						sourceIdentifier: aSource] autorelease];
 }
 
 
-#pragma mark diff application
+#pragma mark merge parents
 
-- (COUUID *) _applyAtPath: (COPath *)aPath
-					store: (COStore *)aStore
+- (NSArray *)mergeParentsForNewCommitUUID: (COUUID *)aUUID
 {
+	NSArray *result = [mergeParentsForNewCommitUUID objectForKey: aUUID];
+	if (result != nil)
+	{
+		return result;
+	}
+	else
+	{
+		return [NSArray array];;
+	}
+}
 	
+- (NSArray *)mergeParentsForPath: (COPath *)aPath
+{
+	COUUID *uuid = [newCommitUUIDForPath objectForKey: aPath];
+	
+	NSAssert(uuid != nil, @"expected uuid");
+	
+	return [self mergeParentsForNewCommitUUID: uuid];
 }
 
-
-- (COUUID *) commitAppliedToParent: (COUUID *)aParent
-							 store: (COStore *)aStore
+- (void) addMergeParent: (COUUID *)aUUID
+				forPath: (COPath *)aPath
 {
-	if ([self hasConflicts])
+	COUUID *uuid = [newCommitUUIDForPath objectForKey: aPath];
+	
+	NSAssert(uuid != nil, @"expected uuid");
+	
+	NSMutableArray *array = [mergeParentsForNewCommitUUID objectForKey: uuid];
+	if (array == nil)
 	{
-		[NSException raise: NSInvalidArgumentException
-					format: @"conflicts must be resolved before the diff can be applied"];
+		array = [NSMutableArray array];
+		[mergeParentsForNewCommitUUID setObject: array forKey: uuid];
 	}
-	
-	COSubtree *dest = [aStore treeForCommit: aParent];
-	
-	COSubtreeDiff *rootDiff = [subtreeDiffForPath objectForKey: [COPath path]];
-	assert(rootDiff != nil);
-	assert(![rootDiff hasConflicts]);
-	
-	COSubtree *result = [rootDiff subtreeWithDiffAppliedToSubtree: dest];
-	
-	// If the receiver was created as a result of a merge, there will be
-	// "synthesized" commits referenced in the subtree that will not
-	// be present in the store. we need to commit them.
-	
-	for (COUUID *commitUUID in treeToCommitForPendingCommitUUID)
-	{
-		[aStore addCommitWithParent: [parentCommitForPendingCommitUUID objectForKey: commitUUID]
-						   metadata: nil
-							   tree: [treeToCommitForPendingCommitUUID objectForKey: commitUUID]];
-	}
-	
-	COUUID *newCommitUUID = [aStore addCommitWithParent: aParent
-											   metadata: nil
-												   tree: dest];
-	return newCommitUUID;
+	[array addObject: aUUID];
 }
 
 #pragma mark diff algorithm
-
 
 - (void) _diffCommonBranch: (COSubtree *)branchInA
 		  withCommonBranch: (COSubtree *)branchInB
@@ -123,22 +140,11 @@
 					 store: (COStore *)aStore
 		  sourceIdentifier: (id)aSource
 {
-	// PRECONDITIONS: assume branchA and branchB point to related (but divergent) versions of a persistent root
-	
-	COUUID *versionA = [[COSubtreeFactory factory] currentVersionForBranch: branchInA];
-	COUUID *versionB = [[COSubtreeFactory factory] currentVersionForBranch: branchInB];
-	
-	// Get the subtrees referenced by these commits.
-	
-	COSubtree *subcontentsA = [aStore treeForCommit: versionA];
-	COSubtree *subcontentsB = [aStore treeForCommit: versionB];
-	
-	
-	[self _diffContent: subcontentsA
-		   withContent: subcontentsB
-				atPath: [currentPath pathByAppendingPathComponent: [branchInA UUID]]
-				 store: aStore
-	  sourceIdentifier: aSource];
+	[self _diffCommit: [[COSubtreeFactory factory] currentVersionForBranch: branchInA]
+		   withCommit: [[COSubtreeFactory factory] currentVersionForBranch: branchInB]
+			   atPath: [currentPath pathByAppendingPathComponent: [branchInA UUID]]
+				store: aStore
+	 sourceIdentifier: aSource];
 }
 
 /**
@@ -164,31 +170,38 @@
 	
 	for (COUUID *branchUUID in branchesIntersection)
 	{
-		COSubtree *branchInA = [persistentRootA subtreeWithUUID: branchUUID];
-		COSubtree *branchInB = [persistentRootB subtreeWithUUID: branchUUID];
-		
-		[self _diffCommonBranch: branchInA
-			   withCommonBranch: branchInB
+		[self _diffCommonBranch: [persistentRootA subtreeWithUUID: branchUUID]
+			   withCommonBranch: [persistentRootB subtreeWithUUID: branchUUID]
 						 atPath: currentPath
 						  store: aStore
 			   sourceIdentifier: aSource];
 	}
 }
 
-- (void) _diffContent: (COSubtree *)contentsA
-		  withContent: (COSubtree *)contentsB
-			   atPath: (COPath *)currentPath
-				store: (COStore *)aStore
-	 sourceIdentifier: (id)aSource
-{		
+- (void) _diffCommit: (COUUID *)commitA
+		  withCommit: (COUUID *)commitB
+			  atPath: (COPath *)currentPath
+			   store: (COStore *)aStore
+	sourceIdentifier: (id)aSource
+{	
+	// Get the subtrees referenced by these commits.
+	
+	COSubtree *contentsA = [aStore treeForCommit: commitA];
+	COSubtree *contentsB = [aStore treeForCommit: commitB];
+	
 	// Diff them 
 	
 	COSubtreeDiff *contentsABDiff = [COSubtreeDiff diffSubtree: contentsA 
 												   withSubtree: contentsB
 											  sourceIdentifier: aSource];
 	
+	// Save stuff
+	
 	[subtreeDiffForPath setObject: contentsABDiff
 						   forKey: currentPath];
+	
+	[diffBaseUUIDForPath setObject: commitA
+							forKey: currentPath];
 	
 	// Search for all embedded persistent roots.
 	
@@ -322,9 +335,6 @@
 
 - (BOOL) hasConflicts
 {
-	if ([rootDiff hasConflicts])
-		return YES;
-	
 	for (COSubtreeDiff *diff in [subtreeDiffForPath allValues])
 	{
 		if ([diff hasConflicts])
@@ -342,20 +352,61 @@
 	return [NSSet setWithArray: [subtreeDiffForPath allKeys]];
 }
 
-- (COSubtreeDiff *) rootSubtreeDiff
-{
-	return rootDiff;
-}
-
 - (COSubtreeDiff *) subtreeDiffAtPath: (COPath *)aPath
 {
-	// FIXME: mutable?
 	return [subtreeDiffForPath objectForKey: aPath];
 }
 
-- (COSubtree *) initialSubtreeForPath: (COPath *)aPath
+#pragma mark private
+
+- (NSSet *) embeddedPathsAtPath: (COPath *) aPath
 {
-	return [[[initialSubtreeForPath objectForKey: aPath] copy] autorelease];
+	NSMutableSet *result = [NSMutableSet set];
+	
+	COSubtreeDiff *diff = [subtreeDiffForPath objectForKey: aPath];
+	NSAssert(diff != nil, @"expected diff");
+	
+	for (COSubtreeEdit *edit in diff)
+	{
+		if ([[edit attribute] isEqual: @"currentVersion"])
+		{
+			[result addObject: [aPath pathByAppendingPathComponent: [edit UUID]]];
+		}
+	}
+	
+	return result;
+}
+
+
+#pragma mark diff application
+
+- (COUUID *) _applyAtPath: (COPath *)aPath
+					store: (COStore *)aStore
+{
+	
+}
+
+
+- (COUUID *) commitInStore: (COStore *)aStore
+{
+	if ([self hasConflicts])
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"conflicts must be resolved before the diff can be applied"];
+	}
+	
+	COSubtree *dest = [aStore treeForCommit: aParent];
+	
+	COSubtreeDiff *rootDiff = [subtreeDiffForPath objectForKey: [COPath path]];
+	assert(rootDiff != nil);
+	assert(![rootDiff hasConflicts]);
+	
+	COSubtree *result = [rootDiff subtreeWithDiffAppliedToSubtree: dest];
+	
+	COUUID *newCommitUUID = [aStore addCommitWithParent: aParent
+											   metadata: nil
+												   tree: result];
+	return newCommitUUID;
 }
 
 
