@@ -25,15 +25,13 @@
 {
 	if (([theEvent modifierFlags] & NSAlternateKeyMask) != 0 )
 	{   		
-		CGFloat delta = [theEvent deltaY];
+		CGFloat delta = MAX(-99.0, MIN(99.0, [theEvent deltaY])) / 100.0;  // (-1 .. 0 .. 1)
 		
-		if (delta > 0)
-		{		
-			[self setZoom: [self zoom] * 1.1];
-		}
-		else if (delta < 0)
+		CGFloat newZoom = [self zoom] * (1 + delta);
+		
+		if (newZoom > (1/100.0) && newZoom < 100)
 		{
-			[self setZoom: [self zoom] * 0.9];
+			[self setZoom: newZoom];
 		}
 	}
 	else

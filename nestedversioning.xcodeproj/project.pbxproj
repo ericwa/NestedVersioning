@@ -119,6 +119,7 @@
 		79F0CED614E61795001D440B /* TestTagging.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F4E315147C59F0004FC1BA /* TestTagging.m */; };
 		79F0CEDD14E6179F001D440B /* TestCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CB302914C63E1C00ADAB77 /* TestCommon.m */; };
 		79F0CEE214E617AA001D440B /* UnitKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E7783514E6049E00D5DFFF /* UnitKit.framework */; };
+		79F3725C1528FB0A00E9ABCD /* EWBezierPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F3725B1528FB0A00E9ABCD /* EWBezierPath.m */; };
 		79F5947C15119C7D007C517E /* COSubtreeEdits.h in Headers */ = {isa = PBXBuildFile; fileRef = 79F5947A15119C7D007C517E /* COSubtreeEdits.h */; };
 		79F5947D15119C7D007C517E /* COSubtreeEdits.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F5947B15119C7D007C517E /* COSubtreeEdits.m */; };
 /* End PBXBuildFile section */
@@ -322,6 +323,8 @@
 		79CB302914C63E1C00ADAB77 /* TestCommon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCommon.m; sourceTree = "<group>"; };
 		79CB315014C6911400ADAB77 /* arrow_branch_purple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow_branch_purple.png; sourceTree = "<group>"; };
 		79E87A9314FA12C0005F6F70 /* merge and selective undo use cases.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = "merge and selective undo use cases.rtf"; path = "Docs/merge and selective undo use cases.rtf"; sourceTree = "<group>"; };
+		79F3725A1528FB0A00E9ABCD /* EWBezierPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWBezierPath.h; sourceTree = "<group>"; };
+		79F3725B1528FB0A00E9ABCD /* EWBezierPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWBezierPath.m; sourceTree = "<group>"; };
 		79F5947A15119C7D007C517E /* COSubtreeEdits.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = COSubtreeEdits.h; path = Diff/COSubtreeEdits.h; sourceTree = "<group>"; };
 		79F5947B15119C7D007C517E /* COSubtreeEdits.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = COSubtreeEdits.m; path = Diff/COSubtreeEdits.m; sourceTree = "<group>"; };
 		79F8202B14E25D85008236F6 /* COSubtreeFactory+Pull.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COSubtreeFactory+Pull.h"; sourceTree = "<group>"; };
@@ -693,6 +696,8 @@
 				661169FA1522397C00806C12 /* EWSketchView.m */,
 				661169FD1522512800806C12 /* EWZoomView.h */,
 				661169FE1522512900806C12 /* EWZoomView.m */,
+				79F3725A1528FB0A00E9ABCD /* EWBezierPath.h */,
+				79F3725B1528FB0A00E9ABCD /* EWBezierPath.m */,
 			);
 			path = Sketch;
 			sourceTree = "<group>";
@@ -1104,6 +1109,7 @@
 				79052BC615211EC300B481C1 /* EWCenteredTextFieldCell.m in Sources */,
 				661169FB1522397C00806C12 /* EWSketchView.m in Sources */,
 				661169FF1522512900806C12 /* EWZoomView.m in Sources */,
+				79F3725C1528FB0A00E9ABCD /* EWBezierPath.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
