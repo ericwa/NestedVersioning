@@ -2,13 +2,13 @@ TODO
 ====
 
 [x] (Mar 28/2012) display undo/redo labels in menu; implement an NSUndoManager replacement
-[ ] (Mar 20/2012) make selective do/undo aware of nested persistent roots
+[x] (Mar 20/2012) make selective do/undo aware of nested persistent roots
 [x] (Mar 13/2012) finish COSubtreeDiff
 [ ] (Feb 22/2012) StoreBrowser: don't abort when deleting a branch/proot that was previously opened
 [ ] (Feb 22/2012) StoreBrowser: don't abort when corrupting a branch/proot's metadata
 [x] (Feb 21/2012) investigate why undo of deleting an embedded item from the tag library is broken
 [x] (Feb 21/2012) StoreBrowser: gray out undo/redo buttons when undo/redo is impossible
-[ ] (Feb 21/2012) doing undo/redo on photolibrary/photo1 should produce commits in photolibrary
+[cancelled] (Feb 21/2012) doing undo/redo on photolibrary/photo1 should produce commits in photolibrary
 				  which are skipped by default when undoing/redoing in photolibrary
 [x] (Feb 21/2012) StoreBrowser: add support for inserting new string attributes
 [x] (Feb 21/2012) StoreBrowser: add support for renaming attribute keys
