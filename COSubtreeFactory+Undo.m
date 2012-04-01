@@ -186,6 +186,9 @@
 														sourceIdentifier: @"reapply"];
 	
 	COPersistentRootDiff *merged = [diffBackout persistentRootDiffByMergingWithDiff: diffReapply];
+
+	// FIXME: concatenate merged with diff(commitToUndo, target), to avoid having to apply merged
+	// as an intermediate step. this will preserve merge conflicts, so we can return them to the caller
 	
 	if ([merged hasConflicts])
 	{

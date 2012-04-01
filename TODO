@@ -1,6 +1,7 @@
 TODO
 ====
 
+[ ] (Mar 31/2012) implement "concatenate" operation for COSubtreeDiff
 [x] (Mar 28/2012) display undo/redo labels in menu; implement an NSUndoManager replacement
 [x] (Mar 20/2012) make selective do/undo aware of nested persistent roots
 [x] (Mar 13/2012) finish COSubtreeDiff
