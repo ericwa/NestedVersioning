@@ -176,7 +176,13 @@
 
 - (COUUID *) commitWithMetadata: (NSDictionary *)theMetadata
 {
-
+	if (tree == nil)
+	{
+		[NSException raise: NSInvalidArgumentException
+					format: @"called -commitWithMetadata: but persistentRootSubtree is nil"];
+		
+	}
+	
 	//
 	// <<<<<<<<<<<<<<<<<<<<< LOCK DB, BEGIN TRANSACTION <<<<<<<<<<<<<<<<<<<<<
 	//
@@ -292,6 +298,7 @@
 
 - (void) setPersistentRootTree: (COSubtree *)aSubtree
 {
+	NILARG_EXCEPTION_TEST(aSubtree);
 	ASSIGN(tree, aSubtree);
 }
 
