@@ -164,9 +164,9 @@
 
 #pragma mark selective undo and apply
 
-- (COSubtreeDiff *) selectiveUndoCommit: (COUUID *) commitToUndo
-							  forCommit: (COUUID*) target
-								  store: (COStore *)aStore
+- (COPersistentRootDiff *) selectiveUndoCommit: (COUUID *) commitToUndo
+									 forCommit: (COUUID*) target
+										 store: (COStore *)aStore
 {
 	COUUID *commitToUndoParent = [aStore parentForCommit: commitToUndo];
 	
@@ -176,18 +176,16 @@
 		return nil;
 	}
 	
-	COSubtree *commitToUndoSubtree = [aStore treeForCommit: commitToUndo];
-	COSubtree *commitToUndoParentSubtree = [aStore treeForCommit: commitToUndoParent];
-	COSubtree *targetSubtree = [aStore treeForCommit: target];
+	COPersistentRootDiff *diffBackout = [COPersistentRootDiff diffCommit: commitToUndo
+															  withCommit: commitToUndoParent
+																   store: aStore
+														sourceIdentifier: @"backout"];	
+	COPersistentRootDiff *diffReapply = [COPersistentRootDiff diffCommit: commitToUndo
+															  withCommit: target
+																   store: aStore
+														sourceIdentifier: @"reapply"];
 	
-	COSubtreeDiff *diffBackout = [COSubtreeDiff diffSubtree: commitToUndoSubtree
-												withSubtree: commitToUndoParentSubtree 
-										   sourceIdentifier: @"backout"];	
-	COSubtreeDiff *diffReapply = [COSubtreeDiff diffSubtree: commitToUndoSubtree
-												withSubtree: targetSubtree 
-										   sourceIdentifier: @"reapply"];
-	
-	COSubtreeDiff *merged = [diffBackout subtreeDiffByMergingWithDiff: diffReapply];
+	COPersistentRootDiff *merged = [diffBackout persistentRootDiffByMergingWithDiff: diffReapply];
 	
 	if ([merged hasConflicts])
 	{
@@ -195,14 +193,15 @@
 		return nil;
 	}
 	
-	COSubtree *newTarget = [merged subtreeWithDiffAppliedToSubtree: commitToUndoSubtree];
+	COUUID *newTarget = [merged commitInStore: aStore];
 
-	COSubtreeDiff *diffTargetToNewTarget = [COSubtreeDiff diffSubtree: targetSubtree
-														  withSubtree: newTarget
-													 sourceIdentifier: @""];
+	COPersistentRootDiff *diffTargetToNewTarget = [COPersistentRootDiff diffCommit: target
+																		withCommit: newTarget
+																			 store: aStore
+																  sourceIdentifier: @""];
 	assert(![diffTargetToNewTarget hasConflicts]);
 	
-	if ([[diffTargetToNewTarget allEdits] count] == 0)
+	if (![diffTargetToNewTarget hasEdits])
 	{
 		NSLog(@"Selective undo failed: final diff is empty (there was nothing to undo)");
 		return nil;
@@ -211,9 +210,9 @@
 	return diffTargetToNewTarget;
 }
 
-- (COSubtreeDiff *) selectiveApplyCommit: (COUUID *) commitToDo
-							   forCommit: (COUUID*) target
-								   store: (COStore *)aStore
+- (COPersistentRootDiff *) selectiveApplyCommit: (COUUID *) commitToDo
+									  forCommit: (COUUID*) target
+										  store: (COStore *)aStore
 {
 	COUUID *commitToDoParent = [aStore parentForCommit: commitToDo];
 	
@@ -223,18 +222,16 @@
 		return nil;
 	}
 	
-	COSubtree *commitToDoSubtree = [aStore treeForCommit: commitToDo];
-	COSubtree *commitToDoParentSubtree = [aStore treeForCommit: commitToDoParent];
-	COSubtree *targetSubtree = [aStore treeForCommit: target];
+	COPersistentRootDiff *diffApplyChange = [COPersistentRootDiff diffCommit: commitToDoParent
+																  withCommit: commitToDo
+																		store: aStore
+															sourceIdentifier: @"apply-selected-change"];	
+	COPersistentRootDiff *diffApplyUpToTarget = [COPersistentRootDiff diffCommit: commitToDoParent
+																	  withCommit: target
+																		   store: aStore	 
+																sourceIdentifier: @"apply-changes-up-to-target"];
 	
-	COSubtreeDiff *diffApplyChange = [COSubtreeDiff diffSubtree: commitToDoParentSubtree
-													withSubtree: commitToDoSubtree 
-											   sourceIdentifier: @"apply-selected-change"];	
-	COSubtreeDiff *diffApplyUpToTarget = [COSubtreeDiff diffSubtree: commitToDoParentSubtree
-														withSubtree: targetSubtree 
-												   sourceIdentifier: @"apply-changes-up-to-target"];
-	
-	COSubtreeDiff *merged = [diffApplyChange subtreeDiffByMergingWithDiff: diffApplyUpToTarget];
+	COPersistentRootDiff *merged = [diffApplyChange persistentRootDiffByMergingWithDiff: diffApplyUpToTarget];
 	
 	if ([merged hasConflicts])
 	{
@@ -242,14 +239,16 @@
 		return nil;
 	}
 	
-	COSubtree *newTarget = [merged subtreeWithDiffAppliedToSubtree: commitToDoParentSubtree];
+	COUUID *newTarget = [merged commitInStore: aStore];
 	
-	COSubtreeDiff *diffTargetToNewTarget = [COSubtreeDiff diffSubtree: targetSubtree
-														  withSubtree: newTarget
-													 sourceIdentifier: @""];
+	COPersistentRootDiff *diffTargetToNewTarget = [COPersistentRootDiff diffCommit: target
+																		withCommit: newTarget
+																			 store: aStore
+																  sourceIdentifier: @""];
+	
 	assert(![diffTargetToNewTarget hasConflicts]);
 	
-	if ([[diffTargetToNewTarget allEdits] count] == 0)
+	if (![diffTargetToNewTarget hasEdits])
 	{
 		NSLog(@"Selective apply failed: final diff is empty (there was nothing to apply)");
 		return nil;

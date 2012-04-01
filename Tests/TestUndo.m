@@ -241,6 +241,7 @@
 {
 	COStore *store = setupStore();
 	COSubtree *innerdoc;
+	COSubtree *middledoc;
 	COSubtree *outerdoc;	
 	
 	{
@@ -254,9 +255,14 @@
 																		  store: store];
 	}
 	
-	outerdoc = [[COSubtreeFactory factory] createPersistentRootWithRootItem: innerdoc
+	middledoc = [[COSubtreeFactory factory] createPersistentRootWithRootItem: innerdoc
+																displayName: @"My Middle Document"
+																	  store: store];
+
+	outerdoc = [[COSubtreeFactory factory] createPersistentRootWithRootItem: middledoc
 																displayName: @"My Outer Document"
 																	  store: store];
+	
 	
 	// Set outerdoc as the store root.
 	
@@ -264,13 +270,14 @@
 	[ctx setPersistentRootTree: outerdoc];
 	[ctx commitWithMetadata: nil];
 	
-	COUUID *state0 = [store rootVersion]; // { "a", "c", "d" }
+	COUUID *state0 = [[COSubtreeFactory factory] currentVersionForBranchOrPersistentRoot: outerdoc]; // { "a", "c", "d" }
 	
 	
 	// make a commit on innerdoc
 	
 	{
-		COPath *path = [[COPath pathWithPathComponent: [outerdoc UUID]]
+		COPath *path = [[[COPath pathWithPathComponent: [outerdoc UUID]]
+						  pathByAppendingPathComponent: [middledoc UUID]]
 						pathByAppendingPathComponent: [innerdoc UUID]];
 		COPersistentRootEditingContext *ctx2 = [COPersistentRootEditingContext editingContextForEditingPath: path
 																									inStore: store];	
@@ -279,12 +286,18 @@
 		[ctx2 commitWithMetadata: nil];
 	}
 
-	COUUID *state1 = [store rootVersion]; // { "a", "b", "c", "d" }
+	// reopen the context to avoid a merge.
+	// FIXME: shouldn't be necessary	
+	ctx = [store rootContext];
+	outerdoc = [ctx persistentRootTree];
+	
+	COUUID *state1 = [[COSubtreeFactory factory] currentVersionForBranchOrPersistentRoot: outerdoc]; // { "a", "b", "c", "d" }
 	
 	// make a commit on innerdoc
 	
 	{
-		COPath *path = [[COPath pathWithPathComponent: [outerdoc UUID]]
+		COPath *path = [[[COPath pathWithPathComponent: [outerdoc UUID]]
+						 pathByAppendingPathComponent: [middledoc UUID]]
 						pathByAppendingPathComponent: [innerdoc UUID]];
 		COPersistentRootEditingContext *ctx2 = [COPersistentRootEditingContext editingContextForEditingPath: path
 																									inStore: store];	
@@ -293,12 +306,18 @@
 		[ctx2 commitWithMetadata: nil];
 	}
 	
-	COUUID *state2 = [store rootVersion]; // { "a", "b", "c", "d", "e" }	
+	// reopen the context to avoid a merge.
+	// FIXME: shouldn't be necessary	
+	ctx = [store rootContext];
+	outerdoc = [ctx persistentRootTree];
+	
+	COUUID *state2 = [[COSubtreeFactory factory] currentVersionForBranchOrPersistentRoot: outerdoc]; // { "a", "b", "c", "d", "e" }	
 	
 	// check contents
 		
 	{
-		COPath *path = [[COPath pathWithPathComponent: [outerdoc UUID]]
+		COPath *path = [[[COPath pathWithPathComponent: [outerdoc UUID]]
+						 pathByAppendingPathComponent: [middledoc UUID]]
 						pathByAppendingPathComponent: [innerdoc UUID]];
 		COPersistentRootEditingContext *ctx2 = [COPersistentRootEditingContext editingContextForEditingPath: path
 																									inStore: store];
@@ -306,12 +325,21 @@
 					   [[ctx2 persistentRootTree] valueForAttribute: @"letters"]);
 	}
 	
+	// check commits
+	
+	UKNotNil(state0);
+	UKNotNil(state1);
+	UKNotNil(state2);
+	UKNil([store parentForCommit: state0]);
+	UKObjectsEqual(state0, [store parentForCommit: state1]);
+	UKObjectsEqual(state1, [store parentForCommit: state2]);
+	
 	// reopen the context to avoid a merge.
 	// FIXME: shouldn't be necessary
 	
 	ctx = [store rootContext];
 	
-	COSubtreeDiff *diff = [[COSubtreeFactory factory] selectiveUndoCommit: state1
+	COPersistentRootDiff *diff = [[COSubtreeFactory factory] selectiveUndoCommit: state1
 																forCommit: state2
 																	store: store];
 	UKNotNil(diff);
@@ -319,16 +347,19 @@
 	
 	if (diff != nil && ![diff hasConflicts])
 	{
-		COSubtree *result = [diff subtreeWithDiffAppliedToSubtree: [ctx persistentRootTree]];
-		
-		[ctx setPersistentRootTree: result];
+		COUUID *result = [diff commitInStore: store];
+		outerdoc = [ctx persistentRootTree];
+		[[COSubtreeFactory factory] setCurrentVersion: result
+							forBranchOrPersistentRoot: outerdoc
+												store: store];
 		[ctx commitWithMetadata: nil];
 	}
 	
 	// check contents
 	
 	{
-		COPath *path = [[COPath pathWithPathComponent: [outerdoc UUID]]
+		COPath *path = [[[COPath pathWithPathComponent: [outerdoc UUID]]
+						 pathByAppendingPathComponent: [middledoc UUID]]
 						pathByAppendingPathComponent: [innerdoc UUID]];
 		COPersistentRootEditingContext *ctx2 = [COPersistentRootEditingContext editingContextForEditingPath: path
 																									inStore: store];

@@ -50,7 +50,8 @@
 
 - (COSubtreeDiff *) subtreeDiffAtPath: (COPath *)aPath;
 
-
+- (NSSet *) conflicts;
+- (BOOL) hasEdits;
 
 #pragma mark merge
 

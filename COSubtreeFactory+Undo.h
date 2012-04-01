@@ -1,6 +1,6 @@
 #import "COSubtreeFactory.h"
 #import "COStore.h"
-#import "COSubtreeDiff.h"
+#import "COPersistentRootDiff.h"
 
 @interface COSubtreeFactory (Undo)
 
@@ -36,15 +36,15 @@
  * or returns nil if the selective undo is impossible or
  * there is nothing to undo.
  */
-- (COSubtreeDiff *) selectiveUndoCommit: (COUUID *) commitToUndo
-							  forCommit: (COUUID*) target
-								  store: (COStore *)aStore;
+- (COPersistentRootDiff *) selectiveUndoCommit: (COUUID *) commitToUndo
+									 forCommit: (COUUID*) target
+										 store: (COStore *)aStore;
 
 /**
  * Returns a diff which can be applied to the contents of 'target'
  */
-- (COSubtreeDiff *) selectiveApplyCommit: (COUUID *) commitToDo
-							   forCommit: (COUUID*) target
-								   store: (COStore *)aStore;
+- (COPersistentRootDiff *) selectiveApplyCommit: (COUUID *) commitToDo
+									  forCommit: (COUUID*) target
+										  store: (COStore *)aStore;
 
 @end

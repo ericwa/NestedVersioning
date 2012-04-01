@@ -344,40 +344,30 @@
 - (IBAction) selectiveUndo: (id)sender
 {
 	COUUID *commitToUndo = [sender representedObject];
-	COSubtreeDiff *diff = [[COSubtreeFactory factory] selectiveUndoCommit: commitToUndo
-																forCommit: [ctx baseCommit]
-																	store: store];
+	COPersistentRootDiff *diff = [[COSubtreeFactory factory] selectiveUndoCommit: commitToUndo
+																	   forCommit: [ctx baseCommit]
+																		   store: store];
 	
 	if (diff)
 	{
 		NSLog(@"Selective undo diff: %@", diff);
 		
-		COSubtree *currentCommitSubtree = [store treeForCommit: [ctx baseCommit]];
-		COSubtree *newCurrentState = [diff subtreeWithDiffAppliedToSubtree: currentCommitSubtree];
-
-		[ctx setPersistentRootTree: newCurrentState];
-		[ctx commitWithMetadata: nil];
-		[[NSApp delegate] reloadAllBrowsers];
+		// FIXME:
 	}
 }
 
 - (IBAction) selectiveApply: (id)sender
 {
 	COUUID *commitToDo = [sender representedObject];
-	COSubtreeDiff *diff = [[COSubtreeFactory factory] selectiveApplyCommit: commitToDo
-																 forCommit: [ctx baseCommit]
-																	 store: store];
+	COPersistentRootDiff *diff = [[COSubtreeFactory factory] selectiveApplyCommit: commitToDo
+																		forCommit: [ctx baseCommit]
+																			store: store];
 	
 	if (diff)
 	{
 		NSLog(@"Selective apply diff: %@", diff);
 		
-		COSubtree *currentCommitSubtree = [store treeForCommit: [ctx baseCommit]];
-		COSubtree *newCurrentState = [diff subtreeWithDiffAppliedToSubtree: currentCommitSubtree];
-		
-		[ctx setPersistentRootTree: newCurrentState];
-		[ctx commitWithMetadata: nil];
-		[[NSApp delegate] reloadAllBrowsers];
+		// FIXME:
 	}
 }
 

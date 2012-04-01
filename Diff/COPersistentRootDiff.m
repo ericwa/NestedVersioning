@@ -304,6 +304,25 @@
 	return NO;
 }
 
+- (NSSet *) conflicts
+{
+	NSMutableSet *result = [NSMutableSet set];
+	for (COSubtreeDiff *diff in [subtreeDiffForPath allValues])
+	{
+		[result unionSet: [diff conflicts]];
+	}
+	return [NSSet setWithSet: result];
+}
+- (BOOL) hasEdits
+{
+	for (COSubtreeDiff *diff in [subtreeDiffForPath allValues])
+	{
+		if ([[diff allEdits] count] != 0)
+			return YES;
+	}
+	return NO;
+}
+
 /**
  * always returns the empty path, at a minimum
  */
