@@ -366,7 +366,19 @@
 	
 	for (COPath *childPath in [self embeddedPathsAtPath: aPath])
 	{
-		[self _applyAtPath: childPath store: aStore];
+		BOOL hasDiffBaseUUIDForChildPath = (nil != [diffBaseUUIDForPath objectForKey: childPath]);
+		BOOL hasSubtreeDiffChildPath = (nil != [subtreeDiffForPath objectForKey: childPath]);
+		
+		assert(hasSubtreeDiffChildPath == hasDiffBaseUUIDForChildPath);
+		
+		if (hasSubtreeDiffChildPath)
+		{
+			[self _applyAtPath: childPath store: aStore];
+		}
+		else
+		{
+			NSLog(@"Ignoring child path %@ because we have no info for it (means it was handled implicitly)", childPath);
+		}
 	}
 	
 	// apply self

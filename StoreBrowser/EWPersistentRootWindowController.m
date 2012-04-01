@@ -3,6 +3,7 @@
 #import "COMacros.h"
 #import "EWGraphRenderer.h"
 #import "COSubtreeDiff.h"
+#import "COPersistentRootDiff.h"
 #import "COSubtreeFactory.h"
 #import "COSubtreeFactory+PersistentRoots.h"
 #import "COSubtreeFactory+Undo.h"
@@ -351,8 +352,8 @@
 	if (diff)
 	{
 		NSLog(@"Selective undo diff: %@", diff);
-		
-		// FIXME:
+		COUUID *resultUUID = [diff commitInStore: store];
+		[self switchToCommit: resultUUID]; // FIXME: Hack
 	}
 }
 
@@ -366,8 +367,9 @@
 	if (diff)
 	{
 		NSLog(@"Selective apply diff: %@", diff);
-		
-		// FIXME:
+		COUUID *resultUUID = [diff commitInStore: store];
+		[self switchToCommit: resultUUID]; // FIXME: Hack
+
 	}
 }
 
