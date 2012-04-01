@@ -237,4 +237,105 @@
 	
 }
 
+- (void) testSelectiveUndoWithNestedPersistentRootMerge
+{
+	COStore *store = setupStore();
+	COSubtree *innerdoc;
+	COSubtree *outerdoc;	
+	
+	{
+		COSubtree *tree = [COSubtree subtree];
+		[tree setValue: A(@"a", @"c", @"d")
+		  forAttribute: @"letters"
+				  type: [COType arrayWithPrimitiveType: [COType stringType]]];
+		
+		innerdoc = [[COSubtreeFactory factory] createPersistentRootWithRootItem: tree
+																	displayName: @"My Inner Document"
+																		  store: store];
+	}
+	
+	outerdoc = [[COSubtreeFactory factory] createPersistentRootWithRootItem: innerdoc
+																displayName: @"My Outer Document"
+																	  store: store];
+	
+	// Set outerdoc as the store root.
+	
+	COPersistentRootEditingContext *ctx = [store rootContext];
+	[ctx setPersistentRootTree: outerdoc];
+	[ctx commitWithMetadata: nil];
+	
+	COUUID *state0 = [store rootVersion]; // { "a", "c", "d" }
+	
+	
+	// make a commit on innerdoc
+	
+	{
+		COPath *path = [[COPath pathWithPathComponent: [outerdoc UUID]]
+						pathByAppendingPathComponent: [innerdoc UUID]];
+		COPersistentRootEditingContext *ctx2 = [COPersistentRootEditingContext editingContextForEditingPath: path
+																									inStore: store];	
+		COSubtree *tree = [ctx2 persistentRootTree];
+		[tree addObject: @"b" toOrderedAttribute: @"letters" atIndex: 1 type: [COType arrayWithPrimitiveType: [COType stringType]]];		
+		[ctx2 commitWithMetadata: nil];
+	}
+
+	COUUID *state1 = [store rootVersion]; // { "a", "b", "c", "d" }
+	
+	// make a commit on innerdoc
+	
+	{
+		COPath *path = [[COPath pathWithPathComponent: [outerdoc UUID]]
+						pathByAppendingPathComponent: [innerdoc UUID]];
+		COPersistentRootEditingContext *ctx2 = [COPersistentRootEditingContext editingContextForEditingPath: path
+																									inStore: store];	
+		COSubtree *tree = [ctx2 persistentRootTree];
+		[tree addObject: @"e" toOrderedAttribute: @"letters" atIndex: 4 type: [COType arrayWithPrimitiveType: [COType stringType]]];		
+		[ctx2 commitWithMetadata: nil];
+	}
+	
+	COUUID *state2 = [store rootVersion]; // { "a", "b", "c", "d", "e" }	
+	
+	// check contents
+		
+	{
+		COPath *path = [[COPath pathWithPathComponent: [outerdoc UUID]]
+						pathByAppendingPathComponent: [innerdoc UUID]];
+		COPersistentRootEditingContext *ctx2 = [COPersistentRootEditingContext editingContextForEditingPath: path
+																									inStore: store];
+		UKObjectsEqual(A(@"a", @"b", @"c", @"d", @"e"),
+					   [[ctx2 persistentRootTree] valueForAttribute: @"letters"]);
+	}
+	
+	// reopen the context to avoid a merge.
+	// FIXME: shouldn't be necessary
+	
+	ctx = [store rootContext];
+	
+	COSubtreeDiff *diff = [[COSubtreeFactory factory] selectiveUndoCommit: state1
+																forCommit: state2
+																	store: store];
+	UKNotNil(diff);
+	UKFalse([diff hasConflicts]);
+	
+	if (diff != nil && ![diff hasConflicts])
+	{
+		COSubtree *result = [diff subtreeWithDiffAppliedToSubtree: [ctx persistentRootTree]];
+		
+		[ctx setPersistentRootTree: result];
+		[ctx commitWithMetadata: nil];
+	}
+	
+	// check contents
+	
+	{
+		COPath *path = [[COPath pathWithPathComponent: [outerdoc UUID]]
+						pathByAppendingPathComponent: [innerdoc UUID]];
+		COPersistentRootEditingContext *ctx2 = [COPersistentRootEditingContext editingContextForEditingPath: path
+																									inStore: store];
+		UKObjectsEqual(A(@"a", @"c", @"d", @"e"),
+					   [[ctx2 persistentRootTree] valueForAttribute: @"letters"]);
+	}
+}
+
+
 @end
