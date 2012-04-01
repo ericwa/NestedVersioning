@@ -206,7 +206,7 @@
 	{
 		for (COSubtreeConflict *conflict in [NSSet setWithSet: [merged valueConflicts]])
 		{
-			if ([self isConflict: conflict editingAttribute: @"currentVersion"])
+			if ([self isConflict: conflict editingAttribute: kCOCurrentVersion])
 			{					
 				COUUID *branchUUID = [[[conflict allEdits] anyObject] UUID];					
 				NSAssert(branchUUID != nil, @"");
@@ -235,7 +235,7 @@
 				
 				
 				COSetAttribute *newEdit = [[[COSetAttribute alloc] initWithUUID: branchUUID
-																	  attribute: @"currentVersion"
+																	  attribute: kCOCurrentVersion
 															   sourceIdentifier: @"virtual"
 																		   type: [COType commitUUIDType]
 																		  value: pendingCommitUUID] autorelease];
@@ -347,7 +347,7 @@
 	
 	for (COSubtreeEdit *edit in [diff allEdits])
 	{
-		if ([[edit attribute] isEqual: @"currentVersion"])
+		if ([[edit attribute] isEqual: kCOCurrentVersion])
 		{
 			[result addObject: [aPath pathByAppendingPathComponent: [edit UUID]]];
 		}
