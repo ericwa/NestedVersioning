@@ -19,7 +19,7 @@
 	NSBezierPath *back = [EWBezierPath bezierPathFromSubtree: subtree];
 	
 	[[NSColor greenColor] set];
-	[back stroke];
+	[back fill];
 	
 	NSLog(@"%d", [back isEqual: test]);
 }
