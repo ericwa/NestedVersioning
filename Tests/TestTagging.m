@@ -60,7 +60,19 @@
 	COStore *store = setupStore();
 	COSubtreeFactory *factory = [COSubtreeFactory factory];
 	
-	COPersistentRootEditingContext *rootCtx = [store rootContext];
+	// wrap the rootCtx in another persistent root
+	
+	COPersistentRootEditingContext *rootRootCtx = [store rootContext];
+	[rootRootCtx setPersistentRootTree: [factory createPersistentRootWithRootItem: [COSubtree subtree]
+																	  displayName: @"tagging test library"
+																			store: store]];
+	[rootRootCtx commitWithMetadata: nil];
+	
+	
+	// old code begins here...
+	
+	COPersistentRootEditingContext *rootCtx = [rootRootCtx editingContextForEditingEmbdeddedPersistentRoot:
+												[rootRootCtx persistentRootTree]];
 	
 	COSubtree *iroot = [COSubtree subtree];
 	
@@ -266,7 +278,8 @@
 	// reopen the context to avoid a merge.
 	// FIXME: shouldn't be necessary
 	
-	rootCtx = [store rootContext];
+	rootCtx = [rootRootCtx editingContextForEditingEmbdeddedPersistentRoot:
+			   [rootRootCtx persistentRootTree]];
 	photolib = [[rootCtx persistentRootTree] subtreeWithUUID: [photolib UUID]];
 	
 	COSubtree *photolibBranchA = [[COSubtreeFactory factory] currentBranchOfPersistentRoot: photolib];
