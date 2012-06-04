@@ -1,9 +1,8 @@
 #import "COPersistentRootDiff.h"
 #import "COMacros.h"
 #import "COPath.h"
-#import "COStorePrivate.h"
+
 #import "COPersistentRootEditingContext.h"
-#import "COSubtreeFactory+PersistentRoots.h"
 #import "COSubtreeDiff.h"
 #import "COSubtreeEdits.h"
 

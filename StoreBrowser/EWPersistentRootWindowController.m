@@ -11,7 +11,7 @@
 #import "AppDelegate.h"
 #import "COType.h"
 #import "EWIconTextFieldCell.h"
-#import "COStorePrivate.h"
+
 #import "EWUndoManager.h"
 
 @implementation EWPersistentRootWindowController

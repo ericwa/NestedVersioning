@@ -1,0 +1,10 @@
+
+
+coreobject log --limit [nuber of log entries to display] [store]
+  prints the command log
+
+coreobject list [store]
+  lists the persistent roots
+
+coreobject export [proot] [store]
+  shows the proot

@@ -11,7 +11,7 @@
 #import "COMacros.h"
 #import "COUUID.h"
 
-
+// FIXME: these macros violate the C aliasing rules
 #define TIME_LOW(uuid) (*(uint32_t*)(uuid))
 #define TIME_MID(uuid) (*(uint16_t*)(&(uuid)[4]))
 #define TIME_HI_AND_VERSION(uuid) (*(uint16_t*)(&(uuid)[6]))
@@ -22,10 +22,15 @@
 #ifdef HAVE_ARC4RANDOM
 static void COUUIDGet16RandomBytes(unsigned char bytes[16])
 {
-	*((uint32_t*)&bytes[0]) = arc4random();
-	*((uint32_t*)&bytes[4]) = arc4random();
-	*((uint32_t*)&bytes[8]) = arc4random();
-	*((uint32_t*)&bytes[12]) = arc4random();
+	uint32_t w1 = arc4random();
+	uint32_t w2 = arc4random();
+	uint32_t w3 = arc4random();
+	uint32_t w4 = arc4random();
+	
+	memcpy(bytes, &w1, 4);
+	memcpy(bytes+4, &w2, 4);
+	memcpy(bytes+8, &w3, 4);
+	memcpy(bytes+12, &w4, 4);
 }
 #else
 #include <openssl/rand.h>
@@ -135,7 +140,9 @@ static void COUUIDGet16RandomBytes(unsigned char bytes[16])
  */
 - (NSUInteger) hash
 {
-	return *((uint64_t *)uuid);
+	uint64_t hash;
+	memcpy(&hash, uuid, 8);
+	return hash;
 }
 
 - (BOOL) isEqual: (id)anObject

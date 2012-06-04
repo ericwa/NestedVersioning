@@ -214,7 +214,7 @@
 	if ([aType isEqual: [COType embeddedItemType]] && !isUnique)
 	{
 		[NSException raise: NSInvalidArgumentException
-					format: @"[COType embeddedItemType] can only exist in a unique multivalue", aType];
+					format: @"[COType embeddedItemType] can only exist in a unique multivalue"];
 	}
 	
 	SUPERINIT;

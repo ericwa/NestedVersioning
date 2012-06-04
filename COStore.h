@@ -3,110 +3,113 @@
 #import "COItem.h"
 #import "COPersistentRootEditingContext.h"
 
+@class COSubtree;
 @class COPersistentRootEditingContext;
 @class COItem;
+@class COPersistentRoot;
+@class COPersistentRootState;
+@class COPersistentRootStateDelta;
+@class COPersistentRootStateToken;
 
-/**
- * lowest level of access to store.. deals with commit tree/forest.
- *
- * Most likely in the final version, the editing context layer will use COStoreController
- * and COStore will be a layer over SQLite (or COStoreController will use sqlite directly, maybe)
- 
- */
 @interface COStore : NSObject
 {
 @private
 	NSURL *url;
-	
-	NSMutableDictionary *plistForCommitCache;
 }
-
-/** @taskunit Initialization */
 
 - (id)initWithURL: (NSURL*)aURL;
 - (NSURL*)URL;
 
+/** @taskunit reading states */
 
-/** @taskunit history cleaning */
-
-// ALL OF THESE SHOULD LOCK THE DB!
-
-/**
- * permanently delete the specified commits.
- *
- * this guarantees not to affect any other commits, besides the listed ones.
- * (so, e.g., branches off of the listed commits will still work as before.)
- *
- * this will attempt to free disk space, but the amount freed
- * depends on how much of the data in the given commits is reused.
- * data not deleted now will be deleted later if it becomes garbage.
- */
-- (void) deleteCommitsWithUUIDs: (NSSet*)uuids;
+// because these are immutable, no atomicity/locking/concurrency
+// concerns exist.
 
 /**
- * implementing this will be non-trivial...
- * e.g., we can have a new branch created off of a very old commit which
- * is scheduled for deletion.
- *
- * x = scheduled for deletion
- * Y = not scheduled for deletion.
- *
- *          /---Y---...
- *         /
- * x---x---x---x---x---x---x---Y---...
- *
- * We should still be able to merge the two Y branches after the history cleaning.
- * 
- * a simple, conservative algorithim could be:
- * - delete all ancestors C of aCommit that satisfy all of:
- *     1. C is older than aDate
- *     2. all children of C are older than aDate
- *     3. C is not referenced explicitly by any embedded object in any commit
- *
- * - when a commit is deleted it should probably be left as a 'sentinel':
- *   this avoids mutating the history graph.
- *    
+ * Slow path. reads the entire state snapshot.
  */
-- (void) deleteParentsOfCommit: (COUUID*)aCommit
-				 olderThanDate: (NSDate*)aDate;
+- (COPersistentRootState *) fullStateForToken: (COPersistentRootStateToken *)aToken;
 
 /**
- * searches for unreachable commits and deletes them.
- * typical usage would be:
- *  1. permanently delete all commits on a persistent root older than a certain date
- *  2. run gc to delete any other commits which are no longer accessible as a result of (1.)
+ * Fast path. Returns the state for a given token, in the form of a delta against
+ * another state. Which state the delta is based on is implementation defined
+ * and has no semantic meaning. the token for that state will be returned in outBasedOn.
  *
- * note that parents of a commit are considered reachable, so if X is reachable,
- * none of X's parents will be deleted.
+ * The idea is to call this optimistically, if outBasedOn happens to return a state
+ * that the caller has a full copy of in memory, they can use the delta, otherwise they must
+ * call -fullStateForToken:.
  */
-- (void) gc;
+- (COPersistentRootStateDelta *) deltaStateForToken: (COPersistentRootStateToken *)aToken
+                                            basedOn: (COPersistentRootStateToken **)outBasedOn;
 
-/** @taskunit accessing the root context */
+// writing state
+//
+// no concurrency concerns exist here, because we're conceptually
+// appending to a set and can never conflict with an exiting item.
+//
+// in practice we'll do it inside a transaction for the affected
+// persistent root cache so we can get a unique id.
+
+- (COPersistentRootStateToken *) addStateAsDelta: (COPersistentRootStateDelta *)aDelta
+                                     parentState: (COPersistentRootStateToken *)parent;
+
+- (COPersistentRootStateToken *) addState: (COPersistentRootState *)aFullSnapshot
+                              parentState: (COPersistentRootStateToken *)parent;
+
+
+/** @taskunit reading persistent roots */
+
+- (NSArray *) allPersistentRootUUIDs;
+
+// Returns a snapshot of the state of a persistent root.
+- (COPersistentRoot *) persistentRootWithUUID: (COUUID *)aUUID;
+
+/** @taskunit writing */
+
+//
+// Each of these mutates a SINGLE PERSISTENT ROOT.
+//
+// Atomicity: any changes made within a persistent root are atomic.
+//
+
+- (COPersistentRoot *) createPersistentRootWithInitialContents: (COPersistentRootState *)contents;
+
+- (COPersistentRoot *) createCopyOfPersistentRoot: (COUUID *)aRoot;
+
+// "exotic" method of creating proot
+- (COPersistentRoot *)createPersistentRootByCopyingBranch: (COUUID *)aBranch
+                                          ofPersistentRoot: (COUUID *)aRoot;
+
+- (BOOL) deletePersistentRoot: (COUUID *)aRoot;
+
+// branches
+
+// note that these mutate the persistent roots, so any in-memory COPersistentRoots will be out of date
+
+- (BOOL) deleteBranch: (COUUID *)aBranch
+     ofPersistentRoot: (COUUID *)aRoot;
+
+- (BOOL) setCurrentBranch: (COUUID *)aBranch
+		forPersistentRoot: (COUUID *)aRoot;
+
+- (COUUID *) createCopyOfBranch: (COUUID *)aBranch
+			   ofPersistentRoot: (COUUID *)aRoot;
 
 /**
- * returns a new context every time
+ * If we care about detecting concurrent changes,
+ * just add a fromVersoin: (token) paramater,
+ * and within the transaction, fail if the current state is not the
+ * fromVersion.
  */
-- (COPersistentRootEditingContext *) rootContext;
+- (BOOL) setCurrentVersion: (COPersistentRootStateToken*)aVersion
+                 forBranch: (COUUID *)aBranch
+          ofPersistentRoot: (COUUID *)aRoot;
+	
 
+/** @taskunit syntax sugar */
 
-
-/** @taskunit search */
-
-/**
- * low-level search method. returns commit UUIDs where the
- * query was _first_ satisfied.
- *
- * should be efficient; i.e. lookup on an indexed SQL table, or
- * full-text-search index lookup.
- */
-- (NSSet*) commitsMatchingQuery: (NSString*)aQuery;
-
-
-
-
-#pragma mark Convenience
-
-
-- (BOOL) isCommit: (COUUID *)testParent parentOfCommit: (COUUID *)testChild;
+- (COPersistentRootState *) fullStateForPersistentRootWithUUID: (COUUID *)aUUID;
+- (COPersistentRootState *) fullStateForPersistentRootWithUUID: (COUUID *)aUUID
+                                                    branchUUID: (COUUID *)aBranch;
 
 @end

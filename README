@@ -1,19 +1,95 @@
-Store Browser
-=============
+Core Object
+===========
 
 Author: Eric Wasylishen
 E-Mail: ewasylishen@gmail.com
 License: http://www.opensource.org/licenses/mit-license.php
 
-Icons from: http://www.famfamfam.com/lab/icons/silk/ (CC BY 2.5)
+
+major rewrite - removing the whole "nested" concept because it is unwieldly
+and overly general.
+
+the new design is just as powerful but much simpler.
+
+persistent roots are as before, but now they can only exist at the top level of a store.               
+instead of trying to use the persistent root mechanism itself to capture the history
+of changes to a persistent root (commit, revert to version, create branch, switch branch, etc),
+there will now be a command log.
+
+unsure at the moment if this command log will be kept directly in the persistent roots
+or in a separate library/location on disk.
+
+--- Branching undo comment:
+
+-compare with other apps that have
+  * linear model-level and linear meta-level,
+     (ui has a list of past document states, you can click to reset to a state.
+      cmd+Z works as normal - and will undo visiting a state, for example -
+      this is the "meta-level" undo.)
+
+  * or branching model-level and no meta-level
+     (ui has a tree of past document states, you can click to reset to a state.
+      cmd+Z navigates the tree - so you can't undo visiting a state.)
+  
+- CO will have branching model-level and linear meta-level
+   (ui has a tree of past document states, you can click to reset to a state.
+    cmd+Z operates on a linear list of UI actions, such as change branch,
+    change state, create branch, etc., so all of those actions are undoable/redoable.)
+
+-we can easily undo/redo branch creation/deletion,
+proot creation/deletion, because these things are all constant size.
+
+So proot delete just serializes the proot and all branches and stores 
+it in the undo log.
+
+app ideas:
+- structured text editor
+- simple graphing / sketch / presentation slide design / vector drawing app
+- ???
 
 
-The StoreBrowser app lets you experiment with this version
-of NestedVersioning a.k.a ObjetMerging 5 a.k.a. CoreObject Prototype
-(I know, the names are confusing.)
+-- App concept:
 
-When you launch StoreBrowser, it deletes anything left over in
-~/om5teststore/ and then creates an example repository there
-using TestTagging.m.
+-name is "Typewriter".
+-document format: a bundle ".etoileTypewriter"
+-each bundle is a coreobject store; with one main persistent root which can have branches
+
+-ui maps one ".etoileTypewriter" bundle to its main persistent root, which is displayed as a document window.
+-undo/redo stack is per-persistent-root
+
+-embedded object format:
+
+{ type: "document"
+  paragraphs:
+    [  {"type" : "paragraph",
+        "text" : "<rtf stream>"}, ... ]
+  
+-menu functions:
+
+document
+  - save: tags the current version. stored either in branch or proot metadata
+  - duplicate: saves a copy of the store. ?
+  - branch: makes a new branch.
+  - branches...: shows branches, allows switching, deleting, rename, etc.
+  - history..: shows history graph. clicking goes to a state. right click for "backout" aka selective undo
+  
+edit
+  - undo
+  - redo
+  
+  -cut/copy/paste/drag/drop
+
+selection behaviour:
+  - for fun we could implement undoable selection
 
 
+suppose you select a few words before para1 up to a few words after, and hit cut.
+ clipboard contents should be an array of  3 things: [ "rich text", { paragraph 1 value object } , "rich text" ]
+
+
+
+
+-- Async saving
+
+- ui only needs to block until immutable snapshot is prepared.
+- v2 feature

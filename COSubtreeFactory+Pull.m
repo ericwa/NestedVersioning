@@ -2,9 +2,8 @@
 #import "COMacros.h"
 #import "COItem.h"
 #import "COUUID.h"
-#import "COStorePrivate.h"
+
 #import "COSubtreeFactory.h"
-#import "COSubtreeFactory+PersistentRoots.h"
 #import "COSubtree.h"
 #import "COSubtreeDiff.h"
 #import "COPersistentRootDiff.h"

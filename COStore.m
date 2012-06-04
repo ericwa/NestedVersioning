@@ -1,31 +1,23 @@
 #import "COStore.h"
 #import "COMacros.h"
-#import "COStorePrivate.h"
+
 #import "COPersistentRootEditingContext.h"
 #import "COSubtree.h"
 
+#import "COBranch.h"
+#import "COPersistentRoot.h"
+#import "COPersistentRootState.h"
+#import "COPersistentRootStateDelta.h"
+#import "COPersistentRootStateToken.h"
+
+NSString *kCOPersistentRootsPlistPath = @"persistentRoots.plist";
+
 @implementation COStore
-
-- (NSString *) rootVersionFile
-{
-	return [[url path] stringByAppendingPathComponent: @"rootVersion"];
-}
-
-- (NSString *) commitLogFile
-{
-	return [[url path] stringByAppendingPathComponent: @"commitLog"];
-}
-
-- (NSString *) commitsDirectory
-{
-	return [[url path] stringByAppendingPathComponent: @"commits"];
-}
 
 - (id)initWithURL: (NSURL*)aURL
 {
 	self = [super init];
 	url = [aURL retain];
-	plistForCommitCache = [[NSMutableDictionary alloc] init];
 	
 	BOOL isDirectory;
 	BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath: [url path]
@@ -33,7 +25,7 @@
 	
 	if (!exists)
 	{
-		if (![[NSFileManager defaultManager] createDirectoryAtPath: [self commitsDirectory]
+		if (![[NSFileManager defaultManager] createDirectoryAtPath: [url path]
 									  withIntermediateDirectories: YES
 													   attributes: nil
 															error: NULL])
@@ -42,7 +34,7 @@
 			[NSException raise: NSGenericException
 						format: @"Error creating store at %@", [url path]];
 			return nil;
-		}
+		}    
 	}
 	// assume it is a valid store if it exists... (may not be of course)
 	
@@ -51,7 +43,6 @@
 
 - (void)dealloc
 {
-	[plistForCommitCache release];
 	[url release];
 	[super dealloc];
 }
@@ -61,418 +52,279 @@
 	return url;
 }
 
-/** @taskunit commits */
+/** @taskunit persistent roots */
 
-
-- (NSArray*) allCommitUUIDs
+- (COPersistentRootState *) _fullStateForPath: (NSString *)aPath
 {
-	NSMutableArray *uuids = [NSMutableArray array];
-	
-	NSArray *arr = [NSArray arrayWithContentsOfFile: [self commitLogFile]];
-	
-	for (NSString *uuidString in arr)
-	{
-		COUUID *uuid = [COUUID UUIDWithString: uuidString];			
-		[uuids addObject: uuid];
-	}
-	return uuids;
+    NSDictionary *plist = [NSDictionary dictionaryWithContentsOfFile: aPath];
+    return [[[COPersistentRootState alloc] initWithPlist: plist] autorelease];
 }
 
-- (void) setAllCommitUUIDs: (NSArray*)uuids
+- (NSString *) _fullStateDirForUUID: (COUUID *)aUUID
 {
-	NSMutableArray *uuidStrings = [NSMutableArray array];
-	for (COUUID *uuid in uuids)
-	{
-		[uuidStrings addObject: [uuid stringValue]];
-	}
-	[uuidStrings writeToFile: [self commitLogFile]
-				  atomically: YES];
+   return [[url path] stringByAppendingPathComponent:
+            [[aUUID stringValue] stringByAppendingString: @".persistentRootStorage"]];
 }
 
-- (COUUID*) addCommitWithUUID: (COUUID *)commitUUID
-					   parent: (COUUID*)parent
-                     metadata: (id)metadataPlist
-		   UUIDsAndStoreItems: (NSDictionary*)objects
-					 rootItem: (COUUID*)root
+- (NSString *) _fullStatePathForToken: (COPersistentRootStateToken *)aToken
 {
-	NILARG_EXCEPTION_TEST(commitUUID);
-	NILARG_EXCEPTION_TEST(objects);
-	NILARG_EXCEPTION_TEST(root);
-	assert([objects objectForKey: root] != nil);
-	
-	NSMutableDictionary *objectsWithStringUUID = [NSMutableDictionary dictionary];
-	{
-		for (COUUID *uuid in objects)
-		{
-			assert([[objects objectForKey: uuid] isKindOfClass: [COItem class]]);
-			assert([[[objects objectForKey: uuid] UUID] isEqual: uuid]);
-			
-			id plist = [[objects objectForKey: uuid] plist];
-			[objectsWithStringUUID setObject: plist
-									  forKey: [uuid stringValue]];
-		}
-	}
-	
-	//NSLog(@"Commit with parent %@", parent);
-	
-	NSMutableDictionary *plist = [NSMutableDictionary dictionaryWithDictionary: D(
-								   [commitUUID stringValue], @"uuid",
-								   [root stringValue], @"root",
-								   objectsWithStringUUID, @"objects",
-								   [NSDate date], @"date")];
-	
-	if (metadataPlist != nil)
-	{
-		[plist setObject:metadataPlist forKey: @"metadata"];
-	}
-	
-	if (parent != nil)
-	{
-		[plist setObject: [parent stringValue] forKey: @"parent"];
-	}
-	
-	NSString *commitFile = [[self commitsDirectory] stringByAppendingPathComponent:
-								[commitUUID stringValue]];
-	
-	if (![plist writeToFile: commitFile
-				 atomically: YES])
-	{
-		[NSException raise: NSInternalInconsistencyException
-					format: @"Failed to save commit %@.", plist];
-	}
-	
-	[self setAllCommitUUIDs:
-	 [[self allCommitUUIDs] arrayByAddingObject: commitUUID]];
-	
-	return commitUUID;			
+    NSString *fileName = [NSString stringWithFormat: @"%lld.plist", (long long int)[aToken _index]];
+    
+    NSString *path = [[self _fullStateDirForUUID: [aToken _prootCache]]
+                      stringByAppendingPathComponent: fileName];
+    
+    return path;
 }
 
-- (COUUID*) addCommitWithParent: (COUUID*)parent
-                       metadata: (id)metadataPlist
-			 UUIDsAndStoreItems: (NSDictionary*)objects
-					   rootItem: (COUUID*)root
+- (COPersistentRootState *) fullStateForToken: (COPersistentRootStateToken *)aToken
 {
-	return [self addCommitWithUUID: [COUUID UUID]
-					 parent: parent
-				   metadata: metadataPlist
-		 UUIDsAndStoreItems: objects
-				   rootItem: root];
+    return [self _fullStateForPath: [self _fullStatePathForToken: aToken]];
+}
+
+- (COPersistentRootStateDelta *) deltaStateForToken: (COPersistentRootStateToken *)aToken
+                                            basedOn: (COPersistentRootStateToken **)outBasedOn
+{
+    assert(0);
+    return nil;
+}
+
+/** @taskunit persistent roots */
+
+/**
+ * This is the path to the mutable part of the store
+ */
+- (NSString *) persistentRootsPlistPath
+{
+    return [[url path] stringByAppendingPathComponent: kCOPersistentRootsPlistPath];
+}
+
+- (NSDictionary *) readPersistentRootsPlist
+{
+    return [NSDictionary dictionaryWithContentsOfFile: [self persistentRootsPlistPath]];
+}
+
+- (BOOL) writePersistentRootsPlist: (NSDictionary *)aPlist
+{
+    return [aPlist writeToFile: [self persistentRootsPlistPath] atomically: YES];
+}
+
+/** @taskunit reading persistent roots */
+
+//
+// we could have a bunch of methods for querying the state of a persistent root,
+// but it's faster to just read the entire state in one go.
+//
+
+- (COPersistentRoot *) persistentRootWithUUID: (COUUID *)aUUID
+{
+    assert(aUUID != nil);
+    
+    NSDictionary *proots = [self readPersistentRootsPlist];
+    
+    id plist = [proots objectForKey: [aUUID stringValue]];
+    
+    assert(plist != nil);
+    
+    return [[[COPersistentRoot alloc] initWithPlist: plist] autorelease];
+}
+
+- (NSArray *) allPersistentRootUUIDs
+{
+    NSArray *strings = [[self readPersistentRootsPlist] allKeys];
+    NSMutableArray *result = [NSMutableArray array];
+    for (NSString *string in strings)
+    {
+        [result addObject: [COUUID UUIDWithString: string]];
+    }
+    
+    return result;
+}
+
+/** @taskunit writing */
+
+/**
+ * create a fresh new cache directory
+ */
+- (BOOL) _createCache: (COUUID *)name
+{
+    return [[NSFileManager defaultManager] createDirectoryAtPath: [self _fullStateDirForUUID: name]
+                                     withIntermediateDirectories: YES
+                                                      attributes: nil
+                                                           error: NULL];
+}
+
+- (COPersistentRootStateToken *) _unusedTokenForCache: (COUUID *)name
+{
+    NSArray *files = [[NSFileManager defaultManager] directoryContentsAtPath: [self _fullStateDirForUUID: name]];
+    
+    int64_t max = -1;
+    for (NSString *file in files)
+    {
+        int64_t num = (int64_t)[file longLongValue];
+        if (num > max) max = num;
+    }
+
+    return [[COPersistentRootStateToken alloc] initWithProotCache: name index: max + 1];
+}
+
+- (BOOL) _writeFullState: (COPersistentRootState *)aState
+                  toPath: (NSString *)aPath
+{
+    return [[aState plist] writeToFile: aPath atomically: YES];
 }
 
 
-- (COUUID*) addCommitWithParent: (COUUID*)parent
-                       metadata: (id)metadataPlist
-						   tree: (COSubtree*)aTree
+- (BOOL) _writeFullState: (COPersistentRootState *)aState
+                  forToken: (COPersistentRootStateToken *)aToken
 {
-	return [self addCommitWithUUID: [COUUID UUID]
-					 parent: parent
-				   metadata: metadataPlist
-					   tree: aTree];
+    return [self _writeFullState: aState
+                          toPath: [self _fullStatePathForToken: aToken]];
 }
 
-- (COUUID*) addCommitWithUUID: (COUUID *)aUUID
-					   parent: (COUUID*)parent
-					 metadata: (id)metadataPlist
-						 tree: (COSubtree*)aTree
+//
+// Each of these mutates a SINGLE PERSISTENT ROOT.
+//
+// Atomicity: any changes made within a persistent root are atomic.
+//
+
+- (COPersistentRoot *) createPersistentRootWithInitialContents: (COPersistentRootState *)contents
 {
-	NSMutableDictionary *uuidsanditems = [NSMutableDictionary dictionary];
-	{
-		for (COItem *item in [aTree allContainedStoreItems])
-		{
-			[uuidsanditems setObject: item
-							  forKey: [item UUID]];
-		}
-	}
-	
-	return [self addCommitWithUUID: aUUID
-							parent: parent
-						  metadata: metadataPlist
-				UUIDsAndStoreItems: uuidsanditems
-						  rootItem: [[aTree root] UUID]];
+    COUUID *newUUID = [COUUID UUID];
+    [self _createCache: newUUID];
+    
+    COPersistentRootStateToken *newToken = [self _unusedTokenForCache: newUUID];
+    BOOL ok =[self _writeFullState: contents
+                          forToken: newToken];
+    assert(ok);
+    
+    COUUID *branchUUID = [COUUID UUID];
+    
+    COBranch *branch = [[[COBranch alloc] initWithUUID: branchUUID
+                                                  name: @"my branch"
+                                          initialState:newToken metadata:nil] autorelease];
+    
+    COPersistentRoot *result = [[[COPersistentRoot alloc] initWithUUID: newUUID
+                                                              branches: [NSArray arrayWithObject: branch]
+                                                         currentBranch: [branch UUID]
+                                                              metadata: nil] autorelease];
+    ok = [self _writePersistentRoot: result];
+    assert(ok);
+    
+    return result;
 }
 
-- (NSDictionary *) _plistForCommit: (COUUID*)commit
+- (BOOL) _writePersistentRoot: (COPersistentRoot *)aRoot
 {
-	{
-		id cached = [plistForCommitCache objectForKey: commit];
-		if (cached != nil)
-		{
-			return cached;
-		}
-	}
-	
-	
-	NSString *commitFile = [[self commitsDirectory] stringByAppendingPathComponent:
-							[commit stringValue]];
-	
-	NSMutableDictionary *plist = [NSMutableDictionary dictionaryWithContentsOfFile: commitFile];
-	
-	if (plist == nil)
-	{
-		[NSException raise: NSInvalidArgumentException
-					format: @"requested commit %@ not in store", commit];
-	}
-	
-	NSMutableDictionary *objectsWithUUID = [NSMutableDictionary dictionary];
-	{
-		for (NSString *uuidString in [plist objectForKey: @"objects"])
-		{
-			id objectPlist = [[plist objectForKey: @"objects"] objectForKey: uuidString];
-			COItem *item = [[[COItem alloc] initWithPlist: objectPlist] autorelease];
-			[objectsWithUUID setObject: item
-								forKey: [COUUID UUIDWithString: uuidString]];
-		}
-	}
-	[plist setObject: objectsWithUUID
-			  forKey: @"objects"];
-	 
-	assert([[plist objectForKey: @"uuid"] isEqualToString: [commit stringValue]]);
-
-	if ([plist objectForKey: @"parent"] != nil)
-	{
-		[plist setObject: [COUUID UUIDWithString: [plist objectForKey: @"parent"]]
-				  forKey: @"parent"];
-	}
-	
-	[plist setObject: [COUUID UUIDWithString: [plist objectForKey: @"root"]]
-			  forKey: @"root"];
-	
-	// Cache the result in memory to avoid reading from disk in the future
-	// (commits are immutable, so it is safe)
-	
-	[plistForCommitCache setObject: plist forKey: commit];
-	
-	return plist;
-}
-- (COUUID *) parentForCommit: (COUUID*)commit
-{
-	NILARG_EXCEPTION_TEST(commit);
-	return [[self _plistForCommit: commit] objectForKey: @"parent"];
-}
-- (id) metadataForCommit: (COUUID*)commit
-{
-	NILARG_EXCEPTION_TEST(commit);
-	return [[self _plistForCommit: commit] objectForKey: @"metadata"];	
-}
-- (NSDate*) dateForCommit: (COUUID*)commit
-{
-	NILARG_EXCEPTION_TEST(commit);
-	NSDate *aDate = [[self _plistForCommit: commit] objectForKey: @"date"];
-	assert([aDate isKindOfClass: [NSDate class]]);
-	return aDate;
-}
-- (NSString *)menuStringForCommit: (COUUID *)commit
-{
-	NILARG_EXCEPTION_TEST(commit);
-	
-	NSString *string = [[self metadataForCommit: commit] objectForKey: @"menuLabel"];
-	
-	if (string == nil)
-		string = @"<menuString not provided>";
-	
-	return string;
+    NSMutableDictionary *prootDict = [NSMutableDictionary dictionaryWithDictionary: [self readPersistentRootsPlist]];
+    [prootDict setObject: [aRoot plist] forKey: [[aRoot UUID] stringValue]];
+    return [self writePersistentRootsPlist: prootDict];
 }
 
-- (NSDictionary *) UUIDsAndStoreItemsForCommit: (COUUID*)commit
-{
-	NILARG_EXCEPTION_TEST(commit);
-	return [[self _plistForCommit: commit] objectForKey: @"objects"];	
-}
-- (COSubtree *) treeForCommit: (COUUID *)aCommit
-{
-	NILARG_EXCEPTION_TEST(aCommit);
-	COUUID *rootItemUUID = [self rootItemForCommit: aCommit];
-	if (rootItemUUID == nil)
-	{
-		return nil;
-	}
-	
-	NSSet *itemSet = [NSSet setWithArray: [[self UUIDsAndStoreItemsForCommit: aCommit] allValues]];
-	
-	return [COSubtree subtreeWithItemSet: itemSet
-								rootUUID: rootItemUUID];
-}
-- (COSubtree *) subtreeForUUID: (COUUID *)aUUID inCommit: (COUUID *)aCommit
-{
-	NILARG_EXCEPTION_TEST(aUUID);
-	NILARG_EXCEPTION_TEST(aCommit);
-	
-	// FIXME: naive implementation
-	COSubtree *entireTree = [self treeForCommit: aCommit];
-	COSubtree *subtree = [entireTree subtreeWithUUID: aUUID];
-	
-	if (subtree == nil)
-	{
-		[NSException raise: NSInvalidArgumentException
-					format: @"requested UUID not found"];
-	}
-	return subtree;
-}
-- (COUUID *) rootItemForCommit: (COUUID*)commit
-{
-	NILARG_EXCEPTION_TEST(commit);
-	return [[self _plistForCommit: commit] objectForKey: @"root"];	
-}
-- (COItem *) storeItemForEmbeddedObject: (COUUID*)embeddedObject
-									inCommit: (COUUID*)aCommitUUID
-{
-	NILARG_EXCEPTION_TEST(embeddedObject);
-	NILARG_EXCEPTION_TEST(aCommitUUID);
-	
-	NSDictionary *dict = [self UUIDsAndStoreItemsForCommit: aCommitUUID];
-	COItem *item = [dict objectForKey: embeddedObject];
 
-	// may be nil if it isn't in the commit
-	return item;
+
+- (COPersistentRoot *) createCopyOfPersistentRoot: (COUUID *)aRoot
+{
+    COPersistentRoot *newRoot = [[self persistentRootWithUUID: aRoot] persistentRootWithNewName];
+    [self _writePersistentRoot: newRoot];
+    return newRoot;
 }
 
-/** @taskunit history cleaning */
-
-- (void) deleteCommitsWithUUIDs: (NSSet*)uuids
+- (COPersistentRoot *)createPersistentRootByCopyingBranch: (COUUID *)aBranch
+                                         ofPersistentRoot: (COUUID *)aRoot
 {
-	for (COUUID *commit in uuids)
-	{
-		NSString *commitFile = [[self commitsDirectory] stringByAppendingPathComponent:
-								[commit stringValue]];
-		BOOL removed = [[NSFileManager defaultManager]
-							removeItemAtPath: commitFile error: NULL];
-		assert(removed);
-	}
-	
-	// FIXME: Inefficient
-	
-	NSMutableArray *allCommits = [NSMutableArray arrayWithArray: [self allCommitUUIDs]];
-	[allCommits removeObjectsInArray: [uuids allObjects]];
-	[self setAllCommitUUIDs: allCommits];
+    COPersistentRoot *newRoot = [[self persistentRootWithUUID: aRoot] persistentRootCopyingBranch: aBranch];
+    [self _writePersistentRoot: newRoot];
+    return newRoot;
 }
 
-- (void) deleteParentsOfCommit: (COUUID*)aCommit
-				 olderThanDate: (NSDate*)aDate
+- (BOOL) deletePersistentRoot: (COUUID *)aRoot
 {
-	assert(0); // unimplemented
+    NSMutableDictionary *prootDict = [NSMutableDictionary dictionaryWithDictionary: [self readPersistentRootsPlist]];
+    [prootDict removeObjectForKey: [aRoot stringValue]];
+    return [self writePersistentRootsPlist: prootDict];
 }
 
-- (void) _gcMarkVersion: (COUUID *)aVersion recordInSet: (NSMutableSet *)markedVersions
-{
-	if ([markedVersions containsObject: aVersion])
-	{
-		return;
-	}
-	else
-	{
-		[markedVersions addObject: aVersion];
-	}
+// branches
 
-	COUUID *parent = [self parentForCommit: aVersion];
-	if (parent != nil)
-	{
-		[self _gcMarkVersion: parent recordInSet: markedVersions];
-	}
-	
-	NSDictionary *embeddedObjects = [self UUIDsAndStoreItemsForCommit: aVersion];
-	for (COItem *item in [embeddedObjects allValues])
-	{
-		for (NSString *attribute in [item attributeNames])
-		{
-			if ([[item typeForAttribute: attribute] isPrimitiveTypeEqual: [COType commitUUIDType]])
-			{
-				for (COUUID *aValue in [item allObjectsForAttribute: attribute])
-				{
-					[self _gcMarkVersion: aValue recordInSet: markedVersions];
-				}
-			}
-		}
-	}
+- (BOOL) deleteBranch: (COUUID *)aBranch
+     ofPersistentRoot: (COUUID *)aRoot
+{
+    COPersistentRoot *newRoot = [self persistentRootWithUUID: aRoot];
+    [newRoot deleteBranch: aRoot];
+    return [self _writePersistentRoot: newRoot];
 }
 
-- (void) gc
+- (BOOL) setCurrentBranch: (COUUID *)aBranch
+		forPersistentRoot: (COUUID *)aRoot
 {
-	NSMutableSet *markedVersions = [NSMutableSet set];
-	[self _gcMarkVersion: [self rootVersion] recordInSet: markedVersions];
-	
-	NSMutableSet *unreachableVersions = [NSMutableSet setWithArray: [self allCommitUUIDs]];
-	[unreachableVersions minusSet: markedVersions];
-	
-	//NSLog(@"GC found the following unreachable commits: %@", unreachableVersions);
-	
-	[self deleteCommitsWithUUIDs: unreachableVersions];
+    COPersistentRoot *newRoot = [self persistentRootWithUUID: aRoot];
+    [newRoot setCurrentBranch: aRoot];
+    return [self _writePersistentRoot: newRoot];
 }
 
-- (COUUID *) rootVersion
+- (COUUID *) createCopyOfBranch: (COUUID *)aBranch
+			   ofPersistentRoot: (COUUID *)aRoot
 {
-	NSString *str = [NSString stringWithContentsOfFile: [self rootVersionFile] 
-											  encoding: NSUTF8StringEncoding
-												 error: NULL];
-	if (str != nil)
-	{
-		return [COUUID UUIDWithString: str];
-	}
-	else
-	{
-		return nil;
-	}
-}
-- (void) setRootVersion: (COUUID*)version
-{
-	NILARG_EXCEPTION_TEST(version);
-	[[version stringValue] writeToFile: [self rootVersionFile] 
-							atomically: YES
-							  encoding: NSUTF8StringEncoding
-								 error: NULL];
+    COPersistentRoot *newRoot = [self persistentRootWithUUID: aRoot];
+    COBranch *newBranch = [newRoot _makeCopyOfBranch: aBranch];
+    [self _writePersistentRoot: newRoot];
+    return [newBranch UUID];
 }
 
-/** @taskunit accessing the root context */
+// adding state
 
-- (COPersistentRootEditingContext *) rootContext
+- (COPersistentRootStateToken *) addStateAsDelta: (COPersistentRootStateDelta *)aDelta
+                                     parentState: (COPersistentRootStateToken *)parent
 {
-	return [COPersistentRootEditingContext editingContextForEditingTopLevelOfStore: self];
+    assert(0); // deltas not supported yet
 }
 
-- (NSSet*) commitsMatchingQuery: (NSString*)aQuery
+- (COPersistentRootStateToken *) addState: (COPersistentRootState *)aFullSnapshot
+                              parentState: (COPersistentRootStateToken *)parent
 {
-	// FIXME:
-	return nil;
+    COUUID *cacheUuid;
+    if (parent == nil)
+    {
+        cacheUuid = [COUUID UUID];
+        [self _createCache: cacheUuid];
+    }
+    else
+    {
+        cacheUuid = [parent _prootCache];
+    }
+    
+    COPersistentRootStateToken *newToken = [self _unusedTokenForCache: cacheUuid];
+    
+    BOOL ok =[self _writeFullState: aFullSnapshot
+                          forToken: newToken];
+    assert(ok);
+    
+    return newToken;
 }
 
-- (BOOL) isCommit: (COUUID *)testParent parentOfCommit: (COUUID *)testChild
-{	
-	COUUID *temp = testChild;
-	
-	do
-	{
-		if ([temp isEqual: testParent])
-		{
-			return YES;
-		}
-		temp = [self parentForCommit: temp];
-	}
-	while (temp != nil);
-	
-	return NO;
+- (BOOL) setCurrentVersion: (COPersistentRootStateToken*)aVersion
+                 forBranch: (COUUID *)aBranch
+          ofPersistentRoot: (COUUID *)aRoot
+{
+    COPersistentRoot *newRoot = [self persistentRootWithUUID: aRoot];
+    [[newRoot branchForUUID: aBranch] _addCommit: aVersion];
+    [[newRoot branchForUUID: aBranch] _setCurrentState: aVersion];
+    return [self _writePersistentRoot: newRoot];
 }
 
-/** @taskunit common ancestor */
+/** @taskunit syntax sugar */
 
-- (COUUID *)commonAncestorForCommit: (COUUID *)commitA
-						  andCommit: (COUUID *)commitB
+- (COPersistentRootState *) fullStateForPersistentRootWithUUID: (COUUID *)aUUID
 {
-	NSMutableSet *ancestorsOfA = [NSMutableSet set];
-	
-	for (COUUID *temp = commitA; temp != nil; temp = [self parentForCommit: temp])
-	{
-		[ancestorsOfA addObject: temp];
-	}
-	
-	for (COUUID *temp = commitB; temp != nil; temp = [self parentForCommit: temp])
-	{
-		if ([ancestorsOfA containsObject: temp])
-		{
-			return temp;
-		}
-	}
-	
-	// No common ancestor
-	return nil;
+    return [self fullStateForToken:
+            [[[self persistentRootWithUUID: aUUID] currentBranch] currentState]];
+}
+
+- (COPersistentRootState *) fullStateForPersistentRootWithUUID: (COUUID *)aUUID
+                                                    branchUUID: (COUUID *)aBranch
+{
+    return [self fullStateForToken:
+            [[[self persistentRootWithUUID: aUUID] branchForUUID: aBranch] currentState]];
 }
 
 @end

@@ -1,6 +1,6 @@
 #import "EWGraphRenderer.h"
 #import "COMacros.h"
-#import "COStorePrivate.h"
+
 #import "COSubtreeFactory+Undo.h"
 
 @implementation EWGraphRenderer

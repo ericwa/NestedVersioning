@@ -9,218 +9,192 @@
 
 @implementation TestStore
 
+- (void) testTokenInMemory
+{
+    COUUID *aUUID = [COUUID UUID];
+    
+    COPersistentRootStateToken *t = [[COPersistentRootStateToken alloc] initWithProotCache: aUUID index: 1];
+    
+    UKObjectsEqual(t, [COPersistentRootStateToken tokenWithPlist: [t plist]]);    
+}
+
+- (void) testBranchInMemory
+{
+    COUUID *aUUID = [COUUID UUID];
+
+    COUUID *stateUUID = [COUUID UUID];    
+    COPersistentRootStateToken *token = [[COPersistentRootStateToken alloc] initWithProotCache: stateUUID index: 1];
+
+    
+    COBranch *branch = [[COBranch alloc] initWithUUID: aUUID
+                                                 name: @"hello"
+                                         initialState: token
+                                             metadata: @"meta"];
+    id plist = [branch _plist];
+    COBranch *branchCopy = [COBranch _branchWithPlist: plist];
+    
+    UKObjectsEqual(branch, branchCopy);
+}
+
+- (void) testPersistentRootInMemory
+{
+    COUUID *prootUUID = [COUUID UUID];
+    COUUID *branchUUID = [COUUID UUID];
+    
+    COUUID *stateUUID = [COUUID UUID];
+    COPersistentRootStateToken *token = [[COPersistentRootStateToken alloc] initWithProotCache: stateUUID index: 1];
+    
+    
+    COBranch *branch = [[COBranch alloc] initWithUUID: branchUUID
+                                                 name: @"hello"
+                                         initialState: token
+                                             metadata: @"meta"];
+  
+    COPersistentRoot *proot = [[COPersistentRoot alloc] initWithUUID: prootUUID
+                                                          branches: [NSArray arrayWithObject: branch]
+                                                     currentBranch: [branch UUID]
+                                                          metadata: nil];
+    
+    COPersistentRoot *prootCopy = [[COPersistentRoot alloc] initWithPlist: [proot plist]];
+    
+    UKObjectsEqual(proot, prootCopy);
+}
+
+
+static COSubtree *makeTree(NSString *message)
+{
+	COSubtree *t1 = [COSubtree subtree];
+    [t1 setPrimitiveValue: message
+             forAttribute: @"name"
+                     type: [COType stringType]];
+	COSubtree *t2 = [COSubtree subtree];
+	COSubtree *t3 = [COSubtree subtree];
+	[t1 addTree: t2];
+	[t2 addTree: t3];
+	return t1;
+}
+
 - (void) testBasic
 {
 	COStore *store = setupStore();
-	
-	COItem *i1 = [[[COItem alloc] initWithUUID: [COUUID UUID]
-							typesForAttributes: D([COType stringType], @"name")
-						   valuesForAttributes: D(@"hello", @"name")] autorelease];
-	
-	NSDictionary *uuidsanditems = [NSDictionary dictionaryWithObjectsAndKeys:
-								   i1, [i1 UUID],
-								   nil];
-	
-	NSDictionary *md = [NSDictionary dictionaryWithObjectsAndKeys: @"today", @"date", nil];
-	
-	COUUID *uuid = [store addCommitWithParent: nil
-									 metadata: md
-						   UUIDsAndStoreItems: uuidsanditems
-									 rootItem: [i1 UUID]];
-	
-	UKTrue(uuid != nil);
-	UKObjectsEqual([NSArray arrayWithObject: uuid], [store allCommitUUIDs]);
-	UKNil([store parentForCommit: uuid]);
-	UKObjectsEqual(md, [store metadataForCommit: uuid]);
-	UKObjectsEqual(uuidsanditems, [store UUIDsAndStoreItemsForCommit: uuid]);
-	UKObjectsEqual([i1 UUID], [store rootItemForCommit: uuid]);
-	
-	[store setRootVersion: uuid];
-	UKObjectsEqual(uuid, [store rootVersion]);
-	
-	[store release];
+	COSubtree *basicTree = makeTree(@"hello world");
+    
+    COPersistentRootState *state = [COPersistentRootState stateWithTree: basicTree];
+    COPersistentRoot *proot = [store createPersistentRootWithInitialContents: state];
+    
+    UKObjectsEqual([NSArray arrayWithObject: [proot UUID]], [store allPersistentRootUUIDs]);
+ 
+    // make a second commit
+    
+	COSubtree *basicTree2 = makeTree(@"hello world2");
+    
+    COPersistentRootState *state2 = [COPersistentRootState stateWithTree: basicTree2];
+    COPersistentRootStateToken *token2 = [store addState: state2 parentState: [[proot currentBranch] currentState]];
+    
+    [store setCurrentVersion: token2 forBranch: [[proot currentBranch] UUID] ofPersistentRoot: [proot UUID]];
+    
+    COPersistentRoot *prootFetched = [store persistentRootWithUUID: [proot UUID]];
+    UKObjectsEqual(state2, [store fullStateForToken: [[prootFetched currentBranch] currentState]]);
+    UKObjectsNotEqual(state, [store fullStateForToken: [[prootFetched currentBranch] currentState]]);
 }
-
-// ObjectMerging tests
-
-#if 0
 
 - (void)testReopenStore
 {
-	COUUID *o1 = [COUUID UUID];
-	NSDictionary *sampleMetadata = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool: YES] forKey:@"metadataWorks"];
-	uint64_t revisionNumber = 0;
-	
+	COUUID *prootUUID = nil;
+    
+    COPersistentRootState *state = [COPersistentRootState stateWithTree: makeTree(@"hello world")];
+    
 	{
-		COStore *s = [[COStore alloc] initWithURL: STORE_URL];
-
-		[s insertRootObjectUUIDs: S(o1)];		
-		[s beginCommitWithMetadata: sampleMetadata rootObjectUUID: o1];
-		[s beginChangesForObjectUUID: o1];
-		[s setValue: @"bob"
-		forProperty: @"name"
-		   ofObject: o1
-		shouldIndex: NO];
-		[s finishChangesForObjectUUID: o1];
-		CORevision *c1 = [s finishCommit];
-		revisionNumber = [c1 revisionNumber];		
-		[s release];
-	}
+        COStore *s = [[COStore alloc] initWithURL: STOREURL];             
+        COPersistentRoot *proot = [s createPersistentRootWithInitialContents: state];
+        prootUUID = [proot UUID];
+        [s release];
+    }
+    
+    {
+        COStore *s = [[COStore alloc] initWithURL: STOREURL];
+        COPersistentRoot *prootFetched = [s persistentRootWithUUID: prootUUID];
+        UKObjectsEqual(state, [s fullStateForToken: [[prootFetched currentBranch] currentState]]);
+        [s release];
+    }
 	
-	{
-		COStore *s2 = [[COStore alloc] initWithURL: STORE_URL];
-
-		CORevision *c1 = [s2 revisionWithRevisionNumber: revisionNumber];
-		
-		UKNotNil(c1);
-		
-		UKIntsEqual(1, [[c1 changedObjectUUIDs] count]);
-		if ([[c1 changedObjectUUIDs] count] == 1)
-		{
-			UKObjectsEqual(o1, [[c1 changedObjectUUIDs] objectAtIndex: 0]);
-		}
-		
-		UKObjectsEqual(sampleMetadata, [c1 metadata]);
-		UKObjectsEqual([NSDictionary dictionaryWithObject: @"bob" forKey: @"name"],
-					   [c1 valuesAndPropertiesForObjectUUID: o1]);
-		
-		[s2 release];
-	}
-	
-	[[NSFileManager defaultManager] removeItemAtPath: [STORE_URL path] error: NULL];
+	[[NSFileManager defaultManager] removeItemAtPath: STOREPATH error: NULL];
 }
 
-
-- (void)testFullTextSearch
+- (void)testDeletePersistentRoot
 {
-	COStore *s = SetUpStore();
-	
-	COUUID *o1 = [COUUID UUID];
-
-	[s insertRootObjectUUIDs: S(o1)];	
-	
-	[s beginCommitWithMetadata: nil rootObjectUUID: o1];
-	[s beginChangesForObjectUUID: o1];
-	[s setValue: @"cats" forProperty: @"name" ofObject: o1 shouldIndex: YES];
-	[s finishChangesForObjectUUID: o1];
-	CORevision *c1 = [s finishCommit];
-
-	[s beginCommitWithMetadata: nil rootObjectUUID: o1];
-	[s beginChangesForObjectUUID: o1];
-	[s setValue: @"dogs" forProperty: @"name" ofObject: o1 shouldIndex: YES];
-	[s finishChangesForObjectUUID: o1];
-	CORevision *c2 = [s finishCommit];
-	
-	[s beginCommitWithMetadata: nil rootObjectUUID: o1];
-	[s beginChangesForObjectUUID: o1];
-	[s setValue: @"horses" forProperty: @"name" ofObject: o1 shouldIndex: YES];
-	[s finishChangesForObjectUUID: o1];
-	CORevision *c3 = [s finishCommit];
-	
-	[s beginCommitWithMetadata: nil rootObjectUUID: o1];
-	[s beginChangesForObjectUUID: o1];
-	[s setValue: @"dogpound" forProperty: @"name" ofObject: o1 shouldIndex: YES];
-	[s finishChangesForObjectUUID: o1];
-	CORevision *c4 = [s finishCommit];
-	
-	UKNotNil(c1);
-	UKNotNil(c2);
-	UKNotNil(c3);
-	UKNotNil(c4);
-	
-	NSArray *searchResults = [s resultDictionariesForQuery: @"dog*"];
-	UKIntsEqual(2, [searchResults count]);
-	if ([searchResults count] == 2)
-	{
-		NSDictionary *result1 = [searchResults objectAtIndex: 0];
-		NSDictionary *result2 = [searchResults objectAtIndex: 1];
-		if ([c4 revisionNumber] == [[result1 objectForKey: @"revisionNumber"] unsignedLongLongValue])
-		{
-			id temp = result2; result2 = result1; result1 = temp;
-		}
-		UKObjectsEqual([NSNumber numberWithUnsignedLongLong: [c2 revisionNumber]], [result1 objectForKey: @"revisionNumber"]);
-		UKObjectsEqual(o1, [result1 objectForKey: @"objectUUID"]);
-		UKObjectsEqual(@"name", [result1 objectForKey: @"property"]);
-		UKObjectsEqual(@"dogs", [result1 objectForKey: @"value"]);
-		
-
-		UKObjectsEqual([NSNumber numberWithUnsignedLongLong: [c4 revisionNumber]], [result2 objectForKey: @"revisionNumber"]);
-		UKObjectsEqual(o1, [result2 objectForKey: @"objectUUID"]);
-		UKObjectsEqual(@"name", [result2 objectForKey: @"property"]);
-		UKObjectsEqual(@"dogpound", [result2 objectForKey: @"value"]);
-	}
-	TearDownStore(s);
+	COStore *store = setupStore();
+	COSubtree *basicTree = makeTree(@"hello world");
+    
+    COPersistentRootState *state = [COPersistentRootState stateWithTree: basicTree];
+    COPersistentRoot *proot = [store createPersistentRootWithInitialContents: state];
+    
+    UKObjectsEqual([NSArray arrayWithObject: [proot UUID]], [store allPersistentRootUUIDs]);
+    
+    [store deletePersistentRoot: [proot UUID]];
+    
+    UKObjectsEqual([NSArray array], [store allPersistentRootUUIDs]);
 }
 
-- (void)testCommitWithNoChanges
+- (void)testBranch
 {
-	COStore *s = SetUpStore();
+	// create a persistent root r with 3 branches: a, b, c; current branch: a
 	
-	COUUID *o1 = [COUUID UUID];
+    COStore *store = setupStore();
+    // N.B. these commit immediately.
+    COPersistentRootState *state = [COPersistentRootState stateWithTree: makeTree(@"hello world")];
+    COPersistentRootState *state2 = [COPersistentRootState stateWithTree: makeTree(@"hello world2")];
+    COPersistentRootState *state3 = [COPersistentRootState stateWithTree: makeTree(@"hello world3")];
+    
+    COPersistentRoot *proot = [store createPersistentRootWithInitialContents: state];
+    COUUID *prootuuid = [proot UUID];
+    COPersistentRootStateToken *token = [[proot currentBranch] currentState];
+    COPersistentRootStateToken *token2 = [store addState: state2 parentState: token];
+    COPersistentRootStateToken *token3 = [store addState: state3 parentState: token];
+    
+    COBranch *branch = [proot currentBranch];
+    COUUID *branch2uuid = [store createCopyOfBranch: [branch UUID] ofPersistentRoot: prootuuid];
+    COUUID *branch3uuid = [store createCopyOfBranch: [branch UUID] ofPersistentRoot: prootuuid];
 
-	[s insertRootObjectUUIDs: S(o1)];	
-	[s beginCommitWithMetadata: nil rootObjectUUID: o1];
-	[s beginChangesForObjectUUID: o1];
-	[s finishChangesForObjectUUID: o1];
-	CORevision *c1 = [s finishCommit];
-	UKNotNil(c1);
-	UKTrue([s isRootObjectUUID: o1]);
-	UKObjectsEqual(S(o1), [s rootObjectUUIDs]);
-
-	TearDownStore(s);
+    proot = [store persistentRootWithUUID: prootuuid];
+    COBranch *branch2 = [proot branchForUUID: branch2uuid];
+    COBranch *branch3 = [proot branchForUUID: branch3uuid];
+    
+    UKObjectsEqual(S(branch, branch2, branch3), [NSSet setWithArray: [[store persistentRootWithUUID: prootuuid] branches]]);
+    
+    [store setCurrentVersion: token2 forBranch: branch2uuid ofPersistentRoot: prootuuid];
+    [store setCurrentVersion: token3 forBranch: branch3uuid ofPersistentRoot: prootuuid];
+    
+    UKObjectsEqual(state2, [store fullStateForPersistentRootWithUUID: prootuuid branchUUID: branch2uuid]);
+    UKObjectsEqual(state3, [store fullStateForPersistentRootWithUUID: prootuuid branchUUID: branch3uuid]);
 }
 
-- (void)testRootObject
+- (void)testCopyPersistentRoot
 {
-	COStore *s = SetUpStore();
-	
-	COUUID *o1 = [COUUID UUID];
-	COUUID *o2 = [COUUID UUID];
-	COUUID *o3 = [COUUID UUID];
-	[s insertRootObjectUUIDs: S(o1)];
-	[s beginCommitWithMetadata: nil rootObjectUUID: o1];
-	[s beginChangesForObjectUUID: o2];
-	[s setValue: @"cats" forProperty: @"name" ofObject: o2 shouldIndex: NO];
-	[s finishChangesForObjectUUID: o2];
-	[s beginChangesForObjectUUID: o3];
-	[s setValue: @"dogs" forProperty: @"name" ofObject: o3 shouldIndex: NO];
-	[s finishChangesForObjectUUID: o3];
-	CORevision *c1 = [s finishCommit];
-	UKNotNil(c1);
-	UKTrue([s isRootObjectUUID: o1]);
-	UKFalse([s isRootObjectUUID: o2]);
-	UKFalse([s isRootObjectUUID: o3]);
-	UKObjectsEqual(S(o1), [s rootObjectUUIDs]);
-	UKObjectsEqual(S(o1, o2, o3), [s UUIDsForRootObjectUUID: o1]);
-	UKObjectsEqual(o1, [s rootObjectUUIDForUUID: o1]);
-	UKObjectsEqual(o1, [s rootObjectUUIDForUUID: o2]);
-	UKObjectsEqual(o1, [s rootObjectUUIDForUUID: o3]);
+	COStore *store = setupStore();
 
-	TearDownStore(s);
+    COPersistentRootState *state = [COPersistentRootState stateWithTree: makeTree(@"hello world")];
+    COPersistentRootState *state2 = [COPersistentRootState stateWithTree: makeTree(@"hello world2")];
+    UKObjectsNotEqual(state, state2);
+    
+    COPersistentRoot *proot = [store createPersistentRootWithInitialContents: state];
+    COPersistentRoot *proot2 = [store createCopyOfPersistentRoot: [proot UUID]];
+    
+    UKObjectsNotEqual([proot UUID], [proot2 UUID]);
+    
+    UKObjectsEqual(state, [store fullStateForPersistentRootWithUUID: [proot UUID]]);
+    UKObjectsEqual(state, [store fullStateForPersistentRootWithUUID: [proot2 UUID]]);
+    
+    // change proot2, verify that it didn't change proot
+    
+    COPersistentRootStateToken *token = [[proot currentBranch] currentState];
+    COPersistentRootStateToken *token2 = [store addState: state2 parentState: token];
+    
+    [store setCurrentVersion: token2 forBranch: [[proot2 currentBranch] UUID] ofPersistentRoot: [proot2 UUID]];
+    
+    UKObjectsEqual(state, [store fullStateForPersistentRootWithUUID: [proot UUID]]);
+    UKObjectsEqual(state2, [store fullStateForPersistentRootWithUUID: [proot2 UUID]]);
 }
 
-
-- (void)testStoreNil
-{
-	COStore *s = SetUpStore();
-	
-	COUUID *o1 = [COUUID UUID];
-
-	[s insertRootObjectUUIDs: S(o1)];	
-	[s beginCommitWithMetadata: nil rootObjectUUID: o1];
-	[s beginChangesForObjectUUID: o1];
-	[s setValue: nil
-	forProperty: @"name"
-	   ofObject: o1
-	shouldIndex: NO];
-	[s finishChangesForObjectUUID: o1];
-	CORevision *c1 = [s finishCommit];
-
-	UKNotNil(c1);
-	
-	TearDownStore(s);
-}
-
-#endif
 
 @end

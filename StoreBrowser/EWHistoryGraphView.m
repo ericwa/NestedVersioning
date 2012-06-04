@@ -2,7 +2,7 @@
 #import "EWGraphRenderer.h"
 #import "COMacros.h"
 #import "COSubtreeDiff.h"
-#import "COStorePrivate.h"
+
 
 @implementation EWHistoryGraphView
 

@@ -1,3 +1,81 @@
+
+/** @taskunit command log */
+
+// in general:
+//  - base case (this is the only one nested versioning supported):
+//    - linear undo/redo for a given proot:branch
+//       = oblivious to branch switches - acts as if you were always working
+//         on the subject branch even if you switched to other branches and worked on them
+//  - proot case:
+//    - linear undo over an entire proot:
+//       = includes all changes made on all branches.
+//       = includes creating and deleting branches
+//       = includes branch switches
+//       = includes editing metadata (name etc)
+//       = oblivious to other proots - acts as if you were always working
+//         on the subject proot even if you switched to other proots and worked on them
+//  - global case:
+//       = includes all changes made in a store
+//
+
+// think about selective undo UI
+
+/*
+ 
+ example of how undo redo work:
+ 
+ supose the subset we are interested in is document
+ 
+ - commit on document.master
+ - commit on document.master
+ - commit on document.master
+ - branch document.master to document.experimental1
+ - switch document to document to document.experimental1
+ - commit on document.experimental1
+ - commit on document.experimental1
+ - commit on document.experimental1
+ - copy document.experimental1 to document2
+ - delete document3
+ - commit on document.experimental1 big idea
+ - undo commit on document.experimental1 big idea
+ - type a by accident
+ 
+ */
+
+// NOTE: this should elegantly solve the "quark undo problem"
+// where you have a project editor containing documents,
+// and undo/redo on the project editor is expected 
+ 
+
+/**
+ 
+ random stuff to think about:
+ 
+  - deep copy mergability:
+     - record what a proot was copied from
+  - "snapshot" feature that tags state of a proot and all embedded proots?
+  -
+ 
+ */
+
+/**
+ * Relationship cacheing:
+ * rationale: we only store (and version) one side of a relationship:
+ * e.g., in a Boss we store a list of the Employees. (one-many relation)
+ * in a Book we store a list of Tags. (many-many relation)
+ *
+ * why? because one side is calculated from the other. if we stored both sides
+ * it would be easy for one to get out of sync with the other.
+ *
+ * to get the boss of an employee, or to get all the books that have a given tag,
+ * we would have to do a linear scan. to avoid that, we maintain this cache.
+ * 
+ * note that it is just a discardable/regeneratable cache; not part of the actual
+ * store data.
+ */
+
+
+
 /**
  * Linear-time version of:
  *

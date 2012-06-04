@@ -3,97 +3,70 @@
 
 @implementation COPath
 
-- (COPath *) initWithElements: (NSArray *)anArray
-		 leadingPathsToParent: (NSInteger) parents
+- (COPath *) initWithPersistentRoot: (COUUID *)aRoot
+							 branch: (COUUID*)aBranch
+					embdeddedObject: (COUUID *)anObject
 {	
 	SUPERINIT;
-	ASSIGN(elements, anArray);
-	leadingPathsToParent = parents;
+	NILARG_EXCEPTION_TEST(aRoot);
+	ASSIGN(persistentRoot, aRoot);
+	ASSIGN(branch, aBranch);
+	ASSIGN(embeddedObject, anObject);
 	return self;
 }
 
 - (void)dealloc
 {
-	[elements release];
+	[persistentRoot release];
+	[branch release];
+	[embeddedObject release];
 	[super dealloc];
 }
 
-+ (COPath *) path
++ (COPath *) pathWithPersistentRoot: (COUUID *)aRoot
 {
-	static COPath *root;
-	if (nil == root)
-	{
-		root = [[COPath alloc] initWithElements: [NSArray array]
-						   leadingPathsToParent: 0];
-	}
-	return root;
+	return [self pathWithPersistentRoot:aRoot branch: nil];
+}
+
++ (COPath *) pathWithPersistentRoot: (COUUID *)aRoot
+							 branch: (COUUID*)aBranch
+{
+	return [self pathWithPersistentRoot:aRoot branch:aBranch embdeddedObject:nil];
+}
+
++ (COPath *) pathWithPersistentRoot: (COUUID *)aRoot
+							 branch: (COUUID*)aBranch
+					embdeddedObject: (COUUID *)anObject
+{
+	return [[[self alloc] initWithPersistentRoot: aRoot branch: aBranch embdeddedObject: anObject] autorelease];
 }
 
 + (COPath *) pathWithString: (NSString*) pathString
 {
 	NILARG_EXCEPTION_TEST(pathString);
 	
-	COPath *result = [COPath path];
+	COUUID *embeddedObject = nil;
+	COUUID *branch = nil;
+	COUUID *persistentRoot = nil;
 	
 	if ([pathString length] > 0)
 	{
-		NSArray *components = [pathString componentsSeparatedByString: @"/"];
-		for (NSString *component in components)
+		NSArray *components = [pathString componentsSeparatedByCharactersInSet:
+							   [NSCharacterSet characterSetWithCharactersInString: @":."]];
+		switch ([components count])
 		{
-			if ([component isEqualToString: @".."])
-			{
-				result = [result pathByAppendingPathToParent];
-			}
-			else
-			{
-				COUUID *uuid = [COUUID UUIDWithString: component];
-				result = [result pathByAppendingPathComponent: uuid];
-			}
+			case 3:
+				embeddedObject = [COUUID UUIDWithString: [components objectAtIndex: 2]];
+			case 2:
+				branch = [COUUID UUIDWithString: [components objectAtIndex: 1]];
+			case 1:
+				persistentRoot = [COUUID UUIDWithString: [components objectAtIndex: 0]];
+				break;
+			default:
+				[NSException raise: NSInvalidArgumentException format: @"unsupported COPath string '%@'", pathString];
 		}
 	}
-	return result;
-}
-
-+ (COPath *) pathWithPathComponent: (COUUID*) aUUID
-{
-	return [[COPath path] pathByAppendingPathComponent: aUUID];
-}
-
-+ (COPath *) pathToParent
-{
-	return [[COPath path] pathByAppendingPathToParent];
-}
-
-- (COPath *) pathByAppendingPathToParent
-{
-	return [[[COPath alloc] initWithElements: elements
-						leadingPathsToParent: leadingPathsToParent + 1] autorelease];
-}
-
-- (COPath *) pathByAppendingPath: (COPath *)aPath
-{
-	NILARG_EXCEPTION_TEST(aPath);
-	
-	if (aPath->leadingPathsToParent >= [elements count])
-	{
-		return [[[COPath alloc] initWithElements: aPath->elements
-							leadingPathsToParent: leadingPathsToParent + aPath->leadingPathsToParent - [elements count]] autorelease];
-	}
-	else
-	{
-		NSArray *newElems = [[elements subarrayWithRange: NSMakeRange(0, [elements count] - aPath->leadingPathsToParent)] 
-							 arrayByAddingObjectsFromArray: aPath->elements];
-		return [[[COPath alloc] initWithElements: newElems												
-							leadingPathsToParent: leadingPathsToParent] autorelease];
-	}
-}
-
-- (COPath *) pathByAppendingPathComponent: (COUUID *)aUUID
-{
-	NILARG_EXCEPTION_TEST(aUUID);
-	
-	return [[[COPath alloc] initWithElements: [elements arrayByAddingObject: aUUID]
-						leadingPathsToParent: leadingPathsToParent] autorelease];
+	return [COPath pathWithPersistentRoot: persistentRoot branch: branch embdeddedObject: embeddedObject];
 }
 
 - (id) copyWithZone: (NSZone *)zone
@@ -103,22 +76,17 @@
 
 - (NSString *) stringValue
 {
-	NSMutableString *value = [NSMutableString string];
+	NSMutableString *value = [NSMutableString stringWithString: [persistentRoot stringValue]];
 	
-	for (NSUInteger i=0; i<leadingPathsToParent; i++)
+	if (branch != nil)
 	{
-		[value appendFormat: @"../"];
+		[value appendFormat: @":%@", branch];
+	}
+	if (embeddedObject != nil)
+	{
+		[value appendFormat: @".%@", embeddedObject];
 	}
 	
-	for (NSUInteger i=0; i<[elements count]; i++)
-	{
-		[value appendFormat: @"%@", [[elements objectAtIndex: i] stringValue]];
-		if ((i + 1) < [elements count])
-		{
-			[value appendFormat: @"/"];
-		}
-	}
-
 	return [NSString stringWithString: value];
 }
 
@@ -133,57 +101,9 @@
 	[[self stringValue] isEqualToString: [anObject stringValue]];
 }
 
-- (BOOL) isEmpty
-{
-	return ![self hasLeadingPathsToParent]
-		&& ![self hasComponents];
-}
-
-- (BOOL) hasLeadingPathsToParent
-{
-	return leadingPathsToParent != 0;
-}
-
-- (BOOL) hasComponents
-{
-	return [elements count] != 0;
-}
-
-- (COUUID *) lastPathComponent
-{
-	return [elements lastObject];
-}
-- (COPath *) pathByDeletingLastPathComponent
-{
-	if ([elements count] == 0)
-	{
-		[NSException raise: NSGenericException
-					format: @"pathByDeletingLastPathComponent called on path with no components"];
-	}
-	return [[[COPath alloc] initWithElements: [elements subarrayWithRange: NSMakeRange(0, [elements count] - 1)]
-						leadingPathsToParent: leadingPathsToParent] autorelease];
-}
-
 - (NSString*) description
 {
 	return [self stringValue];
-}
-
-- (COPath *) pathByRenamingComponents: (NSDictionary *)aMapping
-{
-	NSMutableArray *newElements = [NSMutableArray array];
-	for (COUUID *element in elements)
-	{
-		COUUID *newElement = element;
-		if ([aMapping objectForKey: element] != nil)
-		{
-			newElement = [aMapping objectForKey: element];
-		}
-		[newElements addObject: newElement];
-	}
-	
-	return [[[COPath alloc] initWithElements: newElements
-						leadingPathsToParent: leadingPathsToParent] autorelease];
 }
 
 @end

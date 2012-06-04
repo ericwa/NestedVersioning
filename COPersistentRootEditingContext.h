@@ -7,26 +7,15 @@
 @class COStore;
 
 /**
- * COPersistentRootEditingContext is the heart of NestedVersioning; it supports
- * creating a tree of COSubtree objects representing the contents of a commit on disk,
- * and allows the user to edit that tree, and commit the edited version to disk.
+ * one editing context lets you edit the contents of a persistent root
+ * and manages making the atomic store update to the mutable store state when you commit.
  *
- * It also implements the support for nested persistent roots. The "path" ivar
- * is what allows that.
+ * we must allow multiple persistent roots to contain the same embedded object UUID,
+ * because branching a persistent root and copying it are ~= (almost the same).
  *
- * For example, if an editing context was created for 
- * the path "<photo library uuid>/<photo 1>", the path is used both
- * when creating the context, to look up the current version of the
- * photo library, and then look up the current version of "photo 1"
- * inside the current photo library.
+ * therefore, multiple contexts can contain embedded objects with the same uuid.
  *
- * each UUID the path is the UUID of an item which should have
- * "type" = "persistentRoot" or "type" = "branch". the first UUID 
- * must be an item in the store's root tree, the second one is in the item tree
- * inside the commit which the first persistent root refers to, etc.
- * 
- * the path is also used when making a commit because each persistent
- * root in the path needs to be updated.
+ *
  */
 @interface COPersistentRootEditingContext : NSObject <NSCopying>
 {
