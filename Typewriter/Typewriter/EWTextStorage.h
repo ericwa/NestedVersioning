@@ -1,16 +1,15 @@
 #import <Cocoa/Cocoa.h>
+#import "COUUID.h"
 
 @interface EWTextStorage : NSTextStorage
 {
     NSMutableAttributedString *backing_;
-    NSMutableIndexSet *paragraphStartIndices_;
-    NSMutableArray *paragraphUUIDs_;
 }
 
 - (NSArray *) paragraphUUIDs;
 
-- (NSRange) rangeForParagraphWithUUID: (id)aUUID;
+- (NSRange) rangeForParagraphWithUUID: (COUUID *)aUUID;
 
-- (NSAttributedString *) attributedStringForParagraphWithUUID: (id)aUUID;
+- (NSAttributedString *) attributedStringForParagraphWithUUID: (COUUID *)aUUID;
 
 @end

@@ -7,16 +7,12 @@
     self = [super init];
     
     backing_ = [[NSMutableAttributedString alloc] init];
-    paragraphStartIndices_ = [[NSMutableIndexSet alloc] init];
-    paragraphUUIDs_ = [[NSMutableArray alloc] init];
         
     return self;
 }
 
 - (void) dealloc
 {
-    [paragraphStartIndices_ release];
-    [paragraphUUIDs_ release];
     [backing_ release];
     [super dealloc];
 }
@@ -25,24 +21,60 @@
 
 - (NSArray *) paragraphUUIDs
 {
-    return [NSArray arrayWithArray: paragraphUUIDs_];
+    return [self paragraphUUIDSOverlappingRange: NSMakeRange(0, [backing_ length])];
 }
 
 - (NSRange) rangeForParagraphWithUUID: (id)aUUID
 {
-    // FIXME: use paragraphStartIndices_ to get the range
+    NSRange limitRange = NSMakeRange(0, [backing_ length]);
     
-//    for (id uuid in paragraphUUIDs_) {
-//        if ([uuid isEqual: aUUID]) {
-//            return 
-//        }
-//    }
+    while (limitRange.length > 0)
+    {
+        NSRange effectiveRange;
+        id attributeValue = [backing_ attribute: kCOParagraphUUIDAttribute
+                                        atIndex: limitRange.location
+                          longestEffectiveRange: &effectiveRange
+                                        inRange: limitRange];
+        
+        if ([attributeValue isEqual: aUUID])
+        {
+            return effectiveRange;
+        }
+        
+        limitRange = NSMakeRange(NSMaxRange(effectiveRange),
+                                 NSMaxRange(limitRange) - NSMaxRange(effectiveRange));
+    }
     return NSMakeRange(NSNotFound, 0);
 }
 
 - (NSAttributedString *) attributedStringForParagraphWithUUID: (id)aUUID
 {
     return [self attributedSubstringFromRange: [self rangeForParagraphWithUUID: aUUID]];
+}
+
+- (NSArray *) paragraphUUIDSOverlappingRange: (NSRange)aRange
+{
+    NSRange effectiveRange = NSMakeRange(aRange.location, 0);
+    NSUInteger length = [backing_ length];
+    
+    NSMutableSet *set = [NSMutableSet set];
+    
+    while (NSMaxRange(effectiveRange) < NSMaxRange(aRange))
+    {
+        id attributeValue = [backing_ attribute:kCOParagraphUUIDAttribute
+                                        atIndex:NSMaxRange(effectiveRange)
+                                 effectiveRange:&effectiveRange];
+        [set addObject: attributeValue];
+    }
+    
+    return [set allObjects];
+}
+
+- (COUUID *) paragraphUUIDAtIndex: (NSUInteger)index
+{
+    return [backing_ attribute: kCOParagraphUUIDAttribute
+                       atIndex: index
+                effectiveRange: NULL];
 }
 
 // Overrides for primitive methods
@@ -59,47 +91,155 @@
 - (NSDictionary *)attributesAtIndex:(NSUInteger)index effectiveRange:(NSRangePointer)aRange
 {
     //NSLog(@"EWTextStorage -attributesAtIndex:effectiveRange:");
-    return [backing_ attributesAtIndex: index effectiveRange: aRange];
+    
+    NSMutableDictionary *result = [NSMutableDictionary dictionaryWithDictionary:
+                                    [backing_ attributesAtIndex: index effectiveRange: aRange]];
+    
+    [result removeObjectForKey: kCOParagraphUUIDAttribute];
+    
+    return result;
 }
 
-- (void)replaceCharactersInRange:(NSRange)aRange withString:(NSString *)aString
+static NSString *kCOParagraphUUIDAttribute = @"COParagraphUUIDAttribute";
+
+static NSRange paragraphRangeForLocationInString(NSString *aString, NSUInteger aLocation)
+{
+    NSUInteger paraStart = 0, paraEnd = 0;
+    [aString getParagraphStart: &paraStart
+                           end: &paraEnd
+                   contentsEnd: NULL
+                      forRange: NSMakeRange(aLocation, 0)];
+    
+    return NSMakeRange(paraStart, paraEnd - paraStart);
+}
+
+- (void) debug
+{
+    NSRange limitRange;
+    NSRange effectiveRange;
+    id attributeValue;
+    
+    limitRange = NSMakeRange(0, [backing_ length]);
+    
+    NSLog(@"DEBUG LOG");
+    while (limitRange.length > 0) {
+        attributeValue = [backing_ attribute:kCOParagraphUUIDAttribute
+                                    atIndex:limitRange.location longestEffectiveRange:&effectiveRange
+                                    inRange:limitRange];
+
+        NSLog(@"    paragraph %@: '%@'", attributeValue, [[backing_ string] substringWithRange: effectiveRange]);
+        
+        limitRange = NSMakeRange(NSMaxRange(effectiveRange),
+                                 NSMaxRange(limitRange) - NSMaxRange(effectiveRange));
+    }
+}
+
+- (void)replaceCharactersInRange:(NSRange)replacementRange
+                      withString:(NSString *)replacementString
 {
     //NSLog(@"EWTextStorage -replaceCharactersInRange:withString:");
     
-    [backing_ replaceCharactersInRange: aRange withString: aString];
+    // Count up modified paragraphs
+    
+    NSMutableSet *modifiedParagraphs = [NSMutableSet set];
+    [modifiedParagraphs addObjectsFromArray: [self paragraphUUIDSOverlappingRange: replacementRange]];    
+    
+    
+    // Perform the change
+    
+    [backing_ replaceCharactersInRange: replacementRange withString: replacementString];
+    
+    const NSRange rangeAfterEdit = NSMakeRange(replacementRange.location,
+                                               [replacementString length]);
     
     // Update paragraph metadata
     
-    /*
-     
-     cases:
-       [0..n] paragraph deletions
-     U [0..n] paragraph additions
-     U [0,1,2] paragraph modifications     
-     
-     */
-    
-    
     NSString *string = [self string];
-    NSUInteger length = [string length];
-    NSUInteger paraStart = 0, paraEnd = 0, contentsEnd = 0;
-    NSRange currentRange;
-    while (paraEnd < length) {
-        [string getParagraphStart:&paraStart end:&paraEnd
-                       contentsEnd:&contentsEnd forRange:NSMakeRange(paraEnd, 0)];
-        currentRange = NSMakeRange(paraStart, contentsEnd - paraStart);
-        NSLog(@"paragraph: %@", [string substringWithRange: currentRange]);
+    
+    NSUInteger i = rangeAfterEdit.location;
+    
+    // 1. if i is currently in the middle of a paragraph,
+    // extend that paragraph's UUID up to the end of the paragraph.
+    
+    COUUID *firstAssignedUUID = nil;
+    
+    NSRange firstPara = paragraphRangeForLocationInString(string, rangeAfterEdit.location);
+    if (firstPara.location != i)
+    {
+        COUUID *firstParaUUID = [self paragraphUUIDAtIndex: firstPara.location];
+        firstAssignedUUID = firstParaUUID;
+        
+        [modifiedParagraphs addObject: firstParaUUID];
+        
+//        if (firstParaUUID == nil)
+//        {
+//            // Should only happen on first insertion into an empty text storage
+//            firstParaUUID = [COUUID UUID];
+//            NSLog(@"assigned new UUID %@ to start of edit", firstParaUUID);
+//        }
+        
+        [backing_ addAttribute: kCOParagraphUUIDAttribute value: firstParaUUID range: firstPara];
+                
+        NSLog(@"first paragraph edited (%@) was '%@'", firstParaUUID, [string substringWithRange: firstPara]);
+        
+        i = NSMaxRange(firstPara);
     }
     
+    // 2. Now, (and the loop invariant):
+    // either i is at the start of a paragraph to process, or it is at the
+    // start of an existing paragraph, in which case we are done.
+    
+    while (i < [backing_ length])
+    {
+        COUUID *paraUUID = [self paragraphUUIDAtIndex: i];
+        
+        if (firstAssignedUUID == nil)
+        {
+            firstAssignedUUID = paraUUID;
+        }
+        
+        if (paraUUID != nil && ![paraUUID isEqual: firstAssignedUUID])
+        {
+            break;
+        }
+        
+        NSRange para = paragraphRangeForLocationInString(string, i);  
+        COUUID *newUUID = [COUUID UUID];
+        
+        [modifiedParagraphs addObject: newUUID];
+        
+        [backing_ addAttribute: kCOParagraphUUIDAttribute value: newUUID range: para];
+        
+        NSLog(@"subsequent paragraph edited assigned new uuid (%@) was '%@'", newUUID, [string substringWithRange: para]);
+        
+        i = NSMaxRange(para);
+    }
+    
+    [self debug];
+    
+    NSLog(@"---modified paragraphs: %@", modifiedParagraphs);
+    
     [self edited: NSTextStorageEditedCharacters
-           range: aRange
-  changeInLength: [aString length] - aRange.length];
+           range: replacementRange
+  changeInLength: rangeAfterEdit.length - replacementRange.length];
 }
 
 - (void)setAttributes:(NSDictionary *)attributes range:(NSRange)aRange
 {
     //NSLog(@"EWTextStorage -setAttributes:range:");
-    [backing_ setAttributes: attributes range: aRange];
+    
+    // We don't call setAttributes:range: so as not to disturb the kCOParagraphUUIDAttribute
+    
+    for (NSString *attr in attributes)
+    {
+        [backing_ removeAttribute: attr range: aRange];
+    }
+    
+    [backing_ addAttributes: attributes range: aRange];
+    
+    NSArray *modifiedParagraphs = [self paragraphUUIDSOverlappingRange: aRange];
+    NSLog(@"---modified (attrs) paragraphs: %@", modifiedParagraphs);
+          
     [self edited: NSTextStorageEditedAttributes
            range: aRange
   changeInLength: 0];

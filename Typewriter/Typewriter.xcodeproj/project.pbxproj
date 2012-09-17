@@ -15,6 +15,8 @@
 		668FA60D15FEF3C300D63B7F /* EWDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 668FA60C15FEF3C300D63B7F /* EWDocument.m */; };
 		668FA61015FEF3C300D63B7F /* EWDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 668FA60E15FEF3C300D63B7F /* EWDocument.xib */; };
 		668FA61315FEF3C400D63B7F /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 668FA61115FEF3C400D63B7F /* MainMenu.xib */; };
+		669076411606CDC40057C120 /* COUUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 669076401606CDC40057C120 /* COUUID.m */; };
+		669076561606CF210057C120 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 669076551606CF210057C120 /* libcrypto.dylib */; };
 		66A121521600477900A67EE3 /* EWUndoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 66A121511600477900A67EE3 /* EWUndoManager.m */; };
 		66BBE938160548010050C289 /* EWTextStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 66BBE937160548010050C289 /* EWTextStorage.m */; };
 		66BBE93B16059E470050C289 /* EWTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 66BBE93A16059E470050C289 /* EWTextView.m */; };
@@ -44,6 +46,10 @@
 		668FA60C15FEF3C300D63B7F /* EWDocument.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EWDocument.m; sourceTree = "<group>"; };
 		668FA60F15FEF3C300D63B7F /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/EWDocument.xib; sourceTree = "<group>"; };
 		668FA61215FEF3C400D63B7F /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		6690763F1606CDC40057C120 /* COUUID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COUUID.h; sourceTree = "<group>"; };
+		669076401606CDC40057C120 /* COUUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COUUID.m; sourceTree = "<group>"; };
+		669076531606CF080057C120 /* COMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = COMacros.h; sourceTree = "<group>"; };
+		669076551606CF210057C120 /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = usr/lib/libcrypto.dylib; sourceTree = SDKROOT; };
 		66A121501600477900A67EE3 /* EWUndoManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWUndoManager.h; sourceTree = "<group>"; };
 		66A121511600477900A67EE3 /* EWUndoManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWUndoManager.m; sourceTree = "<group>"; };
 		66BBE936160548010050C289 /* EWTextStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWTextStorage.h; sourceTree = "<group>"; };
@@ -68,6 +74,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				669076561606CF210057C120 /* libcrypto.dylib in Frameworks */,
 				668FA5FA15FEF3C300D63B7F /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -78,6 +85,7 @@
 		668FA5EA15FEF3C300D63B7F = {
 			isa = PBXGroup;
 			children = (
+				669076551606CF210057C120 /* libcrypto.dylib */,
 				668FA5FF15FEF3C300D63B7F /* Typewriter */,
 				668FA5F815FEF3C300D63B7F /* Frameworks */,
 				668FA5F615FEF3C300D63B7F /* Products */,
@@ -114,6 +122,9 @@
 		668FA5FF15FEF3C300D63B7F /* Typewriter */ = {
 			isa = PBXGroup;
 			children = (
+				669076531606CF080057C120 /* COMacros.h */,
+				6690763F1606CDC40057C120 /* COUUID.h */,
+				669076401606CDC40057C120 /* COUUID.m */,
 				66BBE93C1605A3DB0050C289 /* Panels */,
 				66A121501600477900A67EE3 /* EWUndoManager.h */,
 				66A121511600477900A67EE3 /* EWUndoManager.m */,
@@ -265,6 +276,7 @@
 				66BBE9571605AB140050C289 /* EWAppDelegate.m in Sources */,
 				66BBE95A1605AD310050C289 /* EWHistoryWindowController.m in Sources */,
 				66BBE95D1605AD750050C289 /* EWPickboardWindowController.m in Sources */,
+				669076411606CDC40057C120 /* COUUID.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
