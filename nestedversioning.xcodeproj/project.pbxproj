@@ -20,7 +20,26 @@
 		66243A6D15EDFB8B00D00813 /* TestStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 6628FBA6142FA7840072767A /* TestStore.m */; };
 		66243A6E15EE00D100D00813 /* COBranch.m in Sources */ = {isa = PBXBuildFile; fileRef = 665BD3C115D75B9C00428355 /* COBranch.m */; };
 		663187F915BFCA8E00E617EA /* TestCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CB302914C63E1C00ADAB77 /* TestCommon.m */; };
+		666026A116082DFE00D84368 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66EB756B148CA9D300C2114B /* Cocoa.framework */; };
+		666026DF16082E5600D84368 /* Branches.xib in Resources */ = {isa = PBXBuildFile; fileRef = 666026BA16082E5600D84368 /* Branches.xib */; };
+		666026E116082E5600D84368 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 666026BF16082E5600D84368 /* Credits.rtf */; };
+		666026E216082E5600D84368 /* EWDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 666026C116082E5600D84368 /* EWDocument.xib */; };
+		666026E316082E5600D84368 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 666026C316082E5600D84368 /* InfoPlist.strings */; };
+		666026E416082E5600D84368 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 666026C516082E5600D84368 /* MainMenu.xib */; };
+		666026E516082E5600D84368 /* EWAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 666026C816082E5600D84368 /* EWAppDelegate.m */; };
+		666026E616082E5600D84368 /* EWBranchesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 666026CA16082E5600D84368 /* EWBranchesWindowController.m */; };
+		666026E716082E5600D84368 /* EWDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 666026CC16082E5600D84368 /* EWDocument.m */; };
+		666026E816082E5600D84368 /* EWHistoryWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 666026CE16082E5600D84368 /* EWHistoryWindowController.m */; };
+		666026E916082E5600D84368 /* EWPickboardWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 666026D016082E5600D84368 /* EWPickboardWindowController.m */; };
+		666026EA16082E5600D84368 /* EWTextStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 666026D216082E5600D84368 /* EWTextStorage.m */; };
+		666026EB16082E5600D84368 /* EWTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 666026D416082E5600D84368 /* EWTextView.m */; };
+		666026EC16082E5600D84368 /* EWTypewriterWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 666026D616082E5600D84368 /* EWTypewriterWindowController.m */; };
+		666026ED16082E5600D84368 /* EWUndoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 666026D816082E5600D84368 /* EWUndoManager.m */; };
+		666026EE16082E5600D84368 /* History.xib in Resources */ = {isa = PBXBuildFile; fileRef = 666026D916082E5600D84368 /* History.xib */; };
+		666026F016082E5600D84368 /* Pickboard.xib in Resources */ = {isa = PBXBuildFile; fileRef = 666026DB16082E5600D84368 /* Pickboard.xib */; };
+		666026F316082F1E00D84368 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 666026F216082F1E00D84368 /* main.m */; };
 		66A79A0F15CA8E5B00AAF674 /* COStoreLog.h in Headers */ = {isa = PBXBuildFile; fileRef = 66A79A0D15CA8E5B00AAF674 /* COStoreLog.h */; };
+		66AC6218160830CB00E483D3 /* NestedVersioning.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E7785114E6062100D5DFFF /* NestedVersioning.framework */; };
 		66BE0DA115C798E200B38391 /* COEditingContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 66BE0D9D15C798E200B38391 /* COEditingContext.h */; };
 		66BE0DA315C798E200B38391 /* COObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 66BE0D9F15C798E200B38391 /* COObject.h */; };
 		66C6F62515E763470079B7FB /* COPersistentRootState.h in Headers */ = {isa = PBXBuildFile; fileRef = 66C6F62315E763470079B7FB /* COPersistentRootState.h */; };
@@ -197,6 +216,36 @@
 		665BD3C115D75B9C00428355 /* COBranch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COBranch.m; sourceTree = "<group>"; };
 		665BD3C815D78BE600428355 /* COPersistentRoot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPersistentRoot.h; sourceTree = "<group>"; };
 		665BD3C915D78BE600428355 /* COPersistentRoot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COPersistentRoot.m; sourceTree = "<group>"; };
+		6660269F16082DFE00D84368 /* Typewriter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Typewriter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		666026BA16082E5600D84368 /* Branches.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Branches.xib; sourceTree = "<group>"; };
+		666026BB16082E5600D84368 /* COMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COMacros.h; sourceTree = "<group>"; };
+		666026C016082E5600D84368 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = Credits.rtf; sourceTree = "<group>"; };
+		666026C216082E5600D84368 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = EWDocument.xib; sourceTree = "<group>"; };
+		666026C416082E5600D84368 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = InfoPlist.strings; sourceTree = "<group>"; };
+		666026C616082E5600D84368 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = MainMenu.xib; sourceTree = "<group>"; };
+		666026C716082E5600D84368 /* EWAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWAppDelegate.h; sourceTree = "<group>"; };
+		666026C816082E5600D84368 /* EWAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWAppDelegate.m; sourceTree = "<group>"; };
+		666026C916082E5600D84368 /* EWBranchesWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWBranchesWindowController.h; sourceTree = "<group>"; };
+		666026CA16082E5600D84368 /* EWBranchesWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWBranchesWindowController.m; sourceTree = "<group>"; };
+		666026CB16082E5600D84368 /* EWDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWDocument.h; sourceTree = "<group>"; };
+		666026CC16082E5600D84368 /* EWDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWDocument.m; sourceTree = "<group>"; };
+		666026CD16082E5600D84368 /* EWHistoryWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWHistoryWindowController.h; sourceTree = "<group>"; };
+		666026CE16082E5600D84368 /* EWHistoryWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWHistoryWindowController.m; sourceTree = "<group>"; };
+		666026CF16082E5600D84368 /* EWPickboardWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWPickboardWindowController.h; sourceTree = "<group>"; };
+		666026D016082E5600D84368 /* EWPickboardWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWPickboardWindowController.m; sourceTree = "<group>"; };
+		666026D116082E5600D84368 /* EWTextStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWTextStorage.h; sourceTree = "<group>"; };
+		666026D216082E5600D84368 /* EWTextStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWTextStorage.m; sourceTree = "<group>"; };
+		666026D316082E5600D84368 /* EWTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWTextView.h; sourceTree = "<group>"; };
+		666026D416082E5600D84368 /* EWTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWTextView.m; sourceTree = "<group>"; };
+		666026D516082E5600D84368 /* EWTypewriterWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWTypewriterWindowController.h; sourceTree = "<group>"; };
+		666026D616082E5600D84368 /* EWTypewriterWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWTypewriterWindowController.m; sourceTree = "<group>"; };
+		666026D716082E5600D84368 /* EWUndoManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWUndoManager.h; sourceTree = "<group>"; };
+		666026D816082E5600D84368 /* EWUndoManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWUndoManager.m; sourceTree = "<group>"; };
+		666026D916082E5600D84368 /* History.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = History.xib; sourceTree = "<group>"; };
+		666026DB16082E5600D84368 /* Pickboard.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Pickboard.xib; sourceTree = "<group>"; };
+		666026DC16082E5600D84368 /* Typewriter-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Typewriter-Info.plist"; sourceTree = "<group>"; };
+		666026DD16082E5600D84368 /* Typewriter-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Typewriter-Prefix.pch"; sourceTree = "<group>"; };
+		666026F216082F1E00D84368 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		6660E23914F84B3000D2F319 /* TestItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestItem.m; sourceTree = "<group>"; };
 		668DA35E14E0E41A0062E6C2 /* COItemPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COItemPath.m; sourceTree = "<group>"; };
 		668DA36114E0E4210062E6C2 /* COItemPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COItemPath.h; sourceTree = "<group>"; };
@@ -336,6 +385,15 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		6660269C16082DFE00D84368 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				66AC6218160830CB00E483D3 /* NestedVersioning.framework in Frameworks */,
+				666026A116082DFE00D84368 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		66E22EC31421D47100C00A98 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -410,6 +468,7 @@
 				79052B6B1520F9EE00B481C1 /* Sketch */,
 				66DFAECA142A726100623060 /* test-Prefix.pch */,
 				66EB7571148CA9D300C2114B /* StoreBrowser */,
+				666026A216082DFE00D84368 /* Typewriter */,
 				662811F913F8B5010075BBC2 /* Frameworks */,
 				662811F713F8B5010075BBC2 /* Products */,
 				66E7781214E6035F00D5DFFF /* UnitKit */,
@@ -424,6 +483,7 @@
 				66E7783514E6049E00D5DFFF /* UnitKit.framework */,
 				66E7785114E6062100D5DFFF /* NestedVersioning.framework */,
 				79052B111520F8F300B481C1 /* Sketch.app */,
+				6660269F16082DFE00D84368 /* Typewriter.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -560,6 +620,50 @@
 				79F5947B15119C7D007C517E /* COSubtreeEdits.m */,
 			);
 			name = Diff;
+			sourceTree = "<group>";
+		};
+		666026A216082DFE00D84368 /* Typewriter */ = {
+			isa = PBXGroup;
+			children = (
+				666026F216082F1E00D84368 /* main.m */,
+				666026BA16082E5600D84368 /* Branches.xib */,
+				666026BB16082E5600D84368 /* COMacros.h */,
+				666026BE16082E5600D84368 /* en.lproj */,
+				666026C716082E5600D84368 /* EWAppDelegate.h */,
+				666026C816082E5600D84368 /* EWAppDelegate.m */,
+				666026C916082E5600D84368 /* EWBranchesWindowController.h */,
+				666026CA16082E5600D84368 /* EWBranchesWindowController.m */,
+				666026CB16082E5600D84368 /* EWDocument.h */,
+				666026CC16082E5600D84368 /* EWDocument.m */,
+				666026CD16082E5600D84368 /* EWHistoryWindowController.h */,
+				666026CE16082E5600D84368 /* EWHistoryWindowController.m */,
+				666026CF16082E5600D84368 /* EWPickboardWindowController.h */,
+				666026D016082E5600D84368 /* EWPickboardWindowController.m */,
+				666026D116082E5600D84368 /* EWTextStorage.h */,
+				666026D216082E5600D84368 /* EWTextStorage.m */,
+				666026D316082E5600D84368 /* EWTextView.h */,
+				666026D416082E5600D84368 /* EWTextView.m */,
+				666026D516082E5600D84368 /* EWTypewriterWindowController.h */,
+				666026D616082E5600D84368 /* EWTypewriterWindowController.m */,
+				666026D716082E5600D84368 /* EWUndoManager.h */,
+				666026D816082E5600D84368 /* EWUndoManager.m */,
+				666026D916082E5600D84368 /* History.xib */,
+				666026DB16082E5600D84368 /* Pickboard.xib */,
+				666026DC16082E5600D84368 /* Typewriter-Info.plist */,
+				666026DD16082E5600D84368 /* Typewriter-Prefix.pch */,
+			);
+			path = Typewriter;
+			sourceTree = "<group>";
+		};
+		666026BE16082E5600D84368 /* en.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				666026BF16082E5600D84368 /* Credits.rtf */,
+				666026C116082E5600D84368 /* EWDocument.xib */,
+				666026C316082E5600D84368 /* InfoPlist.strings */,
+				666026C516082E5600D84368 /* MainMenu.xib */,
+			);
+			path = en.lproj;
 			sourceTree = "<group>";
 		};
 		669CADED1491C14300D0CF5F /* UUID & Path */ = {
@@ -886,6 +990,23 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		6660269E16082DFE00D84368 /* Typewriter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 666026B616082DFF00D84368 /* Build configuration list for PBXNativeTarget "Typewriter" */;
+			buildPhases = (
+				6660269B16082DFE00D84368 /* Sources */,
+				6660269C16082DFE00D84368 /* Frameworks */,
+				6660269D16082DFE00D84368 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Typewriter;
+			productName = Typewriter;
+			productReference = 6660269F16082DFE00D84368 /* Typewriter.app */;
+			productType = "com.apple.product-type.application";
+		};
 		66E22EC51421D47100C00A98 /* test */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 66E22ED11421D47100C00A98 /* Build configuration list for PBXNativeTarget "test" */;
@@ -1004,11 +1125,26 @@
 				66E7783414E6049E00D5DFFF /* UnitKit */,
 				66E7785014E6062100D5DFFF /* NestedVersioning */,
 				79052AEC1520F8F300B481C1 /* Sketch */,
+				6660269E16082DFE00D84368 /* Typewriter */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		6660269D16082DFE00D84368 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				666026DF16082E5600D84368 /* Branches.xib in Resources */,
+				666026E116082E5600D84368 /* Credits.rtf in Resources */,
+				666026E216082E5600D84368 /* EWDocument.xib in Resources */,
+				666026E316082E5600D84368 /* InfoPlist.strings in Resources */,
+				666026E416082E5600D84368 /* MainMenu.xib in Resources */,
+				666026EE16082E5600D84368 /* History.xib in Resources */,
+				666026F016082E5600D84368 /* Pickboard.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		66E7783314E6049E00D5DFFF /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1058,6 +1194,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		6660269B16082DFE00D84368 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				666026E516082E5600D84368 /* EWAppDelegate.m in Sources */,
+				666026E616082E5600D84368 /* EWBranchesWindowController.m in Sources */,
+				666026E716082E5600D84368 /* EWDocument.m in Sources */,
+				666026E816082E5600D84368 /* EWHistoryWindowController.m in Sources */,
+				666026E916082E5600D84368 /* EWPickboardWindowController.m in Sources */,
+				666026EA16082E5600D84368 /* EWTextStorage.m in Sources */,
+				666026EB16082E5600D84368 /* EWTextView.m in Sources */,
+				666026EC16082E5600D84368 /* EWTypewriterWindowController.m in Sources */,
+				666026ED16082E5600D84368 /* EWUndoManager.m in Sources */,
+				666026F316082F1E00D84368 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		66E22EC21421D47100C00A98 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1166,6 +1319,38 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		666026BF16082E5600D84368 /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				666026C016082E5600D84368 /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		666026C116082E5600D84368 /* EWDocument.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				666026C216082E5600D84368 /* en */,
+			);
+			name = EWDocument.xib;
+			sourceTree = "<group>";
+		};
+		666026C316082E5600D84368 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				666026C416082E5600D84368 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		666026C516082E5600D84368 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				666026C616082E5600D84368 /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
 		66E778BA14E60ED900D5DFFF /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -1229,6 +1414,38 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_CFLAGS = "-DHAVE_ARC4RANDOM";
 				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		666026B416082DFF00D84368 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Typewriter/Typewriter-Prefix.pch";
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				INFOPLIST_FILE = "Typewriter/Typewriter-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		666026B516082DFF00D84368 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Typewriter/Typewriter-Prefix.pch";
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				INFOPLIST_FILE = "Typewriter/Typewriter-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
 		};
@@ -1352,6 +1569,15 @@
 			buildConfigurations = (
 				6628122A13F8B5010075BBC2 /* Debug */,
 				6628122B13F8B5010075BBC2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		666026B616082DFF00D84368 /* Build configuration list for PBXNativeTarget "Typewriter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				666026B416082DFF00D84368 /* Debug */,
+				666026B516082DFF00D84368 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

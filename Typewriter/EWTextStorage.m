@@ -154,6 +154,9 @@ static NSRange paragraphRangeForLocationInString(NSString *aString, NSUInteger a
     
     // Update paragraph metadata
     
+    // FIXME: Typing at the start of a paragraph causes it to get a new UUID
+    
+    
     NSString *string = [self string];
     
     NSUInteger i = rangeAfterEdit.location;
