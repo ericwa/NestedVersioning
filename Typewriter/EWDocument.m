@@ -5,13 +5,23 @@
 #import "EWPickboardWindowController.h"
 #import "EWHistoryWindowController.h"
 
+#import <NestedVersioning/COPersistentRootState.h>
+
 @implementation EWDocument
+
+#define STOREURL [NSURL fileURLWithPath: [@"~/typewriterTest.typewriter" stringByExpandingTildeInPath]]
 
 - (id)init
 {
     self = [super init];
     if (self) {
-        // Add your subclass-specific initialization here.
+                
+        store_ = [[COStore alloc] initWithURL: STOREURL];
+        
+        COSubtree *tree = [COSubtree subtree];
+        COPersistentRootState *contents = [COPersistentRootState stateWithTree: tree];
+        
+        persistentRoot_ = [store_ createPersistentRootWithInitialContents: contents];
     }
     return self;
 }

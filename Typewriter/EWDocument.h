@@ -1,8 +1,12 @@
 #import <Cocoa/Cocoa.h>
 
+#import <NestedVersioning/COPersistentRoot.h>
+#import <NestedVersioning/COStore.h>
+
 @interface EWDocument : NSDocument
 {
-    
+    COStore *store_;
+    COPersistentRoot *persistentRoot_;
 }
 
 
