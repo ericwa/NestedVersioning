@@ -211,6 +211,7 @@
 		66300AF91492CA7E00246C89 /* EWGraphRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWGraphRenderer.m; sourceTree = "<group>"; };
 		66300AFB1493148300246C89 /* EWHistoryGraphView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWHistoryGraphView.h; sourceTree = "<group>"; };
 		66300AFC1493148300246C89 /* EWHistoryGraphView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWHistoryGraphView.m; sourceTree = "<group>"; };
+		663FC97D16099313000A9608 /* NOTES */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NOTES; sourceTree = "<group>"; };
 		66416D20142D3EE20016501D /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		665BD3B815D62DA200428355 /* manual */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = manual; sourceTree = "<group>"; };
 		665BD3C015D75B9C00428355 /* COBranch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COBranch.h; sourceTree = "<group>"; };
@@ -449,6 +450,7 @@
 		662811EB13F8B5000075BBC2 = {
 			isa = PBXGroup;
 			children = (
+				663FC97D16099313000A9608 /* NOTES */,
 				66BE0D9C15C783C400B38391 /* Editing Context */,
 				66E7785514E6062100D5DFFF /* NestedVersioning-Info.plist */,
 				66416D20142D3EE20016501D /* README */,

@@ -1,0 +1,13 @@
+Interesting cases:
+
+- suppose paragraph P1 is copied to the pasteboard, edited a bit more in the source doc, and then copied again.
+ => should we fire a delegate method to imlpement our policy? 
+   - consider when the conflict is on just an inner object of a more complex structure. e.g. copy "group [ circle , square]" , later, copy "group [ diamond, square ]"
+ 
+ seems a good UI might be:
+  * user does CUT ("pick"): if any conflict occurrs on adding to pasteboard, the entire pasteboard item[s] containing all of the conflicting items are removed.
+  
+     => on pasting into an alternate version where the picked object wasn't picked, 
+        we should probably do a copy (relabelling).
+  
+  * user does COPY ("pick copy"): we just relabel the copy, so there is never a conflict.
