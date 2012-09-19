@@ -7,12 +7,14 @@
     self = [super init];
     
     backing_ = [[NSMutableAttributedString alloc] init];
-        
+    paragraphsChangedDuringEditing_ = [[NSMutableSet alloc] init];
+    
     return self;
 }
 
 - (void) dealloc
 {
+    [paragraphsChangedDuringEditing_ release];
     [backing_ release];
     [super dealloc];
 }
@@ -220,7 +222,8 @@ static NSRange paragraphRangeForLocationInString(NSString *aString, NSUInteger a
     
     [self debug];
     
-    NSLog(@"---modified paragraphs: %@", modifiedParagraphs);
+    [paragraphsChangedDuringEditing_ unionSet: modifiedParagraphs];
+    //NSLog(@"---modified paragraphs: %@", modifiedParagraphs);
     
     [self edited: NSTextStorageEditedCharacters
            range: replacementRange
@@ -241,11 +244,25 @@ static NSRange paragraphRangeForLocationInString(NSString *aString, NSUInteger a
     [backing_ addAttributes: attributes range: aRange];
     
     NSArray *modifiedParagraphs = [self paragraphUUIDSOverlappingRange: aRange];
-    NSLog(@"---modified (attrs) paragraphs: %@", modifiedParagraphs);
+    [paragraphsChangedDuringEditing_ addObjectsFromArray: modifiedParagraphs];
+    //NSLog(@"---modified (attrs) paragraphs: %@", modifiedParagraphs);
           
     [self edited: NSTextStorageEditedAttributes
            range: aRange
   changeInLength: 0];
+}
+
+// Change tracking
+
+- (void) beginEditing
+{
+    [paragraphsChangedDuringEditing_ removeAllObjects];
+    [super beginEditing];
+}
+
+- (NSArray *) paragraphUUIDsChangedDuringEditing
+{
+    return [paragraphsChangedDuringEditing_ allObjects];
 }
 
 @end

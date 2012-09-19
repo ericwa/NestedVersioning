@@ -173,6 +173,7 @@
     NSLog(@"windowDidLoad %@", textView_);
     
     textStorage_ = [[EWTextStorage alloc] init];
+    [textStorage_ setDelegate: self];
     
     [textView_ setDelegate: self];
     [[textView_ layoutManager] replaceTextStorage: textStorage_];
@@ -187,6 +188,13 @@
     return NO;
 }
 
+/* NSTextStorage */
+
+- (void)textStorageDidProcessEditing:(NSNotification *)aNotification
+{
+    NSLog(@"TODO: write the text storage out to the persistent root.");
+    NSLog(@"Changed objects were: %@", [textStorage_ paragraphUUIDsChangedDuringEditing]);
+}
     
 //	[outlineView registerForDraggedTypes:
 //	 [NSArray arrayWithObject: EWDragType]];
