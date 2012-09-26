@@ -11,3 +11,6 @@ Interesting cases:
         we should probably do a copy (relabelling).
   
   * user does COPY ("pick copy"): we just relabel the copy, so there is never a conflict.
+
+
+- should the root item in a persistent root always have the same UUID as the persistent root?
