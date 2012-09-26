@@ -16,6 +16,7 @@
 		66116A011522738A00806C12 /* DrawingWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = 66116A001522738900806C12 /* DrawingWindow.nib */; };
 		6615DFAA1522760C005C590F /* ProjectWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = 6615DFA91522760C005C590F /* ProjectWindow.nib */; };
 		6615DFAC15227618005C590F /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 6615DFAB15227618005C590F /* MainMenu.nib */; };
+		6619F58B1612DF8A00CE2DE2 /* COBranch.h in Headers */ = {isa = PBXBuildFile; fileRef = 665BD3C015D75B9C00428355 /* COBranch.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66243A6515ECC13300D00813 /* COPersistentRoot.m in Sources */ = {isa = PBXBuildFile; fileRef = 665BD3C915D78BE600428355 /* COPersistentRoot.m */; };
 		66243A6D15EDFB8B00D00813 /* TestStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 6628FBA6142FA7840072767A /* TestStore.m */; };
 		66243A6E15EE00D100D00813 /* COBranch.m in Sources */ = {isa = PBXBuildFile; fileRef = 665BD3C115D75B9C00428355 /* COBranch.m */; };
@@ -964,6 +965,7 @@
 				66E7787A14E6075B00D5DFFF /* COUUID.h in Headers */,
 				66E7787B14E6075B00D5DFFF /* COPath.h in Headers */,
 				66E7787C14E6075B00D5DFFF /* COType.h in Headers */,
+				6619F58B1612DF8A00CE2DE2 /* COBranch.h in Headers */,
 				66E7787D14E6075B00D5DFFF /* COType+Plist.h in Headers */,
 				66E7787E14E6075B00D5DFFF /* COType+String.h in Headers */,
 				66E7788014E6075B00D5DFFF /* COTypePrivate.h in Headers */,

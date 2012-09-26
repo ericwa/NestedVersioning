@@ -1,5 +1,6 @@
 #import <Cocoa/Cocoa.h>
 #import "EWTypewriterWindowController.h"
+#import "EWDocument.h"
 
 @implementation EWTypewriterWindowController
 //
@@ -194,6 +195,19 @@
 {
     NSLog(@"TODO: write the text storage out to the persistent root.");
     NSLog(@"Changed objects were: %@", [textStorage_ paragraphUUIDsChangedDuringEditing]);
+    
+    COSubtree *subtree = [textStorage_ typewriterDocument];
+
+    // FIXME: should be "Record delata"
+    [[self document] recordNewState: subtree];
+
+    
+//    NSLog(@"subtree: %@", subtree);
+//    
+//    EWTextStorage *newTs = [[EWTextStorage alloc] init];
+//    BOOL success = [newTs setTypewriterDocument: subtree];
+//    
+//    NSLog(@"newTs: %@, succes: %d", newTs, (int)success);
 }
     
 //	[outlineView registerForDraggedTypes:

@@ -4,8 +4,10 @@
 #import "EWBranchesWindowController.h"
 #import "EWPickboardWindowController.h"
 #import "EWHistoryWindowController.h"
+#import "COMacros.h"
 
 #import <NestedVersioning/COPersistentRootState.h>
+#import <NestedVersioning/COBranch.h>
 
 @implementation EWDocument
 
@@ -21,7 +23,7 @@
         COSubtree *tree = [COSubtree subtree];
         COPersistentRootState *contents = [COPersistentRootState stateWithTree: tree];
         
-        persistentRoot_ = [store_ createPersistentRootWithInitialContents: contents];
+        ASSIGN(persistentRoot_, [store_ createPersistentRootWithInitialContents: contents]);
     }
     return self;
 }
@@ -88,6 +90,18 @@
 - (IBAction) pickboard: (id)sender
 {
     [[EWPickboardWindowController sharedController] show];
+}
+
+- (void) recordNewState: (COSubtree*)aTree
+{
+    COPersistentRootStateToken *token = [[persistentRoot_ currentBranch] currentState];
+    
+    COPersistentRootState *newState = [COPersistentRootState stateWithTree: aTree];
+    COPersistentRootStateToken *token2 = [store_ addState: newState parentState: token];
+    
+    [store_ setCurrentVersion: token2 forBranch: [[persistentRoot_ currentBranch] UUID] ofPersistentRoot: [persistentRoot_ UUID]];
+    
+    ASSIGN(persistentRoot_, [store_ persistentRootWithUUID: [persistentRoot_ UUID]]);
 }
 
 

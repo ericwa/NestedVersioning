@@ -15,4 +15,6 @@
 - (IBAction) history: (id)sender;
 - (IBAction) pickboard: (id)sender;
 
+- (void) recordNewState: (COSubtree*)aState;
+
 @end
