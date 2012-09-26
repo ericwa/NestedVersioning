@@ -265,4 +265,76 @@ static NSRange paragraphRangeForLocationInString(NSString *aString, NSUInteger a
     return [paragraphsChangedDuringEditing_ allObjects];
 }
 
+// Input/output
+
+- (BOOL) setTypewriterDocument: (COSubtree *)aTree
+{
+    if (![[aTree typeForAttribute: @"paragraphs"] isEqual: [COType uniqueArrayWithPrimitiveType: [COType embeddedItemType]]])
+    {
+        return NO;
+    }
+    
+    NSMutableAttributedString *result = [[[NSMutableAttributedString alloc] init] autorelease];
+
+        
+    for (COSubtree *paragraph in [aTree valueForAttribute: @"paragraphs"])
+    {
+        if (![[paragraph typeForAttribute: @"data"] isEqual: [COType blobType]])
+        {
+            return NO;
+        }
+        
+        NSData *rtf = [paragraph valueForAttribute: @"data"];
+        
+        NSAttributedString *paragraphAttrString = [[NSAttributedString alloc] initWithRTF: rtf
+                                                                       documentAttributes: NULL];
+        
+        if (paragraphAttrString == nil)
+        {
+            return NO;
+        }
+        
+        [result appendAttributedString: paragraphAttrString];
+    }
+
+    [self beginEditing];
+    [self setAttributedString: result];
+    [self endEditing];
+
+    return YES;
+}
+
+- (COSubtree *) typewriterDocument
+{
+    // Writes out the contents of the text storage as a typewriter document
+    
+    // FIXME: Will have random UUID. We should keep it constant?
+    COSubtree *result = [COSubtree subtree];
+    
+    for (COUUID *paragraphUUID in [self paragraphUUIDs])
+    {
+        COSubtree *paragraphTree = [self paragraphTreeForUUID: paragraphUUID];
+        
+        [result addObject: paragraphTree
+       toOrderedAttribute: @"paragraphs"
+                     type: [COType uniqueArrayWithPrimitiveType: [COType embeddedItemType]]];
+    }
+    
+    return result;
+}
+
+- (COSubtree *) paragraphTreeForUUID: (COUUID *)paragraphUUID
+{
+    NSAttributedString *paragraphAttrString = [self attributedStringForParagraphWithUUID: paragraphUUID];
+    NSData *paragraphAsRTF = [paragraphAttrString RTFFromRange: NSMakeRange(0, [paragraphAttrString length])
+                                            documentAttributes: nil];
+    
+    COSubtree *paragraphTree = [[[COSubtree alloc] initWithUUID: paragraphUUID] autorelease];
+    [paragraphTree setValue: paragraphAsRTF
+               forAttribute: @"data"
+                       type: [COType blobType]];
+    
+    return paragraphTree;
+}
+
 @end
