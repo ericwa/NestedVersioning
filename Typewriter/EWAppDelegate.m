@@ -2,4 +2,9 @@
 
 @implementation EWAppDelegate
 
+- (void) applicationDidFinishLaunching: (NSNotification*)notif
+{
+    
+}
+
 @end
