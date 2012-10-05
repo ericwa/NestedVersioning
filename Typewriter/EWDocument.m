@@ -104,5 +104,44 @@
     ASSIGN(persistentRoot_, [store_ persistentRootWithUUID: [persistentRoot_ UUID]]);
 }
 
+- (void) validateCanLoadStateToken: (COPersistentRootStateToken *)aToken
+{
+    COBranch *editingBranchObject = [persistentRoot_ branchForUUID: editingBranch_];
+    if (editingBranchObject == nil)
+    {
+        [NSException raise: NSInternalInconsistencyException
+                    format: @"editing branch %@ must be one of the persistent root's branches", editingBranch_];
+    }
+    
+    if (![[editingBranchObject allCommits] containsObject: aToken])
+    {
+        [NSException raise: NSInternalInconsistencyException
+                    format: @"the given token %@ must be in the current editing branch's list of states", aToken];
+    }
+}
+
+- (void) loadStateToken: (COPersistentRootStateToken *)aToken
+{
+    [self validateCanLoadStateToken: aToken];
+        
+    COPersistentRootState *state = [store_ fullStateForToken: aToken];
+    COSubtree *tree = [state tree];
+
+    NSArray *wcs = [self windowControllers];
+    for (EWTypewriterWindowController *wc in wcs)
+    {
+        [wc loadDocumentTree: tree];
+    }
+}
+
+- (COUUID *) editingBranch
+{
+    return editingBranch_;
+}
+
+- (COPersistentRoot *) currentPersistentRoot
+{
+    return persistentRoot_;
+}
 
 @end

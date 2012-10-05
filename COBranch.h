@@ -30,6 +30,9 @@
 - (void) setUUID: (COUUID *)aUUID;
 - (NSString *)name;
 - (COPersistentRootStateToken *)currentState;
+/**
+ * @return array of COPersistentRootStateToken
+ */
 - (NSArray *)allCommits;
 
 - (id) metadata;

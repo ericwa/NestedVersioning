@@ -53,6 +53,8 @@
 //
 //- (NSArray *)selectedRows;
 
+- (void) loadDocumentTree: (COSubtree *)aTree;
+
 @end
 
 

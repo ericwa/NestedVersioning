@@ -7,6 +7,8 @@
 {
     COStore *store_;
     COPersistentRoot *persistentRoot_;
+    
+    COUUID *editingBranch_;
 }
 
 
@@ -16,5 +18,15 @@
 - (IBAction) pickboard: (id)sender;
 
 - (void) recordNewState: (COSubtree*)aState;
+
+- (COPersistentRoot *) currentPersistentRoot;
+
+- (COUUID *) editingBranch;
+
+/**
+ * @param aToken
+ *   should be a state token that belongs to [self editingBranch]
+ */
+- (void) loadStateToken: (COPersistentRootStateToken *)aToken;
 
 @end

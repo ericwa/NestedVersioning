@@ -180,6 +180,11 @@
     [[textView_ layoutManager] replaceTextStorage: textStorage_];
 }
 
+- (void) loadDocumentTree: (COSubtree *)aTree
+{
+    [textStorage_ setTypewriterDocument: aTree];
+}
+
 /* NSTextViewDelegate */
 
 - (BOOL)textView:(NSTextView *)aTextView doCommandBySelector:(SEL)aSelector
