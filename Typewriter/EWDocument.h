@@ -3,8 +3,11 @@
 #import <NestedVersioning/COPersistentRoot.h>
 #import <NestedVersioning/COStore.h>
 
+#import "EWUndoManager.h"
+
 @interface EWDocument : NSDocument
 {
+    EWUndoManager *undoManager_;
     COStore *store_;
     COPersistentRoot *persistentRoot_;
     

@@ -445,11 +445,11 @@ in the form of a plist serialization of a COPersistentRoot
 
 - (NSString *) undoMenuItemTitleForPersistentRootWithUUID: (COUUID *)aUUID
 {
-    return @"";
+    return @"Undo";
 }
 - (NSString *) redoMenuItemTitleForPersistentRootWithUUID: (COUUID *)aUUID
 {
-    return @"";    
+    return @"Redo";
 }
 
 - (BOOL) undoForPersistentRootWithUUID: (COUUID *)aUUID

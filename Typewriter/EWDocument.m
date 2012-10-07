@@ -24,6 +24,13 @@
         COPersistentRootState *contents = [COPersistentRootState stateWithTree: tree];
         
         ASSIGN(persistentRoot_, [store_ createPersistentRootWithInitialContents: contents]);
+        ASSIGN(editingBranch_, [[persistentRoot_ currentBranch] UUID]);
+        
+        assert(persistentRoot_ != nil);
+        assert(editingBranch_ != nil);
+        
+        undoManager_ = [[EWUndoManager alloc] init];
+        [undoManager_ setDelegate: self];
     }
     return self;
 }
@@ -72,7 +79,7 @@
 
 - (NSUndoManager *) undoManager
 {
-    return (NSUndoManager *)[[[EWUndoManager alloc] init] autorelease];
+    return (NSUndoManager *)undoManager_;
 }
 
 - (IBAction) branch: (id)sender
@@ -106,7 +113,7 @@
 
 - (void) validateCanLoadStateToken: (COPersistentRootStateToken *)aToken
 {
-    COBranch *editingBranchObject = [persistentRoot_ branchForUUID: editingBranch_];
+    COBranch *editingBranchObject = [persistentRoot_ branchForUUID: [self editingBranch]];
     if (editingBranchObject == nil)
     {
         [NSException raise: NSInternalInconsistencyException
@@ -134,6 +141,24 @@
     }
 }
 
+- (void) setPersistentRoot: (COPersistentRoot*) aMetadata
+{
+    assert(aMetadata != nil);
+    
+    ASSIGN(persistentRoot_, aMetadata);
+    ASSIGN(editingBranch_, [[persistentRoot_ currentBranch] UUID]);
+    [self loadStateToken: [[persistentRoot_ currentBranch] currentState]];
+}
+
+- (void) reloadFromStore
+{
+    // Reads the UUID of persistentRoot_, and uses that to reload the rest of the metadata
+    
+    COUUID *uuid = [self UUID];
+    
+    [self setPersistentRoot: [store_ persistentRootWithUUID: uuid]];
+}
+
 - (COUUID *) editingBranch
 {
     return editingBranch_;
@@ -142,6 +167,42 @@
 - (COPersistentRoot *) currentPersistentRoot
 {
     return persistentRoot_;
+}
+
+- (COUUID *) UUID
+{
+    return [persistentRoot_ UUID];
+}
+
+/* EWUndoManagerDelegate */
+
+- (void) undo
+{
+    [store_ undoForPersistentRootWithUUID: [self UUID]];
+    [self reloadFromStore];
+}
+- (void) redo
+{
+    [store_ redoForPersistentRootWithUUID: [self UUID]];
+    [self reloadFromStore];
+}
+
+- (BOOL) canUndo
+{
+    return [store_ canUndoForPersistentRootWithUUID: [self UUID]];
+}
+- (BOOL) canRedo
+{
+    return [store_ canRedoForPersistentRootWithUUID: [self UUID]];
+}
+
+- (NSString *) undoMenuItemTitle
+{
+    return [store_ undoMenuItemTitleForPersistentRootWithUUID: [self UUID]];
+}
+- (NSString *) redoMenuItemTitle
+{
+    return [store_ redoMenuItemTitleForPersistentRootWithUUID: [self UUID]];
 }
 
 @end

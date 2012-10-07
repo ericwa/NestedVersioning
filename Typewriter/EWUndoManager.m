@@ -2,6 +2,11 @@
 
 @implementation EWUndoManager
 
+- (void) setDelegate: (id<EWUndoManagerDelegate>)delegate
+{
+    delegate_ = delegate;
+}
+
 - (void) dealloc
 {
 	[super dealloc];
@@ -9,43 +14,41 @@
 
 - (BOOL) canUndo
 {
-	return YES;
+	return [delegate_ canUndo];
 }
 
 - (BOOL) canRedo
 {
-	return YES;
+	return [delegate_ canRedo];
 }
 
 - (NSString *) undoMenuItemTitle
 {
-	return @"undo";
+	return [delegate_ undoMenuItemTitle];
 }
 - (NSString *) redoMenuItemTitle
 {
-	return @"redo";
+	return [delegate_ redoMenuItemTitle];
 }
 
 - (NSString *)undoMenuTitleForUndoActionName: (NSString *)action
 {
-	// FIXME: Hack...
-	return [self undoMenuItemTitle];
+	return nil;
 }
 
 - (NSString *)redoMenuTitleForUndoActionName: (NSString *)action
 {
-	// FIXME: Hack...
-	return [self redoMenuItemTitle];
+	return nil;
 }
 
 - (void) undo
 {
-	NSLog(@"Undo");
+    [delegate_ undo];
 }
 
 - (void) redo
 {
-	NSLog(@"Redo");
+    [delegate_ redo];
 }
 
 - (void)forwardInvocation:(NSInvocation *)invocation {
@@ -61,8 +64,7 @@
 }
 
 - (void)setActionName:(NSString*) actionName
-{
-    
+{    
 }
 
 @end

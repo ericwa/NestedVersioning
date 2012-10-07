@@ -10,6 +10,7 @@
     
     EWTextStorage *textStorage_;
     
+    BOOL isLoading_;
     
 //	COPath *path;
 //	COStore *store;

@@ -182,7 +182,9 @@
 
 - (void) loadDocumentTree: (COSubtree *)aTree
 {
+    isLoading_ = YES;
     [textStorage_ setTypewriterDocument: aTree];
+    isLoading_ = NO;
 }
 
 /* NSTextViewDelegate */
@@ -198,6 +200,12 @@
 
 - (void)textStorageDidProcessEditing:(NSNotification *)aNotification
 {
+    if (isLoading_)
+    {
+        NSLog(@"Text change occurred during -loadDocumentTree, so don't create a new commit.");
+        return;
+    }
+    
     NSLog(@"TODO: write the text storage out to the persistent root.");
     NSLog(@"Changed objects were: %@", [textStorage_ paragraphUUIDsChangedDuringEditing]);
     
