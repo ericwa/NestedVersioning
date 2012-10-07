@@ -112,4 +112,30 @@
 - (COPersistentRootState *) fullStateForPersistentRootWithUUID: (COUUID *)aUUID
                                                     branchUUID: (COUUID *)aBranch;
 
+
+/** @taskunit script-based undo/redo log */
+
+/**
+ * Each persistent root has an independent undo log.
+ *
+ * For every action that mutates the persistent root metadata,
+ * we save a metadata snapshot and add it to the log.
+ *
+ * This needn't be directly coupled to COStore and could be implemented
+ * by an external library, but it's convenient to build in. So,
+ * all of the operations in the COStore API which mutate persistent roots
+ * automatically update the undo log. This may need to be finetuned
+ * (e.g a appearsInUndoLog: paramater in every mutation method)
+ */
+
+- (BOOL) canUndoForPersistentRootWithUUID: (COUUID *)aUUID;
+- (BOOL) canRedoForPersistentRootWithUUID: (COUUID *)aUUID;
+
+- (NSString *) undoMenuItemTitleForPersistentRootWithUUID: (COUUID *)aUUID;
+- (NSString *) redoMenuItemTitleForPersistentRootWithUUID: (COUUID *)aUUID;
+
+- (BOOL) undoForPersistentRootWithUUID: (COUUID *)aUUID;
+- (BOOL) redoForPersistentRootWithUUID: (COUUID *)aUUID;
+
+
 @end
