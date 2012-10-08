@@ -1,7 +1,5 @@
 #import "COStore.h"
 #import "COMacros.h"
-
-#import "COPersistentRootEditingContext.h"
 #import "COSubtree.h"
 
 #import "COBranch.h"

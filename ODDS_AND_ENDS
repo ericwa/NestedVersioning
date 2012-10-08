@@ -132,3 +132,42 @@ NSArray *COMergeSortedArraysUsingSelector(NSArray *sortredArrayA, NSArray *sortr
 	
 	return result;
 }
+
+
+Old TODO list
+=============
+
+[ ] (Mar 31/2012) implement "concatenate" operation for COSubtreeDiff
+[ ] (Feb 15/2012) work out merge metadata. is attempting to be concious of individual cherry-picked
+				  commits worthwhile? is it going to work?
+[ ] (Feb 15/2012) decide what to do about merge conflicts. concerns to resolve:
+					- only providing "choosing between hunks in a COSequenceDiff" is not
+					  sufficient for conflict resolution.
+						+ user might need to make manual changes to correctly resolve the change
+						+ the granularity that makes sense could differ depending on application
+						  (some might make sense to make hunk-level accept/reject resolution,
+						   others might be picking between object A with all edits applied and object B)
+				    - seems good to be able to switch branches while there are conflicts pending resolution on dev branch,
+					  continue working on stable branch, and return to dev branch later to complete the merge
+					- When conflict resolution is complete, we want "1 commit" on the "target branch"
+					  with special metadata saying it represents commits X through Y from the "source branch"
+					  cherry-picked onto the target branch.
+					- anything else...?
+[ ] (Feb 15/2012) StoreBrowser: implement persistent root diff window, including showing changes in
+				  nested persistent roots, and showing conflicts
+[ ] (Feb 11/2012) add a feature like Quentin's COSCustomTrack. of particular interest
+				  would be a "local undo" - linear undo/redo on all objects in a persistent
+				  root _except_ the current versions of branches would be unaltered.
+				  this would support the QuArK-explorer use case, of
+				  undo/redo in the project window which doesn't affect the versions of the
+				  embedded documents.
+[ ] (Feb 8/2012)  add code to search for all _different_ (i.e. curentVersion not same)
+                  branches of a given persistent root, for making a UI summary
+[ ] (Feb 8/2012)  add support for merging changes from the store into an editing 
+                  context's in-memory tree, (in particular for when a commit is
+				  made on a nested persistent root while a context stays open on 
+				  one of its parents) so all of the ugly "reopen context"
+				  code in the tests can be removed.
+[ ] (Nov 30/2011) investigate a lazy loading/faulting api
+[ ] (dec 5)       search
+[ ] migrate to sqlite

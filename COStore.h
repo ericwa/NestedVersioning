@@ -1,7 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "COUUID.h"
 #import "COItem.h"
-#import "COPersistentRootEditingContext.h"
 
 @class COSubtree;
 @class COPersistentRootEditingContext;

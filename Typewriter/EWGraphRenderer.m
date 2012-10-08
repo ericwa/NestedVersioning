@@ -1,7 +1,6 @@
 #import "EWGraphRenderer.h"
 #import "COMacros.h"
 
-#import "COSubtreeFactory+Undo.h"
 
 @implementation EWGraphRenderer
 
@@ -239,16 +238,16 @@ static void EWDrawArrowFromTo(NSPoint p1, NSPoint p2)
 
 - (NSColor *)colorForCommit: (COUUID *)aCommit
 {
-	if ([[COSubtreeFactory factory] shouldSkipVersion: aCommit
-											forBranch: nil
-												store: store])
+//	if ([[COSubtreeFactory factory] shouldSkipVersion: aCommit
+//											forBranch: nil
+//												store: store])
 	{
 		return [NSColor lightGrayColor];			
 	}
-	else
-	{
-		return [NSColor blackColor];
-	}
+//	else
+//	{
+//		return [NSColor blackColor];
+//	}
 }
 
 - (void) drawWithHighlightedCommit: (COUUID*)aCommit

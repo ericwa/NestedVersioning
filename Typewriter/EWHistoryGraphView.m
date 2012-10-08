@@ -43,17 +43,19 @@
 	
 	NSMutableString *desc = [NSMutableString string];
 	
-	[desc appendFormat: @"%@", commit];
-	
-	COUUID *parent = [store parentForCommit: commit];
-	if (nil != parent)
-	{
-		COSubtree *before = [store treeForCommit: parent];
-		COSubtree *after = [store treeForCommit: commit];
-		COSubtreeDiff *diff = [COSubtreeDiff diffSubtree: before withSubtree: after sourceIdentifier: @""];
-		
-		[desc appendFormat: @"\n\n%@", diff];
-	}
+    [desc appendString: @"todo"];
+    
+//	[desc appendFormat: @"%@", commit];
+//	
+//	COUUID *parent = [store parentForCommit: commit];
+//	if (nil != parent)
+//	{
+//		COSubtree *before = [store treeForCommit: parent];
+//		COSubtree *after = [store treeForCommit: commit];
+//		COSubtreeDiff *diff = [COSubtreeDiff diffSubtree: before withSubtree: after sourceIdentifier: @""];
+//		
+//		[desc appendFormat: @"\n\n%@", diff];
+//	}
 	
 	return desc;
 }
