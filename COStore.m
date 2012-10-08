@@ -8,6 +8,9 @@
 #import "COPersistentRootStateDelta.h"
 #import "COPersistentRootStateToken.h"
 
+NSString * const COStorePersistentRootMetadataDidChangeNotification = @"COStorePersistentRootMetadataDidChangeNotification";
+NSString * const COStoreNotificationUUID = @"COStoreNotificationUUID";
+
 static NSString *kCOPersistentRootsPlistPath = @"persistentRoots.plist";
 
 static NSString *kCOPersistentRootUndoLogArray = @"COPersistentRootUndoLogArray";
@@ -209,7 +212,17 @@ in the form of a plist serialization of a COPersistentRoot
     [prootDict setObject: undoLogPlist
                   forKey: prootUUIDString];
     
-    return [self writePersistentRootsPlist: prootDict];
+    BOOL ok = [self writePersistentRootsPlist: prootDict];
+    
+    NSDictionary *info = [NSDictionary dictionaryWithObject: aUUID
+                                                     forKey: COStoreNotificationUUID];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName: COStorePersistentRootMetadataDidChangeNotification
+                                                        object: self
+                                                      userInfo: info];
+    
+    
+    return ok;
 }
 
 - (BOOL) _writePersistentRoot: (COPersistentRoot *)aRoot

@@ -31,8 +31,26 @@
         
         undoManager_ = [[EWUndoManager alloc] init];
         [undoManager_ setDelegate: self];
+        
+        [[NSNotificationCenter defaultCenter] addObserver: self
+                                                 selector: @selector(storePersistentRootMetadataDidChange:)
+                                                     name: COStorePersistentRootMetadataDidChangeNotification
+                                                   object: store_];
     }
     return self;
+}
+
+- (void) dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver: self
+                                                    name: COStorePersistentRootMetadataDidChangeNotification
+                                                  object: store_];
+    
+    [store_ release];
+    [persistentRoot_ release];
+    [editingBranch_ release];
+    [undoManager_ release];
+    [super dealloc];
 }
 
 - (void)makeWindowControllers
@@ -172,6 +190,11 @@
 - (COUUID *) UUID
 {
     return [persistentRoot_ UUID];
+}
+
+- (void) storePersistentRootMetadataDidChange: (NSNotification *)notif
+{
+    NSLog(@"did change: %@", notif);
 }
 
 /* EWUndoManagerDelegate */

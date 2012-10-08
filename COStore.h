@@ -10,6 +10,9 @@
 @class COPersistentRootStateDelta;
 @class COPersistentRootStateToken;
 
+extern NSString * const COStorePersistentRootMetadataDidChangeNotification;
+extern NSString * const COStoreNotificationUUID;
+
 @interface COStore : NSObject
 {
 @private
