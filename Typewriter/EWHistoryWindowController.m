@@ -1,5 +1,7 @@
 #import "EWHistoryWindowController.h"
 #import "COStore.h"
+#import "EWDocument.h"
+#import "COBranch.h"
 
 @implementation EWHistoryWindowController
 
@@ -53,7 +55,19 @@
 {
     NSLog(@"history window: view did change: %@", notif);
     
+    COStore *store = [notif object];
     
+    COUUID *aUUID = [[notif userInfo] objectForKey: COStoreNotificationUUID];
+    COPersistentRoot *proot = [store persistentRootWithUUID: aUUID];
+    
+    NSLog(@"new proot: %@", proot);
+    
+    EWDocument *doc = [[NSDocumentController sharedDocumentController] currentDocument];
+    COBranch *branch =[proot branchForUUID: [doc editingBranch]];
+    
+    NSLog(@"current branch: %@ has %d commits.g v %@", branch, (int)[[branch allCommits] count], graphView_);
+    
+    [graphView_ setBranch: branch store: store];
 }
 
 

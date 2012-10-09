@@ -406,6 +406,8 @@ in the form of a plist serialization of a COPersistentRoot
         cacheUuid = [parent _prootCache];
     }
     
+    [aFullSnapshot setParentStateToken: parent];
+    
     COPersistentRootStateToken *newToken = [self _unusedTokenForCache: cacheUuid];
     
     BOOL ok =[self _writeFullState: aFullSnapshot

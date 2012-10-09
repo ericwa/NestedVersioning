@@ -11,7 +11,7 @@
 	COStore *store;
 }
 
-- (id) initWithStore: (COStore*)aStore;
+- (id) initWithCommits: (NSArray*)stateTokens store: (COStore*)aStore;
 - (void) layoutGraph;
 
 - (COStore *)store;

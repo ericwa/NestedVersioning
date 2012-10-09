@@ -1,10 +1,10 @@
 #import "EWGraphRenderer.h"
 #import "COMacros.h"
-
+#import <NestedVersioning/COPersistentRootStateToken.h>
 
 @implementation EWGraphRenderer
 
-static NSInteger visit(NSDictionary *childrenForUUID, COUUID *currentUUID, NSInteger currentLevel, NSMutableDictionary *levelForUUID)
+static NSInteger visit(NSDictionary *childrenForUUID, COPersistentRootStateToken *currentUUID, NSInteger currentLevel, NSMutableDictionary *levelForUUID)
 {
 	//NSLog(@"visiting %@", currentUUID);
 	
@@ -25,7 +25,7 @@ static NSInteger visit(NSDictionary *childrenForUUID, COUUID *currentUUID, NSInt
 	assert(children != nil);
 	
 	NSInteger maxLevelUsed = currentLevel - 1;
-	for (COUUID *child in children)
+	for (COPersistentRootStateToken *child in children)
 	{
 		NSInteger childMax = 
 			visit(childrenForUUID, child, maxLevelUsed + 1, levelForUUID);
@@ -38,10 +38,14 @@ static NSInteger visit(NSDictionary *childrenForUUID, COUUID *currentUUID, NSInt
 	return MAX(currentLevel, maxLevelUsed);
 }
 
-- (id) initWithStore: (COStore*)aStore
+- (id) initWithCommits: (NSArray*)stateTokens store: (COStore*)aStore;
 {
 	SUPERINIT;
 	ASSIGN(store, aStore);
+    
+    ASSIGN(allCommitsSorted, [NSMutableArray arrayWithArray: stateTokens]);
+    
+    [self layoutGraph];
 	return self;
 }
 
@@ -61,8 +65,6 @@ static NSInteger visit(NSDictionary *childrenForUUID, COUUID *currentUUID, NSInt
 
 - (void) layoutGraph
 {
-	ASSIGN(allCommitsSorted, [NSMutableArray arrayWithArray: [store allCommitUUIDs]]);
-	
 	//
 	// Now we just have to decide on the Y position of each node.
 	//
@@ -72,13 +74,13 @@ static NSInteger visit(NSDictionary *childrenForUUID, COUUID *currentUUID, NSInt
 		
 	ASSIGN(childrenForUUID, [NSMutableDictionary dictionaryWithCapacity: [allCommitsSorted count]]);
 	
-	for (COUUID *aCommit in allCommitsSorted)
+	for (COPersistentRootStateToken *aCommit in allCommitsSorted)
 	{
 		[childrenForUUID setObject: [NSMutableArray array] forKey: aCommit];
 	}
-	for (COUUID *aCommit in allCommitsSorted)
+	for (COPersistentRootStateToken *aCommit in allCommitsSorted)
 	{
-		COUUID *aParent = [store parentForCommit: aCommit];
+		COPersistentRootStateToken *aParent = [store parentForStateToken: aCommit];
 		if (aParent != nil)
 		{
 			NSMutableArray *children = [childrenForUUID objectForKey: aParent];
@@ -89,10 +91,10 @@ static NSInteger visit(NSDictionary *childrenForUUID, COUUID *currentUUID, NSInt
 
 	// remove commits which have no children/parents
 	
-	for (COUUID *aCommit in [NSArray arrayWithArray: allCommitsSorted])
+	for (COPersistentRootStateToken *aCommit in [NSArray arrayWithArray: allCommitsSorted])
 	{
 		if ([[childrenForUUID objectForKey: aCommit] count] == 0 &&
-			[store parentForCommit: aCommit] == nil)
+			[store parentForStateToken: aCommit] == nil)
 		{
 			//NSLog(@"removed %@ because it had no parents/children (%d)", 
 			//	  aCommit, (int)[allCommitsSorted indexOfObject: aCommit]);
@@ -113,9 +115,9 @@ static NSInteger visit(NSDictionary *childrenForUUID, COUUID *currentUUID, NSInt
 	// find roots
 	
 	NSMutableArray *roots = [NSMutableArray array];
-	for (COUUID *aCommit in allCommitsSorted)
+	for (COPersistentRootStateToken *aCommit in allCommitsSorted)
 	{
-		COUUID *aParent = [store parentForCommit: aCommit];
+		COPersistentRootStateToken *aParent = [store parentForStateToken: aCommit];
 		if (nil == aParent)
 		{
 			[roots addObject: aCommit];
@@ -140,7 +142,7 @@ static NSInteger visit(NSDictionary *childrenForUUID, COUUID *currentUUID, NSInt
 	ASSIGN(levelForUUID, [NSMutableDictionary dictionary]);
 
 	NSInteger maxLevel = 0;
-	for (COUUID *root in roots)
+	for (COPersistentRootStateToken *root in roots)
 	{
 		//NSLog(@"Starting root %@ at %d", root, (int)maxLevel);
 		maxLevel = visit(childrenForUUID, root, maxLevel, levelForUUID) + 1;
@@ -149,7 +151,7 @@ static NSInteger visit(NSDictionary *childrenForUUID, COUUID *currentUUID, NSInt
 	//NSLog(@"graph output:");
 	
 	maxLevelUsed = 0;
-	for (COUUID *aCommit in allCommitsSorted)
+	for (COPersistentRootStateToken *aCommit in allCommitsSorted)
 	{
 		NSInteger level = [[levelForUUID objectForKey: aCommit] integerValue];
 		
@@ -165,8 +167,8 @@ static NSInteger visit(NSDictionary *childrenForUUID, COUUID *currentUUID, NSInt
 		NSInteger i;
 		for (i=0; i<[allCommitsSorted count]; i++)
 		{
-			COUUID *aCommit = [allCommitsSorted objectAtIndex: i];
-			COUUID *aCommitParent = [store parentForCommit: aCommit];
+			COPersistentRootStateToken *aCommit = [allCommitsSorted objectAtIndex: i];
+			COPersistentRootStateToken *aCommitParent = [store parentForStateToken: aCommit];
 			
 			if (aCommitParent != nil)
 			{
@@ -242,7 +244,7 @@ static void EWDrawArrowFromTo(NSPoint p1, NSPoint p2)
 //											forBranch: nil
 //												store: store])
 	{
-		return [NSColor lightGrayColor];			
+		return [NSColor blackColor];
 	}
 //	else
 //	{

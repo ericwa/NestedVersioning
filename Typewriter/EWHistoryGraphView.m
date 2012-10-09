@@ -1,8 +1,8 @@
 #import "EWHistoryGraphView.h"
 #import "EWGraphRenderer.h"
 #import "COMacros.h"
-#import "COSubtreeDiff.h"
-
+#import "COStore.h"
+#import "COBranch.h"
 
 @implementation EWHistoryGraphView
 
@@ -16,6 +16,14 @@
     return self;
 }
  
+- (void) setBranch: (COBranch*)aBranch store: (COStore*)aStore
+{
+    ASSIGN(graphRenderer, [[[EWGraphRenderer alloc] initWithCommits: [aBranch allCommits]
+                                                              store: aStore] autorelease]);
+    
+    [self setNeedsDisplay: YES];
+}
+
 - (void) drawRect:(NSRect)dirtyRect
 {
     [NSGraphicsContext saveGraphicsState];
@@ -25,7 +33,7 @@
     
 	if (graphRenderer != nil)
 	{        
-        [graphRenderer drawWithHighlightedCommit: currentCommit];
+        [graphRenderer drawWithHighlightedCommit: nil];
 	}
     
     [NSGraphicsContext restoreGraphicsState];
@@ -81,7 +89,6 @@
 
 - (void) setCurrentCommit: (COUUID *)aCommit
 {
-	ASSIGN(currentCommit, aCommit);
 	[self setNeedsDisplay: YES];
 }
 
@@ -96,13 +103,13 @@
 	{
 		NSMenu *menu = [[[NSMenu alloc] initWithTitle: @""] autorelease];
 
-		{
-			NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Diff with Current Commit" 
-														   action: @selector(diffCommits:) 
-													keyEquivalent: @""] autorelease];
-			[item setRepresentedObject: A(currentCommit, commit)];
-			[menu addItem: item];
-		}		
+//		{
+//			NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Diff with Current Commit" 
+//														   action: @selector(diffCommits:) 
+//													keyEquivalent: @""] autorelease];
+//			[item setRepresentedObject: A(currentCommit, commit)];
+//			[menu addItem: item];
+//		}		
 		
 		{
 			NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Selective Undo" 

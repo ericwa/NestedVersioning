@@ -14,7 +14,7 @@
  *
  * In any case, the object weights a few tens of bytes at most.
  */
-@interface COPersistentRootStateToken : NSObject
+@interface COPersistentRootStateToken : NSObject <NSCopying>
 {
     COUUID *prootCache;
     int64_t index;

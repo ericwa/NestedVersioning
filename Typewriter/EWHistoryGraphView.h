@@ -1,15 +1,14 @@
 #import <Cocoa/Cocoa.h>
-#import "COUUID.h"
 
 @class EWGraphRenderer;
+@class COBranch;
+@class COStore;
 
 @interface EWHistoryGraphView : NSView
 {
 	EWGraphRenderer *graphRenderer;
-	COUUID *currentCommit;
 }
 
-- (void) setCurrentCommit: (COUUID *)aCommit;
-- (void) setGraphRenderer: (EWGraphRenderer *)aRenderer;
+- (void) setBranch: (COBranch*)aBranch store: (COStore*)aStore;
 
 @end
