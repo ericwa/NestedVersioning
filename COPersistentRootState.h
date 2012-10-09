@@ -17,12 +17,15 @@
 @interface COPersistentRootState : NSObject
 {
     COSubtree *tree_;
-    
     COPersistentRootStateToken *parentStateToken_;
+    NSDictionary *commitMetadata_;
 }
 
 - (id) initWithPlist: (NSDictionary *)aPlist;
 - (id) plist;
+
+- (NSDictionary *)commitMetadata;
+- (void) setCommitMetadata: (NSDictionary*)commitMetadata;
 
 - (COSubtree *) tree;
 + (COPersistentRootState *) stateWithTree: (COSubtree *)aTree;

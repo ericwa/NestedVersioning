@@ -5,7 +5,7 @@
 
 NSString *kCOPersistentRootStateTree = @"COPersistentRootStateTree";
 NSString *kCOPersistentRootStateParentStateToken = @"COPersistentRootStateParentStateToken";
-
+NSString *kCOPersistentRootStateCommitMetadata = @"COPersistentRootStateCommitMetadata";
 
 @implementation COPersistentRootState
 
@@ -15,7 +15,8 @@ NSString *kCOPersistentRootStateParentStateToken = @"COPersistentRootStateParent
         
     id treePlist = [aPlist objectForKey: kCOPersistentRootStateTree];
     id tokenPlist = [aPlist objectForKey: kCOPersistentRootStateParentStateToken];
-
+    id metadataPlist = [aPlist objectForKey: kCOPersistentRootStateCommitMetadata];
+    
     assert(aPlist != nil);
     assert(treePlist != nil);
     
@@ -25,6 +26,7 @@ NSString *kCOPersistentRootStateParentStateToken = @"COPersistentRootStateParent
     {
         ASSIGN(parentStateToken_, [COPersistentRootStateToken tokenWithPlist: tokenPlist]);
     }
+    ASSIGN(commitMetadata_, metadataPlist);
     
     return self;
 }
@@ -37,6 +39,10 @@ NSString *kCOPersistentRootStateParentStateToken = @"COPersistentRootStateParent
     {
         [plist setObject: [parentStateToken_ plist] forKey: kCOPersistentRootStateParentStateToken];
     }
+    if (commitMetadata_ != nil)
+    {
+        [plist setObject: commitMetadata_ forKey: kCOPersistentRootStateCommitMetadata];
+    }
     return [NSDictionary dictionaryWithDictionary: plist];
 }
 
@@ -44,7 +50,17 @@ NSString *kCOPersistentRootStateParentStateToken = @"COPersistentRootStateParent
 {
     [tree_ release];
     [parentStateToken_ release];
+    [commitMetadata_ release];
     [super dealloc];
+}
+
+- (NSDictionary *)commitMetadata
+{
+    return commitMetadata_;
+}
+- (void) setCommitMetadata: (NSDictionary*)commitMetadata
+{
+    ASSIGN(commitMetadata_, commitMetadata);
 }
 
 - (COSubtree *) tree
@@ -74,7 +90,9 @@ NSString *kCOPersistentRootStateParentStateToken = @"COPersistentRootStateParent
     {
         return [tree_ isEqual: [object tree]]
         && ((parentStateToken_ == nil && [object parentStateToken] == nil)
-            || [parentStateToken_ isEqual: [object parentStateToken]]);
+            || [parentStateToken_ isEqual: [object parentStateToken]])
+        && ((commitMetadata_ == nil && [object commitMetadata] == nil)
+            || [commitMetadata_ isEqual: [object commitMetadata]]);
     }
     return NO;
 }
