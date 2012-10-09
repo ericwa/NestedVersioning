@@ -114,6 +114,10 @@ extern NSString * const COStoreNotificationUUID;
 - (COPersistentRootState *) fullStateForPersistentRootWithUUID: (COUUID *)aUUID
                                                     branchUUID: (COUUID *)aBranch;
 
+/**
+ * Use for drawing the history tree
+ */
+- (COPersistentRootStateToken *) parentForStateToken: (COPersistentRootStateToken *)aToken;
 
 /** @taskunit script-based undo/redo log */
 

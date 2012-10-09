@@ -440,6 +440,13 @@ in the form of a plist serialization of a COPersistentRoot
             [[[self persistentRootWithUUID: aUUID] branchForUUID: aBranch] currentState]];
 }
 
+- (COPersistentRootStateToken *) parentForStateToken: (COPersistentRootStateToken *)aToken
+{
+    COPersistentRootState *state = [self fullStateForToken: aToken];
+    assert(state != nil);
+    return [state parentStateToken];
+}
+
 /** @taskunit script-based undo/redo log */
 
 - (BOOL) canUndoForPersistentRootWithUUID: (COUUID *)aUUID
