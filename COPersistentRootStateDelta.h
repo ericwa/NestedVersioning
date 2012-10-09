@@ -10,6 +10,8 @@
  *
  * Size is O(number of changes in delta * size of changed item data)
  * 
+ * FIXME: Not currently used. Will need to 
+ *
  */
 @interface COPersistentRootStateDelta : NSObject
 {
