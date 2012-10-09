@@ -6,7 +6,7 @@
 
 @implementation EWHistoryGraphView
 
-- (id)initWithFrame:(NSRect)frame
+- (id) initWithFrame:(NSRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
@@ -15,20 +15,20 @@
     
     return self;
 }
-
-- (void)drawRect:(NSRect)dirtyRect
+ 
+- (void) drawRect:(NSRect)dirtyRect
 {
+    [NSGraphicsContext saveGraphicsState];
+    
+    [[NSColor whiteColor] set];
+    NSRectFill(dirtyRect);
+    
 	if (graphRenderer != nil)
-	{
-		[NSGraphicsContext saveGraphicsState];
-		
-		[[NSColor whiteColor] set];
-		NSRectFill(dirtyRect);
-		
-		[graphRenderer drawWithHighlightedCommit: currentCommit];
-		 
-		 [NSGraphicsContext restoreGraphicsState];
+	{        
+        [graphRenderer drawWithHighlightedCommit: currentCommit];
 	}
+    
+    [NSGraphicsContext restoreGraphicsState];
 }
 
 - (NSString *)view:(NSView *)view stringForToolTip:(NSToolTipTag)tag point:(NSPoint)point userData:(void *)userData
