@@ -148,7 +148,11 @@
 - (void) loadStateToken: (COPersistentRootStateToken *)aToken
 {
     [self validateCanLoadStateToken: aToken];
-        
+         
+    COBranch *editingBranchObject = [persistentRoot_ branchForUUID: [self editingBranch]];
+    // N.B. Mutates persistentRoot_
+    [editingBranchObject _setCurrentState: aToken];
+    
     COPersistentRootState *state = [store_ fullStateForToken: aToken];
     COSubtree *tree = [state tree];
 
