@@ -17,11 +17,11 @@
 - (COStore *)store;
 
 - (NSSize) size;
-- (void) drawWithHighlightedCommit: (COUUID*)aCommit;
+- (void) drawWithHighlightedCommit: (COPersistentRootStateToken*)aCommit;
 
-- (COUUID *)commitAtPoint: (NSPoint)aPoint;
+- (COPersistentRootStateToken *)commitAtPoint: (NSPoint)aPoint;
 
-- (NSRect) rectForCommit:(COUUID *)aCommit;
+- (NSRect) rectForCommit:(COPersistentRootStateToken *)aCommit;
 - (NSArray *) commits;
 
 @end

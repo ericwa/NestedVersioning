@@ -4,6 +4,8 @@
 #import "COStore.h"
 #import "COBranch.h"
 
+#import "EWDocument.h"
+
 @implementation EWHistoryGraphView
 
 - (id) initWithFrame:(NSRect)frame
@@ -149,8 +151,14 @@
 		NSPoint pt = [self convertPoint: [theEvent locationInWindow] 
 							   fromView: nil];
 		
-		COUUID *commit = [graphRenderer commitAtPoint: pt];
-		[NSApp sendAction: @selector(switchToCommit:) to: nil from: commit];
+		COPersistentRootStateToken *commit = [graphRenderer commitAtPoint: pt];
+
+        NSLog(@"switch to %@", commit);
+        
+        // FIXME: Hacky to hit NSDocument directly from here?
+        
+        EWDocument *doc = [[NSDocumentController sharedDocumentController] currentDocument];
+        [doc loadStateToken: commit];
 	}
 }
 

@@ -106,7 +106,7 @@ static NSInteger visit(NSDictionary *childrenForUUID, COPersistentRootStateToken
 	
 	// some nodes should have more than 1 child
 	
-	for (COUUID *aCommit in allCommitsSorted)
+	for (COPersistentRootStateToken *aCommit in allCommitsSorted)
 	{
 		//NSLog(@"%@ children: %@", aCommit, [childrenForUUID objectForKey: aCommit]);
 	}
@@ -192,7 +192,7 @@ static NSInteger visit(NSDictionary *childrenForUUID, COPersistentRootStateToken
 	return s;
 }
 
-- (NSRect) rectForCommit: (COUUID*)aCommit
+- (NSRect) rectForCommit: (COPersistentRootStateToken*)aCommit
 {
 	NSNumber *rowObj = [levelForUUID objectForKey: aCommit];
 	assert(rowObj != nil);
@@ -238,7 +238,7 @@ static void EWDrawArrowFromTo(NSPoint p1, NSPoint p2)
 	[NSGraphicsContext restoreGraphicsState];
 }
 
-- (NSColor *)colorForCommit: (COUUID *)aCommit
+- (NSColor *)colorForCommit: (COPersistentRootStateToken *)aCommit
 {
 //	if ([[COSubtreeFactory factory] shouldSkipVersion: aCommit
 //											forBranch: nil
@@ -252,11 +252,11 @@ static void EWDrawArrowFromTo(NSPoint p1, NSPoint p2)
 //	}
 }
 
-- (void) drawWithHighlightedCommit: (COUUID*)aCommit
+- (void) drawWithHighlightedCommit: (COPersistentRootStateToken*)aCommit
 {
 	for (NSUInteger col = 0; col < [allCommitsSorted count]; col++)
 	{
-		COUUID *commit = [allCommitsSorted objectAtIndex: col];		
+		COPersistentRootStateToken *commit = [allCommitsSorted objectAtIndex: col];		
 		
 		NSColor *color = [self colorForCommit: commit];
 		
@@ -275,7 +275,7 @@ static void EWDrawArrowFromTo(NSPoint p1, NSPoint p2)
 			[circle stroke];
 		}
 		
-		for (COUUID *child in [childrenForUUID objectForKey: commit])
+		for (COPersistentRootStateToken *child in [childrenForUUID objectForKey: commit])
 		{
 			NSRect r2 = [self rectForCommit: child];
 			
@@ -291,9 +291,9 @@ static void EWDrawArrowFromTo(NSPoint p1, NSPoint p2)
 	}
 }
 
-- (COUUID *)commitAtPoint: (NSPoint)aPoint
+- (COPersistentRootStateToken *)commitAtPoint: (NSPoint)aPoint
 {
-	for (COUUID *commit in allCommitsSorted)
+	for (COPersistentRootStateToken *commit in allCommitsSorted)
 	{
 		if (NSPointInRect(aPoint, [self rectForCommit: commit]))
 		{
