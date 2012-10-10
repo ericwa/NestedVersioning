@@ -158,6 +158,9 @@
         // FIXME: Hacky to hit NSDocument directly from here?
         
         EWDocument *doc = [[NSDocumentController sharedDocumentController] currentDocument];
+        
+        // FIXME: Should actuall _write_ the change to disk, so it is persisted and undo/redo works properly.
+        // This method doesn't, currently.
         [doc loadStateToken: commit];
 	}
 }

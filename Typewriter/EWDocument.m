@@ -145,6 +145,7 @@
     }
 }
 
+// Doesn't write to DB...
 - (void) loadStateToken: (COPersistentRootStateToken *)aToken
 {
     [self validateCanLoadStateToken: aToken];
