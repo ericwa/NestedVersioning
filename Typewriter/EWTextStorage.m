@@ -40,6 +40,7 @@
         
         if ([attributeValue isEqual: aUUID])
         {
+            NSLog(@"found range: %@", NSStringFromRange(effectiveRange));
             return effectiveRange;
         }
         
@@ -59,17 +60,17 @@
     NSRange effectiveRange = NSMakeRange(aRange.location, 0);
     NSUInteger length = [backing_ length];
     
-    NSMutableSet *set = [NSMutableSet set];
+    NSMutableArray *list = [NSMutableArray array];
     
     while (NSMaxRange(effectiveRange) < NSMaxRange(aRange))
     {
         id attributeValue = [backing_ attribute:kCOParagraphUUIDAttribute
                                         atIndex:NSMaxRange(effectiveRange)
                                  effectiveRange:&effectiveRange];
-        [set addObject: attributeValue];
+        [list addObject: attributeValue];
     }
     
-    return [set allObjects];
+    return list;
 }
 
 - (COUUID *) paragraphUUIDAtIndex: (NSUInteger)index
@@ -294,6 +295,7 @@ static NSRange paragraphRangeForLocationInString(NSString *aString, NSUInteger a
             return NO;
         }
         
+        NSLog(@"appending paragraph: '%@'", [paragraphAttrString string]);
         [result appendAttributedString: paragraphAttrString];
     }
 
@@ -311,8 +313,10 @@ static NSRange paragraphRangeForLocationInString(NSString *aString, NSUInteger a
     // FIXME: Will have random UUID. We should keep it constant?
     COSubtree *result = [COSubtree subtree];
     
+    NSLog(@"dumping typewriterDocument");
     for (COUUID *paragraphUUID in [self paragraphUUIDs])
     {
+        NSLog(@"UUID: %@", paragraphUUID);
         COSubtree *paragraphTree = [self paragraphTreeForUUID: paragraphUUID];
         
         [result addObject: paragraphTree
