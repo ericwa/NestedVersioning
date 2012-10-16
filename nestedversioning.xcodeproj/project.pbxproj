@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		6619F58B1612DF8A00CE2DE2 /* COBranch.h in Headers */ = {isa = PBXBuildFile; fileRef = 665BD3C015D75B9C00428355 /* COBranch.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		66238164162FD04A00CA0CC4 /* COUndoAction.h in Headers */ = {isa = PBXBuildFile; fileRef = 66238162162FD04A00CA0CC4 /* COUndoAction.h */; };
+		66238165162FD04A00CA0CC4 /* COUndoAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 66238163162FD04A00CA0CC4 /* COUndoAction.m */; };
 		66243A6515ECC13300D00813 /* COPersistentRoot.m in Sources */ = {isa = PBXBuildFile; fileRef = 665BD3C915D78BE600428355 /* COPersistentRoot.m */; };
 		66243A6D15EDFB8B00D00813 /* TestStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 6628FBA6142FA7840072767A /* TestStore.m */; };
 		66243A6E15EE00D100D00813 /* COBranch.m in Sources */ = {isa = PBXBuildFile; fileRef = 665BD3C115D75B9C00428355 /* COBranch.m */; };
@@ -33,6 +35,12 @@
 		666026EE16082E5600D84368 /* History.xib in Resources */ = {isa = PBXBuildFile; fileRef = 666026D916082E5600D84368 /* History.xib */; };
 		666026F016082E5600D84368 /* Pickboard.xib in Resources */ = {isa = PBXBuildFile; fileRef = 666026DB16082E5600D84368 /* Pickboard.xib */; };
 		666026F316082F1E00D84368 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 666026F216082F1E00D84368 /* main.m */; };
+		669959491633BB1100B6C022 /* COUndoActionSetCurrentVersionForBranch.h in Headers */ = {isa = PBXBuildFile; fileRef = 669959471633BB1100B6C022 /* COUndoActionSetCurrentVersionForBranch.h */; };
+		6699594A1633BB1100B6C022 /* COUndoActionSetCurrentVersionForBranch.m in Sources */ = {isa = PBXBuildFile; fileRef = 669959481633BB1100B6C022 /* COUndoActionSetCurrentVersionForBranch.m */; };
+		6699594E1633BB5D00B6C022 /* COUndoActionDeleteBranch.h in Headers */ = {isa = PBXBuildFile; fileRef = 6699594C1633BB5C00B6C022 /* COUndoActionDeleteBranch.h */; };
+		6699594F1633BB5D00B6C022 /* COUndoActionDeleteBranch.m in Sources */ = {isa = PBXBuildFile; fileRef = 6699594D1633BB5C00B6C022 /* COUndoActionDeleteBranch.m */; };
+		669959521633BB6A00B6C022 /* COUndoActionSetCurrentBranch.h in Headers */ = {isa = PBXBuildFile; fileRef = 669959501633BB6A00B6C022 /* COUndoActionSetCurrentBranch.h */; };
+		669959531633BB6A00B6C022 /* COUndoActionSetCurrentBranch.m in Sources */ = {isa = PBXBuildFile; fileRef = 669959511633BB6A00B6C022 /* COUndoActionSetCurrentBranch.m */; };
 		66AC6218160830CB00E483D3 /* NestedVersioning.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E7785114E6062100D5DFFF /* NestedVersioning.framework */; };
 		66C6F62515E763470079B7FB /* COPersistentRootState.h in Headers */ = {isa = PBXBuildFile; fileRef = 66C6F62315E763470079B7FB /* COPersistentRootState.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66C6F62615E763470079B7FB /* COPersistentRootState.m in Sources */ = {isa = PBXBuildFile; fileRef = 66C6F62415E763470079B7FB /* COPersistentRootState.m */; };
@@ -120,6 +128,8 @@
 /* Begin PBXFileReference section */
 		66101A0914D09FAA00B50075 /* diff.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = diff.cc; path = Diff/diff.cc; sourceTree = "<group>"; };
 		66101A0D14D09FB700B50075 /* diff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = diff.h; path = Diff/diff.h; sourceTree = "<group>"; };
+		66238162162FD04A00CA0CC4 /* COUndoAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COUndoAction.h; sourceTree = "<group>"; };
+		66238163162FD04A00CA0CC4 /* COUndoAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COUndoAction.m; sourceTree = "<group>"; };
 		6628FBA1142FA7840072767A /* TestCopyEmbeddedObjects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCopyEmbeddedObjects.m; sourceTree = "<group>"; };
 		6628FBA2142FA7840072767A /* TestEditingContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestEditingContext.m; sourceTree = "<group>"; };
 		6628FBA3142FA7840072767A /* TestHistoryTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestHistoryTrack.m; sourceTree = "<group>"; };
@@ -171,6 +181,12 @@
 		6660E23914F84B3000D2F319 /* TestItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestItem.m; sourceTree = "<group>"; };
 		668DA35E14E0E41A0062E6C2 /* COItemPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COItemPath.m; sourceTree = "<group>"; };
 		668DA36114E0E4210062E6C2 /* COItemPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COItemPath.h; sourceTree = "<group>"; };
+		669959471633BB1100B6C022 /* COUndoActionSetCurrentVersionForBranch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COUndoActionSetCurrentVersionForBranch.h; sourceTree = "<group>"; };
+		669959481633BB1100B6C022 /* COUndoActionSetCurrentVersionForBranch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COUndoActionSetCurrentVersionForBranch.m; sourceTree = "<group>"; };
+		6699594C1633BB5C00B6C022 /* COUndoActionDeleteBranch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COUndoActionDeleteBranch.h; sourceTree = "<group>"; };
+		6699594D1633BB5C00B6C022 /* COUndoActionDeleteBranch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COUndoActionDeleteBranch.m; sourceTree = "<group>"; };
+		669959501633BB6A00B6C022 /* COUndoActionSetCurrentBranch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COUndoActionSetCurrentBranch.h; sourceTree = "<group>"; };
+		669959511633BB6A00B6C022 /* COUndoActionSetCurrentBranch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COUndoActionSetCurrentBranch.m; sourceTree = "<group>"; };
 		669CADE61491844000D0CF5F /* COSubtreeDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COSubtreeDiff.h; sourceTree = "<group>"; };
 		669CADE71491844000D0CF5F /* COSubtreeDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COSubtreeDiff.m; sourceTree = "<group>"; };
 		66C6F62315E763470079B7FB /* COPersistentRootState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPersistentRootState.h; sourceTree = "<group>"; };
@@ -470,6 +486,21 @@
 			path = en.lproj;
 			sourceTree = "<group>";
 		};
+		669959581633BCCA00B6C022 /* Undo Actions */ = {
+			isa = PBXGroup;
+			children = (
+				66238162162FD04A00CA0CC4 /* COUndoAction.h */,
+				66238163162FD04A00CA0CC4 /* COUndoAction.m */,
+				669959471633BB1100B6C022 /* COUndoActionSetCurrentVersionForBranch.h */,
+				669959481633BB1100B6C022 /* COUndoActionSetCurrentVersionForBranch.m */,
+				6699594C1633BB5C00B6C022 /* COUndoActionDeleteBranch.h */,
+				6699594D1633BB5C00B6C022 /* COUndoActionDeleteBranch.m */,
+				669959501633BB6A00B6C022 /* COUndoActionSetCurrentBranch.h */,
+				669959511633BB6A00B6C022 /* COUndoActionSetCurrentBranch.m */,
+			);
+			name = "Undo Actions";
+			sourceTree = "<group>";
+		};
 		669CADED1491C14300D0CF5F /* UUID & Path */ = {
 			isa = PBXGroup;
 			children = (
@@ -507,6 +538,7 @@
 				66C6F62915E763B20079B7FB /* COPersistentRootStateDelta.m */,
 				66C6F62C15E764FE0079B7FB /* COPersistentRootStateToken.h */,
 				66C6F62D15E764FE0079B7FB /* COPersistentRootStateToken.m */,
+				669959581633BCCA00B6C022 /* Undo Actions */,
 			);
 			name = Store;
 			sourceTree = "<group>";
@@ -690,6 +722,10 @@
 				66C6F62A15E763B20079B7FB /* COPersistentRootStateDelta.h in Headers */,
 				66C6F62E15E764FE0079B7FB /* COPersistentRootStateToken.h in Headers */,
 				66E7789314E6075B00D5DFFF /* COStore.h in Headers */,
+				66238164162FD04A00CA0CC4 /* COUndoAction.h in Headers */,
+				669959491633BB1100B6C022 /* COUndoActionSetCurrentVersionForBranch.h in Headers */,
+				6699594E1633BB5D00B6C022 /* COUndoActionDeleteBranch.h in Headers */,
+				669959521633BB6A00B6C022 /* COUndoActionSetCurrentBranch.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -891,6 +927,10 @@
 				66C6F62615E763470079B7FB /* COPersistentRootState.m in Sources */,
 				66C6F62B15E763B20079B7FB /* COPersistentRootStateDelta.m in Sources */,
 				66C6F62F15E764FE0079B7FB /* COPersistentRootStateToken.m in Sources */,
+				66238165162FD04A00CA0CC4 /* COUndoAction.m in Sources */,
+				6699594A1633BB1100B6C022 /* COUndoActionSetCurrentVersionForBranch.m in Sources */,
+				6699594F1633BB5D00B6C022 /* COUndoActionDeleteBranch.m in Sources */,
+				669959531633BB6A00B6C022 /* COUndoActionSetCurrentBranch.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

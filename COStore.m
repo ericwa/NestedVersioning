@@ -8,13 +8,20 @@
 #import "COPersistentRootStateDelta.h"
 #import "COPersistentRootStateToken.h"
 
+#import "COUndoAction.h"
+#import "COUndoActionDeleteBranch.h"
+#import "COUndoActionSetCurrentBranch.h"
+#import "COUndoActionSetCurrentVersionForBranch.h"
+
+
 NSString * const COStorePersistentRootMetadataDidChangeNotification = @"COStorePersistentRootMetadataDidChangeNotification";
 NSString * const COStoreNotificationUUID = @"COStoreNotificationUUID";
 
-static NSString *kCOPersistentRootsPlistPath = @"persistentRoots.plist";
+static NSString *kCOStoreMetadataPlistPath = @"metadata.plist";
 
-static NSString *kCOPersistentRootUndoLogArray = @"COPersistentRootUndoLogArray";
-static NSString *kCOPersistentRootUndoLogCurrentIndex = @"COPersistentRootUndoLogCurrentIndex";
+static NSString *kCOUndoActions = @"COUndoActions";
+static NSString *kCORedoActions = @"CORedoActions";
+static NSString *kCOPersistentRoot = @"COPersistentRoot";
 
 @implementation COStore
 
@@ -97,33 +104,33 @@ static NSString *kCOPersistentRootUndoLogCurrentIndex = @"COPersistentRootUndoLo
 /**
  * This is the path to the mutable part of the store
  */
-- (NSString *) persistentRootsPlistPath
+- (NSString *) storeMetadataPlistPath
 {
-    return [[url path] stringByAppendingPathComponent: kCOPersistentRootsPlistPath];
+    return [[url path] stringByAppendingPathComponent: kCOStoreMetadataPlistPath];
 }
 
 /*
-  
-format:
-
-{ prootUUID : { undoLog : [ proot-plist-0, proot-plist-1, ... ],
-                currentUndoLogPosition : 3 },
-  .. }
-
  
-where each proot-plist-x is the state of a persistent root's metadata at a given time
-in the form of a plist serialization of a COPersistentRoot
+ store metadata plist structure:
  
-*/
+ {
+ uuid : 
+     {
+     kCOUndoActions : [ .. ]
+     kCORedoActions : [ .. ]
+     kCOPersistentRoot : plist
+     }
+ 
+ */
 
-- (NSDictionary *) readPersistentRootsPlist
+- (NSMutableDictionary *) readStoreMetadataPlist
 {
-    return [NSDictionary dictionaryWithContentsOfFile: [self persistentRootsPlistPath]];
+    return [NSMutableDictionary dictionaryWithContentsOfFile: [self storeMetadataPlistPath]];
 }
 
-- (BOOL) writePersistentRootsPlist: (NSDictionary *)aPlist
+- (BOOL) writeStoreMetadataPlist: (NSDictionary *)aPlist
 {
-    return [aPlist writeToFile: [self persistentRootsPlistPath] atomically: YES];
+    return [aPlist writeToFile: [self storeMetadataPlistPath] atomically: YES];
 }
 
 /** @taskunit reading persistent roots */
@@ -133,57 +140,19 @@ in the form of a plist serialization of a COPersistentRoot
 // but it's faster to just read the entire state in one go.
 //
 
-- (NSDictionary *) undoLogDictionaryForPersistentRootWithUUID: (COUUID *)aUUID
+- (COPersistentRoot *) persistentRootWithUUID: (COUUID *)aUUID
 {
     assert(aUUID != nil);
-    NSDictionary *proots = [self readPersistentRootsPlist];
-    NSDictionary *undoLogPlist = [proots objectForKey: [aUUID stringValue]];
-
-    return undoLogPlist;
-}
-
-- (NSArray *) undoLogArrayForPersistentRootWithUUID: (COUUID *)aUUID
-{
-    NSDictionary *undoLogPlist = [self undoLogDictionaryForPersistentRootWithUUID: aUUID];
-    NSArray *undoLogArray = [undoLogPlist objectForKey: kCOPersistentRootUndoLogArray];
-    return undoLogArray;
-}
-
-- (NSUInteger) countOfUndoLogStatesForPersistentRootWithUUID: (COUUID *)aUUID
-{
-    return [[self undoLogArrayForPersistentRootWithUUID: aUUID] count];
-}
-
-- (NSUInteger) currentUndoLogStateIndexForPersistentRootWithUUID: (COUUID *)aUUID
-{
-    NSDictionary *undoLogPlist = [self undoLogDictionaryForPersistentRootWithUUID: aUUID];    
-    NSNumber *count = [undoLogPlist objectForKey: kCOPersistentRootUndoLogCurrentIndex];
-    assert(count != nil);
-    
-    return [count unsignedIntegerValue];
-}
-
-- (COPersistentRoot *) persistentRootWithUUID: (COUUID *)aUUID
-                          atUndoLogStateIndex: (NSUInteger)stateIndex
-{
-    NSDictionary *undoLogPlist = [self undoLogDictionaryForPersistentRootWithUUID: aUUID];
-    NSArray *undoLogArray = [undoLogPlist objectForKey: kCOPersistentRootUndoLogArray];
-    assert(undoLogArray != nil);
-    
-    id plist = [undoLogArray objectAtIndex: stateIndex];
+    NSDictionary *md = [self readStoreMetadataPlist];
+    NSDictionary *container = [md objectForKey: [aUUID stringValue]];
+    NSDictionary *plist = [container objectForKey: kCOPersistentRoot];
     
     return [[[COPersistentRoot alloc] initWithPlist: plist] autorelease];
 }
 
-- (COPersistentRoot *) persistentRootWithUUID: (COUUID *)aUUID
-{
-    return [self persistentRootWithUUID: aUUID
-                    atUndoLogStateIndex: [self currentUndoLogStateIndexForPersistentRootWithUUID: aUUID]];
-}
-
 - (NSArray *) allPersistentRootUUIDs
 {
-    NSArray *strings = [[self readPersistentRootsPlist] allKeys];
+    NSArray *strings = [[self readStoreMetadataPlist] allKeys];
     NSMutableArray *result = [NSMutableArray array];
     for (NSString *string in strings)
     {
@@ -195,70 +164,80 @@ in the form of a plist serialization of a COPersistentRoot
 
 /** @taskunit writing */
 
-- (BOOL) _writeUndoLogArray: (NSArray *)anArray
-               currentIndex: (NSUInteger)anIndex
-  forPersistentRootWithUUID: (COUUID *)aUUID
+- (BOOL) _writePersistentRoot: (COPersistentRoot *)aProot
+                  undoActions: (NSArray *)undoActions
+                  redoActions: (NSArray *)redoActions
 {
-    NSString *prootUUIDString = [aUUID stringValue];
+    NSMutableArray *undoPlists = [NSMutableArray array];
+    for (COUndoAction *undoAction in undoActions)
+    {
+        [undoPlists addObject: [undoAction plist]];
+    }
     
-    NSMutableDictionary *prootDict = [NSMutableDictionary dictionaryWithDictionary: [self readPersistentRootsPlist]];
+    NSMutableArray *redoPlists = [NSMutableArray array];
+    for (COUndoAction *redoAction in redoActions)
+    {
+        [redoPlists addObject: [redoAction plist]];
+    }
     
-    NSMutableDictionary *undoLogPlist = [NSMutableDictionary dictionaryWithDictionary: [prootDict objectForKey: prootUUIDString]];
-    [undoLogPlist setObject: anArray
-                     forKey: kCOPersistentRootUndoLogArray];    
-    [undoLogPlist setObject: [NSNumber numberWithUnsignedInteger: anIndex]
-                     forKey: kCOPersistentRootUndoLogCurrentIndex];
+    NSDictionary *prootContainer = D(undoPlists, kCOUndoActions,
+                                     redoPlists, kCORedoActions,
+                                     [aProot plist], kCOPersistentRoot);
     
-    [prootDict setObject: undoLogPlist
-                  forKey: prootUUIDString];
+    NSMutableDictionary *md = [NSMutableDictionary dictionaryWithDictionary: [self readStoreMetadataPlist]];
+    [md setObject: prootContainer
+           forKey: [[aProot UUID] stringValue]];
     
-    BOOL ok = [self writePersistentRootsPlist: prootDict];
+    BOOL ok = [self writeStoreMetadataPlist: md];
     
-    NSDictionary *info = [NSDictionary dictionaryWithObject: aUUID
+    // Post notification
+    
+    NSDictionary *info = [NSDictionary dictionaryWithObject: [aProot UUID]
                                                      forKey: COStoreNotificationUUID];
     
     [[NSNotificationCenter defaultCenter] postNotificationName: COStorePersistentRootMetadataDidChangeNotification
                                                         object: self
                                                       userInfo: info];
     
-    
-    return ok;
+    return ok;    
+}
+
+/**
+ * aKey is kCOUndoActions or kCORedoActions
+ */
+- (NSMutableArray *) _undoActionsForKey: (NSString *)aKey proot: (COUUID *)aProot
+{
+    NSMutableArray *result = [NSMutableArray array];
+    for (id plist in [[[self readStoreMetadataPlist] objectForKey: [aProot stringValue]] objectForKey: aKey])
+    {
+        [result addObject: [COUndoAction undoActionWithPlist: plist]];
+    }
+    return result;
 }
 
 - (BOOL) _writePersistentRoot: (COPersistentRoot *)aRoot
+             andAddUndoAction: (COUndoAction *)action
 {
-    COUUID *uuid = [aRoot UUID];
-
-    NSMutableArray *undoLogArray = [NSMutableArray arrayWithArray: [self undoLogArrayForPersistentRootWithUUID: uuid]];
-    const NSUInteger initialCount = [undoLogArray count];
-
-    NSUInteger currentIndex = 0;
+    NSMutableArray *undoActions = [self _undoActionsForKey: kCOUndoActions proot: [aRoot UUID]];
+    NSMutableArray *redoActions = [self _undoActionsForKey: kCORedoActions proot: [aRoot UUID]];
     
-    if (initialCount == 0)
+    if ([redoActions count] > 0)
     {
-        [undoLogArray addObject: [aRoot plist]];
+        NSLog(@"N.B. writing with a nonempty redo stack so it is getting cleared");
+        [redoActions removeAllObjects];
+    }
+    
+    if (action != nil)
+    {
+        [undoActions addObject: action];
     }
     else
     {
-        currentIndex = [self currentUndoLogStateIndexForPersistentRootWithUUID: uuid];
-        
-        assert(currentIndex < initialCount);
-        
-        if (currentIndex < (initialCount - 1))
-        {
-            NSLog(@"N.B. writing with a nonempty redo stack so it is getting cleared");
-            
-            [undoLogArray removeObjectsInRange: NSMakeRange(currentIndex + 1,
-                                                            initialCount - (currentIndex + 1))];
-        }
-        
-        [undoLogArray addObject: [aRoot plist]];
-        currentIndex++;
+        NSLog(@"Warning, updating proot metadata without inserting undo action");
     }
     
-    return [self _writeUndoLogArray: undoLogArray
-                       currentIndex: currentIndex
-          forPersistentRootWithUUID: uuid];
+    // Write the actual data
+    return [self _writePersistentRoot: aRoot undoActions: undoActions redoActions: redoActions];
 }
 
 /**
@@ -326,7 +305,8 @@ in the form of a plist serialization of a COPersistentRoot
                                                               branches: [NSArray arrayWithObject: branch]
                                                          currentBranch: [branch UUID]
                                                               metadata: nil] autorelease];
-    ok = [self _writePersistentRoot: result];
+    ok = [self _writePersistentRoot: result
+                   andAddUndoAction: nil];
     assert(ok);
     
     return result;
@@ -338,7 +318,8 @@ in the form of a plist serialization of a COPersistentRoot
 - (COPersistentRoot *) createCopyOfPersistentRoot: (COUUID *)aRoot
 {
     COPersistentRoot *newRoot = [[self persistentRootWithUUID: aRoot] persistentRootWithNewName];
-    [self _writePersistentRoot: newRoot];
+    [self _writePersistentRoot: newRoot
+              andAddUndoAction: nil];
     return newRoot;
 }
 
@@ -346,15 +327,16 @@ in the form of a plist serialization of a COPersistentRoot
                                          ofPersistentRoot: (COUUID *)aRoot
 {
     COPersistentRoot *newRoot = [[self persistentRootWithUUID: aRoot] persistentRootCopyingBranch: aBranch];
-    [self _writePersistentRoot: newRoot];
+    [self _writePersistentRoot: newRoot
+              andAddUndoAction: nil];
     return newRoot;
 }
 
 - (BOOL) deletePersistentRoot: (COUUID *)aRoot
 {
-    NSMutableDictionary *prootDict = [NSMutableDictionary dictionaryWithDictionary: [self readPersistentRootsPlist]];
+    NSMutableDictionary *prootDict = [NSMutableDictionary dictionaryWithDictionary: [self readStoreMetadataPlist]];
     [prootDict removeObjectForKey: [aRoot stringValue]];
-    return [self writePersistentRootsPlist: prootDict];
+    return [self writeStoreMetadataPlist: prootDict];
 }
 
 // branches
@@ -363,24 +345,56 @@ in the form of a plist serialization of a COPersistentRoot
      ofPersistentRoot: (COUUID *)aRoot
 {
     COPersistentRoot *newRoot = [self persistentRootWithUUID: aRoot];
+    
+    COBranch *branch = [newRoot branchForUUID: aBranch];
     [newRoot deleteBranch: aRoot];
-    return [self _writePersistentRoot: newRoot];
+    
+    COUndoAction *action = [[[COUndoActionDeleteBranch alloc] initWithBranch:branch
+                                                           isUndoingCreation:NO
+                                                                        UUID:aRoot
+                                                                        date:[NSDate date]
+                                                                 displayName:[NSString stringWithFormat: @"Delete Branch %@",
+                                                                              [branch name]]] autorelease];
+    
+    return [self _writePersistentRoot: newRoot
+                     andAddUndoAction: action];
 }
 
 - (BOOL) setCurrentBranch: (COUUID *)aBranch
 		forPersistentRoot: (COUUID *)aRoot
 {
     COPersistentRoot *newRoot = [self persistentRootWithUUID: aRoot];
+    COBranch *newBranch = [newRoot branchForUUID: aBranch];
+    
+    COUndoAction *action = [[[COUndoActionSetCurrentBranch alloc] initWithOldBranchUUID:[[newRoot currentBranch] UUID]
+                                                                          newBranchUUID:aBranch
+                                                                                   UUID:aRoot
+                                                                                   date:[NSDate date]
+                                                                            displayName:[NSString stringWithFormat: @"Switch to Branch %@",
+                                                                                         [newBranch name]]] autorelease];
+
     [newRoot setCurrentBranch: aRoot];
-    return [self _writePersistentRoot: newRoot];
+                            
+    return [self _writePersistentRoot: newRoot
+                     andAddUndoAction: action];
 }
 
 - (COUUID *) createCopyOfBranch: (COUUID *)aBranch
 			   ofPersistentRoot: (COUUID *)aRoot
 {
     COPersistentRoot *newRoot = [self persistentRootWithUUID: aRoot];
+    COBranch *oldBranch = [newRoot branchForUUID: aBranch];
     COBranch *newBranch = [newRoot _makeCopyOfBranch: aBranch];
-    [self _writePersistentRoot: newRoot];
+
+    COUndoAction *action = [[[COUndoActionDeleteBranch alloc] initWithBranch:newBranch
+                                                           isUndoingCreation:YES
+                                                                        UUID:aRoot
+                                                                        date:[NSDate date]
+                                                                 displayName:[NSString stringWithFormat: @"Copy Branch %@",
+                                                                              [oldBranch name]]] autorelease];
+
+    [self _writePersistentRoot: newRoot
+              andAddUndoAction: action];
     return [newBranch UUID];
 }
 
@@ -422,9 +436,21 @@ in the form of a plist serialization of a COPersistentRoot
           ofPersistentRoot: (COUUID *)aRoot
 {
     COPersistentRoot *newRoot = [self persistentRootWithUUID: aRoot];
+
+    
+    COUndoAction *action = [[[COUndoActionSetCurrentVersionForBranch alloc]
+                                initWithBranch: aBranch
+                                oldToken: [[newRoot branchForUUID: aBranch] currentState]
+                             newToken: aVersion
+                             UUID: aRoot
+                             date: [NSDate date]
+                             displayName: @"Apply Change"] autorelease];
+    
     [[newRoot branchForUUID: aBranch] _addCommit: aVersion];
     [[newRoot branchForUUID: aBranch] _setCurrentState: aVersion];
-    return [self _writePersistentRoot: newRoot];
+ 
+    return [self _writePersistentRoot: newRoot
+                     andAddUndoAction: action];
 }
 
 /** @taskunit syntax sugar */
@@ -451,46 +477,68 @@ in the form of a plist serialization of a COPersistentRoot
 
 /** @taskunit script-based undo/redo log */
 
+// api
+
 - (BOOL) canUndoForPersistentRootWithUUID: (COUUID *)aUUID
 {
-    const NSUInteger i = [self currentUndoLogStateIndexForPersistentRootWithUUID: aUUID];
-    return i > 0;
+    return [[self _undoActionsForKey: kCOUndoActions proot: aUUID] count] > 0;
 }
 - (BOOL) canRedoForPersistentRootWithUUID: (COUUID *)aUUID
 {
-    const NSUInteger count = [self countOfUndoLogStatesForPersistentRootWithUUID: aUUID];
-    const NSUInteger i = [self currentUndoLogStateIndexForPersistentRootWithUUID: aUUID];
-    return i < (count - 1);
+    return [[self _undoActionsForKey: kCORedoActions proot: aUUID] count] > 0;
 }
 
 - (NSString *) undoMenuItemTitleForPersistentRootWithUUID: (COUUID *)aUUID
 {
-    return @"Undo";
+    NSArray *arr = [self _undoActionsForKey: kCOUndoActions proot: aUUID];
+    if ([arr count] == 0)
+    {
+        return @"Undo";
+    }
+    else
+    {
+        return [NSString stringWithFormat: @"Undo %@", [[arr objectAtIndex: 0] menuTitle]];
+    }
 }
 - (NSString *) redoMenuItemTitleForPersistentRootWithUUID: (COUUID *)aUUID
 {
-    return @"Redo";
+    NSArray *arr = [self _undoActionsForKey: kCORedoActions proot: aUUID];
+    if ([arr count] == 0)
+    {
+        return @"Redo";
+    }
+    else
+    {
+        return [NSString stringWithFormat: @"Redo %@", [[arr objectAtIndex: 0] menuTitle]];
+    }
 }
 
 - (BOOL) undoForPersistentRootWithUUID: (COUUID *)aUUID
 {
-    assert([self canUndoForPersistentRootWithUUID: aUUID]);
-    const NSUInteger i = [self currentUndoLogStateIndexForPersistentRootWithUUID: aUUID];
+    NSMutableArray *undoActions = [self _undoActionsForKey: kCOUndoActions proot: aUUID];
+    NSMutableArray *redoActions = [self _undoActionsForKey: kCORedoActions proot: aUUID];
+
+    COUndoAction *action = [undoActions lastObject];
+    [redoActions addObject: [action inverse]];
+    [undoActions removeLastObject];
     
-    return [self _writeUndoLogArray: [self undoLogArrayForPersistentRootWithUUID: aUUID]
-                       currentIndex: i - 1
-          forPersistentRootWithUUID: aUUID];
+    COPersistentRoot *proot = [self persistentRootWithUUID: aUUID];
+    [action applyToPersistentRoot: proot];
+    return [self _writePersistentRoot: proot undoActions: undoActions redoActions: redoActions];
 }
 
 - (BOOL) redoForPersistentRootWithUUID: (COUUID *)aUUID
 {
-    assert([self canRedoForPersistentRootWithUUID: aUUID]);
+    NSMutableArray *undoActions = [self _undoActionsForKey: kCOUndoActions proot: aUUID];
+    NSMutableArray *redoActions = [self _undoActionsForKey: kCORedoActions proot: aUUID];
     
-    const NSUInteger i = [self currentUndoLogStateIndexForPersistentRootWithUUID: aUUID];
+    COUndoAction *action = [redoActions lastObject];
+    [undoActions addObject: [action inverse]];
+    [redoActions removeLastObject];
     
-    return [self _writeUndoLogArray: [self undoLogArrayForPersistentRootWithUUID: aUUID]
-                       currentIndex: i + 1
-          forPersistentRootWithUUID: aUUID];
+    COPersistentRoot *proot = [self persistentRootWithUUID: aUUID];
+    [action applyToPersistentRoot: proot];
+    return [self _writePersistentRoot: proot undoActions: undoActions redoActions: redoActions];
 }
 
 @end

@@ -45,6 +45,7 @@
 - (COPersistentRoot *) persistentRootWithNewName;
 
 - (void) deleteBranch: (COUUID *)aUUID;
+- (void) addBranch: (COBranch *)aBranch;
 - (void) setCurrentBranch: (COUUID *)aUUID;
 - (COBranch *) _makeCopyOfBranch: (COUUID *)aUUID;
 
