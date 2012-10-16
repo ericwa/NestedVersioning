@@ -20,10 +20,8 @@
  
 - (void) setBranch: (COBranch*)aBranch store: (COStore*)aStore
 {
-    ASSIGN(graphRenderer, [[[EWGraphRenderer alloc] initWithCommits: [aBranch allCommits]
-                                                              store: aStore] autorelease]);
-    
-    [self setNeedsDisplay: YES];
+    [self setGraphRenderer: [[[EWGraphRenderer alloc] initWithCommits: [aBranch allCommits]
+                                                              store: aStore] autorelease]];    
 }
 
 - (void) drawRect:(NSRect)dirtyRect
