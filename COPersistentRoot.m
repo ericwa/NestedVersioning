@@ -163,6 +163,8 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
     COUUID *newUUID = [COUUID UUID];
     COBranch *aCopy = [[[self branchForUUID: aUUID] mutableCopy] autorelease];
     [aCopy setUUID: newUUID];
+    NSString *msg = [NSString stringWithFormat: @"copy of '%@'", [[self branchForUUID: aUUID] name]];
+    [aCopy setName: msg];
     [branches setObject: aCopy forKey: newUUID];
     return aCopy;
 }

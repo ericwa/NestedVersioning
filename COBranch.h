@@ -29,6 +29,7 @@
 - (COUUID *)UUID;
 - (void) setUUID: (COUUID *)aUUID;
 - (NSString *)name;
+- (void) setName: (NSString *)aName;
 - (COPersistentRootStateToken *)currentState;
 /**
  * @return array of COPersistentRootStateToken

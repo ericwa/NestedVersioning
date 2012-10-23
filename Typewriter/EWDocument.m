@@ -102,7 +102,9 @@
 
 - (IBAction) branch: (id)sender
 {
-    NSLog(@"branch");
+    [store_ createCopyOfBranch: [[persistentRoot_ currentBranch] UUID] ofPersistentRoot: [self UUID]];
+    
+    [self reloadFromStore];
 }
 - (IBAction) showBranches: (id)sender
 {
@@ -143,6 +145,14 @@
         [NSException raise: NSInternalInconsistencyException
                     format: @"the given token %@ must be in the current editing branch's list of states", aToken];
     }
+}
+
+- (void) persistentSwitchToStateToken: (COPersistentRootStateToken *)aToken
+{
+    [store_ setCurrentVersion: aToken
+                    forBranch: [self editingBranch]
+             ofPersistentRoot: [self UUID]];
+    [self reloadFromStore];
 }
 
 // Doesn't write to DB...
@@ -200,6 +210,20 @@
 - (void) storePersistentRootMetadataDidChange: (NSNotification *)notif
 {
     NSLog(@"did change: %@", notif);
+}
+
+- (void) switchToBranch: (COUUID *)aBranchUUID
+{
+    [store_ setCurrentBranch: aBranchUUID
+           forPersistentRoot: [self UUID]];
+    [self reloadFromStore];
+}
+
+- (void) deleteBranch: (COUUID *)aBranchUUID
+{
+    [store_ deleteBranch: aBranchUUID
+        ofPersistentRoot: [self UUID]];
+    [self reloadFromStore];
 }
 
 /* EWUndoManagerDelegate */

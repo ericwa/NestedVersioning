@@ -32,4 +32,14 @@
  */
 - (void) loadStateToken: (COPersistentRootStateToken *)aToken;
 
+/**
+ * @param aToken
+ *   should be a state token that belongs to [self editingBranch]
+ */
+- (void) persistentSwitchToStateToken: (COPersistentRootStateToken *)aToken;
+
+- (void) switchToBranch: (COUUID *)aBranchUUID;
+
+- (void) deleteBranch: (COUUID *)aBranchUUID;
+
 @end

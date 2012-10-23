@@ -348,7 +348,7 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
     COPersistentRoot *newRoot = [self persistentRootWithUUID: aRoot];
     
     COBranch *branch = [newRoot branchForUUID: aBranch];
-    [newRoot deleteBranch: aRoot];
+    [newRoot deleteBranch: aBranch];
     
     COUndoAction *action = [[[COUndoActionDeleteBranch alloc] initWithBranch:branch
                                                                         UUID:aRoot
@@ -385,7 +385,7 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
     COPersistentRoot *newRoot = [self persistentRootWithUUID: aRoot];
     COBranch *oldBranch = [newRoot branchForUUID: aBranch];
     COBranch *newBranch = [newRoot _makeCopyOfBranch: aBranch];
-
+    
     COUndoAction *action = [[[COUndoActionCreateBranch alloc] initWithBranchUUID: [newBranch UUID]
                                                                             UUID:aRoot
                                                                             date:[NSDate date]
@@ -496,7 +496,7 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
     }
     else
     {
-        return [NSString stringWithFormat: @"Undo %@", [[arr objectAtIndex: 0] menuTitle]];
+        return [NSString stringWithFormat: @"Undo %@", [[arr lastObject] menuTitle]];
     }
 }
 - (NSString *) redoMenuItemTitleForPersistentRootWithUUID: (COUUID *)aUUID
@@ -508,7 +508,7 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
     }
     else
     {
-        return [NSString stringWithFormat: @"Redo %@", [[arr objectAtIndex: 0] menuTitle]];
+        return [NSString stringWithFormat: @"Redo %@", [[arr lastObject] menuTitle]];
     }
 }
 

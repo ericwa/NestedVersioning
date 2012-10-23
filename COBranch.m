@@ -50,6 +50,11 @@ NSString *kCOBranchMetadata = @"COBranchMetadata";
 {
     return name_;
 }
+- (void) setName: (NSString *)aName
+{
+    ASSIGN(name_, [NSString stringWithString: aName]);
+}
+
 - (COPersistentRootStateToken *)currentState
 {
     return currentState;
@@ -138,7 +143,9 @@ NSString *kCOBranchMetadata = @"COBranchMetadata";
 
 - (void) _addCommit: (COPersistentRootStateToken *)aCommit
 {
-    assert(![stateTokens containsObject: aCommit]);
+    if([stateTokens containsObject: aCommit]) {
+        NSLog(@"_addCommit called with existing commit %@", aCommit);
+    }
     [stateTokens addObject: aCommit];
 }
 - (void) _setCurrentState: (COPersistentRootStateToken *)aCommit
