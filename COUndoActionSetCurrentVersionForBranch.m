@@ -15,6 +15,10 @@ static NSString *kCONewVersionToken = @"CONewVersionToken";
                  date: (NSDate*)aDate
           displayName: (NSString*)aName
 {
+    NILARG_EXCEPTION_TEST(aBranch);
+    NILARG_EXCEPTION_TEST(oldToken);
+    NILARG_EXCEPTION_TEST(newToken);
+    
     self = [super initWithUUID: aUUID date: aDate displayName: aName];
     ASSIGN(branch_, aBranch);
     ASSIGN(oldToken_, oldToken);
@@ -43,7 +47,7 @@ static NSString *kCONewVersionToken = @"CONewVersionToken";
     return result;
 }
 
-- (COUndoAction *) inverse
+- (COUndoAction *) inverseForApplicationTo: (COPersistentRoot *)aProot
 {
     return [[[[self class] alloc] initWithBranch: branch_
                                         oldToken: newToken_

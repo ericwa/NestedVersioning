@@ -12,6 +12,9 @@ static NSString *kCONewBranchUUID = @"CONewBranchUUID";
                         date: (NSDate*)aDate
                  displayName: (NSString*)aName
 {
+    NILARG_EXCEPTION_TEST(aOldBranchUUID);
+    NILARG_EXCEPTION_TEST(aNewBranchUUID);
+    
     self = [super initWithUUID: aUUID date: aDate displayName: aName];
     ASSIGN(oldBranch_, aOldBranchUUID);
     ASSIGN(newBranch_, aNewBranchUUID);
@@ -39,7 +42,7 @@ static NSString *kCONewBranchUUID = @"CONewBranchUUID";
     return result;
 }
 
-- (COUndoAction *) inverse
+- (COUndoAction *) inverseForApplicationTo: (COPersistentRoot *)aProot
 {
     return [[[[self class] alloc] initWithOldBranchUUID: newBranch_
                                           newBranchUUID: oldBranch_

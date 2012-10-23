@@ -5,6 +5,7 @@
 
 NSString *kCOUndoActionSetCurrentVersionForBranch;
 NSString *kCOUndoActionDeleteBranch;
+NSString *kCOUndoActionCreateBranch;
 NSString *kCOUndoActionSetCurrentBranch;
 NSString *kCOUndoAction;
 
@@ -29,7 +30,7 @@ NSString *kCOUndoAction;
  * Caller should prepend "Undo " or "Redo "
  */
 - (NSString*) menuTitle;
-- (COUndoAction *) inverse;
+- (COUndoAction *) inverseForApplicationTo: (COPersistentRoot *)aProot;
 
 - (void) applyToPersistentRoot: (COPersistentRoot *)aProot;
 

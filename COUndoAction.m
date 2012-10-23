@@ -1,5 +1,6 @@
 #import "COUndoAction.h"
 #import "COUndoActionDeleteBranch.h"
+#import "COUndoActionCreateBranch.h"
 #import "COUndoActionSetCurrentBranch.h"
 #import "COUndoActionSetCurrentVersionForBranch.h"
 #import "COMacros.h"
@@ -12,6 +13,7 @@
 
 NSString *kCOUndoActionSetCurrentVersionForBranch = @"COUndoActionSetCurrentVersionForBranch";
 NSString *kCOUndoActionDeleteBranch = @"COUndoActionDeleteBranch";
+NSString *kCOUndoActionCreateBranch = @"COUndoActionCreateBranch";
 NSString *kCOUndoActionSetCurrentBranch = @"COUndoActionSetCurrentBranch";
 NSString *kCOUndoAction = @"COUndoAction";
 
@@ -23,22 +25,14 @@ static NSString *kCOActionDisplayName = @"COActionDisplayName";
                date: (NSDate*)aDate
         displayName: (NSString*)aName
 {
+    NILARG_EXCEPTION_TEST(aUUID);
+    NILARG_EXCEPTION_TEST(aDate);
+    NILARG_EXCEPTION_TEST(aName);
+    
     SUPERINIT;
     ASSIGN(uuid_, aUUID);
-    if (![uuid_ isKindOfClass: [COUUID class]])
-    {
-        [NSException raise: NSInvalidArgumentException format: @"expected COUUID"];
-    }
     ASSIGN(date_, aDate);
-    if (![date_ isKindOfClass: [NSDate class]])
-    {
-        [NSException raise: NSInvalidArgumentException format: @"expected date"];
-    }
     ASSIGN(displayName_, aName);
-    if (![displayName_ isKindOfClass: [NSString class]])
-    {
-        [NSException raise: NSInvalidArgumentException format: @"expected string"];
-    }
     return self;
 }
 - (id) initWithPlist: (id)plist
@@ -58,6 +52,10 @@ static NSString *kCOActionDisplayName = @"COActionDisplayName";
     else if ([key isEqual: kCOUndoActionDeleteBranch])
     {
         return [[[COUndoActionDeleteBranch alloc] initWithPlist: aPlist] autorelease];
+    }
+    else if ([key isEqual: kCOUndoActionCreateBranch])
+    {
+        return [[[COUndoActionCreateBranch alloc] initWithPlist: aPlist] autorelease];
     }
     else if ([key isEqual: kCOUndoActionSetCurrentBranch])
     {
@@ -89,7 +87,7 @@ static NSString *kCOActionDisplayName = @"COActionDisplayName";
 {
     return displayName_;
 }
-- (COUndoAction *) inverse
+- (COUndoAction *) inverseForApplicationTo: (COPersistentRoot *)aProot
 {
     [NSException raise: NSGenericException format: @"unimplemented"];
     return nil;

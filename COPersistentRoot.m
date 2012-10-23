@@ -156,7 +156,7 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
 - (void) setCurrentBranch: (COUUID *)aUUID
 {
     assert([branches objectForKey: aUUID] != nil);
-    ASSIGN(uuid, aUUID);
+    ASSIGN(currentBranch, aUUID);
 }
 - (COBranch *) _makeCopyOfBranch: (COUUID *)aUUID
 {

@@ -153,20 +153,94 @@ static COSubtree *makeTree(NSString *message)
     COPersistentRootStateToken *token3 = [store addState: state3 parentState: token];
     
     COBranch *branch = [proot currentBranch];
-    COUUID *branch2uuid = [store createCopyOfBranch: [branch UUID] ofPersistentRoot: prootuuid];
+    COUUID *branch2uuid = [store createCopyOfBranch: [branch UUID] ofPersistentRoot: prootuuid];    
     COUUID *branch3uuid = [store createCopyOfBranch: [branch UUID] ofPersistentRoot: prootuuid];
 
     proot = [store persistentRootWithUUID: prootuuid];
     COBranch *branch2 = [proot branchForUUID: branch2uuid];
     COBranch *branch3 = [proot branchForUUID: branch3uuid];
     
+    UKObjectsEqual(branch2uuid, [branch2 UUID]);
+    UKObjectsEqual(branch3uuid, [branch3 UUID]);
+    
     UKObjectsEqual(S(branch, branch2, branch3), [NSSet setWithArray: [[store persistentRootWithUUID: prootuuid] branches]]);
     
+    [store setCurrentBranch: branch2uuid forPersistentRoot: prootuuid];
+    
+    UKObjectsEqual(branch2uuid, [[[store persistentRootWithUUID: prootuuid] currentBranch] UUID]);
+    UKObjectsEqual(state, [store fullStateForPersistentRootWithUUID: prootuuid]);
+    
     [store setCurrentVersion: token2 forBranch: branch2uuid ofPersistentRoot: prootuuid];
+    
+    UKObjectsEqual(state2, [store fullStateForPersistentRootWithUUID: prootuuid]);
+    
     [store setCurrentVersion: token3 forBranch: branch3uuid ofPersistentRoot: prootuuid];
+    
+    UKObjectsEqual(state2, [store fullStateForPersistentRootWithUUID: prootuuid]);
+    UKObjectsEqual(state2, [store fullStateForPersistentRootWithUUID: prootuuid branchUUID: branch2uuid]);
+    UKObjectsEqual(state3, [store fullStateForPersistentRootWithUUID: prootuuid branchUUID: branch3uuid]);
+
+    // =========
+    // test undo
+    // =========
+    
+    UKFalse([store canRedoForPersistentRootWithUUID: prootuuid]);
+    
+    [store undoForPersistentRootWithUUID: prootuuid]; // undo branch3 (state -> state3)
+    
+    UKObjectsEqual(state2, [store fullStateForPersistentRootWithUUID: prootuuid]);
+    UKObjectsEqual(state2, [store fullStateForPersistentRootWithUUID: prootuuid branchUUID: branch2uuid]);
+    UKObjectsEqual(state, [store fullStateForPersistentRootWithUUID: prootuuid branchUUID: branch3uuid]);
+    
+    [store undoForPersistentRootWithUUID: prootuuid]; // undo branch2 (state -> state2)
+    
+    UKObjectsEqual(state, [store fullStateForPersistentRootWithUUID: prootuuid]);
+    UKObjectsEqual(state, [store fullStateForPersistentRootWithUUID: prootuuid branchUUID: branch2uuid]);
+    UKObjectsEqual(state, [store fullStateForPersistentRootWithUUID: prootuuid branchUUID: branch3uuid]);
+    
+    [store undoForPersistentRootWithUUID: prootuuid]; // undo switch current branch (branch -> branch2)
+    
+    UKObjectsEqual(state, [store fullStateForPersistentRootWithUUID: prootuuid]);
+    UKObjectsEqual([branch UUID], [[[store persistentRootWithUUID: prootuuid] currentBranch] UUID]);
+    
+    [store undoForPersistentRootWithUUID: prootuuid]; // undo creation of branch3
+    
+    UKIntsEqual(2, [[[store persistentRootWithUUID: prootuuid] branches] count]);
+    
+    [store undoForPersistentRootWithUUID: prootuuid]; // undo creation of branch2
+    
+    UKObjectsEqual(S(branch), [NSSet setWithArray: [[store persistentRootWithUUID: prootuuid] branches]]);
+    
+    UKFalse([store canUndoForPersistentRootWithUUID: prootuuid]);
+    
+    // =========
+    // test redo
+    // =========
+    
+    [store redoForPersistentRootWithUUID: prootuuid]; // redo creation of branch2
+    
+    UKIntsEqual(2, [[[store persistentRootWithUUID: prootuuid] branches] count]);
+    
+    [store redoForPersistentRootWithUUID: prootuuid]; // redo creation of branch3
+
+    UKIntsEqual(3, [[[store persistentRootWithUUID: prootuuid] branches] count]);
+    UKObjectsEqual(state, [store fullStateForPersistentRootWithUUID: prootuuid branchUUID: branch2uuid]);
+    UKObjectsEqual(state, [store fullStateForPersistentRootWithUUID: prootuuid branchUUID: branch3uuid]);
+
+    [store redoForPersistentRootWithUUID: prootuuid]; // redo switch current branch (branch -> branch2)  
+    
+    UKObjectsEqual(branch2uuid, [[[store persistentRootWithUUID: prootuuid] currentBranch] UUID]);
+    
+    [store redoForPersistentRootWithUUID: prootuuid]; // redo branch2 (state -> state2)
+    
+    UKObjectsEqual(state2, [store fullStateForPersistentRootWithUUID: prootuuid branchUUID: branch2uuid]);
+    UKObjectsEqual(state, [store fullStateForPersistentRootWithUUID: prootuuid branchUUID: branch3uuid]);
+    
+    [store redoForPersistentRootWithUUID: prootuuid]; // redo branch3 (state -> state3)
     
     UKObjectsEqual(state2, [store fullStateForPersistentRootWithUUID: prootuuid branchUUID: branch2uuid]);
     UKObjectsEqual(state3, [store fullStateForPersistentRootWithUUID: prootuuid branchUUID: branch3uuid]);
+    UKFalse([store canRedoForPersistentRootWithUUID: prootuuid]);
 }
 
 - (void)testCopyPersistentRoot

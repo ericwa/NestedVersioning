@@ -10,6 +10,7 @@
 
 #import "COUndoAction.h"
 #import "COUndoActionDeleteBranch.h"
+#import "COUndoActionCreateBranch.h"
 #import "COUndoActionSetCurrentBranch.h"
 #import "COUndoActionSetCurrentVersionForBranch.h"
 
@@ -350,7 +351,6 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
     [newRoot deleteBranch: aRoot];
     
     COUndoAction *action = [[[COUndoActionDeleteBranch alloc] initWithBranch:branch
-                                                           isUndoingCreation:NO
                                                                         UUID:aRoot
                                                                         date:[NSDate date]
                                                                  displayName:[NSString stringWithFormat: @"Delete Branch %@",
@@ -373,7 +373,7 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
                                                                             displayName:[NSString stringWithFormat: @"Switch to Branch %@",
                                                                                          [newBranch name]]] autorelease];
 
-    [newRoot setCurrentBranch: aRoot];
+    [newRoot setCurrentBranch: aBranch];
                             
     return [self _writePersistentRoot: newRoot
                      andAddUndoAction: action];
@@ -386,11 +386,10 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
     COBranch *oldBranch = [newRoot branchForUUID: aBranch];
     COBranch *newBranch = [newRoot _makeCopyOfBranch: aBranch];
 
-    COUndoAction *action = [[[COUndoActionDeleteBranch alloc] initWithBranch:newBranch
-                                                           isUndoingCreation:YES
-                                                                        UUID:aRoot
-                                                                        date:[NSDate date]
-                                                                 displayName:[NSString stringWithFormat: @"Copy Branch %@",
+    COUndoAction *action = [[[COUndoActionCreateBranch alloc] initWithBranchUUID: [newBranch UUID]
+                                                                            UUID:aRoot
+                                                                            date:[NSDate date]
+                                                                     displayName:[NSString stringWithFormat: @"Copy Branch %@",
                                                                               [oldBranch name]]] autorelease];
 
     [self _writePersistentRoot: newRoot
@@ -518,11 +517,12 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
     NSMutableArray *undoActions = [self _undoActionsForKey: kCOUndoActions proot: aUUID];
     NSMutableArray *redoActions = [self _undoActionsForKey: kCORedoActions proot: aUUID];
 
+    COPersistentRoot *proot = [self persistentRootWithUUID: aUUID];
+    
     COUndoAction *action = [undoActions lastObject];
-    [redoActions addObject: [action inverse]];
+    [redoActions addObject: [action inverseForApplicationTo: proot]];
     [undoActions removeLastObject];
     
-    COPersistentRoot *proot = [self persistentRootWithUUID: aUUID];
     [action applyToPersistentRoot: proot];
     return [self _writePersistentRoot: proot undoActions: undoActions redoActions: redoActions];
 }
@@ -532,11 +532,12 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
     NSMutableArray *undoActions = [self _undoActionsForKey: kCOUndoActions proot: aUUID];
     NSMutableArray *redoActions = [self _undoActionsForKey: kCORedoActions proot: aUUID];
     
+    COPersistentRoot *proot = [self persistentRootWithUUID: aUUID];
+    
     COUndoAction *action = [redoActions lastObject];
-    [undoActions addObject: [action inverse]];
+    [undoActions addObject: [action inverseForApplicationTo: proot]];
     [redoActions removeLastObject];
     
-    COPersistentRoot *proot = [self persistentRootWithUUID: aUUID];
     [action applyToPersistentRoot: proot];
     return [self _writePersistentRoot: proot undoActions: undoActions redoActions: redoActions];
 }

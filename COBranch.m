@@ -158,5 +158,9 @@ NSString *kCOBranchMetadata = @"COBranchMetadata";
     return result;
 }
 
+- (NSString *)description
+{
+    return [NSString stringWithFormat: @"<Branch %@>", [self UUID]];
+}
 
 @end
