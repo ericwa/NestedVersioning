@@ -181,6 +181,21 @@
     ASSIGN(persistentRoot_, aMetadata);
     ASSIGN(editingBranch_, [[persistentRoot_ currentBranch] UUID]);
     [self loadStateToken: [[persistentRoot_ currentBranch] currentState]];
+    
+    for (NSWindowController *wc in [self windowControllers])
+    {
+        [wc synchronizeWindowTitleWithDocumentName];
+    }
+}
+
+- (NSString *)displayName
+{
+    NSString *branchName = [[persistentRoot_ currentBranch] name];
+    
+    // FIXME: Get proper persistent root name
+    return [NSString stringWithFormat: @"Untitled (on branch '%@')",
+            [self UUID],
+            branchName];
 }
 
 - (void) reloadFromStore

@@ -62,12 +62,11 @@
     
     NSLog(@"new proot: %@", proot);
     
-    EWDocument *doc = [[NSDocumentController sharedDocumentController] currentDocument];
-    COBranch *branch =[proot branchForUUID: [doc editingBranch]];
+    COBranch *branch =[proot currentBranch];
     
     NSLog(@"current branch: %@ has %d commits.g v %@", branch, (int)[[branch allCommits] count], graphView_);
     
-    [graphView_ setBranch: branch store: store];
+    [graphView_ setPersistentRoot: proot branch: branch store: store];
 }
 
 

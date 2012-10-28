@@ -18,10 +18,21 @@
     return self;
 }
  
-- (void) setBranch: (COBranch*)aBranch store: (COStore*)aStore
+- (void) setPersistentRoot: (COPersistentRoot *)proot
+                    branch: (COBranch*)aBranch
+                     store: (COStore*)aStore
 {
-    [self setGraphRenderer: [[[EWGraphRenderer alloc] initWithCommits: [aBranch allCommits]
-                                                              store: aStore] autorelease]];    
+    NSMutableArray *allCommitsOnAllBranches = [NSMutableArray array];
+
+    for (COBranch *branch in [proot branches])
+    {
+        [allCommitsOnAllBranches addObjectsFromArray: [branch allCommits]];
+    }
+    
+    [self setGraphRenderer: [[[EWGraphRenderer alloc] initWithCommits: allCommitsOnAllBranches
+                                                        branchCommits: [aBranch allCommits]
+                                                        currentCommit: [aBranch currentState]
+                                                                store: aStore] autorelease]];
 }
 
 - (void) drawRect:(NSRect)dirtyRect
@@ -29,11 +40,11 @@
     [NSGraphicsContext saveGraphicsState];
     
     [[NSColor whiteColor] set];
-    NSRectFill(dirtyRect);
+    NSRectFill([self bounds]);
     
 	if (graphRenderer != nil)
 	{        
-        [graphRenderer drawWithHighlightedCommit: nil];
+        [graphRenderer draw];
 	}
     
     [NSGraphicsContext restoreGraphicsState];
@@ -42,7 +53,7 @@
 - (NSString *)view:(NSView *)view stringForToolTip:(NSToolTipTag)tag point:(NSPoint)point userData:(void *)userData
 {
 	COStore *store = [graphRenderer store];
-	COUUID *commit = [graphRenderer commitAtPoint: point];
+	COPersistentRootStateToken *commit = [graphRenderer commitAtPoint: point];
 	
 	if (commit == nil)
 	{

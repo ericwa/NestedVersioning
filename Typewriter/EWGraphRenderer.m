@@ -38,12 +38,17 @@ static NSInteger visit(NSDictionary *childrenForUUID, COPersistentRootStateToken
 	return MAX(currentLevel, maxLevelUsed);
 }
 
-- (id) initWithCommits: (NSArray*)stateTokens store: (COStore*)aStore;
+- (id) initWithCommits: (NSArray*)stateTokens
+         branchCommits: (NSArray*)branchCommits
+         currentCommit: (COPersistentRootStateToken*)currentCommit
+                 store: (COStore*)aStore
 {
 	SUPERINIT;
 	ASSIGN(store, aStore);
     
     ASSIGN(allCommitsSorted, [NSMutableArray arrayWithArray: stateTokens]);
+    ASSIGN(currentCommit_, currentCommit);
+    ASSIGN(branchCommits_, branchCommits);
     
     [self layoutGraph];
 	return self;
@@ -240,41 +245,48 @@ static void EWDrawArrowFromTo(NSPoint p1, NSPoint p2)
 
 - (NSColor *)colorForCommit: (COPersistentRootStateToken *)aCommit
 {
-//	if ([[COSubtreeFactory factory] shouldSkipVersion: aCommit
-//											forBranch: nil
-//												store: store])
+    if ([aCommit isEqual: currentCommit_])
+    {
+        return [NSColor purpleColor];
+    }
+    else if ([branchCommits_ containsObject: aCommit])
+    {
+        return [[NSColor purpleColor] colorWithAlphaComponent: 0.66];
+    }
+    else
 	{
-		return [NSColor blackColor];
+		return [NSColor lightGrayColor];
 	}
-//	else
-//	{
-//		return [NSColor blackColor];
-//	}
 }
 
-- (void) drawWithHighlightedCommit: (COPersistentRootStateToken*)aCommit
+- (CGFloat) thicknessForCommit: (COPersistentRootStateToken *)aCommit
+{
+    if ([aCommit isEqual: currentCommit_])
+    {
+        return 3.0;
+    }
+    else
+	{
+		return 1.0;
+	}
+}
+
+- (void) draw
 {
 	for (NSUInteger col = 0; col < [allCommitsSorted count]; col++)
 	{
 		COPersistentRootStateToken *commit = [allCommitsSorted objectAtIndex: col];		
 		
 		NSColor *color = [self colorForCommit: commit];
-		
+		CGFloat thickness = [self thicknessForCommit: commit];
+        
 		NSRect r = [self rectForCommit: commit];
 		NSBezierPath *circle = [NSBezierPath bezierPathWithOvalInRect: r];
 		
-		if ([commit isEqual: aCommit])
-		{
-			[[NSColor purpleColor] set];
-			[circle setLineWidth: 3];
-			[circle stroke];
-		}
-		else
-		{
-			[color set];
-			[circle stroke];
-		}
-		
+        [color set];
+        [circle setLineWidth: thickness];
+        [circle stroke];
+    
 		for (COPersistentRootStateToken *child in [childrenForUUID objectForKey: commit])
 		{
 			NSRect r2 = [self rectForCommit: child];

@@ -127,9 +127,12 @@
     {
         return [branch UUID];
     }
+    else if ([[tableColumn identifier] isEqual: @"checked"])
+    {
+        BOOL checked = [[[proot_ currentBranch] UUID] isEqual: [branch UUID]];
+        return [NSNumber numberWithBool: checked];
+    }
     return nil;
 }
-
-
 
 @end

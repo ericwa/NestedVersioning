@@ -9,15 +9,22 @@
 	NSMutableDictionary *levelForUUID;
 	NSUInteger maxLevelUsed;
 	COStore *store;
+    
+    // Used for coloring the graph
+    COPersistentRootStateToken *currentCommit_;
+    NSArray *branchCommits_;
 }
 
-- (id) initWithCommits: (NSArray*)stateTokens store: (COStore*)aStore;
+- (id) initWithCommits: (NSArray*)stateTokens
+         branchCommits: (NSArray*)tokensOnBranch
+         currentCommit: (COPersistentRootStateToken*)currentCommit
+                 store: (COStore*)aStore;
 - (void) layoutGraph;
 
 - (COStore *)store;
 
 - (NSSize) size;
-- (void) drawWithHighlightedCommit: (COPersistentRootStateToken*)aCommit;
+- (void) draw;
 
 - (COPersistentRootStateToken *)commitAtPoint: (NSPoint)aPoint;
 
