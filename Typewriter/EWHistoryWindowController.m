@@ -69,5 +69,9 @@
     [graphView_ setPersistentRoot: proot branch: branch store: store];
 }
 
+- (void) sliderChanged: (id)sender
+{
+    NSLog(@"%lf", [sender doubleValue]);
+}
 
 @end

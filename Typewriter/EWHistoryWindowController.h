@@ -12,4 +12,6 @@
 
 - (void) show;
 
+- (IBAction) sliderChanged: (id)sender;
+
 @end
