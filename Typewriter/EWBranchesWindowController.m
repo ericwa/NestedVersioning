@@ -134,5 +134,20 @@
     }
     return nil;
 }
-
+- (void)tableView:(NSTableView *)tableView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
+{
+    COBranch *branch = [[proot_ branches] objectAtIndex: row];
+    if ([[tableColumn identifier] isEqual: @"name"])
+    {
+        NSLog(@"fixme: rename");
+    }
+    else if ([[tableColumn identifier] isEqual: @"checked"])
+    {
+        if ([object boolValue])
+        {
+            [(EWDocument *)[[NSDocumentController sharedDocumentController]
+                            currentDocument] switchToBranch: [branch UUID]];
+        }
+    }
+}
 @end
