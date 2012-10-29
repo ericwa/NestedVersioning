@@ -1,8 +1,9 @@
 #import <Cocoa/Cocoa.h>
 
 #import "EWHistoryGraphView.h"
+#import "EWUtilityWindowController.h"
 
-@interface EWHistoryWindowController : NSWindowController
+@interface EWHistoryWindowController : EWUtilityWindowController
 {
     IBOutlet EWHistoryGraphView *graphView_;
 }

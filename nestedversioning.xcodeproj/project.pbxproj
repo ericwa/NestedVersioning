@@ -94,6 +94,7 @@
 		66E778B814E60E3C00D5DFFF /* Icon-Pass.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 66E778B614E60E3C00D5DFFF /* Icon-Pass.tiff */; };
 		66E778BE14E60ED900D5DFFF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 66E778BA14E60ED900D5DFFF /* InfoPlist.strings */; };
 		66E778BF14E60ED900D5DFFF /* UKTestHandler.strings in Resources */ = {isa = PBXBuildFile; fileRef = 66E778BC14E60ED900D5DFFF /* UKTestHandler.strings */; };
+		66EA0D59163E04E30023A12A /* EWUtilityWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EA0D58163E04E30023A12A /* EWUtilityWindowController.m */; };
 		79626467150EE07E009A0686 /* COSequenceMerge.h in Headers */ = {isa = PBXBuildFile; fileRef = 79626465150EE07E009A0686 /* COSequenceMerge.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79F5947C15119C7D007C517E /* COSubtreeEdits.h in Headers */ = {isa = PBXBuildFile; fileRef = 79F5947A15119C7D007C517E /* COSubtreeEdits.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
@@ -240,6 +241,8 @@
 		66E8776A1455FE67006CBE7E /* COUUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COUUID.m; sourceTree = "<group>"; };
 		66E8E93314D4BC7F00CBE2D8 /* COSubtreeCopy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COSubtreeCopy.h; sourceTree = "<group>"; };
 		66E8E93414D4BC7F00CBE2D8 /* COSubtreeCopy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COSubtreeCopy.m; sourceTree = "<group>"; };
+		66EA0D57163E04E30023A12A /* EWUtilityWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWUtilityWindowController.h; sourceTree = "<group>"; };
+		66EA0D58163E04E30023A12A /* EWUtilityWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWUtilityWindowController.m; sourceTree = "<group>"; };
 		66EADD6414732AEE003181FC /* TestUndo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestUndo.m; sourceTree = "<group>"; wrapsLines = 1; };
 		66EADD67147345B9003181FC /* COItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COItem.h; sourceTree = "<group>"; };
 		66EADD68147345B9003181FC /* COItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COItem.m; sourceTree = "<group>"; };
@@ -475,6 +478,8 @@
 				666026DB16082E5600D84368 /* Pickboard.xib */,
 				666026DC16082E5600D84368 /* Typewriter-Info.plist */,
 				666026DD16082E5600D84368 /* Typewriter-Prefix.pch */,
+				66EA0D57163E04E30023A12A /* EWUtilityWindowController.h */,
+				66EA0D58163E04E30023A12A /* EWUtilityWindowController.m */,
 			);
 			path = Typewriter;
 			sourceTree = "<group>";
@@ -892,6 +897,7 @@
 				666026F316082F1E00D84368 /* main.m in Sources */,
 				6635EA9716233EB900DBC629 /* EWGraphRenderer.m in Sources */,
 				6635EA9816233EB900DBC629 /* EWHistoryGraphView.m in Sources */,
+				66EA0D59163E04E30023A12A /* EWUtilityWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
