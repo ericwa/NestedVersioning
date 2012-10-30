@@ -16,6 +16,22 @@ instead of trying to use the persistent root mechanism itself to capture the his
 of changes to a persistent root (commit, revert to version, create branch, switch branch, etc),
 there will now be a command log.
 
+
+Store concept: no UUID, only has a URL. A proot can be copied into as many stores as you like
+but the pair (store URL, proot UUID) uniquely identifies tye proot state. all that's needed is 
+to make sure a proot's UUDI is unique within a store, which is trivial.
+
+ rationale:
+  - if stores had UUIDs, not sure what the UUID would mean. It wouldn't be unique (e.g. if a store is backed up, you have 2 stores with the same uuid).
+  - it would serve as a kind of grouping mechanism for persistent roots, e.g.
+    proot X is in store UUID Y, where Y represents my photo library.
+  - but this introduces a whole new level of complexity, 
+     = can proot exist outside of a store UUID?
+     = can proot be moved to different store UUID?
+  - no clear benifit - better to use another mechanism (e.g. tagging) to group persistent
+    roots together, and keep stores as an implementation detail.
+
+
 unsure at the moment if this command log will be kept directly in the persistent roots
 or in a separate library/location on disk.
 
