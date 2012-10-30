@@ -194,7 +194,6 @@
     
     // FIXME: Get proper persistent root name
     return [NSString stringWithFormat: @"Untitled (on branch '%@')",
-            [self UUID],
             branchName];
 }
 
