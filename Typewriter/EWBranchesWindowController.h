@@ -2,10 +2,12 @@
 #import "COPersistentRoot.h"
 #import "EWUtilityWindowController.h"
 
+@class EWDocument;
+
 @interface EWBranchesWindowController : EWUtilityWindowController <NSTableViewDelegate, NSTableViewDataSource>
 {
 	IBOutlet NSTableView *table;
-    COPersistentRoot *proot_;
+    EWDocument *inspectedDoc_;
 }
 
 + (EWBranchesWindowController *) sharedController;

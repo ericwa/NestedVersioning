@@ -14,6 +14,7 @@
     COUUID *editingBranch_;
 }
 
+- (COStore *)store;
 
 - (IBAction) branch: (id)sender;
 - (IBAction) showBranches: (id)sender;

@@ -3,9 +3,12 @@
 #import "EWHistoryGraphView.h"
 #import "EWUtilityWindowController.h"
 
+@class EWDocument;
+
 @interface EWHistoryWindowController : EWUtilityWindowController
 {
     IBOutlet EWHistoryGraphView *graphView_;
+    EWDocument *inspectedDoc_;
 }
 
 + (EWHistoryWindowController *) sharedController;

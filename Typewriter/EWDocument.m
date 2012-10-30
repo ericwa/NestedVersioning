@@ -40,6 +40,11 @@
     return self;
 }
 
+- (COStore *)store
+{
+    return store_;
+}
+
 - (void) dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver: self
