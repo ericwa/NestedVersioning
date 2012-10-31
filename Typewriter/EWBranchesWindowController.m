@@ -46,15 +46,6 @@
 - (void) setInspectedDocument: (NSDocument *)aDoc
 {
     NSLog(@"Inspect %@", aDoc);
-    
-    inspectedDoc_ = (EWDocument *)aDoc;
-    
-    [table reloadData];
-}
-
-- (COPersistentRoot *)proot
-{
-    return [inspectedDoc_ currentPersistentRoot];
 }
 
 - (void) show
@@ -68,20 +59,18 @@
 - (void) storePersistentRootMetadataDidChange: (NSNotification *)notif
 {
     NSLog(@"branches window: view did change: %@", notif);
-    COUUID *aUUID = [[notif userInfo] objectForKey: COStoreNotificationUUID];
+    
     COStore *store = [notif object];
     
-    EWDocument *ewdoc = (EWDocument *)[[NSDocumentController sharedDocumentController]
-                                       currentDocument];
-    if ([aUUID isEqual: [ewdoc UUID]])
-    {
-        [self setInspectedDocument: ewdoc];
-    }
+    COUUID *aUUID = [[notif userInfo] objectForKey: COStoreNotificationUUID];
+    ASSIGN(proot_, [store persistentRootWithUUID: aUUID]);
+    
+    [table reloadData];
 }
 
 - (COBranch *)selectedBranch
 {
-    COBranch *branch = [[[self proot] branches] objectAtIndex: [table selectedRow]];
+    COBranch *branch = [[proot_ branches] objectAtIndex: [table selectedRow]];
     return branch;
 }
 
@@ -125,11 +114,11 @@
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
 {
-	return [[[self proot] branches] count];;
+	return [[proot_ branches] count];;
 }
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
 {
-	COBranch *branch = [[[self proot] branches] objectAtIndex: row];
+	COBranch *branch = [[proot_ branches] objectAtIndex: row];
     if ([[tableColumn identifier] isEqual: @"name"])
     {
         return [branch name];
@@ -140,14 +129,14 @@
     }
     else if ([[tableColumn identifier] isEqual: @"checked"])
     {
-        BOOL checked = [[[[self proot] currentBranch] UUID] isEqual: [branch UUID]];
+        BOOL checked = [[[proot_ currentBranch] UUID] isEqual: [branch UUID]];
         return [NSNumber numberWithBool: checked];
     }
     return nil;
 }
 - (void)tableView:(NSTableView *)tableView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
 {
-    COBranch *branch = [[[self proot] branches] objectAtIndex: row];
+    COBranch *branch = [[proot_ branches] objectAtIndex: row];
     if ([[tableColumn identifier] isEqual: @"name"])
     {
         NSLog(@"fixme: rename");
