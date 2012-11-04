@@ -7,6 +7,7 @@ NSString *kCOUndoActionSetCurrentVersionForBranch;
 NSString *kCOUndoActionDeleteBranch;
 NSString *kCOUndoActionCreateBranch;
 NSString *kCOUndoActionSetCurrentBranch;
+NSString *kCOUndoActionGroup;
 NSString *kCOUndoAction;
 
 @interface COUndoAction : NSObject

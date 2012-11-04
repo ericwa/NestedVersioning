@@ -97,6 +97,8 @@
 		66EA0D59163E04E30023A12A /* EWUtilityWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EA0D58163E04E30023A12A /* EWUtilityWindowController.m */; };
 		66FCDBE41645DEF800E24A67 /* COPersistentRootEditingContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 66FCDBE21645DEF700E24A67 /* COPersistentRootEditingContext.h */; };
 		66FCDBE51645DEF800E24A67 /* COPersistentRootEditingContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 66FCDBE31645DEF800E24A67 /* COPersistentRootEditingContext.m */; };
+		66FCDC1F16470ECA00E24A67 /* COUndoActionGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = 66FCDC1D16470ECA00E24A67 /* COUndoActionGroup.h */; };
+		66FCDC2016470ECA00E24A67 /* COUndoActionGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 66FCDC1E16470ECA00E24A67 /* COUndoActionGroup.m */; };
 		79626467150EE07E009A0686 /* COSequenceMerge.h in Headers */ = {isa = PBXBuildFile; fileRef = 79626465150EE07E009A0686 /* COSequenceMerge.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79F5947C15119C7D007C517E /* COSubtreeEdits.h in Headers */ = {isa = PBXBuildFile; fileRef = 79F5947A15119C7D007C517E /* COSubtreeEdits.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
@@ -264,6 +266,8 @@
 		66F4E319147C606A004FC1BA /* TestGameEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestGameEditor.m; sourceTree = "<group>"; };
 		66FCDBE21645DEF700E24A67 /* COPersistentRootEditingContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPersistentRootEditingContext.h; sourceTree = "<group>"; };
 		66FCDBE31645DEF800E24A67 /* COPersistentRootEditingContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COPersistentRootEditingContext.m; sourceTree = "<group>"; };
+		66FCDC1D16470ECA00E24A67 /* COUndoActionGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COUndoActionGroup.h; sourceTree = "<group>"; };
+		66FCDC1E16470ECA00E24A67 /* COUndoActionGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COUndoActionGroup.m; sourceTree = "<group>"; };
 		790574FB14F8A7D20007C67B /* TestSubtreeDiffMerge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSubtreeDiffMerge.m; sourceTree = "<group>"; };
 		790B1AE81485B184001ED869 /* TestSimpleUseOfNestedPersistentRoots.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSimpleUseOfNestedPersistentRoots.m; sourceTree = "<group>"; };
 		79156DB91484BE4D00AB66B1 /* TestConcurrentContextModification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestConcurrentContextModification.m; sourceTree = "<group>"; };
@@ -505,6 +509,8 @@
 			children = (
 				66238162162FD04A00CA0CC4 /* COUndoAction.h */,
 				66238163162FD04A00CA0CC4 /* COUndoAction.m */,
+				66FCDC1D16470ECA00E24A67 /* COUndoActionGroup.h */,
+				66FCDC1E16470ECA00E24A67 /* COUndoActionGroup.m */,
 				669959471633BB1100B6C022 /* COUndoActionSetCurrentVersionForBranch.h */,
 				669959481633BB1100B6C022 /* COUndoActionSetCurrentVersionForBranch.m */,
 				6699594C1633BB5C00B6C022 /* COUndoActionDeleteBranch.h */,
@@ -753,6 +759,7 @@
 				669959521633BB6A00B6C022 /* COUndoActionSetCurrentBranch.h in Headers */,
 				6617E5EA16364A8400FC903A /* COUndoActionCreateBranch.h in Headers */,
 				66FCDBE41645DEF800E24A67 /* COPersistentRootEditingContext.h in Headers */,
+				66FCDC1F16470ECA00E24A67 /* COUndoActionGroup.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -961,6 +968,7 @@
 				669959531633BB6A00B6C022 /* COUndoActionSetCurrentBranch.m in Sources */,
 				6617E5EB16364A8400FC903A /* COUndoActionCreateBranch.m in Sources */,
 				66FCDBE51645DEF800E24A67 /* COPersistentRootEditingContext.m in Sources */,
+				66FCDC2016470ECA00E24A67 /* COUndoActionGroup.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

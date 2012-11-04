@@ -3,6 +3,7 @@
 #import "COUndoActionCreateBranch.h"
 #import "COUndoActionSetCurrentBranch.h"
 #import "COUndoActionSetCurrentVersionForBranch.h"
+#import "COUndoActionGroup.h"
 #import "COMacros.h"
 
 @interface COUndoAction (Private)
@@ -60,6 +61,10 @@ static NSString *kCOActionDisplayName = @"COActionDisplayName";
     else if ([key isEqual: kCOUndoActionSetCurrentBranch])
     {
         return [[[COUndoActionSetCurrentBranch alloc] initWithPlist: aPlist] autorelease];
+    }
+    else if ([key isEqual: kCOUndoActionGroup])
+    {
+        return [[[COUndoActionGroup alloc] initWithPlist: aPlist] autorelease];
     }
     [NSException raise: NSInvalidArgumentException format: @"invalid plist"];
     return nil;
