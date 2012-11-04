@@ -98,6 +98,30 @@ static COSubtree *makeTree(NSString *message)
     UKObjectsNotEqual(state, [store fullStateForToken: [[prootFetched currentBranch] currentState]]);
 }
 
+- (void) testWithEditingContext
+{
+	COStore *store = setupStore();
+	COSubtree *basicTree = makeTree(@"hello world");
+    
+    // FIXME: Move support for this to editing context
+    
+    COPersistentRootState *state = [COPersistentRootState stateWithTree: basicTree];
+    COPersistentRoot *proot = [store createPersistentRootWithInitialContents: state];
+    
+    COPersistentRootEditingContext *ctx = [COPersistentRootEditingContext contextForEditingPersistentRootWithUUID: [proot UUID]
+                                                                                                          inStore: store];
+
+    UKObjectsEqual(basicTree, [ctx persistentRootTree]);
+    
+    // make a second commit
+    
+    [[ctx persistentRootTree] setValue: @"changed with context" forAttribute: @"name" type: [COType stringType]];
+
+    [ctx commitWithMetadata: nil];
+    
+    UKObjectsEqual(@"changed with context", [[[store fullStateForPersistentRootWithUUID: [ctx UUID]] tree] valueForAttribute: @"name"]);
+}
+
 - (void)testReopenStore
 {
 	COUUID *prootUUID = nil;

@@ -12,6 +12,7 @@
 #import "COSubtree.h"
 #import "COMacros.h"
 #import "COSubtree.h"
+#import "COPersistentRootEditingContext.h"
 
 #define STOREPATH [@"~/om5teststore" stringByExpandingTildeInPath]
 #define STOREURL [NSURL fileURLWithPath: STOREPATH]
