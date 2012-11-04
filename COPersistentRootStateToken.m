@@ -67,4 +67,9 @@
     return [self retain];
 }
 
+- (NSString *)description
+{
+    return [NSString stringWithFormat: @"<State Token %@.%lld>", prootCache, (long long int)index];
+}
+
 @end

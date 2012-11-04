@@ -11,11 +11,16 @@
 - (id) initWithFrame:(NSRect)frame
 {
     self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code here.
+    if (self) {        
     }
     
     return self;
+}
+
+- (void)dealloc
+{
+    [trackingRects release];
+    [super dealloc];
 }
  
 - (void) setPersistentRoot: (COPersistentRoot *)proot
@@ -87,14 +92,31 @@
 	
 	[self setFrameSize: [graphRenderer size]];
 	[self setNeedsDisplay: YES];
-	
+}
+
+-(void)resetCursorRects
+{
+    [super resetCursorRects];
+    
 	// Update tooltips
 	
 	[self removeAllToolTips];
-	for (COUUID *commit in [graphRenderer commits])
+    if (trackingRects != nil)
+    {
+        for (NSNumber *number in trackingRects)
+        {
+            [self removeTrackingRect: [number integerValue]];
+        }
+    }
+    ASSIGN(trackingRects, [NSMutableArray array]);
+    
+	for (COPersistentRootStateToken *commit in [graphRenderer commits])
 	{
 		NSRect r = [graphRenderer rectForCommit: commit];
 		[self addToolTipRect:r owner:self userData:commit];
+        
+        NSInteger tag = [self addTrackingRect:r owner:self userData:commit assumeInside:NO];
+        [trackingRects addObject: [NSNumber numberWithInteger: tag]];
 	}
 }
 
@@ -108,7 +130,7 @@
     NSPoint pt = [self convertPoint: [theEvent locationInWindow] 
 						   fromView: nil];
 	
-    COUUID *commit = [graphRenderer commitAtPoint: pt];
+    COPersistentRootStateToken *commit = [graphRenderer commitAtPoint: pt];
 	
 	if (nil != commit)
 	{
@@ -170,6 +192,18 @@
         
         [doc persistentSwitchToStateToken: commit];
 	}
+}
+
+- (void)mouseEntered:(NSEvent *)theEvent
+{    
+    COPersistentRootStateToken *commit = [theEvent userData];
+    
+    NSLog(@"show %@", commit);
+}
+
+-(void)mouseExited:(NSEvent *)theEvent
+{
+    NSLog(@"restore current state");
 }
 
 @end

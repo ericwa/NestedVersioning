@@ -8,6 +8,8 @@
 @interface EWHistoryGraphView : NSView
 {
 	EWGraphRenderer *graphRenderer;
+    
+    NSMutableArray *trackingRects;
 }
 
 - (void)  setPersistentRoot: (COPersistentRoot *)proot
