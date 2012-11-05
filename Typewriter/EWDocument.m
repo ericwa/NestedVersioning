@@ -221,6 +221,11 @@
     return [persistentRoot_ UUID];
 }
 
+- (COStore *) store
+{
+    return store_;
+}
+
 - (void) storePersistentRootMetadataDidChange: (NSNotification *)notif
 {
     NSLog(@"did change: %@", notif);

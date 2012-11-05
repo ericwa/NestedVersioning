@@ -49,7 +49,7 @@
     
 	if (graphRenderer != nil)
 	{        
-        [graphRenderer draw];
+        [graphRenderer drawWithHighlightedCommit: mouseoverCommit];
 	}
     
     [NSGraphicsContext restoreGraphicsState];
@@ -177,33 +177,52 @@
 
 - (void)mouseUp: (NSEvent *)theEvent
 {
-    if ([theEvent clickCount] == 2)
+    if ([theEvent clickCount] == 1)
 	{
 		NSPoint pt = [self convertPoint: [theEvent locationInWindow] 
 							   fromView: nil];
 		
 		COPersistentRootStateToken *commit = [graphRenderer commitAtPoint: pt];
 
-        NSLog(@"switch to %@", commit);
-        
-        // FIXME: Hacky to hit NSDocument directly from here?
-        
-        EWDocument *doc = [[NSDocumentController sharedDocumentController] currentDocument];
-        
-        [doc persistentSwitchToStateToken: commit];
+        if (commit != nil)
+        {
+            NSLog(@"switch to %@", commit);
+            
+            // FIXME: Hacky to hit NSDocument directly from here!
+            
+            EWDocument *doc = [[NSDocumentController sharedDocumentController] currentDocument];
+            
+            [doc persistentSwitchToStateToken: commit];            
+        }
 	}
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent
 {    
     COPersistentRootStateToken *commit = [theEvent userData];
-    
+    ASSIGN(mouseoverCommit, commit);
+    [self setNeedsDisplay: YES];
     NSLog(@"show %@", commit);
+    
+    // FIXME: Hacky to hit NSDocument directly from here!
+    
+    EWDocument *doc = [[NSDocumentController sharedDocumentController] currentDocument];
+    
+    [doc loadStateToken: commit];
 }
 
 -(void)mouseExited:(NSEvent *)theEvent
 {
     NSLog(@"restore current state");
+    DESTROY(mouseoverCommit);
+    [self setNeedsDisplay: YES];
+    
+    
+    // FIXME: Hacky to hit NSDocument directly from here!
+    
+    EWDocument *doc = [[NSDocumentController sharedDocumentController] currentDocument];
+    
+    [doc loadStateToken: [[[doc currentPersistentRoot] currentBranch] currentState]];
 }
 
 @end

@@ -46,14 +46,15 @@
 - (void) setInspectedDocument: (NSDocument *)aDoc
 {
     NSLog(@"Inspect %@", aDoc);
+    
+    [self setPersistentRoot: [(EWDocument *)aDoc currentPersistentRoot]];
 }
 
 - (void) show
 {
+    [self showWindow: self];
     [self setInspectedDocument: [[NSDocumentController sharedDocumentController]
                                  currentDocument]];
-    
-    [self showWindow: self];
 }
 
 - (void) storePersistentRootMetadataDidChange: (NSNotification *)notif
@@ -63,7 +64,12 @@
     COStore *store = [notif object];
     
     COUUID *aUUID = [[notif userInfo] objectForKey: COStoreNotificationUUID];
-    ASSIGN(proot_, [store persistentRootWithUUID: aUUID]);
+    [self setPersistentRoot: [store persistentRootWithUUID: aUUID]];
+}
+
+- (void) setPersistentRoot: (COPersistentRoot *)proot
+{
+    ASSIGN(proot_, proot);
     
     [table reloadData];
 }

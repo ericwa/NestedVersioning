@@ -24,7 +24,7 @@
 - (COStore *)store;
 
 - (NSSize) size;
-- (void) draw;
+- (void) drawWithHighlightedCommit: (COPersistentRootStateToken *)aCommit;
 
 - (COPersistentRootStateToken *)commitAtPoint: (NSPoint)aPoint;
 

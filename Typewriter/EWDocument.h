@@ -23,6 +23,7 @@
 - (void) recordNewState: (COSubtree*)aState;
 
 - (COPersistentRoot *) currentPersistentRoot;
+- (COStore *) store;
 
 - (COUUID *) editingBranch;
 

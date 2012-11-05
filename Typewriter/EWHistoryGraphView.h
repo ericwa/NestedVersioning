@@ -4,12 +4,15 @@
 @class COBranch;
 @class COStore;
 @class COPersistentRoot;
+@class COPersistentRootStateToken;
 
 @interface EWHistoryGraphView : NSView
 {
 	EWGraphRenderer *graphRenderer;
     
     NSMutableArray *trackingRects;
+    
+    COPersistentRootStateToken *mouseoverCommit;
 }
 
 - (void)  setPersistentRoot: (COPersistentRoot *)proot

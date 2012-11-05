@@ -271,7 +271,7 @@ static void EWDrawArrowFromTo(NSPoint p1, NSPoint p2)
 	}
 }
 
-- (void) draw
+- (void) drawWithHighlightedCommit: (COPersistentRootStateToken *)aCommit
 {
 	for (NSUInteger col = 0; col < [allCommitsSorted count]; col++)
 	{
@@ -279,6 +279,11 @@ static void EWDrawArrowFromTo(NSPoint p1, NSPoint p2)
 		
 		NSColor *color = [self colorForCommit: commit];
 		CGFloat thickness = [self thicknessForCommit: commit];
+        
+        if ([commit isEqual: aCommit])
+        {
+            color = [NSColor redColor];
+        }
         
 		NSRect r = [self rectForCommit: commit];
 		NSBezierPath *circle = [NSBezierPath bezierPathWithOvalInRect: r];

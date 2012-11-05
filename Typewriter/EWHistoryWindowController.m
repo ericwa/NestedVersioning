@@ -40,14 +40,26 @@
 - (void) setInspectedDocument: (NSDocument *)aDoc
 {
     NSLog(@"Inspect %@", aDoc);
+    
+    [self updateWithProot:[(EWDocument *)aDoc currentPersistentRoot]
+                    store:[(EWDocument *)aDoc store]];
+}
+
+- (void) updateWithProot: (COPersistentRoot *)proot
+                   store: (COStore *)store
+{
+    COBranch *branch = [proot currentBranch];
+    
+    NSLog(@"current branch: %@ has %d commits.g v %@", branch, (int)[[branch allCommits] count], graphView_);
+    
+    [graphView_ setPersistentRoot: proot branch: branch store: store];
 }
 
 - (void) show
 {
+    [self showWindow: self];
     [self setInspectedDocument: [[NSDocumentController sharedDocumentController]
                                  currentDocument]];
-    
-    [self showWindow: self];
 }
 
 
@@ -56,17 +68,10 @@
     NSLog(@"history window: view did change: %@", notif);
     
     COStore *store = [notif object];
-    
     COUUID *aUUID = [[notif userInfo] objectForKey: COStoreNotificationUUID];
     COPersistentRoot *proot = [store persistentRootWithUUID: aUUID];
     
-    NSLog(@"new proot: %@", proot);
-    
-    COBranch *branch =[proot currentBranch];
-    
-    NSLog(@"current branch: %@ has %d commits.g v %@", branch, (int)[[branch allCommits] count], graphView_);
-    
-    [graphView_ setPersistentRoot: proot branch: branch store: store];
+    [self updateWithProot: proot store: store];
 }
 
 - (void) sliderChanged: (id)sender
