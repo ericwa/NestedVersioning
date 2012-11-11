@@ -542,4 +542,15 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
     return [self _writePersistentRoot: proot undoActions: undoActions redoActions: redoActions];
 }
 
+- (NSDate *) undoActionDateForPersistentRootWithUUID: (COUUID *)aUUID
+{
+    COUndoAction *action = [[self _undoActionsForKey: kCOUndoActions proot: aUUID] lastObject];
+    return [action date];
+}
+- (NSDate *) redoActionDateForPersistentRootWithUUID: (COUUID *)aUUID
+{
+    COUndoAction *action = [[self _undoActionsForKey: kCORedoActions proot: aUUID] lastObject];
+    return [action date];
+}
+
 @end

@@ -134,6 +134,8 @@ extern NSString * const COStoreNotificationUUID;
  * (e.g a appearsInUndoLog: paramater in every mutation method)
  */
 
+// FIXME: This API is getting ugly
+
 - (BOOL) canUndoForPersistentRootWithUUID: (COUUID *)aUUID;
 - (BOOL) canRedoForPersistentRootWithUUID: (COUUID *)aUUID;
 
@@ -143,5 +145,7 @@ extern NSString * const COStoreNotificationUUID;
 - (BOOL) undoForPersistentRootWithUUID: (COUUID *)aUUID;
 - (BOOL) redoForPersistentRootWithUUID: (COUUID *)aUUID;
 
+- (NSDate *) undoActionDateForPersistentRootWithUUID: (COUUID *)aUUID;
+- (NSDate *) redoActionDateForPersistentRootWithUUID: (COUUID *)aUUID;
 
 @end
