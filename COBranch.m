@@ -4,10 +4,12 @@
 #import "COMacros.h"
 
 NSString *kCOBranchUUID = @"COBranchUUID";
-NSString *kCOBranchName = @"COBranchName";
 NSString *kCOBranchStateTokens = @"COBranchStateTokens";
 NSString *kCOBranchCurrentStateToken = @"COBranchCurrentStateToken";
 NSString *kCOBranchMetadata = @"COBranchMetadata";
+
+// Metadata keys
+NSString *kCOBranchName = @"COBranchName";
 
 @implementation COBranch
 
@@ -18,11 +20,13 @@ NSString *kCOBranchMetadata = @"COBranchMetadata";
 {
     self = [super init];
     uuid_ = [aUUID copy];
-    name_ = [name copy];
     stateTokens = [[NSMutableArray alloc] init];
     [stateTokens addObject: state];
     currentState = [state retain];
-    metadata = [aMetadata copy];
+    metadata = [[NSMutableDictionary alloc] initWithDictionary: aMetadata];
+    
+    // FIXME: Overwrites any exiting name...
+    [self setName: name];
     
     return self;
 }
@@ -30,7 +34,6 @@ NSString *kCOBranchMetadata = @"COBranchMetadata";
 - (void) dealloc
 {
     [uuid_ release];
-    [name_ release];
     [stateTokens release];
     [currentState release];
     [metadata release];
@@ -48,11 +51,11 @@ NSString *kCOBranchMetadata = @"COBranchMetadata";
 
 - (NSString *)name
 {
-    return name_;
+    return [metadata objectForKey: kCOBranchName];
 }
 - (void) setName: (NSString *)aName
 {
-    ASSIGN(name_, [NSString stringWithString: aName]);
+    [metadata setObject: [[aName copy] autorelease] forKey: kCOBranchName];
 }
 
 - (COPersistentRootStateToken *)currentState
@@ -94,26 +97,22 @@ NSString *kCOBranchMetadata = @"COBranchMetadata";
     NSMutableDictionary *results = [NSMutableDictionary dictionary];
     
     [results setObject: [uuid_ stringValue] forKey: kCOBranchUUID];
-    [results setObject: name_ forKey: kCOBranchName];
     
     [results setObject: [self _stateTokensPlist] forKey: kCOBranchStateTokens];
     
     [results setObject: [currentState plist] forKey: kCOBranchCurrentStateToken];
+
+    [results setObject: [[metadata copy] autorelease ] forKey: kCOBranchMetadata];
     
-    if (metadata != nil)
-    {
-        [results setObject: metadata forKey: kCOBranchMetadata];
-    }
     return results;
 }
 + (COBranch *) _branchWithPlist: (id)plist
 {
     COBranch *result = [[[COBranch alloc] init] autorelease];
     result->uuid_ = [[COUUID alloc] initWithString: [plist objectForKey: kCOBranchUUID]];
-    result->name_ = [[plist objectForKey: kCOBranchName] retain];
     result->stateTokens = [[self _stateTokensArrayFromPlist: [plist objectForKey: kCOBranchStateTokens]] mutableCopy];
     result->currentState = [[COPersistentRootStateToken tokenWithPlist: [plist objectForKey: kCOBranchCurrentStateToken]] retain];
-    result->metadata = [[plist objectForKey: kCOBranchMetadata] retain];
+    result->metadata = [[NSMutableDictionary alloc] initWithDictionary: [plist objectForKey: kCOBranchMetadata]];
     return result;
 }
 
@@ -123,14 +122,10 @@ NSString *kCOBranchMetadata = @"COBranchMetadata";
     {
         COBranch *otherBranch = (COBranch *)object;
         if (![uuid_ isEqual: otherBranch->uuid_ ]) return NO;
-        if (![name_ isEqual: otherBranch->name_ ]) return NO;
         if (![stateTokens isEqual: otherBranch->stateTokens ]) return NO;
         if (![currentState isEqual: otherBranch->currentState ]) return NO;
-        if (metadata != nil) {
-            if (![metadata isEqual: otherBranch->metadata]) return NO;
-        } else {
-            if (otherBranch->metadata != nil) return NO;
-        }
+        if (![metadata isEqual: otherBranch->metadata]) return NO;
+
         return YES;
     }
     return NO;
@@ -138,7 +133,7 @@ NSString *kCOBranchMetadata = @"COBranchMetadata";
 
 - (NSUInteger) hash
 {
-    return [uuid_ hash] ^ [name_ hash] ^ [stateTokens hash] ^ [currentState hash] ^ [metadata hash];
+    return [uuid_ hash] ^ [stateTokens hash] ^ [currentState hash] ^ [metadata hash];
 }
 
 - (void) _addCommit: (COPersistentRootStateToken *)aCommit

@@ -7,7 +7,6 @@
 @interface COBranch : NSObject <NSMutableCopying>
 {
     COUUID *uuid_;
-    NSString *name_;
     
     /**
      * We can store this as an NSIndexSet type data structure for very low overhead.
@@ -23,7 +22,7 @@
 - (id) initWithUUID: (COUUID *)aUUID
                name: (NSString *)name
        initialState: (COPersistentRootStateToken *)state
-           metadata: (id)aMetadata;
+           metadata: (NSDictionary *)aMetadata;
 
 
 - (COUUID *)UUID;
@@ -36,7 +35,7 @@
  */
 - (NSArray *)allCommits;
 
-- (id) metadata;
+- (NSDictionary *) metadata;
 
 - (id) _plist;
 + (COBranch *) _branchWithPlist: (id)plist;

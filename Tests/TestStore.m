@@ -29,7 +29,7 @@
     COBranch *branch = [[COBranch alloc] initWithUUID: aUUID
                                                  name: @"hello"
                                          initialState: token
-                                             metadata: @"meta"];
+                                             metadata: nil];
     id plist = [branch _plist];
     COBranch *branchCopy = [COBranch _branchWithPlist: plist];
     
@@ -48,7 +48,7 @@
     COBranch *branch = [[COBranch alloc] initWithUUID: branchUUID
                                                  name: @"hello"
                                          initialState: token
-                                             metadata: @"meta"];
+                                             metadata: nil];
   
     COPersistentRoot *proot = [[COPersistentRoot alloc] initWithUUID: prootUUID
                                                           branches: [NSArray arrayWithObject: branch]
