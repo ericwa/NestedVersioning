@@ -549,21 +549,37 @@
 			name = "Type System";
 			sourceTree = "<group>";
 		};
-		66E2A305143057A100487419 /* Store */ = {
+		66CBDB521653680300227C8D /* Immutable State */ = {
 			isa = PBXGroup;
 			children = (
-				66E877551455F0CB006CBE7E /* COStore.h */,
-				66E877561455F0CB006CBE7E /* COStore.m */,
-				665BD3C015D75B9C00428355 /* COBranch.h */,
-				665BD3C115D75B9C00428355 /* COBranch.m */,
-				665BD3C815D78BE600428355 /* COPersistentRoot.h */,
-				665BD3C915D78BE600428355 /* COPersistentRoot.m */,
 				66C6F62315E763470079B7FB /* COPersistentRootState.h */,
 				66C6F62415E763470079B7FB /* COPersistentRootState.m */,
 				66C6F62815E763B20079B7FB /* COPersistentRootStateDelta.h */,
 				66C6F62915E763B20079B7FB /* COPersistentRootStateDelta.m */,
 				66C6F62C15E764FE0079B7FB /* COPersistentRootStateToken.h */,
 				66C6F62D15E764FE0079B7FB /* COPersistentRootStateToken.m */,
+			);
+			name = "Immutable State";
+			sourceTree = "<group>";
+		};
+		66CBDB531653681500227C8D /* Mutable Interface to Persistent Roots */ = {
+			isa = PBXGroup;
+			children = (
+				665BD3C015D75B9C00428355 /* COBranch.h */,
+				665BD3C115D75B9C00428355 /* COBranch.m */,
+				665BD3C815D78BE600428355 /* COPersistentRoot.h */,
+				665BD3C915D78BE600428355 /* COPersistentRoot.m */,
+			);
+			name = "Mutable Interface to Persistent Roots";
+			sourceTree = "<group>";
+		};
+		66E2A305143057A100487419 /* Store */ = {
+			isa = PBXGroup;
+			children = (
+				66CBDB521653680300227C8D /* Immutable State */,
+				66E877551455F0CB006CBE7E /* COStore.h */,
+				66E877561455F0CB006CBE7E /* COStore.m */,
+				66CBDB531653681500227C8D /* Mutable Interface to Persistent Roots */,
 				669959581633BCCA00B6C022 /* Undo Actions */,
 			);
 			name = Store;
