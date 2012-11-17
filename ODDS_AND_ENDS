@@ -20,28 +20,6 @@
 
 // think about selective undo UI
 
-/*
- 
- example of how undo redo work:
- 
- supose the subset we are interested in is document
- 
- - commit on document.master
- - commit on document.master
- - commit on document.master
- - branch document.master to document.experimental1
- - switch document to document to document.experimental1
- - commit on document.experimental1
- - commit on document.experimental1
- - commit on document.experimental1
- - copy document.experimental1 to document2
- - delete document3
- - commit on document.experimental1 big idea
- - undo commit on document.experimental1 big idea
- - type a by accident
- 
- */
-
 // NOTE: this should elegantly solve the "quark undo problem"
 // where you have a project editor containing documents,
 // and undo/redo on the project editor is expected 
