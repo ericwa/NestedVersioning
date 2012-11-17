@@ -1,10 +1,10 @@
-#import "COUndoAction.h"
+#import "COEdit.h"
 #import "COPersistentRootStateToken.h"
 
 /**
  * undo setting from old -> new (to apply, replace new by old)
  */
-@interface COUndoActionSetCurrentVersionForBranch : COUndoAction
+@interface COEditSetCurrentVersionForBranch : COEdit
 {
     COUUID *branch_;
     COPersistentRootStateToken *oldToken_;

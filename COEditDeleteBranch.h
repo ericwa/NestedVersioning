@@ -1,11 +1,11 @@
-#import "COUndoAction.h"
+#import "COEdit.h"
 
 @class COBranch;
 
 /**
  * action which can undo the creation of a branch
  */
-@interface COUndoActionCreateBranch : COUndoAction
+@interface COEditDeleteBranch : COEdit
 {
     COUUID *branchUUID_;
 }

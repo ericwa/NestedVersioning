@@ -1,8 +1,8 @@
-#import "COUndoActionSetCurrentVersionForBranch.h"
+#import "COEditSetCurrentVersionForBranch.h"
 #import "COMacros.h"
 #import "COBranch.h"
 
-@implementation COUndoActionSetCurrentVersionForBranch : COUndoAction
+@implementation COEditSetCurrentVersionForBranch : COEdit
 
 static NSString *kCOBranchUUID = @"COBranchUUID";
 static NSString *kCOOldVersionToken = @"COOldVersionToken";
@@ -43,11 +43,11 @@ static NSString *kCONewVersionToken = @"CONewVersionToken";
     [result setObject: [branch_ stringValue] forKey: kCOBranchUUID];
     [result setObject: [oldToken_ plist] forKey: kCOOldVersionToken];
     [result setObject: [newToken_ plist] forKey: kCONewVersionToken];
-    [result setObject: kCOUndoActionSetCurrentVersionForBranch forKey: kCOUndoAction];
+    [result setObject: kCOEditSetCurrentVersionForBranch forKey: kCOUndoAction];
     return result;
 }
 
-- (COUndoAction *) inverseForApplicationTo: (COPersistentRoot *)aProot
+- (COEdit *) inverseForApplicationTo: (COPersistentRoot *)aProot
 {
     return [[[[self class] alloc] initWithBranch: branch_
                                         oldToken: newToken_

@@ -8,11 +8,11 @@
 #import "COPersistentRootStateDelta.h"
 #import "COPersistentRootStateToken.h"
 
-#import "COUndoAction.h"
-#import "COUndoActionDeleteBranch.h"
-#import "COUndoActionCreateBranch.h"
-#import "COUndoActionSetCurrentBranch.h"
-#import "COUndoActionSetCurrentVersionForBranch.h"
+#import "COEdit.h"
+#import "COEditCreateBranch.h"
+#import "COEditDeleteBranch.h"
+#import "COEditSetCurrentBranch.h"
+#import "COEditSetCurrentVersionForBranch.h"
 
 
 NSString * const COStorePersistentRootMetadataDidChangeNotification = @"COStorePersistentRootMetadataDidChangeNotification";
@@ -170,13 +170,13 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
                   redoActions: (NSArray *)redoActions
 {
     NSMutableArray *undoPlists = [NSMutableArray array];
-    for (COUndoAction *undoAction in undoActions)
+    for (COEdit *undoAction in undoActions)
     {
         [undoPlists addObject: [undoAction plist]];
     }
     
     NSMutableArray *redoPlists = [NSMutableArray array];
-    for (COUndoAction *redoAction in redoActions)
+    for (COEdit *redoAction in redoActions)
     {
         [redoPlists addObject: [redoAction plist]];
     }
@@ -211,13 +211,13 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
     NSMutableArray *result = [NSMutableArray array];
     for (id plist in [[[self readStoreMetadataPlist] objectForKey: [aProot stringValue]] objectForKey: aKey])
     {
-        [result addObject: [COUndoAction undoActionWithPlist: plist]];
+        [result addObject: [COEdit undoActionWithPlist: plist]];
     }
     return result;
 }
 
 - (BOOL) _writePersistentRoot: (COPersistentRoot *)aRoot
-             andAddUndoAction: (COUndoAction *)action
+             andAddUndoAction: (COEdit *)action
 {
     NSMutableArray *undoActions = [self _undoActionsForKey: kCOUndoActions proot: [aRoot UUID]];
     NSMutableArray *redoActions = [self _undoActionsForKey: kCORedoActions proot: [aRoot UUID]];
@@ -350,7 +350,7 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
     COBranch *branch = [newRoot branchForUUID: aBranch];
     [newRoot deleteBranch: aBranch];
     
-    COUndoAction *action = [[[COUndoActionDeleteBranch alloc] initWithBranch:branch
+    COEdit *action = [[[COEditCreateBranch alloc] initWithBranch:branch
                                                                         UUID:aRoot
                                                                         date:[NSDate date]
                                                                  displayName:[NSString stringWithFormat: @"Delete Branch %@",
@@ -366,7 +366,7 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
     COPersistentRoot *newRoot = [self persistentRootWithUUID: aRoot];
     COBranch *newBranch = [newRoot branchForUUID: aBranch];
     
-    COUndoAction *action = [[[COUndoActionSetCurrentBranch alloc] initWithOldBranchUUID:[[newRoot currentBranch] UUID]
+    COEdit *action = [[[COEditSetCurrentBranch alloc] initWithOldBranchUUID:[[newRoot currentBranch] UUID]
                                                                           newBranchUUID:aBranch
                                                                                    UUID:aRoot
                                                                                    date:[NSDate date]
@@ -386,7 +386,7 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
     COBranch *oldBranch = [newRoot branchForUUID: aBranch];
     COBranch *newBranch = [newRoot _makeCopyOfBranch: aBranch];
     
-    COUndoAction *action = [[[COUndoActionCreateBranch alloc] initWithBranchUUID: [newBranch UUID]
+    COEdit *action = [[[COEditDeleteBranch alloc] initWithBranchUUID: [newBranch UUID]
                                                                             UUID:aRoot
                                                                             date:[NSDate date]
                                                                      displayName:[NSString stringWithFormat: @"Copy Branch %@",
@@ -437,7 +437,7 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
     COPersistentRoot *newRoot = [self persistentRootWithUUID: aRoot];
 
     
-    COUndoAction *action = [[[COUndoActionSetCurrentVersionForBranch alloc]
+    COEdit *action = [[[COEditSetCurrentVersionForBranch alloc]
                                 initWithBranch: aBranch
                                 oldToken: [[newRoot branchForUUID: aBranch] currentState]
                              newToken: aVersion
@@ -519,7 +519,7 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
 
     COPersistentRoot *proot = [self persistentRootWithUUID: aUUID];
     
-    COUndoAction *action = [undoActions lastObject];
+    COEdit *action = [undoActions lastObject];
     [redoActions addObject: [action inverseForApplicationTo: proot]];
     [undoActions removeLastObject];
     
@@ -534,7 +534,7 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
     
     COPersistentRoot *proot = [self persistentRootWithUUID: aUUID];
     
-    COUndoAction *action = [redoActions lastObject];
+    COEdit *action = [redoActions lastObject];
     [undoActions addObject: [action inverseForApplicationTo: proot]];
     [redoActions removeLastObject];
     
@@ -544,12 +544,12 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
 
 - (NSDate *) undoActionDateForPersistentRootWithUUID: (COUUID *)aUUID
 {
-    COUndoAction *action = [[self _undoActionsForKey: kCOUndoActions proot: aUUID] lastObject];
+    COEdit *action = [[self _undoActionsForKey: kCOUndoActions proot: aUUID] lastObject];
     return [action date];
 }
 - (NSDate *) redoActionDateForPersistentRootWithUUID: (COUUID *)aUUID
 {
-    COUndoAction *action = [[self _undoActionsForKey: kCORedoActions proot: aUUID] lastObject];
+    COEdit *action = [[self _undoActionsForKey: kCORedoActions proot: aUUID] lastObject];
     return [action date];
 }
 

@@ -1,7 +1,7 @@
-#import "COUndoActionSetCurrentBranch.h"
+#import "COEditSetCurrentBranch.h"
 #import "COMacros.h"
 
-@implementation COUndoActionSetCurrentBranch : COUndoAction
+@implementation COEditSetCurrentBranch : COEdit
 
 static NSString *kCOOldBranchUUID = @"COOldBranchUUID";
 static NSString *kCONewBranchUUID = @"CONewBranchUUID";
@@ -38,11 +38,11 @@ static NSString *kCONewBranchUUID = @"CONewBranchUUID";
     [result addEntriesFromDictionary: [super plist]];
     [result setObject: [oldBranch_ stringValue] forKey: kCOOldBranchUUID];
     [result setObject: [newBranch_ stringValue] forKey: kCONewBranchUUID];
-    [result setObject: kCOUndoActionSetCurrentBranch forKey: kCOUndoAction];
+    [result setObject: kCOEditSetCurrentBranch forKey: kCOUndoAction];
     return result;
 }
 
-- (COUndoAction *) inverseForApplicationTo: (COPersistentRoot *)aProot
+- (COEdit *) inverseForApplicationTo: (COPersistentRoot *)aProot
 {
     return [[[[self class] alloc] initWithOldBranchUUID: newBranch_
                                           newBranchUUID: oldBranch_

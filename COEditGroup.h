@@ -1,6 +1,6 @@
-#import "COUndoAction.h"
+#import "COEdit.h"
 
-@interface COUndoActionGroup : COUndoAction
+@interface COEditGroup : COEdit
 {
     NSArray *actions_;
 }

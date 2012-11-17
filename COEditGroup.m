@@ -1,8 +1,8 @@
-#import "COUndoActionGroup.h"
-#import "COUndoAction.h"
+#import "COEditGroup.h"
+#import "COEdit.h"
 #import "COMacros.h"
 
-@implementation COUndoActionGroup : COUndoAction
+@implementation COEditGroup : COEdit
 
 static NSString *kCOActions = @"COActions";
 
@@ -26,7 +26,7 @@ static NSString *kCOActions = @"COActions";
     
     for (id actionPlist in plist)
     {
-        COUndoAction *action = [COUndoAction undoActionWithPlist: actionPlist];
+        COEdit *action = [COEdit undoActionWithPlist: actionPlist];
         [(NSMutableArray *)actions_ addObject: action];
     }
     
@@ -37,7 +37,7 @@ static NSString *kCOActions = @"COActions";
 {
     NSMutableArray *actionPlists = [NSMutableArray arrayWithCapacity: [actions_ count]];
     
-    for (COUndoAction *action in actions_)
+    for (COEdit *action in actions_)
     {
         [actionPlists addObject: [action plist]];
     }
@@ -45,14 +45,14 @@ static NSString *kCOActions = @"COActions";
     NSMutableDictionary *result = [NSMutableDictionary dictionary];    
     [result addEntriesFromDictionary: [super plist]];
     [result setObject: actionPlists forKey: kCOActions];
-    [result setObject: kCOUndoActionGroup forKey: kCOUndoAction];
+    [result setObject: kCOEditGroup forKey: kCOUndoAction];
     return result;
 }
 
-- (COUndoAction *) inverseForApplicationTo: (COPersistentRoot *)aProot
+- (COEdit *) inverseForApplicationTo: (COPersistentRoot *)aProot
 {
     NSMutableArray *actionsReversed = [NSMutableArray arrayWithCapacity: [actions_ count]];
-    for (COUndoAction *action in [actions_ reverseObjectEnumerator])
+    for (COEdit *action in [actions_ reverseObjectEnumerator])
     {
         [actionsReversed addObject: [action inverseForApplicationTo: aProot]];
     }
@@ -65,7 +65,7 @@ static NSString *kCOActions = @"COActions";
 
 - (void) applyToPersistentRoot: (COPersistentRoot *)aProot
 {
-    for (COUndoAction *action in actions_)
+    for (COEdit *action in actions_)
     {
         [action applyToPersistentRoot: aProot];
     }

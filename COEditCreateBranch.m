@@ -1,9 +1,9 @@
-#import "COUndoActionDeleteBranch.h"
-#import "COUndoActionCreateBranch.h"
+#import "COEditCreateBranch.h"
+#import "COEditDeleteBranch.h"
 #import "COMacros.h"
 #import "COBranch.h"
 
-@implementation COUndoActionDeleteBranch : COUndoAction
+@implementation COEditCreateBranch : COEdit
 
 static NSString *kCOBranchBackup = @"COBranchBackup";
 
@@ -31,13 +31,13 @@ static NSString *kCOBranchBackup = @"COBranchBackup";
     NSMutableDictionary *result = [NSMutableDictionary dictionary];
     [result addEntriesFromDictionary: [super plist]];
     [result setObject: [branch_ _plist] forKey: kCOBranchBackup];
-    [result setObject: kCOUndoActionDeleteBranch forKey: kCOUndoAction];
+    [result setObject: kCOEditCreateBranch forKey: kCOUndoAction];
     return result;
 }
 
-- (COUndoAction *) inverseForApplicationTo: (COPersistentRoot *)aProot
+- (COEdit *) inverseForApplicationTo: (COPersistentRoot *)aProot
 {
-    return [[[COUndoActionCreateBranch alloc] initWithBranchUUID: [branch_ UUID]
+    return [[[COEditDeleteBranch alloc] initWithBranchUUID: [branch_ UUID]
                                                             UUID: uuid_
                                                             date: date_
                                                      displayName: displayName_] autorelease];

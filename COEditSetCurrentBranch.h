@@ -1,6 +1,6 @@
-#import "COUndoAction.h"
+#import "COEdit.h"
 
-@interface COUndoActionSetCurrentBranch : COUndoAction
+@interface COEditSetCurrentBranch : COEdit
 {
     COUUID *oldBranch_;
     COUUID *newBranch_;
