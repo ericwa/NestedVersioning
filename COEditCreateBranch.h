@@ -7,12 +7,14 @@
  */
 @interface COEditCreateBranch : COEdit
 {
-    COBranch *branch_;
+    COUUID *newUUID_;
+    COPersistentRootStateToken *currentState_;
 }
 
-- (id) initWithBranch: (COBranch *)aBranch
-                 UUID: (COUUID*)aUUID
-                 date: (NSDate*)aDate
-          displayName: (NSString*)aName;
+- (id) initWithBranchUUID: (COUUID *)newUUID
+             currentState: (COPersistentRootStateToken *)state
+                     UUID: (COUUID*)aUUID
+                     date: (NSDate*)aDate
+              displayName: (NSString*)aName;
 
 @end

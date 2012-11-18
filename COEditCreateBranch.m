@@ -1,51 +1,49 @@
 #import "COEditCreateBranch.h"
-#import "COEditDeleteBranch.h"
 #import "COMacros.h"
-#import "COBranch.h"
 
 @implementation COEditCreateBranch : COEdit
 
-static NSString *kCOBranchBackup = @"COBranchBackup";
-
-- (id) initWithBranch: (COBranch *)aBranch
-                 UUID: (COUUID*)aUUID
-                 date: (NSDate*)aDate
-          displayName: (NSString*)aName
+- (id) initWithBranchUUID: (COUUID *)newUUID
+             currentState: (COPersistentRootStateToken *)state
+                     UUID: (COUUID*)aUUID
+                     date: (NSDate*)aDate
+              displayName: (NSString*)aName
 {
-    NILARG_EXCEPTION_TEST(aBranch);
+    NILARG_EXCEPTION_TEST(newUUID);
+    NILARG_EXCEPTION_TEST(state);
     self = [super initWithUUID: aUUID date: aDate displayName: aName];
-    ASSIGN(branch_, [[aBranch mutableCopy] autorelease]);
+    ASSIGN(newUUID_, newUUID);
+    ASSIGN(currentState_, state);
     return self;
 }
 
 
 - (id) initWithPlist: (id)plist
 {
-    self = [super initWithPlist: plist];
-    ASSIGN(branch_, [COBranch _branchWithPlist: [plist objectForKey: kCOBranchBackup]]);
-    return self;
+    [NSException raise: NSGenericException format: @"not undoable"];
+    return nil;
 }
 
 - (id)plist
 {
-    NSMutableDictionary *result = [NSMutableDictionary dictionary];
-    [result addEntriesFromDictionary: [super plist]];
-    [result setObject: [branch_ _plist] forKey: kCOBranchBackup];
-    [result setObject: kCOEditCreateBranch forKey: kCOUndoAction];
-    return result;
+    [NSException raise: NSGenericException format: @"not undoable"];
+    return nil;
 }
 
-- (COEdit *) inverseForApplicationTo: (COPersistentRoot *)aProot
+- (COEdit *) inverseForApplicationTo: (COPersistentRootPlist *)aProot
 {
-    return [[[COEditDeleteBranch alloc] initWithBranchUUID: [branch_ UUID]
-                                                            UUID: uuid_
-                                                            date: date_
-                                                     displayName: displayName_] autorelease];
+    [NSException raise: NSGenericException format: @"not undoable"];
+    return nil;
 }
 
-- (void) applyToPersistentRoot: (COPersistentRoot *)aProot
+- (void) applyToPersistentRoot: (COPersistentRootPlist *)aProot
 {
-    [aProot addBranch: branch_];
+    [aProot setCurrentState: currentState_ forBranch: newUUID_];
+}
+
++ (BOOL) isUndoable
+{
+    return NO;
 }
 
 @end

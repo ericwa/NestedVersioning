@@ -49,7 +49,7 @@ static NSString *kCOActions = @"COActions";
     return result;
 }
 
-- (COEdit *) inverseForApplicationTo: (COPersistentRoot *)aProot
+- (COEdit *) inverseForApplicationTo: (COPersistentRootPlist *)aProot
 {
     NSMutableArray *actionsReversed = [NSMutableArray arrayWithCapacity: [actions_ count]];
     for (COEdit *action in [actions_ reverseObjectEnumerator])
@@ -63,12 +63,17 @@ static NSString *kCOActions = @"COActions";
                                       displayName: displayName_] autorelease];
 }
 
-- (void) applyToPersistentRoot: (COPersistentRoot *)aProot
+- (void) applyToPersistentRoot: (COPersistentRootPlist *)aProot
 {
     for (COEdit *action in actions_)
     {
         [action applyToPersistentRoot: aProot];
     }
+}
+
++ (BOOL) isUndoable
+{
+    return YES;
 }
 
 @end

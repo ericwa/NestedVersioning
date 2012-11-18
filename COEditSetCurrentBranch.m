@@ -42,7 +42,7 @@ static NSString *kCONewBranchUUID = @"CONewBranchUUID";
     return result;
 }
 
-- (COEdit *) inverseForApplicationTo: (COPersistentRoot *)aProot
+- (COEdit *) inverseForApplicationTo: (COPersistentRootPlist *)aProot
 {
     return [[[[self class] alloc] initWithOldBranchUUID: newBranch_
                                           newBranchUUID: oldBranch_
@@ -51,9 +51,14 @@ static NSString *kCONewBranchUUID = @"CONewBranchUUID";
                                             displayName: displayName_] autorelease];
 }
 
-- (void) applyToPersistentRoot: (COPersistentRoot *)aProot
+- (void) applyToPersistentRoot: (COPersistentRootPlist *)aProot
 {
-    [aProot setCurrentBranch: newBranch_];
+    [aProot setCurrentBranchUUID: newBranch_];
+}
+
++ (BOOL) isUndoable
+{
+    return YES;
 }
 
 @end

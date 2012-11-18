@@ -14,13 +14,13 @@
 		typeDictionary = [[NSMutableDictionary alloc] init];
 	}
 	
-	COType *singleton = [typeDictionary objectForKey: [self class]];
+	COType *singleton = [typeDictionary objectForKey: NSStringFromClass([self class])];
 	
 	if (singleton == nil)
 	{
 		singleton = [[[self class] alloc] init];
 		[typeDictionary setObject: singleton
-						   forKey: [self class]];
+						   forKey: NSStringFromClass([self class])];
 		[singleton release];
 	}
 	

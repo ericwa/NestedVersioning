@@ -3,7 +3,7 @@
 @class EWGraphRenderer;
 @class COBranch;
 @class COStore;
-@class COPersistentRoot;
+@class COPersistentRootPlist;
 @class COPersistentRootStateToken;
 
 @interface EWHistoryGraphView : NSView
@@ -15,7 +15,7 @@
     COPersistentRootStateToken *mouseoverCommit;
 }
 
-- (void)  setPersistentRoot: (COPersistentRoot *)proot
+- (void)  setPersistentRoot: (COPersistentRootPlist *)proot
                      branch: (COBranch*)aBranch
                       store: (COStore*)aStore;
 

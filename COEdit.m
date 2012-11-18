@@ -1,8 +1,8 @@
 #import "COEdit.h"
 #import "COEditCreateBranch.h"
-#import "COEditDeleteBranch.h"
 #import "COEditSetCurrentBranch.h"
 #import "COEditSetCurrentVersionForBranch.h"
+#import "COEditSetMetadata.h"
 #import "COEditGroup.h"
 #import "COMacros.h"
 
@@ -12,10 +12,11 @@
 
 @implementation COEdit
 
-NSString *kCOEditSetCurrentVersionForBranch = @"COUndoActionSetCurrentVersionForBranch";
-NSString *kCOEditCreateBranch = @"COUndoActionDeleteBranch";
-NSString *kCOEditDeleteBranch = @"COUndoActionCreateBranch";
-NSString *kCOEditSetCurrentBranch = @"COUndoActionSetCurrentBranch";
+NSString *kCOEditSetCurrentVersionForBranch = @"COEditSetCurrentVersionForBranch";
+NSString *kCOEditSetCurrentBranch = @"COEditSetCurrentBranch";
+NSString *kCOEditGroup = @"COEditGroup";
+NSString *kCOEditSetMetadata = @"COEditSetMetadata";
+
 NSString *kCOUndoAction = @"COEdit";
 
 static NSString *kCOPersistentRootUUID = @"COPersistentRootUUID";
@@ -50,14 +51,6 @@ static NSString *kCOActionDisplayName = @"COActionDisplayName";
     {
         return [[[COEditSetCurrentVersionForBranch alloc] initWithPlist: aPlist] autorelease];
     }
-    else if ([key isEqual: kCOEditCreateBranch])
-    {
-        return [[[COEditCreateBranch alloc] initWithPlist: aPlist] autorelease];
-    }
-    else if ([key isEqual: kCOEditDeleteBranch])
-    {
-        return [[[COEditDeleteBranch alloc] initWithPlist: aPlist] autorelease];
-    }
     else if ([key isEqual: kCOEditSetCurrentBranch])
     {
         return [[[COEditSetCurrentBranch alloc] initWithPlist: aPlist] autorelease];
@@ -65,6 +58,10 @@ static NSString *kCOActionDisplayName = @"COActionDisplayName";
     else if ([key isEqual: kCOEditGroup])
     {
         return [[[COEditGroup alloc] initWithPlist: aPlist] autorelease];
+    }
+    else if ([key isEqual: kCOEditSetMetadata])
+    {
+        return [[[COEditSetMetadata alloc] initWithPlist: aPlist] autorelease];
     }
     [NSException raise: NSInvalidArgumentException format: @"invalid plist"];
     return nil;
@@ -92,15 +89,21 @@ static NSString *kCOActionDisplayName = @"COActionDisplayName";
 {
     return displayName_;
 }
-- (COEdit *) inverseForApplicationTo: (COPersistentRoot *)aProot
+- (COEdit *) inverseForApplicationTo: (COPersistentRootPlist *)aProot
 {
     [NSException raise: NSGenericException format: @"unimplemented"];
     return nil;
 }
 
-- (void) applyToPersistentRoot: (COPersistentRoot *)aProot
+- (void) applyToPersistentRoot: (COPersistentRootPlist *)aProot
 {
     [NSException raise: NSGenericException format: @"unimplemented"];
+}
+
++ (BOOL) isUndoable
+{
+    [NSException raise: NSGenericException format: @"unimplemented"];
+    return NO;
 }
 
 @end

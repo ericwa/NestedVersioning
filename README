@@ -109,3 +109,52 @@ suppose you select a few words before para1 up to a few words after, and hit cut
 
 - ui only needs to block until immutable snapshot is prepared.
 - v2 feature
+
+
+
+-- Ideas on sql:
+
+Delta storage inspired by mercurial revlog:
+
+revid INTEGER PRIMARY KEY | contents BLOB | delta BOOLEAN
+--------------------------+---------------+--------------
+0                         | ???           | no
+1                         | ???           | yes
+2                         | ???           | no
+3                         | ???           | yes
+4                         | ???           | yes
+5                         | ???           | yes
+6                         | ???           | no
+
+suppose we want to reconstruct the delta revision 500000:
+
+SELECT * FROM test WHERE revid <= 500000 AND revid >= (SELECT MAX(revid) FROM test WHERE delta = 0 AND revid < 500000);
+
+
+With index on delta:
+
+sqlite> explain query plan SELECT * FROM test WHERE revid <= 500000 AND revid >= (SELECT MAX(revid) FROM test WHERE delta = 0 AND revid < 500000);
+0|0|0|SEARCH TABLE test USING INTEGER PRIMARY KEY (rowid>? AND rowid<?) (~62500 rows)
+0|0|0|EXECUTE SCALAR SUBQUERY 1
+1|0|0|SEARCH TABLE test USING COVERING INDEX deltaindex (delta=? AND rowid<?) (~1 rows)
+
+Without index on delta;
+
+sqlite> explain query plan SELECT * FROM test WHERE revid <= 500000 AND revid >= (SELECT MAX(revid) FROM test WHERE delta = 0 AND revid < 500000);
+0|0|0|SEARCH TABLE test USING INTEGER PRIMARY KEY (rowid>? AND rowid<?) (~62500 rows)
+0|0|0|EXECUTE SCALAR SUBQUERY 1
+1|0|0|SEARCH TABLE test USING INTEGER PRIMARY KEY (rowid<?) (~1 rows)
+sqlite> SELECT * FROM test WHERE revid <= 500000 AND revid >= (SELECT MAX(revid) FROM test WHERE delta = 0 AND revid < 500000);
+
+The index seems to make no difference, even on 10 million rows with ~2k non-delta rows, it's still instant without the index.
+
+
+
+
+---- Undo.
+Thought about per-branch undo/redo logs.
+The scenario would be if you had two branches of a persistent open (on screen) at the same time, and were working on both.
+
+Af first glance it seems like we could allow undoing on a subset of the branches (plus the proot-global edits like set metadata, set current branch) of a persistent root. Under closer examination however you can arrive at weird states because you may have undone the proot-global edits but  the branches you're not performing undo/redo are too far ahead.
+
+As a workaround the user could use history navigation commands to achieve the same effect, which is probably fine considering this is an advances use case.

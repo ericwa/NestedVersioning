@@ -1,7 +1,7 @@
 #import "EWBranchesWindowController.h"
 #import "COStore.h"
 #import "COMacros.h"
-#import "COPersistentRoot.h"
+#import "COPersistentRootPlist.h"
 #import "EWDocument.h"
 
 @implementation EWBranchesWindowController
@@ -67,7 +67,7 @@
     [self setPersistentRoot: [store persistentRootWithUUID: aUUID]];
 }
 
-- (void) setPersistentRoot: (COPersistentRoot *)proot
+- (void) setPersistentRoot: (COPersistentRootPlist *)proot
 {
     ASSIGN(proot_, proot);
     

@@ -1,17 +1,28 @@
 #import <Foundation/Foundation.h>
 #import "COUUID.h"
-#import "COItem.h"
 
-@class COSubtree;
-@class COPersistentRootEditingContext;
 @class COItem;
-@class COPersistentRoot;
 @class COPersistentRootState;
 @class COPersistentRootStateDelta;
 @class COPersistentRootStateToken;
 
 extern NSString * const COStorePersistentRootMetadataDidChangeNotification;
 extern NSString * const COStoreNotificationUUID;
+
+/**
+ * Snapshot of the state of a persistent root
+ */
+@protocol COPersistentRoot <NSObject>
+
+- (COUUID *) UUID;
+- (NSArray *) branchUUIDs;
+- (COUUID *) currentBranchUUID;
+- (NSArray *) stateTokensForBranch: (COUUID *)aBranch;
+- (COPersistentRootStateToken *)currentStateForBranch: (COUUID *)aBranch;
+- (NSDictionary *) metadata;
+
+@end
+
 
 @interface COStore : NSObject
 {
@@ -64,7 +75,7 @@ extern NSString * const COStoreNotificationUUID;
 - (NSArray *) allPersistentRootUUIDs;
 
 // Returns a snapshot of the state of a persistent root.
-- (COPersistentRoot *) persistentRootWithUUID: (COUUID *)aUUID;
+- (id <COPersistentRoot>) persistentRootWithUUID: (COUUID *)aUUID;
 
 /** @taskunit writing */
 
@@ -74,13 +85,8 @@ extern NSString * const COStoreNotificationUUID;
 // Atomicity: any changes made within a persistent root are atomic.
 //
 
-- (COPersistentRoot *) createPersistentRootWithInitialContents: (COPersistentRootState *)contents;
-
-- (COPersistentRoot *) createCopyOfPersistentRoot: (COUUID *)aRoot;
-
-// "exotic" method of creating proot
-- (COPersistentRoot *)createPersistentRootByCopyingBranch: (COUUID *)aBranch
-                                          ofPersistentRoot: (COUUID *)aRoot;
+- (BOOL) createPersistentRootWithUUID: (COUUID *)aUUID
+                      initialContents: (COPersistentRootState *)contents;
 
 - (BOOL) deletePersistentRoot: (COUUID *)aRoot;
 
@@ -88,14 +94,13 @@ extern NSString * const COStoreNotificationUUID;
 
 // note that these mutate the persistent roots, so any in-memory COPersistentRoots will be out of date
 
-- (BOOL) deleteBranch: (COUUID *)aBranch
-     ofPersistentRoot: (COUUID *)aRoot;
-
 - (BOOL) setCurrentBranch: (COUUID *)aBranch
 		forPersistentRoot: (COUUID *)aRoot;
 
-- (COUUID *) createCopyOfBranch: (COUUID *)aBranch
-			   ofPersistentRoot: (COUUID *)aRoot;
+- (BOOL) createBranchWithUUID: (COUUID *)aBranch
+             withInitialState: (COPersistentRootStateToken *)aToken
+                   setCurrent: (BOOL)setCurrent
+            forPersistentRoot: (COUUID *)aRoot;
 
 /**
  * If we care about detecting concurrent changes,
