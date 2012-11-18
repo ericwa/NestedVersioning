@@ -9,8 +9,8 @@
 #import "COPersistentRootStateToken.h"
 
 #import "COEdit.h"
-#import "COEditCreateBranch.h"
 #import "COEditDeleteBranch.h"
+#import "COEditCreateBranch.h"
 #import "COEditSetCurrentBranch.h"
 #import "COEditSetCurrentVersionForBranch.h"
 
@@ -241,6 +241,17 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
     return [self _writePersistentRoot: aRoot undoActions: undoActions redoActions: redoActions];
 }
 
+- (BOOL) _commitEdit: (COEdit *)anEdit
+{
+    COPersistentRoot *proot = [self persistentRootWithUUID: [anEdit persistentRootUUID]];
+    
+    [anEdit applyToPersistentRoot: proot];
+    
+    COEdit *reverseForEdit = [anEdit inverseForApplicationTo: proot];
+    
+    return [self _writePersistentRoot: proot andAddUndoAction: reverseForEdit];
+}
+
 /**
  * create a fresh new cache directory
  */
@@ -345,55 +356,47 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
 - (BOOL) deleteBranch: (COUUID *)aBranch
      ofPersistentRoot: (COUUID *)aRoot
 {
-    COPersistentRoot *newRoot = [self persistentRootWithUUID: aRoot];
+    COBranch *branch = [[self persistentRootWithUUID: aRoot] branchForUUID: aBranch];
     
-    COBranch *branch = [newRoot branchForUUID: aBranch];
-    [newRoot deleteBranch: aBranch];
-    
-    COEdit *action = [[[COEditCreateBranch alloc] initWithBranch:branch
-                                                                        UUID:aRoot
-                                                                        date:[NSDate date]
-                                                                 displayName:[NSString stringWithFormat: @"Delete Branch %@",
-                                                                              [branch name]]] autorelease];
-    
-    return [self _writePersistentRoot: newRoot
-                     andAddUndoAction: action];
+    return [self _commitEdit: [[[COEditDeleteBranch alloc] initWithBranchUUID: aBranch  UUID:aRoot date:[NSDate date] displayName:[NSString stringWithFormat: @"Delete Branch %@",
+                                [branch name]]] autorelease]];
 }
 
 - (BOOL) setCurrentBranch: (COUUID *)aBranch
 		forPersistentRoot: (COUUID *)aRoot
 {
-    COPersistentRoot *newRoot = [self persistentRootWithUUID: aRoot];
-    COBranch *newBranch = [newRoot branchForUUID: aBranch];
+    COPersistentRoot *proot = [self persistentRootWithUUID: aRoot];
+    COBranch *branch = [proot branchForUUID: aBranch];
     
-    COEdit *action = [[[COEditSetCurrentBranch alloc] initWithOldBranchUUID:[[newRoot currentBranch] UUID]
-                                                                          newBranchUUID:aBranch
-                                                                                   UUID:aRoot
-                                                                                   date:[NSDate date]
-                                                                            displayName:[NSString stringWithFormat: @"Switch to Branch %@",
-                                                                                         [newBranch name]]] autorelease];
-
-    [newRoot setCurrentBranch: aBranch];
-                            
-    return [self _writePersistentRoot: newRoot
-                     andAddUndoAction: action];
+    return [self _commitEdit: [[[COEditSetCurrentBranch alloc] initWithOldBranchUUID:[[proot currentBranch] UUID]
+                                                                       newBranchUUID:aBranch
+                                                                                UUID:aRoot
+                                                                                date:[NSDate date]
+                                                                         displayName:[NSString stringWithFormat: @"Switch to Branch %@",
+                                                                                      [branch name]]] autorelease]];
 }
 
 - (COUUID *) createCopyOfBranch: (COUUID *)aBranch
 			   ofPersistentRoot: (COUUID *)aRoot
 {
-    COPersistentRoot *newRoot = [self persistentRootWithUUID: aRoot];
-    COBranch *oldBranch = [newRoot branchForUUID: aBranch];
-    COBranch *newBranch = [newRoot _makeCopyOfBranch: aBranch];
+    COPersistentRoot *proot = [self persistentRootWithUUID: aRoot];
+ 
+    // Create copy
     
-    COEdit *action = [[[COEditDeleteBranch alloc] initWithBranchUUID: [newBranch UUID]
-                                                                            UUID:aRoot
-                                                                            date:[NSDate date]
-                                                                     displayName:[NSString stringWithFormat: @"Copy Branch %@",
-                                                                              [oldBranch name]]] autorelease];
+    COBranch *oldBranch = [proot branchForUUID: aBranch];
+    COBranch *newBranch = [[oldBranch mutableCopy] autorelease];
+    [newBranch setUUID: [COUUID UUID]];
+    NSString *msg = [NSString stringWithFormat: @"copy of '%@'", [oldBranch name]];
+    [newBranch setName: msg];
+    
+    COEdit *action = [[[COEditCreateBranch alloc] initWithBranch:newBranch
+                                                                  UUID:aRoot
+                                                                  date:[NSDate date]
+                                                           displayName:[NSString stringWithFormat: @"Copy Branch %@",
+                                                                        [oldBranch name]]] autorelease];
 
-    [self _writePersistentRoot: newRoot
-              andAddUndoAction: action];
+    [self _commitEdit: action];
+    
     return [newBranch UUID];
 }
 
@@ -434,22 +437,15 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
                  forBranch: (COUUID *)aBranch
           ofPersistentRoot: (COUUID *)aRoot
 {
-    COPersistentRoot *newRoot = [self persistentRootWithUUID: aRoot];
-
+    COPersistentRoot *proot = [self persistentRootWithUUID: aRoot];
     
-    COEdit *action = [[[COEditSetCurrentVersionForBranch alloc]
+    return [self _commitEdit: [[[COEditSetCurrentVersionForBranch alloc]
                                 initWithBranch: aBranch
-                                oldToken: [[newRoot branchForUUID: aBranch] currentState]
+                                oldToken: [[proot branchForUUID: aBranch] currentState]
                              newToken: aVersion
                              UUID: aRoot
                              date: [NSDate date]
-                             displayName: @"Apply Change"] autorelease];
-    
-    [[newRoot branchForUUID: aBranch] _addCommit: aVersion];
-    [[newRoot branchForUUID: aBranch] _setCurrentState: aVersion];
- 
-    return [self _writePersistentRoot: newRoot
-                     andAddUndoAction: action];
+                             displayName: @"Apply Change"] autorelease]];
 }
 
 /** @taskunit syntax sugar */

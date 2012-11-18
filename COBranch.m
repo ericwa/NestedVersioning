@@ -145,7 +145,10 @@ NSString *kCOBranchName = @"COBranchName";
 }
 - (void) _setCurrentState: (COPersistentRootStateToken *)aCommit
 {
-    assert([stateTokens containsObject: aCommit]);
+    if (![stateTokens containsObject: aCommit]) {
+        NSLog(@"_setCurrentState called with non-existing commit %@", aCommit);
+        [stateTokens addObject: aCommit];
+    }
     ASSIGN(currentState, aCommit);
 }
 

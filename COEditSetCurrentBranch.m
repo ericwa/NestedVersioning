@@ -53,7 +53,7 @@ static NSString *kCONewBranchUUID = @"CONewBranchUUID";
 
 - (void) applyToPersistentRoot: (COPersistentRoot *)aProot
 {
-    [aProot setCurrentBranch: oldBranch_];
+    [aProot setCurrentBranch: newBranch_];
 }
 
 @end

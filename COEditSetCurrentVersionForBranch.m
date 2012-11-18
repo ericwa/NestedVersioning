@@ -59,7 +59,7 @@ static NSString *kCONewVersionToken = @"CONewVersionToken";
 
 - (void) applyToPersistentRoot: (COPersistentRoot *)aProot
 {
-    [[aProot branchForUUID: branch_] _setCurrentState: oldToken_];
+    [[aProot branchForUUID: branch_] _setCurrentState: newToken_];
 }
 
 @end
