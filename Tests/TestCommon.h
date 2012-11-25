@@ -1,12 +1,10 @@
 #import <Foundation/Foundation.h>
 #import <UnitKit/UnitKit.h>
-#import "COStore.h"
+#import "COSQLiteStore.h"
 #import "COPath.h"
 #import "COItem.h"
 
-#import "COPersistentRootState.h"
-#import "COPersistentRootStateDelta.h"
-#import "COPersistentRootStateToken.h"
+#import "CORevisionID.h"
 #import "COSubtree.h"
 #import "COMacros.h"
 #import "COSubtree.h"
@@ -17,4 +15,4 @@
 
 #define STOREPATH [@"~/om5teststore" stringByExpandingTildeInPath]
 #define STOREURL [NSURL fileURLWithPath: STOREPATH]
-COStore *setupStore(void);
+COSQLiteStore *setupStore(void);

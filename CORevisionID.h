@@ -14,7 +14,7 @@
  *
  * In any case, the object weights a few tens of bytes at most.
  */
-@interface COPersistentRootStateToken : NSObject <NSCopying>
+@interface CORevisionID : NSObject <NSCopying>
 {
     COUUID *prootCache;
     int64_t index;
@@ -25,8 +25,12 @@
 
 - (COUUID *) _prootCache;
 - (int64_t) _index;
+/**
+ * Returns a new CORevisionID with the stame backing store UUID but the given revid
+ */
+- (CORevisionID *) revisionIDWithIndex: (int64_t)anIndex;
 
 - (id) plist;
-+ (COPersistentRootStateToken *) tokenWithPlist: (id)plist;
++ (CORevisionID *) tokenWithPlist: (id)plist;
 
 @end

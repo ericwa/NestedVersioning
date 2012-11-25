@@ -31,13 +31,13 @@
  * @param aToken
  *   should be a state token that belongs to [self editingBranch]
  */
-- (void) loadStateToken: (COPersistentRootStateToken *)aToken;
+- (void) loadStateToken: (CORevisionID *)aToken;
 
 /**
  * @param aToken
  *   should be a state token that belongs to [self editingBranch]
  */
-- (void) persistentSwitchToStateToken: (COPersistentRootStateToken *)aToken;
+- (void) persistentSwitchToStateToken: (CORevisionID *)aToken;
 
 - (void) switchToBranch: (COUUID *)aBranchUUID;
 

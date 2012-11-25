@@ -1,23 +1,31 @@
 #import <Foundation/Foundation.h>
 
 #import "COUUID.h"
-#import "COPersistentRootStateToken.h"
-#import "COStore.h"
+#import "CORevisionID.h"
+#import "COSQLiteStore.h"
 
 /**
  * An in-memory representation of all of the data about a persistent root.
- * Mutable
  *
  * Current branching model:
- *  - each commit is tagged with the SINGLE branch uuid where it was created.
- *  - a branch has a current commit, which doesn't need to be on the branch
+ *  - branches are linear sequences of commits defined by head and tail (inclusive)
+ *  - branches shouldn't overlap each other
+ *  - a branch has a current commit, which must be between head and tail (inclusive)
+ *
+ * as an exception to the above, when a branch is first created it can have a current
+ * revision that is anything, and no head or tail.
+ *
  */
-@interface COPersistentRootPlist : NSObject <COPersistentRoot, NSCopying>
+@interface COPersistentRootPlist : NSObject <COPersistentRootMetadata, NSCopying>
 {
     COUUID *uuid_;
+   
+    // TODO: Store as cache UUID + set of integer ranges for space efficiency
+    NSMutableArray *revisionIDs_;
     
-    NSMutableDictionary *stateTokensForBranch_; // COUUID : Array of COPersistentRootStateToken
-    NSMutableDictionary *currentStateForBranch_; // COUUID : COPersistentRootStateToken
+    NSMutableDictionary *headRevisionIdForBranch_; // COUUID : CORevisionID
+    NSMutableDictionary *tailRevisionIdForBranch_; // COUUID : CORevisionID
+    NSMutableDictionary *currentStateForBranch_; // COUUID : CORevisionID
 
     COUUID *currentBranch_;
     
@@ -25,33 +33,36 @@
 }
 
 - (id)      initWithUUID: (COUUID *)aUUID
-    stateTokensForBranch: (NSDictionary *)state
+             revisionIDs: (NSArray *)allRevisions
+ headRevisionIdForBranch: (NSDictionary *)headForBranch
+ tailRevisionIdForBranch: (NSDictionary *)tailForBranch
    currentStateForBranch: (NSDictionary *)stateForBranch
            currentBranch: (COUUID *)currentBranch
                 metadata: (NSDictionary *)theMetadata;
 
-- (COUUID *) UUID;
+- (id) initWithPersistentRootPlist: (COPersistentRootPlist *)aPlist;
 
+- (COUUID *) UUID;
+ 
 - (NSArray *) branchUUIDs;
+
+- (NSArray *) revisionIDs;
+- (void) addRevisionID: (CORevisionID *)aRevision;
 
 - (COUUID *) currentBranchUUID;
 - (void) setCurrentBranchUUID: (COUUID *)aUUID;
 
-- (NSArray *) stateTokensForBranch: (COUUID *)aBranch;
-/**
- * if aBranch does not exist in the receiver,
- * also creates the branch and sets aToken as the current state.
- */
-- (void) addStateToken: (COPersistentRootStateToken *)aToken
-             forBranch: (COUUID *)aBranch;
+- (CORevisionID *)headRevisionIdForBranch: (COUUID *)aBranch;
+- (void)setHeadRevisionId: (CORevisionID *)aRevision
+                forBranch: (COUUID *)aUUID;
 
-- (COPersistentRootStateToken *)currentStateForBranch: (COUUID *)aBranch;
-/**
- * if aBranch does not exist in the receiver,
- * creates the branch. 
- */
-- (void) setCurrentState: (COPersistentRootStateToken *)aState
-               forBranch: (COUUID *)aBranch;
+- (CORevisionID *)tailRevisionIdForBranch: (COUUID *)aBranch;
+- (void)setTailRevisionId: (CORevisionID *)aRevision
+                forBranch: (COUUID *)aUUID;
+
+- (CORevisionID *)currentStateForBranch: (COUUID *)aBranch;
+- (void)setCurrentState: (CORevisionID *)aRevision
+              forBranch: (COUUID *)aUUID;
 
 - (NSDictionary *) metadata;
 - (void) setMetadata: (NSDictionary *)theMetadata;

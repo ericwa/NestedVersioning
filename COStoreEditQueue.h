@@ -2,8 +2,9 @@
 
 #import "COUUID.h"
 #import "COPersistentRootEditQueue.h"
-#import "COPersistentRootState.h"
-#import "COStore.h"
+#import "COSQLiteStore.h"
+
+@class COObjectTree;
 
 /**
  * High-level store API which provides access to COPersistentRootEditQueue objects,
@@ -11,7 +12,7 @@
  */
 @interface COStoreEditQueue : NSObject
 {
-    COStore *store_;
+    COSQLiteStore *store_;
     
     // FIXME: Should be weak so if createPersistentRoot
     // is called and the result is not used, it'll be dealloced?
@@ -27,12 +28,13 @@
 
 /** @taskunit writing */
 
-/**
- * Creates a persistent root in memory, which will be committed once you call -commit on it
- */
-- (COPersistentRootEditQueue *) createPersistentRoot;
+// these 2 commit immediately
+- (COPersistentRootEditQueue *) createPersistentRootWithInitialContents: (COObjectTree *)contents
+                                                               metadata: (NSDictionary *)metadata;
 
-- copy;
+// does a cheap copy
+- (COPersistentRootEditQueue *) createPersistentRootWithInitialRevision: (CORevisionID *)aRevision
+                                                               metadata: (NSDictionary *)metadata;
 
 /**
  * Deletes the requested persistent root immediately

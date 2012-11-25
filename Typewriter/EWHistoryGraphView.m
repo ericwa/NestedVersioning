@@ -58,7 +58,7 @@
 - (NSString *)view:(NSView *)view stringForToolTip:(NSToolTipTag)tag point:(NSPoint)point userData:(void *)userData
 {
 	COStore *store = [graphRenderer store];
-	COPersistentRootStateToken *commit = [graphRenderer commitAtPoint: point];
+	CORevisionID *commit = [graphRenderer commitAtPoint: point];
 	
 	if (commit == nil)
 	{
@@ -110,7 +110,7 @@
     }
     ASSIGN(trackingRects, [NSMutableArray array]);
     
-	for (COPersistentRootStateToken *commit in [graphRenderer commits])
+	for (CORevisionID *commit in [graphRenderer commits])
 	{
 		NSRect r = [graphRenderer rectForCommit: commit];
 		[self addToolTipRect:r owner:self userData:commit];
@@ -130,7 +130,7 @@
     NSPoint pt = [self convertPoint: [theEvent locationInWindow] 
 						   fromView: nil];
 	
-    COPersistentRootStateToken *commit = [graphRenderer commitAtPoint: pt];
+    CORevisionID *commit = [graphRenderer commitAtPoint: pt];
 	
 	if (nil != commit)
 	{
@@ -182,7 +182,7 @@
 		NSPoint pt = [self convertPoint: [theEvent locationInWindow] 
 							   fromView: nil];
 		
-		COPersistentRootStateToken *commit = [graphRenderer commitAtPoint: pt];
+		CORevisionID *commit = [graphRenderer commitAtPoint: pt];
 
         if (commit != nil)
         {
@@ -199,7 +199,7 @@
 
 - (void)mouseEntered:(NSEvent *)theEvent
 {    
-    COPersistentRootStateToken *commit = [theEvent userData];
+    CORevisionID *commit = [theEvent userData];
     ASSIGN(mouseoverCommit, commit);
     [self setNeedsDisplay: YES];
     NSLog(@"show %@", commit);

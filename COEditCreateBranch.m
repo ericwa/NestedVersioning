@@ -4,7 +4,7 @@
 @implementation COEditCreateBranch : COEdit
 
 - (id) initWithBranchUUID: (COUUID *)newUUID
-             currentState: (COPersistentRootStateToken *)state
+             currentState: (CORevisionID *)state
                      UUID: (COUUID*)aUUID
                      date: (NSDate*)aDate
               displayName: (NSString*)aName

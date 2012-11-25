@@ -1,5 +1,5 @@
 #import "COEdit.h"
-#import "COPersistentRootStateToken.h"
+#import "CORevisionID.h"
 
 /**
  * undo setting from old -> new (to apply, replace new by old)
@@ -7,13 +7,13 @@
 @interface COEditSetCurrentVersionForBranch : COEdit
 {
     COUUID *branch_;
-    COPersistentRootStateToken *oldToken_;
-    COPersistentRootStateToken *newToken_;
+    CORevisionID *oldToken_;
+    CORevisionID *newToken_;
 }
 
 - (id) initWithBranch: (COUUID *)aBranch
-             oldToken: (COPersistentRootStateToken *)oldToken
-             newToken: (COPersistentRootStateToken *)newToken
+             oldToken: (CORevisionID *)oldToken
+             newToken: (CORevisionID *)newToken
                  UUID: (COUUID*)aUUID
                  date: (NSDate*)aDate
           displayName: (NSString*)aName;

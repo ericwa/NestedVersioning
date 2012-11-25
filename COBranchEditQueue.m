@@ -3,36 +3,28 @@
 #import "COSubtree.h"
 #import "COPersistentRootEditQueue.h"
 #import "COEditQueuePrivate.h"
+#import "COObjectTree.h"
+#import "COSQLiteStore.h"
 
 @implementation COBranchEditQueue
 
-/**
- * if aState is nil, we are uncommitted 
- */
-- (id)initWithRoot: (COPersistentRootEditQueue*)aRoot branch: (COUUID*)aBranch initialState: (COPersistentRootStateToken *)aState
+- (id)initWithPersistentRoot: (COPersistentRootEditQueue*)aRoot
+                      branch: (COUUID*)aBranch
+          trackCurrentBranch: (BOOL)track
 {
-    assert(aBranch != nil);
-    assert(aRoot  != nil);
-    
     SUPERINIT;
-    persistentRoot_ = aRoot; // weak
+    persistentRoot_ = aRoot;
     ASSIGN(branch_, aBranch);
-
-    if (aState != nil)
-    {
-        ASSIGN(tree_, [[[[persistentRoot_ storeEditQueue] store] fullStateForToken: aState] tree]);
-        backupTree_ = [tree_ copy];
-    }
-    else
-    {
-        tree_ = [[COSubtree alloc] init];
-    }
-    
+    isTrackingCurrentBranch_ = track;
     return self;
 }
 
-- (void) dealloc
+- (void)dealloc
 {
+    [branch_ release];
+    [backupTree_ release];
+    [tree_ release];
+    [modifiedObjects_ release];
     [super dealloc];
 }
 
@@ -40,45 +32,93 @@
 {
     return persistentRoot_;
 }
-
 - (COUUID *) UUID
 {
     return branch_;
 }
 
-- (void) setBranch: (COUUID *)aBranch
+- (CORevisionID *)currentState
 {
-    ASSIGN(branch_, aBranch);
+    return [[persistentRoot_ savedState] currentStateForBranch: branch_];
+}
+
+- (CORevisionID *)head
+{
+    return [[persistentRoot_ savedState] headRevisionIdForBranch: branch_];
+}
+
+- (CORevisionID *)tail
+{
+    return [[persistentRoot_ savedState] tailRevisionIdForBranch: branch_];
+}
+
+// commits immediately. discards any uncommitted edits.
+// moves the current state pointer of the branch.
+- (void) setCurrentState: (CORevisionID *)aState
+{
+    BOOL ok = [[persistentRoot_ store] setCurrentVersion: aState
+                                               forBranch: branch_
+                                        ofPersistentRoot: [persistentRoot_ UUID]];
     
-    // TODO: reload ourself.
+    [[persistentRoot_ savedState] setCurrentState: aState forBranch: branch_];
+    // FIXME: Update head/tail
 }
 
 /** @taskunit manipulation */
 
-
-- (BOOL) commitChanges;
+static COObjectTree *itemTreeForSubtree(COSubtree *aSubtree)
 {
-    return [persistentRoot_ commitChanges];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    for (COItem *item in [aSubtree allContainedStoreItems])
+    {
+        [dict setObject: item forKey: [item UUID]];
+    }
+    return [[[COObjectTree alloc] initWithItemForUUID: dict root: [aSubtree UUID]] autorelease];
+}
+
+- (BOOL) commitChangesWithMetadata: (NSDictionary *)metadata
+{
+    CORevisionID *revId = [[persistentRoot_ store] writeItemTree: itemTreeForSubtree(tree_)
+                                                    withMetadata: metadata
+                                            withParentRevisionID: [self currentState]
+                                                   modifiedItems: [[tree_ allUUIDs] allObjects]];
+
+    BOOL ok = [[persistentRoot_ store] setCurrentVersion: revId
+                                               forBranch: branch_
+                                        ofPersistentRoot: [persistentRoot_ UUID]];
+    assert(ok);
+
+    [[persistentRoot_ savedState] setCurrentState:revId forBranch: branch_];
+    // FIXME: Update head/tail
+    
+    return YES;
 }
 
 - (void) discardChanges
 {
-    // TODO
+    [tree_ release];
+    tree_ = [backupTree_ copy];
 }
 
+// FIXME: Rewrite using editing context
 - (COSubtree *)persistentRootTree
 {
     return tree_;
 }
-
 - (void) setPersistentRootTree: (COSubtree *)aSubtree
 {
     ASSIGN(tree_, aSubtree);
 }
 
-- (COPersistentRootState *) fullState
+/**
+ * the branch of the special "current branch" edit queue
+ * can change.
+ */
+- (void) setBranch: (COUUID *)aBranch
 {
-    return [COPersistentRootState stateWithTree: tree_];
+    assert(isTrackingCurrentBranch_);
+    ASSIGN(branch_, aBranch);
+    [self discardChanges];
 }
 
 @end

@@ -1,8 +1,8 @@
-#import "COPersistentRootStateToken.h"
+#import "CORevisionID.h"
 
 #import "COUUID.h"
 
-@implementation COPersistentRootStateToken
+@implementation CORevisionID
 
 - (id) initWithProotCache: (COUUID *)aUUID
                     index: (int64_t)anIndex
@@ -24,10 +24,10 @@
 
 - (BOOL) isEqual:(id)object
 {
-    if ([object isKindOfClass: [COPersistentRootStateToken class]])
+    if ([object isKindOfClass: [CORevisionID class]])
     {
-        return ((COPersistentRootStateToken *)object)->index == index
-        && [((COPersistentRootStateToken *)object)->prootCache isEqual: prootCache];
+        return ((CORevisionID *)object)->index == index
+        && [((CORevisionID *)object)->prootCache isEqual: prootCache];
     }
     return NO;
 }
@@ -45,16 +45,22 @@
     return index;
 }
 
+- (CORevisionID *) revisionIDWithIndex: (int64_t)anIndex
+{
+    return [[[CORevisionID alloc] initWithProotCache: prootCache
+                                               index: anIndex] autorelease];
+}
+
 - (id) plist
 {
     return [NSString stringWithFormat: @"%@:%@", prootCache,
             [NSNumber numberWithLongLong: (long long)index]];
 }
-+ (COPersistentRootStateToken *) tokenWithPlist: (id)plist
++ (CORevisionID *) tokenWithPlist: (id)plist
 {
     NSArray *comps = [(NSString *)plist componentsSeparatedByString:@":"];
     
-    COPersistentRootStateToken *result = [[[COPersistentRootStateToken alloc] init] autorelease];
+    CORevisionID *result = [[[CORevisionID alloc] init] autorelease];
     
     result->prootCache = [[COUUID UUIDWithString: [comps objectAtIndex: 0]] retain];
     result->index = [(NSString *)[comps objectAtIndex: 1] longLongValue];

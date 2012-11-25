@@ -57,6 +57,12 @@ static void COUUIDGet16RandomBytes(unsigned char bytes[16])
 	return [[[self alloc] initWithString: aString] autorelease];
 }
 
++ (COUUID *) UUIDWithData: (NSData *)aData
+{
+    NSParameterAssert([aData length] == 16);
+    return [[[self alloc] initWithBytes: [aData bytes]] autorelease];
+}
+
 - (id) init
 {
     SUPERINIT;
@@ -178,6 +184,11 @@ static void COUUIDGet16RandomBytes(unsigned char bytes[16])
 - (const unsigned char *) bytes
 {
 	return uuid;
+}
+
+- (NSData *) dataValue
+{
+    return [NSData dataWithBytes: uuid length: 16];
 }
 
 - (NSString*) description

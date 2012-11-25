@@ -1,18 +1,19 @@
 #import "COStoreEditQueue.h"
 #import "COMacros.h"
 #import "COEditQueuePrivate.h"
+#import "COSQLiteStore.h"
 
 @implementation COStoreEditQueue
 
 - (id)initWithURL: (NSURL*)aURL
 {
     SUPERINIT;
-    store_ = [[COStore alloc] initWithURL: aURL];
+    store_ = [[COSQLiteStore alloc] initWithURL: aURL];
     rootForUUID_ = [[NSMutableDictionary alloc] init];
     return self;
 }
 
-- (void)dealoc
+- (void)dealloc
 {
     [store_ release];
     [rootForUUID_ release];
@@ -29,16 +30,24 @@
     return [store_ allPersistentRootUUIDs];
 }
 
+- (COPersistentRootEditQueue *) persistentRootEditQueue: (id<COPersistentRootMetadata>)persistentRoot
+{
+    COPersistentRootEditQueue *root = [[COPersistentRootEditQueue alloc] initWithStoreEditQueue: self
+                                                                                 persistentRoot: persistentRoot];
+    [rootForUUID_ setObject: root forKey: [root UUID]];
+    [root release];
+    return root;
+}
+
 - (COPersistentRootEditQueue *) persistentRootWithUUID: (COUUID *)aUUID
 {
     COPersistentRootEditQueue *root = [rootForUUID_ objectForKey: aUUID];
     if (root == nil)
     {
-        if ([[self allPersistentRootUUIDs] containsObject: aUUID])
+        id<COPersistentRootMetadata> persistentRoot = [store_ persistentRootWithUUID: aUUID];
+        if (persistentRoot != nil)
         {
-            root = [[COPersistentRootEditQueue alloc] initWithRootStore: self uuid: aUUID isNew: NO];
-            [rootForUUID_ setObject: root forKey: aUUID];
-            [root release];
+            return [self persistentRootEditQueue: persistentRoot];
         }
         else
         {
@@ -48,14 +57,22 @@
     return root;
 }
 
-- (COPersistentRootEditQueue *) createPersistentRoot
+- (COPersistentRootEditQueue *) createPersistentRootWithInitialContents: (COObjectTree *)contents
+                                                               metadata: (NSDictionary *)metadata
 {
-    COUUID *newUUID = [COUUID UUID];
-    COPersistentRootEditQueue *proot = [[COPersistentRootEditQueue alloc] initWithRootStore: self uuid: newUUID isNew: YES];
+    id<COPersistentRootMetadata> persistentRoot = [store_ createPersistentRootWithInitialContents: contents metadata: metadata];
     
-    [rootForUUID_ setObject: proot forKey: newUUID];
-    return proot;
+    return [self persistentRootEditQueue: persistentRoot];
 }
+
+- (COPersistentRootEditQueue *) createPersistentRootWithInitialRevision: (CORevisionID *)aRevision
+                                                               metadata: (NSDictionary *)metadata
+{
+    id<COPersistentRootMetadata> persistentRoot = [store_ createPersistentRootWithInitialRevision: aRevision metadata: metadata];
+    
+    return [self persistentRootEditQueue: persistentRoot];
+}
+
 
 - (void) deletePersistentRootWithUUID: (COUUID *)aUUID
 {
@@ -66,7 +83,7 @@
 
 @implementation COStoreEditQueue (Private)
 
-- (COStore *)store
+- (COSQLiteStore *)store
 {
     return store_;
 }

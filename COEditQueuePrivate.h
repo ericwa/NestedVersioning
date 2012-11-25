@@ -1,18 +1,23 @@
 #import "COPersistentRootEditQueue.h"
 #import "COBranchEditQueue.h"
 #import "COStoreEditQueue.h"
+#import "COSQLiteStore.h"
 
 @interface COPersistentRootEditQueue (Private)
 
-- (COStoreEditQueue *) storeEditQueue;
+- (COSQLiteStore *) store;
 
-- (id)initWithRootStore: (COStoreEditQueue *)aRootStore uuid: (COUUID *)aUUID isNew: (BOOL)isNew;
+- (id)initWithStoreEditQueue: (COStoreEditQueue *)aRootStore persistentRoot: (COPersistentRootPlist *)metadata;
+
+- (COPersistentRootPlist *) savedState;
 
 @end
 
 @interface COBranchEditQueue (Private)
 
-- (id)initWithRoot: (COPersistentRootEditQueue*)aRoot branch: (COUUID*)aBranch initialState: (COPersistentRootStateToken *)aState;
+- (id)initWithPersistentRoot: (COPersistentRootEditQueue*)aRoot
+                      branch: (COUUID*)aBranch
+          trackCurrentBranch: (BOOL)track;
 
 /**
  * the branch of the special "current branch" edit queue
@@ -20,13 +25,10 @@
  */
 - (void) setBranch: (COUUID *)aBranch;
 
-// FIXME: add delta api
-- (COPersistentRootState *) fullState;
-
 @end
 
 @interface COStoreEditQueue (Private)
 
-- (COStore *)store;
+- (COSQLiteStore *)store;
 
 @end

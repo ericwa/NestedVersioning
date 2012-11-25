@@ -1,18 +1,6 @@
-#import "COStore.h"
-#import "COMacros.h"
-#import "COSubtree.h"
-
-#import "COPersistentRootPlist.h"
-#import "COPersistentRootState.h"
-#import "COPersistentRootStateDelta.h"
-#import "COPersistentRootStateToken.h"
-
-#import "COEdit.h"
-#import "COEditCreateBranch.h"
-#import "COEditSetCurrentBranch.h"
-#import "COEditSetCurrentVersionForBranch.h"
 
 
+#if 0
 NSString * const COStorePersistentRootMetadataDidChangeNotification = @"COStorePersistentRootMetadataDidChangeNotification";
 NSString * const COStoreNotificationUUID = @"COStoreNotificationUUID";
 
@@ -76,7 +64,7 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
             [[aUUID stringValue] stringByAppendingString: @".persistentRootStorage"]];
 }
 
-- (NSString *) _fullStatePathForToken: (COPersistentRootStateToken *)aToken
+- (NSString *) _fullStatePathForToken: (CORevisionID *)aToken
 {
     NSString *fileName = [NSString stringWithFormat: @"%lld.plist", (long long int)[aToken _index]];
     
@@ -86,13 +74,25 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
     return path;
 }
 
-- (COPersistentRootState *) fullStateForToken: (COPersistentRootStateToken *)aToken
+- (CORevision *) revisionForID: (CORevisionID *)aToken
+{
+    // FIXME: Do this properly
+    
+    COPersistentRootState *state = [self fullStateForToken: aToken];
+    assert(state != nil);
+    
+    return [[[CORevision alloc] initWithRevisionId: aToken
+                                  parentRevisionId: [state parentStateToken]
+                                          metadata: nil] autorelease];
+}
+
+- (COPersistentRootState *) fullStateForToken: (CORevisionID *)aToken
 {
     return [self _fullStateForPath: [self _fullStatePathForToken: aToken]];
 }
 
-- (COPersistentRootStateDelta *) deltaStateForToken: (COPersistentRootStateToken *)aToken
-                                            basedOn: (COPersistentRootStateToken **)outBasedOn
+- (COPersistentRootStateDelta *) deltaStateForToken: (CORevisionID *)aToken
+                                            basedOn: (CORevisionID **)outBasedOn
 {
     assert(0);
     return nil;
@@ -139,7 +139,7 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
 // but it's faster to just read the entire state in one go.
 //
 
-- (id <COPersistentRoot>) persistentRootWithUUID: (COUUID *)aUUID
+- (id <COPersistentRootMetadata>) persistentRootWithUUID: (COUUID *)aUUID
 {
     assert(aUUID != nil);
     NSDictionary *md = [self readStoreMetadataPlist];
@@ -261,7 +261,7 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
                                                            error: NULL];
 }
 
-- (COPersistentRootStateToken *) _unusedTokenForCache: (COUUID *)name
+- (CORevisionID *) _unusedTokenForCache: (COUUID *)name
 {
     NSArray *files = [[NSFileManager defaultManager] directoryContentsAtPath: [self _fullStateDirForUUID: name]];
     
@@ -272,7 +272,7 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
         if (num > max) max = num;
     }
 
-    return [[COPersistentRootStateToken alloc] initWithProotCache: name index: max + 1];
+    return [[CORevisionID alloc] initWithProotCache: name index: max + 1];
 }
 
 - (BOOL) _writeFullState: (COPersistentRootState *)aState
@@ -283,7 +283,7 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
 
 
 - (BOOL) _writeFullState: (COPersistentRootState *)aState
-                  forToken: (COPersistentRootStateToken *)aToken
+                  forToken: (CORevisionID *)aToken
 {
     return [self _writeFullState: aState
                           toPath: [self _fullStatePathForToken: aToken]];
@@ -295,15 +295,15 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
 // Atomicity: any changes made within a persistent root are atomic.
 //
 
-- (BOOL) createPersistentRootWithUUID: (COUUID *)aUUID
-                      initialContents: (COPersistentRootState *)contents
+- (COUUID *) createPersistentRootWithInitialContents: (COPersistentRootState *)contents
+                                            metadata: (NSDictionary *)metadata
 {
-    NILARG_EXCEPTION_TEST(aUUID);
-    NILARG_EXCEPTION_TEST(contents);
-    
+    NSParameterAssert(contents != nil);
+
+    COUUID *aUUID = [COUUID UUID];
     [self _createCache: aUUID];
     
-    COPersistentRootStateToken *newToken = [self _unusedTokenForCache: aUUID];
+    CORevisionID *newToken = [self _unusedTokenForCache: aUUID];
     BOOL ok =[self _writeFullState: contents
                           forToken: newToken];
     assert(ok);
@@ -315,10 +315,32 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
                                                   stateTokensForBranch: D(A(newToken), branchUUID)
                                                  currentStateForBranch: D(newToken, branchUUID)
                                                          currentBranch: branchUUID
-                                                              metadata: nil] autorelease];
+                                                              metadata: metadata] autorelease];
                                  
-    return [self _writePersistentRoot: result
+    ok = [self _writePersistentRoot: result
                    andAddUndoAction: nil];
+    
+    return aUUID;
+}
+
+- (COUUID *) createPersistentRootWithInitialRevision: (CORevisionID *)aRevision
+                                            metadata: (NSDictionary *)metadata
+{
+    NSParameterAssert(aRevision != nil);
+    
+    COUUID *aUUID = [COUUID UUID];
+    COUUID *branchUUID = [COUUID UUID];    
+    
+    COPersistentRootPlist *result = [[[COPersistentRootPlist alloc] initWithUUID: aUUID
+                                                            stateTokensForBranch: D(A(aRevision), branchUUID)
+                                                           currentStateForBranch: D(aRevision, branchUUID)
+                                                                   currentBranch: branchUUID
+                                                                        metadata: metadata] autorelease];
+    
+    BOOL ok = [self _writePersistentRoot: result
+                        andAddUndoAction: nil];
+    
+    return aUUID;
 }
 
 - (BOOL) deletePersistentRoot: (COUUID *)aRoot
@@ -331,7 +353,7 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
 // branches
 
 - (BOOL) createBranchWithUUID: (COUUID *)aBranch
-             withInitialState: (COPersistentRootStateToken *)aToken
+             withInitialState: (CORevisionID *)aToken
                    setCurrent: (BOOL)setCurrent
             forPersistentRoot: (COUUID *)aRoot
 {    
@@ -353,14 +375,14 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
 
 // adding state
 
-- (COPersistentRootStateToken *) addStateAsDelta: (COPersistentRootStateDelta *)aDelta
-                                     parentState: (COPersistentRootStateToken *)parent
+- (CORevisionID *) addStateAsDelta: (COPersistentRootStateDelta *)aDelta
+                                     parentState: (CORevisionID *)parent
 {
     assert(0); // deltas not supported yet
 }
 
-- (COPersistentRootStateToken *) addState: (COPersistentRootState *)aFullSnapshot
-                              parentState: (COPersistentRootStateToken *)parent
+- (CORevisionID *) addState: (COPersistentRootState *)aFullSnapshot
+                              parentState: (CORevisionID *)parent
 {
     COUUID *cacheUuid;
     if (parent == nil)
@@ -375,7 +397,7 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
     
     [aFullSnapshot setParentStateToken: parent];
     
-    COPersistentRootStateToken *newToken = [self _unusedTokenForCache: cacheUuid];
+    CORevisionID *newToken = [self _unusedTokenForCache: cacheUuid];
     
     BOOL ok =[self _writeFullState: aFullSnapshot
                           forToken: newToken];
@@ -384,7 +406,7 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
     return newToken;
 }
 
-- (BOOL) setCurrentVersion: (COPersistentRootStateToken*)aVersion
+- (BOOL) setCurrentVersion: (CORevisionID*)aVersion
                  forBranch: (COUUID *)aBranch
           ofPersistentRoot: (COUUID *)aRoot
 {
@@ -410,95 +432,90 @@ static NSString *kCOPersistentRoot = @"COPersistentRoot";
 - (COPersistentRootState *) fullStateForPersistentRootWithUUID: (COUUID *)aUUID
                                                     branchUUID: (COUUID *)aBranch
 {
-    COPersistentRootStateToken *token = [[self persistentRootWithUUID: aUUID] currentStateForBranch: aBranch];
+    CORevisionID *token = [[self persistentRootWithUUID: aUUID] currentStateForBranch: aBranch];
     
     return [self fullStateForToken: token];
 }
 
-- (COPersistentRootStateToken *) parentForStateToken: (COPersistentRootStateToken *)aToken
-{
-    COPersistentRootState *state = [self fullStateForToken: aToken];
-    assert(state != nil);
-    return [state parentStateToken];
-}
 
 /** @taskunit script-based undo/redo log */
 
 // api
-
-- (BOOL) canUndoForPersistentRootWithUUID: (COUUID *)aUUID
-{
-    return [[self _undoActionsForKey: kCOUndoActions proot: aUUID] count] > 0;
-}
-- (BOOL) canRedoForPersistentRootWithUUID: (COUUID *)aUUID
-{
-    return [[self _undoActionsForKey: kCORedoActions proot: aUUID] count] > 0;
-}
-
-- (NSString *) undoMenuItemTitleForPersistentRootWithUUID: (COUUID *)aUUID
-{
-    NSArray *arr = [self _undoActionsForKey: kCOUndoActions proot: aUUID];
-    if ([arr count] == 0)
-    {
-        return @"Undo";
-    }
-    else
-    {
-        return [NSString stringWithFormat: @"Undo %@", [[arr lastObject] menuTitle]];
-    }
-}
-- (NSString *) redoMenuItemTitleForPersistentRootWithUUID: (COUUID *)aUUID
-{
-    NSArray *arr = [self _undoActionsForKey: kCORedoActions proot: aUUID];
-    if ([arr count] == 0)
-    {
-        return @"Redo";
-    }
-    else
-    {
-        return [NSString stringWithFormat: @"Redo %@", [[arr lastObject] menuTitle]];
-    }
-}
-
-- (BOOL) undoForPersistentRootWithUUID: (COUUID *)aUUID
-{
-    NSMutableArray *undoActions = [self _undoActionsForKey: kCOUndoActions proot: aUUID];
-    NSMutableArray *redoActions = [self _undoActionsForKey: kCORedoActions proot: aUUID];
-
-    COPersistentRootPlist *proot = [self persistentRootWithUUID: aUUID];
-    
-    COEdit *action = [undoActions lastObject];
-    [redoActions addObject: [action inverseForApplicationTo: proot]];
-    [undoActions removeLastObject];
-    
-    [action applyToPersistentRoot: proot];
-    return [self _writePersistentRoot: proot undoActions: undoActions redoActions: redoActions];
-}
-
-- (BOOL) redoForPersistentRootWithUUID: (COUUID *)aUUID
-{
-    NSMutableArray *undoActions = [self _undoActionsForKey: kCOUndoActions proot: aUUID];
-    NSMutableArray *redoActions = [self _undoActionsForKey: kCORedoActions proot: aUUID];
-    
-    COPersistentRootPlist *proot = [self persistentRootWithUUID: aUUID];
-    
-    COEdit *action = [redoActions lastObject];
-    [undoActions addObject: [action inverseForApplicationTo: proot]];
-    [redoActions removeLastObject];
-    
-    [action applyToPersistentRoot: proot];
-    return [self _writePersistentRoot: proot undoActions: undoActions redoActions: redoActions];
-}
-
-- (NSDate *) undoActionDateForPersistentRootWithUUID: (COUUID *)aUUID
-{
-    COEdit *action = [[self _undoActionsForKey: kCOUndoActions proot: aUUID] lastObject];
-    return [action date];
-}
-- (NSDate *) redoActionDateForPersistentRootWithUUID: (COUUID *)aUUID
-{
-    COEdit *action = [[self _undoActionsForKey: kCORedoActions proot: aUUID] lastObject];
-    return [action date];
-}
+//
+//- (BOOL) canUndoForPersistentRootWithUUID: (COUUID *)aUUID
+//{
+//    return [[self _undoActionsForKey: kCOUndoActions proot: aUUID] count] > 0;
+//}
+//- (BOOL) canRedoForPersistentRootWithUUID: (COUUID *)aUUID
+//{
+//    return [[self _undoActionsForKey: kCORedoActions proot: aUUID] count] > 0;
+//}
+//
+//- (NSString *) undoMenuItemTitleForPersistentRootWithUUID: (COUUID *)aUUID
+//{
+//    NSArray *arr = [self _undoActionsForKey: kCOUndoActions proot: aUUID];
+//    if ([arr count] == 0)
+//    {
+//        return @"Undo";
+//    }
+//    else
+//    {
+//        return [NSString stringWithFormat: @"Undo %@", [[arr lastObject] menuTitle]];
+//    }
+//}
+//- (NSString *) redoMenuItemTitleForPersistentRootWithUUID: (COUUID *)aUUID
+//{
+//    NSArray *arr = [self _undoActionsForKey: kCORedoActions proot: aUUID];
+//    if ([arr count] == 0)
+//    {
+//        return @"Redo";
+//    }
+//    else
+//    {
+//        return [NSString stringWithFormat: @"Redo %@", [[arr lastObject] menuTitle]];
+//    }
+//}
+//
+//- (BOOL) undoForPersistentRootWithUUID: (COUUID *)aUUID
+//{
+//    NSMutableArray *undoActions = [self _undoActionsForKey: kCOUndoActions proot: aUUID];
+//    NSMutableArray *redoActions = [self _undoActionsForKey: kCORedoActions proot: aUUID];
+//
+//    COPersistentRootPlist *proot = [self persistentRootWithUUID: aUUID];
+//    
+//    COEdit *action = [undoActions lastObject];
+//    [redoActions addObject: [action inverseForApplicationTo: proot]];
+//    [undoActions removeLastObject];
+//    
+//    [action applyToPersistentRoot: proot];
+//    return [self _writePersistentRoot: proot undoActions: undoActions redoActions: redoActions];
+//}
+//
+//- (BOOL) redoForPersistentRootWithUUID: (COUUID *)aUUID
+//{
+//    NSMutableArray *undoActions = [self _undoActionsForKey: kCOUndoActions proot: aUUID];
+//    NSMutableArray *redoActions = [self _undoActionsForKey: kCORedoActions proot: aUUID];
+//    
+//    COPersistentRootPlist *proot = [self persistentRootWithUUID: aUUID];
+//    
+//    COEdit *action = [redoActions lastObject];
+//    [undoActions addObject: [action inverseForApplicationTo: proot]];
+//    [redoActions removeLastObject];
+//    
+//    [action applyToPersistentRoot: proot];
+//    return [self _writePersistentRoot: proot undoActions: undoActions redoActions: redoActions];
+//}
+//
+//- (NSDate *) undoActionDateForPersistentRootWithUUID: (COUUID *)aUUID
+//{
+//    COEdit *action = [[self _undoActionsForKey: kCOUndoActions proot: aUUID] lastObject];
+//    return [action date];
+//}
+//- (NSDate *) redoActionDateForPersistentRootWithUUID: (COUUID *)aUUID
+//{
+//    COEdit *action = [[self _undoActionsForKey: kCORedoActions proot: aUUID] lastObject];
+//    return [action date];
+//}
 
 @end
+#endif

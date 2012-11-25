@@ -47,6 +47,10 @@
  * Returns an autoreleased UUID object for the given UUID string representation. 
  */
 + (COUUID *) UUIDWithString: (NSString *)aString;
+/**
+ * Returns an autoreleased UUID object for the given 16-byte NSData.
+ */
++ (COUUID *) UUIDWithData: (NSData *)aData;
 
 /**
  * Initializes the UUID object with a 128-bit binary value.
@@ -71,6 +75,8 @@
  * Returns a 128-bit binary value representation of the receiver.
  */
 - (const unsigned char *) bytes;
+
+- (NSData *) dataValue;
 
 /** @taskunit Comparison */
 

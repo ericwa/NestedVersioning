@@ -11,24 +11,24 @@
 	COStore *store;
     
     // Used for coloring the graph
-    COPersistentRootStateToken *currentCommit_;
+    CORevisionID *currentCommit_;
     NSArray *branchCommits_;
 }
 
 - (id) initWithCommits: (NSArray*)stateTokens
          branchCommits: (NSArray*)tokensOnBranch
-         currentCommit: (COPersistentRootStateToken*)currentCommit
+         currentCommit: (CORevisionID*)currentCommit
                  store: (COStore*)aStore;
 - (void) layoutGraph;
 
 - (COStore *)store;
 
 - (NSSize) size;
-- (void) drawWithHighlightedCommit: (COPersistentRootStateToken *)aCommit;
+- (void) drawWithHighlightedCommit: (CORevisionID *)aCommit;
 
-- (COPersistentRootStateToken *)commitAtPoint: (NSPoint)aPoint;
+- (CORevisionID *)commitAtPoint: (NSPoint)aPoint;
 
-- (NSRect) rectForCommit:(COPersistentRootStateToken *)aCommit;
+- (NSRect) rectForCommit:(CORevisionID *)aCommit;
 - (NSArray *) commits;
 
 @end

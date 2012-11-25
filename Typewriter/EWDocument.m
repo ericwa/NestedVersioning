@@ -121,17 +121,17 @@
 
 - (void) recordNewState: (COSubtree*)aTree
 {
-    COPersistentRootStateToken *token = [[persistentRoot_ currentBranch] currentState];
+    CORevisionID *token = [[persistentRoot_ currentBranch] currentState];
     
     COPersistentRootState *newState = [COPersistentRootState stateWithTree: aTree];
-    COPersistentRootStateToken *token2 = [store_ addState: newState parentState: token];
+    CORevisionID *token2 = [store_ addState: newState parentState: token];
     
     [store_ setCurrentVersion: token2 forBranch: [[persistentRoot_ currentBranch] UUID] ofPersistentRoot: [persistentRoot_ UUID]];
     
     ASSIGN(persistentRoot_, [store_ persistentRootWithUUID: [persistentRoot_ UUID]]);
 }
 
-- (void) validateCanLoadStateToken: (COPersistentRootStateToken *)aToken
+- (void) validateCanLoadStateToken: (CORevisionID *)aToken
 {
     COBranch *editingBranchObject = [persistentRoot_ branchForUUID: [self editingBranch]];
     if (editingBranchObject == nil)
@@ -147,7 +147,7 @@
     }
 }
 
-- (void) persistentSwitchToStateToken: (COPersistentRootStateToken *)aToken
+- (void) persistentSwitchToStateToken: (CORevisionID *)aToken
 {
     [store_ setCurrentVersion: aToken
                     forBranch: [self editingBranch]
@@ -156,7 +156,7 @@
 }
 
 // Doesn't write to DB...
-- (void) loadStateToken: (COPersistentRootStateToken *)aToken
+- (void) loadStateToken: (CORevisionID *)aToken
 {
     [self validateCanLoadStateToken: aToken];
          

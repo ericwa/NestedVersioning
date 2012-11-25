@@ -1,7 +1,7 @@
 #import "TestCommon.h"
 
-COStore *setupStore()
+COSQLiteStore *setupStore()
 {
 	[[NSFileManager defaultManager] removeItemAtPath: STOREPATH error: NULL];
-	return [[COStore alloc] initWithURL: [NSURL fileURLWithPath: STOREPATH]];
+	return [[COSQLiteStore alloc] initWithURL: [NSURL fileURLWithPath: STOREPATH]];
 }

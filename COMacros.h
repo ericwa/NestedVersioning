@@ -12,13 +12,7 @@
 #define DESTROY(lvalue) ({ [lvalue release]; lvalue = nil; })
 #endif
 
-#define NILARG_EXCEPTION_TEST(arg) ({ \
-    if (nil == arg) \
-    { \
-        [NSException raise: NSInvalidArgumentException format: @"For %@, " \
-        "%s must not be nil", NSStringFromSelector(_cmd), #arg]; \
-    } \
-})
+#define NILARG_EXCEPTION_TEST(arg) NSParameterAssert(arg != nil)
 
 #define D(...) ({ \
     id __objects_and_keys[] = {__VA_ARGS__}; \

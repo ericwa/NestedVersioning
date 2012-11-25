@@ -1,40 +1,40 @@
 #import <Foundation/Foundation.h>
 #import "COPath.h"
 #import "COItem.h"
-#import "COPersistentRootEditQueue.h"
 #import "COSubtree.h"
 
+@class COPersistentRootEditQueue;
 @class COStore;
+@class CORevisionID;
 
 @interface COBranchEditQueue : NSObject
 {
 	COPersistentRootEditQueue *persistentRoot_; // weak
     COUUID *branch_;
-
-    COPersistentRootStateToken *baseStateToken_;
+    BOOL isTrackingCurrentBranch_;
     
 	// -- in-memory mutable state:
 
 	COSubtree *backupTree_;
 	COSubtree *tree_;
     
-    BOOL isDirty_;
+    NSMutableSet *modifiedObjects_;
 }
 
 - (COPersistentRootEditQueue *) persistentRoot;
 - (COUUID *) UUID;
 
+- (CORevisionID *)currentState;
+- (CORevisionID *)head;
+- (CORevisionID *)tail;
 
-
-- (NSArray *) stateTokens;
-
-- (COPersistentRootStateToken *)currentState;
-
-- (void) setCurrentState: (COPersistentRootStateToken *)aState;
+// commits immediately. discards any uncommitted edits.
+// moves the current state pointer of the branch.
+- (void) setCurrentState: (CORevisionID *)aState;
 
 /** @taskunit manipulation */
 
-- (BOOL) commitChanges;
+- (BOOL) commitChangesWithMetadata: (NSDictionary *)metadata;
 - (void) discardChanges;
 
 - (COSubtree *)persistentRootTree;
