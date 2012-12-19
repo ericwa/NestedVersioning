@@ -9,6 +9,7 @@
 @interface  COEditingContext (Private)
 
 - (void) recordDirtyObject: (COObject *)anObject;
+- (void) recordDirtyObjectUUID: (COUUID *)aUUID;
 
 - (void) removeUnreachableObjectAndChildren: (COUUID *)anObject;
 
@@ -21,6 +22,7 @@
 @interface COObject (Private)
 
 - (id) initWithItem: (COItem *)anItem parentContext: (COEditingContext *)aContext parent: (COObject *)aParent;
+- (void) updateItem: (COItem *)anItem parentContext: (COEditingContext *)aContext parent: (COObject *)aParent;
 - (void) markAsRemovedFromContext;
 
 @end

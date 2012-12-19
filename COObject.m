@@ -1,21 +1,40 @@
 #import "COObject.h"
 #import "COType.h"
 #import "COItem.h"
+#import "COObjectTree.h"
 #import "COEditingContext.h"
 #import "COEditingContextPrivate.h"
 #import "COItemPath.h"
 #import "COMacros.h"
 
-@implementation COObject
+@implementation COObject (Private)
 
 - (id) initWithItem: (COItem *)anItem parentContext: (COEditingContext *)aContext parent: (COObject *)aParent
 {
     SUPERINIT;
+    [self updateItem: anItem
+       parentContext: aContext
+              parent: aParent];
+    return self;
+}
+
+- (void) updateItem: (COItem *)anItem parentContext: (COEditingContext *)aContext parent: (COObject *)aParent
+{
     item = [anItem mutableCopy];
     parentContext_ = aContext;
     parent_ = aParent;
-    return self;
 }
+
+- (void) markAsRemovedFromContext
+{
+    parentContext_ = nil;
+    // FIXME: Add checks in various places that throw an exception if a user
+    // tries to do anything with a COObject with a nil editingContext
+}
+
+@end
+
+@implementation COObject
 
 - (void) dealloc
 {
@@ -118,7 +137,7 @@
 	return [parentContext_ rootObject];
 }
 
-- (BOOL) containsSubtree: (COObject *)aSubtree
+- (BOOL) containsObject: (COObject *)aSubtree
 {
 	for (; aSubtree != nil; aSubtree = [aSubtree parent])
 	{
@@ -167,10 +186,10 @@
 	return [item embeddedItemUUIDs];
 }
 
-- (NSArray *)directDescendentSubtrees
+- (NSSet *)directDescendentSubtrees
 {
     NSSet *uuids = [item embeddedItemUUIDs];
-	NSMutableArray *result = [NSMutableArray arrayWithCapacity: [uuids count]];
+	NSMutableSet *result = [NSMutableSet setWithCapacity: [uuids count]];
     for (COUUID *uuid in uuids)
     {
         [result addObject: [parentContext_ objectForUUID: uuid]];
@@ -185,7 +204,7 @@
 - (COObject *) subtreeWithUUID: (COUUID *)aUUID
 {
 	COObject *object = [parentContext_ objectForUUID: aUUID];
-    if ([self containsSubtree: object])
+    if ([self containsObject: object])
     {
         return object;
     }
@@ -249,9 +268,9 @@
 - (COObjectTree *) objectTree
 {
     NSMutableDictionary *objects = [NSMutableDictionary dictionary];
-    for (COItem *item in [self allContainedStoreItems])
+    for (COItem *i in [self allContainedStoreItems])
     {
-        [objects setObject: item forKey: [item UUID]];
+        [objects setObject: i forKey: [i UUID]];
     }
     
     return [[[COObjectTree alloc] initWithItemForUUID: objects root: [self UUID]] autorelease];
@@ -419,7 +438,7 @@ toUnorderedAttribute: (NSString*)anAttribute
 		[NSException raise: NSInvalidArgumentException
 					format: @"-removeSubtreeWithUUID: can not remove the receiver"];
 	}
-	if (![self containsSubtree: aSubtree])
+	if (![self containsObject: aSubtree])
 	{
 		[NSException raise: NSInvalidArgumentException
 					format: @"argument must be inside the reciever to remove it"];
@@ -436,8 +455,8 @@ toUnorderedAttribute: (NSString*)anAttribute
 
 #pragma mark Mutation Internal
 
-- (void) addObjectTree: (COObjectTree *)aTree
-            atItemPath: (COItemPath *)aPath
+- (COObject *) addObjectTree: (COObjectTree *)aTree
+                  atItemPath: (COItemPath *)aPath
 {
     // see if there are any name conflicts
     
@@ -460,9 +479,9 @@ toUnorderedAttribute: (NSString*)anAttribute
     
     // now, there are no name conflicts.
     
-    COObject *newObject = [parentContext_ createObjectWithDescendents: [aTree root]
-                                                       fromObjectTree: aTree
-                                                               parent: self];
+    COObject *result = [parentContext_ createObjectWithDescendents: [aTree root]
+                                                    fromObjectTree: aTree
+                                                            parent: self];
     [aPath insertValue: [aTree root] inStoreItem: self->item];
     
     // record dirty objects
@@ -472,6 +491,8 @@ toUnorderedAttribute: (NSString*)anAttribute
     {
         [parentContext_ recordDirtyObjectUUID: uuid];
     }
+    
+    return result;
 }
 
 - (void) addObjectSameContext: (COObject *)aObject
@@ -481,7 +502,7 @@ toUnorderedAttribute: (NSString*)anAttribute
     {
         [NSException raise: NSInvalidArgumentException format: @"can't add an object to itself"];
     }
-    if ([aObject containsSubtree: self])
+    if ([aObject containsObject: self])
     {
         [NSException raise: NSInvalidArgumentException format: @"can't add an object to a child of itself"];
     }
@@ -503,29 +524,23 @@ toUnorderedAttribute: (NSString*)anAttribute
     [parentContext_ recordDirtyObject: self];
 }
 
-
-/**
- * Inserts the given subtree at the given item path.
- * The provided subtree is removed from its parent, if it has one.
- * i.e. [aSubtree parent] is mutated by the method call!
- *
- * Works regardless of whether aSubtree is a descendant of
- * [self parent].
- */
-- (void) addSubtree: (COObject *)aSubtree
-		 atItemPath: (COItemPath *)aPath
+- (COObject *) addSubtree: (COObject *)aSubtree
+               atItemPath: (COItemPath *)aPath
 {
     NSParameterAssert([[self UUID] isEqual: [aPath UUID]]);
  
     if ([aSubtree editingContext] == [self editingContext])
     {
+        // Move
         [self addObjectSameContext: aSubtree
                         atItemPath: aPath];
+        return aSubtree;
     }
     else
     {
-        [self addObjectTree: [aSubtree objectTree]
-                 atItemPath: aPath];
+        // Copy
+        return [self addObjectTree: [aSubtree objectTree]
+                        atItemPath: aPath];
     }
 }
 
@@ -542,9 +557,9 @@ toUnorderedAttribute: (NSString*)anAttribute
 #pragma mark contents property
 
 
-- (void) addTree: (COObject *)aValue
+- (COObject *) addTree: (COObject *)aValue
 {
-	[self addSubtree:  aValue
+    return 	[self addSubtree:  aValue
 		  atItemPath: [COItemPath pathWithItemUUID: [self UUID]
 						   unorderedCollectionName: @"contents"
 											  type: [COType setWithPrimitiveType: [COType embeddedItemType]]]];
@@ -632,17 +647,6 @@ toUnorderedAttribute: (NSString*)anAttribute
 - (NSUInteger) hash
 {
 	return [[item UUID] hash];
-}
-
-@end
-
-@implementation COObject (Private)
-
-- (void) markAsRemovedFromContext
-{
-    parentContext_ = nil;
-    // FIXME: Add checks in various places that throw an exception if a user
-    // tries to do anything with a COObject with a nil editingContext
 }
 
 @end

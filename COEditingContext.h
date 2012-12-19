@@ -4,11 +4,6 @@
 @class COObjectTree;
 @class COObject;
 
-
-/*
-
-
-*/
 @interface COEditingContext : NSObject <NSCopying>
 {
     COUUID *rootUUID_;
@@ -17,17 +12,20 @@
     NSMutableSet *dirtyObjects_;
 }
 
-- (COObject *) rootObject;
-
 - (NSSet *)allUUIDs;
 
-- (COObjectTree *)objectTree;
-- (COEditingContext *)editingContextWithObjectTree: (COObjectTree *)aTree;
+- (id) initWithObjectTree: (COObjectTree *)aTree;
 
-- (void) setObjectTree: (COObjectTree *)aTree;
+- (COObject *) rootObject;
 
 - (COObject *)objectForUUID: (COUUID *)uuid;
 
+- (COObjectTree *)objectTree;
 
++ (COEditingContext *)editingContextWithObjectTree: (COObjectTree *)aTree;
+
+- (void) setObjectTree: (COObjectTree *)aTree;
+
+- (NSArray *) dirtyObjectUUIDs;
 
 @end

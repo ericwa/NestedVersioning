@@ -1,42 +1,116 @@
-#if 0
+#import "TestCommon.h"
 
-void test()
-{
-	// 
+@interface TestEditingContext : NSObject <UKTest> {
 	
 }
 
-#endif
-
-
-// Old code:
-
-#import <Foundation/Foundation.h>
-#import <UnitKit/UnitKit.h>
-#import "COEditingContext.h"
-#import "COContainer.h"
-#import "COCollection.h"
-#import "COStore.h"
-#import "TestCommon.h"
-
-@interface TestEditingContext : NSObject <UKTest>
-{
-}
 @end
+
 
 @implementation TestEditingContext
 
-- (id) init
-{
-	self = [super init];
-	return self;
-}
 - (void)testCreate
 {
-	COEditingContext *ctx = NewContext();
+	COEditingContext *ctx = [[COEditingContext alloc] init];
 	UKNotNil(ctx);
-	TearDownContext(ctx);
+    
+    COObject *root = [ctx rootObject];
+    UKNotNil(root);
+    
 }
+
+- (COObject *) itemWithLabel: (NSString *)label
+{
+	COEditingContext *ctx = [[[COEditingContext alloc] init] autorelease];
+    [[ctx rootObject] setValue: label
+                  forAttribute: @"label"
+                          type: [COType stringType]];
+    return [ctx rootObject];    
+}
+
+- (void)testCopyingBetweenContextsWithNoStoreAdvanced
+{
+	COEditingContext *ctx1 = [[COEditingContext alloc] init];
+	COEditingContext *ctx2 = [[COEditingContext alloc] init];
+	
+	COObject *parent = [[ctx1 rootObject] addTree: [self itemWithLabel: @"Shopping"]];
+	COObject *child = [parent addTree: [self itemWithLabel: @"Groceries"]];
+	COObject *subchild = [child addTree: [self itemWithLabel: @"Pizza"]];
+    
+    UKObjectsEqual(S([[ctx1 rootObject] UUID], [parent UUID], [child UUID], [subchild UUID]),
+                   [ctx1 allUUIDs]);
+    
+	// We are going to copy 'child' from ctx1 to ctx2. It should copy both
+	// 'child' and 'subchild', but not 'parent'
+	                                                  
+	COObject *childCopy = [[ctx2 rootObject] addTree: child];
+	UKNotNil(childCopy);
+	UKObjectsSame(ctx2, [childCopy editingContext]);
+	UKObjectsSame([ctx2 rootObject], [childCopy parent]);
+	UKStringsEqual(@"Groceries", [childCopy valueForAttribute: @"label"]);
+	UKNotNil([childCopy contents]);
+	
+	COObject *subchildCopy = [[childCopy contents] anyObject];
+	UKNotNil(subchildCopy);
+	UKObjectsSame(ctx2, [subchildCopy editingContext]);
+	UKStringsEqual(@"Pizza", [subchildCopy valueForAttribute: @"label"]);
+    
+	[ctx1 release];
+	[ctx2 release];
+}
+
+- (void)testCopyingBetweenContextsCornerCases
+{
+	COEditingContext *ctx1 = [[COEditingContext alloc] init];
+	COEditingContext *ctx2 = [[COEditingContext alloc] init];
+	
+    COObject *o1 = [[ctx1 rootObject] addTree: [self itemWithLabel: @"Shopping"]];
+    COObject *o2 = [o1 addTree: [self itemWithLabel: @"Gift"]];
+    UKNotNil(o1);
+    
+	COObject *o1copy = [[ctx2 rootObject] addTree: o1];
+	COObject *o1copy2 = [[ctx2 rootObject] addTree: o1]; // copy o1 into ctx2 a second time
+    
+    COObject *o2copy = [[o1copy directDescendentSubtrees] anyObject];
+	COObject *o2copy2 = [[o1copy2 directDescendentSubtrees] anyObject];
+    UKObjectsNotSame(o1copy, o1copy2);
+    
+    UKObjectsEqual([o1 UUID], [o1copy UUID]);
+    UKObjectsEqual([o2 UUID], [o2copy UUID]);
+    UKObjectsNotEqual([o1 UUID], [o1copy2 UUID]);
+    UKObjectsNotEqual([o2 UUID], [o2copy2 UUID]);
+	
+	[ctx1 release];
+	[ctx2 release];
+}
+
+- (void)testMovingWithinContext
+{
+	COEditingContext *ctx1 = [[COEditingContext alloc] init];
+	
+    COObject *list1 = [[ctx1 rootObject] addTree: [self itemWithLabel: @"List1"]];
+    COObject *list2 = [[ctx1 rootObject] addTree: [self itemWithLabel: @"List2"]];
+    COObject *itemA = [list1 addTree: [self itemWithLabel: @"ItemA"]];
+    COObject *itemB = [list2 addTree: [self itemWithLabel: @"ItemB"]];
+    
+    UKObjectsEqual([list1 directDescendentSubtrees], S(itemA));
+    UKObjectsEqual([list2 directDescendentSubtrees], S(itemB));
+    UKObjectsSame(list1, [itemA parent]);
+    UKObjectsSame(list2, [itemB parent]);
+    
+    // move itemA to list2
+    
+    [list2 addTree: itemA];
+    
+    UKObjectsSame(list2, [itemA parent]);
+    UKObjectsEqual([list1 directDescendentSubtrees], [NSSet set]);
+    UKObjectsEqual([list2 directDescendentSubtrees], S(itemA, itemB));
+    
+	[ctx1 release];
+}
+
+
+#if 0
 
 - (void)testInsertObject
 {
@@ -226,26 +300,6 @@ void test()
 }
 
 
-- (void)testCopyingBetweenContextsCornerCases
-{
-	COEditingContext *ctx1 = [[COEditingContext alloc] init];
-	COEditingContext *ctx2 = [[COEditingContext alloc] init];
-	
-	COObject *o1 = [ctx1 insertObjectWithEntityName: @"Anonymous.OutlineItem"];
-	[o1 setValue: @"Shopping" forProperty: @"label"];
-	
-	COObject *o1copy = [ctx2 insertObject: o1];
-	
-	// Insert again
-	COObject *o1copy2 = [ctx2 insertObject: o1];
-	UKObjectsSame(o1copy, o1copy2);
-	
-	//FIXME: Should inserting again copy over new changes (if any)?
-	
-	[ctx1 release];
-	[ctx2 release];
-}
-
 - (void)testCopyingBetweenContextsWithManyToMany
 {
 	COEditingContext *ctx1 = [[COEditingContext alloc] init];
@@ -267,5 +321,7 @@ void test()
 	[ctx1 release];
 	[ctx2 release];
 }
+
+#endif
 
 @end

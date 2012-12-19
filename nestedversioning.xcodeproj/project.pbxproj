@@ -10,7 +10,6 @@
 		66238164162FD04A00CA0CC4 /* COEdit.h in Headers */ = {isa = PBXBuildFile; fileRef = 66238162162FD04A00CA0CC4 /* COEdit.h */; };
 		66238165162FD04A00CA0CC4 /* COEdit.m in Sources */ = {isa = PBXBuildFile; fileRef = 66238163162FD04A00CA0CC4 /* COEdit.m */; };
 		66243A6515ECC13300D00813 /* COPersistentRootPlist.m in Sources */ = {isa = PBXBuildFile; fileRef = 665BD3C915D78BE600428355 /* COPersistentRootPlist.m */; };
-		66243A6D15EDFB8B00D00813 /* TestStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 6628FBA6142FA7840072767A /* TestStore.m */; };
 		663187F915BFCA8E00E617EA /* TestCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CB302914C63E1C00ADAB77 /* TestCommon.m */; };
 		6635EA9716233EB900DBC629 /* EWGraphRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 6635EA9416233EB900DBC629 /* EWGraphRenderer.m */; };
 		6635EA9816233EB900DBC629 /* EWHistoryGraphView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6635EA9616233EB900DBC629 /* EWHistoryGraphView.m */; };
@@ -56,9 +55,9 @@
 		666CB038166343420066BC77 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 666CB0321663433E0066BC77 /* FMResultSet.m */; };
 		66816C51166343B200BC5F40 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 66816C50166343B200BC5F40 /* libsqlite3.dylib */; };
 		66816C53166343C100BC5F40 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66EB7570148CA9D300C2114B /* Foundation.framework */; };
-		66816C5616634CA100BC5F40 /* TestSQLStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 66816C5516634CA100BC5F40 /* TestSQLStore.m */; };
 		66816C721663562300BC5F40 /* CORevision.h in Headers */ = {isa = PBXBuildFile; fileRef = 66816C701663562300BC5F40 /* CORevision.h */; };
 		66816C731663562300BC5F40 /* CORevision.m in Sources */ = {isa = PBXBuildFile; fileRef = 66816C711663562300BC5F40 /* CORevision.m */; };
+		6684E12C1681BF5B00023210 /* TestEditingContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 6628FBA2142FA7840072767A /* TestEditingContext.m */; };
 		669959491633BB1100B6C022 /* COEditSetCurrentVersionForBranch.h in Headers */ = {isa = PBXBuildFile; fileRef = 669959471633BB1100B6C022 /* COEditSetCurrentVersionForBranch.h */; };
 		6699594A1633BB1100B6C022 /* COEditSetCurrentVersionForBranch.m in Sources */ = {isa = PBXBuildFile; fileRef = 669959481633BB1100B6C022 /* COEditSetCurrentVersionForBranch.m */; };
 		6699594E1633BB5D00B6C022 /* COEditCreateBranch.h in Headers */ = {isa = PBXBuildFile; fileRef = 6699594C1633BB5C00B6C022 /* COEditCreateBranch.h */; };
@@ -225,7 +224,6 @@
 		666CB0311663433C0066BC77 /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMResultSet.h; path = fmdb/src/FMResultSet.h; sourceTree = "<group>"; };
 		666CB0321663433E0066BC77 /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMResultSet.m; path = fmdb/src/FMResultSet.m; sourceTree = "<group>"; };
 		66816C50166343B200BC5F40 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		66816C5516634CA100BC5F40 /* TestSQLStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSQLStore.m; sourceTree = "<group>"; };
 		66816C701663562300BC5F40 /* CORevision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CORevision.h; sourceTree = "<group>"; };
 		66816C711663562300BC5F40 /* CORevision.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CORevision.m; sourceTree = "<group>"; };
 		668DA35E14E0E41A0062E6C2 /* COItemPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COItemPath.m; sourceTree = "<group>"; };
@@ -422,7 +420,6 @@
 		6628FB9D142FA7840072767A /* Tests - old */ = {
 			isa = PBXGroup;
 			children = (
-				6628FBA2142FA7840072767A /* TestEditingContext.m */,
 				6628FBA4142FA7840072767A /* TestPerformance.m */,
 				6628FBA7142FA7840072767A /* TestSynchronization.m */,
 				6628FBA8142FA7840072767A /* TestUtilities.m */,
@@ -752,6 +749,7 @@
 				66DFAEBF142A726100623060 /* main.m */,
 				66E778AC14E6080700D5DFFF /* TestPersistentRootEditingContext.m */,
 				6628FBA6142FA7840072767A /* TestStore.m */,
+				6628FBA2142FA7840072767A /* TestEditingContext.m */,
 				6660E23914F84B3000D2F319 /* TestItem.m */,
 				7978700E14D799A200B45FC6 /* TestSubtree.m */,
 				66EADD6414732AEE003181FC /* TestUndo.m */,
@@ -762,7 +760,6 @@
 				79FB63BD1486ABEF00751E1E /* Tests - docs and code sketch */,
 				79FB63B81486ABC600751E1E /* Tests - documented only */,
 				6628FB9D142FA7840072767A /* Tests - old */,
-				66816C5516634CA100BC5F40 /* TestSQLStore.m */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -1042,8 +1039,7 @@
 			files = (
 				663187F915BFCA8E00E617EA /* TestCommon.m in Sources */,
 				66E778A114E607CD00D5DFFF /* main.m in Sources */,
-				66243A6D15EDFB8B00D00813 /* TestStore.m in Sources */,
-				66816C5616634CA100BC5F40 /* TestSQLStore.m in Sources */,
+				6684E12C1681BF5B00023210 /* TestEditingContext.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

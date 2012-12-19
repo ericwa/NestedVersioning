@@ -13,6 +13,10 @@
 #import "COPersistentRootEditQueue.h"
 #import "COBranchEditQueue.h"
 
+#import "COEditingContext.h"
+#import "COObject.h"
+
+
 #define STOREPATH [@"~/om5teststore" stringByExpandingTildeInPath]
 #define STOREURL [NSURL fileURLWithPath: STOREPATH]
 COSQLiteStore *setupStore(void);

@@ -6,6 +6,7 @@
 @class COPersistentRootEditQueue;
 @class COStore;
 @class CORevisionID;
+@class COEditingContext;
 
 @interface COBranchEditQueue : NSObject
 {
@@ -15,10 +16,7 @@
     
 	// -- in-memory mutable state:
 
-	COSubtree *backupTree_;
-	COSubtree *tree_;
-    
-    NSMutableSet *modifiedObjects_;
+	COEditingContext *editingContext_;
 }
 
 - (COPersistentRootEditQueue *) persistentRoot;
@@ -37,7 +35,6 @@
 - (BOOL) commitChangesWithMetadata: (NSDictionary *)metadata;
 - (void) discardChanges;
 
-- (COSubtree *)persistentRootTree;
-- (void) setPersistentRootTree: (COSubtree *)aSubtree;
+- (COEditingContext *)editingContext;
 
 @end

@@ -14,23 +14,6 @@
 
 /* @taskunit Creation */
 
-- (COObject *) createObjectWithDescendents: (COUUID *)aUUID
-                            fromObjectTree: (COObjectTree *)aTree
-                                    parent: (COObject *)parent
-{
-    COItem *item = [aTree itemForUUID: aUUID];
-    COObject *result = [[[COObject alloc] initWithItem: item
-                                         parentContext: self
-                                                parent: parent] autorelease];
-    
-    for (COUUID *descendent in [item embeddedItemUUIDs])
-    {
-        [self createObjectWithDescendents: descendent fromObjectTree: aTree parent: result];
-    }
-    
-    [objectsByUUID_ setObject: result forKey: aUUID];
-    return result;
-}
 
 
 - (id) initWithObjectTree: (COObjectTree *)aTree
@@ -47,12 +30,33 @@
     return self;
 }
 
+- (id) init
+{
+    COItem *item = [COItem itemWithTypesForAttributes: [NSDictionary dictionary]
+                                  valuesForAttributes: [NSDictionary dictionary]];
+
+    COObjectTree *tree = [[[COObjectTree alloc] initWithItemForUUID: [NSDictionary dictionaryWithObject: item forKey: [item UUID]]
+                                                              root: [item UUID]] autorelease];
+    
+    return [self initWithObjectTree: tree];
+}
+
 - (void) dealloc
 {
     [objectsByUUID_ release];
     [rootUUID_ release];
     [dirtyObjects_ release];
     [super dealloc];
+}
+
+- (COObject *) rootObject
+{
+    return [self objectForUUID: rootUUID_];
+}
+
+- (COObject *)objectForUUID: (COUUID *)uuid
+{
+    return [objectsByUUID_ objectForKey: uuid];
 }
 
 - (COObjectTree *)objectTree
@@ -75,6 +79,74 @@
 - (id) copyWithZone: (NSZone *)aZone
 {
     return [[[self class] editingContextWithObjectTree: [self objectTree]] retain];
+}
+
+
+- (void) updateObject: (COUUID *)aUUID
+       fromObjectTree: (COObjectTree *)aTree
+            setParent: (COObject *)parent
+{
+    COObject *currentObject = [objectsByUUID_ objectForKey: aUUID];
+    COItem *item = [aTree itemForUUID: aUUID];
+    
+    if (currentObject == nil)
+    {
+        // Create new
+        currentObject = [[[COObject alloc] initWithItem: item
+                                          parentContext: self
+                                                 parent: parent] autorelease];
+        [objectsByUUID_ setObject: currentObject forKey: aUUID];
+    }
+    else
+    {
+        // Update existing
+        
+        [currentObject updateItem: item
+                    parentContext: self // FIXME: unnecessary param
+                           parent: parent];
+    }
+  
+    // Process children recursively
+    
+    for (COUUID *descendent in [item embeddedItemUUIDs])
+    {
+        [self updateObject: descendent fromObjectTree: aTree setParent: currentObject];
+    }
+}
+
+
+- (void) setObjectTree: (COObjectTree *)aTree
+{
+    [dirtyObjects_ removeAllObjects];
+    
+    NSSet *initialUUIDs = [[self rootObject] allUUIDs];
+    
+    ASSIGN(rootUUID_, [aTree root]);
+    
+    [self updateObject: rootUUID_
+        fromObjectTree: aTree
+             setParent: nil];
+    
+    // The update is now complete. Remove orphans
+    
+    NSMutableSet *orphanedUUIDs = [NSMutableSet setWithSet: [[self rootObject] allUUIDs]];
+    [orphanedUUIDs minusSet: initialUUIDs];
+    
+    NSLog(@"setObjectTree: orphaned objects: %@", orphanedUUIDs);
+    
+    for (COUUID *uuid in orphanedUUIDs)
+    {
+        COObject *orphan = [objectsByUUID_ objectForKey: uuid];
+        [orphan markAsRemovedFromContext];
+        [objectsByUUID_ removeObjectForKey: uuid];
+    }
+    
+    // TODO: Send change notifications
+}
+
+- (NSArray *) dirtyObjectUUIDs
+{
+    return [dirtyObjects_ allObjects];
 }
 
 @end
@@ -114,5 +186,24 @@
         [objectsByUUID_ removeObjectForKey: uuid]; // should free object unless there are external references
     }
 }
+
+- (COObject *) createObjectWithDescendents: (COUUID *)aUUID
+                            fromObjectTree: (COObjectTree *)aTree
+                                    parent: (COObject *)parent
+{
+    COItem *item = [aTree itemForUUID: aUUID];
+    COObject *result = [[[COObject alloc] initWithItem: item
+                                         parentContext: self
+                                                parent: parent] autorelease];
+    
+    for (COUUID *descendent in [item embeddedItemUUIDs])
+    {
+        [self createObjectWithDescendents: descendent fromObjectTree: aTree parent: result];
+    }
+    
+    [objectsByUUID_ setObject: result forKey: aUUID];
+    return result;
+}
+
 
 @end

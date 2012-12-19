@@ -47,7 +47,7 @@
 	{
         COItem *oldItem = [itemForUUID_ objectForKey: uuid];
         COItem *newItem = [[oldItem mutableCopyWithNameMapping: aMapping] autorelease];
-        [newItems setObject: newItem forKey: uuid];
+        [newItems setObject: newItem forKey: [newItem UUID]];
 	}
 	
     COUUID *newRoot = [aMapping objectForKey: root_];

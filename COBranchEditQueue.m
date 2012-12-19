@@ -5,6 +5,7 @@
 #import "COEditQueuePrivate.h"
 #import "COObjectTree.h"
 #import "COSQLiteStore.h"
+#import "COEditingContext.h"
 
 @implementation COBranchEditQueue
 
@@ -22,9 +23,7 @@
 - (void)dealloc
 {
     [branch_ release];
-    [backupTree_ release];
-    [tree_ release];
-    [modifiedObjects_ release];
+    [editingContext_ release];
     [super dealloc];
 }
 
@@ -66,23 +65,13 @@
 
 /** @taskunit manipulation */
 
-static COObjectTree *itemTreeForSubtree(COSubtree *aSubtree)
-{
-    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-    for (COItem *item in [aSubtree allContainedStoreItems])
-    {
-        [dict setObject: item forKey: [item UUID]];
-    }
-    return [[[COObjectTree alloc] initWithItemForUUID: dict root: [aSubtree UUID]] autorelease];
-}
-
 - (BOOL) commitChangesWithMetadata: (NSDictionary *)metadata
 {
-    CORevisionID *revId = [[persistentRoot_ store] writeItemTree: itemTreeForSubtree(tree_)
+    CORevisionID *revId = [[persistentRoot_ store] writeItemTree: [editingContext_ objectTree]
                                                     withMetadata: metadata
                                             withParentRevisionID: [self currentState]
-                                                   modifiedItems: [[tree_ allUUIDs] allObjects]];
-
+                                                   modifiedItems: [editingContext_ dirtyObjectUUIDs]];
+// fixme: reset dirty objects
     BOOL ok = [[persistentRoot_ store] setCurrentVersion: revId
                                                forBranch: branch_
                                         ofPersistentRoot: [persistentRoot_ UUID]];
@@ -96,20 +85,13 @@ static COObjectTree *itemTreeForSubtree(COSubtree *aSubtree)
 
 - (void) discardChanges
 {
-    [tree_ release];
-    tree_ = [backupTree_ copy];
+    // FIXME:
 }
 
-// FIXME: Rewrite using editing context
-- (COSubtree *)persistentRootTree
+- (COEditingContext *)editingContext
 {
-    return tree_;
+    return editingContext_;
 }
-- (void) setPersistentRootTree: (COSubtree *)aSubtree
-{
-    ASSIGN(tree_, aSubtree);
-}
-
 /**
  * the branch of the special "current branch" edit queue
  * can change.
