@@ -5,6 +5,17 @@
 
 @implementation COObjectTree
 
++ (COObjectTree *) treeWithItems: (NSArray *)items rootUUID: (COUUID *)aUUID
+{
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity: [items count]];
+    for (COItem *item in items)
+    {
+        [dict setObject: item forKey: [item UUID]];
+    }
+    
+    return [[[self alloc] initWithItemForUUID: dict root: aUUID] autorelease];
+}
+
 - (id) initWithItemForUUID: (NSDictionary *) itemForUUID
                       root: (COUUID *)root
 {

@@ -1,6 +1,5 @@
 #import "COEditingContext.h"
 #import "COEditingContextPrivate.h"
-#import "COSubtreeCopy.h"
 #import "COObjectTree.h"
 #import "COMacros.h"
 
@@ -19,13 +18,16 @@
 - (id) initWithObjectTree: (COObjectTree *)aTree
 {
     NSParameterAssert(aTree != nil);
+    NSParameterAssert([aTree itemForUUID: [aTree root]] != nil);
     
     SUPERINIT;
     ASSIGN(rootUUID_, [aTree root]);
     objectsByUUID_ = [[NSMutableDictionary alloc] init];
-    dirtyObjects_ = [[NSMutableSet alloc] init];
-
-    [self createObjectWithDescendents: rootUUID_ fromObjectTree: aTree parent: nil];
+    insertedObjects_ = [[NSMutableSet alloc] init];
+    deletedObjects_ = [[NSMutableSet alloc] init];
+    modifiedObjects_ = [[NSMutableSet alloc] init];
+    
+    [self updateObject: rootUUID_ fromObjectTree: aTree setParent: nil];
     
     return self;
 }
@@ -45,7 +47,9 @@
 {
     [objectsByUUID_ release];
     [rootUUID_ release];
-    [dirtyObjects_ release];
+    [insertedObjects_ release];
+    [deletedObjects_ release];
+    [modifiedObjects_ release];
     [super dealloc];
 }
 
@@ -78,46 +82,37 @@
 
 - (id) copyWithZone: (NSZone *)aZone
 {
-    return [[[self class] editingContextWithObjectTree: [self objectTree]] retain];
+    return [[[self class] alloc] initWithObjectTree: [self objectTree]];
 }
 
-
-- (void) updateObject: (COUUID *)aUUID
-       fromObjectTree: (COObjectTree *)aTree
-            setParent: (COObject *)parent
+- (BOOL) isEqual:(id)object
 {
-    COObject *currentObject = [objectsByUUID_ objectForKey: aUUID];
-    COItem *item = [aTree itemForUUID: aUUID];
+    if (object == self)
+    {
+        return YES;
+    }
+	if (![object isKindOfClass: [self class]])
+	{
+		return NO;
+	}
     
-    if (currentObject == nil)
-    {
-        // Create new
-        currentObject = [[[COObject alloc] initWithItem: item
-                                          parentContext: self
-                                                 parent: parent] autorelease];
-        [objectsByUUID_ setObject: currentObject forKey: aUUID];
-    }
-    else
-    {
-        // Update existing
-        
-        [currentObject updateItem: item
-                    parentContext: self // FIXME: unnecessary param
-                           parent: parent];
-    }
-  
-    // Process children recursively
+    COEditingContext *otherContext = (COEditingContext *)object;
+
+    COObject *selfRoot = [self rootObject];
+    COObject *otherRoot = [otherContext rootObject];
     
-    for (COUUID *descendent in [item embeddedItemUUIDs])
-    {
-        [self updateObject: descendent fromObjectTree: aTree setParent: currentObject];
-    }
+    // Deep equality test
+    return [selfRoot isEqual: otherRoot];
 }
 
+- (NSUInteger) hash
+{
+	return [rootUUID_ hash] ^ 13803254444065375360ULL;
+}
 
 - (void) setObjectTree: (COObjectTree *)aTree
 {
-    [dirtyObjects_ removeAllObjects];
+    [self clearChangeTracking];
     
     NSSet *initialUUIDs = [[self rootObject] allUUIDs];
     
@@ -141,12 +136,29 @@
         [objectsByUUID_ removeObjectForKey: uuid];
     }
     
-    // TODO: Send change notifications
+    // TODO: Send change notification
 }
 
-- (NSArray *) dirtyObjectUUIDs
+#pragma mark change tracking
+
+- (NSSet *) insertedObjectUUIDs
 {
-    return [dirtyObjects_ allObjects];
+    return insertedObjects_;
+}
+- (NSSet *) deletedObjectUUIDs
+{
+    return deletedObjects_;
+}
+- (NSSet *) modifiedObjectUUIDs
+{
+    return modifiedObjects_;
+}
+
+- (void) clearChangeTracking
+{
+    [insertedObjects_ removeAllObjects];
+    [deletedObjects_ removeAllObjects];
+    [modifiedObjects_ removeAllObjects];
 }
 
 @end
@@ -154,16 +166,6 @@
 
 
 @implementation COEditingContext (Private)
-
-- (void) recordDirtyObject: (COObject *)anObject
-{
-    [dirtyObjects_ addObject: [anObject UUID]];
-}
-
-- (void) recordDirtyObjectUUID: (COUUID *)aUUID
-{
-    [dirtyObjects_ addObject: aUUID];
-}
 
 - (void) removeUnreachableObjectAndChildren: (COUUID *)aUUID
 {
@@ -187,23 +189,78 @@
     }
 }
 
-- (COObject *) createObjectWithDescendents: (COUUID *)aUUID
-                            fromObjectTree: (COObjectTree *)aTree
-                                    parent: (COObject *)parent
+- (COObject *) updateObject: (COUUID *)aUUID
+             fromObjectTree: (COObjectTree *)aTree
+                  setParent: (COObject *)parent
+             updatedObjects: (NSMutableSet *)handledSet
 {
+    // Check for cycles.
+    
+    if ([handledSet containsObject: aUUID])
+    {
+        [NSException raise: NSGenericException format: @"Cycle detected"];
+    }
+    [handledSet addObject: aUUID];
+    
+    // Handle the object...
+    
+    COObject *currentObject = [objectsByUUID_ objectForKey: aUUID];
     COItem *item = [aTree itemForUUID: aUUID];
-    COObject *result = [[[COObject alloc] initWithItem: item
-                                         parentContext: self
-                                                parent: parent] autorelease];
+    
+    if (currentObject == nil)
+    {
+        // Create new
+        currentObject = [[[COObject alloc] initWithItem: item
+                                          parentContext: self
+                                                 parent: parent] autorelease];
+        [objectsByUUID_ setObject: currentObject forKey: aUUID];
+    }
+    else
+    {
+        // Update existing
+        
+        [currentObject updateItem: item
+                    parentContext: self // FIXME: unnecessary param
+                           parent: parent];
+    }
+    
+    // Process children recursively
     
     for (COUUID *descendent in [item embeddedItemUUIDs])
     {
-        [self createObjectWithDescendents: descendent fromObjectTree: aTree parent: result];
+        [self updateObject: descendent
+            fromObjectTree: aTree
+                 setParent: currentObject
+            updatedObjects: handledSet];
     }
     
-    [objectsByUUID_ setObject: result forKey: aUUID];
-    return result;
+    return currentObject;
 }
 
+- (COObject *) updateObject: (COUUID *)aUUID
+             fromObjectTree: (COObjectTree *)aTree
+                  setParent: (COObject *)parent
+{
+    return [self updateObject: aUUID
+               fromObjectTree: aTree
+                    setParent: parent
+               updatedObjects: [NSMutableSet set]];
+}
+
+
+- (void) recordInsertedObjectUUID: (COUUID *)aUUID
+{
+    [insertedObjects_ addObject: aUUID];
+}
+
+- (void) recordDeletedObjectUUID: (COUUID *)aUUID
+{
+    [deletedObjects_ addObject: aUUID];
+}
+
+- (void) recordModifiedObjectUUID: (COUUID *)aUUID
+{
+    [modifiedObjects_ addObject: aUUID];
+}
 
 @end

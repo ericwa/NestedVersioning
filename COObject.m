@@ -280,27 +280,12 @@
 
 
 
-- (void) setPrimitiveValue: (id)aValue
-			  forAttribute: (NSString*)anAttribute
-					  type: (COType *)aType
-{
-	if (![aType isPrimitive])
-	{
-		[NSException raise: NSInvalidArgumentException
-					format: @"%@ expected a primitive type", NSStringFromSelector(_cmd)];
-	}
-	
-	[self setValue: aValue
-	  forAttribute: anAttribute
-			  type: aType];
-    
-    [parentContext_ recordDirtyObject: self];
-}
-
 - (void) setValue: (id)aValue
 	 forAttribute: (NSString*)anAttribute
 			 type: (COType *)aType
 {
+    // FIXME: Track removed objects if we overwrote a subtree
+    
 	if ([aType isPrimitiveTypeEqual: [COType embeddedItemType]])
 	{
 		if (![aType isMultivalued])
@@ -346,7 +331,7 @@
 		  forAttribute: anAttribute
 				  type: aType];
         
-        [parentContext_ recordDirtyObject: self];
+        [parentContext_ recordModifiedObjectUUID: [self UUID]];
 	}
 
 }
@@ -369,7 +354,7 @@ toUnorderedAttribute: (NSString*)anAttribute
    toUnorderedAttribute: anAttribute
 				   type: aType];
         
-        [parentContext_ recordDirtyObject: self];
+        [parentContext_ recordModifiedObjectUUID: [self UUID]];
 	}
 	
 }
@@ -393,7 +378,7 @@ toUnorderedAttribute: (NSString*)anAttribute
 				atIndex: anIndex
 				   type: aType];
         
-        [parentContext_ recordDirtyObject: self];
+        [parentContext_ recordModifiedObjectUUID: [self UUID]];
 	}
 }
 
@@ -479,17 +464,17 @@ toUnorderedAttribute: (NSString*)anAttribute
     
     // now, there are no name conflicts.
     
-    COObject *result = [parentContext_ createObjectWithDescendents: [aTree root]
-                                                    fromObjectTree: aTree
-                                                            parent: self];
+    COObject *result = [parentContext_ updateObject: [aTree root]
+                                     fromObjectTree: aTree
+                                          setParent: self];
     [aPath insertValue: [aTree root] inStoreItem: self->item];
     
     // record dirty objects
 
-    [parentContext_ recordDirtyObject: self];
+    [parentContext_ recordModifiedObjectUUID: [self UUID]];
     for (COUUID *uuid in [aTree objectUUIDs])
     {
-        [parentContext_ recordDirtyObjectUUID: uuid];
+        [parentContext_ recordInsertedObjectUUID: uuid];
     }
     
     return result;
@@ -515,13 +500,13 @@ toUnorderedAttribute: (NSString*)anAttribute
 	COItemPath *itemPath = [parentOfSubtreeToRemove itemPathOfSubtreeWithUUID: aUUID];
 	NSAssert([[itemPath UUID] isEqual: [parentOfSubtreeToRemove UUID]], @"");
 	[itemPath removeValue: aUUID inStoreItem: parentOfSubtreeToRemove->item];
-    [parentContext_ recordDirtyObject: parentOfSubtreeToRemove];
+    [parentContext_ recordModifiedObjectUUID: [parentOfSubtreeToRemove UUID]];
     
     // add to self
     
     [aPath insertValue: aUUID inStoreItem: self->item];
     aObject->parent_ = self;
-    [parentContext_ recordDirtyObject: self];
+    [parentContext_ recordModifiedObjectUUID: [self UUID]];
 }
 
 - (COObject *) addSubtree: (COObject *)aSubtree
@@ -626,27 +611,40 @@ toUnorderedAttribute: (NSString*)anAttribute
 
 - (BOOL) isEqual:(id)object
 {
+    if (self == object)
+    {
+        return YES;
+    }
 	if (![object isKindOfClass: [self class]])
 	{
 		return NO;
 	}
+    
     COObject *otherObject = (COObject *)object;
 
     if (otherObject->parentContext_ == parentContext_)
     {
+        // Within a context, an object can only be equal to itself.
+        
         return object == self;
     }
     else
     {
-        // FIXME: For now, objects in different contexts are equal if they have the same UUID.
-        // We should instead do a deep equality test.
-        return [[self UUID] isEqual: [object UUID]];
+        // Deep equality test between objects in two contexts
+
+        if (![item isEqual: otherObject->item])
+        {
+            return NO;
+        }
+        
+        // Recursively call -isEqual on the NSSet of contained COObject instances
+        return [[self directDescendentSubtrees] isEqual: [otherObject directDescendentSubtrees]];
     }
 }
 
 - (NSUInteger) hash
 {
-	return [[item UUID] hash];
+	return [[item UUID] hash] ^ 8748262350970910369ULL;
 }
 
 @end

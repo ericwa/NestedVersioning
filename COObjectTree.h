@@ -12,6 +12,8 @@
     NSDictionary *itemForUUID_;
 }
 
++ (COObjectTree *) treeWithItems: (NSArray *)items rootUUID: (COUUID *)aUUID;
+
 - (id) initWithItemForUUID: (NSDictionary *) itemForUUID
                       root: (COUUID *)root;
 

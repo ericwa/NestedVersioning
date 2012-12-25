@@ -5,14 +5,13 @@
 #import "COItem.h"
 
 #import "CORevisionID.h"
-#import "COSubtree.h"
 #import "COMacros.h"
-#import "COSubtree.h"
-
 #import "COStoreEditQueue.h"
 #import "COPersistentRootEditQueue.h"
 #import "COBranchEditQueue.h"
 
+#import "COObjectTree.h"
+#import "COItemPath.h"
 #import "COEditingContext.h"
 #import "COObject.h"
 

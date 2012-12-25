@@ -1,7 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "COPath.h"
 #import "COItem.h"
-#import "COSubtree.h"
 
 @class COPersistentRootEditQueue;
 @class COStore;

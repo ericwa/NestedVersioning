@@ -1,9 +1,7 @@
 #import "COEdit.h"
-#import "COEditCreateBranch.h"
 #import "COEditSetCurrentBranch.h"
 #import "COEditSetCurrentVersionForBranch.h"
 #import "COEditSetMetadata.h"
-#import "COEditGroup.h"
 #import "COMacros.h"
 
 @interface COEdit (Private)
@@ -14,6 +12,7 @@
 
 NSString *kCOEditSetCurrentVersionForBranch = @"COEditSetCurrentVersionForBranch";
 NSString *kCOEditSetCurrentBranch = @"COEditSetCurrentBranch";
+NSString *kCOEditSetBranchMetadata = @"COEditSetBranchMetadata";
 NSString *kCOEditGroup = @"COEditGroup";
 NSString *kCOEditSetMetadata = @"COEditSetMetadata";
 
@@ -54,10 +53,6 @@ static NSString *kCOActionDisplayName = @"COActionDisplayName";
     else if ([key isEqual: kCOEditSetCurrentBranch])
     {
         return [[[COEditSetCurrentBranch alloc] initWithPlist: aPlist] autorelease];
-    }
-    else if ([key isEqual: kCOEditGroup])
-    {
-        return [[[COEditGroup alloc] initWithPlist: aPlist] autorelease];
     }
     else if ([key isEqual: kCOEditSetMetadata])
     {

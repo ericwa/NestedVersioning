@@ -1,6 +1,5 @@
 #import "COBranchEditQueue.h"
 #import "COMacros.h"
-#import "COSubtree.h"
 #import "COPersistentRootEditQueue.h"
 #import "COEditQueuePrivate.h"
 #import "COObjectTree.h"

@@ -9,6 +9,7 @@ NSString *kCOPersistentRootRevisionIDs= @"COPersistentRootRevisionIDs";
 NSString *kCOPersistentRootHeadRevisionIdForBranch= @"COPersistentRootHeadRevisionIdForBranch";
 NSString *kCOPersistentRootTailRevisionIdForBranch= @"COPersistentRootTailRevisionIdForBranch";
 NSString *kCOPersistentRootCurrentStateForBranch= @"COPersistentRootCurrentStateForBranch";
+NSString *kCOPersistentRootMetadataForBranch= @"COPersistentRootMetadataForBranch";
 
 NSString *kCOPersistentRootCurrentBranchUUID = @"COPersistentRootCurrentBranchUUID";
 NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
@@ -20,6 +21,7 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
  headRevisionIdForBranch: (NSDictionary *)headForBranch
  tailRevisionIdForBranch: (NSDictionary *)tailForBranch
    currentStateForBranch: (NSDictionary *)stateForBranch
+       metadataForBranch: (NSDictionary *)metadataForBranch
            currentBranch: (COUUID *)currentBranch
                 metadata: (NSDictionary *)theMetadata
 {
@@ -28,6 +30,7 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
     NSParameterAssert([headForBranch isKindOfClass: [NSDictionary class]]);
     NSParameterAssert([tailForBranch isKindOfClass: [NSDictionary class]]);
     NSParameterAssert([stateForBranch isKindOfClass: [NSDictionary class]]);
+    NSParameterAssert([metadataForBranch isKindOfClass: [NSDictionary class]]);
     NSParameterAssert([currentBranch isKindOfClass: [COUUID class]]);
     NSParameterAssert([theMetadata isKindOfClass: [NSDictionary class]]);
       
@@ -38,6 +41,7 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
     headRevisionIdForBranch_ = [[NSMutableDictionary alloc] initWithDictionary: headForBranch copyItems: YES];
     tailRevisionIdForBranch_ = [[NSMutableDictionary alloc] initWithDictionary: tailForBranch copyItems: YES];
     currentStateForBranch_ = [[NSMutableDictionary alloc] initWithDictionary: stateForBranch copyItems: YES];
+    metadataForBranch_ = [[NSMutableDictionary alloc] initWithDictionary: metadataForBranch copyItems: YES];
     currentBranch_ = [currentBranch retain];
     metadata_ = [[NSMutableDictionary alloc] initWithDictionary: theMetadata copyItems: YES];
     
@@ -51,6 +55,7 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
       headRevisionIdForBranch: aPlist->headRevisionIdForBranch_
       tailRevisionIdForBranch: aPlist->tailRevisionIdForBranch_
         currentStateForBranch: aPlist->currentStateForBranch_
+            metadataForBranch: aPlist->metadataForBranch_
                 currentBranch: aPlist->currentBranch_
                      metadata: aPlist->metadata_];
 }
@@ -68,6 +73,7 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
     [headRevisionIdForBranch_ release];
     [tailRevisionIdForBranch_ release];
     [currentStateForBranch_ release];
+    [metadataForBranch_ release];
     [currentBranch_ release];
     [metadata_ release];
     [super dealloc];
@@ -138,6 +144,18 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
     [currentStateForBranch_ setObject: aRevision forKey: aUUID];
 }
 
+- (NSDictionary *)metadataForBranch: (COUUID *)aBranch
+{
+    return [metadataForBranch_ objectForKey: aBranch];
+}
+- (void)setMetadata: (NSDictionary *)aRevision
+          forBranch: (COUUID *)aUUID
+{
+    [metadataForBranch_ setObject: [NSDictionary dictionaryWithDictionary: aRevision]
+                           forKey: aUUID];
+}
+
+
 - (NSDictionary *) metadata
 {
     return metadata_;
@@ -156,6 +174,7 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
       headRevisionIdForBranch: UUIDToRevisionIdMapFromPlist([aPlist objectForKey: kCOPersistentRootHeadRevisionIdForBranch])
       tailRevisionIdForBranch: UUIDToRevisionIdMapFromPlist([aPlist objectForKey: kCOPersistentRootTailRevisionIdForBranch])
         currentStateForBranch: UUIDToRevisionIdMapFromPlist([aPlist objectForKey: kCOPersistentRootCurrentStateForBranch])
+            metadataForBranch: UUIDToMetadataMapFromPlist([aPlist objectForKey: kCOPersistentRootMetadataForBranch])
                 currentBranch: [COUUID UUIDWithString: [aPlist objectForKey: kCOPersistentRootUUID]]
                      metadata: [aPlist objectForKey: kCOPersistentRootMetadata]];
 }
@@ -168,6 +187,7 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
     [results setObject: plistFromUUIDToRevisionIdMap(headRevisionIdForBranch_) forKey: kCOPersistentRootHeadRevisionIdForBranch];
     [results setObject: plistFromUUIDToRevisionIdMap(tailRevisionIdForBranch_) forKey: kCOPersistentRootTailRevisionIdForBranch];
     [results setObject: plistFromUUIDToRevisionIdMap(currentStateForBranch_) forKey: kCOPersistentRootCurrentStateForBranch];
+    [results setObject: plistFromUUIDToMetadataMap(metadataForBranch_) forKey: kCOPersistentRootMetadataForBranch];
     [results setObject: [currentBranch_ stringValue] forKey: kCOPersistentRootCurrentBranchUUID];
     [results setObject: metadata_ forKey: kCOPersistentRootMetadata];
     return results;
@@ -183,6 +203,7 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
         && [headRevisionIdForBranch_ isEqual: other->headRevisionIdForBranch_]
         && [tailRevisionIdForBranch_ isEqual: other->tailRevisionIdForBranch_]
         && [currentStateForBranch_ isEqual: other->currentStateForBranch_]
+        && [metadataForBranch_ isEqual: other->metadataForBranch_]
         && [currentBranch_ isEqual: other->currentBranch_]
         && [metadata_ isEqual: other->metadata_];
     }
@@ -196,6 +217,7 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
     ^ [headRevisionIdForBranch_ hash]
     ^ [tailRevisionIdForBranch_ hash]
     ^ [currentStateForBranch_ hash]
+    ^ [metadataForBranch_ hash]
     ^ [currentBranch_ hash]
     ^ [metadata_ hash];
 }
@@ -241,5 +263,27 @@ static NSDictionary *UUIDToRevisionIdMapFromPlist(NSDictionary *map)
     }
     return result;
 }
-                                                
+
+static NSDictionary *plistFromUUIDToMetadataMap(NSDictionary *map)
+{
+    NSMutableDictionary *result = [NSMutableDictionary dictionary];
+    for (COUUID *key in map)
+    {
+        [result setObject: [map objectForKey: key]
+                   forKey: [key stringValue]];
+    }
+    return result;
+}
+
+static NSDictionary *UUIDToMetadataMapFromPlist(NSDictionary *map)
+{
+    NSMutableDictionary *result = [NSMutableDictionary dictionary];
+    for (NSString *key in map)
+    {
+        [result setObject: [map objectForKey: key]
+                   forKey: [COUUID UUIDWithString: key]];
+    }
+    return result;
+}
+
 @end

@@ -8,14 +8,15 @@
 
 @interface  COEditingContext (Private)
 
-- (void) recordDirtyObject: (COObject *)anObject;
-- (void) recordDirtyObjectUUID: (COUUID *)aUUID;
+- (void) recordInsertedObjectUUID: (COUUID *)aUUID;
+- (void) recordDeletedObjectUUID: (COUUID *)aUUID;
+- (void) recordModifiedObjectUUID: (COUUID *)aUUID;
 
 - (void) removeUnreachableObjectAndChildren: (COUUID *)anObject;
 
-- (COObject *) createObjectWithDescendents: (COUUID *)aUUID
-                            fromObjectTree: (COObjectTree *)aTree
-                                    parent: (COObject *)parent;
+- (COObject *) updateObject: (COUUID *)aUUID
+             fromObjectTree: (COObjectTree *)aTree
+                  setParent: (COObject *)parent;
 
 @end
 

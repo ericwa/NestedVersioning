@@ -2,7 +2,6 @@
 
 #import "COUUID.h"
 #import "CORevisionID.h"
-#import "COStore.h"
 #import "COSQLiteStore.h"
 #import "COPersistentRootPlist.h"
 

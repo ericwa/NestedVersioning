@@ -160,4 +160,105 @@
 	[store2 release];	
 }
 
+
+- (void)testInsertObject
+{
+	COEditingContext *ctx = NewContext();
+	UKFalse([ctx hasChanges]);
+	
+	
+	COObject *obj = [ctx insertObjectWithEntityName: @"Anonymous.OutlineItem"];
+	UKNotNil(obj);
+	UKTrue([obj isKindOfClass: [COObject class]]);
+	
+	NSArray *expectedProperties = [NSArray arrayWithObjects: @"parentContainer", @"parentCollections", @"contents", @"label", nil];
+	UKObjectsEqual([NSSet setWithArray: expectedProperties],
+				   [NSSet setWithArray: [obj persistentPropertyNames]]);
+    
+	UKObjectsSame(obj, [ctx objectWithUUID: [obj UUID]]);
+	
+	UKTrue([ctx hasChanges]);
+	
+	UKNotNil([obj valueForProperty: @"parentCollections"]);
+	UKNotNil([obj valueForProperty: @"contents"]);
+	
+	TearDownContext(ctx);
+}
+
+- (void)testBasicPersistence
+{
+	COUUID *objUUID;
+	
+	{
+		COStore *store = [[COStore alloc] initWithURL: STORE_URL];
+		COEditingContext *ctx = [[COEditingContext alloc] initWithStore: store];
+		COObject *obj = [ctx insertObjectWithEntityName: @"Anonymous.OutlineItem"];
+		objUUID = [[obj UUID] retain];
+		[obj setValue: @"Hello" forProperty: @"label"];
+		[ctx commit];
+		[ctx release];
+		[store release];
+	}
+	
+	{
+		COStore *store = [[COStore alloc] initWithURL: STORE_URL];
+		COEditingContext *ctx = [[COEditingContext alloc] initWithStore: store];
+		COObject *obj = [ctx objectWithUUID: objUUID];
+		UKNotNil(obj);
+		NSArray *expectedProperties = [NSArray arrayWithObjects: @"parentContainer", @"parentCollections", @"contents", @"label", nil];
+		UKObjectsEqual([NSSet setWithArray: expectedProperties],
+					   [NSSet setWithArray: [obj persistentPropertyNames]]);
+		UKStringsEqual(@"Hello", [obj valueForProperty: @"label"]);
+		[ctx release];
+		[store release];
+	}
+	[objUUID release];
+	DELETE_STORE;
+}
+
+
+- (void)testDiscardChanges
+{
+	COEditingContext *ctx = NewContext();
+    
+	UKFalse([ctx hasChanges]);
+    
+	COObject *o1 = [ctx insertObjectWithEntityName: @"Anonymous.OutlineItem"];
+	COUUID *u1 = [[o1 UUID] retain];
+	
+	// FIXME: It's not entirely clear what this should do
+	[ctx discardAllChanges];
+	UKNil([ctx objectWithUUID: u1]);
+	
+	UKFalse([ctx hasChanges]);
+	COObject *o2 = [ctx insertObjectWithEntityName: @"Anonymous.OutlineItem"];
+	[o2 setValue: @"hello" forProperty: @"label"];
+	[ctx commit];
+	UKObjectsEqual(@"hello", [o2 valueForProperty: @"label"]);
+	
+	[o2 setValue: @"bye" forProperty: @"label"];
+	[ctx discardAllChanges];
+	UKObjectsEqual(@"hello", [o2 valueForProperty: @"label"]);
+	
+	TearDownContext(ctx);
+}
+
+- (void)testCopyingBetweenContextsWithNoStoreSimple
+{
+	COEditingContext *ctx1 = [[COEditingContext alloc] init];
+	COEditingContext *ctx2 = [[COEditingContext alloc] init];
+    
+	COObject *o1 = [ctx1 insertObjectWithEntityName: @"Anonymous.OutlineItem"];
+	[o1 setValue: @"Shopping" forProperty: @"label"];
+	
+	COObject *o1copy = [ctx2 insertObject: o1];
+	UKNotNil(o1copy);
+	UKObjectsSame(ctx1, [o1 editingContext]);
+	UKObjectsSame(ctx2, [o1copy editingContext]);
+	UKStringsEqual(@"Shopping", [o1copy valueForProperty: @"label"]);
+    
+	[ctx1 release];
+	[ctx2 release];
+}
+
 @end

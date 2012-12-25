@@ -44,12 +44,12 @@
 	// 'child' and 'subchild', but not 'parent'
 	                                                  
 	COObject *childCopy = [[ctx2 rootObject] addTree: child];
-	UKNotNil(childCopy);
+	UKObjectsEqual(childCopy, child);
 	UKObjectsSame(ctx2, [childCopy editingContext]);
 	UKObjectsSame([ctx2 rootObject], [childCopy parent]);
 	UKStringsEqual(@"Groceries", [childCopy valueForAttribute: @"label"]);
 	UKNotNil([childCopy contents]);
-	
+    
 	COObject *subchildCopy = [[childCopy contents] anyObject];
 	UKNotNil(subchildCopy);
 	UKObjectsSame(ctx2, [subchildCopy editingContext]);
@@ -109,196 +109,170 @@
 	[ctx1 release];
 }
 
+- (void)testObjectEquality
+{
+	COEditingContext *ctx1 = [[COEditingContext alloc] init];
+	
+    COObject *list1 = [[ctx1 rootObject] addTree: [self itemWithLabel: @"List1"]];
+    COObject *itemA = [list1 addTree: [self itemWithLabel: @"ItemA"]];
+    COObject *itemA1 = [itemA addTree: [self itemWithLabel: @"ItemA1"]];
+    
+    COEditingContext *ctx2 = [ctx1 copy];
+    
+    UKObjectsEqual(ctx1, ctx2);
+    UKObjectsEqual([ctx1 rootObject], [ctx2 rootObject]);
+
+    // now make an edit in ctx2
+    
+    [[ctx2 objectForUUID: [itemA UUID]] setValue: @"modified" forAttribute: @"test" type: [COType stringType]];
+    
+    UKObjectsNotEqual(ctx1, ctx2);
+    UKObjectsNotEqual([ctx1 rootObject], [ctx2 rootObject]);
+    UKObjectsNotEqual(list1, [ctx2 objectForUUID: [list1 UUID]]);
+    UKObjectsNotEqual(itemA, [ctx2 objectForUUID: [itemA UUID]]);
+    UKObjectsEqual(itemA1, [ctx2 objectForUUID: [itemA1 UUID]]);
+    
+    // undo the change
+    
+    [[ctx2 objectForUUID: [itemA UUID]] removeValueForAttribute: @"test"];
+    
+    UKObjectsEqual(ctx1, ctx2);
+    UKObjectsEqual([ctx1 rootObject], [ctx2 rootObject]);
+}
+
+- (void)testChangeTrackingBasic
+{
+	COEditingContext *ctx1 = [[COEditingContext alloc] init];
+	
+    UKObjectsEqual([NSSet set], [ctx1 insertedObjectUUIDs]);
+    UKObjectsEqual([NSSet set], [ctx1 deletedObjectUUIDs]);
+    UKObjectsEqual([NSSet set], [ctx1 modifiedObjectUUIDs]);
+    
+    COObject *list1 = [[ctx1 rootObject] addTree: [self itemWithLabel: @"List1"]];
+
+    UKObjectsEqual(S([list1 UUID]), [ctx1 insertedObjectUUIDs]);
+    UKObjectsEqual([NSSet set], [ctx1 deletedObjectUUIDs]);
+    UKObjectsEqual(S([[ctx1 rootObject] UUID]), [ctx1 modifiedObjectUUIDs]);
+    
+    [ctx1 clearChangeTracking];
+    
+    UKObjectsEqual([NSSet set], [ctx1 insertedObjectUUIDs]);
+    UKObjectsEqual([NSSet set], [ctx1 deletedObjectUUIDs]);
+    UKObjectsEqual([NSSet set], [ctx1 modifiedObjectUUIDs]);
+}
+
+- (void)testShoppingList
+{
+	COEditingContext *ctx1 = [[COEditingContext alloc] init];    
+    
+	COObject *workspace = [[ctx1 rootObject] addTree: [self itemWithLabel: @"Workspace"]];
+	COObject *document1 = [workspace addTree: [self itemWithLabel: @"Document1"]];
+	COObject *group1 = [document1 addTree: [self itemWithLabel: @"Group1"]];
+	COObject *leaf1 = [group1 addTree: [self itemWithLabel: @"Leaf1"]];
+	COObject *leaf2 = [group1 addTree: [self itemWithLabel: @"Leaf2"]];
+	COObject *group2 = [document1 addTree: [self itemWithLabel: @"Group2"]];
+	COObject *leaf3 = [group2 addTree: [self itemWithLabel: @"Leaf3"]];
+	
+	COObject *document2 = [workspace addTree: [self itemWithLabel: @"Document2"]];
+		
+	// Now make some changes
+	
+	[group2 addTree: leaf2];
+	[document2 addTree: group2];
+	
+	UKObjectsSame(workspace, [document1 parent]);
+	UKObjectsSame(workspace, [document2 parent]);
+	UKObjectsSame(document1, [group1 parent]);
+	UKObjectsSame(document2, [group2 parent]);
+	UKObjectsSame(group1, [leaf1 parent]);
+	UKObjectsSame(group2, [leaf2 parent]);
+	UKObjectsSame(group2, [leaf3 parent]);
+	UKObjectsEqual(S(document1, document2), [workspace contents]);
+	UKObjectsEqual(S(group1), [document1 contents]);
+	UKObjectsEqual(S(group2), [document2 contents]);
+	UKObjectsEqual(S(leaf1), [group1 contents]);
+	UKObjectsEqual(S(leaf2, leaf3), [group2 contents]);
+}
+
+- (void) testSubtreeCreationFromItemsWithCycle
+{
+	COMutableItem *parent = [COMutableItem item];
+	COMutableItem *child = [COMutableItem item];
+	[parent setValue: [child UUID] forAttribute: @"cycle" type: [COType embeddedItemType]];
+	[child setValue: [parent UUID] forAttribute: @"cycle" type: [COType embeddedItemType]];
+    
+    COObjectTree *objectTree = [COObjectTree treeWithItems: A(parent, child) rootUUID: [parent UUID]];
+    
+    UKRaisesException([COEditingContext editingContextWithObjectTree: objectTree]);
+}
+
+
+- (void) testSubtreeBasic
+{
+	COEditingContext *ctx1 = [[COEditingContext alloc] init];
+    COObject *t1 = [ctx1 rootObject];
+	
+	UKNotNil([t1 UUID]);
+	UKNil([t1 parent]);
+	UKObjectsSame(t1, [t1 root]);
+	UKTrue([t1 containsObject: t1]);
+	
+    COObject *t2 = [t1 addTree: [self itemWithLabel: @"t2"]];
+	
+	UKObjectsSame(t1, [t2 parent]);
+	UKObjectsSame(t1, [t2 root]);
+	UKNil([t1 parent]);
+	UKObjectsSame(t1, [t1 root]);
+	
+	UKTrue([t1 containsObject: t2]);
+	UKObjectsEqual(S([t1 UUID], [t2 UUID]), [t1 allUUIDs]);
+	UKObjectsEqual(S([t2 UUID]), [t1 allDescendentSubtreeUUIDs]);
+	UKObjectsEqual(S([t2 UUID]), [t1 directDescendentSubtreeUUIDs]);
+	UKObjectsEqual(S(t2), [t1 directDescendentSubtrees]);
+	UKIntsEqual(2, [[t1 allContainedStoreItems] count]);
+	UKIntsEqual(1, [[t2 allUUIDs] count]);
+	UKTrue(t2 == [t1 subtreeWithUUID: [t2 UUID]]);
+	UKObjectsEqual([COItemPath pathWithItemUUID: [t1 UUID]
+                        unorderedCollectionName: @"contents"
+                                           type: [COType setWithPrimitiveType: [COType embeddedItemType]]],
+                   [t1 itemPathOfSubtreeWithUUID: [t2 UUID]]);
+	
+    COObject *t3 = [t2 addTree: [self itemWithLabel: @"t3"]];
+	
+	UKTrue([t1 containsObject: t3]);
+	UKObjectsEqual(S([t1 UUID], [t2 UUID], [t3 UUID]), [t1 allUUIDs]);
+	UKObjectsEqual(S([t2 UUID], [t3 UUID]), [t1 allDescendentSubtreeUUIDs]);
+	UKObjectsEqual(S([t2 UUID]), [t1 directDescendentSubtreeUUIDs]);
+	UKObjectsEqual(S(t2), [t1 directDescendentSubtrees]);
+	UKIntsEqual(3, [[t1 allContainedStoreItems] count]);
+	UKIntsEqual(2, [[t2 allUUIDs] count]);
+	UKObjectsSame(t3, [t1 subtreeWithUUID: [t3 UUID]]);
+	UKObjectsEqual([COItemPath pathWithItemUUID: [t2 UUID]
+                        unorderedCollectionName: @"contents"
+                                           type: [COType setWithPrimitiveType: [COType embeddedItemType]]],
+                   [t1 itemPathOfSubtreeWithUUID: [t3 UUID]]);
+}
+
+- (void) testSubtreeCreationFromItems
+{
+	COEditingContext *ctx1 = [[COEditingContext alloc] init];
+    COObject *t1 = [ctx1 rootObject];
+    COObject *t2 = [t1 addTree: [self itemWithLabel: @"t2"]];
+    [t2 addTree: [self itemWithLabel: @"t3"]];
+
+    COEditingContext *t1copyCtx = [COEditingContext editingContextWithObjectTree: [COObjectTree treeWithItems: [[t1 allContainedStoreItems] allObjects]
+                                                                                                     rootUUID: [t1 UUID]]];
+    
+
+    COEditingContext *t2copyCtx = [COEditingContext editingContextWithObjectTree: [COObjectTree treeWithItems: [[t2 allContainedStoreItems] allObjects]
+                                                                                                     rootUUID: [t2 UUID]]];
+    
+	UKObjectsEqual(t1, [t1copyCtx rootObject]);
+    UKObjectsEqual(t2, [t2copyCtx rootObject]);
+}
+
 
 #if 0
-
-- (void)testInsertObject
-{
-	COEditingContext *ctx = NewContext();
-	UKFalse([ctx hasChanges]);
-	
-	
-	COObject *obj = [ctx insertObjectWithEntityName: @"Anonymous.OutlineItem"];
-	UKNotNil(obj);
-	UKTrue([obj isKindOfClass: [COObject class]]);
-	
-	NSArray *expectedProperties = [NSArray arrayWithObjects: @"parentContainer", @"parentCollections", @"contents", @"label", nil];
-	UKObjectsEqual([NSSet setWithArray: expectedProperties],
-				   [NSSet setWithArray: [obj persistentPropertyNames]]);
-
-	UKObjectsSame(obj, [ctx objectWithUUID: [obj UUID]]);
-	
-	UKTrue([ctx hasChanges]);
-	
-	UKNotNil([obj valueForProperty: @"parentCollections"]);
-	UKNotNil([obj valueForProperty: @"contents"]);
-	
-	TearDownContext(ctx);
-}
-
-- (void)testBasicPersistence
-{
-	COUUID *objUUID;
-	
-	{
-		COStore *store = [[COStore alloc] initWithURL: STORE_URL];
-		COEditingContext *ctx = [[COEditingContext alloc] initWithStore: store];
-		COObject *obj = [ctx insertObjectWithEntityName: @"Anonymous.OutlineItem"];
-		objUUID = [[obj UUID] retain];
-		[obj setValue: @"Hello" forProperty: @"label"];
-		[ctx commit];
-		[ctx release];
-		[store release];
-	}
-	
-	{
-		COStore *store = [[COStore alloc] initWithURL: STORE_URL];
-		COEditingContext *ctx = [[COEditingContext alloc] initWithStore: store];
-		COObject *obj = [ctx objectWithUUID: objUUID];
-		UKNotNil(obj);
-		NSArray *expectedProperties = [NSArray arrayWithObjects: @"parentContainer", @"parentCollections", @"contents", @"label", nil];
-		UKObjectsEqual([NSSet setWithArray: expectedProperties],
-					   [NSSet setWithArray: [obj persistentPropertyNames]]);
-		UKStringsEqual(@"Hello", [obj valueForProperty: @"label"]);
-		[ctx release];
-		[store release];
-	}
-	[objUUID release];
-	DELETE_STORE;
-}
-
-
-- (void)testDiscardChanges
-{
-	COEditingContext *ctx = NewContext();
-
-	UKFalse([ctx hasChanges]);
-		
-	COObject *o1 = [ctx insertObjectWithEntityName: @"Anonymous.OutlineItem"];
-	COUUID *u1 = [[o1 UUID] retain];
-	
-	// FIXME: It's not entirely clear what this should do
-	[ctx discardAllChanges];
-	UKNil([ctx objectWithUUID: u1]);
-	
-	UKFalse([ctx hasChanges]);
-	COObject *o2 = [ctx insertObjectWithEntityName: @"Anonymous.OutlineItem"];
-	[o2 setValue: @"hello" forProperty: @"label"];
-	[ctx commit];
-	UKObjectsEqual(@"hello", [o2 valueForProperty: @"label"]);
-	
-	[o2 setValue: @"bye" forProperty: @"label"];
-	[ctx discardAllChanges];
-	UKObjectsEqual(@"hello", [o2 valueForProperty: @"label"]);
-	
-	TearDownContext(ctx);
-}
-
-- (void)testCopyingBetweenContextsWithNoStoreSimple
-{
-	COEditingContext *ctx1 = [[COEditingContext alloc] init];
-	COEditingContext *ctx2 = [[COEditingContext alloc] init];
-
-	COObject *o1 = [ctx1 insertObjectWithEntityName: @"Anonymous.OutlineItem"];
-	[o1 setValue: @"Shopping" forProperty: @"label"];
-	
-	COObject *o1copy = [ctx2 insertObject: o1];
-	UKNotNil(o1copy);
-	UKObjectsSame(ctx1, [o1 editingContext]);
-	UKObjectsSame(ctx2, [o1copy editingContext]);
-	UKStringsEqual(@"Shopping", [o1copy valueForProperty: @"label"]);
-
-	[ctx1 release];
-	[ctx2 release];
-}
-
-- (void)testCopyingBetweenContextsWithNoStoreAdvanced
-{
-	COEditingContext *ctx1 = [[COEditingContext alloc] init];
-	COEditingContext *ctx2 = [[COEditingContext alloc] init];
-	
-	COContainer *parent = [ctx1 insertObjectWithEntityName: @"Anonymous.OutlineItem"];
-	COContainer *child = [ctx1 insertObjectWithEntityName: @"Anonymous.OutlineItem"];
-	COContainer *subchild = [ctx1 insertObjectWithEntityName: @"Anonymous.OutlineItem"];
-
-	[parent setValue: @"Shopping" forProperty: @"label"];
-	[child setValue: @"Groceries" forProperty: @"label"];
-	[subchild setValue: @"Pizza" forProperty: @"label"];
-	[child addObject: subchild];
-	[parent addObject: child];
-
-	// We are going to copy 'child' from ctx1 to ctx2. It should copy both
-	// 'child' and 'subchild', but not 'parent'
-	
-	COContainer *childCopy = [ctx2 insertObject: child];
-	UKNotNil(childCopy);
-	UKObjectsSame(ctx2, [childCopy editingContext]);
-	UKNil([childCopy valueForProperty: @"parentContainer"]);
-	UKStringsEqual(@"Groceries", [childCopy valueForProperty: @"label"]);
-	UKNotNil([childCopy contentArray]);
-	
-	COContainer *subchildCopy = [[childCopy contentArray] firstObject];
-	UKNotNil(subchildCopy);
-	UKObjectsSame(ctx2, [subchildCopy editingContext]);
-	UKStringsEqual(@"Pizza", [subchildCopy valueForProperty: @"label"]);
-				   
-	[ctx1 release];
-	[ctx2 release];
-}
-
-- (void)testCopyingBetweenContextsWithSharedStore
-{
-	COEditingContext *ctx1 = NewContext();
-	COEditingContext *ctx2 = [[COEditingContext alloc] initWithStore: [ctx1 store]];
-	
-	COContainer *parent = [ctx1 insertObjectWithEntityName: @"Anonymous.OutlineItem"];
-	COContainer *child = [ctx1 insertObjectWithEntityName: @"Anonymous.OutlineItem"];
-	COContainer *subchild = [ctx1 insertObjectWithEntityName: @"Anonymous.OutlineItem"];
-	
-	[parent setValue: @"Shopping" forProperty: @"label"];
-	[child setValue: @"Groceries" forProperty: @"label"];
-	[subchild setValue: @"Pizza" forProperty: @"label"];
-	[child addObject: subchild];
-	[parent addObject: child];
-	
-	[ctx1 commit];
-	
-	// We won't commit this
-	[parent setValue: @"Todo" forProperty: @"label"];
-	
-	// We'll add another sub-child and leave it uncommitted.
-	COContainer *subchild2 = [ctx1 insertObjectWithEntityName: @"Anonymous.OutlineItem"];
-	[subchild2 setValue: @"Salad" forProperty: @"label"];
-	[child addObject: subchild2];
-	
-	// We are going to copy 'child' from ctx1 to ctx2. It should copy
-	// 'child', 'subchild', and 'subchild2', but not 'parent' (so 
-	// renaming parent from "Shopping" to "Todo" should not be propagated.)
-	
-	COContainer *childCopy = [ctx2 insertObject: child];
-	UKNotNil(childCopy);
-	UKObjectsSame(ctx2, [childCopy editingContext]);
-	UKObjectsEqual([parent UUID], [[childCopy valueForProperty: @"parentContainer"] UUID]);
-	UKStringsEqual(@"Shopping", [[childCopy valueForProperty: @"parentContainer"] valueForProperty: @"label"]);
-	UKStringsEqual(@"Groceries", [childCopy valueForProperty: @"label"]);
-	UKNotNil([childCopy contentArray]);
-	UKIntsEqual(2, [[childCopy contentArray] count]);
-	if (2 == [[childCopy contentArray] count])
-	{
-		COContainer *subchildCopy = [[childCopy contentArray] firstObject];
-		UKNotNil(subchildCopy);
-		UKObjectsSame(ctx2, [subchildCopy editingContext]);
-		UKStringsEqual(@"Pizza", [subchildCopy valueForProperty: @"label"]);
-		
-		COContainer *subchild2Copy = [[childCopy contentArray] objectAtIndex: 1];
-		UKNotNil(subchild2Copy);
-		UKObjectsSame(ctx2, [subchild2Copy editingContext]);
-		UKStringsEqual(@"Salad", [subchild2Copy valueForProperty: @"label"]);
-	}
-	[ctx2 release];
-	TearDownContext(ctx1);
-}
-
 
 - (void)testCopyingBetweenContextsWithManyToMany
 {
@@ -320,6 +294,85 @@
 	
 	[ctx1 release];
 	[ctx2 release];
+}
+
+
+- (void) testSubtreeCreationFromItemsWithEmbeddedItemUsedTwice
+{
+	COMutableItem *parent = [COMutableItem item];
+	COMutableItem *child1 = [COMutableItem item];
+	COMutableItem *child2 = [COMutableItem item];
+	COMutableItem *shared = [COMutableItem item];
+	
+	[parent setValue: S([child1 UUID], [child2 UUID]) forAttribute: @"contents" type: [COType setWithPrimitiveType: [COType embeddedItemType]]];
+	[child1 setValue: [shared UUID] forAttribute: @"shared" type: [COType embeddedItemType]];
+	[child2 setValue: [shared UUID] forAttribute: @"shared" type: [COType embeddedItemType]];
+	
+	// illegal, because "shared" is embedded in two places
+	
+	UKRaisesException([COSubtree subtreeWithItemSet: S(parent, child1, child2, shared) rootUUID: [parent UUID]]);
+}
+
+- (void) testSubtreePlistRoundTrip
+{
+	COSubtree *t1 = [COSubtree subtree];
+	COSubtree *t2 = [COSubtree subtree];
+	COSubtree *t3 = [COSubtree subtree];
+	[t1 addTree: t2];
+	[t2 addTree: t3];
+	
+	COSubtree *t1a = [COSubtree subtreeWithPlist: [t1 plist]];
+	UKObjectsEqual(t1, t1a);
+	
+	COSubtree *t2a = [COSubtree subtreeWithPlist: [t2 plist]];
+	UKObjectsEqual(t2, t2a);
+}
+
+
+// From ObjectMerging - TestRelationshipIntegrity
+
+- (void)testBasicRelationshipIntegrity
+{
+	// Test one-to-many relationships
+	
+	COSubtree *o1 = [COSubtree subtree];
+	COSubtree *o2 = [COSubtree subtree];
+	COSubtree *o3 = [COSubtree subtree];
+	
+	[o1 addTree: o2];
+	[o2 addTree: o3];
+	
+	UKNil([o1 parent]);
+	UKObjectsEqual(S(o2), [o1 contents]);
+	UKObjectsSame(o1, [o2 parent]);
+	UKObjectsEqual(S(o3), [o2 contents]);
+	UKObjectsSame(o2, [o3 parent]);
+	UKObjectsEqual([NSSet set], [o3 contents]);
+    
+	
+	// FIXME: Not supported yet.
+	
+	// Test many-to-many relationships
+	
+    //	COObject *t1 = [ctx insertObjectWithEntityName: @"Anonymous.COCollection"]; // See COObject.m for metamodel definition
+    //	COObject *t2 = [ctx insertObjectWithEntityName: @"Anonymous.COCollection"];
+    //	COObject *t3 = [ctx insertObjectWithEntityName: @"Anonymous.COCollection"];
+    //
+    //	[t1 addObject: o1 forProperty: @"contents"];
+    //	[t2 addObject: o1 forProperty: @"contents"];
+    //
+    //	UKObjectsEqual(S(t1, t2), [o1 valueForProperty: @"parentCollections"]);
+    //
+    //	[o2 addObject: t2 forProperty: @"parentCollections"];
+    //	[o2 addObject: t3 forProperty: @"parentCollections"];
+    //
+    //	UKObjectsEqual(S(o1), [t1 valueForProperty: @"contents"]);
+    //	UKObjectsEqual(S(o1, o2), [t2 valueForProperty: @"contents"]);
+    //	UKObjectsEqual(S(o2), [t3 valueForProperty: @"contents"]);
+    //
+    //	[ctx release];
+    //	[store release];
+    //	DELETE_STORE;
 }
 
 #endif

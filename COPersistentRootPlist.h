@@ -26,7 +26,8 @@
     NSMutableDictionary *headRevisionIdForBranch_; // COUUID : CORevisionID
     NSMutableDictionary *tailRevisionIdForBranch_; // COUUID : CORevisionID
     NSMutableDictionary *currentStateForBranch_; // COUUID : CORevisionID
-
+    NSMutableDictionary *metadataForBranch_; // COUUID : NSDictionary
+    
     COUUID *currentBranch_;
     
     NSDictionary *metadata_;
@@ -37,6 +38,7 @@
  headRevisionIdForBranch: (NSDictionary *)headForBranch
  tailRevisionIdForBranch: (NSDictionary *)tailForBranch
    currentStateForBranch: (NSDictionary *)stateForBranch
+       metadataForBranch: (NSDictionary *)metadataForBranch
            currentBranch: (COUUID *)currentBranch
                 metadata: (NSDictionary *)theMetadata;
 
@@ -63,6 +65,11 @@
 - (CORevisionID *)currentStateForBranch: (COUUID *)aBranch;
 - (void)setCurrentState: (CORevisionID *)aRevision
               forBranch: (COUUID *)aUUID;
+
+- (NSDictionary *)metadataForBranch: (COUUID *)aBranch;
+- (void)setMetadata: (NSDictionary *)aRevision
+          forBranch: (COUUID *)aUUID;
+
 
 - (NSDictionary *) metadata;
 - (void) setMetadata: (NSDictionary *)theMetadata;
