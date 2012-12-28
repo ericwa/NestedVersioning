@@ -58,6 +58,8 @@
  */
 - (NSSet *) modifiedObjectUUIDs;
 
+- (NSSet *) insertedOrModifiedObjectUUIDs;
+
 - (void) clearChangeTracking;
 
 @end

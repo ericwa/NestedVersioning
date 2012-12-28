@@ -18,17 +18,13 @@
     UKObjectsEqual(t, [CORevisionID tokenWithPlist: [t plist]]);    
 }
 
-static COSubtree *makeTree(NSString *message)
+static COObject *makeTree(NSString *label)
 {
-	COSubtree *t1 = [COSubtree subtree];
-    [t1 setPrimitiveValue: message
-             forAttribute: @"name"
-                     type: [COType stringType]];
-	COSubtree *t2 = [COSubtree subtree];
-	COSubtree *t3 = [COSubtree subtree];
-	[t1 addTree: t2];
-	[t2 addTree: t3];
-	return t1;
+    COEditingContext *ctx = [[[COEditingContext alloc] init] autorelease];
+    [[ctx rootObject] setValue: label
+                  forAttribute: @"label"
+                          type: [COType stringType]];
+    return [ctx rootObject];
 }
 
 - (CORevisionID *) currentState: (id<COPersistentRootMetadata>)aRoot
@@ -271,8 +267,12 @@ static COSubtree *makeTree(NSString *message)
 {
     COStoreEditQueue *store = [[COStoreEditQueue alloc] initWithURL: STOREURL];
     
-    COPersistentRootEditQueue *proot = [store createPersistentRoot];
+    COPersistentRootEditQueue *proot = [store createPersistentRootWithInitialContents: [makeTree(@"root") objectTree]
+                                                                             metadata: [NSDictionary dictionary]];
 
+    // Verify that the new persistent root is saved
+    UKIntsEqual(1, [[store allPersistentRootUUIDs] count]);
+    
     COBranchEditQueue *currentBranch = [proot contextForEditingCurrentBranch];
     
     COUUID *initialBranchUUID = [currentBranch UUID];
@@ -280,23 +280,16 @@ static COSubtree *makeTree(NSString *message)
     UKIntsEqual(1, [[proot branchUUIDs] count]);
     UKObjectsEqual([[proot branchUUIDs] objectAtIndex: 0], [currentBranch UUID]);
     
-    // Verify that the new persistent root wasn't saved to the store yet.
-    UKTrue([[store allPersistentRootUUIDs] count] == 0);
-    
     [proot setName: @"my root"];
-    [proot commitChanges];
     
-    UKTrue([[store allPersistentRootUUIDs] count] == 1);
-    
-    COBranchEditQueue *newBranch = [proot createBranch];
+    COBranchEditQueue *newBranch = [proot createBranchAtRevision: [[proot contextForEditingCurrentBranch] currentState]
+                                                      setCurrent: YES];
     COUUID *newBranchUUID = [newBranch UUID];
     
     // Check that the currentBranch context is updated
     // if we switch branch
     
-    [proot setCurrentBranchUUID: newBranchUUID];
-    
-    UKObjectsEqual(newBranchUUID, [currentBranch UUID]);
+    //UKObjectsEqual(newBranchUUID, [currentBranch UUID]);
     
     // FIXME: Test:
     /*

@@ -11,12 +11,13 @@
 {
 	SUPERINIT;
     
-	db_ = [[FMDatabase alloc] initWithPath: aPath];
+	db_ = [[FMDatabase alloc] initWithPath: [aPath stringByAppendingPathComponent: @"revisions.sqlite"]];
     
     [db_ setShouldCacheStatements: YES];
 	
 	if (![db_ open])
 	{
+        assert(0);
         [self release];
 		return nil;
 	}
@@ -34,7 +35,7 @@
     
     // Set up schema
     
-    [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS commits (commitid INTEGER PRIMARY KEY ASC, "
+    [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS commits (revid INTEGER PRIMARY KEY ASC, "
                         "contents BLOB, metadata BLOB, parent INTEGER, root BLOB, deltabase INTEGER)"];
     
     if ([db_ hadError])
@@ -134,7 +135,7 @@
     
     while ([rs next])
     {
-        const int64_t revid = [rs longLongIntForColumn: 0];
+        const int64_t revid = [rs longLongIntForColumnIndex: 0];
         NSData *contentsData = [rs dataForColumnIndex: 1];
         const int64_t parent = [rs longLongIntForColumnIndex: 2];
         const int64_t deltabase = [rs boolForColumnIndex: 3];

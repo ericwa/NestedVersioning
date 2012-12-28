@@ -153,6 +153,10 @@
 {
     return modifiedObjects_;
 }
+- (NSSet *) insertedOrModifiedObjectUUIDs
+{
+    return [insertedObjects_ setByAddingObjectsFromSet: modifiedObjects_];
+}
 
 - (void) clearChangeTracking
 {

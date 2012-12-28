@@ -16,6 +16,8 @@
     persistentRoot_ = aRoot;
     ASSIGN(branch_, aBranch);
     isTrackingCurrentBranch_ = track;
+    editingContext_ = [[COEditingContext alloc] initWithObjectTree: [self currentStateObjectTree]];
+    
     return self;
 }
 
@@ -40,6 +42,11 @@
     return [[persistentRoot_ savedState] currentStateForBranch: branch_];
 }
 
+- (COObjectTree *)currentStateObjectTree
+{
+    return [[persistentRoot_ store] objectTreeForRevision: [self currentState]];
+}
+
 - (CORevisionID *)head
 {
     return [[persistentRoot_ savedState] headRevisionIdForBranch: branch_];
@@ -57,9 +64,12 @@
     BOOL ok = [[persistentRoot_ store] setCurrentVersion: aState
                                                forBranch: branch_
                                         ofPersistentRoot: [persistentRoot_ UUID]];
+    assert(ok);
     
     [[persistentRoot_ savedState] setCurrentState: aState forBranch: branch_];
     // FIXME: Update head/tail
+    
+    [editingContext_ setObjectTree: [self currentStateObjectTree]];
 }
 
 /** @taskunit manipulation */
@@ -69,8 +79,9 @@
     CORevisionID *revId = [[persistentRoot_ store] writeItemTree: [editingContext_ objectTree]
                                                     withMetadata: metadata
                                             withParentRevisionID: [self currentState]
-                                                   modifiedItems: [editingContext_ dirtyObjectUUIDs]];
-// fixme: reset dirty objects
+                                                   modifiedItems: [[editingContext_ insertedOrModifiedObjectUUIDs] allObjects]];
+    [editingContext_ clearChangeTracking];
+    
     BOOL ok = [[persistentRoot_ store] setCurrentVersion: revId
                                                forBranch: branch_
                                         ofPersistentRoot: [persistentRoot_ UUID]];
@@ -84,7 +95,7 @@
 
 - (void) discardChanges
 {
-    // FIXME:
+    [editingContext_ setObjectTree: [self currentStateObjectTree]];
 }
 
 - (COEditingContext *)editingContext

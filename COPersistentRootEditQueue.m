@@ -97,6 +97,10 @@ NSString *kCOPersistentRootName = @"COPersistentRootName";
 {
     COUUID *aBranch = [[self store] createBranchWithInitialRevision: aRevision
                                                                setCurrent: setCurrent forPersistentRoot: [self UUID]];
+    
+    // FIXME: Overly coarse
+    savedState_ = [[self store] persistentRootWithUUID: [self UUID]];
+    
     return [self contextForEditingBranchWithUUID: aBranch];
 }
 

@@ -169,11 +169,27 @@
                                                            error: NULL];
 }
 
+- (CORevisionID *) writeItemTreeWithNoParent: (COObjectTree *)anItemTree
+                                withMetadata: (NSDictionary *)metadata
+                      inBackingStoreWithUUID: (COUUID *)aBacking
+{
+    COSQLiteStorePersistentRootBackingStore *backing = [self backingStoreForUUID: aBacking];
+    
+    const int64_t revid = [backing writeItemTree: anItemTree
+                                    withMetadata: metadata
+                                      withParent: nil
+                                   modifiedItems: nil];
+    
+    return [[[CORevisionID alloc] initWithProotCache: aBacking index: revid] autorelease];
+}
+
+
 - (CORevisionID *) writeItemTree: (COObjectTree *)anItemTree
                     withMetadata: (NSDictionary *)metadata
             withParentRevisionID: (CORevisionID *)aParent
                    modifiedItems: (NSArray*)modifiedItems // array of COUUID
 {
+    NSParameterAssert(aParent != nil);
     COSQLiteStorePersistentRootBackingStore *backing = [self backingStoreForRevisionID: aParent];
     
     const int64_t revid = [backing writeItemTree: anItemTree
@@ -188,7 +204,14 @@
 
 - (NSArray *) allPersistentRootUUIDs
 {
-    return [NSArray array];
+    NSMutableArray *result = [NSMutableArray array];
+    FMResultSet *rs = [db_ executeQuery: @"SELECT uuid FROM persistentroots"];
+    while ([rs next])
+    {
+        [result addObject: [COUUID UUIDWithData: [rs dataForColumnIndex: 0]]];
+    }
+    [rs close];
+    return [NSArray arrayWithArray: result];
 }
 
 - (id <COPersistentRootMetadata>) persistentRootWithUUID: (COUUID *)aUUID
@@ -223,7 +246,7 @@
 {
     NSData *data = [NSJSONSerialization dataWithJSONObject: [plist plist] options: 0 error: NULL];
     
-    return [db_ executeUpdate: @"INSERT INTO persistentroots VALUES(?,?,?)", [[plist UUID] dataValue], data, [aUUID dataValue]];
+    return [db_ executeUpdate: @"INSERT INTO persistentroots VALUES(?,?,?)", [[plist UUID] dataValue], [aUUID dataValue], data];
 }
 
 
@@ -235,17 +258,16 @@
     
     [self createBackingStoreWithUUID: uuid];
     
-    CORevisionID *revId = [self writeItemTree: contents
-           withMetadata: nil
-   withParentRevisionID: nil
-          modifiedItems: nil];
-    
+    CORevisionID *revId = [self writeItemTreeWithNoParent: contents
+                                             withMetadata: [NSDictionary dictionary]
+                                   inBackingStoreWithUUID: uuid];
 
     COPersistentRootPlist *plist = [[COPersistentRootPlist alloc] initWithUUID: uuid
                                                                    revisionIDs: A(revId)
                                                        headRevisionIdForBranch: D(revId, branch)
                                                        tailRevisionIdForBranch: D(revId, branch)
                                                          currentStateForBranch: D(revId, branch)
+                                                             metadataForBranch: [NSDictionary dictionary]
                                                                  currentBranch: branch
                                                                       metadata: metadata];
     
@@ -265,6 +287,7 @@
                                                        headRevisionIdForBranch: D(revId, branch)
                                                        tailRevisionIdForBranch: D(revId, branch)
                                                          currentStateForBranch: D(revId, branch)
+                                                             metadataForBranch: [NSDictionary dictionary]
                                                                  currentBranch: branch
                                                                       metadata: metadata];
     
@@ -296,7 +319,15 @@
     
     COPersistentRootPlist *plist = (COPersistentRootPlist *)[self persistentRootWithUUID: aRoot];
     
-    // FIXME: Implement
+    [plist addRevisionID: aToken];
+    [plist setCurrentState: aToken forBranch: branch];
+    [plist setHeadRevisionId: aToken forBranch: branch];
+    [plist setTailRevisionId: aToken forBranch: branch];
+    
+    if (setCurrent)
+    {
+        [plist setCurrentBranchUUID: branch];
+    }
     
     BOOL ok = [self updatePersistentRoot: plist];
     if (!ok)
