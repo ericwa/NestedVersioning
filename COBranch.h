@@ -2,14 +2,13 @@
 #import "COPath.h"
 #import "COItem.h"
 
-@class COPersistentRootEditQueue;
-@class COStore;
+@class COPersistentRoot;
 @class CORevisionID;
 @class COEditingContext;
 
-@interface COBranchEditQueue : NSObject
+@interface COBranch : NSObject
 {
-	COPersistentRootEditQueue *persistentRoot_; // weak
+	COPersistentRoot *persistentRoot_; // weak
     COUUID *branch_;
     BOOL isTrackingCurrentBranch_;
     
@@ -18,7 +17,7 @@
 	COEditingContext *editingContext_;
 }
 
-- (COPersistentRootEditQueue *) persistentRoot;
+- (COPersistentRoot *) persistentRoot;
 - (COUUID *) UUID;
 
 - (CORevisionID *)currentState;

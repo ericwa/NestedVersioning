@@ -6,9 +6,9 @@
 
 #import "CORevisionID.h"
 #import "COMacros.h"
-#import "COStoreEditQueue.h"
-#import "COPersistentRootEditQueue.h"
-#import "COBranchEditQueue.h"
+#import "COStore.h"
+#import "COPersistentRoot.h"
+#import "COBranch.h"
 
 #import "COObjectTree.h"
 #import "COItemPath.h"

@@ -2,7 +2,7 @@
 
 
 @interface TestStoreEditQueue : NSObject <UKTest> {
-    COStoreEditQueue *store;
+    COStore *store;
 }
 
 @end
@@ -24,7 +24,7 @@ static COObject *makeTree(NSString *label)
     self = [super init];
     
     [[NSFileManager defaultManager] removeItemAtPath: STOREPATH error: NULL];
-    store = [[COStoreEditQueue alloc] initWithURL: [NSURL fileURLWithPath: STOREPATH]];
+    store = [[COStore alloc] initWithURL: [NSURL fileURLWithPath: STOREPATH]];
     return self;
 }
 
@@ -37,13 +37,13 @@ static COObject *makeTree(NSString *label)
 
 - (void) testEditQueueApis
 {
-    COPersistentRootEditQueue *proot = [store createPersistentRootWithInitialContents: [makeTree(@"root") objectTree]
+    COPersistentRoot *proot = [store createPersistentRootWithInitialContents: [makeTree(@"root") objectTree]
                                                                              metadata: [NSDictionary dictionary]];
     
     // Verify that the new persistent root is saved
     UKIntsEqual(1, [[store allPersistentRootUUIDs] count]);
     
-    COBranchEditQueue *currentBranch = [proot contextForEditingCurrentBranch];
+    COBranch *currentBranch = [proot contextForEditingCurrentBranch];
     CORevisionID *firstRevision = [currentBranch currentState];
     COObjectTree *firstState = [[currentBranch editingContext] objectTree];
     COUUID *initialBranchUUID = [currentBranch UUID];
@@ -55,7 +55,7 @@ static COObject *makeTree(NSString *label)
     
     // Create a new branch and switch to it.
     
-    COBranchEditQueue *newBranch = [proot createBranchAtRevision: [[proot contextForEditingCurrentBranch] currentState]
+    COBranch *newBranch = [proot createBranchAtRevision: [[proot contextForEditingCurrentBranch] currentState]
                                                       setCurrent: YES];
     COUUID *newBranchUUID = [newBranch UUID];
     

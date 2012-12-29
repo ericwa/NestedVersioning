@@ -1,8 +1,6 @@
 #import <Cocoa/Cocoa.h>
 
 @class EWGraphRenderer;
-@class COBranch;
-@class COStore;
 @class COPersistentRootPlist;
 @class CORevisionID;
 

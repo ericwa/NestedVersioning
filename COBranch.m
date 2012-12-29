@@ -1,14 +1,14 @@
-#import "COBranchEditQueue.h"
+#import "COBranch.h"
 #import "COMacros.h"
-#import "COPersistentRootEditQueue.h"
+#import "COPersistentRoot.h"
 #import "COEditQueuePrivate.h"
 #import "COObjectTree.h"
 #import "COSQLiteStore.h"
 #import "COEditingContext.h"
 
-@implementation COBranchEditQueue
+@implementation COBranch
 
-- (id)initWithPersistentRoot: (COPersistentRootEditQueue*)aRoot
+- (id)initWithPersistentRoot: (COPersistentRoot*)aRoot
                       branch: (COUUID*)aBranch
           trackCurrentBranch: (BOOL)track
 {
@@ -28,7 +28,7 @@
     [super dealloc];
 }
 
-- (COPersistentRootEditQueue *) persistentRoot
+- (COPersistentRoot *) persistentRoot
 {
     return persistentRoot_;
 }

@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 
 #import "COUUID.h"
-#import "COPersistentRootEditQueue.h"
+#import "COPersistentRoot.h"
 #import "COSQLiteStore.h"
 
 @class COObjectTree;
@@ -10,7 +10,7 @@
  * High-level store API which provides access to COPersistentRootEditQueue objects,
  * which are managed/mutable models for the persistent roots
  */
-@interface COStoreEditQueue : NSObject
+@interface COStore : NSObject
 {
     COSQLiteStore *store_;
     
@@ -24,16 +24,16 @@
 
 - (NSArray *) allPersistentRootUUIDs;
 
-- (COPersistentRootEditQueue *) persistentRootWithUUID: (COUUID *)aUUID;
+- (COPersistentRoot *) persistentRootWithUUID: (COUUID *)aUUID;
 
 /** @taskunit writing */
 
 // these 2 commit immediately
-- (COPersistentRootEditQueue *) createPersistentRootWithInitialContents: (COObjectTree *)contents
+- (COPersistentRoot *) createPersistentRootWithInitialContents: (COObjectTree *)contents
                                                                metadata: (NSDictionary *)metadata;
 
 // does a cheap copy
-- (COPersistentRootEditQueue *) createPersistentRootWithInitialRevision: (CORevisionID *)aRevision
+- (COPersistentRoot *) createPersistentRootWithInitialRevision: (CORevisionID *)aRevision
                                                                metadata: (NSDictionary *)metadata;
 
 /**

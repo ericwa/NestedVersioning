@@ -5,8 +5,8 @@
 #import "COSQLiteStore.h"
 #import "COPersistentRootPlist.h"
 
-@class COBranchEditQueue;
-@class COStoreEditQueue;
+@class COBranch;
+@class COStore;
 
 /**
  * goals:
@@ -16,9 +16,9 @@
  *   windows an editing them simiultaneously
  *
  */
-@interface COPersistentRootEditQueue : NSObject
+@interface COPersistentRoot : NSObject
 {
-    COStoreEditQueue *rootStore_; // weak
+    COStore *rootStore_; // weak
     
     COPersistentRootPlist *savedState_;
 
@@ -28,7 +28,7 @@
      * within the context of this COPersistentRootEditQueue
      * instance). 
      */
-    COBranchEditQueue *currentBranchEditQueue_;
+    COBranch *currentBranchEditQueue_;
     
     NSMutableDictionary *branchEditQueueForUUID_;
 }
@@ -70,7 +70,7 @@
  * ---
  * Commits the new branch immediately
  */
-- (COBranchEditQueue *) createBranchAtRevision: (CORevisionID *)aRevision
+- (COBranch *) createBranchAtRevision: (CORevisionID *)aRevision
                                     setCurrent: (BOOL)setCurrent;
 
 
@@ -85,8 +85,8 @@
  *
  * On second thought it may not matter.
  */
-- (COBranchEditQueue *) contextForEditingCurrentBranch;
-- (COBranchEditQueue *) contextForEditingBranchWithUUID: (COUUID *)aUUID;
+- (COBranch *) contextForEditingCurrentBranch;
+- (COBranch *) contextForEditingBranchWithUUID: (COUUID *)aUUID;
 
 
 @end

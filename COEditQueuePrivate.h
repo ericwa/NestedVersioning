@@ -1,21 +1,21 @@
-#import "COPersistentRootEditQueue.h"
-#import "COBranchEditQueue.h"
-#import "COStoreEditQueue.h"
+#import "COPersistentRoot.h"
+#import "COBranch.h"
+#import "COStore.h"
 #import "COSQLiteStore.h"
 
-@interface COPersistentRootEditQueue (Private)
+@interface COPersistentRoot (Private)
 
 - (COSQLiteStore *) store;
 
-- (id)initWithStoreEditQueue: (COStoreEditQueue *)aRootStore persistentRoot: (COPersistentRootPlist *)metadata;
+- (id)initWithStoreEditQueue: (COStore *)aRootStore persistentRoot: (COPersistentRootPlist *)metadata;
 
 - (COPersistentRootPlist *) savedState;
 
 @end
 
-@interface COBranchEditQueue (Private)
+@interface COBranch (Private)
 
-- (id)initWithPersistentRoot: (COPersistentRootEditQueue*)aRoot
+- (id)initWithPersistentRoot: (COPersistentRoot*)aRoot
                       branch: (COUUID*)aBranch
           trackCurrentBranch: (BOOL)track;
 
@@ -27,7 +27,7 @@
 
 @end
 
-@interface COStoreEditQueue (Private)
+@interface COStore (Private)
 
 - (COSQLiteStore *)store;
 

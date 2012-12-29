@@ -1,9 +1,9 @@
-#import "COStoreEditQueue.h"
+#import "COStore.h"
 #import "COMacros.h"
 #import "COEditQueuePrivate.h"
 #import "COSQLiteStore.h"
 
-@implementation COStoreEditQueue
+@implementation COStore
 
 - (id)initWithURL: (NSURL*)aURL
 {
@@ -30,18 +30,18 @@
     return [store_ allPersistentRootUUIDs];
 }
 
-- (COPersistentRootEditQueue *) persistentRootEditQueue: (id<COPersistentRootMetadata>)persistentRoot
+- (COPersistentRoot *) persistentRootEditQueue: (id<COPersistentRootMetadata>)persistentRoot
 {
-    COPersistentRootEditQueue *root = [[COPersistentRootEditQueue alloc] initWithStoreEditQueue: self
+    COPersistentRoot *root = [[COPersistentRoot alloc] initWithStoreEditQueue: self
                                                                                  persistentRoot: persistentRoot];
     [rootForUUID_ setObject: root forKey: [root UUID]];
     [root release];
     return root;
 }
 
-- (COPersistentRootEditQueue *) persistentRootWithUUID: (COUUID *)aUUID
+- (COPersistentRoot *) persistentRootWithUUID: (COUUID *)aUUID
 {
-    COPersistentRootEditQueue *root = [rootForUUID_ objectForKey: aUUID];
+    COPersistentRoot *root = [rootForUUID_ objectForKey: aUUID];
     if (root == nil)
     {
         id<COPersistentRootMetadata> persistentRoot = [store_ persistentRootWithUUID: aUUID];
@@ -57,7 +57,7 @@
     return root;
 }
 
-- (COPersistentRootEditQueue *) createPersistentRootWithInitialContents: (COObjectTree *)contents
+- (COPersistentRoot *) createPersistentRootWithInitialContents: (COObjectTree *)contents
                                                                metadata: (NSDictionary *)metadata
 {
     id<COPersistentRootMetadata> persistentRoot = [store_ createPersistentRootWithInitialContents: contents metadata: metadata];
@@ -65,7 +65,7 @@
     return [self persistentRootEditQueue: persistentRoot];
 }
 
-- (COPersistentRootEditQueue *) createPersistentRootWithInitialRevision: (CORevisionID *)aRevision
+- (COPersistentRoot *) createPersistentRootWithInitialRevision: (CORevisionID *)aRevision
                                                                metadata: (NSDictionary *)metadata
 {
     id<COPersistentRootMetadata> persistentRoot = [store_ createPersistentRootWithInitialRevision: aRevision metadata: metadata];
@@ -81,7 +81,7 @@
 
 @end
 
-@implementation COStoreEditQueue (Private)
+@implementation COStore (Private)
 
 - (COSQLiteStore *)store
 {
