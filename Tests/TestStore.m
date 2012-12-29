@@ -1,13 +1,32 @@
 #import "TestCommon.h"
 
+#define STOREPATH [@"~/om6teststore" stringByExpandingTildeInPath]
+#define STOREURL [NSURL fileURLWithPath: STOREPATH]
+
 @interface TestStore : NSObject <UKTest> {
-	
+	COSQLiteStore *store;
 }
 
 @end
 
 
 @implementation TestStore
+
+- (id) init
+{
+    self = [super init];
+    
+    [[NSFileManager defaultManager] removeItemAtPath: STOREPATH error: NULL];
+    store = [[COSQLiteStore alloc] initWithURL: [NSURL fileURLWithPath: STOREPATH]];
+    return self;
+}
+
+- (void) dealloc
+{
+    [[NSFileManager defaultManager] removeItemAtPath: STOREPATH error: NULL];
+    [store release];
+    [super dealloc];
+}
 
 - (void) testTokenInMemory
 {
@@ -32,32 +51,41 @@ static COObject *makeTree(NSString *label)
     return [aRoot currentStateForBranch: [aRoot currentBranchUUID]];
 }
 
-//- (void) testBasic
-//{
-//	COStore *store = setupStore();
-//	COSubtree *basicTree = makeTree(@"hello world");
-//    
-//    COPersistentRootState *state = [COPersistentRootState stateWithTree: basicTree];
-//    COUUID *prootUUID = [COUUID UUID];
-//    [store createPersistentRootWithUUID: prootUUID
-//                        initialContents: state];
-//    id<COPersistentRoot> proot = [store persistentRootWithUUID: prootUUID];
-//    
-//    UKObjectsEqual([NSArray arrayWithObject: [proot UUID]], [store allPersistentRootUUIDs]);
-// 
-//    // make a second commit
-//    
-//	COSubtree *basicTree2 = makeTree(@"hello world2");
-//    
-//    COPersistentRootState *state2 = [COPersistentRootState stateWithTree: basicTree2];
-//    COPersistentRootStateToken *token2 = [store addState: state2 parentState: [self currentState: proot]];
-//    
-//    [store setCurrentVersion: token2 forBranch: [proot currentBranchUUID] ofPersistentRoot: [proot UUID]];
-//    
-//    id<COPersistentRoot> prootFetched = [store persistentRootWithUUID: [proot UUID]];
-//    UKObjectsEqual(state2, [store fullStateForToken: [self currentState: prootFetched]]);
-//    UKObjectsNotEqual(state, [store fullStateForToken: [self currentState: prootFetched]]);
-//}
+- (void) testBasic
+{
+	COObjectTree *basicTree = [makeTree(@"hello world") objectTree];
+    
+    id <COPersistentRootMetadata> proot = [store createPersistentRootWithInitialContents: basicTree
+                                                                                metadata: [NSDictionary dictionary]];
+    
+    UKObjectsEqual([NSArray arrayWithObject: [proot UUID]], [store allPersistentRootUUIDs]);
+    
+    COObjectTree *fetchedTree = [store objectTreeForRevision: [self currentState: proot]];
+    UKObjectsEqual(basicTree, fetchedTree);
+    
+    id<COPersistentRootMetadata> prootFetchedFirst = [store persistentRootWithUUID: [proot UUID]];
+    UKObjectsEqual(proot, prootFetchedFirst);
+    
+    // make a second commit
+    
+    COMutableItem *modifiedItem = [[[basicTree itemForUUID: [basicTree root]] mutableCopy] autorelease];
+    [modifiedItem setValue: @"hello world 2" forAttribute: @"label" type: [COType stringType]];
+    COObjectTree *basicTree2 = [COObjectTree treeWithItems: A(modifiedItem) rootUUID: [modifiedItem UUID]];
+    
+    CORevisionID *token2 = [store writeItemTree: basicTree2
+                                   withMetadata: nil
+                           withParentRevisionID: [proot currentStateForBranch: [proot currentBranchUUID]]
+                                  modifiedItems: nil];
+    
+    [store setCurrentVersion: token2 forBranch: [proot currentBranchUUID] ofPersistentRoot: [proot UUID]];
+    
+    id<COPersistentRootMetadata> prootFetched = [store persistentRootWithUUID: [proot UUID]];
+    CORevisionID *currentState = [self currentState: prootFetched];
+    UKNotNil(currentState);
+    
+    fetchedTree = [store objectTreeForRevision: currentState];
+    UKObjectsEqual(basicTree2, fetchedTree);
+}
 //
 //- (void) testWithEditingContext
 //{
@@ -261,47 +289,5 @@ static COObject *makeTree(NSString *label)
 //    UKObjectsEqual(state, [store fullStateForPersistentRootWithUUID: [proot UUID]]);
 //    UKObjectsEqual(state2, [store fullStateForPersistentRootWithUUID: [proot2 UUID]]);
 //}
-
-
-- (void) testEditQueueApis
-{
-    COStoreEditQueue *store = [[COStoreEditQueue alloc] initWithURL: STOREURL];
-    
-    COPersistentRootEditQueue *proot = [store createPersistentRootWithInitialContents: [makeTree(@"root") objectTree]
-                                                                             metadata: [NSDictionary dictionary]];
-
-    // Verify that the new persistent root is saved
-    UKIntsEqual(1, [[store allPersistentRootUUIDs] count]);
-    
-    COBranchEditQueue *currentBranch = [proot contextForEditingCurrentBranch];
-    
-    COUUID *initialBranchUUID = [currentBranch UUID];
-    
-    UKIntsEqual(1, [[proot branchUUIDs] count]);
-    UKObjectsEqual([[proot branchUUIDs] objectAtIndex: 0], [currentBranch UUID]);
-    
-    [proot setName: @"my root"];
-    
-    COBranchEditQueue *newBranch = [proot createBranchAtRevision: [[proot contextForEditingCurrentBranch] currentState]
-                                                      setCurrent: YES];
-    COUUID *newBranchUUID = [newBranch UUID];
-    
-    // Check that the currentBranch context is updated
-    // if we switch branch
-    
-    //UKObjectsEqual(newBranchUUID, [currentBranch UUID]);
-    
-    // FIXME: Test:
-    /*
-    * It's going to be a bit of work to handle the case where
-    * there is this context open on a particular branch,
-    * as well as the explicit one created by -contextForEditingBranchWithUUID
-    * because they should stay in sync?
-    */
-    
-    // Close
-    
-    [[NSFileManager defaultManager] removeItemAtPath: STOREPATH error: NULL];
-}
 
 @end

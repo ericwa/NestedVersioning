@@ -101,7 +101,7 @@
     FMResultSet *rs = [db_ executeQuery: @"SELECT parent FROM commits WHERE revid = ?", [NSNumber numberWithLongLong: revid]];
 	if ([rs next])
 	{
-        result = [rs longLongIntForColumn: 0];
+        result = [rs longLongIntForColumnIndex: 0];
 	}
     [rs close];
     
@@ -203,7 +203,7 @@ static NSData *contentsBLOBWithItemTree(COObjectTree *anItemTree, NSArray *modif
 	{
         if (![rs columnIndexIsNull: 0])
         {
-            result = [rs longLongIntForColumn: 0] + 1;
+            result = [rs longLongIntForColumnIndex: 0] + 1;
         }
 	}
     [rs close];
@@ -218,7 +218,7 @@ static NSData *contentsBLOBWithItemTree(COObjectTree *anItemTree, NSArray *modif
     FMResultSet *rs = [db_ executeQuery: @"SELECT deltabase FROM commits WHERE rowid = ?", [NSNumber numberWithLongLong: aRowid]];
     if ([rs next])
     {
-        deltabase = [rs longLongIntForColumn: 0];
+        deltabase = [rs longLongIntForColumnIndex: 0];
     }
     [rs close];
 
@@ -241,6 +241,10 @@ static NSData *contentsBLOBWithItemTree(COObjectTree *anItemTree, NSArray *modif
     if (delta)
     {
         deltabase = parent_deltabase;
+        if (modifiedItems == nil)
+        {
+            modifiedItems = [anItemTree objectUUIDs];
+        }
         contentsBlob = contentsBLOBWithItemTree(anItemTree, modifiedItems);
     }
     else
@@ -249,7 +253,11 @@ static NSData *contentsBLOBWithItemTree(COObjectTree *anItemTree, NSArray *modif
         contentsBlob = contentsBLOBWithItemTree(anItemTree, [anItemTree objectUUIDs]);
     }    
 
-    NSData *metadataBlob = [NSJSONSerialization dataWithJSONObject: metadata options: 0 error: NULL];
+    NSData *metadataBlob = nil;
+    if (metadata != nil)
+    {
+        metadataBlob = [NSJSONSerialization dataWithJSONObject: metadata options: 0 error: NULL];
+    }
     
     // revid INTEGER PRIMARY KEY | contents BLOB | metadata BLOB | parent INTEGER | root BLOB | deltabase INTEGER
     [db_ executeUpdate: @"INSERT INTO commits VALUES (?, ?, ?, ?, ?, ?)",

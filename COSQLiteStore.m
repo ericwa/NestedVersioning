@@ -154,6 +154,7 @@
 
 - (COObjectTree *) objectTreeForRevision: (CORevisionID *)aToken
 {
+    NSParameterAssert(aToken != nil);
     COSQLiteStorePersistentRootBackingStore *backing = [self backingStoreForRevisionID: aToken];
     COObjectTree *result = [backing itemTreeForRevid: [aToken _index]];
     return result;

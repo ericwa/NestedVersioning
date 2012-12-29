@@ -15,7 +15,5 @@
 #import "COEditingContext.h"
 #import "COObject.h"
 
-
-#define STOREPATH [@"~/om5teststore" stringByExpandingTildeInPath]
+#define STOREPATH [@"~/om6teststore" stringByExpandingTildeInPath]
 #define STOREURL [NSURL fileURLWithPath: STOREPATH]
-COSQLiteStore *setupStore(void);

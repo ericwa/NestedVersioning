@@ -175,7 +175,7 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
       tailRevisionIdForBranch: UUIDToRevisionIdMapFromPlist([aPlist objectForKey: kCOPersistentRootTailRevisionIdForBranch])
         currentStateForBranch: UUIDToRevisionIdMapFromPlist([aPlist objectForKey: kCOPersistentRootCurrentStateForBranch])
             metadataForBranch: UUIDToMetadataMapFromPlist([aPlist objectForKey: kCOPersistentRootMetadataForBranch])
-                currentBranch: [COUUID UUIDWithString: [aPlist objectForKey: kCOPersistentRootUUID]]
+                currentBranch: [COUUID UUIDWithString: [aPlist objectForKey: kCOPersistentRootCurrentBranchUUID]]
                      metadata: [aPlist objectForKey: kCOPersistentRootMetadata]];
 }
 
@@ -220,6 +220,11 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
     ^ [metadataForBranch_ hash]
     ^ [currentBranch_ hash]
     ^ [metadata_ hash];
+}
+
+- (NSString *) description
+{
+    return [[self plist] description];
 }
 
 static NSArray *plistFromStateTokens(NSArray *stateTokens)

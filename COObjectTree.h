@@ -6,7 +6,7 @@
 /**
  * Immutable.
  */
-@interface COObjectTree : NSObject
+@interface COObjectTree : NSObject <NSCopying>
 {
     COUUID *root_;
     NSDictionary *itemForUUID_;

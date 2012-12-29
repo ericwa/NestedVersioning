@@ -287,7 +287,7 @@ static id importValueFromPlist(id aPlist)
 {
 	NSMutableString *result = [NSMutableString string];
 		
-	[result appendFormat: @"{\n"];
+	[result appendFormat: @"{ COItem %@\n", uuid];
 	
 	for (NSString *attrib in [self attributeNames])
 	{
