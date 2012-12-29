@@ -20,6 +20,15 @@
 - (COPersistentRoot *) persistentRoot;
 - (COUUID *) UUID;
 
+- (NSDictionary *) metadata;
+// commits immediately
+- (void) setMetadata: (NSDictionary *)theMetadata;
+
+- (NSString *) name;
+// commits immediately
+- (void) setName: (NSString *)aName;
+
+
 - (CORevisionID *) currentRevisionID;
 - (CORevisionID *) headRevisionID;
 - (CORevisionID *) tailRevisionID;

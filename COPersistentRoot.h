@@ -3,7 +3,7 @@
 #import "COUUID.h"
 #import "CORevisionID.h"
 #import "COSQLiteStore.h"
-#import "COPersistentRootPlist.h"
+#import "COPersistentRootState.h"
 
 @class COBranch;
 @class COStore;
@@ -20,7 +20,7 @@
 {
     COStore *rootStore_; // weak
     
-    COPersistentRootPlist *savedState_;
+    COPersistentRootState *savedState_;
 
     /**
      * if the user has called -contextForEditingCurrentBranch,
@@ -47,11 +47,8 @@
 
 // branches
 
-- (NSArray *) branchUUIDs;
 
-- (COUUID *) currentBranchUUID;
-// commits immediately
-- (void) setCurrentBranchUUID: (COUUID *)aUUID;
+- (NSSet *) branches;
 
 /**
  * @returns array of CORevisionID
@@ -85,8 +82,15 @@
  *
  * On second thought it may not matter.
  */
-- (COBranch *) contextForEditingCurrentBranch;
-- (COBranch *) contextForEditingBranchWithUUID: (COUUID *)aUUID;
+- (COBranch *) currentBranch;
 
+// commits immediately
+- (void) setCurrentBranch: (COBranch *)aBranch;
+
+- (void) removeBranch: (COBranch *)aBranch;
+
+- (COBranch *) branchWithUUID: (COUUID *)aUUID;
+
+- (NSArray *) operationLog;
 
 @end

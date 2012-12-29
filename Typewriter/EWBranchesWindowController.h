@@ -1,11 +1,11 @@
 #import <Cocoa/Cocoa.h>
-#import "COPersistentRootPlist.h"
+#import "COPersistentRootState.h"
 #import "EWUtilityWindowController.h"
 
 @interface EWBranchesWindowController : EWUtilityWindowController <NSTableViewDelegate, NSTableViewDataSource>
 {
 	IBOutlet NSTableView *table;
-    COPersistentRootPlist *proot_;
+    COPersistentRootState *proot_;
 }
 
 + (EWBranchesWindowController *) sharedController;

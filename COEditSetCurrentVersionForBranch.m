@@ -1,5 +1,6 @@
 #import "COEditSetCurrentVersionForBranch.h"
 #import "COMacros.h"
+#import "COBranchState.h"
 
 @implementation COEditSetCurrentVersionForBranch : COEdit
 
@@ -46,7 +47,7 @@ static NSString *kCONewVersionToken = @"CONewVersionToken";
     return result;
 }
 
-- (COEdit *) inverseForApplicationTo: (COPersistentRootPlist *)aProot
+- (COEdit *) inverseForApplicationTo: (COPersistentRootState *)aProot
 {
     return [[[[self class] alloc] initWithBranch: branch_
                                         oldToken: newToken_
@@ -56,9 +57,9 @@ static NSString *kCONewVersionToken = @"CONewVersionToken";
                                      displayName: displayName_] autorelease];
 }
 
-- (void) applyToPersistentRoot: (COPersistentRootPlist *)aProot
+- (void) applyToPersistentRoot: (COPersistentRootState *)aProot
 {
-    [aProot setCurrentState: newToken_ forBranch: branch_];
+    [[aProot branchPlistForUUID: branch_] setCurrentState: newToken_];
 }
 
 + (BOOL) isUndoable

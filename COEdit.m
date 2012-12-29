@@ -1,7 +1,10 @@
 #import "COEdit.h"
+#import "COEditCreateBranch.h"
+#import "COEditDeleteBranch.h"
 #import "COEditSetCurrentBranch.h"
 #import "COEditSetCurrentVersionForBranch.h"
 #import "COEditSetMetadata.h"
+#import "COEditSetBranchMetadata.h"
 #import "COMacros.h"
 
 @interface COEdit (Private)
@@ -10,10 +13,11 @@
 
 @implementation COEdit
 
+NSString *kCOEditCreateBranch = @"COEditCreateBranch";
+NSString *kCOEditDeleteBranch = @"COEditDeleteBranch";
 NSString *kCOEditSetCurrentVersionForBranch = @"COEditSetCurrentVersionForBranch";
 NSString *kCOEditSetCurrentBranch = @"COEditSetCurrentBranch";
 NSString *kCOEditSetBranchMetadata = @"COEditSetBranchMetadata";
-NSString *kCOEditGroup = @"COEditGroup";
 NSString *kCOEditSetMetadata = @"COEditSetMetadata";
 
 NSString *kCOUndoAction = @"COEdit";
@@ -38,34 +42,40 @@ static NSString *kCOActionDisplayName = @"COActionDisplayName";
 }
 - (id) initWithPlist: (id)plist
 {
+    NSParameterAssert([self class] != [COEdit class]);
+        
     return [self initWithUUID: [COUUID UUIDWithString: [plist objectForKey: kCOPersistentRootUUID]]
-                         date: [plist objectForKey: kCOActionDate]
+                         date: [[[[NSDateFormatter alloc] init] autorelease] dateFromString: [plist objectForKey: kCOActionDate]]
                   displayName: [plist objectForKey: kCOActionDisplayName]];
 }
 
-+ (COEdit *) undoActionWithPlist: (id)aPlist
++ (COEdit *) editWithPlist: (id)aPlist
 {
     NSString *key = [aPlist objectForKey: kCOUndoAction];
-    if ([key isEqual: kCOEditSetCurrentVersionForBranch])
+    
+    Class cls = [D([COEditCreateBranch class], kCOEditCreateBranch,
+                   [COEditDeleteBranch class], kCOEditDeleteBranch,
+                   [COEditSetCurrentVersionForBranch class], kCOEditSetCurrentVersionForBranch,
+                   [COEditSetCurrentBranch class], kCOEditSetCurrentBranch,
+                   [COEditSetMetadata class], kCOEditSetMetadata,
+                   [COEditSetBranchMetadata class], kCOEditSetBranchMetadata) objectForKey: key];
+    
+
+    if (cls != Nil)
     {
-        return [[[COEditSetCurrentVersionForBranch alloc] initWithPlist: aPlist] autorelease];
+        return [[[cls alloc] initWithPlist: aPlist] autorelease];
     }
-    else if ([key isEqual: kCOEditSetCurrentBranch])
+    else
     {
-        return [[[COEditSetCurrentBranch alloc] initWithPlist: aPlist] autorelease];
+        [NSException raise: NSInvalidArgumentException format: @"invalid plist"];
+        return nil;
     }
-    else if ([key isEqual: kCOEditSetMetadata])
-    {
-        return [[[COEditSetMetadata alloc] initWithPlist: aPlist] autorelease];
-    }
-    [NSException raise: NSInvalidArgumentException format: @"invalid plist"];
-    return nil;
 }
 
 - (id)plist
 {
     NSMutableDictionary *result = [NSMutableDictionary dictionary];
-    [result setObject: date_ forKey: kCOActionDate];
+    [result setObject: [[[[NSDateFormatter alloc] init] autorelease] stringFromDate: date_] forKey: kCOActionDate];
     [result setObject: [uuid_ stringValue] forKey: kCOPersistentRootUUID];
     [result setObject: displayName_ forKey: kCOActionDisplayName];
     return result;
@@ -84,13 +94,13 @@ static NSString *kCOActionDisplayName = @"COActionDisplayName";
 {
     return displayName_;
 }
-- (COEdit *) inverseForApplicationTo: (COPersistentRootPlist *)aProot
+- (COEdit *) inverseForApplicationTo: (COPersistentRootState *)aProot
 {
     [NSException raise: NSGenericException format: @"unimplemented"];
     return nil;
 }
 
-- (void) applyToPersistentRoot: (COPersistentRootPlist *)aProot
+- (void) applyToPersistentRoot: (COPersistentRootState *)aProot
 {
     [NSException raise: NSGenericException format: @"unimplemented"];
 }
@@ -99,6 +109,11 @@ static NSString *kCOActionDisplayName = @"COActionDisplayName";
 {
     [NSException raise: NSGenericException format: @"unimplemented"];
     return NO;
+}
+
+- (NSString *) description
+{
+    return [[self plist] description];
 }
 
 @end

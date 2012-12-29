@@ -2,11 +2,14 @@
 #import "COMacros.h"
 #import "COPersistentRoot.h"
 #import "COPersistentRootPrivate.h"
+#import "COBranchState.h"
 #import "COItemTree.h"
 #import "COSQLiteStore.h"
 #import "COEditingContext.h"
 
 @implementation COBranch
+
+NSString *kCOBranchName = @"COBranchName";
 
 - (id)initWithPersistentRoot: (COPersistentRoot*)aRoot
                       branch: (COUUID*)aBranch
@@ -16,7 +19,6 @@
     persistentRoot_ = aRoot;
     ASSIGN(branch_, aBranch);
     isTrackingCurrentBranch_ = track;
-    editingContext_ = [[COEditingContext alloc] initWithItemTree: [self currentStateObjectTree]];
     
     return self;
 }
@@ -37,9 +39,36 @@
     return branch_;
 }
 
+- (NSDictionary *) metadata
+{
+    NSDictionary *result = [[[persistentRoot_ savedState] branchPlistForUUID: branch_] metadata];
+    if (result == nil)
+    {
+        return [NSDictionary dictionary];
+    }
+    return result;
+}
+- (void) setMetadata: (NSDictionary *)theMetadata
+{
+    // FIXME: Implement
+    assert(0);
+}
+
+- (NSString *)name
+{
+    return [[self metadata] objectForKey: kCOBranchName];
+}
+- (void) setName: (NSString *)aName
+{
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary: [self metadata]];
+    [dict setObject: aName forKey: kCOBranchName];
+    [self setMetadata: dict];
+}
+
+
 - (CORevisionID *)currentRevisionID
 {
-    return [[persistentRoot_ savedState] currentStateForBranch: branch_];
+    return [[[persistentRoot_ savedState] branchPlistForUUID: branch_] currentState];
 }
 
 - (COItemTree *)currentStateObjectTree
@@ -49,26 +78,36 @@
 
 - (CORevisionID *)headRevisionID
 {
-    return [[persistentRoot_ savedState] headRevisionIdForBranch: branch_];
+    return [[[persistentRoot_ savedState] branchPlistForUUID: branch_] headRevisionID];
 }
 
 - (CORevisionID *)tailRevisionID
 {
-    return [[persistentRoot_ savedState] tailRevisionIdForBranch: branch_];
+    return [[[persistentRoot_ savedState] branchPlistForUUID: branch_] tailRevisionID];
+}
+
+- (void) unfaultEditingContext
+{
+    if (editingContext_ == nil)
+    {
+        editingContext_ = [[COEditingContext alloc] initWithItemTree: [self currentStateObjectTree]];
+    }
 }
 
 // commits immediately. discards any uncommitted edits.
 // moves the current state pointer of the branch.
 - (void) setCurrentRevisionID: (CORevisionID *)aState
 {
+    [self unfaultEditingContext];
     BOOL ok = [[persistentRoot_ store] setCurrentVersion: aState
                                                forBranch: branch_
-                                        ofPersistentRoot: [persistentRoot_ UUID]];
+                                        ofPersistentRoot: [persistentRoot_ UUID]
+                                       operationMetadata: nil];
     assert(ok);
     
-    [[persistentRoot_ savedState] setCurrentState: aState forBranch: branch_];
+    [[[persistentRoot_ savedState] branchPlistForUUID: branch_] setCurrentState: aState];
     // FIXME: Update head/tail
-    
+        
     [editingContext_ setItemTree: [self currentStateObjectTree]];
 }
 
@@ -76,6 +115,8 @@
 
 - (BOOL) commitChangesWithMetadata: (NSDictionary *)metadata
 {
+    [self unfaultEditingContext];
+    
     CORevisionID *revId = [[persistentRoot_ store] writeItemTree: [editingContext_ itemTree]
                                                     withMetadata: metadata
                                             withParentRevisionID: [self currentRevisionID]
@@ -84,10 +125,11 @@
     
     BOOL ok = [[persistentRoot_ store] setCurrentVersion: revId
                                                forBranch: branch_
-                                        ofPersistentRoot: [persistentRoot_ UUID]];
+                                        ofPersistentRoot: [persistentRoot_ UUID]
+                                       operationMetadata: nil];
     assert(ok);
 
-    [[persistentRoot_ savedState] setCurrentState:revId forBranch: branch_];
+    [[[persistentRoot_ savedState] branchPlistForUUID: branch_] setCurrentState:revId];
     // FIXME: Update head/tail
     
     return YES;
@@ -95,11 +137,19 @@
 
 - (void) discardChanges
 {
-    [editingContext_ setItemTree: [self currentStateObjectTree]];
+    if (editingContext_ != nil)
+    {
+        [editingContext_ setItemTree: [self currentStateObjectTree]];
+    }
 }
 
 - (BOOL) hasChanges
 {
+    if (editingContext_ == nil)
+    {
+        return NO;
+    }
+    
     return [[editingContext_ insertedObjectUUIDs] count] > 0
         || [[editingContext_ modifiedObjectUUIDs] count] > 0
         || [[editingContext_ deletedObjectUUIDs] count] > 0;
@@ -107,6 +157,7 @@
 
 - (COEditingContext *)editingContext
 {
+    [self unfaultEditingContext];
     return editingContext_;
 }
 /**

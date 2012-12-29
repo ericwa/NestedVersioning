@@ -12,7 +12,6 @@ static NSString *kCONewMetadata = @"CONewMetadata";
                       date: (NSDate*)aDate
                displayName: (NSString*)aName
 {
-    NILARG_EXCEPTION_TEST(oldMeta);
     NILARG_EXCEPTION_TEST(newMeta);
     
     self = [super initWithUUID: aUUID date: aDate displayName: aName];
@@ -42,7 +41,7 @@ static NSString *kCONewMetadata = @"CONewMetadata";
     return result;
 }
 
-- (COEdit *) inverseForApplicationTo: (COPersistentRootPlist *)aProot
+- (COEdit *) inverseForApplicationTo: (COPersistentRootState *)aProot
 {
     return [[[[self class] alloc] initWithOldMetadata: new_
                                           newMetadata: old_
@@ -51,7 +50,7 @@ static NSString *kCONewMetadata = @"CONewMetadata";
                                           displayName: displayName_] autorelease];
 }
 
-- (void) applyToPersistentRoot: (COPersistentRootPlist *)aProot
+- (void) applyToPersistentRoot: (COPersistentRootState *)aProot
 {
     [aProot setMetadata: new_];
 }

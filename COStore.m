@@ -8,8 +8,7 @@
 - (id)initWithURL: (NSURL*)aURL
 {
     SUPERINIT;
-    store_ = [[COSQLiteStore alloc] initWithURL: aURL];
-    rootForUUID_ = [[NSMutableDictionary alloc] init];
+    store_ = [[COSQLiteStore alloc] initWithURL: aURL];    
     return self;
 }
 
@@ -25,58 +24,63 @@
     return [store_ URL];
 }
 
-- (NSSet *) persistentRootUUIDs
+- (void) fetchPersistentRoots
 {
-    return [store_ persistentRootUUIDs];
+    if (rootForUUID_ == nil)
+    {
+        rootForUUID_ = [[NSMutableDictionary alloc] init];
+        for (COUUID *uuid in [store_ persistentRootUUIDs])
+        {
+            [self cachePersistentRootEditPlist: [store_ persistentRootWithUUID: uuid]];
+        }
+    }
 }
 
-- (COPersistentRoot *) persistentRootEditQueue: (COPersistentRootPlist *)persistentRoot
+- (COPersistentRoot *) cachePersistentRootEditPlist: (COPersistentRootState *)persistentRoot
 {
-    COPersistentRoot *root = [[COPersistentRoot alloc] initWithStoreEditQueue: self
-                                                                                 persistentRoot: persistentRoot];
+    [self fetchPersistentRoots];
+    
+    COPersistentRoot *root = [[[COPersistentRoot alloc] initWithStoreEditQueue: self
+                                                                persistentRoot: persistentRoot] autorelease];
     [rootForUUID_ setObject: root forKey: [root UUID]];
-    [root release];
     return root;
+}
+
+- (NSSet *) persistentRoots
+{
+    [self fetchPersistentRoots];
+    return [NSSet setWithArray: [rootForUUID_ allValues]];
 }
 
 - (COPersistentRoot *) persistentRootWithUUID: (COUUID *)aUUID
 {
+    [self fetchPersistentRoots];
     COPersistentRoot *root = [rootForUUID_ objectForKey: aUUID];
-    if (root == nil)
-    {
-        COPersistentRootPlist *persistentRoot = [store_ persistentRootWithUUID: aUUID];
-        if (persistentRoot != nil)
-        {
-            return [self persistentRootEditQueue: persistentRoot];
-        }
-        else
-        {
-            NSLog(@"requested UUID %@ not in store", aUUID);
-        }
-    }
     return root;
 }
 
 - (COPersistentRoot *) createPersistentRootWithInitialContents: (COItemTree *)contents
                                                                metadata: (NSDictionary *)metadata
 {
-    COPersistentRootPlist *persistentRoot = [store_ createPersistentRootWithInitialContents: contents metadata: metadata];
+    COPersistentRootState *persistentRoot = [store_ createPersistentRootWithInitialContents: contents metadata: metadata];
     
-    return [self persistentRootEditQueue: persistentRoot];
+    return [self cachePersistentRootEditPlist: persistentRoot];
 }
 
 - (COPersistentRoot *) createPersistentRootWithInitialRevision: (CORevisionID *)aRevision
                                                                metadata: (NSDictionary *)metadata
 {
-    COPersistentRootPlist *persistentRoot = [store_ createPersistentRootWithInitialRevision: aRevision metadata: metadata];
+    COPersistentRootState *persistentRoot = [store_ createPersistentRootWithInitialRevision: aRevision metadata: metadata];
     
-    return [self persistentRootEditQueue: persistentRoot];
+    return [self cachePersistentRootEditPlist: persistentRoot];
 }
 
 
 - (void) deletePersistentRootWithUUID: (COUUID *)aUUID
 {
+    [self fetchPersistentRoots];
     [store_ deletePersistentRoot: aUUID];
+    [rootForUUID_ removeObjectForKey: aUUID];
 }
 
 @end

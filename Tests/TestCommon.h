@@ -10,10 +10,21 @@
 #import "COPersistentRoot.h"
 #import "COBranch.h"
 
+#import "COPersistentRootState.h"
+#import "COBranchState.h"
+
 #import "COItemTree.h"
 #import "COItemPath.h"
 #import "COEditingContext.h"
 #import "COObject.h"
+
+#import "COEdit.h"
+#import "COEditCreateBranch.h"
+#import "COEditDeleteBranch.h"
+#import "COEditSetCurrentBranch.h"
+#import "COEditSetCurrentVersionForBranch.h"
+#import "COEditSetMetadata.h"
+#import "COEditSetBranchMetadata.h"
 
 #define STOREPATH [@"~/om6teststore" stringByExpandingTildeInPath]
 #define STOREURL [NSURL fileURLWithPath: STOREPATH]

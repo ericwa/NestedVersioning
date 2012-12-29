@@ -1,0 +1,13 @@
+#import <NestedVersioning/CORevisionID.h>
+#import <NestedVersioning/CORevision.h>
+#import <NestedVersioning/COObject.h>
+#import <NestedVersioning/COEditingContext.h>
+#import <NestedVersioning/COStore.h>
+#import <NestedVersioning/COPersistentRoot.h>
+#import <NestedVersioning/COBranch.h>
+#import <NestedVersioning/COUUID.h>
+#import <NestedVersioning/COPath.h>
+#import <NestedVersioning/COType.h>
+#import <NestedVersioning/COItem.h>
+#import <NestedVersioning/COItemPath.h>
+#import <NestedVersioning/COItemTree.h>

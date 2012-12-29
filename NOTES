@@ -14,3 +14,66 @@ Interesting cases:
 
 
 - should the root item in a persistent root always have the same UUID as the persistent root?
+
+
+    
+    
+    
+THOUGHTS jan 2 / 2013
+-=-=--=-=-=-=-=-==-=
+
+- concerned about loading custom model object subclasses of COObject. need to re-add metamodel stuff?
+
+- should build a vector drawing app with group, image, shape so I can test
+  different object classes (group, image, shape) (and diff/merge!) in a realistic setting.
+- attachments / BLOBs?
+
+- for storing the undo log (history of changes to the persistent root data):
+ the problem of a command-pattern, 2-stack (undo / redo) undo system being too inflexible
+ should be solved by moving to a 1-stack (action log) system, which looks similar to git's reflog
+
+- Full history import / export needs to be thought about.
+
+- write "document shoebox" app?
+
+- encryption (could be easy with SQLCipher - but it's not bundled with OSes like sqlite), indexing, ...
+
+- add a integer lock version to the COStore methods so we can check within a DB transaction that the version
+of the proot metadata on disk is the same as what was in memory.
+ 
+ 
+ 
+Undo scheme:                         Params:
+
+1. set current version for branch    [ username='ericw', appname='objectManager' ]
+2. set current branch                [ username='ericw', appname='objectManager' ]
+3. set metadata for branch           [ username='ericw', appname='objectManager' ]
+4. set metadata for persistent root  [ username='ericw', appname='objectManager' ]
+5. delete non-current branch         [ username='ericw', appname='objectManager' ]
+
+
+Rules:
+
+Suppose we are in app X and user Y:
+
+(most recent of:
+    (most recent 1. if app = X and user = Y)
+    (most recent 2. if app = X and user = Y)
+    (most recent 3. if app = X and user = Y)
+    (most recent 4. if app = X and user = Y)
+    (most recent 5. if app = X and user = Y))
+    
+This means we can undo a:
+
+"set current version for branch" before a "set current branch"
+"set current version for branch" before a "set metadata for branch"
+"set current version for branch" before a "set metadata for persistent root"
+"set current branch" before a "set current version for branch"
+"set current branch" before a "set metadata for branch"
+"set current branch" before a "set metadata for persistent root"
+"set metadata for branch" before a "set current version for branch"
+"set metadata for branch" before a "set current branch"
+"set metadata for branch" before a "set metadata for persistent root"
+"set metadata for persistent root" before a "set current version for branch"
+"set metadata for persistent root" before a "set metadata for branch"
+"set metadata for persistent root" before a "set current branch"

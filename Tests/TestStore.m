@@ -46,16 +46,16 @@ static COObject *makeTree(NSString *label)
     return [ctx rootObject];
 }
 
-- (CORevisionID *) currentState: (COPersistentRootPlist *)aRoot
+- (CORevisionID *) currentState: (COPersistentRootState *)aRoot
 {
-    return [aRoot currentStateForBranch: [aRoot currentBranchUUID]];
+    return [[aRoot branchPlistForUUID: [aRoot currentBranchUUID]] currentState];
 }
 
 - (void) testBasic
 {
 	COItemTree *basicTree = [makeTree(@"hello world") itemTree];
     
-    COPersistentRootPlist *proot = [store createPersistentRootWithInitialContents: basicTree
+    COPersistentRootState *proot = [store createPersistentRootWithInitialContents: basicTree
                                                                          metadata: [NSDictionary dictionary]];
     
     UKObjectsEqual(S([proot UUID]), [store persistentRootUUIDs]);
@@ -63,7 +63,7 @@ static COObject *makeTree(NSString *label)
     COItemTree *fetchedTree = [store itemTreeForRevisionID: [self currentState: proot]];
     UKObjectsEqual(basicTree, fetchedTree);
     
-    COPersistentRootPlist *prootFetchedFirst = [store persistentRootWithUUID: [proot UUID]];
+    COPersistentRootState *prootFetchedFirst = [store persistentRootWithUUID: [proot UUID]];
     UKObjectsEqual(proot, prootFetchedFirst);
     
     // make a second commit
@@ -74,18 +74,22 @@ static COObject *makeTree(NSString *label)
     
     CORevisionID *token2 = [store writeItemTree: basicTree2
                                    withMetadata: nil
-                           withParentRevisionID: [proot currentStateForBranch: [proot currentBranchUUID]]
+                           withParentRevisionID: [[proot branchPlistForUUID: [proot currentBranchUUID]] currentState]
                                   modifiedItems: nil];
     
-    [store setCurrentVersion: token2 forBranch: [proot currentBranchUUID] ofPersistentRoot: [proot UUID]];
+    [store setCurrentVersion: token2
+                   forBranch: [proot currentBranchUUID]
+            ofPersistentRoot: [proot UUID]
+           operationMetadata: nil];
     
-    COPersistentRootPlist *prootFetched = [store persistentRootWithUUID: [proot UUID]];
+    COPersistentRootState *prootFetched = [store persistentRootWithUUID: [proot UUID]];
     CORevisionID *currentState = [self currentState: prootFetched];
     UKNotNil(currentState);
     
     fetchedTree = [store itemTreeForRevisionID: currentState];
     UKObjectsEqual(basicTree2, fetchedTree);
 }
+
 //
 //- (void) testWithEditingContext
 //{

@@ -2,7 +2,7 @@
 #import "COStore.h"
 #import "COBranch.h"
 #import "COMacros.h"
-#import "COPersistentRootPlist.h"
+#import "COPersistentRootState.h"
 #import "COPersistentRootPrivate.h"
 #import "COSQLiteStore.h"
 
@@ -10,11 +10,11 @@
 @implementation COPersistentRoot (Private)
 
 - (id)initWithStoreEditQueue: (COStore *)aRootStore
-              persistentRoot: (COPersistentRootPlist *)metadata
+              persistentRoot: (COPersistentRootState *)metadata
 {
     SUPERINIT;
     rootStore_ = aRootStore;
-    savedState_ = [[COPersistentRootPlist alloc] initWithPersistentRootPlist: metadata];
+    savedState_ = [[COPersistentRootState alloc] initWithPersistentRootPlist: metadata];
     branchForUUID_ = [[NSMutableDictionary alloc] init];
     return self;
 }
@@ -24,7 +24,7 @@
     return [rootStore_ store];
 }
 
-- (COPersistentRootPlist *) savedState
+- (COPersistentRootState *) savedState
 {
     return savedState_;
 }
@@ -60,7 +60,9 @@ NSString *kCOPersistentRootName = @"COPersistentRootName";
 }
 - (void) setMetadata: (NSDictionary *)theMetadata
 {
-    BOOL ok = [[self store] setMetadata: theMetadata forPersistentRoot: [self UUID]];
+    BOOL ok = [[self store] setMetadata: theMetadata
+                      forPersistentRoot: [self UUID]
+                      operationMetadata: nil];
     assert(ok);
     // FIXME: Throw exception if not ok?
     [savedState_ setMetadata: theMetadata];
@@ -79,27 +81,14 @@ NSString *kCOPersistentRootName = @"COPersistentRootName";
 
 // branches
 
-- (NSArray *) branchUUIDs
+- (NSSet *) branches
 {
-    return [savedState_ branchUUIDs];
-}
-
-- (COUUID *) currentBranchUUID
-{
-    return [savedState_ currentBranchUUID];
-}
-
-- (void) setCurrentBranchUUID: (COUUID *)aUUID
-{
-    BOOL ok = [[self store] setCurrentBranch: aUUID forPersistentRoot: [self UUID]];
-    assert(ok);
-    // FIXME: Throw exception if not ok?
-    [savedState_ setCurrentBranchUUID: aUUID];
-    
-    if (currentBranch_ != nil)
+    NSMutableSet *result = [NSMutableSet set];
+    for (COUUID *uuid in [savedState_ branchUUIDs])
     {
-        [currentBranch_ setBranch: aUUID];
+        [result addObject: [self branchWithUUID: uuid]];
     }
+    return [NSSet setWithSet: result];
 }
 
 - (NSArray *) revisionIDs
@@ -111,7 +100,9 @@ NSString *kCOPersistentRootName = @"COPersistentRootName";
                                     setCurrent: (BOOL)setCurrent
 {
     COUUID *aBranch = [[self store] createBranchWithInitialRevision: aRevision
-                                                               setCurrent: setCurrent forPersistentRoot: [self UUID]];
+                                                         setCurrent: setCurrent
+                                                  forPersistentRoot: [self UUID]
+                                                  operationMetadata: nil];
     
     // FIXME: Overly coarse
     ASSIGN(savedState_, [[self store] persistentRootWithUUID: [self UUID]]);
@@ -122,22 +113,50 @@ NSString *kCOPersistentRootName = @"COPersistentRootName";
         [currentBranch_ setBranch: aBranch];
     }
     
-    return [self contextForEditingBranchWithUUID: aBranch];
+    return [self branchWithUUID: aBranch];
 }
 
-- (COBranch *) contextForEditingCurrentBranch
+- (COBranch *) currentBranch
 {
     if (currentBranch_ == nil)
     {
         currentBranch_ = [[COBranch alloc] initWithPersistentRoot: self
-                                                                             branch: [self currentBranchUUID]
-                                                                 trackCurrentBranch: YES];
+                                                           branch: [savedState_ currentBranchUUID]
+                                               trackCurrentBranch: YES];
         
     }
     return currentBranch_;
 }
 
-- (COBranch *) contextForEditingBranchWithUUID: (COUUID *)aUUID
+- (void) setCurrentBranch: (COBranch *)aBranch
+{
+    BOOL ok = [[self store] setCurrentBranch: [aBranch UUID]
+                           forPersistentRoot: [self UUID]
+                           operationMetadata: nil];
+    assert(ok);
+    // FIXME: Throw exception if not ok?
+    [savedState_ setCurrentBranchUUID: [aBranch UUID]];
+    
+    if (currentBranch_ != nil)
+    {
+        [currentBranch_ setBranch: [aBranch UUID]];
+    }
+}
+
+- (void) removeBranch: (COBranch *)aBranch
+{
+    NSParameterAssert(![[self currentBranch] isEqual: aBranch]);
+    
+    BOOL ok = [[self store] deleteBranch: [aBranch UUID]
+                        ofPersistentRoot: [self UUID]
+                       operationMetadata: nil];
+    assert(ok);
+    // FIXME: Throw exception if not ok?
+    
+    [savedState_ removeBranchForUUID: [aBranch UUID]];
+}
+
+- (COBranch *) branchWithUUID: (COUUID *)aUUID
 {
     COBranch *cached = [branchForUUID_ objectForKey: aUUID];
     if (cached != nil)
@@ -157,6 +176,11 @@ NSString *kCOPersistentRootName = @"COPersistentRootName";
     // FIXME: not really an error, just for debugging
     assert(0);
     return nil;
+}
+
+- (NSArray *) operationLog
+{
+    return [[self store] operationLogForPersistentRoot: [self UUID]];
 }
 
 @end

@@ -41,22 +41,25 @@ static COObject *makeTree(NSString *label)
                                                                              metadata: [NSDictionary dictionary]];
     
     // Verify that the new persistent root is saved
-    UKIntsEqual(1, [[store persistentRootUUIDs] count]);
+    UKIntsEqual(1, [[store persistentRoots] count]);
     
-    COBranch *currentBranch = [proot contextForEditingCurrentBranch];
+    COBranch *currentBranch = [proot currentBranch];
+    COBranch *firstBranch = [proot branchWithUUID: [currentBranch UUID]];
     CORevisionID *firstRevision = [currentBranch currentRevisionID];
     COItemTree *firstState = [[currentBranch editingContext] itemTree];
     
-    UKIntsEqual(1, [[proot branchUUIDs] count]);
-    UKObjectsEqual([[proot branchUUIDs] objectAtIndex: 0], [currentBranch UUID]);
+    UKIntsEqual(1, [[proot branches] count]);
+    UKObjectsEqual([[[proot branches] anyObject] UUID], [currentBranch UUID]);
     
     [proot setName: @"my root"];
     
     // Create a new branch and switch to it.
     
-    COBranch *newBranch = [proot createBranchAtRevision: [[proot contextForEditingCurrentBranch] currentRevisionID]
-                                                      setCurrent: YES];
+    COBranch *newBranch = [proot createBranchAtRevision: [[proot currentBranch] currentRevisionID]
+                                             setCurrent: YES];
     COUUID *newBranchUUID = [newBranch UUID];
+    
+    UKIntsEqual(2, [[proot branches] count]);
     
     UKObjectsEqual(@"root", [[[newBranch editingContext] rootObject] valueForAttribute: @"label"]);
     UKFalse([newBranch hasChanges]);
@@ -79,7 +82,13 @@ static COObject *makeTree(NSString *label)
     
     UKObjectsEqual(newBranchUUID, [currentBranch UUID]);
 
+
+    // Delete the first branch
+    [proot removeBranch: firstBranch];
+    UKIntsEqual(1, [[proot branches] count]);
     
+    NSArray *log = [proot operationLog];
+    UKObjectKindOf([log lastObject], [COEditDeleteBranch class]);
 }
 
 @end

@@ -1,13 +1,15 @@
 #import <Foundation/Foundation.h>
 
 #import "COUUID.h"
-#import "COPersistentRootPlist.h"
+#import "COPersistentRootState.h"
 
 NSString *kCOEditSetCurrentVersionForBranch;
 NSString *kCOEditCreateBranch;
+NSString *kCOEditDeleteBranch;
 NSString *kCOEditSetCurrentBranch;
 NSString *kCOEditGroup;
 NSString *kCOEditSetMetadata;
+NSString *kCOEditSetBranchMetadata;
 
 NSString *kCOUndoAction;
 
@@ -22,7 +24,7 @@ NSString *kCOUndoAction;
                date: (NSDate*)aDate
         displayName: (NSString*)aName;
 
-+ (COEdit *) undoActionWithPlist: (id)aPlist;
++ (COEdit *) editWithPlist: (id)aPlist;
 - (id)plist;
 
 - (COUUID*) persistentRootUUID;
@@ -32,9 +34,9 @@ NSString *kCOUndoAction;
  * Caller should prepend "Undo " or "Redo "
  */
 - (NSString*) menuTitle;
-- (COEdit *) inverseForApplicationTo: (COPersistentRootPlist *)aProot;
+- (COEdit *) inverseForApplicationTo: (COPersistentRootState *)aProot;
 
-- (void) applyToPersistentRoot: (COPersistentRootPlist *)aProot;
+- (void) applyToPersistentRoot: (COPersistentRootState *)aProot;
 
 + (BOOL) isUndoable;
 

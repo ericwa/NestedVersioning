@@ -1,6 +1,6 @@
 #import <Cocoa/Cocoa.h>
 
-#import <NestedVersioning/COPersistentRootPlist.h>
+#import <NestedVersioning/COPersistentRootState.h>
 #import <NestedVersioning/COStore.h>
 
 #import "EWUndoManager.h"
@@ -9,7 +9,7 @@
 {
     EWUndoManager *undoManager_;
     COStore *store_;
-    COPersistentRootPlist *persistentRoot_;
+    COPersistentRootState *persistentRoot_;
     
     COUUID *editingBranch_;
 }
@@ -22,7 +22,7 @@
 
 - (void) recordNewState: (COSubtree*)aState;
 
-- (COPersistentRootPlist *) currentPersistentRoot;
+- (COPersistentRootState *) currentPersistentRoot;
 - (COStore *) store;
 
 - (COUUID *) editingBranch;

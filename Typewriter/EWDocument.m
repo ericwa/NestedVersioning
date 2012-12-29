@@ -6,7 +6,7 @@
 #import "EWHistoryWindowController.h"
 #import "COMacros.h"
 
-#import <NestedVersioning/COPersistentRootState.h>
+#import <NestedVersioning/CORevisionID.h>
 #import <NestedVersioning/COBranch.h>
 
 @implementation EWDocument
@@ -21,7 +21,7 @@
         store_ = [[COStore alloc] initWithURL: STOREURL];
         
         COSubtree *tree = [COSubtree subtree];
-        COPersistentRootState *contents = [COPersistentRootState stateWithTree: tree];
+        CORevisionID *contents = [CORevisionID stateWithTree: tree];
         
         ASSIGN(persistentRoot_, [store_ createPersistentRootWithInitialContents: contents]);
         ASSIGN(editingBranch_, [[persistentRoot_ currentBranch] UUID]);
@@ -123,7 +123,7 @@
 {
     CORevisionID *token = [[persistentRoot_ currentBranch] currentRevisionID];
     
-    COPersistentRootState *newState = [COPersistentRootState stateWithTree: aTree];
+    CORevisionID *newState = [CORevisionID stateWithTree: aTree];
     CORevisionID *token2 = [store_ addState: newState parentState: token];
     
     [store_ setCurrentVersion: token2 forBranch: [[persistentRoot_ currentBranch] UUID] ofPersistentRoot: [persistentRoot_ UUID]];
@@ -164,7 +164,7 @@
     // N.B. Mutates persistentRoot_
     [editingBranchObject _setCurrentState: aToken];
     
-    COPersistentRootState *state = [store_ fullStateForToken: aToken];
+    CORevisionID *state = [store_ fullStateForToken: aToken];
     COSubtree *tree = [state tree];
 
     NSArray *wcs = [self windowControllers];
@@ -174,7 +174,7 @@
     }
 }
 
-- (void) setPersistentRoot: (COPersistentRootPlist*) aMetadata
+- (void) setPersistentRoot: (COPersistentRootState*) aMetadata
 {
     assert(aMetadata != nil);
     
@@ -211,7 +211,7 @@
     return editingBranch_;
 }
 
-- (COPersistentRootPlist *) currentPersistentRoot
+- (COPersistentRootState *) currentPersistentRoot
 {
     return persistentRoot_;
 }

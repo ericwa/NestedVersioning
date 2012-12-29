@@ -7,9 +7,9 @@
 
 - (COSQLiteStore *) store;
 
-- (id)initWithStoreEditQueue: (COStore *)aRootStore persistentRoot: (COPersistentRootPlist *)metadata;
+- (id)initWithStoreEditQueue: (COStore *)aRootStore persistentRoot: (COPersistentRootState *)metadata;
 
-- (COPersistentRootPlist *) savedState;
+- (COPersistentRootState *) savedState;
 
 @end
 

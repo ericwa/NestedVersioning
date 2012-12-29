@@ -6,7 +6,7 @@
 @class CORevision;
 @class COItemTree;
 @class FMDatabase;
-@class COPersistentRootPlist;
+@class COPersistentRootState;
 
 @interface COSQLiteStore : NSObject
 {
@@ -31,8 +31,6 @@
  */
 - (CORevision *) revisionForID: (CORevisionID *)aToken;
 
-// FIXME: Add a variant which returns a delta (for efficiency in the case when
-// we have the parent already in mem)?
 - (COItemTree *) itemTreeForRevisionID: (CORevisionID *)aToken;
 
 /** @taskunit writing states */
@@ -47,25 +45,27 @@
 - (NSSet *) persistentRootUUIDs;
 
 // Returns a snapshot of the state of a persistent root.
-- (COPersistentRootPlist *) persistentRootWithUUID: (COUUID *)aUUID;
+- (COPersistentRootState *) persistentRootWithUUID: (COUUID *)aUUID;
 
 
 /** @taskunit writing persistent roots */
 
-- (COPersistentRootPlist *) createPersistentRootWithInitialContents: (COItemTree *)contents
+- (COPersistentRootState *) createPersistentRootWithInitialContents: (COItemTree *)contents
                                                            metadata: (NSDictionary *)metadata;
 
-- (COPersistentRootPlist *) createPersistentRootWithInitialRevision: (CORevisionID *)aRevision
+- (COPersistentRootState *) createPersistentRootWithInitialRevision: (CORevisionID *)aRevision
                                                            metadata: (NSDictionary *)metadata;
 
 - (BOOL) deletePersistentRoot: (COUUID *)aRoot;
 
 - (BOOL) setCurrentBranch: (COUUID *)aBranch
-		forPersistentRoot: (COUUID *)aRoot;
+		forPersistentRoot: (COUUID *)aRoot
+        operationMetadata: (NSDictionary*)operationMetadata;
 
 - (COUUID *) createBranchWithInitialRevision: (CORevisionID *)aToken
                                   setCurrent: (BOOL)setCurrent
-                           forPersistentRoot: (COUUID *)aRoot;
+                           forPersistentRoot: (COUUID *)aRoot
+                           operationMetadata: (NSDictionary*)operationMetadata;
 
 /**
  * If we care about detecting concurrent changes,
@@ -75,9 +75,25 @@
  */
 - (BOOL) setCurrentVersion: (CORevisionID*)aVersion
                  forBranch: (COUUID *)aBranch
-          ofPersistentRoot: (COUUID *)aRoot;
+          ofPersistentRoot: (COUUID *)aRoot
+         operationMetadata: (NSDictionary*)operationMetadata;
+
+- (BOOL) deleteBranch: (COUUID *)aBranch
+     ofPersistentRoot: (COUUID *)aRoot
+    operationMetadata: (NSDictionary*)operationMetadata;
 
 - (BOOL) setMetadata: (NSDictionary *)metadata
-   forPersistentRoot: (COUUID *)aRoot;
+   forPersistentRoot: (COUUID *)aRoot
+   operationMetadata: (NSDictionary*)operationMetadata;
+
+- (BOOL) setMetadata: (NSDictionary *)metadata
+           forBranch: (COUUID *)aBranch
+    ofPersistentRoot: (COUUID *)aRoot
+   operationMetadata: (NSDictionary*)operationMetadata;
+
+
+/* Operation log */
+
+- (NSArray *) operationLogForPersistentRoot: (COUUID *)aRoot;
 
 @end
