@@ -98,6 +98,13 @@
     [editingContext_ setObjectTree: [self currentStateObjectTree]];
 }
 
+- (BOOL) hasChanges
+{
+    return [[editingContext_ insertedObjectUUIDs] count] > 0
+        || [[editingContext_ modifiedObjectUUIDs] count] > 0
+        || [[editingContext_ deletedObjectUUIDs] count] > 0;
+}
+
 - (COEditingContext *)editingContext
 {
     return editingContext_;

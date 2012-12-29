@@ -101,6 +101,12 @@ NSString *kCOPersistentRootName = @"COPersistentRootName";
     // FIXME: Overly coarse
     ASSIGN(savedState_, [[self store] persistentRootWithUUID: [self UUID]]);
     
+    // Update current branch edit queue
+    if (currentBranchEditQueue_ != nil)
+    {
+        [currentBranchEditQueue_ setBranch: aBranch];
+    }
+    
     return [self contextForEditingBranchWithUUID: aBranch];
 }
 

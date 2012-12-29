@@ -1,4 +1,5 @@
 TODO
 ====
 
-- switch to simpler NestedVersioning branching model.
+- swap strong/weak pointers so COObject owns COEditingContext
+and COBranchEditQueue owns COPersistentRootEditQueue owns COStoreEditQueue 

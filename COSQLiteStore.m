@@ -178,7 +178,7 @@
     
     const int64_t revid = [backing writeItemTree: anItemTree
                                     withMetadata: metadata
-                                      withParent: nil
+                                      withParent: -1
                                    modifiedItems: nil];
     
     return [[[CORevisionID alloc] initWithProotCache: aBacking index: revid] autorelease];

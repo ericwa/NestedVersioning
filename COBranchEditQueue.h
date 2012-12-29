@@ -33,6 +33,7 @@
 
 - (BOOL) commitChangesWithMetadata: (NSDictionary *)metadata;
 - (void) discardChanges;
+- (BOOL) hasChanges;
 
 - (COEditingContext *)editingContext;
 

@@ -225,6 +225,10 @@ static NSData *contentsBLOBWithItemTree(COObjectTree *anItemTree, NSArray *modif
     return deltabase;
 }
 
+/**
+ * @param aParent -1 for no parent, otherwise the parent of this commit
+ * @param modifiedItems nil for all items in anItemTree, otherwise a subset
+ */
 - (int64_t) writeItemTree: (COObjectTree *)anItemTree
              withMetadata: (NSDictionary *)metadata
                withParent: (int64_t)aParent
