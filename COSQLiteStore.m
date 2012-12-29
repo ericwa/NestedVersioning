@@ -144,8 +144,8 @@
     const int64_t parent = [backing parentForRevid: [aToken revisionIndex]];
     NSDictionary *metadata = [backing metadataForRevid: [aToken revisionIndex]];
     
-    CORevision *result = [[[CORevision alloc] initWithRevisionId: aToken
-                                                parentRevisionId: [aToken revisionIDWithRevisionIndex: parent]
+    CORevision *result = [[[CORevision alloc] initWithRevisionID: aToken
+                                                parentRevisionID: [aToken revisionIDWithRevisionIndex: parent]
                                                         metadata: metadata] autorelease];
     
     return result;

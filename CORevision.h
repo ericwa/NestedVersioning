@@ -7,17 +7,17 @@
  */
 @interface CORevision : NSObject <NSCopying>
 {
-    CORevisionID *revisionId_;
-    CORevisionID *parentRevisionId_;
+    CORevisionID *revisionID_;
+    CORevisionID *parentRevisionID_;
     NSDictionary *metadata_;
 }
 
-- (id) initWithRevisionId: (CORevisionID *)revisionId
-         parentRevisionId: (CORevisionID *)parentRevisionId
+- (id) initWithRevisionID: (CORevisionID *)revisionId
+         parentRevisionID: (CORevisionID *)parentRevisionId
                  metadata: (NSDictionary *)metadata;
 
-- (CORevisionID *)revisionId;
-- (CORevisionID *)parentRevisionId;
+- (CORevisionID *)revisionID;
+- (CORevisionID *)parentRevisionID;
 - (NSDictionary *)metadata;
 
 - (id) plist;
