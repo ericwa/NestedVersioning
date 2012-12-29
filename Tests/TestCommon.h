@@ -10,7 +10,7 @@
 #import "COPersistentRoot.h"
 #import "COBranch.h"
 
-#import "COObjectTree.h"
+#import "COItemTree.h"
 #import "COItemPath.h"
 #import "COEditingContext.h"
 #import "COObject.h"

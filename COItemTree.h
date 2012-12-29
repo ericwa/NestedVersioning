@@ -6,13 +6,13 @@
 /**
  * Immutable.
  */
-@interface COObjectTree : NSObject <NSCopying>
+@interface COItemTree : NSObject <NSCopying>
 {
     COUUID *root_;
     NSDictionary *itemForUUID_;
 }
 
-+ (COObjectTree *) treeWithItems: (NSArray *)items rootUUID: (COUUID *)aUUID;
++ (COItemTree *) treeWithItems: (NSArray *)items rootUUID: (COUUID *)aUUID;
 
 - (id) initWithItemForUUID: (NSDictionary *) itemForUUID
                       root: (COUUID *)root;
@@ -21,6 +21,6 @@
 - (COItem *) itemForUUID: (COUUID *)aUUID;
 - (NSArray *) objectUUIDs;
 
-- (COObjectTree *) objectTreeWithNameMapping: (NSDictionary *)aMapping;
+- (COItemTree *) objectTreeWithNameMapping: (NSDictionary *)aMapping;
 
 @end

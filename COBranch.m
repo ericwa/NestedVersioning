@@ -2,7 +2,7 @@
 #import "COMacros.h"
 #import "COPersistentRoot.h"
 #import "COEditQueuePrivate.h"
-#import "COObjectTree.h"
+#import "COItemTree.h"
 #import "COSQLiteStore.h"
 #import "COEditingContext.h"
 
@@ -42,7 +42,7 @@
     return [[persistentRoot_ savedState] currentStateForBranch: branch_];
 }
 
-- (COObjectTree *)currentStateObjectTree
+- (COItemTree *)currentStateObjectTree
 {
     return [[persistentRoot_ store] objectTreeForRevision: [self currentState]];
 }

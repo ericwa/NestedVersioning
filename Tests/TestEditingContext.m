@@ -201,7 +201,7 @@
 	[parent setValue: [child UUID] forAttribute: @"cycle" type: [COType embeddedItemType]];
 	[child setValue: [parent UUID] forAttribute: @"cycle" type: [COType embeddedItemType]];
     
-    COObjectTree *objectTree = [COObjectTree treeWithItems: A(parent, child) rootUUID: [parent UUID]];
+    COItemTree *objectTree = [COItemTree treeWithItems: A(parent, child) rootUUID: [parent UUID]];
     
     UKRaisesException([COEditingContext editingContextWithObjectTree: objectTree]);
 }
@@ -260,11 +260,11 @@
     COObject *t2 = [t1 addTree: [self itemWithLabel: @"t2"]];
     [t2 addTree: [self itemWithLabel: @"t3"]];
 
-    COEditingContext *t1copyCtx = [COEditingContext editingContextWithObjectTree: [COObjectTree treeWithItems: [[t1 allContainedStoreItems] allObjects]
+    COEditingContext *t1copyCtx = [COEditingContext editingContextWithObjectTree: [COItemTree treeWithItems: [[t1 allContainedStoreItems] allObjects]
                                                                                                      rootUUID: [t1 UUID]]];
     
 
-    COEditingContext *t2copyCtx = [COEditingContext editingContextWithObjectTree: [COObjectTree treeWithItems: [[t2 allContainedStoreItems] allObjects]
+    COEditingContext *t2copyCtx = [COEditingContext editingContextWithObjectTree: [COItemTree treeWithItems: [[t2 allContainedStoreItems] allObjects]
                                                                                                      rootUUID: [t2 UUID]]];
     
 	UKObjectsEqual(t1, [t1copyCtx rootObject]);

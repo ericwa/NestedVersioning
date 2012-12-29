@@ -53,14 +53,14 @@ static COObject *makeTree(NSString *label)
 
 - (void) testBasic
 {
-	COObjectTree *basicTree = [makeTree(@"hello world") objectTree];
+	COItemTree *basicTree = [makeTree(@"hello world") objectTree];
     
     id <COPersistentRootMetadata> proot = [store createPersistentRootWithInitialContents: basicTree
                                                                                 metadata: [NSDictionary dictionary]];
     
     UKObjectsEqual([NSArray arrayWithObject: [proot UUID]], [store allPersistentRootUUIDs]);
     
-    COObjectTree *fetchedTree = [store objectTreeForRevision: [self currentState: proot]];
+    COItemTree *fetchedTree = [store objectTreeForRevision: [self currentState: proot]];
     UKObjectsEqual(basicTree, fetchedTree);
     
     id<COPersistentRootMetadata> prootFetchedFirst = [store persistentRootWithUUID: [proot UUID]];
@@ -70,7 +70,7 @@ static COObject *makeTree(NSString *label)
     
     COMutableItem *modifiedItem = [[[basicTree itemForUUID: [basicTree root]] mutableCopy] autorelease];
     [modifiedItem setValue: @"hello world 2" forAttribute: @"label" type: [COType stringType]];
-    COObjectTree *basicTree2 = [COObjectTree treeWithItems: A(modifiedItem) rootUUID: [modifiedItem UUID]];
+    COItemTree *basicTree2 = [COItemTree treeWithItems: A(modifiedItem) rootUUID: [modifiedItem UUID]];
     
     CORevisionID *token2 = [store writeItemTree: basicTree2
                                    withMetadata: nil

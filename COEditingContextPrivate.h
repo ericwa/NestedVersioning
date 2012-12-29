@@ -15,7 +15,7 @@
 - (void) removeUnreachableObjectAndChildren: (COUUID *)anObject;
 
 - (COObject *) updateObject: (COUUID *)aUUID
-             fromObjectTree: (COObjectTree *)aTree
+             fromObjectTree: (COItemTree *)aTree
                   setParent: (COObject *)parent;
 
 @end

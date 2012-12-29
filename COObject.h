@@ -2,7 +2,7 @@
 #import "COItem.h"
 
 @class COEditingContext;
-@class COObjectTree;
+@class COItemTree;
 @class COItemPath;
 
 /**
@@ -82,7 +82,7 @@
 
 - (COItemPath *) itemPathOfSubtreeWithUUID: (COUUID *)aUUID;
 
-- (COObjectTree *) objectTree;
+- (COItemTree *) objectTree;
 
 #pragma mark Mutation
 

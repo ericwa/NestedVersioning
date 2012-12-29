@@ -45,7 +45,7 @@ static COObject *makeTree(NSString *label)
     
     COBranch *currentBranch = [proot contextForEditingCurrentBranch];
     CORevisionID *firstRevision = [currentBranch currentState];
-    COObjectTree *firstState = [[currentBranch editingContext] objectTree];
+    COItemTree *firstState = [[currentBranch editingContext] objectTree];
     COUUID *initialBranchUUID = [currentBranch UUID];
     
     UKIntsEqual(1, [[proot branchUUIDs] count]);
@@ -70,7 +70,7 @@ static COObject *makeTree(NSString *label)
     [newBranch commitChangesWithMetadata: [NSDictionary dictionary]];
     UKFalse([newBranch hasChanges]);
     CORevisionID *secondRevision = [newBranch currentState];
-    COObjectTree *secondTree = [[newBranch editingContext] objectTree];
+    COItemTree *secondTree = [[newBranch editingContext] objectTree];
     
     UKObjectsNotEqual(firstRevision, secondRevision);
     UKObjectsNotEqual(firstState, secondTree);

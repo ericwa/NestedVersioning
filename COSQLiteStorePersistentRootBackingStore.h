@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "COObjectTree.h"
+#import "COItemTree.h"
 
 @class FMDatabase;
 
@@ -17,9 +17,9 @@
 
 - (int64_t) parentForRevid: (int64_t)revid;
 
-- (COObjectTree *) itemTreeForRevid: (int64_t)revid;
+- (COItemTree *) itemTreeForRevid: (int64_t)revid;
 
-- (int64_t) writeItemTree: (COObjectTree *)anItemTree
+- (int64_t) writeItemTree: (COItemTree *)anItemTree
              withMetadata: (NSDictionary *)metadata
                withParent: (int64_t)aParent
             modifiedItems: (NSArray*)modifiedItems; // array of COUUID

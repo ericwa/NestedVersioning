@@ -1,6 +1,6 @@
 #import "COSQLiteStorePersistentRootBackingStore.h"
 #import "COMacros.h"
-#import "COObjectTree.h"
+#import "COItemTree.h"
 #import "COItem.h"
 #import "COUUID.h"
 #import "FMDatabase.h"
@@ -121,7 +121,7 @@
 	return result;
 }
 
-- (COObjectTree *) itemTreeForRevid: (int64_t)revid
+- (COItemTree *) itemTreeForRevid: (int64_t)revid
 {
     NSNumber *revidObj = [NSNumber numberWithLongLong: revid];
     
@@ -174,12 +174,12 @@
     
     // FIXME: run a tree search to collect all used object UUID; so we can weed out any unreferenced ones
     // which may be in resultDict (because they were deleted at some point)
-    COObjectTree *result = [[[COObjectTree alloc] initWithItemForUUID: resultDict
+    COItemTree *result = [[[COItemTree alloc] initWithItemForUUID: resultDict
                                                              root: root] autorelease];
     return result;
 }
 
-static NSData *contentsBLOBWithItemTree(COObjectTree *anItemTree, NSArray *modifiedItems)
+static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifiedItems)
 {
     /**
      * NSString (UUID) -> COItem plist
@@ -229,7 +229,7 @@ static NSData *contentsBLOBWithItemTree(COObjectTree *anItemTree, NSArray *modif
  * @param aParent -1 for no parent, otherwise the parent of this commit
  * @param modifiedItems nil for all items in anItemTree, otherwise a subset
  */
-- (int64_t) writeItemTree: (COObjectTree *)anItemTree
+- (int64_t) writeItemTree: (COItemTree *)anItemTree
              withMetadata: (NSDictionary *)metadata
                withParent: (int64_t)aParent
             modifiedItems: (NSArray*)modifiedItems

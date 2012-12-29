@@ -1,6 +1,6 @@
 #import "COEditingContext.h"
 #import "COEditingContextPrivate.h"
-#import "COObjectTree.h"
+#import "COItemTree.h"
 #import "COMacros.h"
 
 
@@ -15,7 +15,7 @@
 
 
 
-- (id) initWithObjectTree: (COObjectTree *)aTree
+- (id) initWithObjectTree: (COItemTree *)aTree
 {
     NSParameterAssert(aTree != nil);
     NSParameterAssert([aTree itemForUUID: [aTree root]] != nil);
@@ -37,7 +37,7 @@
     COItem *item = [COItem itemWithTypesForAttributes: [NSDictionary dictionary]
                                   valuesForAttributes: [NSDictionary dictionary]];
 
-    COObjectTree *tree = [[[COObjectTree alloc] initWithItemForUUID: [NSDictionary dictionaryWithObject: item forKey: [item UUID]]
+    COItemTree *tree = [[[COItemTree alloc] initWithItemForUUID: [NSDictionary dictionaryWithObject: item forKey: [item UUID]]
                                                               root: [item UUID]] autorelease];
     
     return [self initWithObjectTree: tree];
@@ -63,7 +63,7 @@
     return [objectsByUUID_ objectForKey: uuid];
 }
 
-- (COObjectTree *)objectTree
+- (COItemTree *)objectTree
 {
     NSMutableDictionary *itemByUUID = [NSMutableDictionary dictionary];
     for (COUUID *uuid in objectsByUUID_)
@@ -71,11 +71,11 @@
         [itemByUUID setObject: [[self objectForUUID: uuid] item]
                        forKey: uuid];
     }
-    return [[[COObjectTree alloc] initWithItemForUUID: itemByUUID
+    return [[[COItemTree alloc] initWithItemForUUID: itemByUUID
                                                  root: rootUUID_] autorelease];
 }
 
-+ (COEditingContext *)editingContextWithObjectTree: (COObjectTree *)aTree
++ (COEditingContext *)editingContextWithObjectTree: (COItemTree *)aTree
 {
     return [[[self alloc] initWithObjectTree: aTree] autorelease];
 }
@@ -110,7 +110,7 @@
 	return [rootUUID_ hash] ^ 13803254444065375360ULL;
 }
 
-- (void) setObjectTree: (COObjectTree *)aTree
+- (void) setObjectTree: (COItemTree *)aTree
 {
     [self clearChangeTracking];
     
@@ -194,7 +194,7 @@
 }
 
 - (COObject *) updateObject: (COUUID *)aUUID
-             fromObjectTree: (COObjectTree *)aTree
+             fromObjectTree: (COItemTree *)aTree
                   setParent: (COObject *)parent
              updatedObjects: (NSMutableSet *)handledSet
 {
@@ -242,7 +242,7 @@
 }
 
 - (COObject *) updateObject: (COUUID *)aUUID
-             fromObjectTree: (COObjectTree *)aTree
+             fromObjectTree: (COItemTree *)aTree
                   setParent: (COObject *)parent
 {
     return [self updateObject: aUUID

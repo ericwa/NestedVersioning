@@ -1,11 +1,11 @@
-#import "COObjectTree.h"
+#import "COItemTree.h"
 #import "COMacros.h"
 #import "COUUID.h"
 #import "COItem.h"
 
-@implementation COObjectTree
+@implementation COItemTree
 
-+ (COObjectTree *) treeWithItems: (NSArray *)items rootUUID: (COUUID *)aUUID
++ (COItemTree *) treeWithItems: (NSArray *)items rootUUID: (COUUID *)aUUID
 {
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity: [items count]];
     for (COItem *item in items)
@@ -55,7 +55,7 @@
     return [itemForUUID_ allKeys];
 }
 
-- (COObjectTree *) objectTreeWithNameMapping: (NSDictionary *)aMapping;
+- (COItemTree *) objectTreeWithNameMapping: (NSDictionary *)aMapping;
 {
 	NSMutableDictionary *newItems = [NSMutableDictionary dictionary];
 	
@@ -72,7 +72,7 @@
         newRoot = root_;
     }
     
-	return [[[COObjectTree alloc] initWithItemForUUID: newItems root:newRoot] autorelease];
+	return [[[COItemTree alloc] initWithItemForUUID: newItems root:newRoot] autorelease];
 }
 
 
@@ -84,11 +84,11 @@
 	{
 		return YES;
 	}
-	if (![object isKindOfClass: [COObjectTree class]])
+	if (![object isKindOfClass: [COItemTree class]])
 	{
 		return NO;
 	}
-	COObjectTree *otherTree = (COObjectTree*)object;
+	COItemTree *otherTree = (COItemTree*)object;
 	
 	if (![otherTree->root_ isEqual: root_]) return NO;
 	if (![otherTree->itemForUUID_ isEqual: itemForUUID_]) return NO;

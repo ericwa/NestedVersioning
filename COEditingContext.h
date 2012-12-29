@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 
 @class COUUID;
-@class COObjectTree;
+@class COItemTree;
 @class COObject;
 
 @interface COEditingContext : NSObject <NSCopying>
@@ -16,13 +16,13 @@
 
 - (NSSet *)allUUIDs;
 
-- (id) initWithObjectTree: (COObjectTree *)aTree;
+- (id) initWithObjectTree: (COItemTree *)aTree;
 
 - (COObject *) rootObject;
 
 - (COObject *)objectForUUID: (COUUID *)uuid;
 
-- (COObjectTree *)objectTree;
+- (COItemTree *)objectTree;
 
 /**
  * Builds a COSubtree from a set of items and the UUID
@@ -30,7 +30,7 @@
  *  - items does not contain an item with UUID aRootUUID
  *  - items contains more than one item with the same UUID
  */
-+ (COEditingContext *)editingContextWithObjectTree: (COObjectTree *)aTree;
++ (COEditingContext *)editingContextWithObjectTree: (COItemTree *)aTree;
 
 /**
  * Returns a copy of the reciever, not including any change tracking
@@ -41,7 +41,7 @@
 /**
  * Clears change tracking
  */
-- (void) setObjectTree: (COObjectTree *)aTree;
+- (void) setObjectTree: (COItemTree *)aTree;
 
 #pragma mark change tracking
 

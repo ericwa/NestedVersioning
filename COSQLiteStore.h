@@ -6,7 +6,7 @@
 @class COPersistentRootStateDelta;
 @class CORevisionID;
 @class CORevision;
-@class COObjectTree;
+@class COItemTree;
 @class FMDatabase;
 
 /**
@@ -55,11 +55,11 @@
 
 // FIXME: Add a variant which returns a delta (for efficiency in the case when
 // we have the parent already in mem)?
-- (COObjectTree *) objectTreeForRevision: (CORevisionID *)aToken;
+- (COItemTree *) objectTreeForRevision: (CORevisionID *)aToken;
 
 /** @taskunit writing states */
 
-- (CORevisionID *) writeItemTree: (COObjectTree *)anItemTree
+- (CORevisionID *) writeItemTree: (COItemTree *)anItemTree
                     withMetadata: (NSDictionary *)metadata
             withParentRevisionID: (CORevisionID *)aParent
                    modifiedItems: (NSArray*)modifiedItems; // array of COUUID
@@ -74,7 +74,7 @@
 
 /** @taskunit writing persistent roots */
 
-- (id <COPersistentRootMetadata>) createPersistentRootWithInitialContents: (COObjectTree *)contents
+- (id <COPersistentRootMetadata>) createPersistentRootWithInitialContents: (COItemTree *)contents
                                                                  metadata: (NSDictionary *)metadata;
 
 - (id <COPersistentRootMetadata>) createPersistentRootWithInitialRevision: (CORevisionID *)aRevision

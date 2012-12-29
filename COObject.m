@@ -1,7 +1,7 @@
 #import "COObject.h"
 #import "COType.h"
 #import "COItem.h"
-#import "COObjectTree.h"
+#import "COItemTree.h"
 #import "COEditingContext.h"
 #import "COEditingContextPrivate.h"
 #import "COItemPath.h"
@@ -265,7 +265,7 @@
 	return nil;
 }
 
-- (COObjectTree *) objectTree
+- (COItemTree *) objectTree
 {
     NSMutableDictionary *objects = [NSMutableDictionary dictionary];
     for (COItem *i in [self allContainedStoreItems])
@@ -273,7 +273,7 @@
         [objects setObject: i forKey: [i UUID]];
     }
     
-    return [[[COObjectTree alloc] initWithItemForUUID: objects root: [self UUID]] autorelease];
+    return [[[COItemTree alloc] initWithItemForUUID: objects root: [self UUID]] autorelease];
 }
 
 #pragma mark Mutation
@@ -440,7 +440,7 @@ toUnorderedAttribute: (NSString*)anAttribute
 
 #pragma mark Mutation Internal
 
-- (COObject *) addObjectTree: (COObjectTree *)aTree
+- (COObject *) addObjectTree: (COItemTree *)aTree
                   atItemPath: (COItemPath *)aPath
 {
     // see if there are any name conflicts

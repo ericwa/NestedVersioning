@@ -57,7 +57,7 @@
     return root;
 }
 
-- (COPersistentRoot *) createPersistentRootWithInitialContents: (COObjectTree *)contents
+- (COPersistentRoot *) createPersistentRootWithInitialContents: (COItemTree *)contents
                                                                metadata: (NSDictionary *)metadata
 {
     id<COPersistentRootMetadata> persistentRoot = [store_ createPersistentRootWithInitialContents: contents metadata: metadata];

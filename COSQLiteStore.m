@@ -152,11 +152,11 @@
 }
 
 
-- (COObjectTree *) objectTreeForRevision: (CORevisionID *)aToken
+- (COItemTree *) objectTreeForRevision: (CORevisionID *)aToken
 {
     NSParameterAssert(aToken != nil);
     COSQLiteStorePersistentRootBackingStore *backing = [self backingStoreForRevisionID: aToken];
-    COObjectTree *result = [backing itemTreeForRevid: [aToken revisionIndex]];
+    COItemTree *result = [backing itemTreeForRevid: [aToken revisionIndex]];
     return result;
 }
 
@@ -170,7 +170,7 @@
                                                            error: NULL];
 }
 
-- (CORevisionID *) writeItemTreeWithNoParent: (COObjectTree *)anItemTree
+- (CORevisionID *) writeItemTreeWithNoParent: (COItemTree *)anItemTree
                                 withMetadata: (NSDictionary *)metadata
                       inBackingStoreWithUUID: (COUUID *)aBacking
 {
@@ -185,7 +185,7 @@
 }
 
 
-- (CORevisionID *) writeItemTree: (COObjectTree *)anItemTree
+- (CORevisionID *) writeItemTree: (COItemTree *)anItemTree
                     withMetadata: (NSDictionary *)metadata
             withParentRevisionID: (CORevisionID *)aParent
                    modifiedItems: (NSArray*)modifiedItems // array of COUUID
@@ -251,7 +251,7 @@
 }
 
 
-- (id <COPersistentRootMetadata>) createPersistentRootWithInitialContents: (COObjectTree *)contents
+- (id <COPersistentRootMetadata>) createPersistentRootWithInitialContents: (COItemTree *)contents
                                                                  metadata: (NSDictionary *)metadata
 {
     COUUID *uuid = [COUUID UUID];
