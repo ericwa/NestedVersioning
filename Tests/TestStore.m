@@ -32,9 +32,9 @@
 {
     COUUID *aUUID = [COUUID UUID];
     
-    CORevisionID *t = [[CORevisionID alloc] initWithProotCache: aUUID index: 1];
+    CORevisionID *t = [[CORevisionID alloc] initWithPersistentRootBackingStoreUUID: aUUID revisionIndex: 1];
     
-    UKObjectsEqual(t, [CORevisionID tokenWithPlist: [t plist]]);    
+    UKObjectsEqual(t, [CORevisionID revisionIDWithPlist: [t plist]]);    
 }
 
 static COObject *makeTree(NSString *label)

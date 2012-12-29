@@ -242,7 +242,7 @@ static NSArray *stateTokensFromPlist(NSArray *array)
     NSMutableArray *result = [NSMutableArray array];
     for (id plist in array)
     {
-        [result addObject: [CORevisionID tokenWithPlist: plist]];
+        [result addObject: [CORevisionID revisionIDWithPlist: plist]];
     }
     return result;
 }
@@ -263,7 +263,7 @@ static NSDictionary *UUIDToRevisionIdMapFromPlist(NSDictionary *map)
     NSMutableDictionary *result = [NSMutableDictionary dictionary];
     for (NSString *key in map)
     {
-        [result setObject: [CORevisionID tokenWithPlist: [map objectForKey: key]]
+        [result setObject: [CORevisionID revisionIDWithPlist: [map objectForKey: key]]
                    forKey: [COUUID UUIDWithString: key]];
     }
     return result;

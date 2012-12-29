@@ -132,7 +132,7 @@
 
 - (COSQLiteStorePersistentRootBackingStore *) backingStoreForRevisionID: (CORevisionID *)aToken
 {
-    return [self backingStoreForUUID: [aToken _prootCache]];
+    return [self backingStoreForUUID: [aToken backingStoreUUID]];
 }
 
 /** @taskunit reading states */
@@ -141,11 +141,11 @@
 {
     COSQLiteStorePersistentRootBackingStore *backing = [self backingStoreForRevisionID: aToken];
     
-    const int64_t parent = [backing parentForRevid: [aToken _index]];
-    NSDictionary *metadata = [backing metadataForRevid: [aToken _index]];
+    const int64_t parent = [backing parentForRevid: [aToken revisionIndex]];
+    NSDictionary *metadata = [backing metadataForRevid: [aToken revisionIndex]];
     
     CORevision *result = [[[CORevision alloc] initWithRevisionId: aToken
-                                                parentRevisionId: [aToken revisionIDWithIndex: parent]
+                                                parentRevisionId: [aToken revisionIDWithRevisionIndex: parent]
                                                         metadata: metadata] autorelease];
     
     return result;
@@ -156,7 +156,7 @@
 {
     NSParameterAssert(aToken != nil);
     COSQLiteStorePersistentRootBackingStore *backing = [self backingStoreForRevisionID: aToken];
-    COObjectTree *result = [backing itemTreeForRevid: [aToken _index]];
+    COObjectTree *result = [backing itemTreeForRevid: [aToken revisionIndex]];
     return result;
 }
 
@@ -181,7 +181,7 @@
                                       withParent: -1
                                    modifiedItems: nil];
     
-    return [[[CORevisionID alloc] initWithProotCache: aBacking index: revid] autorelease];
+    return [[[CORevisionID alloc] initWithPersistentRootBackingStoreUUID: aBacking revisionIndex: revid] autorelease];
 }
 
 
@@ -195,10 +195,10 @@
     
     const int64_t revid = [backing writeItemTree: anItemTree
                                     withMetadata: metadata
-                                      withParent: [aParent _index]
+                                      withParent: [aParent revisionIndex]
                                    modifiedItems: modifiedItems];
     
-    return [aParent revisionIDWithIndex: revid];
+    return [aParent revisionIDWithRevisionIndex: revid];
 }
 
 /** @taskunit persistent roots */
@@ -292,7 +292,7 @@
                                                                  currentBranch: branch
                                                                       metadata: metadata];
     
-    [self insertPersistentRoot: plist backingStoreUUID: [revId _prootCache]];
+    [self insertPersistentRoot: plist backingStoreUUID: [revId backingStoreUUID]];
     
     return plist;
 }

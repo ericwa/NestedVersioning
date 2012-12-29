@@ -30,8 +30,8 @@ static NSString *kCONewVersionToken = @"CONewVersionToken";
     self = [super initWithPlist: plist];
 
     ASSIGN(branch_, [COUUID UUIDWithString: [plist objectForKey: kCOBranchUUID]]);
-    ASSIGN(oldToken_, [CORevisionID tokenWithPlist: [plist objectForKey: kCOOldVersionToken]]);
-    ASSIGN(newToken_, [CORevisionID tokenWithPlist: [plist objectForKey: kCONewVersionToken]]);
+    ASSIGN(oldToken_, [CORevisionID revisionIDWithPlist: [plist objectForKey: kCOOldVersionToken]]);
+    ASSIGN(newToken_, [CORevisionID revisionIDWithPlist: [plist objectForKey: kCONewVersionToken]]);
     
     return self;
 }

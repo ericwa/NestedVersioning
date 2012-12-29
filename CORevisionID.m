@@ -4,21 +4,21 @@
 
 @implementation CORevisionID
 
-- (id) initWithProotCache: (COUUID *)aUUID
-                    index: (int64_t)anIndex
+- (id) initWithPersistentRootBackingStoreUUID: (COUUID *)aUUID
+                    revisionIndex: (int64_t)anIndex
 {
     self = [super init];
     if (self != nil)
     {
-        prootCache = [aUUID retain];
-        index = anIndex;
+        backingStoreUUID_ = [aUUID retain];
+        revisionIndex_ = anIndex;
     }
     return self;
 }
 
 - (void) dealloc
 {
-    [prootCache release];
+    [backingStoreUUID_ release];
     [super dealloc];
 }
 
@@ -26,44 +26,44 @@
 {
     if ([object isKindOfClass: [CORevisionID class]])
     {
-        return ((CORevisionID *)object)->index == index
-        && [((CORevisionID *)object)->prootCache isEqual: prootCache];
+        return ((CORevisionID *)object)->revisionIndex_ == revisionIndex_
+        && [((CORevisionID *)object)->backingStoreUUID_ isEqual: backingStoreUUID_];
     }
     return NO;
 }
 
 - (NSUInteger) hash
 {
-    return index ^ [prootCache hash];
+    return revisionIndex_ ^ [backingStoreUUID_ hash];
 }
-- (COUUID *) _prootCache
+- (COUUID *) backingStoreUUID
 {
-    return prootCache;
+    return backingStoreUUID_;
 }
-- (int64_t) _index
+- (int64_t) revisionIndex
 {
-    return index;
+    return revisionIndex_;
 }
 
-- (CORevisionID *) revisionIDWithIndex: (int64_t)anIndex
+- (CORevisionID *) revisionIDWithRevisionIndex: (int64_t)anIndex
 {
-    return [[[CORevisionID alloc] initWithProotCache: prootCache
-                                               index: anIndex] autorelease];
+    return [[[CORevisionID alloc] initWithPersistentRootBackingStoreUUID: backingStoreUUID_
+                                               revisionIndex: anIndex] autorelease];
 }
 
 - (id) plist
 {
-    return [NSString stringWithFormat: @"%@:%@", prootCache,
-            [NSNumber numberWithLongLong: (long long)index]];
+    return [NSString stringWithFormat: @"%@:%@", backingStoreUUID_,
+            [NSNumber numberWithLongLong: (long long)revisionIndex_]];
 }
-+ (CORevisionID *) tokenWithPlist: (id)plist
++ (CORevisionID *) revisionIDWithPlist: (id)plist
 {
     NSArray *comps = [(NSString *)plist componentsSeparatedByString:@":"];
     
     CORevisionID *result = [[[CORevisionID alloc] init] autorelease];
     
-    result->prootCache = [[COUUID UUIDWithString: [comps objectAtIndex: 0]] retain];
-    result->index = [(NSString *)[comps objectAtIndex: 1] longLongValue];
+    result->backingStoreUUID_ = [[COUUID UUIDWithString: [comps objectAtIndex: 0]] retain];
+    result->revisionIndex_ = [(NSString *)[comps objectAtIndex: 1] longLongValue];
     
     return result;
 }
@@ -75,7 +75,7 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat: @"<State Token %@.%lld>", prootCache, (long long int)index];
+    return [NSString stringWithFormat: @"<State Token %@.%lld>", backingStoreUUID_, (long long int)revisionIndex_];
 }
 
 @end

@@ -16,21 +16,21 @@
  */
 @interface CORevisionID : NSObject <NSCopying>
 {
-    COUUID *prootCache;
-    int64_t index;
+    COUUID *backingStoreUUID_;
+    int64_t revisionIndex_;
 }
 
-- (id) initWithProotCache: (COUUID *)aUUID
-                    index: (int64_t)anIndex;
+- (id) initWithPersistentRootBackingStoreUUID: (COUUID *)aUUID
+                                revisionIndex: (int64_t)anIndex;
 
-- (COUUID *) _prootCache;
-- (int64_t) _index;
+- (COUUID *) backingStoreUUID;
+- (int64_t) revisionIndex;
 /**
  * Returns a new CORevisionID with the stame backing store UUID but the given revid
  */
-- (CORevisionID *) revisionIDWithIndex: (int64_t)anIndex;
+- (CORevisionID *) revisionIDWithRevisionIndex: (int64_t)anIndex;
 
 - (id) plist;
-+ (CORevisionID *) tokenWithPlist: (id)plist;
++ (CORevisionID *) revisionIDWithPlist: (id)plist;
 
 @end
