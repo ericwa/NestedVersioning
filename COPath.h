@@ -4,9 +4,9 @@
 @interface COPath : NSObject <NSCopying>
 {
 @private
-	COUUID *persistentRoot;
-	COUUID *branch;
-	COUUID *embeddedObject;
+	COUUID *persistentRoot_;
+	COUUID *branch_;
+	COUUID *embeddedObject_;
 }
 
 /**
@@ -23,6 +23,8 @@
 + (COPath *) pathWithPersistentRoot: (COUUID *)aRoot
 							 branch: (COUUID*)aBranch
 					embdeddedObject: (COUUID *)anObject;
+
+- (COPath *) pathWithNameMapping: (NSDictionary *)aMapping;
 
 // string persistence
 

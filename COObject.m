@@ -542,7 +542,7 @@ toUnorderedAttribute: (NSString*)anAttribute
 #pragma mark contents property
 
 
-- (COObject *) addObject: (COObject *)aValue
+- (COObject *) addObjectToContents: (COObject *)aValue
 {
     return 	[self addObject:  aValue
 		  atItemPath: [COItemPath pathWithItemUUID: [self UUID]

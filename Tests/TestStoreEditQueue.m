@@ -46,7 +46,6 @@ static COObject *makeTree(NSString *label)
     COBranch *currentBranch = [proot contextForEditingCurrentBranch];
     CORevisionID *firstRevision = [currentBranch currentRevisionID];
     COItemTree *firstState = [[currentBranch editingContext] itemTree];
-    COUUID *initialBranchUUID = [currentBranch UUID];
     
     UKIntsEqual(1, [[proot branchUUIDs] count]);
     UKObjectsEqual([[proot branchUUIDs] objectAtIndex: 0], [currentBranch UUID]);
@@ -64,7 +63,7 @@ static COObject *makeTree(NSString *label)
     
     // Commit a change to the new branch.
     
-    [[[newBranch editingContext] rootObject] addObject: makeTree(@"pizza")];
+    [[[newBranch editingContext] rootObject] addObjectToContents: makeTree(@"pizza")];
     UKTrue([newBranch hasChanges]);
     
     [newBranch commitChangesWithMetadata: [NSDictionary dictionary]];

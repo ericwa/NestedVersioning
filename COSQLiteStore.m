@@ -263,14 +263,14 @@
                                              withMetadata: [NSDictionary dictionary]
                                    inBackingStoreWithUUID: uuid];
 
-    COPersistentRootPlist *plist = [[COPersistentRootPlist alloc] initWithUUID: uuid
+    COPersistentRootPlist *plist = [[[COPersistentRootPlist alloc] initWithUUID: uuid
                                                                    revisionIDs: A(revId)
                                                        headRevisionIdForBranch: D(revId, branch)
                                                        tailRevisionIdForBranch: D(revId, branch)
                                                          currentStateForBranch: D(revId, branch)
                                                              metadataForBranch: [NSDictionary dictionary]
                                                                  currentBranch: branch
-                                                                      metadata: metadata];
+                                                                      metadata: metadata] autorelease];
     
     [self insertPersistentRoot: plist backingStoreUUID: uuid];
     
@@ -283,14 +283,14 @@
     COUUID *uuid = [COUUID UUID];
     COUUID *branch = [COUUID UUID];
     
-    COPersistentRootPlist *plist = [[COPersistentRootPlist alloc] initWithUUID: uuid
-                                                                   revisionIDs: A(revId)
-                                                       headRevisionIdForBranch: D(revId, branch)
-                                                       tailRevisionIdForBranch: D(revId, branch)
-                                                         currentStateForBranch: D(revId, branch)
-                                                             metadataForBranch: [NSDictionary dictionary]
-                                                                 currentBranch: branch
-                                                                      metadata: metadata];
+    COPersistentRootPlist *plist = [[[COPersistentRootPlist alloc] initWithUUID: uuid
+                                                                    revisionIDs: A(revId)
+                                                        headRevisionIdForBranch: D(revId, branch)
+                                                        tailRevisionIdForBranch: D(revId, branch)
+                                                          currentStateForBranch: D(revId, branch)
+                                                              metadataForBranch: [NSDictionary dictionary]
+                                                                  currentBranch: branch
+                                                                       metadata: metadata] autorelease];
     
     [self insertPersistentRoot: plist backingStoreUUID: [revId backingStoreUUID]];
     

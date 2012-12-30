@@ -118,7 +118,7 @@ toUnorderedAttribute: (NSString*)anAttribute
 
 #pragma mark contents property
 
-- (COObject *) addObject: (COObject *)aValue;
+- (COObject *) addObjectToContents: (COObject *)aValue;
 
 - (NSSet *) contents;
 

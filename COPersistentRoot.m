@@ -6,9 +6,8 @@
 #import "COPersistentRootPrivate.h"
 #import "COSQLiteStore.h"
 
-@implementation COPersistentRoot
 
-NSString *kCOPersistentRootName = @"COPersistentRootName";
+@implementation COPersistentRoot (Private)
 
 - (id)initWithStoreEditQueue: (COStore *)aRootStore
               persistentRoot: (COPersistentRootPlist *)metadata
@@ -19,6 +18,22 @@ NSString *kCOPersistentRootName = @"COPersistentRootName";
     branchForUUID_ = [[NSMutableDictionary alloc] init];
     return self;
 }
+
+- (COSQLiteStore *) store
+{
+    return [rootStore_ store];
+}
+
+- (COPersistentRootPlist *) savedState
+{
+    return savedState_;
+}
+
+@end
+
+@implementation COPersistentRoot
+
+NSString *kCOPersistentRootName = @"COPersistentRootName";
 
 - (void) dealloc
 {
@@ -142,20 +157,6 @@ NSString *kCOPersistentRootName = @"COPersistentRootName";
     // FIXME: not really an error, just for debugging
     assert(0);
     return nil;
-}
-
-- (COPersistentRootPlist *) savedState
-{
-    return savedState_;
-}
-
-@end
-
-@implementation COPersistentRoot (Private)
-
-- (COSQLiteStore *) store
-{
-    return [rootStore_ store];
 }
 
 @end

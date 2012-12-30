@@ -9,17 +9,17 @@
 {	
 	SUPERINIT;
 	NILARG_EXCEPTION_TEST(aRoot);
-	ASSIGN(persistentRoot, aRoot);
-	ASSIGN(branch, aBranch);
-	ASSIGN(embeddedObject, anObject);
+	ASSIGN(persistentRoot_, aRoot);
+	ASSIGN(branch_, aBranch);
+	ASSIGN(embeddedObject_, anObject);
 	return self;
 }
 
 - (void)dealloc
 {
-	[persistentRoot release];
-	[branch release];
-	[embeddedObject release];
+	[persistentRoot_ release];
+	[branch_ release];
+	[embeddedObject_ release];
 	[super dealloc];
 }
 
@@ -69,6 +69,35 @@
 	return [COPath pathWithPersistentRoot: persistentRoot branch: branch embdeddedObject: embeddedObject];
 }
 
+- (COPath *) pathWithNameMapping: (NSDictionary *)aMapping
+{
+	COUUID *embeddedObject = embeddedObject_;
+	COUUID *branch = branch_;
+	COUUID *persistentRoot = persistentRoot_;
+    
+    if (embeddedObject != nil
+        && [aMapping objectForKey: embeddedObject])
+    {
+        embeddedObject = [aMapping objectForKey: embeddedObject];
+    }
+    
+    if (branch != nil
+        && [aMapping objectForKey: branch])
+    {
+        branch = [aMapping objectForKey: branch];
+    }
+    
+    if (persistentRoot != nil
+        && [aMapping objectForKey: persistentRoot])
+    {
+        persistentRoot = [aMapping objectForKey: persistentRoot];
+    }
+    
+    return [COPath pathWithPersistentRoot: persistentRoot
+                                   branch: branch
+                          embdeddedObject: embeddedObject];
+}
+
 - (id) copyWithZone: (NSZone *)zone
 {
 	return [self retain];
@@ -76,15 +105,15 @@
 
 - (NSString *) stringValue
 {
-	NSMutableString *value = [NSMutableString stringWithString: [persistentRoot stringValue]];
+	NSMutableString *value = [NSMutableString stringWithString: [persistentRoot_ stringValue]];
 	
-	if (branch != nil)
+	if (branch_ != nil)
 	{
-		[value appendFormat: @":%@", branch];
+		[value appendFormat: @":%@", branch_];
 	}
-	if (embeddedObject != nil)
+	if (embeddedObject_ != nil)
 	{
-		[value appendFormat: @".%@", embeddedObject];
+		[value appendFormat: @".%@", embeddedObject_];
 	}
 	
 	return [NSString stringWithString: value];

@@ -369,7 +369,7 @@ static id importValueFromPlist(id aPlist)
 			{
 				COPath *pathValue = (COPath*)value;
 				
-				[aCopy setValue: [pathValue pathByRenamingComponents: aMapping]
+				[aCopy setValue: [pathValue pathWithNameMapping: aMapping]
 				   forAttribute: attr
 						   type: type];
 			}
@@ -380,7 +380,7 @@ static id importValueFromPlist(id aPlist)
 				
 				for (COPath *pathValue in value)
 				{
-					[newCollection addObject: [pathValue pathByRenamingComponents:aMapping]];
+					[newCollection addObject: [pathValue pathWithNameMapping:aMapping]];
 				}
 				
 				[aCopy setValue: newCollection
@@ -399,6 +399,13 @@ static id importValueFromPlist(id aPlist)
 
 
 @implementation COMutableItem
+
++ (COMutableItem *) itemWithTypesForAttributes: (NSDictionary *)typesForAttributes
+						   valuesForAttributes: (NSDictionary *)valuesForAttributes
+{
+    return (COMutableItem *)[super itemWithTypesForAttributes: typesForAttributes
+                                          valuesForAttributes: valuesForAttributes];
+}
 
 - (id) initWithUUID: (COUUID *)aUUID
  typesForAttributes: (NSDictionary *)typesForAttributes
