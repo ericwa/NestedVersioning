@@ -83,7 +83,7 @@
     if (num_cols > 0) {
         NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:num_cols];
         
-        NSUInteger i;
+        int i;
         for (i = 0; i < num_cols; i++) {
             
             const char *col_name = sqlite3_column_name(statement.statement, i);
@@ -95,7 +95,7 @@
                 // fetch according to type
                 switch (sqlite3_column_type(statement.statement, i)) {
                     case SQLITE_INTEGER: {
-                        value = [NSNumber numberWithInt:[self intForColumnIndex:i]];
+                        value = [NSNumber numberWithLongLong:[self longLongIntForColumnIndex:i]];
                         break;
                     }
                     case SQLITE_FLOAT: {
