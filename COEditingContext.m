@@ -18,10 +18,10 @@
 - (id) initWithObjectTree: (COItemTree *)aTree
 {
     NSParameterAssert(aTree != nil);
-    NSParameterAssert([aTree itemForUUID: [aTree root]] != nil);
+    NSParameterAssert([aTree itemForUUID: [aTree rootItemUUID]] != nil);
     
     SUPERINIT;
-    ASSIGN(rootUUID_, [aTree root]);
+    ASSIGN(rootUUID_, [aTree rootItemUUID]);
     objectsByUUID_ = [[NSMutableDictionary alloc] init];
     insertedObjects_ = [[NSMutableSet alloc] init];
     deletedObjects_ = [[NSMutableSet alloc] init];
@@ -38,7 +38,7 @@
                                   valuesForAttributes: [NSDictionary dictionary]];
 
     COItemTree *tree = [[[COItemTree alloc] initWithItemForUUID: [NSDictionary dictionaryWithObject: item forKey: [item UUID]]
-                                                              root: [item UUID]] autorelease];
+                                                              rootItemUUID: [item UUID]] autorelease];
     
     return [self initWithObjectTree: tree];
 }
@@ -72,7 +72,7 @@
                        forKey: uuid];
     }
     return [[[COItemTree alloc] initWithItemForUUID: itemByUUID
-                                                 root: rootUUID_] autorelease];
+                                                 rootItemUUID: rootUUID_] autorelease];
 }
 
 + (COEditingContext *)editingContextWithObjectTree: (COItemTree *)aTree
@@ -116,7 +116,7 @@
     
     NSSet *initialUUIDs = [[self rootObject] allUUIDs];
     
-    ASSIGN(rootUUID_, [aTree root]);
+    ASSIGN(rootUUID_, [aTree rootItemUUID]);
     
     [self updateObject: rootUUID_
         fromObjectTree: aTree

@@ -273,7 +273,7 @@
         [objects setObject: i forKey: [i UUID]];
     }
     
-    return [[[COItemTree alloc] initWithItemForUUID: objects root: [self UUID]] autorelease];
+    return [[[COItemTree alloc] initWithItemForUUID: objects rootItemUUID: [self UUID]] autorelease];
 }
 
 #pragma mark Mutation
@@ -446,7 +446,7 @@ toUnorderedAttribute: (NSString*)anAttribute
     // see if there are any name conflicts
     
     NSMutableSet *conflictingNames = [NSMutableSet setWithSet: [parentContext_ allUUIDs]];
-    [conflictingNames intersectSet: [NSSet setWithArray: [aTree objectUUIDs]]];
+    [conflictingNames intersectSet: [NSSet setWithArray: [aTree itemUUIDs]]];
     
     if ([conflictingNames count] > 0)
     {
@@ -459,20 +459,20 @@ toUnorderedAttribute: (NSString*)anAttribute
                         forKey: name];
         }
         
-        aTree = [aTree objectTreeWithNameMapping: mapping];
+        aTree = [aTree itemTreeWithNameMapping: mapping];
     }
     
     // now, there are no name conflicts.
     
-    COObject *result = [parentContext_ updateObject: [aTree root]
+    COObject *result = [parentContext_ updateObject: [aTree rootItemUUID]
                                      fromObjectTree: aTree
                                           setParent: self];
-    [aPath insertValue: [aTree root] inStoreItem: self->item];
+    [aPath insertValue: [aTree rootItemUUID] inStoreItem: self->item];
     
     // record dirty objects
 
     [parentContext_ recordModifiedObjectUUID: [self UUID]];
-    for (COUUID *uuid in [aTree objectUUIDs])
+    for (COUUID *uuid in [aTree itemUUIDs])
     {
         [parentContext_ recordInsertedObjectUUID: uuid];
     }

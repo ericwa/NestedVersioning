@@ -175,7 +175,7 @@
     // FIXME: run a tree search to collect all used object UUID; so we can weed out any unreferenced ones
     // which may be in resultDict (because they were deleted at some point)
     COItemTree *result = [[[COItemTree alloc] initWithItemForUUID: resultDict
-                                                             root: root] autorelease];
+                                                             rootItemUUID: root] autorelease];
     return result;
 }
 
@@ -247,14 +247,14 @@ static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifie
         deltabase = parent_deltabase;
         if (modifiedItems == nil)
         {
-            modifiedItems = [anItemTree objectUUIDs];
+            modifiedItems = [anItemTree itemUUIDs];
         }
         contentsBlob = contentsBLOBWithItemTree(anItemTree, modifiedItems);
     }
     else
     {
         deltabase = rowid;
-        contentsBlob = contentsBLOBWithItemTree(anItemTree, [anItemTree objectUUIDs]);
+        contentsBlob = contentsBLOBWithItemTree(anItemTree, [anItemTree itemUUIDs]);
     }    
 
     NSData *metadataBlob = nil;
@@ -269,7 +269,7 @@ static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifie
         contentsBlob,
         metadataBlob,
         [NSNumber numberWithLongLong: aParent],
-        [[anItemTree root] dataValue],
+        [[anItemTree rootItemUUID] dataValue],
         [NSNumber numberWithLongLong: deltabase]];
     
     [db_ commit];

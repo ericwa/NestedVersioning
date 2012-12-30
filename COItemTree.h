@@ -8,19 +8,19 @@
  */
 @interface COItemTree : NSObject <NSCopying>
 {
-    COUUID *root_;
+    COUUID *rootItemUUID_;
     NSDictionary *itemForUUID_;
 }
 
-+ (COItemTree *) treeWithItems: (NSArray *)items rootUUID: (COUUID *)aUUID;
++ (COItemTree *) treeWithItems: (NSArray *)items rootItemUUID: (COUUID *)aUUID;
 
 - (id) initWithItemForUUID: (NSDictionary *) itemForUUID
-                      root: (COUUID *)root;
+              rootItemUUID: (COUUID *)root;
 
-- (COUUID *) root;
+- (COUUID *) rootItemUUID;
 - (COItem *) itemForUUID: (COUUID *)aUUID;
-- (NSArray *) objectUUIDs;
+- (NSArray *) itemUUIDs;
 
-- (COItemTree *) objectTreeWithNameMapping: (NSDictionary *)aMapping;
+- (COItemTree *) itemTreeWithNameMapping: (NSDictionary *)aMapping;
 
 @end

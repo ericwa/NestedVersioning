@@ -5,7 +5,7 @@
 
 @implementation COItemTree
 
-+ (COItemTree *) treeWithItems: (NSArray *)items rootUUID: (COUUID *)aUUID
++ (COItemTree *) treeWithItems: (NSArray *)items rootItemUUID: (COUUID *)aUUID
 {
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity: [items count]];
     for (COItem *item in items)
@@ -13,25 +13,25 @@
         [dict setObject: item forKey: [item UUID]];
     }
     
-    return [[[self alloc] initWithItemForUUID: dict root: aUUID] autorelease];
+    return [[[self alloc] initWithItemForUUID: dict rootItemUUID: aUUID] autorelease];
 }
 
 - (id) initWithItemForUUID: (NSDictionary *) itemForUUID
-                      root: (COUUID *)root
+                      rootItemUUID: (COUUID *)root
 {
     NSParameterAssert([itemForUUID isKindOfClass: [NSDictionary class]]);
     NSParameterAssert([root isKindOfClass: [COUUID class]]);
     
     SUPERINIT;
     itemForUUID_ = [[NSDictionary alloc] initWithDictionary: itemForUUID copyItems: YES];
-    root_ = [root copy];
+    rootItemUUID_ = [root copy];
     return self;
 }
 
 - (void) dealloc
 {
     [itemForUUID_ release];
-    [root_ release];
+    [rootItemUUID_ release];
     [super dealloc];
 }
 
@@ -40,9 +40,9 @@
     return [self retain];
 }
 
-- (COUUID *) root
+- (COUUID *) rootItemUUID
 {
-    return root_;
+    return rootItemUUID_;
 }
 
 - (COItem *) itemForUUID: (COUUID *)aUUID
@@ -50,12 +50,12 @@
     return [itemForUUID_ objectForKey: aUUID];
 }
 
-- (NSArray *) objectUUIDs
+- (NSArray *) itemUUIDs
 {
     return [itemForUUID_ allKeys];
 }
 
-- (COItemTree *) objectTreeWithNameMapping: (NSDictionary *)aMapping;
+- (COItemTree *) itemTreeWithNameMapping: (NSDictionary *)aMapping;
 {
 	NSMutableDictionary *newItems = [NSMutableDictionary dictionary];
 	
@@ -66,13 +66,13 @@
         [newItems setObject: newItem forKey: [newItem UUID]];
 	}
 	
-    COUUID *newRoot = [aMapping objectForKey: root_];
+    COUUID *newRoot = [aMapping objectForKey: rootItemUUID_];
     if (newRoot == nil)
     {
-        newRoot = root_;
+        newRoot = rootItemUUID_;
     }
     
-	return [[[COItemTree alloc] initWithItemForUUID: newItems root:newRoot] autorelease];
+	return [[[COItemTree alloc] initWithItemForUUID: newItems rootItemUUID:newRoot] autorelease];
 }
 
 
@@ -90,21 +90,21 @@
 	}
 	COItemTree *otherTree = (COItemTree*)object;
 	
-	if (![otherTree->root_ isEqual: root_]) return NO;
+	if (![otherTree->rootItemUUID_ isEqual: rootItemUUID_]) return NO;
 	if (![otherTree->itemForUUID_ isEqual: itemForUUID_]) return NO;
 	return YES;
 }
 
 - (NSUInteger) hash
 {
-	return [root_ hash] ^ [itemForUUID_ hash] ^ 16921545442590332862ULL;
+	return [rootItemUUID_ hash] ^ [itemForUUID_ hash] ^ 16921545442590332862ULL;
 }
 
 - (NSString *)description
 {
 	NSMutableString *result = [NSMutableString string];
     
-	[result appendFormat: @"[COObjectTree root: %@\n", root_];
+	[result appendFormat: @"[COObjectTree root: %@\n", rootItemUUID_];
 	for (COItem *item in [itemForUUID_ allValues])
 	{
 		[result appendFormat: @"%@", item];
