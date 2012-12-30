@@ -2,7 +2,6 @@
 
 #import "COUUID.h"
 #import "CORevisionID.h"
-#import "COSQLiteStore.h"
 
 /**
  * An in-memory representation of all of the data about a persistent root.
@@ -16,7 +15,7 @@
  * revision that is anything, and no head or tail.
  *
  */
-@interface COPersistentRootPlist : NSObject <COPersistentRootMetadata, NSCopying>
+@interface COPersistentRootPlist : NSObject <NSCopying>
 {
     COUUID *uuid_;
    

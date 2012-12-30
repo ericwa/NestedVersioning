@@ -46,7 +46,7 @@ static COObject *makeTree(NSString *label)
     return [ctx rootObject];
 }
 
-- (CORevisionID *) currentState: (id<COPersistentRootMetadata>)aRoot
+- (CORevisionID *) currentState: (COPersistentRootPlist *)aRoot
 {
     return [aRoot currentStateForBranch: [aRoot currentBranchUUID]];
 }
@@ -55,15 +55,15 @@ static COObject *makeTree(NSString *label)
 {
 	COItemTree *basicTree = [makeTree(@"hello world") itemTree];
     
-    id <COPersistentRootMetadata> proot = [store createPersistentRootWithInitialContents: basicTree
-                                                                                metadata: [NSDictionary dictionary]];
+    COPersistentRootPlist *proot = [store createPersistentRootWithInitialContents: basicTree
+                                                                         metadata: [NSDictionary dictionary]];
     
-    UKObjectsEqual([NSArray arrayWithObject: [proot UUID]], [store allPersistentRootUUIDs]);
+    UKObjectsEqual(S([proot UUID]), [store persistentRootUUIDs]);
     
-    COItemTree *fetchedTree = [store objectTreeForRevision: [self currentState: proot]];
+    COItemTree *fetchedTree = [store itemTreeForRevisionID: [self currentState: proot]];
     UKObjectsEqual(basicTree, fetchedTree);
     
-    id<COPersistentRootMetadata> prootFetchedFirst = [store persistentRootWithUUID: [proot UUID]];
+    COPersistentRootPlist *prootFetchedFirst = [store persistentRootWithUUID: [proot UUID]];
     UKObjectsEqual(proot, prootFetchedFirst);
     
     // make a second commit
@@ -79,11 +79,11 @@ static COObject *makeTree(NSString *label)
     
     [store setCurrentVersion: token2 forBranch: [proot currentBranchUUID] ofPersistentRoot: [proot UUID]];
     
-    id<COPersistentRootMetadata> prootFetched = [store persistentRootWithUUID: [proot UUID]];
+    COPersistentRootPlist *prootFetched = [store persistentRootWithUUID: [proot UUID]];
     CORevisionID *currentState = [self currentState: prootFetched];
     UKNotNil(currentState);
     
-    fetchedTree = [store objectTreeForRevision: currentState];
+    fetchedTree = [store itemTreeForRevisionID: currentState];
     UKObjectsEqual(basicTree2, fetchedTree);
 }
 //
@@ -149,11 +149,11 @@ static COObject *makeTree(NSString *label)
 //                        initialContents: state];
 //    id<COPersistentRoot> proot = [store persistentRootWithUUID: uuid];
 //    
-//    UKObjectsEqual([NSArray arrayWithObject: uuid], [store allPersistentRootUUIDs]);
+//    UKObjectsEqual(S(uuid), [store allPersistentRootUUIDs]);
 //    
 //    [store deletePersistentRoot: uuid];
 //    
-//    UKObjectsEqual([NSArray array], [store allPersistentRootUUIDs]);
+//    UKObjectsEqual([NSSet set], [store allPersistentRootUUIDs]);
 //}
 
 //- (void)testBranch

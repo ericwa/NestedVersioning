@@ -22,7 +22,7 @@
 - (id)initWithURL: (NSURL*)aURL;
 - (NSURL*)URL;
 
-- (NSArray *) allPersistentRootUUIDs;
+- (NSSet *) persistentRootUUIDs;
 
 - (COPersistentRoot *) persistentRootWithUUID: (COUUID *)aUUID;
 

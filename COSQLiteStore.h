@@ -2,33 +2,11 @@
 
 @class COUUID;
 @class COItem;
-@class COPersistentRootState;
-@class COPersistentRootStateDelta;
 @class CORevisionID;
 @class CORevision;
 @class COItemTree;
 @class FMDatabase;
-
-/**
- * Snapshot of the state of a persistent root
- */
-@protocol COPersistentRootMetadata <NSObject>
-
-- (COUUID *) UUID;
-
-- (NSArray *) branchUUIDs;
-- (NSArray *) revisionIDs;
-
-- (COUUID *) currentBranchUUID;
-
-- (CORevisionID *)headRevisionIdForBranch: (COUUID *)aBranch;
-- (CORevisionID *)tailRevisionIdForBranch: (COUUID *)aBranch;
-- (CORevisionID *)currentStateForBranch: (COUUID *)aBranch;
-
-- (NSDictionary *) metadata;
-
-@end
-
+@class COPersistentRootPlist;
 
 @interface COSQLiteStore : NSObject
 {
@@ -55,7 +33,7 @@
 
 // FIXME: Add a variant which returns a delta (for efficiency in the case when
 // we have the parent already in mem)?
-- (COItemTree *) objectTreeForRevision: (CORevisionID *)aToken;
+- (COItemTree *) itemTreeForRevisionID: (CORevisionID *)aToken;
 
 /** @taskunit writing states */
 
@@ -66,19 +44,19 @@
 
 /** @taskunit reading persistent roots */
 
-- (NSArray *) allPersistentRootUUIDs;
+- (NSSet *) persistentRootUUIDs;
 
 // Returns a snapshot of the state of a persistent root.
-- (id <COPersistentRootMetadata>) persistentRootWithUUID: (COUUID *)aUUID;
+- (COPersistentRootPlist *) persistentRootWithUUID: (COUUID *)aUUID;
 
 
 /** @taskunit writing persistent roots */
 
-- (id <COPersistentRootMetadata>) createPersistentRootWithInitialContents: (COItemTree *)contents
-                                                                 metadata: (NSDictionary *)metadata;
+- (COPersistentRootPlist *) createPersistentRootWithInitialContents: (COItemTree *)contents
+                                                           metadata: (NSDictionary *)metadata;
 
-- (id <COPersistentRootMetadata>) createPersistentRootWithInitialRevision: (CORevisionID *)aRevision
-                                                                 metadata: (NSDictionary *)metadata;
+- (COPersistentRootPlist *) createPersistentRootWithInitialRevision: (CORevisionID *)aRevision
+                                                           metadata: (NSDictionary *)metadata;
 
 - (BOOL) deletePersistentRoot: (COUUID *)aRoot;
 

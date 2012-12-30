@@ -152,7 +152,7 @@
 }
 
 
-- (COItemTree *) objectTreeForRevision: (CORevisionID *)aToken
+- (COItemTree *) itemTreeForRevisionID: (CORevisionID *)aToken
 {
     NSParameterAssert(aToken != nil);
     COSQLiteStorePersistentRootBackingStore *backing = [self backingStoreForRevisionID: aToken];
@@ -203,19 +203,19 @@
 
 /** @taskunit persistent roots */
 
-- (NSArray *) allPersistentRootUUIDs
+- (NSSet *) persistentRootUUIDs
 {
-    NSMutableArray *result = [NSMutableArray array];
+    NSMutableSet *result = [NSMutableSet set];
     FMResultSet *rs = [db_ executeQuery: @"SELECT uuid FROM persistentroots"];
     while ([rs next])
     {
         [result addObject: [COUUID UUIDWithData: [rs dataForColumnIndex: 0]]];
     }
     [rs close];
-    return [NSArray arrayWithArray: result];
+    return [NSSet setWithSet: result];
 }
 
-- (id <COPersistentRootMetadata>) persistentRootWithUUID: (COUUID *)aUUID
+- (COPersistentRootPlist *) persistentRootWithUUID: (COUUID *)aUUID
 {
     NSData *plistBlob = nil;
     FMResultSet *rs = [db_ executeQuery: @"SELECT plist FROM persistentroots WHERE uuid = ?", [aUUID dataValue]];
@@ -251,7 +251,7 @@
 }
 
 
-- (id <COPersistentRootMetadata>) createPersistentRootWithInitialContents: (COItemTree *)contents
+- (COPersistentRootPlist *) createPersistentRootWithInitialContents: (COItemTree *)contents
                                                                  metadata: (NSDictionary *)metadata
 {
     COUUID *uuid = [COUUID UUID];
@@ -277,7 +277,7 @@
     return plist;
 }
 
-- (id <COPersistentRootMetadata>) createPersistentRootWithInitialRevision: (CORevisionID *)revId
+- (COPersistentRootPlist *) createPersistentRootWithInitialRevision: (CORevisionID *)revId
                                                                  metadata: (NSDictionary *)metadata
 {
     COUUID *uuid = [COUUID UUID];

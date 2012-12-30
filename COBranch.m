@@ -44,7 +44,7 @@
 
 - (COItemTree *)currentStateObjectTree
 {
-    return [[persistentRoot_ store] objectTreeForRevision: [self currentRevisionID]];
+    return [[persistentRoot_ store] itemTreeForRevisionID: [self currentRevisionID]];
 }
 
 - (CORevisionID *)headRevisionID

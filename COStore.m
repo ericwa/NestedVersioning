@@ -25,12 +25,12 @@
     return [store_ URL];
 }
 
-- (NSArray *) allPersistentRootUUIDs
+- (NSSet *) persistentRootUUIDs
 {
-    return [store_ allPersistentRootUUIDs];
+    return [store_ persistentRootUUIDs];
 }
 
-- (COPersistentRoot *) persistentRootEditQueue: (id<COPersistentRootMetadata>)persistentRoot
+- (COPersistentRoot *) persistentRootEditQueue: (COPersistentRootPlist *)persistentRoot
 {
     COPersistentRoot *root = [[COPersistentRoot alloc] initWithStoreEditQueue: self
                                                                                  persistentRoot: persistentRoot];
@@ -44,7 +44,7 @@
     COPersistentRoot *root = [rootForUUID_ objectForKey: aUUID];
     if (root == nil)
     {
-        id<COPersistentRootMetadata> persistentRoot = [store_ persistentRootWithUUID: aUUID];
+        COPersistentRootPlist *persistentRoot = [store_ persistentRootWithUUID: aUUID];
         if (persistentRoot != nil)
         {
             return [self persistentRootEditQueue: persistentRoot];
@@ -60,7 +60,7 @@
 - (COPersistentRoot *) createPersistentRootWithInitialContents: (COItemTree *)contents
                                                                metadata: (NSDictionary *)metadata
 {
-    id<COPersistentRootMetadata> persistentRoot = [store_ createPersistentRootWithInitialContents: contents metadata: metadata];
+    COPersistentRootPlist *persistentRoot = [store_ createPersistentRootWithInitialContents: contents metadata: metadata];
     
     return [self persistentRootEditQueue: persistentRoot];
 }
@@ -68,7 +68,7 @@
 - (COPersistentRoot *) createPersistentRootWithInitialRevision: (CORevisionID *)aRevision
                                                                metadata: (NSDictionary *)metadata
 {
-    id<COPersistentRootMetadata> persistentRoot = [store_ createPersistentRootWithInitialRevision: aRevision metadata: metadata];
+    COPersistentRootPlist *persistentRoot = [store_ createPersistentRootWithInitialRevision: aRevision metadata: metadata];
     
     return [self persistentRootEditQueue: persistentRoot];
 }

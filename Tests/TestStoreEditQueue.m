@@ -41,7 +41,7 @@ static COObject *makeTree(NSString *label)
                                                                              metadata: [NSDictionary dictionary]];
     
     // Verify that the new persistent root is saved
-    UKIntsEqual(1, [[store allPersistentRootUUIDs] count]);
+    UKIntsEqual(1, [[store persistentRootUUIDs] count]);
     
     COBranch *currentBranch = [proot contextForEditingCurrentBranch];
     CORevisionID *firstRevision = [currentBranch currentRevisionID];
