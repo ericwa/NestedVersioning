@@ -6,7 +6,7 @@
 
 @interface COEditingContext : NSObject <NSCopying>
 {
-    COUUID *rootUUID_;
+    COUUID *rootObjectUUID_;
     NSMutableDictionary *objectsByUUID_;
     
     NSMutableSet *insertedObjects_;
@@ -14,15 +14,13 @@
     NSMutableSet *modifiedObjects_;
 }
 
-- (NSSet *)allUUIDs;
+- (NSSet *) allObjectUUIDs;
 
-- (id) initWithObjectTree: (COItemTree *)aTree;
+- (id) initWithItemTree: (COItemTree *)aTree;
 
 - (COObject *) rootObject;
 
-- (COObject *)objectForUUID: (COUUID *)uuid;
-
-- (COItemTree *)objectTree;
+- (COObject *) objectForUUID: (COUUID *)uuid;
 
 /**
  * Builds a COSubtree from a set of items and the UUID
@@ -30,7 +28,7 @@
  *  - items does not contain an item with UUID aRootUUID
  *  - items contains more than one item with the same UUID
  */
-+ (COEditingContext *)editingContextWithObjectTree: (COItemTree *)aTree;
++ (COEditingContext *) editingContextWithItemTree: (COItemTree *)aTree;
 
 /**
  * Returns a copy of the reciever, not including any change tracking
@@ -38,10 +36,12 @@
  */
 - (id) copyWithZone: (NSZone *)aZone;
 
+- (COItemTree *) itemTree;
+
 /**
  * Clears change tracking
  */
-- (void) setObjectTree: (COItemTree *)aTree;
+- (void) setItemTree: (COItemTree *)aTree;
 
 #pragma mark change tracking
 

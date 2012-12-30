@@ -484,14 +484,14 @@
 	
 	COUUID *uuid = [itemB UUID];
 	
-	NSMutableSet *removedAttrs = [NSMutableSet setWithArray: [itemA attributeNames]]; // itemA may be nil => may be empty set
-	[removedAttrs minusSet: [NSSet setWithArray: [itemB attributeNames]]];
+	NSMutableSet *removedAttrs = [NSMutableSet setWithSet: [itemA attributeNames]]; // itemA may be nil => may be empty set
+	[removedAttrs minusSet: [NSSet setWithSet: [itemB attributeNames]]];
 	
-	NSMutableSet *addedAttrs = [NSMutableSet setWithArray: [itemB attributeNames]]; 
-	[addedAttrs minusSet: [NSSet setWithArray: [itemA attributeNames]]];
+	NSMutableSet *addedAttrs = [NSMutableSet setWithSet: [itemB attributeNames]];
+	[addedAttrs minusSet: [NSSet setWithSet: [itemA attributeNames]]];
 	
-	NSMutableSet *commonAttrs = [NSMutableSet setWithArray: [itemB attributeNames]];
-	[commonAttrs intersectSet: [NSSet setWithArray: [itemA attributeNames]]];
+	NSMutableSet *commonAttrs = [NSMutableSet setWithSet: [itemB attributeNames]];
+	[commonAttrs intersectSet: [NSSet setWithSet: [itemA attributeNames]]];
 	
 	
 	// process 'insert attribute's

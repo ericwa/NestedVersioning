@@ -16,7 +16,7 @@
     persistentRoot_ = aRoot;
     ASSIGN(branch_, aBranch);
     isTrackingCurrentBranch_ = track;
-    editingContext_ = [[COEditingContext alloc] initWithObjectTree: [self currentStateObjectTree]];
+    editingContext_ = [[COEditingContext alloc] initWithItemTree: [self currentStateObjectTree]];
     
     return self;
 }
@@ -69,14 +69,14 @@
     [[persistentRoot_ savedState] setCurrentState: aState forBranch: branch_];
     // FIXME: Update head/tail
     
-    [editingContext_ setObjectTree: [self currentStateObjectTree]];
+    [editingContext_ setItemTree: [self currentStateObjectTree]];
 }
 
 /** @taskunit manipulation */
 
 - (BOOL) commitChangesWithMetadata: (NSDictionary *)metadata
 {
-    CORevisionID *revId = [[persistentRoot_ store] writeItemTree: [editingContext_ objectTree]
+    CORevisionID *revId = [[persistentRoot_ store] writeItemTree: [editingContext_ itemTree]
                                                     withMetadata: metadata
                                             withParentRevisionID: [self currentState]
                                                    modifiedItems: [[editingContext_ insertedOrModifiedObjectUUIDs] allObjects]];
@@ -95,7 +95,7 @@
 
 - (void) discardChanges
 {
-    [editingContext_ setObjectTree: [self currentStateObjectTree]];
+    [editingContext_ setItemTree: [self currentStateObjectTree]];
 }
 
 - (BOOL) hasChanges

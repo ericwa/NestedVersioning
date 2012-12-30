@@ -20,7 +20,7 @@
 
 - (void) updateItem: (COItem *)anItem parentContext: (COEditingContext *)aContext parent: (COObject *)aParent
 {
-    item = [anItem mutableCopy];
+    item_ = [anItem mutableCopy];
     parentContext_ = aContext;
     parent_ = aParent;
 }
@@ -39,40 +39,40 @@
 - (void) dealloc
 {
     // FIXME Watch out that COEditingContext manages the parent_ pointer
-    [item release];
+    [item_ release];
     [super dealloc];
 }
 
 #pragma mark Access to the receivers attributes/values
 
 
-- (COEditingContext *)editingContext
+- (COEditingContext *) editingContext
 {
     return parentContext_;
 }
 
 - (COItem *) item
 {
-	return [[item copy] autorelease];
+	return [[item_ copy] autorelease];
 }
 
 - (COUUID *) UUID
 {
-	return [item UUID];
+	return [item_ UUID];
 }
 
-- (NSArray *) attributeNames
+- (NSSet *) attributeNames
 {
-	return [item attributeNames];
+	return [item_ attributeNames];
 }
 
 - (COType *) typeForAttribute: (NSString *)anAttribute
 {
-	return [item typeForAttribute: anAttribute];
+	return [item_ typeForAttribute: anAttribute];
 }
 - (id) valueForAttribute: (NSString*)anAttribute
 {
-	id rootValue = [item valueForAttribute: anAttribute];
+	id rootValue = [item_ valueForAttribute: anAttribute];
 	COType *type = [self typeForAttribute: anAttribute];
 	
 	if ([type isPrimitiveTypeEqual: [COType embeddedItemType]])
@@ -127,21 +127,21 @@
 #pragma mark Access to the tree stucture
 
 
-- (COObject *) parent
+- (COObject *) parentObject
 {
 	return parent_;
 }
 
-- (COObject *) root
+- (COObject *) rootObject
 {
 	return [parentContext_ rootObject];
 }
 
-- (BOOL) containsObject: (COObject *)aSubtree
+- (BOOL) containsObject: (COObject *)anObject
 {
-	for (; aSubtree != nil; aSubtree = [aSubtree parent])
+	for (; anObject != nil; anObject = [anObject parentObject])
 	{
-		if (aSubtree == self)
+		if (anObject == self)
 		{
 			return YES;
 		}
@@ -149,46 +149,46 @@
 	return NO;
 }
 
-- (NSSet *)allUUIDs
+- (NSSet *) allObjectUUIDs
 {
-	return [[self allDescendentSubtreeUUIDs] setByAddingObject: [self UUID]];
+	return [[self allDescendentObjectUUIDs] setByAddingObject: [self UUID]];
 }
 
-- (NSSet *)allContainedStoreItems
+- (NSSet *) allStoreItems
 {
 	NSMutableSet *result = [NSMutableSet set];
 	
-	[result addObject: [[item copy] autorelease]];
+	[result addObject: [[item_ copy] autorelease]];
 	
-	for (COObject *node in [self directDescendentSubtrees])
+	for (COObject *node in [self directDescendentObjects])
 	{
-		[result unionSet: [node allContainedStoreItems]];
+		[result unionSet: [node allStoreItems]];
 	}
 	
 	return result;
 }
 
-- (NSSet *)allDescendentSubtreeUUIDs
+- (NSSet *) allDescendentObjectUUIDs
 {
 	NSMutableSet *result = [NSMutableSet set];
 	
-	for (COObject *node in [self directDescendentSubtrees])
+	for (COObject *node in [self directDescendentObjects])
 	{
 		[result addObject: [node UUID]];
-		[result unionSet: [node allDescendentSubtreeUUIDs]];
+		[result unionSet: [node allDescendentObjectUUIDs]];
 	}
 	
 	return result;
 }
 
-- (NSSet *)directDescendentSubtreeUUIDs
+- (NSSet *) directDescendentObjectUUIDs
 {
-	return [item embeddedItemUUIDs];
+	return [item_ embeddedItemUUIDs];
 }
 
-- (NSSet *)directDescendentSubtrees
+- (NSSet *) directDescendentObjects
 {
-    NSSet *uuids = [item embeddedItemUUIDs];
+    NSSet *uuids = [item_ embeddedItemUUIDs];
 	NSMutableSet *result = [NSMutableSet setWithCapacity: [uuids count]];
     for (COUUID *uuid in uuids)
     {
@@ -198,10 +198,10 @@
 }
 
 /**
- * Searches the receiver for the subtree with the givent UUID.
+ * Searches the receiver for the Object with the givent UUID.
  * Returns nil if not present
  */
-- (COObject *) subtreeWithUUID: (COUUID *)aUUID
+- (COObject *) descendentObjectForUUID: (COUUID *)aUUID
 {
 	COObject *object = [parentContext_ objectForUUID: aUUID];
     if ([self containsObject: object])
@@ -214,46 +214,46 @@
     }
 }
 
-- (COItemPath *) itemPathOfSubtreeWithUUID: (COUUID *)aUUID
+- (COItemPath *) itemPathOfDescendentObjectWithUUID: (COUUID *)aUUID
 {
-	COObject *destSubtree = [self subtreeWithUUID: aUUID];
+	COObject *destObject = [self descendentObjectForUUID: aUUID];
 	
-	if (destSubtree == nil)
+	if (destObject == nil)
 	{
 		return nil;
 	}
 	
-	COObject *destSubtreeParent = [destSubtree parent];
+	COObject *destObjectParent = [destObject parentObject];
 	
-	// Search destSubtreeParent's attributes for [destSubtree UUID];
+	// Search destObjectParent's attributes for [destObject UUID];
 	// FIXME: Factor out?
 	
-	for (NSString *attr in [destSubtreeParent attributeNames])
+	for (NSString *attr in [destObjectParent attributeNames])
 	{
-		if ([[destSubtreeParent->item allObjectsForAttribute: attr] containsObject: [destSubtree UUID]])
+		if ([[destObjectParent->item_ allObjectsForAttribute: attr] containsObject: [destObject UUID]])
 		{
-			COType *type = [destSubtreeParent typeForAttribute: attr];
+			COType *type = [destObjectParent typeForAttribute: attr];
 			if ([type isMultivalued])
 			{
 				if ([type isOrdered])
 				{
-					NSUInteger index = [[destSubtreeParent->item allObjectsForAttribute: attr] indexOfObject: [destSubtree UUID]];
+					NSUInteger index = [[destObjectParent->item_ allObjectsForAttribute: attr] indexOfObject: [destObject UUID]];
 					
-					return [COItemPath pathWithItemUUID: [destSubtreeParent UUID]
+					return [COItemPath pathWithItemUUID: [destObjectParent UUID]
 											  arrayName: attr
 										 insertionIndex: index
 												   type: type];
 				}
 				else
 				{
-					return [COItemPath pathWithItemUUID: [destSubtreeParent UUID]
+					return [COItemPath pathWithItemUUID: [destObjectParent UUID]
 								unorderedCollectionName: attr
 												   type: type];
 				}
 			}
 			else
 			{
-				return [COItemPath pathWithItemUUID: [destSubtreeParent UUID]
+				return [COItemPath pathWithItemUUID: [destObjectParent UUID]
 										  valueName: attr
 											   type: type];
 			}
@@ -261,14 +261,14 @@
 	}
 	
 	[NSException raise: NSInternalInconsistencyException
-				format: @"COSubtree inconsistent"];
+				format: @"COObject inconsistent"];
 	return nil;
 }
 
-- (COItemTree *) objectTree
+- (COItemTree *) itemTree
 {
     NSMutableDictionary *objects = [NSMutableDictionary dictionary];
-    for (COItem *i in [self allContainedStoreItems])
+    for (COItem *i in [self allStoreItems])
     {
         [objects setObject: i forKey: [i UUID]];
     }
@@ -284,13 +284,13 @@
 	 forAttribute: (NSString*)anAttribute
 			 type: (COType *)aType
 {
-    // FIXME: Track removed objects if we overwrote a subtree
+    // FIXME: Track removed objects if we overwrote a Object
     
 	if ([aType isPrimitiveTypeEqual: [COType embeddedItemType]])
 	{
 		if (![aType isMultivalued])
 		{
-			[self addSubtree:  aValue atItemPath: [COItemPath pathWithItemUUID: [self UUID]
+			[self addObject:  aValue atItemPath: [COItemPath pathWithItemUUID: [self UUID]
                                                                               valueName: anAttribute
                                                                                    type: aType]];
 		}
@@ -304,9 +304,9 @@
 				const NSUInteger count = [array count];
 				for (NSUInteger i=0; i<count; i++)
 				{
-					COObject *aSubtree = [array objectAtIndex: i];
+					COObject *anObject = [array objectAtIndex: i];
 					
-					[self addSubtree:  aSubtree
+					[self addObject:  anObject
                                     atItemPath: [COItemPath pathWithItemUUID: [self UUID]
                                                                    arrayName: anAttribute
                                                               insertionIndex: i
@@ -315,9 +315,9 @@
 			}
 			else
 			{
-				for (COObject *aSubtree in aValue)
+				for (COObject *anObject in aValue)
 				{
-					[self addSubtree:  aSubtree
+					[self addObject:  anObject
                                     atItemPath: [COItemPath pathWithItemUUID: [self UUID]
                                                      unorderedCollectionName: anAttribute
                                                                         type: aType]];
@@ -327,7 +327,7 @@
 	}
 	else
 	{
-		[item setValue: aValue
+		[item_ setValue: aValue
 		  forAttribute: anAttribute
 				  type: aType];
         
@@ -344,13 +344,13 @@ toUnorderedAttribute: (NSString*)anAttribute
 {
 	if ([aType isPrimitiveTypeEqual: [COType embeddedItemType]])
 	{
-		[self addSubtree:  aValue atItemPath: [COItemPath pathWithItemUUID: [self UUID]
+		[self addObject:  aValue atItemPath: [COItemPath pathWithItemUUID: [self UUID]
 												  unorderedCollectionName: anAttribute
 																	 type: aType]];
 	}
 	else
 	{
-		[item addObject: aValue
+		[item_ addObject: aValue
    toUnorderedAttribute: anAttribute
 				   type: aType];
         
@@ -366,14 +366,14 @@ toUnorderedAttribute: (NSString*)anAttribute
 {
 	if ([aType isPrimitiveTypeEqual: [COType embeddedItemType]])
 	{
-		[self addSubtree:  aValue atItemPath: [COItemPath pathWithItemUUID: [self UUID]
+		[self addObject:  aValue atItemPath: [COItemPath pathWithItemUUID: [self UUID]
 																arrayName: anAttribute
 														   insertionIndex: anIndex
 																	 type: aType]];
 	}
 	else
 	{
-		[item addObject: aValue
+		[item_ addObject: aValue
 	 toOrderedAttribute: anAttribute
 				atIndex: anIndex
 				   type: aType];
@@ -386,7 +386,7 @@ toUnorderedAttribute: (NSString*)anAttribute
   toOrderedAttribute: (NSString*)anAttribute
 				type: (COType *)aType
 {
-	NSUInteger anIndex = [[item valueForAttribute: anAttribute] count];
+	NSUInteger anIndex = [[item_ valueForAttribute: anAttribute] count];
     
 	[self addObject: aValue
  toOrderedAttribute: anAttribute
@@ -394,46 +394,46 @@ toUnorderedAttribute: (NSString*)anAttribute
 			   type: aType];
 }
 
-- (void)removeValueForAttribute: (NSString*)anAttribute
+- (void) removeValueForAttribute: (NSString*)anAttribute
 {
-	if ([[item typeForAttribute: anAttribute] isPrimitiveTypeEqual: [COType embeddedItemType]])
+	if ([[item_ typeForAttribute: anAttribute] isPrimitiveTypeEqual: [COType embeddedItemType]])
 	{
-		for (COUUID *uuidToRemove in [item allObjectsForAttribute: anAttribute])
+		for (COUUID *uuidToRemove in [item_ allObjectsForAttribute: anAttribute])
 		{
             [parentContext_ removeUnreachableObjectAndChildren: uuidToRemove];
 		}
 	}
     
-	[item removeValueForAttribute: anAttribute];
+	[item_ removeValueForAttribute: anAttribute];
 }
 
 /**
- * Removes a subtree (regardless of where in the receiver or the receiver's children
+ * Removes a Object (regardless of where in the receiver or the receiver's children
  * it is located.) Throws an exception if the guven UUID is not present in the receiver.
  */
-- (void) removeSubtreeWithUUID: (COUUID *)aUUID
+- (void) removeDescendentObjectWithUUID: (COUUID *)aUUID
 {
-	[self removeSubtree: [self subtreeWithUUID: aUUID]];
+	[self removeDescendentObject: [self descendentObjectForUUID: aUUID]];
 }
 
-- (void) removeSubtree: (COObject *)aSubtree
+- (void) removeDescendentObject: (COObject *)anObject
 {
-	if (aSubtree == self)
+	if (anObject == self)
 	{
 		[NSException raise: NSInvalidArgumentException
-					format: @"-removeSubtreeWithUUID: can not remove the receiver"];
+					format: @"-removeObjectWithUUID: can not remove the receiver"];
 	}
-	if (![self containsObject: aSubtree])
+	if (![self containsObject: anObject])
 	{
 		[NSException raise: NSInvalidArgumentException
 					format: @"argument must be inside the reciever to remove it"];
 	}
 	
-	COUUID *aUUID = [aSubtree UUID];
-	COObject *parentOfSubtreeToRemove = [aSubtree parent];
-	COItemPath *itemPath = [self itemPathOfSubtreeWithUUID: aUUID];
-	NSAssert([[itemPath UUID] isEqual: [parentOfSubtreeToRemove UUID]], @"");
-	[itemPath removeValue: aUUID inStoreItem: parentOfSubtreeToRemove->item];
+	COUUID *aUUID = [anObject UUID];
+	COObject *parentOfObjectToRemove = [anObject parentObject];
+	COItemPath *itemPath = [self itemPathOfDescendentObjectWithUUID: aUUID];
+	NSAssert([[itemPath UUID] isEqual: [parentOfObjectToRemove UUID]], @"");
+	[itemPath removeValue: aUUID inStoreItem: parentOfObjectToRemove->item_];
 
     [parentContext_ removeUnreachableObjectAndChildren: aUUID];
 }
@@ -445,7 +445,7 @@ toUnorderedAttribute: (NSString*)anAttribute
 {
     // see if there are any name conflicts
     
-    NSMutableSet *conflictingNames = [NSMutableSet setWithSet: [parentContext_ allUUIDs]];
+    NSMutableSet *conflictingNames = [NSMutableSet setWithSet: [parentContext_ allObjectUUIDs]];
     [conflictingNames intersectSet: [NSSet setWithArray: [aTree itemUUIDs]]];
     
     if ([conflictingNames count] > 0)
@@ -465,9 +465,9 @@ toUnorderedAttribute: (NSString*)anAttribute
     // now, there are no name conflicts.
     
     COObject *result = [parentContext_ updateObject: [aTree rootItemUUID]
-                                     fromObjectTree: aTree
+                                     fromItemTree: aTree
                                           setParent: self];
-    [aPath insertValue: [aTree rootItemUUID] inStoreItem: self->item];
+    [aPath insertValue: [aTree rootItemUUID] inStoreItem: self->item_];
     
     // record dirty objects
 
@@ -495,45 +495,45 @@ toUnorderedAttribute: (NSString*)anAttribute
     // remove from parent
     
     COUUID *aUUID = [aObject UUID];
-	COObject *parentOfSubtreeToRemove = [aObject parent];
+	COObject *parentOfObjectToRemove = [aObject parentObject];
     
-	COItemPath *itemPath = [parentOfSubtreeToRemove itemPathOfSubtreeWithUUID: aUUID];
-	NSAssert([[itemPath UUID] isEqual: [parentOfSubtreeToRemove UUID]], @"");
-	[itemPath removeValue: aUUID inStoreItem: parentOfSubtreeToRemove->item];
-    [parentContext_ recordModifiedObjectUUID: [parentOfSubtreeToRemove UUID]];
+	COItemPath *itemPath = [parentOfObjectToRemove itemPathOfDescendentObjectWithUUID: aUUID];
+	NSAssert([[itemPath UUID] isEqual: [parentOfObjectToRemove UUID]], @"");
+	[itemPath removeValue: aUUID inStoreItem: parentOfObjectToRemove->item_];
+    [parentContext_ recordModifiedObjectUUID: [parentOfObjectToRemove UUID]];
     
     // add to self
     
-    [aPath insertValue: aUUID inStoreItem: self->item];
+    [aPath insertValue: aUUID inStoreItem: self->item_];
     aObject->parent_ = self;
     [parentContext_ recordModifiedObjectUUID: [self UUID]];
 }
 
-- (COObject *) addSubtree: (COObject *)aSubtree
+- (COObject *) addObject: (COObject *)anObject
                atItemPath: (COItemPath *)aPath
 {
     NSParameterAssert([[self UUID] isEqual: [aPath UUID]]);
  
-    if ([aSubtree editingContext] == [self editingContext])
+    if ([anObject editingContext] == [self editingContext])
     {
         // Move
-        [self addObjectSameContext: aSubtree
+        [self addObjectSameContext: anObject
                         atItemPath: aPath];
-        return aSubtree;
+        return anObject;
     }
     else
     {
         // Copy
-        return [self addObjectTree: [aSubtree objectTree]
+        return [self addObjectTree: [anObject itemTree]
                         atItemPath: aPath];
     }
 }
 
-- (void) moveSubtreeWithUUID: (COUUID *)aUUID
+- (void) moveDescendentObjectWithUUID: (COUUID *)aUUID
 				  toItemPath: (COItemPath *)aPath
 {
-	COObject *subtreeToMove = [self subtreeWithUUID: aUUID];
-	[self addSubtree: subtreeToMove
+	COObject *objectToMove = [self descendentObjectForUUID: aUUID];
+	[self addObject: objectToMove
 		  atItemPath: aPath];
 }
 
@@ -542,9 +542,9 @@ toUnorderedAttribute: (NSString*)anAttribute
 #pragma mark contents property
 
 
-- (COObject *) addTree: (COObject *)aValue
+- (COObject *) addObject: (COObject *)aValue
 {
-    return 	[self addSubtree:  aValue
+    return 	[self addObject:  aValue
 		  atItemPath: [COItemPath pathWithItemUUID: [self UUID]
 						   unorderedCollectionName: @"contents"
 											  type: [COType setWithPrimitiveType: [COType embeddedItemType]]]];
@@ -572,12 +572,12 @@ toUnorderedAttribute: (NSString*)anAttribute
 // Logging
 
 
-- (NSString *)selfDescription
+- (NSString *) selfDescription
 {
 	return [NSString stringWithFormat: @"%@ (%@)", [self valueForAttribute: @"name"], [self UUID]];
 }
 
-- (NSString *)tabs: (NSUInteger)i
+- (NSString *) tabs: (NSUInteger)i
 {
 	NSMutableString *result = [NSMutableString string];
 	for (NSUInteger j=0; j<i; j++)
@@ -585,7 +585,7 @@ toUnorderedAttribute: (NSString*)anAttribute
 	return result;
 }
 
-- (NSString *)descriptionWithIndent: (NSUInteger)i
+- (NSString *) descriptionWithIndent: (NSUInteger)i
 {
 	NSMutableString *result = [NSMutableString string];
 	[result appendFormat: @"%@%@\n", [self tabs: i], [self selfDescription]];
@@ -602,7 +602,7 @@ toUnorderedAttribute: (NSString*)anAttribute
 	return result;
 }
 
-- (NSString *)description
+- (NSString *) description
 {
 	return [self descriptionWithIndent: 0];
 }
@@ -632,19 +632,19 @@ toUnorderedAttribute: (NSString*)anAttribute
     {
         // Deep equality test between objects in two contexts
 
-        if (![item isEqual: otherObject->item])
+        if (![item_ isEqual: otherObject->item_])
         {
             return NO;
         }
         
         // Recursively call -isEqual on the NSSet of contained COObject instances
-        return [[self directDescendentSubtrees] isEqual: [otherObject directDescendentSubtrees]];
+        return [[self directDescendentObjects] isEqual: [otherObject directDescendentObjects]];
     }
 }
 
 - (NSUInteger) hash
 {
-	return [[item UUID] hash] ^ 8748262350970910369ULL;
+	return [[item_ UUID] hash] ^ 8748262350970910369ULL;
 }
 
 @end

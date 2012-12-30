@@ -53,7 +53,7 @@ static COObject *makeTree(NSString *label)
 
 - (void) testBasic
 {
-	COItemTree *basicTree = [makeTree(@"hello world") objectTree];
+	COItemTree *basicTree = [makeTree(@"hello world") itemTree];
     
     id <COPersistentRootMetadata> proot = [store createPersistentRootWithInitialContents: basicTree
                                                                                 metadata: [NSDictionary dictionary]];

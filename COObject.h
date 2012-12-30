@@ -41,20 +41,19 @@
 @interface COObject : NSObject
 {
     COEditingContext *parentContext_; // weak
-    
     COObject *parent_; // weak
-    COMutableItem *item;
+    COMutableItem *item_;
 }
 
 #pragma mark Access to the receivers attributes/values
 
-- (COEditingContext *)editingContext;
+- (COEditingContext *) editingContext;
 
 - (COItem *) item;
 
 - (COUUID *) UUID;
 
-- (NSArray *) attributeNames;
+- (NSSet *) attributeNames;
 
 - (COType *) typeForAttribute: (NSString *)anAttribute;
 
@@ -62,27 +61,27 @@
 
 #pragma mark Access to the tree stucture
 
-- (COObject *)parent;
+- (COObject *) parentObject;
 
-- (COObject *) root;
+- (COObject *) rootObject;
 
-- (BOOL) containsObject: (COObject *)aSubtree;
+- (BOOL) containsObject: (COObject *)anObject;
 
-- (NSSet *)allUUIDs;
+- (NSSet *) allObjectUUIDs;
 
-- (NSSet *)allContainedStoreItems;
+- (NSSet *) allStoreItems;
 
-- (NSSet *)allDescendentSubtreeUUIDs;
+- (NSSet *) allDescendentObjectUUIDs;
 
-- (NSSet *)directDescendentSubtreeUUIDs;
+- (NSSet *) directDescendentObjectUUIDs;
 
-- (NSSet *)directDescendentSubtrees;
+- (NSSet *) directDescendentObjects;
 
-- (COObject *) subtreeWithUUID: (COUUID *)aUUID;
+- (COObject *) descendentObjectForUUID: (COUUID *)aUUID;
 
-- (COItemPath *) itemPathOfSubtreeWithUUID: (COUUID *)aUUID;
+- (COItemPath *) itemPathOfDescendentObjectWithUUID: (COUUID *)aUUID;
 
-- (COItemTree *) objectTree;
+- (COItemTree *) itemTree;
 
 #pragma mark Mutation
 
@@ -103,24 +102,24 @@ toUnorderedAttribute: (NSString*)anAttribute
   toOrderedAttribute: (NSString*)anAttribute
 				type: (COType *)aType;
 
-- (void)removeValueForAttribute: (NSString*)anAttribute;
+- (void) removeValueForAttribute: (NSString*)anAttribute;
 
-- (void) removeSubtreeWithUUID: (COUUID *)aUUID;
+- (void) removeDescendentObjectWithUUID: (COUUID *)aUUID;
 
-- (void) removeSubtree: (COObject *)aSubtree;
+- (void) removeDescendentObject: (COObject *)anObject;
 
 #pragma mark Mutation Internal
 
-- (COObject *) addSubtree: (COObject *)aSubtree
-               atItemPath: (COItemPath *)aPath;
+- (COObject *) addObject: (COObject *)anObject
+              atItemPath: (COItemPath *)aPath;
 
-- (void) moveSubtreeWithUUID: (COUUID *)aUUID
-				  toItemPath: (COItemPath *)aPath;
+- (void) moveDescendentObjectWithUUID: (COUUID *)aUUID
+                           toItemPath: (COItemPath *)aPath;
 
 #pragma mark contents property
 
-- (COObject *) addTree: (COObject *)aValue;
+- (COObject *) addObject: (COObject *)aValue;
 
-- (NSSet*) contents;
+- (NSSet *) contents;
 
 @end

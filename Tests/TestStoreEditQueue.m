@@ -37,7 +37,7 @@ static COObject *makeTree(NSString *label)
 
 - (void) testEditQueueApis
 {
-    COPersistentRoot *proot = [store createPersistentRootWithInitialContents: [makeTree(@"root") objectTree]
+    COPersistentRoot *proot = [store createPersistentRootWithInitialContents: [makeTree(@"root") itemTree]
                                                                              metadata: [NSDictionary dictionary]];
     
     // Verify that the new persistent root is saved
@@ -45,7 +45,7 @@ static COObject *makeTree(NSString *label)
     
     COBranch *currentBranch = [proot contextForEditingCurrentBranch];
     CORevisionID *firstRevision = [currentBranch currentState];
-    COItemTree *firstState = [[currentBranch editingContext] objectTree];
+    COItemTree *firstState = [[currentBranch editingContext] itemTree];
     COUUID *initialBranchUUID = [currentBranch UUID];
     
     UKIntsEqual(1, [[proot branchUUIDs] count]);
@@ -64,13 +64,13 @@ static COObject *makeTree(NSString *label)
     
     // Commit a change to the new branch.
     
-    [[[newBranch editingContext] rootObject] addTree: makeTree(@"pizza")];
+    [[[newBranch editingContext] rootObject] addObject: makeTree(@"pizza")];
     UKTrue([newBranch hasChanges]);
     
     [newBranch commitChangesWithMetadata: [NSDictionary dictionary]];
     UKFalse([newBranch hasChanges]);
     CORevisionID *secondRevision = [newBranch currentState];
-    COItemTree *secondTree = [[newBranch editingContext] objectTree];
+    COItemTree *secondTree = [[newBranch editingContext] itemTree];
     
     UKObjectsNotEqual(firstRevision, secondRevision);
     UKObjectsNotEqual(firstState, secondTree);

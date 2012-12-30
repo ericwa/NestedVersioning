@@ -6,7 +6,7 @@
 
 @implementation COEditingContext
 
-- (NSSet *)allUUIDs
+- (NSSet *) allObjectUUIDs
 {
     return [NSSet setWithArray: [objectsByUUID_ allKeys]];
 }
@@ -15,19 +15,19 @@
 
 
 
-- (id) initWithObjectTree: (COItemTree *)aTree
+- (id) initWithItemTree: (COItemTree *)aTree
 {
     NSParameterAssert(aTree != nil);
     NSParameterAssert([aTree itemForUUID: [aTree rootItemUUID]] != nil);
     
     SUPERINIT;
-    ASSIGN(rootUUID_, [aTree rootItemUUID]);
+    ASSIGN(rootObjectUUID_, [aTree rootItemUUID]);
     objectsByUUID_ = [[NSMutableDictionary alloc] init];
     insertedObjects_ = [[NSMutableSet alloc] init];
     deletedObjects_ = [[NSMutableSet alloc] init];
     modifiedObjects_ = [[NSMutableSet alloc] init];
     
-    [self updateObject: rootUUID_ fromObjectTree: aTree setParent: nil];
+    [self updateObject: rootObjectUUID_ fromItemTree: aTree setParent: nil];
     
     return self;
 }
@@ -40,13 +40,13 @@
     COItemTree *tree = [[[COItemTree alloc] initWithItemForUUID: [NSDictionary dictionaryWithObject: item forKey: [item UUID]]
                                                               rootItemUUID: [item UUID]] autorelease];
     
-    return [self initWithObjectTree: tree];
+    return [self initWithItemTree: tree];
 }
 
 - (void) dealloc
 {
     [objectsByUUID_ release];
-    [rootUUID_ release];
+    [rootObjectUUID_ release];
     [insertedObjects_ release];
     [deletedObjects_ release];
     [modifiedObjects_ release];
@@ -55,15 +55,15 @@
 
 - (COObject *) rootObject
 {
-    return [self objectForUUID: rootUUID_];
+    return [self objectForUUID: rootObjectUUID_];
 }
 
-- (COObject *)objectForUUID: (COUUID *)uuid
+- (COObject *) objectForUUID: (COUUID *)uuid
 {
     return [objectsByUUID_ objectForKey: uuid];
 }
 
-- (COItemTree *)objectTree
+- (COItemTree *) itemTree
 {
     NSMutableDictionary *itemByUUID = [NSMutableDictionary dictionary];
     for (COUUID *uuid in objectsByUUID_)
@@ -72,17 +72,17 @@
                        forKey: uuid];
     }
     return [[[COItemTree alloc] initWithItemForUUID: itemByUUID
-                                                 rootItemUUID: rootUUID_] autorelease];
+                                                 rootItemUUID: rootObjectUUID_] autorelease];
 }
 
-+ (COEditingContext *)editingContextWithObjectTree: (COItemTree *)aTree
++ (COEditingContext *) editingContextWithItemTree: (COItemTree *)aTree
 {
-    return [[[self alloc] initWithObjectTree: aTree] autorelease];
+    return [[[self alloc] initWithItemTree: aTree] autorelease];
 }
 
 - (id) copyWithZone: (NSZone *)aZone
 {
-    return [[[self class] alloc] initWithObjectTree: [self objectTree]];
+    return [[[self class] alloc] initWithItemTree: [self itemTree]];
 }
 
 - (BOOL) isEqual:(id)object
@@ -107,24 +107,24 @@
 
 - (NSUInteger) hash
 {
-	return [rootUUID_ hash] ^ 13803254444065375360ULL;
+	return [rootObjectUUID_ hash] ^ 13803254444065375360ULL;
 }
 
-- (void) setObjectTree: (COItemTree *)aTree
+- (void) setItemTree: (COItemTree *)aTree
 {
     [self clearChangeTracking];
     
-    NSSet *initialUUIDs = [[self rootObject] allUUIDs];
+    NSSet *initialUUIDs = [[self rootObject] allObjectUUIDs];
     
-    ASSIGN(rootUUID_, [aTree rootItemUUID]);
+    ASSIGN(rootObjectUUID_, [aTree rootItemUUID]);
     
-    [self updateObject: rootUUID_
-        fromObjectTree: aTree
+    [self updateObject: rootObjectUUID_
+        fromItemTree: aTree
              setParent: nil];
     
     // The update is now complete. Remove orphans
     
-    NSMutableSet *orphanedUUIDs = [NSMutableSet setWithSet: [[self rootObject] allUUIDs]];
+    NSMutableSet *orphanedUUIDs = [NSMutableSet setWithSet: [[self rootObject] allObjectUUIDs]];
     [orphanedUUIDs minusSet: initialUUIDs];
     
     NSLog(@"setObjectTree: orphaned objects: %@", orphanedUUIDs);
@@ -173,7 +173,7 @@
 
 - (void) removeUnreachableObjectAndChildren: (COUUID *)aUUID
 {
-    NSParameterAssert(![aUUID isEqual: rootUUID_]);
+    NSParameterAssert(![aUUID isEqual: rootObjectUUID_]);
 
     COObject *object = [objectsByUUID_ objectForKey: aUUID];
     if (object == nil)
@@ -181,10 +181,10 @@
         return; // nothing to do since the object is not in memory
     }
     
-    NSAssert(![[[object parent] directDescendentSubtreeUUIDs] containsObject: [object UUID]],
+    NSAssert(![[[object parentObject] directDescendentObjectUUIDs] containsObject: [object UUID]],
              @"%@ should have already been detached from its parent", aUUID);
     
-    for (COUUID *uuid in [object allDescendentSubtreeUUIDs])
+    for (COUUID *uuid in [object allDescendentObjectUUIDs])
     {
         COObject *objectToRemove = [self objectForUUID: uuid];
         [objectToRemove markAsRemovedFromContext];
@@ -242,7 +242,7 @@
 }
 
 - (COObject *) updateObject: (COUUID *)aUUID
-             fromObjectTree: (COItemTree *)aTree
+             fromItemTree: (COItemTree *)aTree
                   setParent: (COObject *)parent
 {
     return [self updateObject: aUUID

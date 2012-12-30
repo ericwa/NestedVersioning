@@ -139,9 +139,9 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 	return uuid;
 }
 
-- (NSArray *) attributeNames
+- (NSSet *) attributeNames
 {
-	return [types allKeys];
+	return [NSSet setWithArray: [types allKeys]];
 }
 
 - (COType *) typeForAttribute: (NSString *)anAttribute

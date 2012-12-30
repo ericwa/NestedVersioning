@@ -5,7 +5,7 @@
 @implementation CORevisionID
 
 - (id) initWithPersistentRootBackingStoreUUID: (COUUID *)aUUID
-                    revisionIndex: (int64_t)anIndex
+                                revisionIndex: (int64_t)anIndex
 {
     self = [super init];
     if (self != nil)
@@ -48,7 +48,7 @@
 - (CORevisionID *) revisionIDWithRevisionIndex: (int64_t)anIndex
 {
     return [[[CORevisionID alloc] initWithPersistentRootBackingStoreUUID: backingStoreUUID_
-                                               revisionIndex: anIndex] autorelease];
+                                                           revisionIndex: anIndex] autorelease];
 }
 
 - (id) plist
