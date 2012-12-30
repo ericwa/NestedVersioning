@@ -440,8 +440,8 @@ toUnorderedAttribute: (NSString*)anAttribute
 
 #pragma mark Mutation Internal
 
-- (COObject *) addObjectTree: (COItemTree *)aTree
-                  atItemPath: (COItemPath *)aPath
+- (COObject *) addItemTree: (COItemTree *)aTree
+                atItemPath: (COItemPath *)aPath
 {
     // see if there are any name conflicts
     
@@ -524,8 +524,8 @@ toUnorderedAttribute: (NSString*)anAttribute
     else
     {
         // Copy
-        return [self addObjectTree: [anObject itemTree]
-                        atItemPath: aPath];
+        return [self addItemTree: [anObject itemTree]
+                      atItemPath: aPath];
     }
 }
 

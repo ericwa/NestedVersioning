@@ -3,7 +3,7 @@
 #import "COBranch.h"
 #import "COMacros.h"
 #import "COPersistentRootPlist.h"
-#import "COEditQueuePrivate.h"
+#import "COPersistentRootPrivate.h"
 #import "COSQLiteStore.h"
 
 @implementation COPersistentRoot
@@ -16,14 +16,14 @@ NSString *kCOPersistentRootName = @"COPersistentRootName";
     SUPERINIT;
     rootStore_ = aRootStore;
     savedState_ = [[COPersistentRootPlist alloc] initWithPersistentRootPlist: metadata];
-    branchEditQueueForUUID_ = [[NSMutableDictionary alloc] init];
+    branchForUUID_ = [[NSMutableDictionary alloc] init];
     return self;
 }
 
 - (void) dealloc
 {
     [savedState_ release];
-    [branchEditQueueForUUID_ release];
+    [branchForUUID_ release];
     [super dealloc];
 }
 
@@ -81,13 +81,13 @@ NSString *kCOPersistentRootName = @"COPersistentRootName";
     // FIXME: Throw exception if not ok?
     [savedState_ setCurrentBranchUUID: aUUID];
     
-    if (currentBranchEditQueue_ != nil)
+    if (currentBranch_ != nil)
     {
-        [currentBranchEditQueue_ setBranch: aUUID];
+        [currentBranch_ setBranch: aUUID];
     }
 }
 
-- (NSArray *) allCommits
+- (NSArray *) revisionIDs
 {
     return [savedState_ revisionIDs];
 }
@@ -102,9 +102,9 @@ NSString *kCOPersistentRootName = @"COPersistentRootName";
     ASSIGN(savedState_, [[self store] persistentRootWithUUID: [self UUID]]);
     
     // Update current branch edit queue
-    if (currentBranchEditQueue_ != nil)
+    if (currentBranch_ != nil)
     {
-        [currentBranchEditQueue_ setBranch: aBranch];
+        [currentBranch_ setBranch: aBranch];
     }
     
     return [self contextForEditingBranchWithUUID: aBranch];
@@ -112,19 +112,19 @@ NSString *kCOPersistentRootName = @"COPersistentRootName";
 
 - (COBranch *) contextForEditingCurrentBranch
 {
-    if (currentBranchEditQueue_ == nil)
+    if (currentBranch_ == nil)
     {
-        currentBranchEditQueue_ = [[COBranch alloc] initWithPersistentRoot: self
+        currentBranch_ = [[COBranch alloc] initWithPersistentRoot: self
                                                                              branch: [self currentBranchUUID]
                                                                  trackCurrentBranch: YES];
         
     }
-    return currentBranchEditQueue_;
+    return currentBranch_;
 }
 
 - (COBranch *) contextForEditingBranchWithUUID: (COUUID *)aUUID
 {
-    COBranch *cached = [branchEditQueueForUUID_ objectForKey: aUUID];
+    COBranch *cached = [branchForUUID_ objectForKey: aUUID];
     if (cached != nil)
     {
         return cached;
@@ -135,7 +135,7 @@ NSString *kCOPersistentRootName = @"COPersistentRootName";
         COBranch *branch = [[[COBranch alloc] initWithPersistentRoot: self
                                                                                 branch: aUUID
                                                                     trackCurrentBranch: NO] autorelease];
-        [branchEditQueueForUUID_ setObject: branch forKey: aUUID];        
+        [branchForUUID_ setObject: branch forKey: aUUID];        
         return branch;
     }
     

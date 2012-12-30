@@ -36,7 +36,7 @@
     
     [self setGraphRenderer: [[[EWGraphRenderer alloc] initWithCommits: allCommitsOnAllBranches
                                                         branchCommits: [aBranch allCommits]
-                                                        currentCommit: [aBranch currentState]
+                                                        currentCommit: [aBranch currentRevisionID]
                                                                 store: aStore] autorelease]];
 }
 
@@ -222,7 +222,7 @@
     
     EWDocument *doc = [[NSDocumentController sharedDocumentController] currentDocument];
     
-    [doc loadStateToken: [[[doc currentPersistentRoot] currentBranch] currentState]];
+    [doc loadStateToken: [[[doc currentPersistentRoot] currentBranch] currentRevisionID]];
 }
 
 @end

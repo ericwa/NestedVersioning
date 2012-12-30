@@ -121,7 +121,7 @@
 
 - (void) recordNewState: (COSubtree*)aTree
 {
-    CORevisionID *token = [[persistentRoot_ currentBranch] currentState];
+    CORevisionID *token = [[persistentRoot_ currentBranch] currentRevisionID];
     
     COPersistentRootState *newState = [COPersistentRootState stateWithTree: aTree];
     CORevisionID *token2 = [store_ addState: newState parentState: token];
@@ -180,7 +180,7 @@
     
     ASSIGN(persistentRoot_, aMetadata);
     ASSIGN(editingBranch_, [[persistentRoot_ currentBranch] UUID]);
-    [self loadStateToken: [[persistentRoot_ currentBranch] currentState]];
+    [self loadStateToken: [[persistentRoot_ currentBranch] currentRevisionID]];
     
     for (NSWindowController *wc in [self windowControllers])
     {

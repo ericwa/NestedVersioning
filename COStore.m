@@ -1,6 +1,6 @@
 #import "COStore.h"
 #import "COMacros.h"
-#import "COEditQueuePrivate.h"
+#import "COPersistentRootPrivate.h"
 #import "COSQLiteStore.h"
 
 @implementation COStore

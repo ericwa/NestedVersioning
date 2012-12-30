@@ -1,7 +1,7 @@
 #import "COBranch.h"
 #import "COMacros.h"
 #import "COPersistentRoot.h"
-#import "COEditQueuePrivate.h"
+#import "COPersistentRootPrivate.h"
 #import "COItemTree.h"
 #import "COSQLiteStore.h"
 #import "COEditingContext.h"
@@ -37,29 +37,29 @@
     return branch_;
 }
 
-- (CORevisionID *)currentState
+- (CORevisionID *)currentRevisionID
 {
     return [[persistentRoot_ savedState] currentStateForBranch: branch_];
 }
 
 - (COItemTree *)currentStateObjectTree
 {
-    return [[persistentRoot_ store] objectTreeForRevision: [self currentState]];
+    return [[persistentRoot_ store] objectTreeForRevision: [self currentRevisionID]];
 }
 
-- (CORevisionID *)head
+- (CORevisionID *)headRevisionID
 {
     return [[persistentRoot_ savedState] headRevisionIdForBranch: branch_];
 }
 
-- (CORevisionID *)tail
+- (CORevisionID *)tailRevisionID
 {
     return [[persistentRoot_ savedState] tailRevisionIdForBranch: branch_];
 }
 
 // commits immediately. discards any uncommitted edits.
 // moves the current state pointer of the branch.
-- (void) setCurrentState: (CORevisionID *)aState
+- (void) setCurrentRevisionID: (CORevisionID *)aState
 {
     BOOL ok = [[persistentRoot_ store] setCurrentVersion: aState
                                                forBranch: branch_
@@ -78,7 +78,7 @@
 {
     CORevisionID *revId = [[persistentRoot_ store] writeItemTree: [editingContext_ itemTree]
                                                     withMetadata: metadata
-                                            withParentRevisionID: [self currentState]
+                                            withParentRevisionID: [self currentRevisionID]
                                                    modifiedItems: [[editingContext_ insertedOrModifiedObjectUUIDs] allObjects]];
     [editingContext_ clearChangeTracking];
     

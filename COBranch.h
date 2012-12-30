@@ -20,13 +20,13 @@
 - (COPersistentRoot *) persistentRoot;
 - (COUUID *) UUID;
 
-- (CORevisionID *)currentState;
-- (CORevisionID *)head;
-- (CORevisionID *)tail;
+- (CORevisionID *) currentRevisionID;
+- (CORevisionID *) headRevisionID;
+- (CORevisionID *) tailRevisionID;
 
 // commits immediately. discards any uncommitted edits.
 // moves the current state pointer of the branch.
-- (void) setCurrentState: (CORevisionID *)aState;
+- (void) setCurrentRevisionID: (CORevisionID *)aState;
 
 /** @taskunit manipulation */
 
@@ -34,6 +34,6 @@
 - (void) discardChanges;
 - (BOOL) hasChanges;
 
-- (COEditingContext *)editingContext;
+- (COEditingContext *) editingContext;
 
 @end

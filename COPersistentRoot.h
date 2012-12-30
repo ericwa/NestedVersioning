@@ -28,9 +28,9 @@
      * within the context of this COPersistentRootEditQueue
      * instance). 
      */
-    COBranch *currentBranchEditQueue_;
+    COBranch *currentBranch_;
     
-    NSMutableDictionary *branchEditQueueForUUID_;
+    NSMutableDictionary *branchForUUID_;
 }
 
 - (COUUID *) UUID;
@@ -41,7 +41,7 @@
 // commits immediately
 - (void) setMetadata: (NSDictionary *)theMetadata;
 
-- (NSString *)name;
+- (NSString *) name;
 // commits immediately
 - (void) setName: (NSString *)aName;
 
@@ -56,7 +56,7 @@
 /**
  * @returns array of CORevisionID
  */
-- (NSArray *) allCommits;
+- (NSArray *) revisionIDs;
 
 // editing context
 
@@ -71,7 +71,7 @@
  * Commits the new branch immediately
  */
 - (COBranch *) createBranchAtRevision: (CORevisionID *)aRevision
-                                    setCurrent: (BOOL)setCurrent;
+                           setCurrent: (BOOL)setCurrent;
 
 
 /**
