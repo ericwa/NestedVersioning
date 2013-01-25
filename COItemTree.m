@@ -50,9 +50,20 @@
     return [itemForUUID_ objectForKey: aUUID];
 }
 
+- (void) collectAllDescendentsOfItem: (COUUID *)aUUID inSet: (NSMutableSet *)aSet
+{
+	[aSet addObject: aUUID];
+	for (COUUID *child in [[self itemForUUID: aUUID] embeddedItemUUIDs])
+	{
+        [self collectAllDescendentsOfItem: child inSet: aSet];
+	}
+}
+
 - (NSArray *) itemUUIDs
 {
-    return [itemForUUID_ allKeys];
+    NSMutableSet *result = [NSMutableSet set];
+    [self collectAllDescendentsOfItem: [self rootItemUUID] inSet: result];
+    return [result allObjects];
 }
 
 - (COItemTree *) itemTreeWithNameMapping: (NSDictionary *)aMapping;

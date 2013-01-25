@@ -3,24 +3,23 @@
 #import "COArrayDiff.h"
 
 @class COUUID;
-@class COSubtree;
 @class COMutableItem;
-
+@class COItemTree;
 @class COSubtreeEdit;
-@class COSubtreeConflict;
-@class COSubtreeDiff;
+@class COItemTreeConflict;
+@class COItemTreeDiff;
 @class COSetDiff, COArrayDiff;
 @class COType;
 @class CODiffDictionary;
 
-@interface COSubtreeConflict : NSObject // not publically copyable.
+@interface COItemTreeConflict : NSObject // not publically copyable.
 {
 	@public
-	COSubtreeDiff *parentDiff; /* weak reference */
+	COItemTreeDiff *parentDiff; /* weak reference */
 	NSMutableDictionary *editsForSourceIdentifier; /* id => NSMutableSet of COSubtreeEdit*/
 }
 
-- (COSubtreeDiff *) parentDiff;
+- (COItemTreeDiff *) parentDiff;
 
 - (NSSet *) sourceIdentifiers;
 
@@ -50,7 +49,7 @@
  * - conflicts arise when the same subtree is inserted in multiple places.
  * - note that a _COSubtree_ cannot exist in an inconsistent state.
  */
-@interface COSubtreeDiff : NSObject <NSCopying, CODiffArraysDelegate>
+@interface COItemTreeDiff : NSObject <NSCopying, CODiffArraysDelegate>
 {
 	COUUID *oldRoot;
 	COUUID *newRoot;
@@ -68,13 +67,13 @@
 	NSMutableSet *valueConflicts; // e.g. set attr to "x" and set attr to "y"
 }
 
-+ (COSubtreeDiff *) diffSubtree: (COSubtree *)a
-					withSubtree: (COSubtree *)b
-			   sourceIdentifier: (id)aSource;
++ (COItemTreeDiff *) diffItemTree: (COItemTree *)a
+					withItemTree: (COItemTree *)b
+                sourceIdentifier: (id)aSource;
 
-- (COSubtree *) subtreeWithDiffAppliedToSubtree: (COSubtree *)aSubtree;
+- (COItemTree *) itemTreeWithDiffAppliedToItemTree: (COItemTree *)aSubtree;
 
-- (COSubtreeDiff *)subtreeDiffByMergingWithDiff: (COSubtreeDiff *)other;
+- (COItemTreeDiff *)itemTreeDiffByMergingWithDiff: (COItemTreeDiff *)other;
 
 - (BOOL) hasConflicts;
 
@@ -107,7 +106,7 @@
  * caller should subsequently insert or update edits to reflect the
  * resolution of the conflict.
  */
-- (void) removeConflict: (COSubtreeConflict *)aConflict;
+- (void) removeConflict: (COItemTreeConflict *)aConflict;
 - (void) addEdit: (COSubtreeEdit *)anEdit;
 - (void) removeEdit: (COSubtreeEdit *)anEdit;
 

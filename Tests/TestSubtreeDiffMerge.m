@@ -8,6 +8,7 @@
 
 @implementation TestSubtreeDiffMerge
 
+#if 0
 - (void) testBasic
 {
 	COSubtree *t1 = [COSubtree subtree];
@@ -571,5 +572,6 @@
 	UKObjectsEqual(@"diff13", [edit1diff13_2 sourceIdentifier]);
 	 */
 }
+#endif
 
 @end

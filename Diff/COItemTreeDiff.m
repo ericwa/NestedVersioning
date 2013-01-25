@@ -1,8 +1,8 @@
-#import "COSubtreeDiff.h"
+#import "COItemTreeDiff.h"
 #import "COMacros.h"
 #import "COUUID.h"
-#import "COSubtree.h"
 #import "COItem.h"
+#import "COItemTree.h"
 #import "COArrayDiff.h"
 #import "COSubtreeEdits.h"
 
@@ -128,9 +128,9 @@
 
 
 
-@implementation COSubtreeConflict
+@implementation COItemTreeConflict
 
-- (id) initWithParentDiff: (COSubtreeDiff *)aParent
+- (id) initWithParentDiff: (COItemTreeDiff *)aParent
 {
 	SUPERINIT;
 	
@@ -142,7 +142,7 @@
 
 - (id) copyWithZone: (NSZone *)aZone
 {
-	COSubtreeConflict *aCopy = [[[self class] allocWithZone: aZone] init];
+	COItemTreeConflict *aCopy = [[[self class] allocWithZone: aZone] init];
 	aCopy->parentDiff = nil;
 	aCopy->editsForSourceIdentifier = [[NSMutableDictionary alloc] init];
 	for (id aSource in editsForSourceIdentifier)
@@ -161,7 +161,7 @@
 	[super dealloc];
 }
 
-- (COSubtreeDiff *) parentDiff
+- (COItemTreeDiff *) parentDiff
 {
 	return parentDiff;
 }
@@ -255,7 +255,7 @@
 
 
 
-@implementation COSubtreeDiff
+@implementation COItemTreeDiff
 
 #pragma mark other stuff
 
@@ -289,7 +289,7 @@
 
 - (id) copyWithZone:(NSZone *)zone
 {
-	COSubtreeDiff *result = [[[self class] alloc] init];
+	COItemTreeDiff *result = [[[self class] alloc] init];
 	result->oldRoot = [oldRoot copyWithZone: zone];
 	result->newRoot = [newRoot copyWithZone: zone];
 	result->diffDict = [diffDict copyWithZone: zone];
@@ -305,23 +305,23 @@
 	result->valueConflicts = [[NSMutableSet alloc] initWithSet: valueConflicts
 													 copyItems: YES];
 	
-	for (COSubtreeConflict *conflict in result->embeddedItemInsertionConflicts)
+	for (COItemTreeConflict *conflict in result->embeddedItemInsertionConflicts)
 	{
 		conflict->parentDiff = result;
 	}
-	for (COSubtreeConflict *conflict in result->equalEditConflicts)
+	for (COItemTreeConflict *conflict in result->equalEditConflicts)
 	{
 		conflict->parentDiff = result;
 	}
-	for (COSubtreeConflict *conflict in result->sequenceEditConflicts)
+	for (COItemTreeConflict *conflict in result->sequenceEditConflicts)
 	{
 		conflict->parentDiff = result;
 	}
-	for (COSubtreeConflict *conflict in result->editTypeConflicts)
+	for (COItemTreeConflict *conflict in result->editTypeConflicts)
 	{
 		conflict->parentDiff = result;
 	}
-	for (COSubtreeConflict *conflict in result->valueConflicts)
+	for (COItemTreeConflict *conflict in result->valueConflicts)
 	{
 		conflict->parentDiff = result;
 	}	
@@ -546,17 +546,17 @@
 	}
 }
 
-+ (COSubtreeDiff *) diffSubtree: (COSubtree *)a
-					withSubtree: (COSubtree *)b
-			   sourceIdentifier: (id)aSource
++ (COItemTreeDiff *) diffItemTree: (COItemTree *)a
+					withItemTree: (COItemTree *)b
+                sourceIdentifier: (id)aSource
 {
-	COSubtreeDiff *result = [[[self alloc] initWithOldRootUUID: [a UUID]
-												   newRootUUID: [b UUID]] autorelease];
+	COItemTreeDiff *result = [[[self alloc] initWithOldRootUUID: [a rootItemUUID]
+												   newRootUUID: [b rootItemUUID]] autorelease];
 
-	for (COUUID *aUUID in [b allUUIDs])
+	for (COUUID *aUUID in [b itemUUIDs])
 	{
-		COItem *commonItemA = [[a subtreeWithUUID: aUUID] item]; // may be nil if the item was inserted in b
-		COItem *commonItemB = [[b subtreeWithUUID: aUUID] item];
+		COItem *commonItemA = [a itemForUUID: aUUID]; // may be nil if the item was inserted in b
+		COItem *commonItemB = [b itemForUUID: aUUID];
 		
 		[result _diffItemBefore: commonItemA after: commonItemB sourceIdentifier: aSource];
 	}
@@ -668,7 +668,7 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 				format: @"unknown edit type %@", anyEdit];
 }
 
-- (COSubtree *) subtreeWithDiffAppliedToSubtree: (COSubtree *)aSubtree
+- (COItemTree *) itemTreeWithDiffAppliedToItemTree: (COItemTree *)anItemTree
 {
 	/**
 	does applying a diff to a subtree in-place even make sense?
@@ -678,7 +678,7 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 	 hence all pointers to within the subtree must be discarded
 	 
 	 also, if the root changes UUID, we would have to keep the same
-	 COSubtree object but change its UUID. sounds like applying 
+	 COItemTree object but change its UUID. sounds like applying 
 	 diff in-place doesn't make much sense.
 	 
 		 => or we could require that subtree diffs don't change the root UUID.
@@ -687,10 +687,10 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 	 
 	 */
 
-	if (![[[aSubtree root] UUID] isEqual: oldRoot])
+	if (![[anItemTree rootItemUUID] isEqual: oldRoot])
 	{
 		[NSException raise: NSInvalidArgumentException
-					format: @"diff was created from a subtree with UUID %@ and being applied to a subtree with UUID %@", oldRoot, [[aSubtree root] UUID]];
+					format: @"diff was created from a subtree with UUID %@ and being applied to a subtree with UUID %@", oldRoot, [anItemTree rootItemUUID]];
 	}
 	
 	if ([self hasConflicts])
@@ -703,8 +703,9 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 	
 	NSMutableDictionary *newItems = [NSMutableDictionary dictionary];
 	
-	for (COItem *oldItem in [aSubtree allContainedStoreItems])
+	for (COUUID *oldItemUUID in [anItemTree itemUUIDs])
 	{
+        COItem *oldItem = [anItemTree itemForUUID: oldItemUUID];
 		[newItems setObject: [[oldItem mutableCopy] autorelease]
 					 forKey: [oldItem UUID]];
 	}
@@ -732,11 +733,11 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 		}
 	}
 	
-	return [COSubtree subtreeWithItemSet: [NSSet setWithArray: [newItems allValues]]
-								rootUUID: newRoot];
+	return [[[COItemTree alloc] initWithItemForUUID: newItems
+                                       rootItemUUID: newRoot] autorelease];
 }
 
-- (void) mergeWith: (COSubtreeDiff *)other
+- (void) mergeWith: (COItemTreeDiff *)other
 {
 	if (![other->oldRoot isEqual: self->oldRoot]
 		|| ![other->newRoot isEqual: self->newRoot])
@@ -751,16 +752,16 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 	}
 }
 
-- (COSubtreeDiff *)subtreeDiffByMergingWithDiff: (COSubtreeDiff *)other
+- (COItemTreeDiff *)itemTreeDiffByMergingWithDiff: (COItemTreeDiff *)other
 {
-	COSubtreeDiff *result = [[self copy] autorelease];
+	COItemTreeDiff *result = [[self copy] autorelease];
 	[result mergeWith: other];
 	return result;
 }
 
 - (BOOL) hasConflicts
 {	
-	for (COSubtreeConflict *conflict in [self conflicts])
+	for (COItemTreeConflict *conflict in [self conflicts])
 	{
 		if (![conflict isNonconflicting])
 			return YES;
@@ -821,7 +822,7 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
  * -[self removeEdit:] which will handle updating those
  * other conflicts.)
  */
-- (void) removeConflict: (COSubtreeConflict *)aConflict
+- (void) removeConflict: (COItemTreeConflict *)aConflict
 {
 	for (COSubtreeEdit *edit in [aConflict allEdits])
 	{
@@ -834,11 +835,11 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 	[valueConflicts removeObject: aConflict];
 }
 
-- (COSubtreeConflict *) findOrCreateConflictInMutableSet: (NSMutableSet *)aSet containingEdit: (COSubtreeEdit *)existingEdit
+- (COItemTreeConflict *) findOrCreateConflictInMutableSet: (NSMutableSet *)aSet containingEdit: (COSubtreeEdit *)existingEdit
 {
-	COSubtreeConflict *conflict = nil;
+	COItemTreeConflict *conflict = nil;
 	
-	for (COSubtreeConflict *aConflict in aSet)
+	for (COItemTreeConflict *aConflict in aSet)
 	{
 		if ([[aConflict allEdits] containsObject: existingEdit])
 		{
@@ -849,7 +850,7 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 	
 	if (conflict == nil)
 	{
-		conflict = [[[COSubtreeConflict alloc] initWithParentDiff: self] autorelease];
+		conflict = [[[COItemTreeConflict alloc] initWithParentDiff: self] autorelease];
 		[conflict addEdit: existingEdit];
 		[aSet addObject: conflict];
 	}
@@ -865,7 +866,7 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 
 - (void) recordEmbeddedItemInsertionConflictEdit: (COSubtreeEdit *)newEdit withEdit: (COSubtreeEdit *)existingEdit
 {
-	COSubtreeConflict *conflict = [self findOrCreateConflictInMutableSet: embeddedItemInsertionConflicts containingEdit: existingEdit];
+	COItemTreeConflict *conflict = [self findOrCreateConflictInMutableSet: embeddedItemInsertionConflicts containingEdit: existingEdit];
 	[conflict addEdit: newEdit];
 }
 
@@ -876,7 +877,7 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 
 - (void) recordEqualEditConflictEdit: (COSubtreeEdit *)newEdit withEdit: (COSubtreeEdit *)existingEdit
 {
-	COSubtreeConflict *conflict = [self findOrCreateConflictInMutableSet: equalEditConflicts containingEdit: existingEdit];
+	COItemTreeConflict *conflict = [self findOrCreateConflictInMutableSet: equalEditConflicts containingEdit: existingEdit];
 	[conflict addEdit: newEdit];
 }
 
@@ -887,7 +888,7 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 
 - (void) recordSequenceEditConflictEdit: (COSubtreeEdit *)newEdit withEdit: (COSubtreeEdit *)existingEdit
 {
-	COSubtreeConflict *conflict = [self findOrCreateConflictInMutableSet: sequenceEditConflicts containingEdit: existingEdit];
+	COItemTreeConflict *conflict = [self findOrCreateConflictInMutableSet: sequenceEditConflicts containingEdit: existingEdit];
 	[conflict addEdit: newEdit];
 }
 
@@ -898,7 +899,7 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 
 - (void) recordEditTypeConflictEdit: (COSubtreeEdit *)newEdit withEdit: (COSubtreeEdit *)existingEdit
 {
-	COSubtreeConflict *conflict = [self findOrCreateConflictInMutableSet: editTypeConflicts containingEdit: existingEdit];
+	COItemTreeConflict *conflict = [self findOrCreateConflictInMutableSet: editTypeConflicts containingEdit: existingEdit];
 	[conflict addEdit: newEdit];
 }
 
@@ -909,7 +910,7 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 
 - (void) recordValueConflictEdit: (COSubtreeEdit *)newEdit withEdit: (COSubtreeEdit *)existingEdit
 {
-	COSubtreeConflict *conflict = [self findOrCreateConflictInMutableSet: valueConflicts containingEdit: existingEdit];
+	COItemTreeConflict *conflict = [self findOrCreateConflictInMutableSet: valueConflicts containingEdit: existingEdit];
 	[conflict addEdit: newEdit];
 }
 
@@ -1030,7 +1031,7 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 
 - (void) _updateConflictsForRemovingEdit: (COSubtreeEdit *)anEdit
 {
-	for (COSubtreeConflict *conflict in [self conflicts])
+	for (COItemTreeConflict *conflict in [self conflicts])
 	{
 		for (COSubtreeEdit *edit in [conflict allEdits])
 		{
