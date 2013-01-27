@@ -283,6 +283,24 @@ static id importValueFromPlist(id aPlist)
 	return [NSSet setWithSet: result];
 }
 
+- (NSSet *) attachments
+{
+	NSMutableSet *result = [NSMutableSet set];
+	
+	for (NSString *key in [self attributeNames])
+	{
+		COType *type = [self typeForAttribute: key];
+		if ([type isPrimitiveTypeEqual: [COType attachmentType]])
+		{
+			for (NSData *embedded in [self allObjectsForAttribute: key])
+			{
+				[result addObject: embedded];
+			}
+		}
+	}
+	return [NSSet setWithSet: result];
+}
+
 - (NSString *)description
 {
 	NSMutableString *result = [NSMutableString string];

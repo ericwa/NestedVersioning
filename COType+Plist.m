@@ -3,15 +3,7 @@
 #import "COUUID.h"
 #import "COPath.h"
 
-@interface COInt64Type (Plist)
-@end
-@interface CODoubleType (Plist)
-@end
-@interface COStringType (Plist)
-@end
-@interface COFullTextIndexableStringType (Plist)
-@end
-@interface COBlobType (Plist)
+@interface COPrimitiveType (Plist)
 @end
 @interface COCommitType (Plist)
 @end
@@ -23,67 +15,7 @@
 @end
 
 
-@implementation COInt64Type (Plist)
-
-- (id) plistValueForValue: (id)aValue
-{
-	return aValue;
-}
-
-- (id) valueForPlistValue: (id)aPlist
-{
-	return aPlist;
-}
-
-@end
-
-
-@implementation CODoubleType (Plist)
-
-- (id) plistValueForValue: (id)aValue
-{
-	return aValue;
-}
-
-- (id) valueForPlistValue: (id)aPlist
-{
-	return aPlist;
-}
-
-@end
-
-
-@implementation COStringType (Plist)
-
-- (id) plistValueForValue: (id)aValue
-{
-	return aValue;
-}
-
-- (id) valueForPlistValue: (id)aPlist
-{
-	return aPlist;
-}
-
-@end
-
-
-@implementation COFullTextIndexableStringType (Plist)
-
-- (id) plistValueForValue: (id)aValue
-{
-	return aValue;
-}
-
-- (id) valueForPlistValue: (id)aPlist
-{
-	return aPlist;
-}
-
-@end
-
-
-@implementation COBlobType (Plist)
+@implementation COPrimitiveType (Plist)
 
 - (id) plistValueForValue: (id)aValue
 {

@@ -145,6 +145,7 @@
 		66E778BF14E60ED900D5DFFF /* UKTestHandler.strings in Resources */ = {isa = PBXBuildFile; fileRef = 66E778BC14E60ED900D5DFFF /* UKTestHandler.strings */; };
 		66EA0D59163E04E30023A12A /* EWUtilityWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EA0D58163E04E30023A12A /* EWUtilityWindowController.m */; };
 		66EDAF2F16B258CF00B06DB2 /* TestSubtreeDiffMerge.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EDAF2E16B258CF00B06DB2 /* TestSubtreeDiffMerge.m */; };
+		66EDAF3A16B4B55400B06DB2 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E552B4146B7799008FDFAF /* libcrypto.dylib */; };
 		66FCDBE41645DEF800E24A67 /* COBranch.h in Headers */ = {isa = PBXBuildFile; fileRef = 66FCDBE21645DEF700E24A67 /* COBranch.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79626467150EE07E009A0686 /* COSequenceMerge.h in Headers */ = {isa = PBXBuildFile; fileRef = 79626465150EE07E009A0686 /* COSequenceMerge.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79F5947C15119C7D007C517E /* COSubtreeEdits.h in Headers */ = {isa = PBXBuildFile; fileRef = 79F5947A15119C7D007C517E /* COSubtreeEdits.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -374,6 +375,7 @@
 		66EB756F148CA9D300C2114B /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		66EB7570148CA9D300C2114B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		66EDAF2E16B258CF00B06DB2 /* TestSubtreeDiffMerge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSubtreeDiffMerge.m; sourceTree = "<group>"; };
+		66EDAF3816B4B53900B06DB2 /* libssl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.dylib; path = ../../../../usr/lib/libssl.dylib; sourceTree = "<group>"; };
 		66EDFD94148EF73200D0DC0B /* COType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COType.h; sourceTree = "<group>"; };
 		66EDFD95148EF73200D0DC0B /* COType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COType.m; sourceTree = "<group>"; };
 		66EE5D3814637418008AA95B /* COPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPath.h; sourceTree = "<group>"; };
@@ -443,6 +445,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				66EDAF3A16B4B55400B06DB2 /* libcrypto.dylib in Frameworks */,
 				66816C53166343C100BC5F40 /* Foundation.framework in Frameworks */,
 				66816C51166343B200BC5F40 /* libsqlite3.dylib in Frameworks */,
 			);
@@ -454,6 +457,7 @@
 		662811EB13F8B5000075BBC2 = {
 			isa = PBXGroup;
 			children = (
+				66EDAF3816B4B53900B06DB2 /* libssl.dylib */,
 				66816C50166343B200BC5F40 /* libsqlite3.dylib */,
 				663FC97D16099313000A9608 /* NOTES */,
 				66416D20142D3EE20016501D /* README */,

@@ -24,4 +24,6 @@
                withParent: (int64_t)aParent
             modifiedItems: (NSArray*)modifiedItems; // array of COUUID
 
+- (void) iteratePartialItemTrees: (void (^)(NSSet *))aBlock;
+
 @end

@@ -54,6 +54,7 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes;
 - (NSArray*) allObjectsForAttribute: (NSString*)attribute;
 
 - (NSSet *) embeddedItemUUIDs;
+- (NSSet *) attachments;
 
 /** @taskunit NSCopying and NSMutableCopying */
 

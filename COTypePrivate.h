@@ -18,7 +18,8 @@
 @end
 @interface COEmbeddedItemType : COPrimitiveType
 @end
-
+@interface COAttachmentType : COPrimitiveType
+@end
 
 @interface COMultivaluedType : COType
 {

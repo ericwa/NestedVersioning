@@ -67,6 +67,7 @@
 					  [COCommitType type],
 					  [COPathType type],
 					  [COEmbeddedItemType type],
+                      [COAttachmentType type],
 					  nil];
 
 	for (COType *type in types)
@@ -194,6 +195,20 @@
 - (BOOL) validateValue: (id)aValue
 {
 	return [aValue isKindOfClass: [COUUID class]];
+}
+
+@end
+
+@implementation COAttachmentType
+
+- (NSString *)stringValue
+{
+	return @"Attachment";
+}
+
+- (BOOL) validateValue: (id)aValue
+{
+	return [aValue isKindOfClass: [NSData class]];
 }
 
 @end
@@ -438,6 +453,11 @@
 + (COType *) embeddedItemType
 {
 	return [COEmbeddedItemType type];
+}
+
++ (COType *) attachmentType
+{
+    return [COAttachmentType type];
 }
 
 + (COType *) setWithPrimitiveType: (COType *)aType

@@ -26,6 +26,7 @@
 + (COType *) commitUUIDType;
 + (COType *) pathType;
 + (COType *) embeddedItemType;
++ (COType *) attachmentType;
 
 + (COType *) setWithPrimitiveType: (COType *)aType;
 + (COType *) uniqueArrayWithPrimitiveType: (COType *)aType;

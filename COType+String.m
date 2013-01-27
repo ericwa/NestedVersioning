@@ -11,15 +11,9 @@
 @end
 @interface COFullTextIndexableStringType (String)
 @end
-@interface COBlobType (String)
-@end
 @interface COCommitType (String)
 @end
 @interface COPathType (String)
-@end
-@interface COEmbeddedItemType (String)
-@end
-@interface COMultivaluedType (String)
 @end
 
 
@@ -123,21 +117,6 @@
 @end
 
 
-@implementation COBlobType (String)
-
-- (BOOL) isValidStringValue: (NSString *)aString
-{
-	return NO;
-}
-
-- (BOOL) supportsRepresentationAsString
-{
-	return NO;
-}
-
-@end
-
-
 @implementation COCommitType (String)
 
 - (BOOL) isValidStringValue: (NSString *)aString
@@ -206,21 +185,26 @@
 @end
 
 
-@implementation COEmbeddedItemType (String)
+@implementation COType (String)
 
 - (BOOL) supportsRepresentationAsString
 {
 	return NO;
 }
 
-@end
-
-
-@implementation COMultivaluedType (String)
-
-- (BOOL) supportsRepresentationAsString
+- (BOOL) isValidStringValue: (NSString *)aString
 {
 	return NO;
+}
+
+- (NSString *) stringValueForValue: (id)aValue
+{
+	return nil;
+}
+
+- (id) valueForStringValue: (NSString *)aString
+{
+	return nil;
 }
 
 @end

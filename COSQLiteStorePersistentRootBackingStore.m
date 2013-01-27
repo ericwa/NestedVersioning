@@ -277,4 +277,28 @@ static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifie
     return rowid;
 }
 
+- (void) iteratePartialItemTrees: (void (^)(NSSet *))aBlock
+{
+    FMResultSet *rs = [db_ executeQuery: @"SELECT contents FROM commits"];
+    while ([rs next])
+    {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        
+        NSData *contentsData = [rs dataForColumnIndex: 0];
+        NSDictionary *contents = [NSJSONSerialization JSONObjectWithData: contentsData options: 0 error: NULL];
+        
+        NSMutableSet *items = [NSMutableSet setWithCapacity: [contents count]];
+        for (NSString *key in contents)
+        {
+            [items addObject: [[[COItem alloc] initWithPlist: [contents objectForKey: key]] autorelease]];
+        }
+        
+        aBlock(items);
+        
+        [pool release];
+    }
+	
+    [rs close];
+}
+
 @end
