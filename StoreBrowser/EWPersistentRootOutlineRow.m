@@ -1,17 +1,6 @@
 #import "EWPersistentRootOutlineRow.h"
-#import "COMacros.h"
-#import "COType+String.h"
 #import "EWPersistentRootWindowController.h"
-#import "COPath.h"
-#import "COSubtree.h"
-#import "COSubtreeDiff.h"
-#import "COPersistentRootDiff.h"
-#import "COSubtreeFactory.h"
-#import "COSubtreeFactory+PersistentRoots.h"
-#import "COSubtreeCopy.h"
-#import "AppDelegate.h"
-#import "EWDiffWindowController.h"
-
+#import "COMacros.h"
 
 @implementation EWPersistentRootOutlineRow
 
@@ -20,7 +9,7 @@
 	return parent;
 }
 
-- (id) initWithContext: (COPersistentRootEditingContext *)aContext
+- (id) initWithContext: (COEditingContext *)aContext
 			  itemUUID: (COUUID *)aUUID
 			 attribute: (NSString*)anAttribute
 isPrimitiveInContainer: (BOOL)aFlag
@@ -46,26 +35,17 @@ isPrimitiveInContainer: (BOOL)aFlag
 
 // Special row types
 
-- (COSubtree *)rowSubtree
+- (COObject *)rowSubtree
 {
-	return [[ctx persistentRootTree] subtreeWithUUID: UUID];
+	return [ctx objectForUUID: UUID];
 }
 
-- (BOOL) isPersistentRoot
-{
-	return [self isEmbeddedObject] && [[COSubtreeFactory factory] isPersistentRoot: [self rowSubtree]];
-}
-- (BOOL) isBranch
-{
-	return [self isEmbeddedObject] && [[COSubtreeFactory factory] isBranch: [self rowSubtree]];
-}
 - (BOOL) isEmbeddedObject
 {
 	return attribute == nil;
 }
 
-
-- (id) initWithContext: (COPersistentRootEditingContext *)aContext
+- (id) initWithContext: (COEditingContext *)aContext
 			  itemUUID: (COUUID *)aUUID
 			 attribute: (NSString*)anAttribute
 				parent: (EWPersistentRootOutlineRow *)aParent
@@ -80,7 +60,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 				windowController: aController];
 }
 
-- (id) initWithContext: (COPersistentRootEditingContext *)aContext
+- (id) initWithContext: (COEditingContext *)aContext
 			  itemUUID: (COUUID *)aUUID
 				parent: (EWPersistentRootOutlineRow *)aParent
 	  windowController: (EWPersistentRootWindowController *)aController
@@ -94,12 +74,12 @@ isPrimitiveInContainer: (BOOL)aFlag
 				windowController: aController];
 }
 
-- (id)initWithContext: (COPersistentRootEditingContext *)aContext
+- (id)initWithContext: (COEditingContext *)aContext
 			   parent: (EWPersistentRootOutlineRow *)aParent
 	 windowController: (EWPersistentRootWindowController *)aController
 {
 	return [self initWithContext: aContext
-						itemUUID: [[aContext persistentRootTree] UUID]
+						itemUUID: [[aContext rootObject] UUID]
 						  parent: aParent
 				windowController: aController];
 }
@@ -134,7 +114,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 		return [NSArray array];
 	}
 	
-	COSubtree *subtree = [self rowSubtree];
+	COObject *subtree = [self rowSubtree];
 	
 	if ([self isEmbeddedObject]) // no attribute, so a root node for a persistent root
 	{
@@ -218,17 +198,6 @@ isPrimitiveInContainer: (BOOL)aFlag
 	return contents;
 }
 
-- (COSubtree *)persistentRootOwningBranch
-{
-	assert([self isBranch]);
-	
-	COSubtree *proot = [[self rowSubtree] parent];
-	assert(proot != nil);
-	assert([[COSubtreeFactory factory] isPersistentRoot: proot]);
-	
-	return proot;
-}
-
 - (id)valueForTableColumn: (NSTableColumn *)column
 {
 	if ([[column identifier] isEqualToString: @"name"])
@@ -246,7 +215,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 		}
 		else			
 		{
-			COSubtree *storeItem = [self rowSubtree];
+			COObject *storeItem = [self rowSubtree];
 			id value = [storeItem valueForAttribute: @"name"];
 			if (value) {
 				return [NSString stringWithFormat: @"%@ (%@)", value, [storeItem UUID]];
@@ -286,23 +255,6 @@ isPrimitiveInContainer: (BOOL)aFlag
 			return [[COType embeddedItemType] description];
 		}
 	}
-	else if ([[column identifier] isEqualToString: @"currentbranch"])
-	{
-		if ([self isPersistentRoot])
-		{
-			// NSPopupButtonCell takes a NSNumber indicating the index in the menu.
-			
-			NSArray *branches = [self orderedBranchesForSubtree: [self rowSubtree]];
-			
-			COSubtree *current = [[COSubtreeFactory factory] currentBranchOfPersistentRoot: [self rowSubtree]];
-			
-			NSUInteger i = [branches indexOfObject: current];
-			assert(i < [branches count]);
-			
-			return [NSNumber numberWithUnsignedInteger: i];
-		}
-		return nil;
-	}
 	
 	return nil;
 }
@@ -311,19 +263,6 @@ isPrimitiveInContainer: (BOOL)aFlag
 {
 	if ([self isEmbeddedObject])
 	{		
-		if ([self isPersistentRoot])
-		{
-			return [NSImage imageNamed: @"package"]; // persistent root embedded object
-		}
-		else if	([self isBranch])
-		{
-			COSubtree *persistentRoot = [self persistentRootOwningBranch];
-			if ([[[COSubtreeFactory factory] currentBranchOfPersistentRoot: persistentRoot] isEqual: [self rowSubtree]])
-			{
-				return [NSImage imageNamed: @"arrow_branch_purple"]; // branch embedded object			
-			}
-			return [NSImage imageNamed: @"arrow_branch"]; // branch embedded object
-		}
 		return [NSImage imageNamed: @"brick"]; // regular embedded object
 	}
 	else
@@ -364,36 +303,17 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 	return [EWPersistentRootOutlineRow compareUUID: [subtree1 UUID] withUUID: [subtree2 UUID]];	
 }
 
-/**
- * Returns branches for given persistent root in an arbitrary
- * but stable sorted order
- */
-- (NSArray *) orderedBranchesForSubtree: (COSubtree*)aPersistentRoot
-{
-	return [[[[COSubtreeFactory factory] branchesOfPersistentRoot: aPersistentRoot] allObjects] sortedArrayUsingFunction: subtreeSort
-																											  context: NULL];
-}
-
 - (void) setValue: (id)object forTableColumn: (NSTableColumn *)tableColumn
 {
 	NSLog(@"Set to %@ col %@", object, [tableColumn identifier]);
 	
-	if ([[tableColumn identifier] isEqualToString: @"currentbranch"])
-	{
-		COSubtree *selectedBranch = [[self orderedBranchesForSubtree: [self rowSubtree]] objectAtIndex: [object integerValue]];
-		[[COSubtreeFactory factory] setCurrentBranch: selectedBranch
-								forPersistentRoot: [self rowSubtree]];
-		[ctx commitWithMetadata: nil];
-		
-		[[NSApp delegate] reloadAllBrowsers];
-	}
 	if ([[tableColumn identifier] isEqualToString: @"name"])
 	{
 		if ([self attribute] != nil)
 		{
 			// Store the old value under a new name
 			
-			COSubtree *storeItem = [self rowSubtree];
+			COObject *storeItem = [self rowSubtree];
 			COType *type = [storeItem typeForAttribute: [self attribute]];
 			id value = [storeItem valueForAttribute: [self attribute]];
 			
@@ -403,7 +323,7 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 						   type: type];
 			
 			[ctx commitWithMetadata: nil];
-			[[NSApp delegate] reloadAllBrowsers];			
+			[windowController reloadBrowser];			
 		}
 	}
 	if ([[tableColumn identifier] isEqualToString: @"value"])
@@ -413,7 +333,7 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 			NSLog(@"Attempting to store new value '%@' for attribute '%@' of %@",
 				  object, [self attribute], [self UUID]);
 			
-			COSubtree *storeItem = [self rowSubtree];
+			COObject *storeItem = [self rowSubtree];
 			
 			COType *type = [storeItem typeForAttribute: [self attribute]];
 			
@@ -432,73 +352,24 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 			
 			id value = [type valueForStringValue: object]; // e.g. converts string -> COUUID
 			
-			[storeItem setPrimitiveValue: value
-							forAttribute: [self attribute]
-									type: type];
+			[storeItem setValue: value
+                    forAttribute: [self attribute]
+                            type: type];
 
-			[ctx commitWithMetadata: nil];
-			
-			[[NSApp delegate] reloadAllBrowsers];
+			[ctx commitWithMetadata: nil];			
+			[windowController reloadBrowser];
 		}
 	}	
 }
 
 - (NSCell *)dataCellForTableColumn: (NSTableColumn *)tableColumn
 {
-	if ([self attribute] == nil) // only if we click on the root of an embedded object
-	{
-		if ([self isPersistentRoot] ||
-			[self isBranch])
-		{
-			if ([[tableColumn identifier] isEqualToString: @"action"])
-			{
-				NSButtonCell *cell = [[[NSButtonCell alloc] init] autorelease];
-				[cell setBezelStyle: NSRoundRectBezelStyle];
-				[cell setTitle: @"Open"];
-				[cell setTarget: self];
-				[cell setAction: @selector(openPersistentRoot:)];
-				return cell;				
-			}
-			else if ([[tableColumn identifier] isEqualToString: @"currentbranch"])
-			{
-				if ([self isPersistentRoot])
-				{
-					NSPopUpButtonCell *cell = [[[NSPopUpButtonCell alloc] init] autorelease];
-					[cell setBezelStyle: NSRoundRectBezelStyle];
-					NSMenu *aMenu = [[[NSMenu alloc] init] autorelease];
-					
-					NSArray *branches = [self orderedBranchesForSubtree: [self rowSubtree]];
-					for (COSubtree *aBranch in branches)
-					{
-						[aMenu addItemWithTitle:  [NSString stringWithFormat: @"%@ (%@)",
-													[[COSubtreeFactory factory] displayNameForBranchOrPersistentRoot: aBranch],
-													[[aBranch UUID] stringValue]]
-										 action: nil
-								  keyEquivalent: @""];
-					}
-					
-					[cell setEnabled: ([branches count] > 1)];
-					[cell setMenu: aMenu];
-					
-					return cell;
-				}
-			}
-		}
-	}
-	
 	return [tableColumn dataCell];
-}
-
-/** @taskunit open button */
-
-- (void)openPersistentRoot: (id)sender
-{
-	[[NSApp delegate] browsePersistentRootAtPath: [[ctx path] pathByAppendingPathComponent: [self UUID]]];
 }
 
 - (void) deleteRow
 {	
-	COSubtree *storeItem = [self rowSubtree];
+	COObject *storeItem = [self rowSubtree];
 	
 	if (isPrimitiveInContainer)
 	{
@@ -528,7 +399,10 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 	{
 		NSLog(@"Deleting embedded item %@", [self UUID]);
 		
-		[[ctx persistentRootTree] removeSubtreeWithUUID: [[self rowSubtree] UUID]];
+        COUUID *uuid = [[self rowSubtree] UUID];
+        
+        [[[ctx objectForUUID: uuid] parentObject] removeDescendentObject: uuid];
+
 		[ctx commitWithMetadata: nil];
 	}
 }
@@ -563,90 +437,27 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 
 // Menu stuff
 
-- (void) branch: (id)sender
-{
-	COSubtree *newBranch = [[COSubtreeFactory factory] createBranchOfPersistentRoot: [self rowSubtree]];
-	
-	EWPersistentRootWindowController *controller = windowController; // FIXME: ugly hack
-	
-	[ctx commitWithMetadata: nil];
-	[[NSApp delegate] reloadAllBrowsers]; // FIXME: ugly.. deallocates self...
-	
-	[controller orderFrontAndHighlightItem: [newBranch UUID]];
-}
-
-- (void) duplicateBranchAsPersistentRoot: (id)sender
-{
-	COSubtree *newRoot = [[COSubtreeFactory factory] persistentRootByCopyingBranch: [self rowSubtree]];
-	COSubtree *dest = [[[self rowSubtree] parent] parent];
-	
-	NSLog(@"trying to break out branch %@ into %@ as new UUID", [self UUID], dest);
-	
-	assert(dest != nil);
-	
-	[dest addTree: newRoot];
-	
-	EWPersistentRootWindowController *controller = windowController; // FIXME: ugly hack
-	
-	[ctx commitWithMetadata: nil];
-	[[NSApp delegate] reloadAllBrowsers]; // FIXME: ugly.. deallocates self...
-	
-	[controller orderFrontAndHighlightItem: [newRoot UUID]];
-}
-
 - (void) duplicateEmbeddedItem: (id)sender
 {
-	COSubtree *newRoot = [[[self rowSubtree] subtreeCopyRenamingAllItems] subtree];
-	COSubtree *dest = [[self rowSubtree] parent];
-	
-	if ([newRoot valueForAttribute: @"name"] != nil)
-	{
-		[newRoot setPrimitiveValue: [NSString stringWithFormat: @"Copy of %@", [newRoot valueForAttribute: @"name"]]
-					  forAttribute: @"name"
-							  type: [COType stringType]];
-	}	
-	[dest addTree: newRoot];
-	
-	EWPersistentRootWindowController *controller = windowController; // FIXME: ugly hack
-	
-	[ctx commitWithMetadata: nil];
-	[[NSApp delegate] reloadAllBrowsers]; // FIXME: ugly.. deallocates self...
-	
-	[controller orderFrontAndHighlightItem: [newRoot UUID]];
-}
-
-- (void) diff: (id)sender
-{
-	NSArray *selectedRows = [windowController selectedRows];
-	assert([selectedRows count] == 2);
-
-	EWPersistentRootOutlineRow *row1 = [selectedRows objectAtIndex: 0];
-	EWPersistentRootOutlineRow *row2 = [selectedRows objectAtIndex: 1];
-	
-	/*COPersistentRootEditingContext *row1ctx = 
-		[COPersistentRootEditingContext editingContextForEditingPath: [[ctx path] pathByAppendingPathComponent: [row1 UUID]]
-															 inStore: [ctx store]];
-
-	COPersistentRootEditingContext *row2ctx = 	
-		[COPersistentRootEditingContext editingContextForEditingPath: [[ctx path] pathByAppendingPathComponent: [row2 UUID]]
-															 inStore: [ctx store]];
-	
-	assert(row1ctx != nil);
-	assert(row2ctx != nil);
-	
-	COSubtreeDiff *treediff = [COSubtreeDiff diffSubtree: [row1ctx persistentRootTree]
-											 withSubtree: [row2ctx persistentRootTree]];
-	 
-	 */
-	
-	COPersistentRootDiff *diff = [[COPersistentRootDiff alloc]
-									initWithPath: [[ctx path] pathByAppendingPathComponent: [row1 UUID]]
-										andPath: [[ctx path] pathByAppendingPathComponent: [row2 UUID]]
-										inStore: [ctx store]];
-	// FIXME:
-	
-	EWDiffWindowController *diffWindow = [[EWDiffWindowController alloc] initWithPersistentRootDiff: diff];
-	[diffWindow showWindow: nil];
+    assert(0);
+    
+//	COObject *newRoot = [[[self rowSubtree]  subtreeCopyRenamingAllItems] subtree];
+//	COObject *dest = [[self rowSubtree] parent];
+//	
+//	if ([newRoot valueForAttribute: @"name"] != nil)
+//	{
+//		[newRoot setPrimitiveValue: [NSString stringWithFormat: @"Copy of %@", [newRoot valueForAttribute: @"name"]]
+//					  forAttribute: @"name"
+//							  type: [COType stringType]];
+//	}	
+//	[dest addTree: newRoot];
+//	
+//	EWPersistentRootWindowController *controller = windowController; // FIXME: ugly hack
+//	
+//	[ctx commitWithMetadata: nil];
+//	[windowController reloadBrowser]; // FIXME: ugly.. deallocates self...
+//	
+//	[controller orderFrontAndHighlightItem: [newRoot UUID]];
 }
 
 - (void) diffEmbeddedItems: (id)sender
@@ -657,12 +468,12 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 	EWPersistentRootOutlineRow *row1 = [selectedRows objectAtIndex: 0];
 	EWPersistentRootOutlineRow *row2 = [selectedRows objectAtIndex: 1];
 	
-	COSubtreeDiff *diff = [COSubtreeDiff diffSubtree: [row1 rowSubtree]
-										 withSubtree: [row2 rowSubtree]
-									sourceIdentifier: @"fixme"];
+//	COSubtreeDiff *diff = [COSubtreeDiff diffSubtree: [row1 rowSubtree]
+//										 withSubtree: [row2 rowSubtree]
+//									sourceIdentifier: @"fixme"];
 	// FIXME:
 	
-	NSLog(@"Embedded item diff: %@", diff);
+//	NSLog(@"Embedded item diff: %@", diff);
 }
 
 - (void) delete: (id)sender
@@ -670,60 +481,38 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 	[windowController deleteForward: sender];
 }
 
-- (void) switchBranch: (id)sender
+- (COObject *) itemWithLabel: (NSString *)label
 {
-	[[COSubtreeFactory factory] setCurrentBranch: [self rowSubtree]
-							forPersistentRoot: [self persistentRootOwningBranch]];
-	[ctx commitWithMetadata: nil];
-	
-	[[NSApp delegate] reloadAllBrowsers]; // FIXME: ugly.. deallocates self...
+	COEditingContext *ctx = [[[COEditingContext alloc] init] autorelease];
+    [[ctx rootObject] setValue: label
+                  forAttribute: @"label"
+                          type: [COType stringType]];
+    return [ctx rootObject];
 }
+
 
 - (void) addStringKeyValue: (id)sender
 {
-	COSubtree *subtree = [self rowSubtree];
+	COObject *subtree = [self rowSubtree];
 	[subtree setValue: @"new value" forAttribute: @"newAttribute" type: [COType stringType]];
 
 	[ctx commitWithMetadata: nil];
 	
-	[[NSApp delegate] reloadAllBrowsers]; // FIXME: ugly.. deallocates self...
+	[windowController reloadBrowser]; // FIXME: ugly.. deallocates self...
 }
 
 - (void) addEmbeddedItem: (id)sender
 {
-	COSubtree *subtree = [self rowSubtree];
-	COSubtree *newItem = [COSubtree subtree];
-	[subtree addTree: newItem];
+	COObject *subtree = [self rowSubtree];
+	COObject *newItem = [self itemWithLabel: @"new item"];
+	[subtree addObjectToContents: newItem];
 
 	[ctx commitWithMetadata: nil];
 	
 	EWPersistentRootWindowController *controller = windowController; // FIXME: ugly hack
-	
-	[[NSApp delegate] reloadAllBrowsers]; // FIXME: ugly.. deallocates self...
+	[windowController reloadBrowser]; // FIXME: ugly.. deallocates self...
 
 	[controller orderFrontAndHighlightItem: [newItem UUID]];
-}
-
-- (void) addPersistentRoot: (id)sender
-{
-	COSubtree *subtree = [self rowSubtree];
-
-	COSubtree *dummyContents = [COSubtree subtree];
-	[dummyContents addTree: [[COSubtreeFactory factory] item: @"an item"]];
-	
-	COSubtree *newPersistentRoot = [[COSubtreeFactory factory] createPersistentRootWithRootItem: dummyContents
-																					displayName: @"New Persistent Root"
-																						  store: [ctx store]];
-	
-	[subtree addTree: newPersistentRoot];
-	
-	[ctx commitWithMetadata: nil];
-	
-	EWPersistentRootWindowController *controller = windowController; // FIXME: ugly hack
-	
-	[[NSApp delegate] reloadAllBrowsers]; // FIXME: ugly.. deallocates self...
-	
-	[controller orderFrontAndHighlightItem: [newPersistentRoot UUID]];
 }
 
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem
@@ -733,22 +522,11 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 	NSOutlineView *outlineView = [windowController outlineView];
 	NSIndexSet *selIndexes = [outlineView selectedRowIndexes];
 	
-    if (theAction == @selector(diff:))
-    {
-        if ([selIndexes count] == 2)
-		{	
-			EWPersistentRootOutlineRow *row1 = [outlineView itemAtRow: [selIndexes firstIndex]];
-			EWPersistentRootOutlineRow *row2 = [outlineView itemAtRow: [selIndexes indexGreaterThanIndex: [selIndexes firstIndex]]];
-			
-			if (([row1 isPersistentRoot] || [row1 isBranch])
-				&& ([row2 isPersistentRoot] || [row2 isBranch]))
-			{
-				return YES;
-			}
-		}
-		return NO;
-    }
-	else if (theAction == @selector(diffEmbeddedItems:))
+    if (theAction == @selector(duplicateEmbeddedItem:))
+	{
+        return [selIndexes count] == 1 && [self isEmbeddedObject];
+	}
+    else if (theAction == @selector(diffEmbeddedItems:))
 	{
         if ([selIndexes count] == 2)
 		{	
@@ -759,38 +537,12 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 		}
 		return NO;
 	}
-	else if (theAction == @selector(branch:))
-    {
-        return [selIndexes count] == 1 && [self isPersistentRoot];
-    }
-	else if (theAction == @selector(duplicateBranchAsPersistentRoot:))
-	{
-        return [selIndexes count] == 1 && [self isBranch];
-	}
-	else if (theAction == @selector(duplicateEmbeddedItem:))
-	{
-        return [selIndexes count] == 1 && [self isEmbeddedObject];
-	}
-	else if (theAction == @selector(openPersistentRoot:))
-	{
-		return [selIndexes count] == 1 && ([self isBranch] || [self isPersistentRoot]);
-	}
-	else if (theAction == @selector(switchBranch:))
-	{
-        if ([selIndexes count] == 1 && [self isBranch])
-		{
-			// Only enable the menu item if it is for a different branch than the current one
-			return ![[[COSubtreeFactory factory] currentBranchOfPersistentRoot: [self persistentRootOwningBranch]]
-						isEqual: [self rowSubtree]];
-		}
-		return NO;
-	}
 	else if (theAction == @selector(addStringKeyValue:))
 	{
         return ([selIndexes count] == 1 && [self isEmbeddedObject]);
 	}
-	else if (theAction == @selector(addEmbeddedItem:)
-			 || theAction == @selector(addPersistentRoot:))
+    else if (theAction == @selector(addEmbeddedItem:)
+              || theAction == @selector(addPersistentRoot:))
 	{
         return ([selIndexes count] == 1);
 	}
@@ -824,22 +576,6 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 	}
 	
 	[menu addItem: [NSMenuItem separatorItem]];
-	
-	{
-		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Open Persistent Roots/Branch Contents" 
-													   action: @selector(openPersistentRoot:) 
-												keyEquivalent: @""] autorelease];
-		[item setTarget: self];
-		[menu addItem: item];
-	}
-	
-	{
-		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Diff Pair of Persistent Roots/Branches" 
-													   action: @selector(diff:) 
-												keyEquivalent: @""] autorelease];
-		[item setTarget: self];
-		[menu addItem: item];
-	}
 
 	{
 		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Diff Pair of Embedded Items" 
@@ -848,32 +584,6 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 		[item setTarget: self];
 		[menu addItem: item];
 	}	
-	
-	[menu addItem: [NSMenuItem separatorItem]];
-	
-	{
-		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Create Branch" 
-													   action: @selector(branch:) 
-												keyEquivalent: @""] autorelease];
-		[item setTarget: self];
-		[menu addItem: item];
-	}
-	
-	{
-		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Switch to Branch" 
-													   action: @selector(switchBranch:) 
-												keyEquivalent: @""] autorelease];
-		[item setTarget: self];
-		[menu addItem: item];
-	}
-	
-	{
-		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Duplicate Branch as Persistent Root" 
-													   action: @selector(duplicateBranchAsPersistentRoot:) 
-												keyEquivalent: @""] autorelease];
-		[item setTarget: self];
-		[menu addItem: item];
-	}
 	
 	[menu addItem: [NSMenuItem separatorItem]];
 
@@ -888,14 +598,6 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 	{
 		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Add Embedded Item" 
 													   action: @selector(addEmbeddedItem:) 
-												keyEquivalent: @""] autorelease];
-		[item setTarget: self];
-		[menu addItem: item];
-	}	
-
-	{
-		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: @"Add Persistent Root" 
-													   action: @selector(addPersistentRoot:) 
 												keyEquivalent: @""] autorelease];
 		[item setTarget: self];
 		[menu addItem: item];

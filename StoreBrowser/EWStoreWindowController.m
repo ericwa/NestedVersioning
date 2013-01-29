@@ -1,5 +1,5 @@
 #import "EWStoreWindowController.h"
-#import "EWPersistentRootInspectorWindowController.h"
+#import "EWPersistentRootWindowController.h"
 
 @implementation EWStoreWindowController
 
@@ -27,7 +27,7 @@
 - (IBAction) inspect: (id)sender
 {
     NSLog(@"inspect %@", sender);
-    [[[EWPersistentRootInspectorWindowController alloc] initWithPersistentRoot: [sender objectAtIndex: 0]] showWindow: self];
+    [[[EWPersistentRootWindowController alloc] initWithPersistentRoot: [sender objectAtIndex: 0]] showWindow: self];
 }
 
 

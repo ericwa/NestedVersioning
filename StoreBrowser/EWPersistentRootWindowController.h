@@ -1,48 +1,29 @@
 #import <Cocoa/Cocoa.h>
-#import "COPath.h"
-#import "COStore.h"
-#import "COPersistentRootEditingContext.h"
-#import "COSubtreeFactory+PersistentRoots.h"
+#import <NestedVersioning/NestedVersioning.h>
 
 #import "EWPersistentRootOutlineRow.h"
-#import "EWHistoryGraphView.h"
 
 #define EWDragType @"org.etoile.storebrowser.rows"
 
 @interface EWPersistentRootWindowController : NSWindowController
 {
-	COPath *path;
-	COStore *store;
-	COPersistentRootEditingContext *ctx;
+    COPersistentRoot *root;
+    COBranch *branch;	
+	COEditingContext *ctx;
+    
 	EWPersistentRootOutlineRow *outlineModel;
 	IBOutlet NSOutlineView *outlineView;
-	
-	IBOutlet EWHistoryGraphView *historyView;
-	
-	IBOutlet NSButton *highlightInParentButton;
-	IBOutlet NSButton *undoButton;
-	IBOutlet NSButton *redoButton;
-	IBOutlet NSSplitView *splitter;
-	
-	NSMutableDictionary *expansion;
 }
 
 - (NSOutlineView *)outlineView;
 
-- (BOOL) isExpanded: (EWPersistentRootOutlineRow*)aRow;
-- (void) setExpanded: (BOOL)flag
-			 forRow: (EWPersistentRootOutlineRow *)aRow;
-
-- (id)initWithPath: (COPath*)aPath
-			 store: (COStore*)aStore;
+- (id)initWithPersistentRoot: (COPersistentRoot *)aRoot;
 
 - (IBAction) highlightInParent: (id)sender;
 - (IBAction) undo: (id)sender;
 - (IBAction) redo: (id)sender;
 
 - (void) orderFrontAndHighlightItem: (COUUID*)aUUID;
-
-- (COSubtree *)branchItem;
 
 /**
  * Temporary hack...
@@ -52,6 +33,11 @@
 - (COUUID *) currentCommit;
 
 - (NSArray *)selectedRows;
+
+// private
+
+- (void) reloadBrowser;
+- (NSOutlineView *)outlineView;
 
 @end
 

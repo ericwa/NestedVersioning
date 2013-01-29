@@ -1,14 +1,11 @@
 #import <Cocoa/Cocoa.h>
-#import "COPath.h"
-#import "COStore.h"
-#import "COPersistentRootEditingContext.h"
-#import "COSubtreeFactory+PersistentRoots.h"
+#import <NestedVersioning/NestedVersioning.h>
 
 @class EWPersistentRootWindowController;
 
 @interface EWPersistentRootOutlineRow : NSObject
 {
-	COPersistentRootEditingContext *ctx;
+	COEditingContext *ctx;
 	
 	EWPersistentRootWindowController *windowController;
 	
@@ -26,13 +23,13 @@
 
 - (EWPersistentRootOutlineRow *) parent;
 
-- (COSubtree *)rowSubtree;
+- (COObject *)rowSubtree;
 
 - (COUUID *)UUID;
 - (NSString *)attribute;
 - (BOOL) isPrimitiveInContainer;
 
-- (id)initWithContext: (COPersistentRootEditingContext *)aContext
+- (id)initWithContext: (COEditingContext *)aContext
 			   parent: (EWPersistentRootOutlineRow *)aParent
 	 windowController: (EWPersistentRootWindowController *)aController;
 
@@ -52,12 +49,10 @@
 
 - (NSMenu *)menu;
 
-- (NSArray *) orderedBranchesForSubtree: (COSubtree*)aPersistentRoot;
+- (NSArray *) orderedBranchesForSubtree: (COObject*)aPersistentRoot;
 
 // Special row types
 
-- (BOOL) isPersistentRoot;
-- (BOOL) isBranch;
 - (BOOL) isEmbeddedObject;
 
 @end

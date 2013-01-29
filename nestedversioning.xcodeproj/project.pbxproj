@@ -78,6 +78,10 @@
 		666CB036166343420066BC77 /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 666CB0301663433A0066BC77 /* FMDatabaseAdditions.m */; };
 		666CB037166343420066BC77 /* FMResultSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 666CB0311663433C0066BC77 /* FMResultSet.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		666CB038166343420066BC77 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 666CB0321663433E0066BC77 /* FMResultSet.m */; };
+		667CD1D416B7B3EC00C50906 /* EWIconTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 662C1DE0168FACC9002157F3 /* EWIconTextFieldCell.m */; };
+		667CD1D516B7B3EC00C50906 /* EWOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 662C1DE2168FACC9002157F3 /* EWOutlineView.m */; };
+		667CD1D616B7B3EC00C50906 /* EWPersistentRootOutlineRow.m in Sources */ = {isa = PBXBuildFile; fileRef = 662C1DE4168FACC9002157F3 /* EWPersistentRootOutlineRow.m */; };
+		667CD1D716B7B3EC00C50906 /* EWPersistentRootWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 662C1DE6168FACC9002157F3 /* EWPersistentRootWindowController.m */; };
 		66816C51166343B200BC5F40 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 66816C50166343B200BC5F40 /* libsqlite3.dylib */; };
 		66816C53166343C100BC5F40 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66EB7570148CA9D300C2114B /* Foundation.framework */; };
 		66816C721663562300BC5F40 /* CORevision.h in Headers */ = {isa = PBXBuildFile; fileRef = 66816C701663562300BC5F40 /* CORevision.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1186,6 +1190,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				667CD1D416B7B3EC00C50906 /* EWIconTextFieldCell.m in Sources */,
+				667CD1D516B7B3EC00C50906 /* EWOutlineView.m in Sources */,
+				667CD1D616B7B3EC00C50906 /* EWPersistentRootOutlineRow.m in Sources */,
+				667CD1D716B7B3EC00C50906 /* EWPersistentRootWindowController.m in Sources */,
 				662C1DF0168FACC9002157F3 /* AppDelegate.m in Sources */,
 				662C1E01168FACC9002157F3 /* main.m in Sources */,
 				662C1E571690D7DD002157F3 /* EWStoreWindowController.m in Sources */,

@@ -122,4 +122,6 @@ toUnorderedAttribute: (NSString*)anAttribute
 
 - (NSSet *) contents;
 
+- (COEditingContext *) independentEditingContext;
+
 @end

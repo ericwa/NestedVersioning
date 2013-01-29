@@ -568,6 +568,10 @@ toUnorderedAttribute: (NSString*)anAttribute
 	return contents;
 }
 
+- (COEditingContext *) independentEditingContext
+{
+    return [[[COEditingContext alloc] initWithItemTree: [self itemTree]] autorelease];
+}
 
 // Logging
 

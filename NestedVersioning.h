@@ -8,6 +8,7 @@
 #import <NestedVersioning/COUUID.h>
 #import <NestedVersioning/COPath.h>
 #import <NestedVersioning/COType.h>
+#import <NestedVersioning/COType+String.h>
 #import <NestedVersioning/COItem.h>
 #import <NestedVersioning/COItemPath.h>
 #import <NestedVersioning/COItemTree.h>

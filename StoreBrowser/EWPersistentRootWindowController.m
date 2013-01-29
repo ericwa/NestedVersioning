@@ -1,177 +1,30 @@
-#import <Cocoa/Cocoa.h>
 #import "EWPersistentRootWindowController.h"
 #import "COMacros.h"
-#import "EWGraphRenderer.h"
-#import "COSubtreeDiff.h"
-#import "COPersistentRootDiff.h"
-#import "COSubtreeFactory.h"
-#import "COSubtreeFactory+PersistentRoots.h"
-#import "COSubtreeFactory+Undo.h"
-#import "COSubtreeFactory+Pull.h"
 #import "AppDelegate.h"
-#import "COType.h"
 #import "EWIconTextFieldCell.h"
-#import "COStorePrivate.h"
-#import "EWUndoManager.h"
 
 @implementation EWPersistentRootWindowController
 
 - (void) setupCtx
 {
-	ASSIGN(ctx, [COPersistentRootEditingContext	editingContextForEditingPath: path
-																	 inStore: store]);
-	assert(ctx != nil);
-	
 	DESTROY(outlineModel);
 	outlineModel = [[EWPersistentRootOutlineRow alloc] initWithContext: ctx
 																parent: nil
-													  windowController: self];
-	
-	// View may not exist yet.
-	// FIXME: duplicated code in init...
-	if (![path isEmpty])
-	{
-		EWGraphRenderer *renderer = [[EWGraphRenderer alloc] initWithStore: store];
-		[renderer layoutGraph];
-		[historyView setGraphRenderer: renderer];
-		[renderer release];
-		
-		[historyView setCurrentCommit: [self currentCommit]];	
-	}
-	
-	//NSLog(@"%@", [ctx persistentRootTree]);
+													  windowController: self];	
 }
 
-- (id)initWithPath: (COPath*)aPath
-			 store: (COStore*)aStore
+- (id)initWithPersistentRoot: (COPersistentRoot *)aRoot
 {
 	self = [super initWithWindowNibName: @"PersistentRootWindow"];
 	
-	ASSIGN(path, aPath);
-	ASSIGN(store, aStore);
-	ASSIGN(expansion, [NSMutableDictionary dictionary]);
-	
+	ASSIGN(root, aRoot);
+	ASSIGN(branch, [root currentBranch]);
+    ASSIGN(ctx, [branch editingContext]);
+	assert(ctx != nil);	
+    
 	[self setupCtx];
 	
-	NSLog(@"%@, %@", [self window], [aStore URL]);
-	
 	return self;
-}
-
-- (COSubtree *)persistentRootItem
-{
-	if ([path isEmpty])
-	{
-		return nil;
-	}
-	else
-	{
-		COPersistentRootEditingContext *parentCtx = [COPersistentRootEditingContext editingContextForEditingPath: [path pathByDeletingLastPathComponent] 
-																										 inStore: store];
-		
-		COSubtree *persistentRootTree = [parentCtx persistentRootTree];
-		COSubtree *item = [persistentRootTree subtreeWithUUID: [path lastPathComponent]];
-		return item;
-	}
-}
-
-- (COSubtree *)branchItem
-{
-	COSubtree *item = [self persistentRootItem];
-	if (item != nil)
-	{
-		return [[COSubtreeFactory factory] currentBranch: item];
-	}
-	return nil;
-}
-
-- (NSString *)persistentRootTitle
-{
-	if ([path isEmpty])
-	{
-		return @"Store Root";
-	}
-	else
-	{
-		COSubtree *item = [self persistentRootItem];
-		
-		NSString *displayName = [[COSubtreeFactory factory] displayNameForBranchOrPersistentRoot: item];
-		
-		if ([[COSubtreeFactory factory] isBranch: item])
-		{
-			NSString *persistentRootDisplayName = [[COSubtreeFactory factory] displayNameForBranchOrPersistentRoot: [item parent]];
-			
-			return [NSString stringWithFormat: @"Branch '%@' of '%@' (%@)", displayName, persistentRootDisplayName, [path stringValue]];	
-		}
-		else if ([[COSubtreeFactory factory] isPersistentRoot: item])
-		{
-			return [NSString stringWithFormat: @"Persistent Root '%@' (%@)", displayName,  [path stringValue]];
-		}
-		else
-		{
-			assert(0);
-		}
-
-	}
-}
-
-- (BOOL) canUndo
-{
-	COSubtree *item = [self branchItem];
-	if (nil != item)
-	{
-		return [[COSubtreeFactory factory] canUndoBranch: item store: store];
-	}
-	return NO;
-}
-
-- (BOOL) canRedo
-{
-	COSubtree *item = [self branchItem];
-	if (nil != item)
-	{
-		return [[COSubtreeFactory factory] canRedoBranch: item store: store];
-	}
-	return NO;
-}
-
-- (NSString *) undoLabel
-{
-	COSubtree *branch = [self branchItem];
-	
-	if (nil != branch)
-	{
-		if ([[COSubtreeFactory factory] canUndoBranch: branch store: store])
-		{
-			return [NSString stringWithFormat: @"Undo %@", [[COSubtreeFactory factory] undoMessageForBranch: branch store: store]];
-		}
-	}
-	return @"Undo";
-}
-
-- (COStore *)store
-{
-	return store;
-}
-
-- (NSString *) redoLabel
-{
-	COSubtree *branch = [self branchItem];
-	
-	if (nil != branch)
-	{
-		if ([[COSubtreeFactory factory] canRedoBranch: branch store: store])
-		{
-			return [NSString stringWithFormat: @"Redo %@", [[COSubtreeFactory factory] redoMessageForBranch: branch store: store]];
-		}
-	}
-	return @"Redo";
-}
-
-- (void) updateUndoRedoButtons
-{
-	[undoButton setEnabled: [[self undoManager]  canUndo]];
-	[redoButton setEnabled: [[self undoManager]  canRedo]];
 }
 
 - (void)windowDidLoad
@@ -188,191 +41,19 @@
 		[[outlineView tableColumnWithIdentifier: @"name"] setDataCell: cell];
 	}
 	
-	[self updateUndoRedoButtons];
-	
-	if ([path isEmpty])
-	{
-		[highlightInParentButton setEnabled: NO];
-		[splitter setPosition: 0.0 ofDividerAtIndex: 0];
-	}
-	else
-	{
-		EWGraphRenderer *renderer = [[EWGraphRenderer alloc] initWithStore: store];
-		[renderer layoutGraph];
-		[historyView setGraphRenderer: renderer];
-		[renderer release];
-		
-		[historyView setCurrentCommit: [self currentCommit]];	
-	}
-	
-	[[self window] setTitle: [self persistentRootTitle]];
+	//[[self window] setTitle: [self persistentRootTitle]];
 }
 
-- (BOOL) isExpanded: (EWPersistentRootOutlineRow*)aRow
+- (NSString *) windowTitleForDocumentDisplayName:(NSString *)displayName
 {
-	return [[expansion objectForKey: [aRow identifier]] boolValue];
-}
-- (void) setExpanded: (BOOL)flag
-			  forRow: (EWPersistentRootOutlineRow *)aRow
-{
-	[expansion setObject: [NSNumber numberWithBool: flag] forKey: [aRow identifier]];
-}
-
-- (void)doExpansion: (EWPersistentRootOutlineRow *)row
-{
-	if ([self isExpanded: row])
-	{
-		[outlineView expandItem: row];
-	}
-	for (EWPersistentRootOutlineRow *child in [row children])
-	{
-		[self doExpansion: child];
-	}
+    return [root name];
 }
 
 - (void) reloadBrowser
 {
 	[self setupCtx];
 	[outlineView reloadData];
-	[self doExpansion: outlineModel];
-	
-	[self updateUndoRedoButtons];
 }
-
-- (IBAction) highlightInParent: (id)sender
-{
-	assert(![path isEmpty]);
-	
-	[[(AppDelegate*)[NSApp delegate] windowControllerForPath: [path pathByDeletingLastPathComponent]] 
-		orderFrontAndHighlightItem: [path lastPathComponent]];
-}
-
-/**
- * FIXME: This is a bit ugly
- */
-- (COUUID *) currentCommit
-{
-	if (![path isEmpty])
-	{
-		COPersistentRootEditingContext *parentCtx = [COPersistentRootEditingContext editingContextForEditingPath: [path pathByDeletingLastPathComponent] 
-																										 inStore: store];
-		
-		COSubtree *item = [[parentCtx persistentRootTree] subtreeWithUUID: [path lastPathComponent]];
-		
-		COUUID *currentCommit = [[COSubtreeFactory factory] currentVersionForBranchOrPersistentRoot: item];
-		assert(currentCommit != nil);
-		
-		return currentCommit;
-	}
-	return nil;
-}
-
-- (IBAction) undo: (id)sender
-{
-	COPersistentRootEditingContext *parentCtx = [COPersistentRootEditingContext editingContextForEditingPath: [path pathByDeletingLastPathComponent] 
-																									 inStore: store];
-	
-	COSubtree *item = [[parentCtx persistentRootTree] subtreeWithUUID: [path lastPathComponent]];
-	item = [[COSubtreeFactory factory] currentBranch: item];
-	
-	[[COSubtreeFactory factory] undoBranch: item store: store];
-	[parentCtx commitWithMetadata: nil];
-	[[NSApp delegate] reloadAllBrowsers];
-}
-
-- (IBAction) redo: (id)sender
-{
-	COPersistentRootEditingContext *parentCtx = [COPersistentRootEditingContext editingContextForEditingPath: [path pathByDeletingLastPathComponent] 
-																									 inStore: store];
-	
-	COSubtree *item = [[parentCtx persistentRootTree] subtreeWithUUID: [path lastPathComponent]];
-	item = [[COSubtreeFactory factory] currentBranch: item];
-	
-	[[COSubtreeFactory factory] redoBranch: item store: store];
-	[parentCtx commitWithMetadata: nil];
-	[[NSApp delegate] reloadAllBrowsers];
-}
-
-- (IBAction) switchToCommit: (id)sender
-{
-	COUUID *commit;
-	if (![sender isKindOfClass: [COUUID class]])
-	{
-		commit = [sender representedObject];
-	}
-	else
-	{
-		commit = sender;
-	}
-	
-	if (commit == nil)
-	{
-		return;
-	}
-
-	
-	COPersistentRootEditingContext *parentCtx = [COPersistentRootEditingContext editingContextForEditingPath: [path pathByDeletingLastPathComponent] 
-																									 inStore: store];
-	
-	COSubtree *persistentRootTree = [parentCtx persistentRootTree];
-	COSubtree *item = [persistentRootTree subtreeWithUUID: [path lastPathComponent]];
-	
-	[[COSubtreeFactory factory] setCurrentVersion: commit
-						forBranchOrPersistentRoot: item
-											store: store];
-	
-	[parentCtx commitWithMetadata: nil];
-	[[NSApp delegate] reloadAllBrowsers];
-}
-
-- (IBAction) diffCommits: (id)sender
-{
-	NSArray *commits = [sender representedObject];
-	if ([commits count] != 2)
-		[NSException raise: NSInvalidArgumentException format: @""];
-	
-	COSubtree *a = [store treeForCommit: [commits objectAtIndex: 0]];
-	COSubtree *b = [store treeForCommit: [commits objectAtIndex: 1]];
-	
-	COSubtreeDiff *diff = [COSubtreeDiff diffSubtree: a
-										 withSubtree: b
-									sourceIdentifier: @"fixme"];
-	// FIXME:
-	
-	NSLog(@"Commits diff: %@", diff);
-}
-
-- (IBAction) selectiveUndo: (id)sender
-{
-	COUUID *commitToUndo = [sender representedObject];
-	COPersistentRootDiff *diff = [[COSubtreeFactory factory] selectiveUndoCommit: commitToUndo
-																	   forCommit: [ctx baseCommit]
-																		   store: store];
-	
-	if (diff)
-	{
-		NSLog(@"Selective undo diff: %@", diff);
-		COUUID *resultUUID = [diff commitInStore: store];
-		[self switchToCommit: resultUUID]; // FIXME: Hack
-	}
-}
-
-- (IBAction) selectiveApply: (id)sender
-{
-	COUUID *commitToDo = [sender representedObject];
-	COPersistentRootDiff *diff = [[COSubtreeFactory factory] selectiveApplyCommit: commitToDo
-																		forCommit: [ctx baseCommit]
-																			store: store];
-	
-	if (diff)
-	{
-		NSLog(@"Selective apply diff: %@", diff);
-		COUUID *resultUUID = [diff commitInStore: store];
-		[self switchToCommit: resultUUID]; // FIXME: Hack
-
-	}
-}
-
 
 static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *start, COUUID *aUUID)
 {
@@ -463,18 +144,7 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
 		EWPersistentRootOutlineRow *row = [self selectedItem];
 		
 		NSLog(@"Double click %@", [row UUID]);
-		
-		if ([row attribute] == nil) // only if we click on the root of an embedded object
-		{
-			COSubtree *item = [[ctx persistentRootTree] subtreeWithUUID: [row UUID]];
-			
-			if ([[COSubtreeFactory factory] isPersistentRoot: item] ||
-				[[COSubtreeFactory factory] isBranch: item])
-			{
-				[[NSApp delegate] browsePersistentRootAtPath: [path pathByAppendingPathComponent: [row UUID]]];
-			}
-		}
-		
+				
 		// FIXME:
 		// setting a double action on an outline view seems to break normal editing
 		// so we hack it in here.
@@ -504,7 +174,7 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
 			[itemToDelete deleteRow];
 		}
 	}
-	[[NSApp delegate] reloadAllBrowsers];
+    [self reloadBrowser];
 }
 
 - (void)delete:(id)sender
@@ -570,12 +240,10 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
 - (void)outlineViewItemDidCollapse: (NSNotification *)notif
 {
 	EWPersistentRootOutlineRow *anItem = [[notif userInfo] objectForKey: @"NSObject"];
-	[self setExpanded: NO forRow: anItem];
 }
 - (void)outlineViewItemDidExpand: (NSNotification *)notif
 {
 	EWPersistentRootOutlineRow *anItem = [[notif userInfo] objectForKey: @"NSObject"];
-	[self setExpanded: YES forRow: anItem];
 }
 
 - (NSOutlineView *)outlineView
@@ -587,78 +255,78 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
 
 - (IBAction)copy:(id)sender
 {
-	NSArray *rows = [self selectedRows];
-	
-	if ([rows count] == 0)
-	{
-		NSLog(@"Nothing to copy");
-		return;
-	}
-	if ([rows count] > 1)
-	{
-		NSLog(@"FIXME: only copying first item");
-	}
-	
-	EWPersistentRootOutlineRow *row = [rows objectAtIndex: 0];
-	if (![row isEmbeddedObject])
-	{
-		NSLog(@"Only embedded objects can be copied.");
-		return;
-	}
-	
-	COSubtree *subtreeToCopy = [row rowSubtree];
-	id plistToCopy = [subtreeToCopy plist];
-	
-	NSPasteboard *pb = [NSPasteboard generalPasteboard];
-	[pb declareTypes: A(EWDragType) owner: self];
-	[pb setPropertyList: plistToCopy forType: EWDragType];
+//	NSArray *rows = [self selectedRows];
+//	
+//	if ([rows count] == 0)
+//	{
+//		NSLog(@"Nothing to copy");
+//		return;
+//	}
+//	if ([rows count] > 1)
+//	{
+//		NSLog(@"FIXME: only copying first item");
+//	}
+//	
+//	EWPersistentRootOutlineRow *row = [rows objectAtIndex: 0];
+//	if (![row isEmbeddedObject])
+//	{
+//		NSLog(@"Only embedded objects can be copied.");
+//		return;
+//	}
+//	
+//	COObject *subtreeToCopy = [row rowSubtree];
+//	id plistToCopy = [[subtreeToCopy itemTree] plist];
+//	
+//	NSPasteboard *pb = [NSPasteboard generalPasteboard];
+//	[pb declareTypes: A(EWDragType) owner: self];
+//	[pb setPropertyList: plistToCopy forType: EWDragType];
 }
 
 - (IBAction)paste:(id)sender
 {
-	NSLog(@"Paste!");
-	
-	// test paste destination
-	
-	NSArray *rows = [self selectedRows];
-	
-	if ([rows count] != 1)
-	{
-		NSLog(@"Select a single row, container property of EmbeddedItemm, to paste on to");
-		return;
-	}
-	
-	EWPersistentRootOutlineRow *row = [rows objectAtIndex: 0];
-	
-	COSubtree *rowSubtree = [row rowSubtree];
-	
-	if (![[rowSubtree typeForAttribute: [row attribute]] isEqual: [COType setWithPrimitiveType: [COType embeddedItemType]]])
-	{
-		NSLog(@"Dest row type is wrong");
-		return;
-	}
-
-	// do the paste
-	
-	NSPasteboard *pb = [NSPasteboard generalPasteboard];
-	NSString *bestType = [pb availableTypeFromArray: A(EWDragType)];
-	if (bestType != nil)
-	{
-		id plist = [pb propertyListForType: EWDragType];
-
-		COSubtree *pasteSubtree = [COSubtree subtreeWithPlist: plist];
-		
-		[rowSubtree addObject: pasteSubtree
-		 toUnorderedAttribute: [row attribute]
-						 type: [rowSubtree typeForAttribute: [row attribute]]]; 
-		
-		[ctx commitWithMetadata: nil];		
-		[[NSApp delegate] reloadAllBrowsers];
-	}
-	else
-	{
-		NSLog(@"No suitable data on pasteboard");
-	}
+//	NSLog(@"Paste!");
+//	
+//	// test paste destination
+//	
+//	NSArray *rows = [self selectedRows];
+//	
+//	if ([rows count] != 1)
+//	{
+//		NSLog(@"Select a single row, container property of EmbeddedItemm, to paste on to");
+//		return;
+//	}
+//	
+//	EWPersistentRootOutlineRow *row = [rows objectAtIndex: 0];
+//	
+//	COSubtree *rowSubtree = [row rowSubtree];
+//	
+//	if (![[rowSubtree typeForAttribute: [row attribute]] isEqual: [COType setWithPrimitiveType: [COType embeddedItemType]]])
+//	{
+//		NSLog(@"Dest row type is wrong");
+//		return;
+//	}
+//
+//	// do the paste
+//	
+//	NSPasteboard *pb = [NSPasteboard generalPasteboard];
+//	NSString *bestType = [pb availableTypeFromArray: A(EWDragType)];
+//	if (bestType != nil)
+//	{
+//		id plist = [pb propertyListForType: EWDragType];
+//
+//		COSubtree *pasteSubtree = [COSubtree subtreeWithPlist: plist];
+//		
+//		[rowSubtree addObject: pasteSubtree
+//		 toUnorderedAttribute: [row attribute]
+//						 type: [rowSubtree typeForAttribute: [row attribute]]]; 
+//		
+//		[ctx commitWithMetadata: nil];		
+//		[[NSApp delegate] reloadAllBrowsers];
+//	}
+//	else
+//	{
+//		NSLog(@"No suitable data on pasteboard");
+//	}
 }
 
 - (IBAction)cut:(id)sender
@@ -672,118 +340,118 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
 
 - (BOOL)outlineView:(NSOutlineView *)anOutlineView writeItems:(NSArray *)items toPasteboard:(NSPasteboard *)pb
 {
-	if ([items count] != 1)
-	{
-		return NO;
-	}
-
-	EWPersistentRootOutlineRow *row = [items objectAtIndex: 0];
-	if (![row isEmbeddedObject])
-	{
-		NSLog(@"Only embedded objects can be copied.");
-		return NO;
-	}
-	
-	COSubtree *subtreeToCopy = [row rowSubtree];
-	id plistToCopy = [subtreeToCopy plist];
-	
-	[pb declareTypes: A(EWDragType) owner: self];
-	return [pb setPropertyList: plistToCopy forType: EWDragType];
+//	if ([items count] != 1)
+//	{
+//		return NO;
+//	}
+//
+//	EWPersistentRootOutlineRow *row = [items objectAtIndex: 0];
+//	if (![row isEmbeddedObject])
+//	{
+//		NSLog(@"Only embedded objects can be copied.");
+//		return NO;
+//	}
+//	
+//	COSubtree *subtreeToCopy = [row rowSubtree];
+//	id plistToCopy = [subtreeToCopy plist];
+//	
+//	[pb declareTypes: A(EWDragType) owner: self];
+//	return [pb setPropertyList: plistToCopy forType: EWDragType];
 }
 
 - (NSDragOperation)outlineView:(NSOutlineView *)anOutlineView validateDrop:(id <NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)index
 {
 	// FIXME: gnustep should handle this
 	
-	id plist = [[info draggingPasteboard] propertyListForType: EWDragType];
-	if (plist == nil)
-	{
-		return NSDragOperationNone;
-	}
-	
-	COSubtree *proposedSubtree = [COSubtree subtreeWithPlist: plist];
-	if ([[[item rowSubtree] UUID] isEqual: [proposedSubtree UUID]])
-	{
-		NSLog(@"Can't drop source onto itself");
-		return NSDragOperationNone;
-	}
-	
-	if ([item isEmbeddedObject]
-		|| [[[item rowSubtree] typeForAttribute: [item attribute]] isEqual: [COType setWithPrimitiveType: [COType embeddedItemType]]])
-	{
-		NSDragOperation mask = NSDragOperationNone;
-		if ([[[item rowSubtree] root] containsSubtreeWithUUID: [proposedSubtree UUID]])
-		{
-			mask = [info draggingSourceOperationMask];
-		}
-		else
-		{
-			// cross-persistent-root; copy for familiarity's sake
-			mask = NSDragOperationCopy;
-		}
-		NSLog(@"returning %d", (int)mask);
-		return mask;
-	}
-	return NSDragOperationNone;
+//	id plist = [[info draggingPasteboard] propertyListForType: EWDragType];
+//	if (plist == nil)
+//	{
+//		return NSDragOperationNone;
+//	}
+//	
+//	COSubtree *proposedSubtree = [COSubtree subtreeWithPlist: plist];
+//	if ([[[item rowSubtree] UUID] isEqual: [proposedSubtree UUID]])
+//	{
+//		NSLog(@"Can't drop source onto itself");
+//		return NSDragOperationNone;
+//	}
+//	
+//	if ([item isEmbeddedObject]
+//		|| [[[item rowSubtree] typeForAttribute: [item attribute]] isEqual: [COType setWithPrimitiveType: [COType embeddedItemType]]])
+//	{
+//		NSDragOperation mask = NSDragOperationNone;
+//		if ([[[item rowSubtree] root] containsSubtreeWithUUID: [proposedSubtree UUID]])
+//		{
+//			mask = [info draggingSourceOperationMask];
+//		}
+//		else
+//		{
+//			// cross-persistent-root; copy for familiarity's sake
+//			mask = NSDragOperationCopy;
+//		}
+//		NSLog(@"returning %d", (int)mask);
+//		return mask;
+//	}
+//	return NSDragOperationNone;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)aOutlineView acceptDrop:(id <NSDraggingInfo>)info item:(id)newParent childIndex:(NSInteger)index
 {
-			NSLog(@"got %d", (int)[info draggingSourceOperationMask]);
-	
-	NSPasteboard *pb = [info draggingPasteboard];
-	NSString *bestType = [pb availableTypeFromArray: A(EWDragType)];
-	if (bestType == nil)
-	{
-		return NO;
-	}
-
-	id plist = [pb propertyListForType: EWDragType];		
-	COSubtree *pasteSubtree = [COSubtree subtreeWithPlist: plist];
-	COSubtree *destsubtree = [newParent rowSubtree];
-	
-	BOOL mustCopy = ![[destsubtree root] containsSubtreeWithUUID: [pasteSubtree UUID]];
-	
-	// special case: branch pull
-	
-	if ([[COSubtreeFactory factory] isBranch: pasteSubtree]
-		&& [[COSubtreeFactory factory] isBranch: destsubtree])
-	{
-		[[COSubtreeFactory factory] pullChangesFromBranch: pasteSubtree
-												 toBranch: destsubtree 
-													store: [ctx store]];
-		
-	}
-	else
-	{
-		if ([info draggingSourceOperationMask] == NSDragOperationLink)
-		{
-			NSLog(@"Link unsupported");
-			return NO;
-		}
-		
-		if (mustCopy || [info draggingSourceOperationMask] == NSDragOperationCopy)
-		{
-			NSLog(@"copy");
-		}
-		else
-		{
-			NSLog(@"remove %@", pasteSubtree);
-			NSLog(@"before %@", [[newParent rowSubtree] root]);
-			[[[newParent rowSubtree] root] removeSubtreeWithUUID: [pasteSubtree UUID]];
-		}
-		
-		
-		[destsubtree addTree: pasteSubtree];
-	}
-	
-
-	NSLog(@"after %@", [ctx persistentRootTree]);	
-	
-	[ctx commitWithMetadata: nil];
-	
-	[[NSApp delegate] performSelector: @selector(reloadAllBrowsers) withObject:nil afterDelay:0.1];
-	
+//			NSLog(@"got %d", (int)[info draggingSourceOperationMask]);
+//	
+//	NSPasteboard *pb = [info draggingPasteboard];
+//	NSString *bestType = [pb availableTypeFromArray: A(EWDragType)];
+//	if (bestType == nil)
+//	{
+//		return NO;
+//	}
+//
+//	id plist = [pb propertyListForType: EWDragType];		
+//	COSubtree *pasteSubtree = [COSubtree subtreeWithPlist: plist];
+//	COSubtree *destsubtree = [newParent rowSubtree];
+//	
+//	BOOL mustCopy = ![[destsubtree root] containsSubtreeWithUUID: [pasteSubtree UUID]];
+//	
+//	// special case: branch pull
+//	
+//	if ([[COSubtreeFactory factory] isBranch: pasteSubtree]
+//		&& [[COSubtreeFactory factory] isBranch: destsubtree])
+//	{
+//		[[COSubtreeFactory factory] pullChangesFromBranch: pasteSubtree
+//												 toBranch: destsubtree 
+//													store: [ctx store]];
+//		
+//	}
+//	else
+//	{
+//		if ([info draggingSourceOperationMask] == NSDragOperationLink)
+//		{
+//			NSLog(@"Link unsupported");
+//			return NO;
+//		}
+//		
+//		if (mustCopy || [info draggingSourceOperationMask] == NSDragOperationCopy)
+//		{
+//			NSLog(@"copy");
+//		}
+//		else
+//		{
+//			NSLog(@"remove %@", pasteSubtree);
+//			NSLog(@"before %@", [[newParent rowSubtree] root]);
+//			[[[newParent rowSubtree] root] removeSubtreeWithUUID: [pasteSubtree UUID]];
+//		}
+//		
+//		
+//		[destsubtree addTree: pasteSubtree];
+//	}
+//	
+//
+//	NSLog(@"after %@", [ctx persistentRootTree]);	
+//	
+//	[ctx commitWithMetadata: nil];
+//	
+//	[[NSApp delegate] performSelector: @selector(reloadAllBrowsers) withObject:nil afterDelay:0.1];
+//	
 	return YES;
 }
 
@@ -797,54 +465,54 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
     SEL theAction = [anItem action];
 
 	NSArray *rows = [self selectedRows];
-	
-	if (theAction == @selector(copy:) || theAction == @selector(cut:))
-	{
-		if ([rows count] != 1)
-		{
-			return NO;
-		}
-		
-		EWPersistentRootOutlineRow *row = [rows objectAtIndex: 0];
-		if (![row isEmbeddedObject])
-		{
-			return NO;
-		}
-		
-		return YES;
-	}
-	else if (theAction == @selector(paste:))
-	{
-		NSArray *rows = [self selectedRows];
-		
-		if ([rows count] != 1)
-		{
-			return NO;
-		}
-		
-		EWPersistentRootOutlineRow *row = [rows objectAtIndex: 0];
-		COSubtree *rowSubtree = [row rowSubtree];
-		
-		if (![[rowSubtree typeForAttribute: [row attribute]] isEqual: [COType setWithPrimitiveType: [COType embeddedItemType]]])
-		{
-			return NO;
-		}
-		
-		NSPasteboard *pb = [NSPasteboard generalPasteboard];
-		return [pb availableTypeFromArray: A(EWDragType)] != nil;
-	}
+//	
+//	if (theAction == @selector(copy:) || theAction == @selector(cut:))
+//	{
+//		if ([rows count] != 1)
+//		{
+//			return NO;
+//		}
+//		
+//		EWPersistentRootOutlineRow *row = [rows objectAtIndex: 0];
+//		if (![row isEmbeddedObject])
+//		{
+//			return NO;
+//		}
+//		
+//		return YES;
+//	}
+//	else if (theAction == @selector(paste:))
+//	{
+//		NSArray *rows = [self selectedRows];
+//		
+//		if ([rows count] != 1)
+//		{
+//			return NO;
+//		}
+//		
+//		EWPersistentRootOutlineRow *row = [rows objectAtIndex: 0];
+//		COSubtree *rowSubtree = [row rowSubtree];
+//		
+//		if (![[rowSubtree typeForAttribute: [row attribute]] isEqual: [COType setWithPrimitiveType: [COType embeddedItemType]]])
+//		{
+//			return NO;
+//		}
+//		
+//		NSPasteboard *pb = [NSPasteboard generalPasteboard];
+//		return [pb availableTypeFromArray: A(EWDragType)] != nil;
+//	}
 	
 	return [self respondsToSelector: theAction];
 }
 
-- (NSUndoManager *)undoManager
-{
-	return [[[EWUndoManager alloc] initWithWindowController: self] autorelease];
-}
-
-- (NSUndoManager *)windowWillReturnUndoManager:(NSWindow *)sender
-{
-	return [self undoManager];
-}
+//- (NSUndoManager *)undoManager
+//{
+//	return [[[EWUndoManager alloc] initWithWindowController: self] autorelease];
+//}
+//
+//- (NSUndoManager *)windowWillReturnUndoManager:(NSWindow *)sender
+//{
+//	return [self undoManager];
+//}
 
 @end
