@@ -80,6 +80,12 @@
     return [[[self alloc] initWithItemTree: aTree] autorelease];
 }
 
++ (COEditingContext *) editingContextWithItem: (COItem *)anItem
+{
+    return [self editingContextWithItemTree: [COItemTree treeWithItems: [NSArray arrayWithObject: anItem]
+                                                          rootItemUUID: [anItem UUID]]];
+}
+
 - (id) copyWithZone: (NSZone *)aZone
 {
     return [[[self class] alloc] initWithItemTree: [self itemTree]];

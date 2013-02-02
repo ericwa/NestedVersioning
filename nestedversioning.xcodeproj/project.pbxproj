@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		662115BD16BD92F400F037BB /* list-add.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 662115BC16BD92F400F037BB /* list-add.tiff */; };
+		662115C116BD938B00F037BB /* edit-redo.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 662115BF16BD938B00F037BB /* edit-redo.tiff */; };
+		662115C216BD938B00F037BB /* edit-undo.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 662115C016BD938B00F037BB /* edit-undo.tiff */; };
 		66238164162FD04A00CA0CC4 /* COEdit.h in Headers */ = {isa = PBXBuildFile; fileRef = 66238162162FD04A00CA0CC4 /* COEdit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66238165162FD04A00CA0CC4 /* COEdit.m in Sources */ = {isa = PBXBuildFile; fileRef = 66238163162FD04A00CA0CC4 /* COEdit.m */; };
 		66243A6515ECC13300D00813 /* COPersistentRootState.m in Sources */ = {isa = PBXBuildFile; fileRef = 665BD3C915D78BE600428355 /* COPersistentRootState.m */; };
@@ -194,6 +197,9 @@
 /* Begin PBXFileReference section */
 		66101A0914D09FAA00B50075 /* diff.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = diff.cc; path = Diff/diff.cc; sourceTree = "<group>"; };
 		66101A0D14D09FB700B50075 /* diff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = diff.h; path = Diff/diff.h; sourceTree = "<group>"; };
+		662115BC16BD92F400F037BB /* list-add.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "list-add.tiff"; sourceTree = "<group>"; };
+		662115BF16BD938B00F037BB /* edit-redo.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "edit-redo.tiff"; sourceTree = "<group>"; };
+		662115C016BD938B00F037BB /* edit-undo.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "edit-undo.tiff"; sourceTree = "<group>"; };
 		66238162162FD04A00CA0CC4 /* COEdit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COEdit.h; sourceTree = "<group>"; };
 		66238163162FD04A00CA0CC4 /* COEdit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COEdit.m; sourceTree = "<group>"; };
 		6628FBA1142FA7840072767A /* TestCopyEmbeddedObjects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCopyEmbeddedObjects.m; sourceTree = "<group>"; };
@@ -560,6 +566,7 @@
 				662C1DE4168FACC9002157F3 /* EWPersistentRootOutlineRow.m */,
 				662C1DE5168FACC9002157F3 /* EWPersistentRootWindowController.h */,
 				662C1DE6168FACC9002157F3 /* EWPersistentRootWindowController.m */,
+				662C1E7316923F38002157F3 /* PersistentRootWindow.xib */,
 				662C1DE7168FACC9002157F3 /* EWUndoManager.h */,
 				662C1DE8168FACC9002157F3 /* EWUndoManager.m */,
 				662C1E591690EBF4002157F3 /* EWStoreDocument.h */,
@@ -568,12 +575,14 @@
 				662C1DEA168FACC9002157F3 /* main.m */,
 				662C1DEB168FACC9002157F3 /* MainMenu.xib */,
 				662C1DEC168FACC9002157F3 /* package.png */,
-				662C1E7316923F38002157F3 /* PersistentRootWindow.xib */,
 				662C1DEE168FACC9002157F3 /* StoreBrowser-Info.plist */,
 				662C1DEF168FACC9002157F3 /* StoreBrowser-Prefix.pch */,
 				662C1E38168FF81F002157F3 /* edit-copy.png */,
 				662C1E36168FF6ED002157F3 /* package-x-generic.png */,
 				662C1E3A168FF84E002157F3 /* edit-delete.png */,
+				662115BC16BD92F400F037BB /* list-add.tiff */,
+				662115BF16BD938B00F037BB /* edit-redo.tiff */,
+				662115C016BD938B00F037BB /* edit-undo.tiff */,
 				662C1E33168FF324002157F3 /* StoreWindow.xib */,
 				662C1E551690D7D8002157F3 /* EWStoreWindowController.h */,
 				662C1E561690D7DA002157F3 /* EWStoreWindowController.m */,
@@ -1148,6 +1157,9 @@
 				662C1E3B168FF84F002157F3 /* edit-delete.png in Resources */,
 				662C1E4816902136002157F3 /* PersistentRootInspector.xib in Resources */,
 				662C1E7416923F38002157F3 /* PersistentRootWindow.xib in Resources */,
+				662115BD16BD92F400F037BB /* list-add.tiff in Resources */,
+				662115C116BD938B00F037BB /* edit-redo.tiff in Resources */,
+				662115C216BD938B00F037BB /* edit-undo.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

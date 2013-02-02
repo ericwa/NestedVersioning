@@ -515,4 +515,25 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
 //	return [self undoManager];
 //}
 
+- (IBAction) undo: (id)sender
+{
+    
+}
+- (IBAction) redo: (id)sender
+{
+    
+}
+- (IBAction) insertItem: (id)sender
+{
+    EWPersistentRootOutlineRow *row = [[self selectedItem] parent];
+    if (row != nil)
+    {
+        [[row rowSubtree] addObjectToContents: [[COEditingContext editingContextWithItem: [COMutableItem item]] rootObject]];
+        
+        [branch commitChangesWithMetadata: nil];
+        [self reloadBrowser];
+        
+    }
+}
+
 @end

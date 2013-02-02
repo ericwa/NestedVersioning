@@ -3,6 +3,7 @@
 @class COUUID;
 @class COItemTree;
 @class COObject;
+@class COItem;
 
 @interface COEditingContext : NSObject <NSCopying>
 {
@@ -29,6 +30,8 @@
  *  - items contains more than one item with the same UUID
  */
 + (COEditingContext *) editingContextWithItemTree: (COItemTree *)aTree;
+
++ (COEditingContext *) editingContextWithItem: (COItem *)anItem;
 
 /**
  * Returns a copy of the reciever, not including any change tracking

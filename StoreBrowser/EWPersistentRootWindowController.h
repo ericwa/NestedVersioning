@@ -22,6 +22,8 @@
 - (IBAction) highlightInParent: (id)sender;
 - (IBAction) undo: (id)sender;
 - (IBAction) redo: (id)sender;
+- (IBAction) insertItem: (id)sender;
+
 
 - (void) orderFrontAndHighlightItem: (COUUID*)aUUID;
 
