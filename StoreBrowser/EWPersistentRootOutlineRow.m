@@ -322,8 +322,7 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 				   forAttribute: object
 						   type: type];
 			
-			[ctx commitWithMetadata: nil];
-			[windowController reloadBrowser];			
+			[self commitWithMetadata: nil];
 		}
 	}
 	if ([[tableColumn identifier] isEqualToString: @"value"])
@@ -356,8 +355,7 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
                     forAttribute: [self attribute]
                             type: type];
 
-			[ctx commitWithMetadata: nil];			
-			[windowController reloadBrowser];
+            [self commitWithMetadata: nil];
 		}
 	}	
 }
@@ -384,7 +382,7 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 		//[container release];
 		
 
-		[ctx commitWithMetadata: nil];
+		[self commitWithMetadata: nil];
 	}
 	else if (attribute != nil)
 	{
@@ -393,7 +391,7 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 		
 		[storeItem removeValueForAttribute: attribute];
 		
-		[ctx commitWithMetadata: nil];
+		[self commitWithMetadata: nil];
 	}
 	else // embedded item
 	{
@@ -403,7 +401,7 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
         
         [[[ctx objectForUUID: uuid] parentObject] removeDescendentObject: uuid];
 
-		[ctx commitWithMetadata: nil];
+		[self commitWithMetadata: nil];
 	}
 }
 
@@ -454,7 +452,7 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 //	
 //	EWPersistentRootWindowController *controller = windowController; // FIXME: ugly hack
 //	
-//	[ctx commitWithMetadata: nil];
+//	[self commitWithMetadata: nil];
 //	[windowController reloadBrowser]; // FIXME: ugly.. deallocates self...
 //	
 //	[controller orderFrontAndHighlightItem: [newRoot UUID]];
@@ -496,9 +494,7 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 	COObject *subtree = [self rowSubtree];
 	[subtree setValue: @"new value" forAttribute: @"newAttribute" type: [COType stringType]];
 
-	[ctx commitWithMetadata: nil];
-	
-	[windowController reloadBrowser]; // FIXME: ugly.. deallocates self...
+	[self commitWithMetadata: nil];
 }
 
 - (void) addEmbeddedItem: (id)sender
@@ -507,12 +503,7 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 	COObject *newItem = [self itemWithLabel: @"new item"];
 	[subtree addObjectToContents: newItem];
 
-	[ctx commitWithMetadata: nil];
-	
-	EWPersistentRootWindowController *controller = windowController; // FIXME: ugly hack
-	[windowController reloadBrowser]; // FIXME: ugly.. deallocates self...
-
-	[controller orderFrontAndHighlightItem: [newItem UUID]];
+	[self commitWithMetadata: nil];
 }
 
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem
@@ -606,5 +597,9 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
     return menu;
 }
 
+- (void) commitWithMetadata: (NSDictionary*)meta
+{
+
+}
 @end
 

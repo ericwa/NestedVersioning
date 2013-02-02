@@ -55,4 +55,6 @@
 
 - (BOOL) isEmbeddedObject;
 
+- (void) commitWithMetadata: (NSDictionary*)meta;
+
 @end
