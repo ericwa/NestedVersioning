@@ -82,7 +82,7 @@
 
 + (COEditingContext *) editingContextWithItem: (COItem *)anItem
 {
-    return [self editingContextWithItemTree: [COItemTree treeWithItems: [NSArray arrayWithObject: anItem]
+    return [self editingContextWithItemTree: [COItemTree itemTreeWithItems: [NSArray arrayWithObject: anItem]
                                                           rootItemUUID: [anItem UUID]]];
 }
 

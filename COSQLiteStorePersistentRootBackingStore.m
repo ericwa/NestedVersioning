@@ -121,8 +121,10 @@
 	return result;
 }
 
-- (COItemTree *) itemTreeForRevid: (int64_t)revid
+- (COPartialItemTree *) partialItemTreeFromRevid: (int64_t)baseRevid toRevid: (int64_t)revid
 {
+    NSParameterAssert(baseRevid < revid);
+    
     NSNumber *revidObj = [NSNumber numberWithLongLong: revid];
     
     NSMutableDictionary *resultDict = [NSMutableDictionary dictionary];
@@ -156,6 +158,13 @@
                 }
             }
             
+            if (parent == baseRevid)
+            {
+                // The caller _already_ has the state of baseRevid. If the state we just processed's
+                // parent is baseRevid, we can stop because we have everything already.
+                break;
+            }
+            
             nextRevId = parent;
             
             // validity check            
@@ -172,11 +181,14 @@
     
     COUUID *root = [self rootUUIDForRevid: revid];
     
-    // FIXME: run a tree search to collect all used object UUID; so we can weed out any unreferenced ones
-    // which may be in resultDict (because they were deleted at some point)
-    COItemTree *result = [[[COItemTree alloc] initWithItemForUUID: resultDict
-                                                             rootItemUUID: root] autorelease];
+    COPartialItemTree *result = [[[COPartialItemTree alloc] initWithItemForUUID: resultDict
+                                                                   rootItemUUID: root] autorelease];
     return result;
+}
+
+- (COItemTree *) itemTreeForRevid: (int64_t)revid
+{
+    return [[self partialItemTreeFromRevid: -1 toRevid: revid] itemTree];
 }
 
 static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifiedItems)

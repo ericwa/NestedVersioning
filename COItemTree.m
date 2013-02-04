@@ -3,21 +3,10 @@
 #import "COUUID.h"
 #import "COItem.h"
 
-@implementation COItemTree
-
-+ (COItemTree *) treeWithItems: (NSArray *)items rootItemUUID: (COUUID *)aUUID
-{
-    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity: [items count]];
-    for (COItem *item in items)
-    {
-        [dict setObject: item forKey: [item UUID]];
-    }
-    
-    return [[[self alloc] initWithItemForUUID: dict rootItemUUID: aUUID] autorelease];
-}
+@implementation COPartialItemTree
 
 - (id) initWithItemForUUID: (NSDictionary *) itemForUUID
-                      rootItemUUID: (COUUID *)root
+              rootItemUUID: (COUUID *)root
 {
     NSParameterAssert([itemForUUID isKindOfClass: [NSDictionary class]]);
     NSParameterAssert([root isKindOfClass: [COUUID class]]);
@@ -35,7 +24,18 @@
     [super dealloc];
 }
 
-- (id) copyWithZone:(NSZone *)zone
++ (id) itemTreeWithItems: (NSArray *)items rootItemUUID: (COUUID *)aUUID
+{
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity: [items count]];
+    for (COItem *item in items)
+    {
+        [dict setObject: item forKey: [item UUID]];
+    }
+    
+    return [[[self alloc] initWithItemForUUID: dict rootItemUUID: aUUID] autorelease];
+}
+
+- (id) copyWithZone: (NSZone *)zone
 {
     return [self retain];
 }
@@ -50,23 +50,20 @@
     return [itemForUUID_ objectForKey: aUUID];
 }
 
-- (void) collectAllDescendentsOfItem: (COUUID *)aUUID inSet: (NSMutableSet *)aSet
-{
-	[aSet addObject: aUUID];
-	for (COUUID *child in [[self itemForUUID: aUUID] embeddedItemUUIDs])
-	{
-        [self collectAllDescendentsOfItem: child inSet: aSet];
-	}
-}
-
 - (NSArray *) itemUUIDs
 {
-    NSMutableSet *result = [NSMutableSet set];
-    [self collectAllDescendentsOfItem: [self rootItemUUID] inSet: result];
-    return [result allObjects];
+    return [itemForUUID_ allKeys];
 }
 
-- (COItemTree *) itemTreeWithNameMapping: (NSDictionary *)aMapping;
+- (id) itemTreeByAddingItemTree: (COPartialItemTree *)partialTree
+{
+    NSMutableDictionary *resultDict = [NSMutableDictionary dictionaryWithDictionary: itemForUUID_];
+    [resultDict addEntriesFromDictionary: partialTree->itemForUUID_];
+    return [[[[self class] alloc] initWithItemForUUID: resultDict
+                                         rootItemUUID: partialTree->rootItemUUID_] autorelease];
+}
+
+- (id) itemTreeWithNameMapping: (NSDictionary *)aMapping;
 {
 	NSMutableDictionary *newItems = [NSMutableDictionary dictionary];
 	
@@ -83,9 +80,15 @@
         newRoot = rootItemUUID_;
     }
     
-	return [[[COItemTree alloc] initWithItemForUUID: newItems rootItemUUID:newRoot] autorelease];
+	return [[[[self class] alloc] initWithItemForUUID: newItems rootItemUUID:newRoot] autorelease];
 }
 
+- (COItemTree *) itemTree
+{
+	return [[[COItemTree alloc] initWithItemForUUID: itemForUUID_
+                                       rootItemUUID: rootItemUUID_] autorelease];
+
+}
 
 /** @taskunit equality testing */
 
@@ -95,11 +98,11 @@
 	{
 		return YES;
 	}
-	if (![object isKindOfClass: [COItemTree class]])
+	if (![object isKindOfClass: [COPartialItemTree class]])
 	{
 		return NO;
 	}
-	COItemTree *otherTree = (COItemTree*)object;
+	COPartialItemTree *otherTree = (COPartialItemTree*)object;
 	
 	if (![otherTree->rootItemUUID_ isEqual: rootItemUUID_]) return NO;
 	if (![otherTree->itemForUUID_ isEqual: itemForUUID_]) return NO;
@@ -115,7 +118,7 @@
 {
 	NSMutableString *result = [NSMutableString string];
     
-	[result appendFormat: @"[COObjectTree root: %@\n", rootItemUUID_];
+	[result appendFormat: @"[%@ root: %@\n", NSStringFromClass([self class]), rootItemUUID_];
 	for (COItem *item in [itemForUUID_ allValues])
 	{
 		[result appendFormat: @"%@", item];
@@ -123,6 +126,46 @@
 	[result appendFormat: @"]"];
 	
 	return result;
+}
+
+@end
+
+@implementation COItemTree
+
++ (void) collectAllDescendentsOfItem: (COUUID *)aUUID
+                               inSet: (NSMutableSet *)dest
+                  withItemDictionary: (NSDictionary *)aDict
+{
+    if ([dest containsObject: aUUID])
+    {
+        [NSException raise: NSInvalidArgumentException
+                    format: @"Cycle detected"];
+    }
+	[dest addObject: aUUID];
+	for (COUUID *child in [[aDict objectForKey: aUUID] embeddedItemUUIDs])
+	{
+        [self collectAllDescendentsOfItem: child
+                                    inSet: dest
+                       withItemDictionary: aDict];
+	}
+}
+
+- (id) initWithItemForUUID: (NSDictionary *) itemForUUID
+              rootItemUUID: (COUUID *)root
+{
+    NSMutableSet *itemsToKeep = [NSMutableSet setWithCapacity: [itemForUUID count]];
+    [COItemTree collectAllDescendentsOfItem: root
+                                      inSet: itemsToKeep
+                         withItemDictionary: itemForUUID];
+    
+    NSMutableDictionary *filteredDictionary = [NSMutableDictionary dictionaryWithCapacity:[itemsToKeep count]];
+    for (COUUID *uuid in itemsToKeep)
+    {
+        [filteredDictionary setObject: [itemForUUID objectForKey: uuid] forKey: uuid];
+    }
+    
+    return [super initWithItemForUUID: filteredDictionary
+                         rootItemUUID: root];
 }
 
 @end

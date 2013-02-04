@@ -70,7 +70,7 @@ static COObject *makeTree(NSString *label)
     
     COMutableItem *modifiedItem = [[[basicTree itemForUUID: [basicTree rootItemUUID]] mutableCopy] autorelease];
     [modifiedItem setValue: @"hello world 2" forAttribute: @"label" type: [COType stringType]];
-    COItemTree *basicTree2 = [COItemTree treeWithItems: A(modifiedItem) rootItemUUID: [modifiedItem UUID]];
+    COItemTree *basicTree2 = [COItemTree itemTreeWithItems: A(modifiedItem) rootItemUUID: [modifiedItem UUID]];
     
     CORevisionID *token2 = [store writeItemTree: basicTree2
                                    withMetadata: nil
