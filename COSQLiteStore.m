@@ -354,7 +354,8 @@
                                                           newBranchUUID: aBranch
                                                                    UUID: aRoot
                                                                    date: [NSDate date]
-                                                            displayName: @""] autorelease];
+                                                            displayName: @""
+                                                      operationMetadata: operationMetadata] autorelease];
     
     return [self updatePersistentRoot: plist withOperation: op];
 }
@@ -390,7 +391,8 @@
                                                            newToken:aToken
                                                                UUID:aRoot
                                                                date: [NSDate date]
-                                                        displayName: @""] autorelease];
+                                                        displayName: @""
+                                                  operationMetadata: operationMetadata] autorelease];
     
     BOOL ok = [self updatePersistentRoot: plist withOperation: op];
     if (!ok)
@@ -422,7 +424,8 @@
                                                                   newToken: aVersion
                                                                       UUID: aRoot
                                                                       date: [NSDate date]
-                                                               displayName: @""] autorelease];
+                                                               displayName: @""
+                                                         operationMetadata: operationMetadata] autorelease];
     
     return  [self updatePersistentRoot: plist withOperation: op];
 }
@@ -437,7 +440,8 @@
     COEdit *op = [[[COEditDeleteBranch alloc] initWithBranchPlist: branchState
                                                              UUID: aRoot
                                                              date: [NSDate date]
-                                                               displayName: @""] autorelease];
+                                                      displayName: @""
+                                                operationMetadata: operationMetadata] autorelease];
     
     [plist removeBranchForUUID: aBranch];
     
@@ -457,7 +461,8 @@
                                                            newMetadata: metadata
                                                                   UUID:aRoot branchUUID: aBranch
                                                                   date: [NSDate date]
-                                                           displayName: @""] autorelease];
+                                                           displayName: @""
+                                                     operationMetadata: operationMetadata] autorelease];
     return [self updatePersistentRoot: plist withOperation: op];
 }
 
@@ -473,7 +478,8 @@
                                                      newMetadata: metadata
                                                             UUID: aRoot
                                                             date: [NSDate date]
-                                                     displayName: @""] autorelease];
+                                                     displayName: @""
+                                               operationMetadata: operationMetadata] autorelease];
     return [self updatePersistentRoot: plist withOperation: op];
 }
 

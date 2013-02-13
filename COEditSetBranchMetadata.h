@@ -12,5 +12,6 @@
                       UUID: (COUUID*)aUUID
                 branchUUID: (COUUID*)aBranch
                       date: (NSDate*)aDate
-               displayName: (NSString*)aName;
+               displayName: (NSString*)aName
+         operationMetadata: (NSDictionary *)opMetadata;
 @end

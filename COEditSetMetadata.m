@@ -11,10 +11,11 @@ static NSString *kCONewMetadata = @"CONewMetadata";
                       UUID: (COUUID*)aUUID
                       date: (NSDate*)aDate
                displayName: (NSString*)aName
+         operationMetadata: (NSDictionary *)opMetadata
 {
     NILARG_EXCEPTION_TEST(newMeta);
     
-    self = [super initWithUUID: aUUID date: aDate displayName: aName];
+    self = [super initWithUUID: aUUID date: aDate displayName: aName operationMetadata: opMetadata];
     ASSIGN(old_, [NSDictionary dictionaryWithDictionary: oldMeta]);
     ASSIGN(new_, [NSDictionary dictionaryWithDictionary: newMeta]);
     return self;
@@ -47,7 +48,8 @@ static NSString *kCONewMetadata = @"CONewMetadata";
                                           newMetadata: old_
                                                  UUID: uuid_
                                                  date: date_
-                                          displayName: displayName_] autorelease];
+                                          displayName: displayName_
+                                    operationMetadata: operationMetadata_] autorelease];
 }
 
 - (void) applyToPersistentRoot: (COPersistentRootState *)aProot

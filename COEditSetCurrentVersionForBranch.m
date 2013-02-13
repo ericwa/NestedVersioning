@@ -14,12 +14,13 @@ static NSString *kCONewVersionToken = @"CONewVersionToken";
                  UUID: (COUUID*)aUUID
                  date: (NSDate*)aDate
           displayName: (NSString*)aName
+    operationMetadata: (NSDictionary *)opMetadata
 {
     NILARG_EXCEPTION_TEST(aBranch);
     NILARG_EXCEPTION_TEST(oldToken);
     NILARG_EXCEPTION_TEST(newToken);
     
-    self = [super initWithUUID: aUUID date: aDate displayName: aName];
+    self = [super initWithUUID: aUUID date: aDate displayName: aName operationMetadata: opMetadata];
     ASSIGN(branch_, aBranch);
     ASSIGN(oldToken_, oldToken);
     ASSIGN(newToken_, newToken);
@@ -54,7 +55,8 @@ static NSString *kCONewVersionToken = @"CONewVersionToken";
                                         newToken: oldToken_
                                             UUID: uuid_
                                             date: date_
-                                     displayName: displayName_] autorelease];
+                                     displayName: displayName_
+                               operationMetadata: operationMetadata_] autorelease];
 }
 
 - (void) applyToPersistentRoot: (COPersistentRootState *)aProot

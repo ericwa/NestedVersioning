@@ -13,6 +13,7 @@
 - (id) initWithBranchPlist: (COBranchState *)aBranch
                       UUID: (COUUID*)aUUID
                       date: (NSDate*)aDate
-               displayName: (NSString*)aName;
+               displayName: (NSString*)aName
+         operationMetadata: (NSDictionary *)opMetadata;
 
 @end
