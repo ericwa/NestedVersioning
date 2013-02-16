@@ -18,18 +18,14 @@ NSString *kCOUndoAction;
     COUUID *uuid_;
     NSDate *date_;
     NSString *displayName_;
-    NSDictionary *operationMetadata_;
 }
 - (id) initWithPlist: (id)plist;
 - (id) initWithUUID: (COUUID*)aUUID
                date: (NSDate*)aDate
-        displayName: (NSString*)aName
-  operationMetadata: (NSDictionary *)opMetadata;
+        displayName: (NSString*)aName;
 
 + (COEdit *) editWithPlist: (id)aPlist;
 - (id)plist;
-
-- (NSDictionary *) operationMetadata;
 
 - (COUUID*) persistentRootUUID;
 

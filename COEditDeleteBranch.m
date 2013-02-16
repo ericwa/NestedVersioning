@@ -11,10 +11,9 @@ static NSString *kCOBranch = @"COBranch";
                       UUID: (COUUID*)aUUID
                       date: (NSDate*)aDate
                displayName: (NSString*)aName
-         operationMetadata: (NSDictionary *)opMetadata
 {
     NILARG_EXCEPTION_TEST(aBranch);
-    self = [super initWithUUID: aUUID date: aDate displayName: aName operationMetadata: opMetadata];
+    self = [super initWithUUID: aUUID date: aDate displayName: aName];
     ASSIGN(branch_, aBranch);
     return self;
 }

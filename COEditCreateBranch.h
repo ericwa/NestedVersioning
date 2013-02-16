@@ -18,7 +18,6 @@
                     newToken: (CORevisionID *)newToken
                         UUID: (COUUID*)aUUID
                         date: (NSDate*)aDate
-                 displayName: (NSString*)aName
-           operationMetadata: (NSDictionary *)opMetadata;
+                 displayName: (NSString*)aName;
 
 @end

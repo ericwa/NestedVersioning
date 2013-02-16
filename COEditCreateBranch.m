@@ -15,12 +15,11 @@ static NSString *kCOSetCurrent = @"COSetCurrent";
                         UUID: (COUUID*)aUUID
                         date: (NSDate*)aDate
                  displayName: (NSString*)aName
-           operationMetadata: (NSDictionary *)opMetadata
 {
     NILARG_EXCEPTION_TEST(aNewBranchUUID);
     NILARG_EXCEPTION_TEST(newToken);
     
-    self = [super initWithUUID: aUUID date: aDate displayName: aName operationMetadata: opMetadata];
+    self = [super initWithUUID: aUUID date: aDate displayName: aName];
     ASSIGN(oldBranch_, aOldBranchUUID);
     ASSIGN(branch_, aNewBranchUUID);
     setCurrent_ = setCurrent;

@@ -11,12 +11,11 @@ static NSString *kCONewBranchUUID = @"CONewBranchUUID";
                         UUID: (COUUID*)aUUID
                         date: (NSDate*)aDate
                  displayName: (NSString*)aName
-           operationMetadata: (NSDictionary *)opMetadata
 {
     NILARG_EXCEPTION_TEST(aOldBranchUUID);
     NILARG_EXCEPTION_TEST(aNewBranchUUID);
     
-    self = [super initWithUUID: aUUID date: aDate displayName: aName operationMetadata: opMetadata];
+    self = [super initWithUUID: aUUID date: aDate displayName: aName];
     ASSIGN(oldBranch_, aOldBranchUUID);
     ASSIGN(newBranch_, aNewBranchUUID);
     return self;
@@ -49,8 +48,7 @@ static NSString *kCONewBranchUUID = @"CONewBranchUUID";
                                           newBranchUUID: oldBranch_
                                                    UUID: uuid_
                                                    date: date_
-                                            displayName: displayName_
-                                      operationMetadata: operationMetadata_] autorelease];
+                                            displayName: displayName_] autorelease];
 }
 
 - (void) applyToPersistentRoot: (COPersistentRootState *)aProot

@@ -25,12 +25,10 @@ NSString *kCOUndoAction = @"COEdit";
 static NSString *kCOPersistentRootUUID = @"COPersistentRootUUID";
 static NSString *kCOActionDate = @"COActionDate";
 static NSString *kCOActionDisplayName = @"COActionDisplayName";
-static NSString *kCOOperationMetadata = @"COOperationMetadata";
 
 - (id) initWithUUID: (COUUID*)aUUID
                date: (NSDate*)aDate
         displayName: (NSString*)aName
-  operationMetadata: (NSDictionary *)opMetadata
 {
     NILARG_EXCEPTION_TEST(aUUID);
     NILARG_EXCEPTION_TEST(aDate);
@@ -40,7 +38,6 @@ static NSString *kCOOperationMetadata = @"COOperationMetadata";
     ASSIGN(uuid_, aUUID);
     ASSIGN(date_, aDate);
     ASSIGN(displayName_, aName);
-    ASSIGN(operationMetadata_, opMetadata);
     return self;
 }
 - (id) initWithPlist: (id)plist
@@ -49,8 +46,7 @@ static NSString *kCOOperationMetadata = @"COOperationMetadata";
         
     return [self initWithUUID: [COUUID UUIDWithString: [plist objectForKey: kCOPersistentRootUUID]]
                          date: [[[[NSDateFormatter alloc] init] autorelease] dateFromString: [plist objectForKey: kCOActionDate]]
-                  displayName: [plist objectForKey: kCOActionDisplayName]
-            operationMetadata: [plist objectForKey: kCOOperationMetadata]];
+                  displayName: [plist objectForKey: kCOActionDisplayName]];
 }
 
 + (COEdit *) editWithPlist: (id)aPlist
@@ -82,10 +78,6 @@ static NSString *kCOOperationMetadata = @"COOperationMetadata";
     [result setObject: [[[[NSDateFormatter alloc] init] autorelease] stringFromDate: date_] forKey: kCOActionDate];
     [result setObject: [uuid_ stringValue] forKey: kCOPersistentRootUUID];
     [result setObject: displayName_ forKey: kCOActionDisplayName];
-    if (operationMetadata_ != nil)
-    {
-        [result setObject: operationMetadata_ forKey: kCOOperationMetadata];
-    }
     return result;
 }
 
@@ -101,10 +93,6 @@ static NSString *kCOOperationMetadata = @"COOperationMetadata";
 - (NSString*) menuTitle
 {
     return displayName_;
-}
-- (NSDictionary *) operationMetadata
-{
-    return operationMetadata_;
 }
 - (COEdit *) inverseForApplicationTo: (COPersistentRootState *)aProot
 {
