@@ -61,8 +61,7 @@ NSString *kCOPersistentRootName = @"COPersistentRootName";
 - (void) setMetadata: (NSDictionary *)theMetadata
 {
     BOOL ok = [[self store] setMetadata: theMetadata
-                      forPersistentRoot: [self UUID]
-                      operationMetadata: nil];
+                      forPersistentRoot: [self UUID]];
     assert(ok);
     // FIXME: Throw exception if not ok?
     [savedState_ setMetadata: theMetadata];
@@ -101,8 +100,7 @@ NSString *kCOPersistentRootName = @"COPersistentRootName";
 {
     COUUID *aBranch = [[self store] createBranchWithInitialRevision: aRevision
                                                          setCurrent: setCurrent
-                                                  forPersistentRoot: [self UUID]
-                                                  operationMetadata: nil];
+                                                  forPersistentRoot: [self UUID]];
     
     // FIXME: Overly coarse
     ASSIGN(savedState_, [[self store] persistentRootWithUUID: [self UUID]]);
@@ -131,8 +129,7 @@ NSString *kCOPersistentRootName = @"COPersistentRootName";
 - (void) setCurrentBranch: (COBranch *)aBranch
 {
     BOOL ok = [[self store] setCurrentBranch: [aBranch UUID]
-                           forPersistentRoot: [self UUID]
-                           operationMetadata: nil];
+                           forPersistentRoot: [self UUID]];
     assert(ok);
     // FIXME: Throw exception if not ok?
     [savedState_ setCurrentBranchUUID: [aBranch UUID]];
@@ -148,8 +145,7 @@ NSString *kCOPersistentRootName = @"COPersistentRootName";
     NSParameterAssert(![[self currentBranch] isEqual: aBranch]);
     
     BOOL ok = [[self store] deleteBranch: [aBranch UUID]
-                        ofPersistentRoot: [self UUID]
-                       operationMetadata: nil];
+                        ofPersistentRoot: [self UUID]];
     assert(ok);
     // FIXME: Throw exception if not ok?
     

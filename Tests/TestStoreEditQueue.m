@@ -86,9 +86,6 @@ static COObject *makeTree(NSString *label)
     // Delete the first branch
     [proot removeBranch: firstBranch];
     UKIntsEqual(1, [[proot branches] count]);
-    
-    NSArray *log = [proot operationLog];
-    UKObjectKindOf([log lastObject], [COEditDeleteBranch class]);
 }
 
 @end

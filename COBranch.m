@@ -101,8 +101,7 @@ NSString *kCOBranchName = @"COBranchName";
     [self unfaultEditingContext];
     BOOL ok = [[persistentRoot_ store] setCurrentVersion: aState
                                                forBranch: branch_
-                                        ofPersistentRoot: [persistentRoot_ UUID]
-                                       operationMetadata: nil];
+                                        ofPersistentRoot: [persistentRoot_ UUID]];
     assert(ok);
     
     [[[persistentRoot_ savedState] branchPlistForUUID: branch_] setCurrentState: aState];
@@ -125,8 +124,7 @@ NSString *kCOBranchName = @"COBranchName";
     
     BOOL ok = [[persistentRoot_ store] setCurrentVersion: revId
                                                forBranch: branch_
-                                        ofPersistentRoot: [persistentRoot_ UUID]
-                                       operationMetadata: nil];
+                                        ofPersistentRoot: [persistentRoot_ UUID]];
     assert(ok);
 
     [[[persistentRoot_ savedState] branchPlistForUUID: branch_] setCurrentState:revId];

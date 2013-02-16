@@ -72,9 +72,6 @@
     
     [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS persistentroots (uuid BLOB PRIMARY KEY,"
      "backingstore BLOB, plist BLOB)"];
-
-    [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS operations (uuid BLOB,"
-     "plist BLOB)"];
     
     if ([db_ hadError])
     {
@@ -263,14 +260,11 @@
 /** @taskunit writing persistent roots */
 
 - (BOOL) updatePersistentRoot: (COPersistentRootState *)plist
-                withOperation: (COEdit *)anEdit
 {
     NSData *data = [NSJSONSerialization dataWithJSONObject: [plist plist] options: 0 error: NULL];
-    NSData *operationData = [NSJSONSerialization dataWithJSONObject: [anEdit plist] options: 0 error: NULL];
-    
+
     [db_ beginTransaction];
     [db_ executeUpdate: @"UPDATE persistentroots SET plist = ? WHERE uuid = ?", data, [[plist UUID] dataValue]];
-    [db_ executeUpdate: @"INSERT INTO operations VALUES(?, ?)", [[plist UUID] dataValue], operationData];
     return [db_ commit];
 }
 
@@ -343,26 +337,16 @@
 
 - (BOOL) setCurrentBranch: (COUUID *)aBranch
 		forPersistentRoot: (COUUID *)aRoot
-        operationMetadata: (NSDictionary*)operationMetadata
 {
     COPersistentRootState *plist = [self persistentRootWithUUID: aRoot];
-    COUUID *oldUUID = [plist currentBranchUUID];
     
     [plist setCurrentBranchUUID: aBranch];
-    
-    COEdit *op = [[[COEditSetCurrentBranch alloc] initWithOldBranchUUID: oldUUID
-                                                          newBranchUUID: aBranch
-                                                                   UUID: aRoot
-                                                                   date: [NSDate date]
-                                                            displayName: @""] autorelease];
-    
-    return [self updatePersistentRoot: plist withOperation: op];
+    return [self updatePersistentRoot: plist];
 }
 
 - (COUUID *) createBranchWithInitialRevision: (CORevisionID *)aToken
                                   setCurrent: (BOOL)setCurrent
                            forPersistentRoot: (COUUID *)aRoot
-                           operationMetadata: (NSDictionary*)operationMetadata
 {
     COUUID *branchUUID = [COUUID UUID];
     
@@ -384,15 +368,7 @@
         [plist setCurrentBranchUUID: branchUUID];
     }
     
-    COEdit *op = [[[COEditCreateBranch alloc] initWithOldBranchUUID:oldCurrent
-                                                      newBranchUUID:branchUUID
-                                                         setCurrent:setCurrent
-                                                           newToken:aToken
-                                                               UUID:aRoot
-                                                               date: [NSDate date]
-                                                        displayName: @""] autorelease];
-    
-    BOOL ok = [self updatePersistentRoot: plist withOperation: op];
+    BOOL ok = [self updatePersistentRoot: plist];
     if (!ok)
     {
         branch = nil;
@@ -410,88 +386,43 @@
 - (BOOL) setCurrentVersion: (CORevisionID*)aVersion
                  forBranch: (COUUID *)aBranch
           ofPersistentRoot: (COUUID *)aRoot
-         operationMetadata: (NSDictionary*)operationMetadata
 {
     COPersistentRootState *plist = [self persistentRootWithUUID: aRoot];
     CORevisionID *oldVersion = [[plist branchPlistForUUID: aBranch] currentState];
     
     [[plist branchPlistForUUID: aBranch] setCurrentState: aVersion];
     
-    COEdit *op = [[[COEditSetCurrentVersionForBranch alloc] initWithBranch: aBranch
-                                                                  oldToken: oldVersion
-                                                                  newToken: aVersion
-                                                                      UUID: aRoot
-                                                                      date: [NSDate date]
-                                                               displayName: @""] autorelease];
-    
-    return  [self updatePersistentRoot: plist withOperation: op];
+    return  [self updatePersistentRoot: plist];
 }
 
 - (BOOL) deleteBranch: (COUUID *)aBranch
      ofPersistentRoot: (COUUID *)aRoot
-    operationMetadata: (NSDictionary*)operationMetadata
 {
     COPersistentRootState *plist = [self persistentRootWithUUID: aRoot];
     COBranchState *branchState = [plist branchPlistForUUID: aBranch];
     
-    COEdit *op = [[[COEditDeleteBranch alloc] initWithBranchPlist: branchState
-                                                             UUID: aRoot
-                                                             date: [NSDate date]
-                                                               displayName: @""] autorelease];
-    
     [plist removeBranchForUUID: aBranch];
     
-    return  [self updatePersistentRoot: plist withOperation: op];
+    return  [self updatePersistentRoot: plist];
 }
 
 - (BOOL) setMetadata: (NSDictionary *)metadata
            forBranch: (COUUID *)aBranch
     ofPersistentRoot: (COUUID *)aRoot
-   operationMetadata: (NSDictionary*)operationMetadata
 {
     COPersistentRootState *plist = [self persistentRootWithUUID: aRoot];
-    NSDictionary *oldMeta = [[plist branchPlistForUUID: aBranch] metadata];
     [[plist branchPlistForUUID: aBranch] setMetadata:metadata];
     
-    COEdit *op = [[[COEditSetBranchMetadata alloc] initWithOldMetadata: oldMeta
-                                                           newMetadata: metadata
-                                                                  UUID:aRoot branchUUID: aBranch
-                                                                  date: [NSDate date]
-                                                           displayName: @""] autorelease];
-    return [self updatePersistentRoot: plist withOperation: op];
+    return [self updatePersistentRoot: plist];
 }
 
 - (BOOL) setMetadata: (NSDictionary *)metadata
    forPersistentRoot: (COUUID *)aRoot
-   operationMetadata: (NSDictionary*)operationMetadata
 {
     COPersistentRootState *plist = [self persistentRootWithUUID: aRoot];
-    NSDictionary *oldMeta = [plist metadata];
     [plist setMetadata:metadata];
     
-    COEdit *op = [[[COEditSetMetadata alloc] initWithOldMetadata: oldMeta
-                                                     newMetadata: metadata
-                                                            UUID: aRoot
-                                                            date: [NSDate date]
-                                                     displayName: @""] autorelease];
-    return [self updatePersistentRoot: plist withOperation: op];
-}
-
-/* Operation Log */
-
-- (NSArray *) operationLogForPersistentRoot: (COUUID *)aRoot
-{
-    NSMutableArray *result = [NSMutableArray array];
-    FMResultSet *rs = [db_ executeQuery: @"SELECT plist FROM operations WHERE uuid = ?", [aRoot dataValue]];
-    while ([rs next])
-    {
-        id plist = [NSJSONSerialization JSONObjectWithData: [rs dataForColumnIndex: 0]
-                                                   options: 0
-                                                     error: NULL];
-        [result addObject: [COEdit editWithPlist: plist]];
-    }
-    [rs close];
-    return result;
+    return [self updatePersistentRoot: plist];
 }
 
 /* Attachments */

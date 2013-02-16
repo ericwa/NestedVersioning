@@ -59,13 +59,11 @@
 - (BOOL) deletePersistentRoot: (COUUID *)aRoot;
 
 - (BOOL) setCurrentBranch: (COUUID *)aBranch
-		forPersistentRoot: (COUUID *)aRoot
-        operationMetadata: (NSDictionary*)operationMetadata;
+		forPersistentRoot: (COUUID *)aRoot;
 
 - (COUUID *) createBranchWithInitialRevision: (CORevisionID *)aToken
                                   setCurrent: (BOOL)setCurrent
-                           forPersistentRoot: (COUUID *)aRoot
-                           operationMetadata: (NSDictionary*)operationMetadata;
+                           forPersistentRoot: (COUUID *)aRoot;
 
 /**
  * If we care about detecting concurrent changes,
@@ -75,26 +73,17 @@
  */
 - (BOOL) setCurrentVersion: (CORevisionID*)aVersion
                  forBranch: (COUUID *)aBranch
-          ofPersistentRoot: (COUUID *)aRoot
-         operationMetadata: (NSDictionary*)operationMetadata;
+          ofPersistentRoot: (COUUID *)aRoot;
 
 - (BOOL) deleteBranch: (COUUID *)aBranch
-     ofPersistentRoot: (COUUID *)aRoot
-    operationMetadata: (NSDictionary*)operationMetadata;
+     ofPersistentRoot: (COUUID *)aRoot;
 
 - (BOOL) setMetadata: (NSDictionary *)metadata
-   forPersistentRoot: (COUUID *)aRoot
-   operationMetadata: (NSDictionary*)operationMetadata;
+   forPersistentRoot: (COUUID *)aRoot;
 
 - (BOOL) setMetadata: (NSDictionary *)metadata
            forBranch: (COUUID *)aBranch
-    ofPersistentRoot: (COUUID *)aRoot
-   operationMetadata: (NSDictionary*)operationMetadata;
-
-
-/* Operation log */
-
-- (NSArray *) operationLogForPersistentRoot: (COUUID *)aRoot;
+    ofPersistentRoot: (COUUID *)aRoot;
 
 /* Attachments */
 

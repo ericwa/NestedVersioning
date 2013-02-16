@@ -79,8 +79,7 @@ static COObject *makeTree(NSString *label)
     
     [store setCurrentVersion: token2
                    forBranch: [proot currentBranchUUID]
-            ofPersistentRoot: [proot UUID]
-           operationMetadata: nil];
+            ofPersistentRoot: [proot UUID]];
     
     COPersistentRootState *prootFetched = [store persistentRootWithUUID: [proot UUID]];
     CORevisionID *currentState = [self currentState: prootFetched];
