@@ -51,6 +51,8 @@
 		66409FBA1659DA3900B9C491 /* COBranch.m in Sources */ = {isa = PBXBuildFile; fileRef = 66FCDBE31645DEF800E24A67 /* COBranch.m */; };
 		664BBC64169BF06E00EE7C88 /* COBranchState.h in Headers */ = {isa = PBXBuildFile; fileRef = 664BBC62169BF06E00EE7C88 /* COBranchState.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		664BBC65169BF06E00EE7C88 /* COBranchState.m in Sources */ = {isa = PBXBuildFile; fileRef = 664BBC63169BF06E00EE7C88 /* COBranchState.m */; };
+		664F9C8916D0A57F003B69B3 /* COStoreController.h in Headers */ = {isa = PBXBuildFile; fileRef = 664F9C8716D0A57F003B69B3 /* COStoreController.h */; };
+		664F9C8A16D0A57F003B69B3 /* COStoreController.m in Sources */ = {isa = PBXBuildFile; fileRef = 664F9C8816D0A57F003B69B3 /* COStoreController.m */; };
 		666026A116082DFE00D84368 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66EB756B148CA9D300C2114B /* Cocoa.framework */; };
 		666026DF16082E5600D84368 /* Branches.xib in Resources */ = {isa = PBXBuildFile; fileRef = 666026BA16082E5600D84368 /* Branches.xib */; };
 		666026E116082E5600D84368 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 666026BF16082E5600D84368 /* Credits.rtf */; };
@@ -268,6 +270,8 @@
 		66416D20142D3EE20016501D /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		664BBC62169BF06E00EE7C88 /* COBranchState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COBranchState.h; sourceTree = "<group>"; };
 		664BBC63169BF06E00EE7C88 /* COBranchState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COBranchState.m; sourceTree = "<group>"; };
+		664F9C8716D0A57F003B69B3 /* COStoreController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COStoreController.h; sourceTree = "<group>"; };
+		664F9C8816D0A57F003B69B3 /* COStoreController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COStoreController.m; sourceTree = "<group>"; };
 		665BD3B815D62DA200428355 /* manual */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = manual; sourceTree = "<group>"; };
 		665BD3C815D78BE600428355 /* COPersistentRootState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COPersistentRootState.h; sourceTree = "<group>"; };
 		665BD3C915D78BE600428355 /* COPersistentRootState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COPersistentRootState.m; sourceTree = "<group>"; };
@@ -473,6 +477,7 @@
 				66416D20142D3EE20016501D /* README */,
 				666CB039166343460066BC77 /* fmdb */,
 				66E7785514E6062100D5DFFF /* NestedVersioning-Info.plist */,
+				669959581633BCCA00B6C022 /* Undo Actions */,
 				66DF0054166C865700753F67 /* New Code */,
 				79837D8C151024EB004EDD21 /* ODDS_AND_ENDS */,
 				668641991696C26B004772ED /* NestedVersioning.h */,
@@ -736,6 +741,8 @@
 				665BD3C915D78BE600428355 /* COPersistentRootState.m */,
 				664BBC62169BF06E00EE7C88 /* COBranchState.h */,
 				664BBC63169BF06E00EE7C88 /* COBranchState.m */,
+				664F9C8716D0A57F003B69B3 /* COStoreController.h */,
+				664F9C8816D0A57F003B69B3 /* COStoreController.m */,
 			);
 			name = "Real Store";
 			sourceTree = "<group>";
@@ -803,7 +810,6 @@
 				66C6F62D15E764FE0079B7FB /* CORevisionID.m */,
 				66816C701663562300BC5F40 /* CORevision.h */,
 				66816C711663562300BC5F40 /* CORevision.m */,
-				669959581633BCCA00B6C022 /* Undo Actions */,
 				66FCDBE71645E0FC00E24A67 /* Editing Context */,
 				66409FAE16599EA000B9C491 /* High-level api */,
 				666CB028166342CE0066BC77 /* Real Store */,
@@ -1009,6 +1015,7 @@
 				6686419D1696C4CC004772ED /* COEditSetBranchMetadata.h in Headers */,
 				668641A11696C68F004772ED /* COEditCreateBranch.h in Headers */,
 				664BBC64169BF06E00EE7C88 /* COBranchState.h in Headers */,
+				664F9C8916D0A57F003B69B3 /* COStoreController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1294,6 +1301,7 @@
 				6686419E1696C4CC004772ED /* COEditSetBranchMetadata.m in Sources */,
 				668641A21696C68F004772ED /* COEditCreateBranch.m in Sources */,
 				664BBC65169BF06E00EE7C88 /* COBranchState.m in Sources */,
+				664F9C8A16D0A57F003B69B3 /* COStoreController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

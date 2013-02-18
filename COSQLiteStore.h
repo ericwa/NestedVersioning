@@ -48,8 +48,24 @@
 - (COPersistentRootState *) persistentRootWithUUID: (COUUID *)aUUID;
 
 
+/* Attachments */
+
+- (NSURL *) URLForAttachment: (NSData *)aHash;
+- (NSData *) addAttachmentAtURL: (NSURL *)aURL;
+
+
 /** @taskunit writing persistent roots */
 
+/*
+
+ Handing creation/deletion properly:
+ 
+ Typical use case:
+   - user creates a document, types in it a bit.
+   - It's a temporary note, so when theyy're done with it, they delete it.
+   - Note is moved to trash. CMD+Z undoes the move to trash.
+ 
+ */
 - (COPersistentRootState *) createPersistentRootWithInitialContents: (COItemTree *)contents
                                                            metadata: (NSDictionary *)metadata;
 
@@ -57,6 +73,9 @@
                                                            metadata: (NSDictionary *)metadata;
 
 - (BOOL) deletePersistentRoot: (COUUID *)aRoot;
+
+
+/* Undoable changes */
 
 - (BOOL) setCurrentBranch: (COUUID *)aBranch
 		forPersistentRoot: (COUUID *)aRoot;
@@ -85,9 +104,5 @@
            forBranch: (COUUID *)aBranch
     ofPersistentRoot: (COUUID *)aRoot;
 
-/* Attachments */
-
-- (NSURL *) URLForAttachment: (NSData *)aHash;
-- (NSData *) addAttachmentAtURL: (NSURL *)aURL;
 
 @end
