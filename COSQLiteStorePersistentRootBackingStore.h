@@ -9,10 +9,13 @@
  */
 @interface COSQLiteStorePersistentRootBackingStore : NSObject
 {
+    NSString *path_;
     FMDatabase *db_;
 }
 
 - (id)initWithPath: (NSString *)aPath;
+
+- (void)close;
 
 - (NSDictionary *) metadataForRevid: (int64_t)revid;
 

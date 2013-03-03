@@ -11,6 +11,7 @@
 {
 	SUPERINIT;
     
+    path_ = [aPath retain];
 	db_ = [[FMDatabase alloc] initWithPath: [aPath stringByAppendingPathComponent: @"revisions.sqlite"]];
     
     [db_ setShouldCacheStatements: YES];
@@ -48,8 +49,14 @@
 	return self;
 }
 
+- (void)close
+{
+    [db_ close];
+}
+
 - (void)dealloc
 {
+    [path_ release];
 	[db_ release];
 	[super dealloc];
 }

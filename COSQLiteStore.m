@@ -140,13 +140,18 @@
             [self backingUUIDForPersistentRootUUID: aUUID]];
 }
 
+- (NSString *) backingStorePathForUUID: (COUUID *)aUUID
+{
+    return [[url_ path] stringByAppendingPathComponent: [aUUID stringValue]];
+}
+
 - (COSQLiteStorePersistentRootBackingStore *) backingStoreForUUID: (COUUID *)aUUID
 {
     COSQLiteStorePersistentRootBackingStore *result = [backingStores_ objectForKey: aUUID];
     if (result == nil)
     {
-        NSString *path = [[url_ path] stringByAppendingPathComponent: [aUUID stringValue]];
-        result = [[COSQLiteStorePersistentRootBackingStore alloc] initWithPath: path];
+        result = [[COSQLiteStorePersistentRootBackingStore alloc] initWithPath:
+                    [self backingStorePathForUUID: aUUID]];
         [backingStores_ setObject: result forKey: aUUID];
         [result release];
     }
@@ -156,6 +161,21 @@
 - (COSQLiteStorePersistentRootBackingStore *) backingStoreForRevisionID: (CORevisionID *)aToken
 {
     return [self backingStoreForUUID: [aToken backingStoreUUID]];
+}
+
+- (void) deleteBackingStoreWithUUID: (COUUID *)aUUID
+{
+    {
+        COSQLiteStorePersistentRootBackingStore *backing = [backingStores_ objectForKey: aUUID];
+        if (backing != nil)
+        {
+            [backing close];
+            [backingStores_ removeObjectForKey: aUUID];
+        }
+    }
+    
+    assert([[NSFileManager defaultManager] removeItemAtPath:
+            [self backingStorePathForUUID: aUUID] error: NULL]);
 }
 
 /** @taskunit reading states */
@@ -330,9 +350,22 @@
 
 - (BOOL) deletePersistentRoot: (COUUID *)aRoot
 {
-    return [db_ executeUpdate: @"DELETE FROM persistentroots WHERE uuid = ?", [aRoot dataValue]];
+    [db_ beginTransaction];
     
-    // TODO: Delete backing store if unused by any other persistent roots
+    COUUID *backingUUID = [self backingUUIDForPersistentRootUUID: aRoot];
+    
+    [db_ executeUpdate: @"DELETE FROM persistentroots WHERE uuid = ?", [aRoot dataValue]];
+    
+    FMResultSet *rs = [db_ executeQuery: @"SELECT COUNT(backingstore) FROM persistentroots WHERE backingstore = ?", [backingUUID dataValue]];
+    if (![rs next])
+    {
+        [self deleteBackingStoreWithUUID: backingUUID];
+    }
+    [rs close];
+    
+    [db_ commit];
+    [backingStoreUUIDForPersistentRootUUID_ removeObjectForKey: aRoot];
+    return YES;
 }
 
 - (BOOL) setCurrentBranch: (COUUID *)aBranch
