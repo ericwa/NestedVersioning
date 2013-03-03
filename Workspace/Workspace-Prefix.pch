@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'Workspace' target in the 'Workspace' project
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif
