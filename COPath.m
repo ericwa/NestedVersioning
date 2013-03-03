@@ -3,6 +3,10 @@
 
 @implementation COPath
 
+@synthesize persistentRoot = persistentRoot_;
+@synthesize branch = branch_;
+@synthesize embeddedObject = embeddedObject_;
+
 - (COPath *) initWithPersistentRoot: (COUUID *)aRoot
 							 branch: (COUUID*)aBranch
 					embdeddedObject: (COUUID *)anObject

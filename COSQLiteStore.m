@@ -13,6 +13,7 @@
 #import "COEditSetCurrentVersionForBranch.h"
 #import "COEditSetMetadata.h"
 #import "COEditSetBranchMetadata.h"
+#import "COItem.h"
 
 #import "FMDatabase.h"
 
@@ -71,7 +72,7 @@
     // Set up schema
     
     [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS persistentroots (uuid BLOB PRIMARY KEY,"
-     "backingstore BLOB, plist BLOB)"];
+     "backingstore BLOB, plist BLOB, gcroot BOOLEAN)"];
     
     if ([db_ hadError])
     {
@@ -258,6 +259,18 @@
     return [NSSet setWithSet: result];
 }
 
+- (NSSet *) gcRootUUIDs
+{
+    NSMutableSet *result = [NSMutableSet set];
+    FMResultSet *rs = [db_ executeQuery: @"SELECT uuid FROM persistentroots WHERE gcroot = 1"];
+    while ([rs next])
+    {
+        [result addObject: [COUUID UUIDWithData: [rs dataForColumnIndex: 0]]];
+    }
+    [rs close];
+    return [NSSet setWithSet: result];
+}
+
 - (COPersistentRootState *) persistentRootWithUUID: (COUUID *)aUUID
 {
     NSData *plistBlob = nil;
@@ -288,16 +301,20 @@
     return [db_ commit];
 }
 
-- (BOOL) insertPersistentRoot: (COPersistentRootState *)plist backingStoreUUID: (COUUID *)aUUID
+- (BOOL) insertPersistentRoot: (COPersistentRootState *)plist
+             backingStoreUUID: (COUUID *)aUUID
+                     isGCRoot: (BOOL)isGCRoot
 {
     NSData *data = [NSJSONSerialization dataWithJSONObject: [plist plist] options: 0 error: NULL];
     
-    return [db_ executeUpdate: @"INSERT INTO persistentroots VALUES(?,?,?)", [[plist UUID] dataValue], [aUUID dataValue], data];
+    return [db_ executeUpdate: @"INSERT INTO persistentroots VALUES(?,?,?,?)",
+            [[plist UUID] dataValue], [aUUID dataValue], data, [NSNumber numberWithBool: isGCRoot]];
 }
 
 
 - (COPersistentRootState *) createPersistentRootWithInitialContents: (COItemTree *)contents
                                                            metadata: (NSDictionary *)metadata
+                                                           isGCRoot: (BOOL)isGCRoot
 {
     COUUID *uuid = [COUUID UUID];
     COUUID *branchUUID = [COUUID UUID];
@@ -320,13 +337,14 @@
                                                               currentBranchUUID: branchUUID
                                                                        metadata: metadata] autorelease];
     
-    [self insertPersistentRoot: plist backingStoreUUID: uuid];
+    [self insertPersistentRoot: plist backingStoreUUID: uuid isGCRoot: isGCRoot];
     
     return plist;
 }
 
 - (COPersistentRootState *) createPersistentRootWithInitialRevision: (CORevisionID *)revId
-                                                                 metadata: (NSDictionary *)metadata
+                                                           metadata: (NSDictionary *)metadata
+                                                           isGCRoot: (BOOL)isGCRoot
 {
     COUUID *uuid = [COUUID UUID];
     COUUID *branchUUID = [COUUID UUID];
@@ -343,9 +361,24 @@
                                                               currentBranchUUID: branchUUID
                                                                        metadata: metadata] autorelease];
     
-    [self insertPersistentRoot: plist backingStoreUUID: [revId backingStoreUUID]];
+    [self insertPersistentRoot: plist backingStoreUUID: [revId backingStoreUUID] isGCRoot: isGCRoot];
     
     return plist;
+}
+
+- (BOOL) isPersistentRootGCRoot: (COUUID *)aRoot
+{
+    FMResultSet *rs = [db_ executeQuery: @"SELECT gcroot FROM persistentroots WHERE uuid = ?", [aRoot dataValue]];
+    if (![rs next])
+    {
+        [rs close];
+        [NSException raise: NSInvalidArgumentException format: @"persistent root not found"];
+    }
+    
+    BOOL isGcRoot = [rs boolForColumnIndex: 0];
+    [rs close];
+    
+    return isGcRoot;
 }
 
 - (BOOL) deletePersistentRoot: (COUUID *)aRoot
@@ -364,8 +397,56 @@
     [rs close];
     
     [db_ commit];
+    
     [backingStoreUUIDForPersistentRootUUID_ removeObjectForKey: aRoot];
     return YES;
+}
+
+- (BOOL) deleteGCRoot: (COUUID *)aRoot
+{
+    if (![self isPersistentRootGCRoot: aRoot])
+    {
+        [NSException raise: NSInvalidArgumentException format: @"expected GC root"];
+    }
+
+    return [self deletePersistentRoot: aRoot];
+}
+
+- (NSSet *)allReferencedPersistentRootUUIDs
+{
+    NSMutableSet *result = [NSMutableSet set];
+    
+    NSSet *backingStores = [self allBackingUUIDs];
+    for (COUUID *backingUUID in backingStores)
+    {
+        COSQLiteStorePersistentRootBackingStore *backingStore = [self backingStoreForUUID: backingUUID];
+        
+        [backingStore iteratePartialItemTrees: ^(NSSet *items)
+         {
+             for (COItem *item in items)
+             {
+                 [result unionSet: [item allReferencedPersistentRootUUIDs]];
+             }
+         }];
+    }
+    
+    return result;
+}
+
+- (void) gcPersistentRoots
+{
+    // FIXME: Lock store
+    
+    NSMutableSet *garbage = [NSMutableSet setWithSet: [self persistentRootUUIDs]];
+    [garbage minusSet: [self allReferencedPersistentRootUUIDs]];
+    [garbage minusSet: [self gcRootUUIDs]];
+    
+    for (COUUID *uuid in garbage)
+    {
+        [self deletePersistentRoot: uuid];
+    }
+    
+    // FIXME: Unlock store
 }
 
 - (BOOL) setCurrentBranch: (COUUID *)aBranch

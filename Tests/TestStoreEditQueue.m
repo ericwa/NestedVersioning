@@ -38,7 +38,8 @@ static COObject *makeTree(NSString *label)
 - (void) testEditQueueApis
 {
     COPersistentRoot *proot = [store createPersistentRootWithInitialContents: [makeTree(@"root") itemTree]
-                                                                             metadata: [NSDictionary dictionary]];
+                                                                             metadata: [NSDictionary dictionary]
+                                                                    isGCRoot: YES];
     
     // Verify that the new persistent root is saved
     UKIntsEqual(1, [[store persistentRoots] count]);

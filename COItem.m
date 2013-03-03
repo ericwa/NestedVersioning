@@ -283,6 +283,8 @@ static id importValueFromPlist(id aPlist)
 	return [NSSet setWithSet: result];
 }
 
+// Helper methods for doing GC
+
 - (NSSet *) attachments
 {
 	NSMutableSet *result = [NSMutableSet set];
@@ -300,6 +302,25 @@ static id importValueFromPlist(id aPlist)
 	}
 	return [NSSet setWithSet: result];
 }
+
+- (NSSet *) allReferencedPersistentRootUUIDs
+{
+	NSMutableSet *result = [NSMutableSet set];
+	
+	for (NSString *key in [self attributeNames])
+	{
+		COType *type = [self typeForAttribute: key];
+		if ([type isPrimitiveTypeEqual: [COType pathType]])
+		{
+			for (COPath *path in [self allObjectsForAttribute: key])
+			{
+				[result addObject: [path persistentRoot]];
+			}
+		}
+	}
+	return [NSSet setWithSet: result];
+}
+
 
 - (NSString *)description
 {

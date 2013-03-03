@@ -54,7 +54,10 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes;
 - (NSArray*) allObjectsForAttribute: (NSString*)attribute;
 
 - (NSSet *) embeddedItemUUIDs;
+
+// GC helper methods
 - (NSSet *) attachments;
+- (NSSet *) allReferencedPersistentRootUUIDs;
 
 /** @taskunit NSCopying and NSMutableCopying */
 

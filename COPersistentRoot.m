@@ -174,9 +174,4 @@ NSString *kCOPersistentRootName = @"COPersistentRootName";
     return nil;
 }
 
-- (NSArray *) operationLog
-{
-    return [[self store] operationLogForPersistentRoot: [self UUID]];
-}
-
 @end

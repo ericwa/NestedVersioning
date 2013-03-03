@@ -9,6 +9,10 @@
 	COUUID *embeddedObject_;
 }
 
+@property (readonly) COUUID *persistentRoot;
+@property (readonly) COUUID *branch;
+@property (readonly) COUUID *embeddedObject;
+
 /**
  * Implicitly points to the root object of the current branch
  */

@@ -67,12 +67,14 @@
  
  */
 - (COPersistentRootState *) createPersistentRootWithInitialContents: (COItemTree *)contents
-                                                           metadata: (NSDictionary *)metadata;
+                                                           metadata: (NSDictionary *)metadata
+                                                           isGCRoot: (BOOL)isGCRoot;
 
 - (COPersistentRootState *) createPersistentRootWithInitialRevision: (CORevisionID *)aRevision
-                                                           metadata: (NSDictionary *)metadata;
+                                                           metadata: (NSDictionary *)metadata
+                                                           isGCRoot: (BOOL)isGCRoot;
 
-- (BOOL) deletePersistentRoot: (COUUID *)aRoot;
+- (BOOL) deleteGCRoot: (COUUID *)aRoot;
 
 
 /* Undoable changes */

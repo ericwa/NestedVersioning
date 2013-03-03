@@ -56,7 +56,7 @@ static COObject *makeTree(NSString *label)
 	COItemTree *basicTree = [makeTree(@"hello world") itemTree];
     
     COPersistentRootState *proot = [store createPersistentRootWithInitialContents: basicTree
-                                                                         metadata: [NSDictionary dictionary]];
+                                                                         metadata: [NSDictionary dictionary] isGCRoot: YES];
     
     UKObjectsEqual(S([proot UUID]), [store persistentRootUUIDs]);
     

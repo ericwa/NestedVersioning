@@ -30,11 +30,13 @@
 
 // these 2 commit immediately
 - (COPersistentRoot *) createPersistentRootWithInitialContents: (COItemTree *)contents
-                                                      metadata: (NSDictionary *)metadata;
+                                                      metadata: (NSDictionary *)metadata
+                                                      isGCRoot: (BOOL)isGCRoot;
 
 // does a cheap copy
 - (COPersistentRoot *) createPersistentRootWithInitialRevision: (CORevisionID *)aRevision
-                                                      metadata: (NSDictionary *)metadata;
+                                                      metadata: (NSDictionary *)metadata
+                                                      isGCRoot: (BOOL)isGCRoot;
 
 /**
  * Deletes the requested persistent root immediately

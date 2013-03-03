@@ -60,17 +60,19 @@
 }
 
 - (COPersistentRoot *) createPersistentRootWithInitialContents: (COItemTree *)contents
-                                                               metadata: (NSDictionary *)metadata
+                                                      metadata: (NSDictionary *)metadata
+                                                      isGCRoot: (BOOL)isGCRoot
 {
-    COPersistentRootState *persistentRoot = [store_ createPersistentRootWithInitialContents: contents metadata: metadata];
+    COPersistentRootState *persistentRoot = [store_ createPersistentRootWithInitialContents: contents metadata: metadata isGCRoot: isGCRoot];
     
     return [self cachePersistentRootEditPlist: persistentRoot];
 }
 
 - (COPersistentRoot *) createPersistentRootWithInitialRevision: (CORevisionID *)aRevision
-                                                               metadata: (NSDictionary *)metadata
+                                                      metadata: (NSDictionary *)metadata
+                                                      isGCRoot: (BOOL)isGCRoot
 {
-    COPersistentRootState *persistentRoot = [store_ createPersistentRootWithInitialRevision: aRevision metadata: metadata];
+    COPersistentRootState *persistentRoot = [store_ createPersistentRootWithInitialRevision: aRevision metadata: metadata  isGCRoot: isGCRoot];
     
     return [self cachePersistentRootEditPlist: persistentRoot];
 }
@@ -79,7 +81,7 @@
 - (void) deletePersistentRootWithUUID: (COUUID *)aUUID
 {
     [self fetchPersistentRoots];
-    [store_ deletePersistentRoot: aUUID];
+    [store_ deleteGCRoot: aUUID];
     [rootForUUID_ removeObjectForKey: aUUID];
 }
 
