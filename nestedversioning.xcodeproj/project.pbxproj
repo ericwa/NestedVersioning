@@ -18,6 +18,7 @@
 		662115C216BD938B00F037BB /* edit-undo.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 662115C016BD938B00F037BB /* edit-undo.tiff */; };
 		66218E1416E296E400796902 /* ManageWorkspaces.xib in Resources */ = {isa = PBXBuildFile; fileRef = 66218E1316E296E400796902 /* ManageWorkspaces.xib */; };
 		66218E1716E2B37300796902 /* ManageWorkspacesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66218E1616E2B37300796902 /* ManageWorkspacesWindowController.m */; };
+		66218E1816E2E3CC00796902 /* NestedVersioning.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E7785114E6062100D5DFFF /* NestedVersioning.framework */; };
 		66238164162FD04A00CA0CC4 /* COEdit.h in Headers */ = {isa = PBXBuildFile; fileRef = 66238162162FD04A00CA0CC4 /* COEdit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66238165162FD04A00CA0CC4 /* COEdit.m in Sources */ = {isa = PBXBuildFile; fileRef = 66238163162FD04A00CA0CC4 /* COEdit.m */; };
 		66243A6515ECC13300D00813 /* COPersistentRootState.m in Sources */ = {isa = PBXBuildFile; fileRef = 665BD3C915D78BE600428355 /* COPersistentRootState.m */; };
@@ -170,6 +171,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		66218E1916E2E41C00796902 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 662811ED13F8B5000075BBC2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 66E7785014E6062100D5DFFF;
+			remoteInfo = NestedVersioning;
+		};
 		662C1E07168FACF2002157F3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662811ED13F8B5000075BBC2 /* Project object */;
@@ -445,6 +453,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				66218E1816E2E3CC00796902 /* NestedVersioning.framework in Frameworks */,
 				660ED2E616D3475800BF6BB8 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1092,6 +1101,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				66218E1A16E2E41C00796902 /* PBXTargetDependency */,
 			);
 			name = Workspace;
 			productName = Workspace;
@@ -1407,6 +1417,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		66218E1A16E2E41C00796902 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 66E7785014E6062100D5DFFF /* NestedVersioning */;
+			targetProxy = 66218E1916E2E41C00796902 /* PBXContainerItemProxy */;
+		};
 		662C1E08168FACF2002157F3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 66E7785014E6062100D5DFFF /* NestedVersioning */;

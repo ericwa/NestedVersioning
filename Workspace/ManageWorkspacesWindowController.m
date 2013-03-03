@@ -8,6 +8,7 @@
 - (id)init
 {
     self = [super initWithWindowNibName: @"ManageWorkspaces"];
+    workspaces = [[NSMutableArray alloc] init];
     return self;
 }
 
