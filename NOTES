@@ -77,3 +77,36 @@ This means we can undo a:
 "set metadata for persistent root" before a "set current version for branch"
 "set metadata for persistent root" before a "set metadata for branch"
 "set metadata for persistent root" before a "set current branch"
+
+Mar 1
+======
+Question is, are persistent roots naturally alive, or can we ever GC them due to a lack of references within a store?
+
+=> need to be naturally alive.
+
+1. user creates a document (persistent-root)
+
+workspace proot
+|---|
+| d-+----. document proot
+|---|
+
+2. user deletes the document:
+
+workspace proot
+|---|
+|   |    . document proot
+|   |    |
+| Tr|    |
+| |-|    |
+| |d+----/
+-----
+this is an undoable change in the workspace. we move the "d" proxy to the Trash (Tr) group inside workspace proot.
+
+We want moving to trash to be undoable in the workspace proot. This will work fine.
+
+After a while we can simply delete the proot.
+
+
+
+Workspace app
