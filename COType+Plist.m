@@ -5,11 +5,9 @@
 
 @interface COPrimitiveType (Plist)
 @end
-@interface COCommitType (Plist)
+@interface COUUIDType (Plist)
 @end
 @interface COPathType (Plist)
-@end
-@interface COEmbeddedItemType (Plist)
 @end
 @interface COMultivaluedType (Plist)
 @end
@@ -29,8 +27,10 @@
 
 @end
 
-
-@implementation COCommitType (Plist)
+/**
+ * Abstract superclass of COCommitType, COWeakReferenceType, COEmbeddedItemType
+ */
+@implementation COUUIDType (Plist)
 
 - (id) plistValueForValue: (id)aValue
 {
@@ -55,21 +55,6 @@
 - (id) valueForPlistValue: (id)aPlist
 {
 	return [COPath pathWithString: aPlist];
-}
-
-@end
-
-
-@implementation COEmbeddedItemType (Plist)
-
-- (id) plistValueForValue: (id)aValue
-{
-	return [(COUUID *)aValue stringValue];
-}
-
-- (id) valueForPlistValue: (id)aPlist
-{
-	return [COUUID UUIDWithString: aPlist];
 }
 
 @end

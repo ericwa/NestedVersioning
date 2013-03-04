@@ -12,13 +12,17 @@
 @end
 @interface COBlobType : COPrimitiveType
 @end
-@interface COCommitType : COPrimitiveType
-@end
 @interface COPathType : COPrimitiveType
 @end
-@interface COEmbeddedItemType : COPrimitiveType
-@end
 @interface COAttachmentType : COPrimitiveType
+@end
+@interface COUUIDType : COPrimitiveType
+@end
+@interface COCommitType : COUUIDType
+@end
+@interface COEmbeddedItemType : COUUIDType
+@end
+@interface COWeakReferenceType : COUUIDType
 @end
 
 @interface COMultivaluedType : COType

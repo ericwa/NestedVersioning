@@ -11,7 +11,7 @@
 @end
 @interface COFullTextIndexableStringType (String)
 @end
-@interface COCommitType (String)
+@interface COUUIDType (String)
 @end
 @interface COPathType (String)
 @end
@@ -117,7 +117,7 @@
 @end
 
 
-@implementation COCommitType (String)
+@implementation COUUIDType (String)
 
 - (BOOL) isValidStringValue: (NSString *)aString
 {

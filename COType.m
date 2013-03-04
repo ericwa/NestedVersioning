@@ -68,6 +68,7 @@
 					  [COPathType type],
 					  [COEmbeddedItemType type],
                       [COAttachmentType type],
+                      [COWeakReferenceType type],
 					  nil];
 
 	for (COType *type in types)
@@ -154,6 +155,8 @@
 
 @end
 
+@implementation COUUIDType
+@end
 
 @implementation COCommitType
 
@@ -213,7 +216,19 @@
 
 @end
 
+@implementation COWeakReferenceType
 
+- (NSString *)stringValue
+{
+	return @"WeakRef";
+}
+
+- (BOOL) validateValue: (id)aValue
+{
+	return [aValue isKindOfClass: [COUUID class]];
+}
+
+@end
 
 @implementation COMultivaluedType
 
@@ -458,6 +473,11 @@
 + (COType *) attachmentType
 {
     return [COAttachmentType type];
+}
+
++ (COType *) weakReferenceType
+{
+    return [COWeakReferenceType type];
 }
 
 + (COType *) setWithPrimitiveType: (COType *)aType
