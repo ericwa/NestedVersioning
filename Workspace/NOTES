@@ -1,0 +1,7 @@
+Workspace notes
+===============
+
+Deletion model:
+
+Now CoreObject has gc for persistent roots that are not marked as GC roots.
+

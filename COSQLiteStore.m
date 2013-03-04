@@ -412,24 +412,48 @@
     return [self deletePersistentRoot: aRoot];
 }
 
-- (NSSet *)allReferencedPersistentRootUUIDs
+- (NSSet *)allPersistentRootUUIDsReferencedByPersistentRootWithUUID: (COUUID*)aUUID
 {
     NSMutableSet *result = [NSMutableSet set];
     
-    NSSet *backingStores = [self allBackingUUIDs];
-    for (COUUID *backingUUID in backingStores)
-    {
-        COSQLiteStorePersistentRootBackingStore *backingStore = [self backingStoreForUUID: backingUUID];
-        
-        [backingStore iteratePartialItemTrees: ^(NSSet *items)
+    // NOTE: This is a bit too coarse; it will return all persistent roots referenced
+    // from within the backing store.
+    COSQLiteStorePersistentRootBackingStore *backingStore = [self backingStoreForPersistentRootUUID: aUUID];    
+    [backingStore iteratePartialItemTrees: ^(NSSet *items)
+     {
+         for (COItem *item in items)
          {
-             for (COItem *item in items)
-             {
-                 [result unionSet: [item allReferencedPersistentRootUUIDs]];
-             }
-         }];
-    }
+             [result unionSet: [item allReferencedPersistentRootUUIDs]];
+         }
+     }];
     
+    return result;
+}
+
+- (void)recursivelyCollectPersistentRootUUIDsReferencedByPersistentRootWithUUID: (COUUID*)aUUID
+                                                                             in: (NSMutableSet *)result
+{
+    for (COUUID *referenced in [self allPersistentRootUUIDsReferencedByPersistentRootWithUUID: aUUID])
+    {
+        if (![result containsObject: referenced])
+        {
+            [result addObject: referenced];
+            [self recursivelyCollectPersistentRootUUIDsReferencedByPersistentRootWithUUID: referenced
+                                                                                       in: result];
+        }
+    }
+}
+
+
+- (NSSet *)livePersistentRootUUIDs
+{
+    NSSet *gcRoots = [self gcRootUUIDs];
+    NSMutableSet *result = [NSMutableSet setWithSet: gcRoots];
+    for (COUUID *gcRoot in gcRoots)
+    {
+        [self recursivelyCollectPersistentRootUUIDsReferencedByPersistentRootWithUUID: gcRoot
+                                                                                   in: result];
+    }
     return result;
 }
 
@@ -438,8 +462,7 @@
     // FIXME: Lock store
     
     NSMutableSet *garbage = [NSMutableSet setWithSet: [self persistentRootUUIDs]];
-    [garbage minusSet: [self allReferencedPersistentRootUUIDs]];
-    [garbage minusSet: [self gcRootUUIDs]];
+    [garbage minusSet: [self livePersistentRootUUIDs]];
     
     for (COUUID *uuid in garbage)
     {
