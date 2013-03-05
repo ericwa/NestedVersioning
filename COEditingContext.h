@@ -33,6 +33,8 @@
 
 + (COEditingContext *) editingContextWithItem: (COItem *)anItem;
 
++ (COEditingContext *) editingContext;
+
 /**
  * Returns a copy of the reciever, not including any change tracking
  * information.

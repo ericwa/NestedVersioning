@@ -43,6 +43,7 @@
 /** @taskunit reading persistent roots */
 
 - (NSSet *) persistentRootUUIDs;
+- (NSSet *) gcRootUUIDs;
 
 // Returns a snapshot of the state of a persistent root.
 - (COPersistentRootState *) persistentRootWithUUID: (COUUID *)aUUID;

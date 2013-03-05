@@ -23,6 +23,7 @@
 - (NSURL*)URL;
 
 - (NSSet *) persistentRoots;
+- (NSSet *) GCRoots;
 
 - (COPersistentRoot *) persistentRootWithUUID: (COUUID *)aUUID;
 

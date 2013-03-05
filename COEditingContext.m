@@ -43,6 +43,11 @@
     return [self initWithItemTree: tree];
 }
 
++ (COEditingContext *) editingContext
+{
+    return [[[self alloc] init] autorelease];
+}
+
 - (void) dealloc
 {
     [objectsByUUID_ release];

@@ -52,6 +52,18 @@
     return [NSSet setWithArray: [rootForUUID_ allValues]];
 }
 
+- (NSSet *) GCRoots
+{
+    [self fetchPersistentRoots];
+    
+    NSMutableSet *result = [NSMutableSet set];
+    for (COUUID *uuid in [store_ gcRootUUIDs])
+    {
+        [result addObject: [rootForUUID_ objectForKey: uuid]];        
+    }
+    return [NSSet setWithSet: result];
+}
+
 - (COPersistentRoot *) persistentRootWithUUID: (COUUID *)aUUID
 {
     [self fetchPersistentRoots];

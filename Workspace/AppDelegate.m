@@ -1,7 +1,6 @@
 #import "AppDelegate.h"
 #import <NestedVersioning/NestedVersioning.h>
-
-NSString *kWorkspaces = @"Workspaces";
+#import <NestedVersioning/COMacros.h>
 
 @implementation AppDelegate
 
@@ -12,15 +11,40 @@ NSString *kWorkspaces = @"Workspaces";
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    COStore *store = [[COStore alloc] initWithURL: [NSURL URLWithString: [@"~/workspace.store" stringByExpandingTildeInPath]]];
+    store_ = [[COStore alloc] initWithURL: [NSURL URLWithString: [@"~/workspace.store" stringByExpandingTildeInPath]]];
     
-    NSArray *workspaces = [[NSUserDefaults standardUserDefaults] stringArrayForKey: kWorkspaces];
-    if ([workspaces count] == 0)
+    NSSet *gcRoots = [store_ GCRoots];
+    const NSUInteger count = [gcRoots count];
+    NSAssert(count == 0 || count == 1, @"expected one workspaces proot");
+    
+    if (count == 0)
     {
+        COEditingContext *workspace = [COEditingContext editingContext];
+        [[workspace rootObject] setValue: @"Default Workspace" forAttribute: @"name" type: [COType stringType]];
+        
+        COEditingContext *workspaces = [COEditingContext editingContext];
+        [[workspaces rootObject] setValue: A([workspace rootObject])
+                      forAttribute: @"orderedContents"
+                              type: [COType uniqueArrayWithPrimitiveType: [COType embeddedItemType]]];
+        
+        workspaces_ = [[store_ createPersistentRootWithInitialContents: [workspaces itemTree]
+                                                              metadata: nil
+                                                              isGCRoot: YES] retain];
+        NSLog(@"New workspaces: %@", workspaces_);
+    }
+    else
+    {
+        workspaces_ = [[gcRoots anyObject] retain];
+        NSLog(@"Reused workspaces: %@", workspaces_);
     }
     
     
-    [self.switchMenu insertItemWithTitle: @"hello" action:NULL keyEquivalent:@"" atIndex:0];
+    // Populate menu
+    COEditingContext *worksapceCtx = [[workspaces_ currentBranch] editingContext];
+    for (COObject *workspace in [[worksapceCtx rootObject] valueForAttribute: @"orderedContents"])
+    {
+        [self.switchMenu insertItemWithTitle: [workspace valueForAttribute: @"name"] action:NULL keyEquivalent:@"" atIndex:0];
+    }
 }
 
 @end

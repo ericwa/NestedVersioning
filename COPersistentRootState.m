@@ -109,7 +109,10 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
     [results setObject: plistFromStateTokens(revisionIDs_) forKey: kCOPersistentRootRevisionIDs];
     [results setObject: plistFromUUIDToBranchMap(branchForUUID_) forKey: kCOPersistentRootBranchForUUID];
     [results setObject: [currentBranch_ stringValue] forKey: kCOPersistentRootCurrentBranchUUID];
-    [results setObject: metadata_ forKey: kCOPersistentRootMetadata];
+    if (metadata_ != nil)
+    {
+        [results setObject: metadata_ forKey: kCOPersistentRootMetadata];
+    }
     return results;
 }
 
