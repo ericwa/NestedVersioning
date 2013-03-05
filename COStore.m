@@ -8,7 +8,7 @@
 - (id)initWithURL: (NSURL*)aURL
 {
     SUPERINIT;
-    store_ = [[COSQLiteStore alloc] initWithURL: aURL];    
+    store_ = [[COSQLiteStore alloc] initWithURL: aURL];
     return self;
 }
 

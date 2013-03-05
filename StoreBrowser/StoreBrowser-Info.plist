@@ -35,7 +35,7 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>coreobjectstore</string>
+				<string>store</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string></string>
