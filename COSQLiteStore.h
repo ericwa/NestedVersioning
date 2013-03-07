@@ -45,7 +45,10 @@
 - (NSSet *) persistentRootUUIDs;
 - (NSSet *) gcRootUUIDs;
 
-// Returns a snapshot of the state of a persistent root.
+/**
+ * @return  a snapshot of the state of a persistent root, or nil if
+ *          the persistent root does not exist.
+ */
 - (COPersistentRootState *) persistentRootWithUUID: (COUUID *)aUUID;
 
 

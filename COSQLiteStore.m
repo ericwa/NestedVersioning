@@ -281,11 +281,19 @@
     }
     [rs close];
     
-    id plist = [NSJSONSerialization JSONObjectWithData: plistBlob
-                                               options: 0
-                                                 error: NULL];
-    
-    return [[[COPersistentRootState alloc] initWithPlist: plist] autorelease];
+    if (plistBlob != nil)
+    {
+        id plist = [NSJSONSerialization JSONObjectWithData: plistBlob
+                                                   options: 0
+                                                     error: NULL];
+        
+        return [[[COPersistentRootState alloc] initWithPlist: plist] autorelease];
+    }
+    else
+    {
+        NSLog(@"-[%@ %@]: persistent root not found: %@", [self class], NSStringFromSelector(_cmd), aUUID);
+        return nil;
+    }
 }
 
 
