@@ -599,7 +599,8 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 
 - (void) commitWithMetadata: (NSDictionary*)meta
 {
-
+    [windowController reloadBrowser];
+    
 }
 @end
 

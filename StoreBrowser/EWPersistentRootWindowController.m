@@ -53,6 +53,7 @@
 {
 	[self setupCtx];
 	[outlineView reloadData];
+    NSLog(@"reloaded data");
 }
 
 static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *start, COUUID *aUUID)

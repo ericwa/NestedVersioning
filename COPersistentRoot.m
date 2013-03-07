@@ -78,6 +78,11 @@ NSString *kCOPersistentRootName = @"COPersistentRootName";
     [self setMetadata: dict];
 }
 
+- (BOOL) isGCRoot
+{
+    return [[[self store] gcRootUUIDs] containsObject: [self UUID]];
+}
+
 // branches
 
 - (NSSet *) branches

@@ -22,6 +22,7 @@
 		66238164162FD04A00CA0CC4 /* COEdit.h in Headers */ = {isa = PBXBuildFile; fileRef = 66238162162FD04A00CA0CC4 /* COEdit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66238165162FD04A00CA0CC4 /* COEdit.m in Sources */ = {isa = PBXBuildFile; fileRef = 66238163162FD04A00CA0CC4 /* COEdit.m */; };
 		66243A6515ECC13300D00813 /* COPersistentRootState.m in Sources */ = {isa = PBXBuildFile; fileRef = 665BD3C915D78BE600428355 /* COPersistentRootState.m */; };
+		66285D9016E8446600F64338 /* EWFormatBooleanValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 66285D8F16E8446600F64338 /* EWFormatBooleanValueTransformer.m */; };
 		662C1D50168D882F002157F3 /* TestStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 6628FBA6142FA7840072767A /* TestStore.m */; };
 		662C1D5F168F8FDC002157F3 /* TestStoreEditQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 662C1D5E168F8FDC002157F3 /* TestStoreEditQueue.m */; };
 		662C1DB9168FAC6B002157F3 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66EB756B148CA9D300C2114B /* Cocoa.framework */; };
@@ -233,6 +234,8 @@
 		66218E1616E2B37300796902 /* ManageWorkspacesWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManageWorkspacesWindowController.m; sourceTree = "<group>"; };
 		66238162162FD04A00CA0CC4 /* COEdit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COEdit.h; sourceTree = "<group>"; };
 		66238163162FD04A00CA0CC4 /* COEdit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COEdit.m; sourceTree = "<group>"; };
+		66285D8E16E8446600F64338 /* EWFormatBooleanValueTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWFormatBooleanValueTransformer.h; sourceTree = "<group>"; };
+		66285D8F16E8446600F64338 /* EWFormatBooleanValueTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWFormatBooleanValueTransformer.m; sourceTree = "<group>"; };
 		6628FBA1142FA7840072767A /* TestCopyEmbeddedObjects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCopyEmbeddedObjects.m; sourceTree = "<group>"; };
 		6628FBA2142FA7840072767A /* TestEditingContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestEditingContext.m; sourceTree = "<group>"; };
 		6628FBA3142FA7840072767A /* TestHistoryTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestHistoryTrack.m; sourceTree = "<group>"; };
@@ -662,6 +665,8 @@
 				662C1E4716902136002157F3 /* PersistentRootInspector.xib */,
 				662C1E69169175F3002157F3 /* EWPersistentRootInspectorWindowController.h */,
 				662C1E6A169175F3002157F3 /* EWPersistentRootInspectorWindowController.m */,
+				66285D8E16E8446600F64338 /* EWFormatBooleanValueTransformer.h */,
+				66285D8F16E8446600F64338 /* EWFormatBooleanValueTransformer.m */,
 			);
 			path = StoreBrowser;
 			sourceTree = "<group>";
@@ -1327,6 +1332,7 @@
 				662C1E571690D7DD002157F3 /* EWStoreWindowController.m in Sources */,
 				662C1E5B1690EBFC002157F3 /* EWStoreDocument.m in Sources */,
 				662C1E6B169175F3002157F3 /* EWPersistentRootInspectorWindowController.m in Sources */,
+				66285D9016E8446600F64338 /* EWFormatBooleanValueTransformer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

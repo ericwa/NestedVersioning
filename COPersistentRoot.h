@@ -45,6 +45,8 @@
 // commits immediately
 - (void) setName: (NSString *)aName;
 
+- (BOOL) isGCRoot;
+
 // branches
 
 
