@@ -5,6 +5,12 @@
 @class COObject;
 @class COItem;
 
+/**
+ * TODO: We should relax COItemTree to support
+ * arbitrary graphs, dangling objects, etc.
+ * As long as we keep embedded object references working as they
+ * do now.
+ */
 @interface COEditingContext : NSObject <NSCopying>
 {
     COUUID *rootObjectUUID_;
@@ -20,6 +26,12 @@
 - (id) initWithItemTree: (COItemTree *)aTree;
 
 - (COObject *) rootObject;
+/**
+ * @throws exception if anObject is not in this context
+ */
+- (void) setRootObject: (COObject *)anObject;
+
+- (COObject *) cloneObject: (COObject *)anObject;
 
 - (COObject *) objectForUUID: (COUUID *)uuid;
 
@@ -40,6 +52,7 @@
  * information.
  */
 - (id) copyWithZone: (NSZone *)aZone;
+
 
 - (COItemTree *) itemTree;
 
