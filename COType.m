@@ -68,7 +68,7 @@
 					  [COPathType type],
 					  [COEmbeddedItemType type],
                       [COAttachmentType type],
-                      [COWeakReferenceType type],
+                      [COReferenceType type],
 					  nil];
 
 	for (COType *type in types)
@@ -216,11 +216,11 @@
 
 @end
 
-@implementation COWeakReferenceType
+@implementation COReferenceType
 
 - (NSString *)stringValue
 {
-	return @"WeakRef";
+	return @"Reference";
 }
 
 - (BOOL) validateValue: (id)aValue
@@ -475,9 +475,9 @@
     return [COAttachmentType type];
 }
 
-+ (COType *) weakReferenceType
++ (COType *) referenceType
 {
-    return [COWeakReferenceType type];
+    return [COReferenceType type];
 }
 
 + (COType *) setWithPrimitiveType: (COType *)aType

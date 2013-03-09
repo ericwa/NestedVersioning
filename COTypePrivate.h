@@ -22,7 +22,7 @@
 @end
 @interface COEmbeddedItemType : COUUIDType
 @end
-@interface COWeakReferenceType : COUUIDType
+@interface COReferenceType : COUUIDType
 @end
 
 @interface COMultivaluedType : COType

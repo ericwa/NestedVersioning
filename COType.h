@@ -27,7 +27,7 @@
 + (COType *) pathType;
 + (COType *) embeddedItemType;
 + (COType *) attachmentType;
-+ (COType *) weakReferenceType;
++ (COType *) referenceType;
 
 + (COType *) setWithPrimitiveType: (COType *)aType;
 + (COType *) uniqueArrayWithPrimitiveType: (COType *)aType;

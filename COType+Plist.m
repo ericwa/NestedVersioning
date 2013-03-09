@@ -28,7 +28,7 @@
 @end
 
 /**
- * Abstract superclass of COCommitType, COWeakReferenceType, COEmbeddedItemType
+ * Abstract superclass of COCommitType, COReferenceType, COEmbeddedItemType
  */
 @implementation COUUIDType (Plist)
 
