@@ -19,6 +19,11 @@
 		66218E1416E296E400796902 /* ManageWorkspaces.xib in Resources */ = {isa = PBXBuildFile; fileRef = 66218E1316E296E400796902 /* ManageWorkspaces.xib */; };
 		66218E1716E2B37300796902 /* ManageWorkspacesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66218E1616E2B37300796902 /* ManageWorkspacesWindowController.m */; };
 		66218E1816E2E3CC00796902 /* NestedVersioning.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E7785114E6062100D5DFFF /* NestedVersioning.framework */; };
+		6622E9AE16EBD45000D82F2A /* COManagedObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 6622E9AD16EBD45000D82F2A /* COManagedObject.h */; };
+		6622E9B016EBD5D100D82F2A /* COEditingContextDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 6622E9AF16EBD5D000D82F2A /* COEditingContextDelegate.h */; };
+		6622E9B616EBD9C500D82F2A /* Workspace.m in Sources */ = {isa = PBXBuildFile; fileRef = 6622E9B516EBD9C500D82F2A /* Workspace.m */; };
+		6622E9B816EBDADF00D82F2A /* WorkspaceNavigator.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6622E9B716EBDADF00D82F2A /* WorkspaceNavigator.xib */; };
+		6622E9BB16EBDB0000D82F2A /* WorkspaceNavigatorWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6622E9BA16EBDB0000D82F2A /* WorkspaceNavigatorWindowController.m */; };
 		66238164162FD04A00CA0CC4 /* COEdit.h in Headers */ = {isa = PBXBuildFile; fileRef = 66238162162FD04A00CA0CC4 /* COEdit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66238165162FD04A00CA0CC4 /* COEdit.m in Sources */ = {isa = PBXBuildFile; fileRef = 66238163162FD04A00CA0CC4 /* COEdit.m */; };
 		66243A6515ECC13300D00813 /* COPersistentRootState.m in Sources */ = {isa = PBXBuildFile; fileRef = 665BD3C915D78BE600428355 /* COPersistentRootState.m */; };
@@ -232,6 +237,13 @@
 		66218E1316E296E400796902 /* ManageWorkspaces.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ManageWorkspaces.xib; sourceTree = "<group>"; };
 		66218E1516E2B37300796902 /* ManageWorkspacesWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManageWorkspacesWindowController.h; sourceTree = "<group>"; };
 		66218E1616E2B37300796902 /* ManageWorkspacesWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManageWorkspacesWindowController.m; sourceTree = "<group>"; };
+		6622E9AD16EBD45000D82F2A /* COManagedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COManagedObject.h; sourceTree = "<group>"; };
+		6622E9AF16EBD5D000D82F2A /* COEditingContextDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COEditingContextDelegate.h; sourceTree = "<group>"; };
+		6622E9B416EBD9C500D82F2A /* Workspace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Workspace.h; sourceTree = "<group>"; };
+		6622E9B516EBD9C500D82F2A /* Workspace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Workspace.m; sourceTree = "<group>"; };
+		6622E9B716EBDADF00D82F2A /* WorkspaceNavigator.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WorkspaceNavigator.xib; sourceTree = "<group>"; };
+		6622E9B916EBDB0000D82F2A /* WorkspaceNavigatorWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WorkspaceNavigatorWindowController.h; sourceTree = "<group>"; };
+		6622E9BA16EBDB0000D82F2A /* WorkspaceNavigatorWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WorkspaceNavigatorWindowController.m; sourceTree = "<group>"; };
 		66238162162FD04A00CA0CC4 /* COEdit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COEdit.h; sourceTree = "<group>"; };
 		66238163162FD04A00CA0CC4 /* COEdit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COEdit.m; sourceTree = "<group>"; };
 		66285D8E16E8446600F64338 /* EWFormatBooleanValueTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWFormatBooleanValueTransformer.h; sourceTree = "<group>"; };
@@ -521,6 +533,11 @@
 				66218E1316E296E400796902 /* ManageWorkspaces.xib */,
 				66218E1516E2B37300796902 /* ManageWorkspacesWindowController.h */,
 				66218E1616E2B37300796902 /* ManageWorkspacesWindowController.m */,
+				6622E9B416EBD9C500D82F2A /* Workspace.h */,
+				6622E9B516EBD9C500D82F2A /* Workspace.m */,
+				6622E9B716EBDADF00D82F2A /* WorkspaceNavigator.xib */,
+				6622E9B916EBDB0000D82F2A /* WorkspaceNavigatorWindowController.h */,
+				6622E9BA16EBDB0000D82F2A /* WorkspaceNavigatorWindowController.m */,
 			);
 			path = Workspace;
 			sourceTree = "<group>";
@@ -965,6 +982,8 @@
 				666CB024166206C70066BC77 /* COEditingContext.h */,
 				666CB025166206C70066BC77 /* COEditingContext.m */,
 				66C0EF411679857500D2D7CD /* COEditingContextPrivate.h */,
+				6622E9AD16EBD45000D82F2A /* COManagedObject.h */,
+				6622E9AF16EBD5D000D82F2A /* COEditingContextDelegate.h */,
 			);
 			name = "Editing Context";
 			sourceTree = "<group>";
@@ -1089,6 +1108,8 @@
 				668641A11696C68F004772ED /* COEditCreateBranch.h in Headers */,
 				664BBC64169BF06E00EE7C88 /* COBranchState.h in Headers */,
 				664F9C8916D0A57F003B69B3 /* COStoreController.h in Headers */,
+				6622E9AE16EBD45000D82F2A /* COManagedObject.h in Headers */,
+				6622E9B016EBD5D100D82F2A /* COEditingContextDelegate.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1244,6 +1265,7 @@
 				660ED2F816D3475900BF6BB8 /* MainMenu.xib in Resources */,
 				66365AA616D4A05F00525970 /* NOTES in Resources */,
 				66218E1416E296E400796902 /* ManageWorkspaces.xib in Resources */,
+				6622E9B816EBDADF00D82F2A /* WorkspaceNavigator.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1316,6 +1338,8 @@
 				660ED2EE16D3475900BF6BB8 /* main.m in Sources */,
 				660ED2F516D3475900BF6BB8 /* AppDelegate.m in Sources */,
 				66218E1716E2B37300796902 /* ManageWorkspacesWindowController.m in Sources */,
+				6622E9B616EBD9C500D82F2A /* Workspace.m in Sources */,
+				6622E9BB16EBDB0000D82F2A /* WorkspaceNavigatorWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

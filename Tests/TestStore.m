@@ -89,6 +89,21 @@ static COObject *makeTree(NSString *label)
     UKObjectsEqual(basicTree2, fetchedTree);
 }
 
+- (void) testReferenceType
+{
+    {
+        COEditingContext *ctx = [COEditingContext editingContext];
+        [[ctx rootObject] setValue: @"Photo groups"
+                      forAttribute: @"label"
+                              type: [COType stringType]];
+        
+        //             /- friends---\
+        // photo groups              photo1
+        //             \- vacations-/
+    }
+
+}
+
 //
 //- (void) testWithEditingContext
 //{

@@ -42,6 +42,7 @@
 				<string key="NSClassName">NSApplication</string>
 			</object>
 			<object class="NSArrayController" id="581354018">
+				<string key="NSObjectClassName">Workspace</string>
 				<bool key="NSEditable">YES</bool>
 				<object class="_NSManagedProxy" key="_NSManagedProxy"/>
 				<bool key="NSAvoidsEmptySelection">YES</bool>
@@ -542,17 +543,6 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">ManageWorkspacesWindowController</string>
 					<string key="superclassName">NSWindowController</string>
-					<object class="NSMutableDictionary" key="outlets">
-						<string key="NS.key.0">workspaces</string>
-						<string key="NS.object.0">NSMutableArray</string>
-					</object>
-					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<string key="NS.key.0">workspaces</string>
-						<object class="IBToOneOutletInfo" key="NS.object.0">
-							<string key="name">workspaces</string>
-							<string key="candidateClassName">NSMutableArray</string>
-						</object>
-					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/ManageWorkspacesWindowController.h</string>

@@ -1,12 +1,22 @@
 #import "AppDelegate.h"
 #import <NestedVersioning/NestedVersioning.h>
 #import <NestedVersioning/COMacros.h>
+#import "WorkspaceNavigatorWindowController.h"
 
 @implementation AppDelegate
 
 - (void)dealloc
 {
     [super dealloc];
+}
+
+- (COObject *) itemWithLabel: (NSString *)label
+{
+	COEditingContext *ctx = [[[COEditingContext alloc] init] autorelease];
+    [[ctx rootObject] setValue: label
+                  forAttribute: @"name"
+                          type: [COType stringType]];
+    return [ctx rootObject];
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
@@ -27,6 +37,10 @@
                       forAttribute: @"orderedContents"
                               type: [COType uniqueArrayWithPrimitiveType: [COType embeddedItemType]]];
         
+        [[workspaces rootObject] addObject: [self itemWithLabel: @"My Phat Workspace"]
+                        toOrderedAttribute: @"orderedContents"
+                                      type: [COType uniqueArrayWithPrimitiveType: [COType embeddedItemType]]];
+        
         workspaces_ = [[store_ createPersistentRootWithInitialContents: [workspaces itemTree]
                                                               metadata: nil
                                                               isGCRoot: YES] retain];
@@ -41,10 +55,26 @@
     
     // Populate menu
     COEditingContext *worksapceCtx = [[workspaces_ currentBranch] editingContext];
+    NSUInteger i=0;
     for (COObject *workspace in [[worksapceCtx rootObject] valueForAttribute: @"orderedContents"])
     {
-        [self.switchMenu insertItemWithTitle: [workspace valueForAttribute: @"name"] action:NULL keyEquivalent:@"" atIndex:0];
+        NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle: [workspace valueForAttribute: @"name"]
+                                                       action: @selector(openWorkspace:)
+                                                keyEquivalent: @""] autorelease];
+        [item setTarget: self];
+        [item setRepresentedObject: workspace];
+        
+        [self.switchMenu insertItem: item atIndex: i];
+        
+        i++;
     }
+}
+
+- (void) openWorkspace: (id)sender
+{
+    NSLog(@"open workspace: %@", [sender representedObject]);
+    
+    [[[WorkspaceNavigatorWindowController alloc] init] showWindow: nil];
 }
 
 @end
