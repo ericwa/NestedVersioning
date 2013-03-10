@@ -4,13 +4,9 @@
 @class COItemTree;
 @class COObject;
 @class COItem;
+@class COSchemaRegistry;
+@class COSchema;
 
-/**
- * TODO: We should relax COItemTree to support
- * arbitrary graphs, dangling objects, etc.
- * As long as we keep embedded object references working as they
- * do now.
- */
 @interface COEditingContext : NSObject <NSCopying>
 {
     COUUID *rootObjectUUID_;
@@ -19,11 +15,35 @@
     NSMutableSet *insertedObjects_;
     NSMutableSet *deletedObjects_;
     NSMutableSet *modifiedObjects_;
+    
+    COSchemaRegistry *schemaRegistry_;
+    
+    // relationship caches:
+    
+    NSMutableDictionary *embeddedObjectParentUUIDForUUID_;
 }
 
-- (NSSet *) allObjectUUIDs;
+#pragma mark Creation
 
-- (id) initWithItemTree: (COItemTree *)aTree;
++ (COEditingContext *) editingContext;
+
++ (COEditingContext *) editingContextWithSchemaRegistry: (COSchemaRegistry *)aRegistry;
+
+#pragma mark Adding objects
+
+- (COObject *) insertObject;
+
+- (COObject *) insertObjectWithSchemaName: (NSString *)aSchemaName;
+
+#pragma mark Schema
+
+- (COSchemaRegistry *) schemaRegistry;
+
+#pragma mark Accessing Object Tree
+
+- (COObject *) objectForUUID: (COUUID *)uuid;
+
+- (NSSet *) allObjectUUIDs;
 
 - (COObject *) rootObject;
 /**
@@ -33,19 +53,12 @@
 
 - (COObject *) cloneObject: (COObject *)anObject;
 
-- (COObject *) objectForUUID: (COUUID *)uuid;
-
 /**
- * Builds a COSubtree from a set of items and the UUID
- * of the root item. Throws an exception under any of these circumstances:
- *  - items does not contain an item with UUID aRootUUID
- *  - items contains more than one item with the same UUID
+ * @return If there exists an object which has a [COType embeddedObjectType] reference to
+ * anObject, return that object. Otherwise return nil.
  */
-+ (COEditingContext *) editingContextWithItemTree: (COItemTree *)aTree;
+- (COObject *) embeddedObjectParent: (COObject *)anObject;
 
-+ (COEditingContext *) editingContextWithItem: (COItem *)anItem;
-
-+ (COEditingContext *) editingContext;
 
 /**
  * Returns a copy of the reciever, not including any change tracking

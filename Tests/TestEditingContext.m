@@ -11,12 +11,10 @@
 
 - (void)testCreate
 {
-	COEditingContext *ctx = [[COEditingContext alloc] init];
+	COEditingContext *ctx = [COEditingContext editingContext];
 	UKNotNil(ctx);
     
-    COObject *root = [ctx rootObject];
-    UKNotNil(root);
-    
+    UKNil([ctx rootObject]);
 }
 
 - (COObject *) itemWithLabel: (NSString *)label

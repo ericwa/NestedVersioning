@@ -5,6 +5,8 @@
 @class COItemTree;
 @class COItemPath;
 
+NSString *kCOSchemaName;
+
 /**
  * General behaviour:
  When setting values, you can pass another COObject.
@@ -41,7 +43,6 @@
 @interface COObject : NSObject
 {
     COEditingContext *parentContext_; // weak
-    COObject *parent_; // weak
     COMutableItem *item_;
 }
 
@@ -59,11 +60,11 @@
 
 - (id) valueForAttribute: (NSString*)anAttribute;
 
+- (NSString *) schemaName;
+
 #pragma mark Access to the tree stucture
 
-- (COObject *) parentObject;
-
-- (COObject *) rootObject;
+- (COObject *) embeddedObjectParent;
 
 - (BOOL) containsObject: (COObject *)anObject;
 
@@ -85,22 +86,29 @@
 
 #pragma mark Mutation
 
+/**
+ * Can only be used if we have a schema already set, or that attribute already had an
+ * explicit type set.
+ */
+- (void) setValue: (id)aValue
+	 forAttribute: (NSString*)anAttribute;
+
 - (void) setValue: (id)aValue
 	 forAttribute: (NSString*)anAttribute
 			 type: (COType *)aType;
 
+- (void) setValue: (id)aValue
+	 forAttribute: (NSString*)anAttribute;
+
 - (void)   addObject: (id)aValue
-toUnorderedAttribute: (NSString*)anAttribute
-				type: (COType *)aType;
+toUnorderedAttribute: (NSString*)anAttribute;
 
 - (void)   addObject: (id)aValue
   toOrderedAttribute: (NSString*)anAttribute
-			 atIndex: (NSUInteger)anIndex
-				type: (COType *)aType;
+			 atIndex: (NSUInteger)anIndex;
 
 - (void)   addObject: (id)aValue
-  toOrderedAttribute: (NSString*)anAttribute
-				type: (COType *)aType;
+  toOrderedAttribute: (NSString*)anAttribute;
 
 - (void) removeValueForAttribute: (NSString*)anAttribute;
 

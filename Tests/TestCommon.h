@@ -26,5 +26,8 @@
 #import "COEditSetMetadata.h"
 #import "COEditSetBranchMetadata.h"
 
+#import "COSchemaTemplate.h"
+#import "COSchemaRegistry.h"
+
 #define STOREPATH [@"~/om6teststore" stringByExpandingTildeInPath]
 #define STOREURL [NSURL fileURLWithPath: STOREPATH]

@@ -6,23 +6,26 @@
 #import "COEditingContextPrivate.h"
 #import "COItemPath.h"
 #import "COMacros.h"
+#import "COSchemaRegistry.h"
+#import "COSchema.h"
+
+NSString *kCOSchemaName = @"COSchemaName";
 
 @implementation COObject (Private)
 
-- (id) initWithItem: (COItem *)anItem parentContext: (COEditingContext *)aContext parent: (COObject *)aParent
+- (id) initWithItem: (COItem *)anItem
+      parentContext: (COEditingContext *)aContext
 {
     SUPERINIT;
     [self updateItem: anItem
-       parentContext: aContext
-              parent: aParent];
+       parentContext: aContext];
     return self;
 }
 
-- (void) updateItem: (COItem *)anItem parentContext: (COEditingContext *)aContext parent: (COObject *)aParent
+- (void) updateItem: (COItem *)anItem parentContext: (COEditingContext *)aContext
 {
     item_ = [anItem mutableCopy];
     parentContext_ = aContext;
-    parent_ = aParent;
 }
 
 - (void) markAsRemovedFromContext
@@ -38,8 +41,8 @@
 
 - (void) dealloc
 {
-    // FIXME Watch out that COEditingContext manages the parent_ pointer
-    [item_ release];
+    parentContext_ = nil;
+    DESTROY(item_);
     [super dealloc];
 }
 
@@ -68,6 +71,14 @@
 
 - (COType *) typeForAttribute: (NSString *)anAttribute
 {
+    COType *schemaType = [[[parentContext_ schemaRegistry] schemaForName: [self schemaName]]
+                        typeForProperty: anAttribute];
+    
+    if (schemaType != nil)
+    {
+        return schemaType;
+    }
+    
 	return [item_ typeForAttribute: anAttribute];
 }
 - (id) valueForAttribute: (NSString*)anAttribute
@@ -77,69 +88,35 @@
 	
 	if ([type isPrimitiveTypeEqual: [COType embeddedItemType]])
 	{
-		if ([type isMultivalued])
-		{
-			id container;
-			
-			if ([type isOrdered])
-			{
-				container = [NSMutableArray array];;
-			}
-			else
-			{
-				container = [NSMutableSet set];
-			}
-			
-			for (COUUID *uuid in rootValue)
-			{
-				COObject *node = [parentContext_ objectForUUID: uuid];
-				if (node == nil)
-				{
-					[NSException raise: NSInternalInconsistencyException
-								format: @"broken COItemTreeNode instance: missing sub-node %@", uuid];
-				}
-				
-				[container addObject: node];
-			}
-			
-			return container;
-		}
-		else
-		{
-			COObject *node = [parentContext_ objectForUUID: rootValue];
-			if (node == nil)
-			{
-				[NSException raise: NSInternalInconsistencyException
-							format: @"broken COItemTreeNode instance: missing sub-node %@", rootValue];
-			}
-			
-			return node;
-		}
+		return [self convertCOUUIDValueToCOObject: rootValue];
 	}
+    else if ([type isPrimitiveTypeEqual: [COType referenceType]])
+    {
+        return [self convertCOUUIDValueToCOObject: rootValue];
+    }
 	else
 	{
 		return rootValue;
 	}
 }
 
-
+- (NSString *) schemaName
+{
+    // NOTE: -valueForAttribute: calls -typeForAttribute:, which calls -schemaName,
+    //       so we can't call -valueForAttribute:. Access item_ directly, instead.
+    return [item_ valueForAttribute: kCOSchemaName];
+}
 
 #pragma mark Access to the tree stucture
 
-
-- (COObject *) parentObject
+- (COObject *) embeddedObjectParent
 {
-	return parent_;
-}
-
-- (COObject *) rootObject
-{
-	return [parentContext_ rootObject];
+    return [parentContext_ embeddedObjectParent: self];
 }
 
 - (BOOL) containsObject: (COObject *)anObject
 {
-	for (; anObject != nil; anObject = [anObject parentObject])
+	for (; anObject != nil; anObject = [anObject embeddedObjectParent])
 	{
 		if (anObject == self)
 		{
@@ -223,7 +200,7 @@
 		return nil;
 	}
 	
-	COObject *destObjectParent = [destObject parentObject];
+	COObject *destObjectParent = [destObject embeddedObjectParent];
 	
 	// Search destObjectParent's attributes for [destObject UUID];
 	// FIXME: Factor out?
@@ -278,13 +255,91 @@
 
 #pragma mark Mutation
 
+- (id) convertCOObjectValueToCOUUID: (id)aValue
+{
+    if ([aValue isKindOfClass: [COObject class]])
+    {
+        return [aValue UUID];
+    }
+    else if ([aValue isKindOfClass: [NSCountedSet class]])
+    {
+        NSCountedSet *replacement = [NSCountedSet set];
+        for (COObject *object in aValue)
+        {
+            [replacement addObject: [object UUID]];
+        }
+        return replacement;
+    }
+    else if ([aValue isKindOfClass: [NSSet class]])
+    {
+        NSMutableSet *replacement = [NSMutableSet set];
+        for (COObject *object in aValue)
+        {
+            [replacement addObject: [object UUID]];
+        }
+        return [NSSet setWithSet: replacement];
+    }
+    else if ([aValue isKindOfClass: [NSArray class]])
+    {
+        NSMutableArray *replacement = [NSMutableArray array];
+        for (COObject *object in aValue)
+        {
+            [replacement addObject: [object UUID]];
+        }
+        return [NSArray arrayWithArray: replacement];
+    }
+    NSParameterAssert(NO);
+    return nil;
+}
 
+- (id) convertCOUUIDValueToCOObject: (id)aValue
+{
+    if ([aValue isKindOfClass: [COUUID class]])
+    {
+        return [parentContext_ objectForUUID: aValue];
+    }
+    else if ([aValue isKindOfClass: [NSCountedSet class]])
+    {
+        NSCountedSet *replacement = [NSCountedSet set];
+        for (COObject *object in aValue)
+        {
+            [replacement addObject: [parentContext_ objectForUUID: aValue]];
+        }
+        return replacement;
+    }
+    else if ([aValue isKindOfClass: [NSSet class]])
+    {
+        NSMutableSet *replacement = [NSMutableSet set];
+        for (COObject *object in aValue)
+        {
+            [replacement addObject: [parentContext_ objectForUUID: aValue]];
+        }
+        return [NSSet setWithSet: replacement];
+    }
+    else if ([aValue isKindOfClass: [NSArray class]])
+    {
+        NSMutableArray *replacement = [NSMutableArray array];
+        for (COObject *object in aValue)
+        {
+            [replacement addObject: [parentContext_ objectForUUID: aValue]];
+        }
+        return [NSArray arrayWithArray: replacement];
+    }
+    NSParameterAssert(NO);
+    return nil;
+}
+
+- (void) setValue: (id)aValue
+	 forAttribute: (NSString*)anAttribute
+{
+    [self setValue: aValue forAttribute: anAttribute type: [self typeForAttribute: anAttribute]];
+}
 
 - (void) setValue: (id)aValue
 	 forAttribute: (NSString*)anAttribute
 			 type: (COType *)aType
 {
-    // FIXME: Track removed objects if we overwrote a Object
+    NSParameterAssert(aType != nil);
     
 	if ([aType isPrimitiveTypeEqual: [COType embeddedItemType]])
 	{
@@ -325,6 +380,14 @@
 			}
 		}
 	}
+	else if ([aType isPrimitiveTypeEqual: [COType referenceType]])
+	{
+		[item_ setValue: [self convertCOObjectValueToCOUUID: aValue]
+           forAttribute: anAttribute
+                   type: aType];
+        
+        [parentContext_ recordModifiedObjectUUID: [self UUID]];
+	}
 	else
 	{
 		[item_ setValue: aValue
@@ -333,21 +396,30 @@
         
         [parentContext_ recordModifiedObjectUUID: [self UUID]];
 	}
-
 }
 
 
 
 - (void)   addObject: (id)aValue
-toUnorderedAttribute: (NSString*)anAttribute    
-				type: (COType *)aType
+toUnorderedAttribute: (NSString*)anAttribute
 {
+    COType *aType = [self typeForAttribute: anAttribute];
+    NSParameterAssert(aType != nil);
+    
 	if ([aType isPrimitiveTypeEqual: [COType embeddedItemType]])
 	{
 		[self addObject:  aValue atItemPath: [COItemPath pathWithItemUUID: [self UUID]
 												  unorderedCollectionName: anAttribute
 																	 type: aType]];
 	}
+    else if ([aType isPrimitiveTypeEqual: [COType referenceType]])
+    {
+		[item_ addObject: [aValue UUID]
+    toUnorderedAttribute: anAttribute
+                    type: aType];
+        
+        [parentContext_ recordModifiedObjectUUID: [self UUID]];
+    }
 	else
 	{
 		[item_ addObject: aValue
@@ -362,8 +434,10 @@ toUnorderedAttribute: (NSString*)anAttribute
 - (void)   addObject: (id)aValue
   toOrderedAttribute: (NSString*)anAttribute
 			 atIndex: (NSUInteger)anIndex
-				type: (COType *)aType
 {
+    COType *aType = [self typeForAttribute: anAttribute];
+    NSParameterAssert(aType != nil);
+
 	if ([aType isPrimitiveTypeEqual: [COType embeddedItemType]])
 	{
 		[self addObject:  aValue atItemPath: [COItemPath pathWithItemUUID: [self UUID]
@@ -371,6 +445,15 @@ toUnorderedAttribute: (NSString*)anAttribute
 														   insertionIndex: anIndex
 																	 type: aType]];
 	}
+    else if ([aType isPrimitiveTypeEqual: [COType referenceType]])
+    {
+		[item_ addObject: [aValue UUID]
+      toOrderedAttribute: anAttribute
+                 atIndex: anIndex
+                    type: aType];
+        
+        [parentContext_ recordModifiedObjectUUID: [self UUID]];
+    }
 	else
 	{
 		[item_ addObject: aValue
@@ -384,14 +467,15 @@ toUnorderedAttribute: (NSString*)anAttribute
 
 - (void)   addObject: (id)aValue
   toOrderedAttribute: (NSString*)anAttribute
-				type: (COType *)aType
 {
+    COType *aType = [self typeForAttribute: anAttribute];
+    NSParameterAssert([aType isOrdered]);
+
 	NSUInteger anIndex = [[item_ valueForAttribute: anAttribute] count];
     
 	[self addObject: aValue
  toOrderedAttribute: anAttribute
-			atIndex: anIndex
-			   type: aType];
+			atIndex: anIndex];
 }
 
 - (void) removeValueForAttribute: (NSString*)anAttribute
@@ -430,7 +514,7 @@ toUnorderedAttribute: (NSString*)anAttribute
 	}
 	
 	COUUID *aUUID = [anObject UUID];
-	COObject *parentOfObjectToRemove = [anObject parentObject];
+	COObject *parentOfObjectToRemove = [anObject embeddedObjectParent];
 	COItemPath *itemPath = [self itemPathOfDescendentObjectWithUUID: aUUID];
 	NSAssert([[itemPath UUID] isEqual: [parentOfObjectToRemove UUID]], @"");
 	[itemPath removeValue: aUUID inStoreItem: parentOfObjectToRemove->item_];
@@ -495,18 +579,21 @@ toUnorderedAttribute: (NSString*)anAttribute
     // remove from parent
     
     COUUID *aUUID = [aObject UUID];
-	COObject *parentOfObjectToRemove = [aObject parentObject];
+	COObject *parentOfObjectToRemove = [aObject embeddedObjectParent];
     
-	COItemPath *itemPath = [parentOfObjectToRemove itemPathOfDescendentObjectWithUUID: aUUID];
-	NSAssert([[itemPath UUID] isEqual: [parentOfObjectToRemove UUID]], @"");
-	[itemPath removeValue: aUUID inStoreItem: parentOfObjectToRemove->item_];
-    [parentContext_ recordModifiedObjectUUID: [parentOfObjectToRemove UUID]];
+    if (parentOfObjectToRemove != nil)
+    {
+        COItemPath *itemPath = [parentOfObjectToRemove itemPathOfDescendentObjectWithUUID: aUUID];
+        NSAssert([[itemPath UUID] isEqual: [parentOfObjectToRemove UUID]], @"");
+        [itemPath removeValue: aUUID inStoreItem: parentOfObjectToRemove->item_];
+        [parentContext_ recordModifiedObjectUUID: [parentOfObjectToRemove UUID]];
+    }
     
     // add to self
     
     [aPath insertValue: aUUID inStoreItem: self->item_];
-    aObject->parent_ = self;
     [parentContext_ recordModifiedObjectUUID: [self UUID]];
+    [parentContext_ recordAddedEmbededObject: aUUID toObject: [self UUID]];
 }
 
 - (COObject *) addObject: (COObject *)anObject

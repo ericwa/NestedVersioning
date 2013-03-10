@@ -6,46 +6,40 @@
 
 @implementation COEditingContext
 
-- (NSSet *) allObjectUUIDs
+#pragma mark Creation
+
+- (id) initWithSchemaRegistry: (COSchemaRegistry *)aRegistry
 {
-    return [NSSet setWithArray: [objectsByUUID_ allKeys]];
-}
-
-/* @taskunit Creation */
-
-
-
-- (id) initWithItemTree: (COItemTree *)aTree
-{
-    NSParameterAssert(aTree != nil);
-    NSParameterAssert([aTree itemForUUID: [aTree rootItemUUID]] != nil);
-    
     SUPERINIT;
-    ASSIGN(rootObjectUUID_, [aTree rootItemUUID]);
     objectsByUUID_ = [[NSMutableDictionary alloc] init];
     insertedObjects_ = [[NSMutableSet alloc] init];
     deletedObjects_ = [[NSMutableSet alloc] init];
     modifiedObjects_ = [[NSMutableSet alloc] init];
-    
-    [self updateObject: rootObjectUUID_ fromItemTree: aTree setParent: nil];
-    
+    schemaRegistry_ = [aRegistry retain];
+    embeddedObjectParentUUIDForUUID_ = [[NSMutableDictionary alloc] init];
     return self;
-}
-
-- (id) init
-{
-    COItem *item = [COItem itemWithTypesForAttributes: [NSDictionary dictionary]
-                                  valuesForAttributes: [NSDictionary dictionary]];
-
-    COItemTree *tree = [[[COItemTree alloc] initWithItemForUUID: [NSDictionary dictionaryWithObject: item forKey: [item UUID]]
-                                                              rootItemUUID: [item UUID]] autorelease];
-    
-    return [self initWithItemTree: tree];
 }
 
 + (COEditingContext *) editingContext
 {
-    return [[[self alloc] init] autorelease];
+    return [[[self alloc] initWithSchemaRegistry: nil] autorelease];
+}
+
++ (COEditingContext *) editingContextWithSchemaRegistry: (COSchemaRegistry *)aRegistry
+{
+    return [[[self alloc] initWithSchemaRegistry: aRegistry] autorelease];
+}
+
+#pragma mark Schema
+
+- (COSchemaRegistry *) schemaRegistry
+{
+    return schemaRegistry_;
+}
+
+- (NSSet *) allObjectUUIDs
+{
+    return [NSSet setWithArray: [objectsByUUID_ allKeys]];
 }
 
 - (void) dealloc
@@ -55,12 +49,18 @@
     [insertedObjects_ release];
     [deletedObjects_ release];
     [modifiedObjects_ release];
+    [schemaRegistry_ release];
+    [embeddedObjectParentUUIDForUUID_ release];
     [super dealloc];
 }
 
 - (COObject *) rootObject
 {
-    return [self objectForUUID: rootObjectUUID_];
+    if (rootObjectUUID_ != nil)
+    {
+        return [self objectForUUID: rootObjectUUID_];
+    }
+    return nil;
 }
 
 - (COObject *) objectForUUID: (COUUID *)uuid
@@ -70,6 +70,10 @@
 
 - (COItemTree *) itemTree
 {
+    if (rootObjectUUID_ == nil)
+    {
+        [NSException raise: NSGenericException format: @"no root object!"];
+    }
     NSMutableDictionary *itemByUUID = [NSMutableDictionary dictionary];
     for (COUUID *uuid in objectsByUUID_)
     {
@@ -77,22 +81,12 @@
                        forKey: uuid];
     }
     return [[[COItemTree alloc] initWithItemForUUID: itemByUUID
-                                                 rootItemUUID: rootObjectUUID_] autorelease];
-}
-
-+ (COEditingContext *) editingContextWithItemTree: (COItemTree *)aTree
-{
-    return [[[self alloc] initWithItemTree: aTree] autorelease];
-}
-
-+ (COEditingContext *) editingContextWithItem: (COItem *)anItem
-{
-    return [self editingContextWithItemTree: [COItemTree itemTreeWithItems: [NSArray arrayWithObject: anItem]
-                                                          rootItemUUID: [anItem UUID]]];
+                                       rootItemUUID: rootObjectUUID_] autorelease];
 }
 
 - (id) copyWithZone: (NSZone *)aZone
 {
+    // FIXME: Handle copying 
     return [[[self class] alloc] initWithItemTree: [self itemTree]];
 }
 
@@ -150,6 +144,25 @@
     // TODO: Send change notification
 }
 
+- (void) setRootObject: (COObject *)anObject
+{
+    if (anObject == nil)
+    {
+        DESTROY(rootObjectUUID_);
+        return;
+    }
+    
+    NSParameterAssert([anObject editingContext] == self);
+    
+    COObject *newRootParent = [anObject embeddedObjectParent];
+    if (newRootParent != nil)
+    {
+        [newRootParent removeDescendentObject: anObject];
+    }
+    
+    ASSIGN(rootObjectUUID_, [anObject UUID]);
+}
+
 #pragma mark change tracking
 
 - (NSSet *) insertedObjectUUIDs
@@ -184,24 +197,24 @@
 
 - (void) removeUnreachableObjectAndChildren: (COUUID *)aUUID
 {
-    NSParameterAssert(![aUUID isEqual: rootObjectUUID_]);
-
-    COObject *object = [objectsByUUID_ objectForKey: aUUID];
-    if (object == nil)
-    {
-        return; // nothing to do since the object is not in memory
-    }
-    
-    NSAssert(![[[object parentObject] directDescendentObjectUUIDs] containsObject: [object UUID]],
-             @"%@ should have already been detached from its parent", aUUID);
-    
-    for (COUUID *uuid in [object allDescendentObjectUUIDs])
-    {
-        COObject *objectToRemove = [self objectForUUID: uuid];
-        [objectToRemove markAsRemovedFromContext];
-        
-        [objectsByUUID_ removeObjectForKey: uuid]; // should free object unless there are external references
-    }
+//    NSParameterAssert(![aUUID isEqual: rootObjectUUID_]);
+//
+//    COObject *object = [objectsByUUID_ objectForKey: aUUID];
+//    if (object == nil)
+//    {
+//        return; // nothing to do since the object is not in memory
+//    }
+//    
+//    NSAssert(![[[object parentObject] directDescendentObjectUUIDs] containsObject: [object UUID]],
+//             @"%@ should have already been detached from its parent", aUUID);
+//    
+//    for (COUUID *uuid in [object allDescendentObjectUUIDs])
+//    {
+//        COObject *objectToRemove = [self objectForUUID: uuid];
+//        [objectToRemove markAsRemovedFromContext];
+//        
+//        [objectsByUUID_ removeObjectForKey: uuid]; // should free object unless there are external references
+//    }
 }
 
 - (COObject *) updateObject: (COUUID *)aUUID
@@ -276,6 +289,34 @@
 - (void) recordModifiedObjectUUID: (COUUID *)aUUID
 {
     [modifiedObjects_ addObject: aUUID];
+}
+
+- (COObject *) insertObjectWithSchemaName: (NSString *)aSchemaName
+{
+    COMutableItem *item = [COMutableItem item];
+    if (aSchemaName != nil)
+    {
+        [item setValue: aSchemaName forAttribute: kCOSchemaName type: [COType stringType]];
+    }
+    
+    COObject *object = [[[COObject alloc] initWithItem: item parentContext: self] autorelease];
+    [objectsByUUID_ setObject: object forKey: [object UUID]];
+    return object;
+}
+
+- (COObject *) insertObject
+{
+    return [self insertObjectWithSchemaName: nil];
+}
+
+- (COObject *) embeddedObjectParent: (COObject *)anObject
+{
+    return [self objectForUUID: [embeddedObjectParentUUIDForUUID_ objectForKey: [anObject UUID]]];
+}
+
+- (void) recordAddedEmbededObject: (COUUID *)aUUID toObject: (COUUID *)aTarget
+{
+    [embeddedObjectParentUUIDForUUID_ setObject:aTarget forKey: aUUID];
 }
 
 @end

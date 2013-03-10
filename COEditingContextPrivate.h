@@ -22,8 +22,8 @@
 
 @interface COObject (Private)
 
-- (id) initWithItem: (COItem *)anItem parentContext: (COEditingContext *)aContext parent: (COObject *)aParent;
-- (void) updateItem: (COItem *)anItem parentContext: (COEditingContext *)aContext parent: (COObject *)aParent;
+- (id) initWithItem: (COItem *)anItem parentContext: (COEditingContext *)aContext;
+- (void) updateItem: (COItem *)anItem parentContext: (COEditingContext *)aContext;
 - (void) markAsRemovedFromContext;
 
 @end
