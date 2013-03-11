@@ -71,9 +71,7 @@ NSString *kCOSchemaName = @"COSchemaName";
 
 - (COType *) typeForAttribute: (NSString *)anAttribute
 {
-    COType *schemaType = [[[parentContext_ schemaRegistry] schemaForName: [self schemaName]]
-                        typeForProperty: anAttribute];
-    
+    COType *schemaType = [[self schema] typeForProperty: anAttribute];
     if (schemaType != nil)
     {
         return schemaType;
@@ -105,6 +103,11 @@ NSString *kCOSchemaName = @"COSchemaName";
     // NOTE: -valueForAttribute: calls -typeForAttribute:, which calls -schemaName,
     //       so we can't call -valueForAttribute:. Access item_ directly, instead.
     return [item_ valueForAttribute: kCOSchemaName];
+}
+
+- (COSchema *) schema
+{
+    return [[parentContext_ schemaRegistry] schemaForName: [self schemaName]];
 }
 
 #pragma mark Access to the tree stucture

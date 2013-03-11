@@ -4,6 +4,7 @@
 @class COEditingContext;
 @class COItemTree;
 @class COItemPath;
+@class COSchema;
 
 NSString *kCOSchemaName;
 
@@ -61,6 +62,10 @@ NSString *kCOSchemaName;
 - (id) valueForAttribute: (NSString*)anAttribute;
 
 - (NSString *) schemaName;
+/**
+ * Looks up -schemaName in our context's schema registry.
+ */
+- (COSchema *) schema;
 
 #pragma mark Access to the tree stucture
 
