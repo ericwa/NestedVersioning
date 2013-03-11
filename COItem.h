@@ -54,6 +54,7 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes;
 - (NSArray*) allObjectsForAttribute: (NSString*)attribute;
 
 - (NSSet *) embeddedItemUUIDs;
+- (NSSet *) referencedItemUUIDs;
 
 // GC helper methods
 - (NSSet *) attachments;

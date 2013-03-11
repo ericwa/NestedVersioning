@@ -301,6 +301,7 @@
     
     COObject *object = [[[COObject alloc] initWithItem: item parentContext: self] autorelease];
     [objectsByUUID_ setObject: object forKey: [object UUID]];
+    NSLog(@"Inserting object %@", [object UUID]);
     return object;
 }
 

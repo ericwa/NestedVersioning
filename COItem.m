@@ -283,6 +283,25 @@ static id importValueFromPlist(id aPlist)
 	return [NSSet setWithSet: result];
 }
 
+- (NSSet *) referencedItemUUIDs
+{
+	NSMutableSet *result = [NSMutableSet set];
+	
+	for (NSString *key in [self attributeNames])
+	{
+		COType *type = [self typeForAttribute: key];
+		if ([type isPrimitiveTypeEqual: [COType referenceType]])
+		{
+			for (COUUID *embedded in [self allObjectsForAttribute: key])
+			{
+				[result addObject: embedded];
+			}
+		}
+	}
+	return [NSSet setWithSet: result];
+}
+
+
 // Helper methods for doing GC
 
 - (NSSet *) attachments

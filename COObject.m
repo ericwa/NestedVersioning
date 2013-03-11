@@ -66,7 +66,16 @@ NSString *kCOSchemaName = @"COSchemaName";
 
 - (NSSet *) attributeNames
 {
-	return [item_ attributeNames];
+    COSchema *schema = [self schema];
+    if (schema != nil)
+    {
+        return [[schema propertyNames] setByAddingObjectsFromSet:
+                    [item_ attributeNames]];
+    }
+    else
+    {
+        return [item_ attributeNames];
+    }
 }
 
 - (COType *) typeForAttribute: (NSString *)anAttribute
@@ -304,27 +313,27 @@ NSString *kCOSchemaName = @"COSchemaName";
     else if ([aValue isKindOfClass: [NSCountedSet class]])
     {
         NSCountedSet *replacement = [NSCountedSet set];
-        for (COObject *object in aValue)
+        for (COUUID *object in aValue)
         {
-            [replacement addObject: [parentContext_ objectForUUID: aValue]];
+            [replacement addObject: [parentContext_ objectForUUID: object]];
         }
         return replacement;
     }
     else if ([aValue isKindOfClass: [NSSet class]])
     {
         NSMutableSet *replacement = [NSMutableSet set];
-        for (COObject *object in aValue)
+        for (COUUID *object in aValue)
         {
-            [replacement addObject: [parentContext_ objectForUUID: aValue]];
+            [replacement addObject: [parentContext_ objectForUUID: object]];
         }
         return [NSSet setWithSet: replacement];
     }
     else if ([aValue isKindOfClass: [NSArray class]])
     {
         NSMutableArray *replacement = [NSMutableArray array];
-        for (COObject *object in aValue)
+        for (COUUID *object in aValue)
         {
-            [replacement addObject: [parentContext_ objectForUUID: aValue]];
+            [replacement addObject: [parentContext_ objectForUUID: object]];
         }
         return [NSArray arrayWithArray: replacement];
     }

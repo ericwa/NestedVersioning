@@ -136,27 +136,59 @@
                                inSet: (NSMutableSet *)dest
                   withItemDictionary: (NSDictionary *)aDict
 {
-    if ([dest containsObject: aUUID])
-    {
-        [NSException raise: NSInvalidArgumentException
-                    format: @"Cycle detected"];
-    }
 	[dest addObject: aUUID];
 	for (COUUID *child in [[aDict objectForKey: aUUID] embeddedItemUUIDs])
 	{
-        [self collectAllDescendentsOfItem: child
-                                    inSet: dest
-                       withItemDictionary: aDict];
+        if (![dest containsObject: child])
+        {
+            [self collectAllDescendentsOfItem: child
+                                        inSet: dest
+                           withItemDictionary: aDict];
+        }
+        else
+        {
+            [NSException raise: NSInvalidArgumentException
+                        format: @"Cycle detected"];
+        }
+	}
+}
+
++ (void) assertTreeHasNoCyclesWithRoot: (COUUID *)aRoot
+                        itemDictionary: (NSDictionary *)aDict
+{
+    NSMutableSet *temp = [NSMutableSet set];
+    [self collectAllDescendentsOfItem: aRoot
+                                inSet: temp
+                   withItemDictionary: aDict];
+}
+
++ (void) collectAllReferencesFromItem: (COUUID *)aUUID
+                                inSet: (NSMutableSet *)dest
+                   withItemDictionary: (NSDictionary *)aDict
+{
+	[dest addObject: aUUID];
+    COItem *item = [aDict objectForKey: aUUID];
+	for (COUUID *child in [[item referencedItemUUIDs] setByAddingObjectsFromSet: [item embeddedItemUUIDs]])
+	{
+        if (![dest containsObject: child])
+        {
+            [self collectAllReferencesFromItem: child
+                                         inSet: dest
+                            withItemDictionary: aDict];
+        }
 	}
 }
 
 - (id) initWithItemForUUID: (NSDictionary *) itemForUUID
               rootItemUUID: (COUUID *)root
 {
+    [COItemTree assertTreeHasNoCyclesWithRoot: root
+                               itemDictionary: itemForUUID];
+    
     NSMutableSet *itemsToKeep = [NSMutableSet setWithCapacity: [itemForUUID count]];
-    [COItemTree collectAllDescendentsOfItem: root
-                                      inSet: itemsToKeep
-                         withItemDictionary: itemForUUID];
+    [COItemTree collectAllReferencesFromItem: root
+                                       inSet: itemsToKeep
+                          withItemDictionary: itemForUUID];
     
     NSMutableDictionary *filteredDictionary = [NSMutableDictionary dictionaryWithCapacity:[itemsToKeep count]];
     for (COUUID *uuid in itemsToKeep)

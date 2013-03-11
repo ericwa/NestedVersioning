@@ -23,11 +23,13 @@ THOUGHTS jan 2 / 2013
 -=-=--=-=-=-=-=-==-=
 
 - concerned about loading custom model object subclasses of COObject. need to re-add metamodel stuff?
+ => WIP. Done.
 
 - should build a vector drawing app with group, image, shape so I can test
   different object classes (group, image, shape) (and diff/merge!) in a realistic setting.
 - attachments / BLOBs?
-
+ => Done.
+ 
 - for storing the undo log (history of changes to the persistent root data):
  the problem of a command-pattern, 2-stack (undo / redo) undo system being too inflexible
  should be solved by moving to a 1-stack (action log) system, which looks similar to git's reflog
