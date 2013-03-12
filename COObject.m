@@ -17,15 +17,18 @@ NSString *kCOSchemaName = @"COSchemaName";
       parentContext: (COEditingContext *)aContext
 {
     SUPERINIT;
-    [self updateItem: anItem
-       parentContext: aContext];
+    item_ = [anItem mutableCopy];
+    parentContext_ = aContext;
     return self;
 }
 
-- (void) updateItem: (COItem *)anItem parentContext: (COEditingContext *)aContext
+- (void) setItem: (COItem *)anItem
 {
-    item_ = [anItem mutableCopy];
-    parentContext_ = aContext;
+    if (item_ != anItem)
+    {
+        [item_ release];
+        item_ = [anItem mutableCopy];
+    }
 }
 
 - (void) markAsRemovedFromContext
@@ -536,46 +539,6 @@ toUnorderedAttribute: (NSString*)anAttribute
 
 #pragma mark Mutation Internal
 
-- (COObject *) addItemTree: (COItemTree *)aTree
-                atItemPath: (COItemPath *)aPath
-{
-    // see if there are any name conflicts
-    
-    NSMutableSet *conflictingNames = [NSMutableSet setWithSet: [parentContext_ allObjectUUIDs]];
-    [conflictingNames intersectSet: [NSSet setWithArray: [aTree itemUUIDs]]];
-    
-    if ([conflictingNames count] > 0)
-    {
-        NSLog(@"names %@ need to be remapped", conflictingNames);
-     
-        NSMutableDictionary *mapping = [NSMutableDictionary dictionary];
-        for (COUUID *name in conflictingNames)
-        {
-            [mapping setObject: [COUUID UUID]
-                        forKey: name];
-        }
-        
-        aTree = [aTree itemTreeWithNameMapping: mapping];
-    }
-    
-    // now, there are no name conflicts.
-    
-    COObject *result = [parentContext_ updateObject: [aTree rootItemUUID]
-                                     fromItemTree: aTree
-                                          setParent: self];
-    [aPath insertValue: [aTree rootItemUUID] inStoreItem: self->item_];
-    
-    // record dirty objects
-
-    [parentContext_ recordModifiedObjectUUID: [self UUID]];
-    for (COUUID *uuid in [aTree itemUUIDs])
-    {
-        [parentContext_ recordInsertedObjectUUID: uuid];
-    }
-    
-    return result;
-}
-
 - (void) addObjectSameContext: (COObject *)aObject
                    atItemPath: (COItemPath *)aPath
 {
@@ -628,80 +591,35 @@ toUnorderedAttribute: (NSString*)anAttribute
     }
 }
 
-- (void) moveDescendentObjectWithUUID: (COUUID *)aUUID
-				  toItemPath: (COItemPath *)aPath
-{
-	COObject *objectToMove = [self descendentObjectForUUID: aUUID];
-	[self addObject: objectToMove
-		  atItemPath: aPath];
-}
-
-
-
-#pragma mark contents property
-
-
-- (COObject *) addObjectToContents: (COObject *)aValue
-{
-    return 	[self addObject:  aValue
-		  atItemPath: [COItemPath pathWithItemUUID: [self UUID]
-						   unorderedCollectionName: @"contents"
-											  type: [COType setWithPrimitiveType: [COType embeddedItemType]]]];
-}
-
-- (NSSet*) contents
-{
-	NSSet *contents = (NSSet*)[self valueForAttribute: @"contents"];
-	if (nil == contents)
-	{
-		return [NSSet set];
-	}
-	
-	if (![contents isKindOfClass: [NSSet class]])
-	{
-		//[NSException raise: NSInternalInconsistencyException
-		//			format: @"contents attribute not a set type"];
-		NSLog(@"Warning, contents attribute of %@ not a set type: %@", [self UUID], contents);
-		return [NSSet set];
-	}
-	return contents;
-}
-
-- (COEditingContext *) independentEditingContext
-{
-    return [[[COEditingContext alloc] initWithItemTree: [self itemTree]] autorelease];
-}
 
 // Logging
 
 
 - (NSString *) selfDescription
 {
-	return [NSString stringWithFormat: @"%@ (%@)", [self valueForAttribute: @"name"], [self UUID]];
+	return [NSString stringWithFormat: @"[COObject %@]", [self UUID]];
 }
 
-- (NSString *) tabs: (NSUInteger)i
+static NSString *tabs(NSUInteger i)
 {
 	NSMutableString *result = [NSMutableString string];
 	for (NSUInteger j=0; j<i; j++)
+    {
 		[result appendFormat: @"\t"];
+    }
 	return result;
 }
 
 - (NSString *) descriptionWithIndent: (NSUInteger)i
 {
 	NSMutableString *result = [NSMutableString string];
-	[result appendFormat: @"%@%@\n", [self tabs: i], [self selfDescription]];
+	[result appendFormat: @"%@%@\n", tabs(i), [self selfDescription]];
 	
-	if ([[self typeForAttribute: @"contents"] isPrimitiveTypeEqual: [COType embeddedItemType]]
-		&& [[self typeForAttribute: @"contents"] isMultivalued])
-	{
-		for (COObject *content in [self valueForAttribute: @"contents"])
-		{
-			[result appendFormat: @"%@", [content descriptionWithIndent: i+1]];
-		}
-	}
-	
+    for (COObject *content in [self directDescendentObjects])
+    {
+        [result appendFormat: @"%@", [content descriptionWithIndent: i+1]];
+    }
+
 	return result;
 }
 

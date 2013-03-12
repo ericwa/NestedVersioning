@@ -35,6 +35,12 @@
 
 - (COObject *) insertObjectWithSchemaName: (NSString *)aSchemaName;
 
+/**
+ * Inserts an item tree into the context. The COObject representing the tree root is returned.
+ * Normal relabeling rules are followed.
+ */
+- (COObject *) insertItemTree: (COItemTree *)aTree;
+
 #pragma mark Schema
 
 - (COSchemaRegistry *) schemaRegistry;

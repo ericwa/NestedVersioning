@@ -102,12 +102,28 @@
 	}
     
     COEditingContext *otherContext = (COEditingContext *)object;
-
-    COObject *selfRoot = [self rootObject];
-    COObject *otherRoot = [otherContext rootObject];
     
-    // Deep equality test
-    return [selfRoot isEqual: otherRoot];
+    if (!((rootObjectUUID_ == nil && otherContext->rootObjectUUID_ == nil)
+          || [rootObjectUUID_ isEqual: otherContext->rootObjectUUID_]))
+    {
+        return NO;
+    }
+    
+    if (![[self allObjectUUIDs] isEqual: [otherContext allObjectUUIDs]])
+    {
+        return NO;
+    }
+    
+    for (COUUID *aUUID in [self allObjectUUIDs])
+    {
+        COItem *selfItem = [[self objectForUUID: aUUID] item];
+        COItem *otherItem = [[otherContext objectForUUID: aUUID] item];
+        if (![selfItem isEqual: otherItem])
+        {
+            return NO;
+        }
+    }
+    return YES;
 }
 
 - (NSUInteger) hash
@@ -119,26 +135,11 @@
 {
     [self clearChangeTracking];
     
-    NSSet *initialUUIDs = [[self rootObject] allObjectUUIDs];
-    
     ASSIGN(rootObjectUUID_, [aTree rootItemUUID]);
     
-    [self updateObject: rootObjectUUID_
-        fromItemTree: aTree
-             setParent: nil];
-    
-    // The update is now complete. Remove orphans
-    
-    NSMutableSet *orphanedUUIDs = [NSMutableSet setWithSet: [[self rootObject] allObjectUUIDs]];
-    [orphanedUUIDs minusSet: initialUUIDs];
-    
-    NSLog(@"setObjectTree: orphaned objects: %@", orphanedUUIDs);
-    
-    for (COUUID *uuid in orphanedUUIDs)
+    for (COUUID *uuid in [aTree itemUUIDs])
     {
-        COObject *orphan = [objectsByUUID_ objectForKey: uuid];
-        [orphan markAsRemovedFromContext];
-        [objectsByUUID_ removeObjectForKey: uuid];
+        [self createOrUpdateObjectForItem: [aTree itemForUUID: uuid]];
     }
     
     // TODO: Send change notification
@@ -195,84 +196,27 @@
 
 @implementation COEditingContext (Private)
 
-- (void) removeUnreachableObjectAndChildren: (COUUID *)aUUID
-{
-//    NSParameterAssert(![aUUID isEqual: rootObjectUUID_]);
-//
-//    COObject *object = [objectsByUUID_ objectForKey: aUUID];
-//    if (object == nil)
-//    {
-//        return; // nothing to do since the object is not in memory
-//    }
-//    
-//    NSAssert(![[[object parentObject] directDescendentObjectUUIDs] containsObject: [object UUID]],
-//             @"%@ should have already been detached from its parent", aUUID);
-//    
-//    for (COUUID *uuid in [object allDescendentObjectUUIDs])
-//    {
-//        COObject *objectToRemove = [self objectForUUID: uuid];
-//        [objectToRemove markAsRemovedFromContext];
-//        
-//        [objectsByUUID_ removeObjectForKey: uuid]; // should free object unless there are external references
-//    }
-}
 
-- (COObject *) updateObject: (COUUID *)aUUID
-             fromObjectTree: (COItemTree *)aTree
-                  setParent: (COObject *)parent
-             updatedObjects: (NSMutableSet *)handledSet
+- (COObject *) createOrUpdateObjectForItem: (COItem *)item
 {
-    // Check for cycles.
-    
-    if ([handledSet containsObject: aUUID])
-    {
-        [NSException raise: NSGenericException format: @"Cycle detected"];
-    }
-    [handledSet addObject: aUUID];
-    
-    // Handle the object...
-    
+    COUUID *aUUID = [item UUID];
     COObject *currentObject = [objectsByUUID_ objectForKey: aUUID];
-    COItem *item = [aTree itemForUUID: aUUID];
     
     if (currentObject == nil)
     {
         // Create new
         currentObject = [[[COObject alloc] initWithItem: item
-                                          parentContext: self
-                                                 parent: parent] autorelease];
+                                          parentContext: self] autorelease];
         [objectsByUUID_ setObject: currentObject forKey: aUUID];
     }
     else
     {
         // Update existing
         
-        [currentObject updateItem: item
-                    parentContext: self // FIXME: unnecessary param
-                           parent: parent];
+        [currentObject setItem: item];
     }
-    
-    // Process children recursively
-    
-    for (COUUID *descendent in [item embeddedItemUUIDs])
-    {
-        [self updateObject: descendent
-            fromObjectTree: aTree
-                 setParent: currentObject
-            updatedObjects: handledSet];
-    }
-    
-    return currentObject;
-}
 
-- (COObject *) updateObject: (COUUID *)aUUID
-             fromItemTree: (COItemTree *)aTree
-                  setParent: (COObject *)parent
-{
-    return [self updateObject: aUUID
-               fromObjectTree: aTree
-                    setParent: parent
-               updatedObjects: [NSMutableSet set]];
+    return currentObject;
 }
 
 
@@ -318,6 +262,69 @@
 - (void) recordAddedEmbededObject: (COUUID *)aUUID toObject: (COUUID *)aTarget
 {
     [embeddedObjectParentUUIDForUUID_ setObject:aTarget forKey: aUUID];
+}
+
+- (COObject *) insertItemTree: (COItemTree *)aTree
+{
+    // see if there are any name conflicts
+    
+    NSMutableSet *conflictingNames = [NSMutableSet setWithSet: [self allObjectUUIDs]];
+    [conflictingNames intersectSet: [NSSet setWithArray: [aTree itemUUIDs]]];
+    
+    if ([conflictingNames count] > 0)
+    {
+        NSLog(@"names %@ need to be remapped", conflictingNames);
+        
+        NSMutableDictionary *mapping = [NSMutableDictionary dictionary];
+        for (COUUID *name in conflictingNames)
+        {
+            [mapping setObject: [COUUID UUID]
+                        forKey: name];
+        }
+        
+        aTree = [aTree itemTreeWithNameMapping: mapping];
+    }
+    
+    // now, there are no name conflicts.
+    
+    COObject *result = [self updateObject: [aTree rootItemUUID]
+                             fromItemTree: aTree];
+
+    for (COUUID *uuid in [aTree itemUUIDs])
+    {
+        [self recordInsertedObjectUUID: uuid];
+    }
+    
+    return result;
+}
+
+- (void) removeObject: (COObject *)anObject
+{
+    NSParameterAssert([anObject editingContext] == self);
+ 
+    COUUID *uuid = [anObject UUID];
+    
+    // If it has a parent, remove it from the parent
+    COObject *parent = [anObject embeddedObjectParent];
+    if (parent != nil)
+    {
+        [parent removeDescendentObject: anObject];
+    }
+    
+    [anObject markAsRemovedFromContext];
+
+    // Update change tracking
+    if ([insertedObjects_ containsObject: uuid])
+    {
+        [insertedObjects_ removeObject: uuid];
+    }
+    else
+    {
+        [deletedObjects_ addObject: uuid];
+    }
+    
+    // Release it from the objects dictionary
+    [objectsByUUID_ removeObjectForKey: uuid];
 }
 
 @end
