@@ -128,6 +128,39 @@
 	return result;
 }
 
+static void ParseCommitDataAsUUIDToItemDataDictionary(NSMutableDictionary *dest, NSData *commitData)
+{
+    // format:
+    //
+    // |------------|-----------------------|----------| |---..
+    // |128-bit UUID| uint_32 little-endian | item data| | next UUID...
+    // |------------|-----------------------|----------| |---..
+    //                 ^- number of bytes in item data
+    
+    const unsigned char *bytes = [commitData bytes];
+    const NSUInteger len = [commitData length];
+    NSUInteger offset = 0;
+    
+    
+    while (offset < len)
+    {
+        COUUID *uuid = [[COUUID alloc] initWithBytes: bytes + offset];
+        offset += 16;
+        
+        uint32_t length;
+        memcpy(&length, bytes + offset, 4);
+        length = CFSwapInt32LittleToHost(length);
+        offset += 4;
+        
+        NSData *data = [commitData subdataWithRange: NSMakeRange(offset, length)];
+        [dest setObject: data
+                 forKey: uuid];
+        [data release];
+        [uuid release];
+        offset += length;
+    }
+}
+
 - (COPartialItemTree *) partialItemTreeFromRevid: (int64_t)baseRevid toRevid: (int64_t)revid
 {
     NSParameterAssert(baseRevid < revid);
