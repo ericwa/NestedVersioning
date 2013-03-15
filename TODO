@@ -1,5 +1,45 @@
 TODO
 ====
 
-- swap strong/weak pointers so COObject owns COEditingContext
-and COBranchEditQueue owns COPersistentRootEditQueue owns COStoreEditQueue 
+Store
+-----
+
+- GC unreachable revisions (aka history compacting)
+- Merge all gc code into a single GC pass.
+- Write binary serialization format
+- Full-text search
+- Cache references
+
+COItem
+------
+
+- Lazy deserialization. Upon creation from store, ivar is a NSData with the binary serialized form.
+
+Types
+-----
+
+- remove bag / unique array types
+- figure out where to put type names for primitives (<NSData> is org.etoile.bezier-path)
+
+Schema
+------
+
+- 
+
+
+COObject / COEditingContext
+---------------------------
+
+- Fix bugs and complete.
+
+Undo/redo
+---------
+- Don't put in CO core.
+- Write a undo manager that has 4 stacks per persistent root:
+ - metadata undo, metadata redo, state undo (current branch, current commit), state redo 
+
+
+Tests
+-----
+
+- port all...

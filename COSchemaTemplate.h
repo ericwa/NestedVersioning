@@ -2,6 +2,19 @@
 
 @class COType;
 
+/*
+ 
+ TODO: Maybe support primitive schemas
+ 
+ So you can say a property
+ 
+ shape : <data ...> has primitive schema org.etoile.bezier-path
+ 
+ and define a value transformer for org.etoile.bezier-path <-> NSBezierPath
+ 
+ Mixin (multiple inheritance) schema support for COObject?
+ 
+ */
 @interface COSchemaTemplate : NSObject
 {
     NSString *name_;

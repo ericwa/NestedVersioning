@@ -201,4 +201,8 @@ Thought:
     - when the app wants to undo, it provides a search query like { app : objectManager, user : eric }.
     - be able to handle selection undo/redo, where selection state exists only in the undo/redo log
     
-    
+
+
+Lessons about object context:
+
+Objects should send accurate change tracking info to the context

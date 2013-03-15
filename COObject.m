@@ -57,11 +57,6 @@ NSString *kCOSchemaName = @"COSchemaName";
     return parentContext_;
 }
 
-- (COItem *) item
-{
-	return [[item_ copy] autorelease];
-}
-
 - (COUUID *) UUID
 {
 	return [item_ UUID];

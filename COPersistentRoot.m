@@ -5,7 +5,7 @@
 #import "COPersistentRootState.h"
 #import "COPersistentRootPrivate.h"
 #import "COSQLiteStore.h"
-
+#import "COEditingContext.h"
 
 @implementation COPersistentRoot (Private)
 
@@ -177,6 +177,13 @@ NSString *kCOPersistentRootName = @"COPersistentRootName";
     // FIXME: not really an error, just for debugging
     assert(0);
     return nil;
+}
+
+- (COEditingContext *) readonlyContextForViewingRevision: (CORevisionID *)aRevision
+{
+    COEditingContext *ctx =  [[COEditingContext alloc] init];
+    [ctx setItemTree: [[self store] itemTreeForRevisionID: aRevision]];
+    return [ctx autorelease];
 }
 
 @end

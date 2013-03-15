@@ -71,7 +71,7 @@
     return root;
 }
 
-- (COPersistentRoot *) createPersistentRootWithInitialContents: (COItemTree *)contents
+- (COPersistentRoot *) createPersistentRootWithInitialContents: (COEditingContext *)contents
                                                       metadata: (NSDictionary *)metadata
                                                       isGCRoot: (BOOL)isGCRoot
 {

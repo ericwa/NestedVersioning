@@ -21,13 +21,14 @@
 + (COType *) int64Type;
 + (COType *) doubleType;
 + (COType *) stringType;
-+ (COType *) fullTextIndexableStringType;
 + (COType *) blobType;
 + (COType *) commitUUIDType;
 + (COType *) pathType;
 + (COType *) embeddedItemType;
 + (COType *) attachmentType;
 + (COType *) referenceType;
+
+// TODO: Refactor to -set, -uniqueArray, -bag, -array
 
 + (COType *) setWithPrimitiveType: (COType *)aType;
 + (COType *) uniqueArrayWithPrimitiveType: (COType *)aType;
@@ -45,7 +46,9 @@
 */
 + (COType *) arrayWithPrimitiveType: (COType *)aType;
 
+- (COType *) namedType: (NSString *)aName;
 
+- (COType *) storageType; // Type ignoring name
 
 - (BOOL) isMultivalued;
 - (BOOL) isPrimitive;

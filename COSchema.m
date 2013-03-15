@@ -12,11 +12,24 @@
                      registry: (COSchemaRegistry *)aRegistry
 {
     SUPERINIT;
+    parentRegistry_ = aRegistry;
     name_ = [[aTemplate name] copy];
     parent_ = [[aTemplate parent] copy];
-    typeForAttribute_ = [[NSMutableDictionary alloc] initWithDictionary: [aTemplate typeForAttribute]];
-    schemaNameForAttribute_ = [[NSMutableDictionary alloc] initWithDictionary: [aTemplate schemaNameForAttribute]];
-    parentRegistry_ = aRegistry;
+    
+    // setup dictionaries
+    
+    COSchema *parentSchema = [self parent];
+    
+    typeForAttribute_ = [[NSMutableDictionary alloc] init];
+    schemaNameForAttribute_ = [[NSMutableDictionary alloc] init];
+    if (parentSchema != nil)
+    {
+        [typeForAttribute_ addEntriesFromDictionary: parentSchema->typeForAttribute_];
+        [schemaNameForAttribute_ addEntriesFromDictionary: parentSchema->schemaNameForAttribute_];
+    }
+    [typeForAttribute_ addEntriesFromDictionary: [aTemplate typeForAttribute]];
+    [schemaNameForAttribute_ addEntriesFromDictionary: [aTemplate schemaNameForAttribute]];
+    
     return self;
 }
 - (void) dealloc

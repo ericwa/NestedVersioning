@@ -43,6 +43,7 @@ NSString *kCOSchemaName;
 */
 @interface COObject : NSObject
 {
+    @package
     COEditingContext *parentContext_; // weak
     COMutableItem *item_;
 }
@@ -50,8 +51,6 @@ NSString *kCOSchemaName;
 #pragma mark Access to the receivers attributes/values
 
 - (COEditingContext *) editingContext;
-
-- (COItem *) item;
 
 - (COUUID *) UUID;
 

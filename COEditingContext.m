@@ -77,7 +77,7 @@
     NSMutableDictionary *itemByUUID = [NSMutableDictionary dictionary];
     for (COUUID *uuid in objectsByUUID_)
     {
-        [itemByUUID setObject: [[self objectForUUID: uuid] item]
+        [itemByUUID setObject: [self objectForUUID: uuid]->item_
                        forKey: uuid];
     }
     return [[[COItemTree alloc] initWithItemForUUID: itemByUUID

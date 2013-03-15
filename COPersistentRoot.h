@@ -7,6 +7,7 @@
 
 @class COBranch;
 @class COStore;
+@class COEditingContext;
 
 /**
  * goals:
@@ -91,8 +92,6 @@
 
 - (void) removeBranch: (COBranch *)aBranch;
 
-- (COBranch *) branchWithUUID: (COUUID *)aUUID;
-
-- (NSArray *) operationLog;
+- (COEditingContext *) readonlyContextForViewingRevision: (CORevisionID *)aRevision;
 
 @end

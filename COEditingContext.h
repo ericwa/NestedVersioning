@@ -41,6 +41,8 @@
  */
 - (COObject *) insertItemTree: (COItemTree *)aTree;
 
+- (COObject *) deleteObject: (COObject *)anObject;
+
 #pragma mark Schema
 
 - (COSchemaRegistry *) schemaRegistry;
@@ -98,5 +100,9 @@
 - (NSSet *) insertedOrModifiedObjectUUIDs;
 
 - (void) clearChangeTracking;
+
+#pragma mark store integration
+
+- (NSArray *)commitWithMetadata: (NSDictionary *)metadata;
 
 @end
