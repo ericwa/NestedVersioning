@@ -177,6 +177,10 @@
 		66ED6D6A16F41989001B853E /* COSQLiteStorePersistentRootBackingStoreBinaryFormats.h in Headers */ = {isa = PBXBuildFile; fileRef = 66ED6D6816F41988001B853E /* COSQLiteStorePersistentRootBackingStoreBinaryFormats.h */; };
 		66ED6D6B16F41989001B853E /* COSQLiteStorePersistentRootBackingStoreBinaryFormats.m in Sources */ = {isa = PBXBuildFile; fileRef = 66ED6D6916F41988001B853E /* COSQLiteStorePersistentRootBackingStoreBinaryFormats.m */; };
 		66ED6D6E16F427FD001B853E /* TestSQLiteStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 66ED6D6D16F427FD001B853E /* TestSQLiteStore.m */; };
+		66ED6D8716F4EB4F001B853E /* COBinaryWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 66ED6D8116F4EB4F001B853E /* COBinaryWriter.h */; };
+		66ED6D8816F4EB4F001B853E /* COBinaryWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 66ED6D8216F4EB4F001B853E /* COBinaryWriter.m */; };
+		66ED6D8B16F507BF001B853E /* COBinaryReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 66ED6D8916F507BE001B853E /* COBinaryReader.h */; };
+		66ED6D8C16F507BF001B853E /* COBinaryReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 66ED6D8A16F507BF001B853E /* COBinaryReader.m */; };
 		66EDAF3A16B4B55400B06DB2 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E552B4146B7799008FDFAF /* libcrypto.dylib */; };
 		66FCDBE41645DEF800E24A67 /* COBranch.h in Headers */ = {isa = PBXBuildFile; fileRef = 66FCDBE21645DEF700E24A67 /* COBranch.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79626467150EE07E009A0686 /* COSequenceMerge.h in Headers */ = {isa = PBXBuildFile; fileRef = 79626465150EE07E009A0686 /* COSequenceMerge.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -451,6 +455,10 @@
 		66ED6D6816F41988001B853E /* COSQLiteStorePersistentRootBackingStoreBinaryFormats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COSQLiteStorePersistentRootBackingStoreBinaryFormats.h; sourceTree = "<group>"; };
 		66ED6D6916F41988001B853E /* COSQLiteStorePersistentRootBackingStoreBinaryFormats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COSQLiteStorePersistentRootBackingStoreBinaryFormats.m; sourceTree = "<group>"; };
 		66ED6D6D16F427FD001B853E /* TestSQLiteStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSQLiteStore.m; sourceTree = "<group>"; };
+		66ED6D8116F4EB4F001B853E /* COBinaryWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = COBinaryWriter.h; path = Serialization/COBinaryWriter.h; sourceTree = "<group>"; };
+		66ED6D8216F4EB4F001B853E /* COBinaryWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = COBinaryWriter.m; path = Serialization/COBinaryWriter.m; sourceTree = "<group>"; };
+		66ED6D8916F507BE001B853E /* COBinaryReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COBinaryReader.h; sourceTree = "<group>"; };
+		66ED6D8A16F507BF001B853E /* COBinaryReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COBinaryReader.m; sourceTree = "<group>"; };
 		66EDAF2E16B258CF00B06DB2 /* TestSubtreeDiffMerge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSubtreeDiffMerge.m; sourceTree = "<group>"; };
 		66EDAF3816B4B53900B06DB2 /* libssl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.dylib; path = ../../../../usr/lib/libssl.dylib; sourceTree = "<group>"; };
 		66EDFD94148EF73200D0DC0B /* COType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COType.h; sourceTree = "<group>"; };
@@ -854,6 +862,7 @@
 		666CB028166342CE0066BC77 /* Real Store */ = {
 			isa = PBXGroup;
 			children = (
+				66ED6D6F16F4EA9C001B853E /* Serializer */,
 				666CB029166342E50066BC77 /* COSQLiteStore.h */,
 				666CB02A166342E50066BC77 /* COSQLiteStore.m */,
 				66E4BB63166A7B64009BFE7D /* COSQLiteStorePersistentRootBackingStore.h */,
@@ -993,6 +1002,17 @@
 				66EB7570148CA9D300C2114B /* Foundation.framework */,
 			);
 			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		66ED6D6F16F4EA9C001B853E /* Serializer */ = {
+			isa = PBXGroup;
+			children = (
+				66ED6D8116F4EB4F001B853E /* COBinaryWriter.h */,
+				66ED6D8216F4EB4F001B853E /* COBinaryWriter.m */,
+				66ED6D8916F507BE001B853E /* COBinaryReader.h */,
+				66ED6D8A16F507BF001B853E /* COBinaryReader.m */,
+			);
+			name = Serializer;
 			sourceTree = "<group>";
 		};
 		66EDFD8E148EF64600D0DC0B /* In-Memory Item Tree */ = {
@@ -1151,6 +1171,8 @@
 				6622E9CB16ED1E1400D82F2A /* COSchema.h in Headers */,
 				66ED6D5C16F04A3B001B853E /* COValueTransformer.h in Headers */,
 				66ED6D6A16F41989001B853E /* COSQLiteStorePersistentRootBackingStoreBinaryFormats.h in Headers */,
+				66ED6D8716F4EB4F001B853E /* COBinaryWriter.h in Headers */,
+				66ED6D8B16F507BF001B853E /* COBinaryReader.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1485,6 +1507,8 @@
 				6622E9CC16ED1E1400D82F2A /* COSchema.m in Sources */,
 				66ED6D5D16F04A3B001B853E /* COValueTransformer.m in Sources */,
 				66ED6D6B16F41989001B853E /* COSQLiteStorePersistentRootBackingStoreBinaryFormats.m in Sources */,
+				66ED6D8816F4EB4F001B853E /* COBinaryWriter.m in Sources */,
+				66ED6D8C16F507BF001B853E /* COBinaryReader.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
