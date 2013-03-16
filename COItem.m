@@ -47,6 +47,8 @@ static NSDictionary *copyValueDictionary(NSDictionary *input, BOOL mutable)
 
 - (BOOL) validate
 {
+    // FIXME: Disabled for performance
+#if 0
 	if (![[NSSet setWithArray: [types allKeys]] isEqual:
 		  [NSSet setWithArray: [values allKeys]]])
 	{
@@ -94,7 +96,7 @@ static NSDictionary *copyValueDictionary(NSDictionary *input, BOOL mutable)
 			}
 		}
 	}
-	
+#endif
 	return YES;
 }
 
@@ -617,11 +619,16 @@ toUnorderedAttribute: (NSString*)anAttribute
 {
 	assert([[types objectForKey: anAttribute] isMultivalued]);
 	
-	id container = [[values objectForKey: anAttribute] mutableCopy];
-	[container addObject: aValue];
-	[(NSMutableDictionary *)values setObject: container forKey: anAttribute];
-	[container release];
-	
+    id container = [values objectForKey: anAttribute];
+    if (![container isKindOfClass: [NSMutableArray class]]
+        && ![container isKindOfClass: [NSMutableSet class]])
+    {
+        container = [[container mutableCopy] autorelease];
+        [(NSMutableDictionary *)values setObject: container forKey: anAttribute];
+        
+    }
+    [container addObject: aValue];
+    
 	if (![self validate])
 	{
 		[NSException raise: NSInvalidArgumentException
@@ -644,9 +651,11 @@ toUnorderedAttribute: (NSString*)anAttribute
 	}
 }
 
-- (id)copyWithZone:(NSZone *)zone
+- (id) copyWithZone: (NSZone *)zone
 {
-	return [self mutableCopyWithZone: zone];
+	return [[COItem alloc] initWithUUID: uuid
+                     typesForAttributes: types
+                    valuesForAttributes: values];
 }
 
 @end

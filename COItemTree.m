@@ -12,6 +12,9 @@
     NSParameterAssert([root isKindOfClass: [COUUID class]]);
     
     SUPERINIT;
+    
+    // For some reason this is reallllly slow!
+    
     itemForUUID_ = [[NSDictionary alloc] initWithDictionary: itemForUUID copyItems: YES];
     rootItemUUID_ = [root copy];
     return self;

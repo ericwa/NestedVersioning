@@ -38,16 +38,24 @@ static COUUID *childUUIDs[NUM_CHILDREN];
     return self;
 }
 
-- (COItemTree *) initialContents
+- (COMutableItem *) initialRootItem
 {
-    NSMutableArray *items = [NSMutableArray arrayWithCapacity: NUM_CHILDREN];
-    
     COMutableItem *rootItem = [[[COMutableItem alloc] initWithUUID: rootUUID] autorelease];
     [rootItem setValue: @"root" forAttribute: @"name" type: [COType stringType]];
     [rootItem setValue: A()
           forAttribute: @"children"
                   type: [COType uniqueArrayWithPrimitiveType: [COType embeddedItemType]]];
-    [items addObject: rootItem];
+    
+    for (int i=0; i<NUM_CHILDREN; i++)
+    {
+        [rootItem addObject: childUUIDs[i] forAttribute: @"children"];
+    }
+    return rootItem;
+}
+
+- (NSMutableArray *) initialChildItems
+{
+    NSMutableArray *items = [NSMutableArray arrayWithCapacity: NUM_CHILDREN];
     
     for (int i=0; i<NUM_CHILDREN; i++)
     {
@@ -55,24 +63,52 @@ static COUUID *childUUIDs[NUM_CHILDREN];
         [child setValue: [NSString stringWithFormat: @"child %d", i]
            forAttribute: @"name"
                    type: [COType stringType]];
-        [rootItem addObject: [child UUID] forAttribute: @"children"];
-        [items addObject: child];
+
+        [items addObject: [[child copy] autorelease]];
     }
     
-    return [COItemTree itemTreeWithItems: items
-                            rootItemUUID: rootUUID];
+    return items;
 }
 
 - (void)testBasic
 {
-    COItemTree *initialContents = [self initialContents];
-    COPersistentRootState *state = [store createPersistentRootWithInitialContents: initialContents
+    COMutableItem *initialRootItem = [self initialRootItem];
+    NSMutableArray *initialChildItems = [self initialChildItems];
+    
+    COItemTree *initialContents = [COItemTree itemTreeWithItems: [initialChildItems arrayByAddingObject: initialRootItem]
+                                                   rootItemUUID: rootUUID];
+    
+    COPersistentRootState *proot = [store createPersistentRootWithInitialContents: initialContents
                                                                          metadata: nil
                                                                          isGCRoot: YES];
     
-    COItemTree *readBack = [store itemTreeForRevisionID: [[state currentBranchState] currentState]];
+    // Test reading back the first commit
     
+    COItemTree *readBack = [store itemTreeForRevisionID: [[proot currentBranchState] currentState]];    
     UKObjectsEqual(initialContents, readBack);
+    
+    
+    // Commit a change to each object
+    
+    CORevisionID *lastCommitId = [[proot currentBranchState] currentState];
+    for (int i=0; i<NUM_CHILDREN; i++)
+    {
+        COMutableItem *mi = [[[initialChildItems objectAtIndex: i] mutableCopy] autorelease];
+        [mi setValue: [NSString stringWithFormat: @"edited %d", i]
+                                          forAttribute: @"name"
+                                                  type: [COType stringType]];
+        [initialChildItems replaceObjectAtIndex: i
+                                     withObject: [[mi copy]autorelease]];
+                
+        COItemTree *modifiedContents = [COPartialItemTree
+                                        itemTreeWithItems: [initialChildItems arrayByAddingObject: initialRootItem]
+                                            rootItemUUID: rootUUID];
+        
+        lastCommitId = [store writeItemTree: modifiedContents
+                               withMetadata: nil
+                       withParentRevisionID: lastCommitId
+                              modifiedItems: A(childUUIDs[i])];
+    }
 }
 
 @end
