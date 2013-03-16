@@ -81,12 +81,15 @@ static COUUID *childUUIDs[NUM_CHILDREN];
     COMutableItem *initialRootItem = [self initialRootItem];
     NSMutableArray *initialChildItems = [self initialChildItems];
     
-    COMutableItem *mi = [[[initialChildItems objectAtIndex: i] mutableCopy] autorelease];
-    [mi setValue: [NSString stringWithFormat: @"edited %d", i]
-    forAttribute: @"name"
-            type: [COType stringType]];
-    [initialChildItems replaceObjectAtIndex: i
-                                 withObject: [[mi copy]autorelease]];
+    for (int j=0; j<=i; j++)
+    {
+        COMutableItem *mi = [[[initialChildItems objectAtIndex: j] mutableCopy] autorelease];
+        [mi setValue: [NSString stringWithFormat: @"edited %d", j]
+        forAttribute: @"name"
+                type: [COType stringType]];
+        [initialChildItems replaceObjectAtIndex: j
+                                     withObject: [[mi copy]autorelease]];
+    }
 
     COItemTree *modifiedContents = [COItemTree
                                     itemTreeWithItems: [initialChildItems arrayByAddingObject: initialRootItem]
