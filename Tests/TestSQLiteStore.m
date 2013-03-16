@@ -11,7 +11,7 @@
 
 @implementation TestSQLiteStore
 
-static const int NUM_CHILDREN = 400;
+static const int NUM_CHILDREN = 25;
 
 static COUUID *rootUUID;
 static COUUID *childUUIDs[NUM_CHILDREN];
