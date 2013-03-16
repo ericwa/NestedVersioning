@@ -10,6 +10,7 @@
 #import "COPersistentRoot.h"
 #import "COBranch.h"
 
+#import "CORevision.h"
 #import "COPersistentRootState.h"
 #import "COBranchState.h"
 

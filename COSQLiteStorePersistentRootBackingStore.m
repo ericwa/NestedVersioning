@@ -95,9 +95,13 @@
     FMResultSet *rs = [db_ executeQuery: @"SELECT metadata FROM commits WHERE revid = ?", [NSNumber numberWithLongLong: revid]];
 	if ([rs next])
 	{
-        result = [NSJSONSerialization JSONObjectWithData: [rs dataForColumnIndex: 0]
-                                                 options: 0
-                                                   error: NULL];
+        NSData *data = [rs dataForColumnIndex: 0];
+        if (data != nil)
+        {
+            result = [NSJSONSerialization JSONObjectWithData: data
+                                                     options: 0
+                                                       error: NULL];
+        }
 	}
     [rs close];
     
