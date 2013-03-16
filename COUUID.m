@@ -19,6 +19,16 @@
 #define CLOCK_SEQ_LOW(uuid) (*(&(uuid)[9]))
 #define NODE(uuid) ((char*)(&(uuid)[10]))
 
+
+static void COUUIDGet16RandomBytes(unsigned char bytes[16])
+{
+    static int64_t ctr = 0;
+    int64_t val = OSAtomicIncrement64(&ctr);
+    memset(bytes, 0, 16);
+    memcpy(bytes, &val, 8);
+}
+
+#if 0
 #ifdef HAVE_ARC4RANDOM
 static void COUUIDGet16RandomBytes(unsigned char bytes[16])
 {
@@ -43,7 +53,7 @@ static void COUUIDGet16RandomBytes(unsigned char bytes[16])
 	}
 }
 #endif
-
+#endif
 
 @implementation COUUID
 
