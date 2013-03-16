@@ -6,7 +6,8 @@ Store
 
 - GC unreachable revisions (aka history compacting)
 - Merge all gc code into a single GC pass.
-- Write binary serialization format
+x Write binary serialization format
+- Write COItem import/export using binary parser
 - Full-text search
 - Cache references
 
@@ -14,6 +15,8 @@ COItem
 ------
 
 - Lazy deserialization. Upon creation from store, ivar is a NSData with the binary serialized form.
+- Fix validation perf.
+- COItemTree: fix performance problems
 
 Types
 -----
