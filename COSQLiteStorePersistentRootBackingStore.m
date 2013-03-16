@@ -38,7 +38,8 @@
     // Set up schema
     
     [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS commits (revid INTEGER PRIMARY KEY ASC, "
-                        "contents BLOB, metadata BLOB, parent INTEGER, root BLOB, deltabase INTEGER)"];
+                        "contents BLOB, metadata BLOB, parent INTEGER, root BLOB, deltabase INTEGER, "
+                        "bytesInDeltaRun INTEGER)"];
     
     if ([db_ hadError])
     {
@@ -245,6 +246,20 @@ static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifie
     return deltabase;
 }
 
+- (int64_t) bytesInDeltaRunForRowid: (int64_t)aRowid
+{
+    int64_t bytesInDeltaRun = 0;
+    
+    FMResultSet *rs = [db_ executeQuery: @"SELECT bytesInDeltaRun FROM commits WHERE rowid = ?", [NSNumber numberWithLongLong: aRowid]];
+    if ([rs next])
+    {
+        bytesInDeltaRun = [rs longLongIntForColumnIndex: 0];
+    }
+    [rs close];
+    
+    return bytesInDeltaRun;
+}
+
 /**
  * @param aParent -1 for no parent, otherwise the parent of this commit
  * @param modifiedItems nil for all items in anItemTree, otherwise a subset
@@ -258,10 +273,16 @@ static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifie
     
     const int64_t parent_deltabase = [self deltabaseForRowid: aParent];
     const int64_t rowid = [self nextRowid];
+    const int64_t lastBytesInDeltaRun = [self bytesInDeltaRunForRowid: rowid - 1];
     int64_t deltabase;
     NSData *contentsBlob;
+    int64_t bytesInDeltaRun;
     
-    const BOOL delta = (parent_deltabase != -1 && rowid - parent_deltabase < 10);
+    // Limit delta runs to 9 commits:
+    const BOOL delta = (parent_deltabase != -1 && rowid - parent_deltabase < 100);
+    
+    // Limit delta runs to 4k
+    //const BOOL delta = (parent_deltabase != -1 && lastBytesInDeltaRun < 4096);
     if (delta)
     {
         deltabase = parent_deltabase;
@@ -270,12 +291,14 @@ static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifie
             modifiedItems = [anItemTree itemUUIDs];
         }
         contentsBlob = contentsBLOBWithItemTree(anItemTree, modifiedItems);
+        bytesInDeltaRun = lastBytesInDeltaRun + [contentsBlob length];
     }
     else
     {
         deltabase = rowid;
         contentsBlob = contentsBLOBWithItemTree(anItemTree, [anItemTree itemUUIDs]);
-    }    
+        bytesInDeltaRun = [contentsBlob length];
+    }
 
     NSData *metadataBlob = nil;
     if (metadata != nil)
@@ -283,14 +306,15 @@ static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifie
         metadataBlob = [NSJSONSerialization dataWithJSONObject: metadata options: 0 error: NULL];
     }
     
-    // revid INTEGER PRIMARY KEY | contents BLOB | metadata BLOB | parent INTEGER | root BLOB | deltabase INTEGER
-    [db_ executeUpdate: @"INSERT INTO commits VALUES (?, ?, ?, ?, ?, ?)",
+    // revid INTEGER PRIMARY KEY | contents BLOB | metadata BLOB | parent INTEGER | root BLOB | deltabase INTEGER | bytesInDeltaRun
+    [db_ executeUpdate: @"INSERT INTO commits VALUES (?, ?, ?, ?, ?, ?, ?)",
         [NSNumber numberWithLongLong: rowid],
         contentsBlob,
         metadataBlob,
         [NSNumber numberWithLongLong: aParent],
         [[anItemTree rootItemUUID] dataValue],
-        [NSNumber numberWithLongLong: deltabase]];
+        [NSNumber numberWithLongLong: deltabase],
+        [NSNumber numberWithLongLong: bytesInDeltaRun]];
     
     [db_ commit];
     
