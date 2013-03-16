@@ -4,6 +4,7 @@
 #import "COItem.h"
 #import "COUUID.h"
 #import "FMDatabase.h"
+#import "COSQLiteStorePersistentRootBackingStoreBinaryFormats.h"
 
 @implementation COSQLiteStorePersistentRootBackingStore
 
@@ -128,46 +129,13 @@
 	return result;
 }
 
-static void ParseCommitDataAsUUIDToItemDataDictionary(NSMutableDictionary *dest, NSData *commitData)
-{
-    // format:
-    //
-    // |------------|-----------------------|----------| |---..
-    // |128-bit UUID| uint_32 little-endian | item data| | next UUID...
-    // |------------|-----------------------|----------| |---..
-    //                 ^- number of bytes in item data
-    
-    const unsigned char *bytes = [commitData bytes];
-    const NSUInteger len = [commitData length];
-    NSUInteger offset = 0;
-    
-    
-    while (offset < len)
-    {
-        COUUID *uuid = [[COUUID alloc] initWithBytes: bytes + offset];
-        offset += 16;
-        
-        uint32_t length;
-        memcpy(&length, bytes + offset, 4);
-        length = CFSwapInt32LittleToHost(length);
-        offset += 4;
-        
-        NSData *data = [commitData subdataWithRange: NSMakeRange(offset, length)];
-        [dest setObject: data
-                 forKey: uuid];
-        [data release];
-        [uuid release];
-        offset += length;
-    }
-}
-
 - (COPartialItemTree *) partialItemTreeFromRevid: (int64_t)baseRevid toRevid: (int64_t)revid
 {
     NSParameterAssert(baseRevid < revid);
     
     NSNumber *revidObj = [NSNumber numberWithLongLong: revid];
     
-    NSMutableDictionary *resultDict = [NSMutableDictionary dictionary];
+    NSMutableDictionary *dataForUUID = [NSMutableDictionary dictionary];
     
     FMResultSet *rs = [db_ executeQuery: @"SELECT revid, contents, parent, deltabase "
                                           "FROM commits "
@@ -184,19 +152,7 @@ static void ParseCommitDataAsUUIDToItemDataDictionary(NSMutableDictionary *dest,
         
         if (revid == nextRevId || nextRevId == -1)
         {
-            /**
-             * NSString (UUID) -> COItem plist
-             */
-            NSDictionary *contents = [NSJSONSerialization JSONObjectWithData: contentsData options: 0 error: NULL];
-            
-            for (NSString *key in contents)
-            {
-                if ([resultDict objectForKey: [COUUID UUIDWithString: key]] == nil)
-                {
-                    [resultDict setObject: [[[COItem alloc] initWithPlist: [contents objectForKey: key]] autorelease]
-                                   forKey: [COUUID UUIDWithString: key]];
-                }
-            }
+            ParseCombinedCommitDataInToUUIDToItemDataDictionary(dataForUUID, contentsData, NO);
             
             if (parent == baseRevid)
             {
@@ -221,6 +177,19 @@ static void ParseCommitDataAsUUIDToItemDataDictionary(NSMutableDictionary *dest,
     
     COUUID *root = [self rootUUIDForRevid: revid];
     
+    // Convert dataForUUID to a UUID -> COItem mapping.
+    // TODO: Eliminate this by giving COItem to be created with a serialized NSData of itself,
+    // and lazily deserializing itself.
+    NSMutableDictionary *resultDict = [NSMutableDictionary dictionary];
+    for (COUUID *uuid in dataForUUID)
+    {        
+        id plist = [NSJSONSerialization JSONObjectWithData: [dataForUUID objectForKey: uuid]
+                                                   options: 0 error: NULL];
+        COItem *item = [[[COItem alloc] initWithPlist: plist] autorelease];
+        [resultDict setObject: item
+                       forKey: uuid];
+    }
+    
     COPartialItemTree *result = [[[COPartialItemTree alloc] initWithItemForUUID: resultDict
                                                                    rootItemUUID: root] autorelease];
     return result;
@@ -233,18 +202,17 @@ static void ParseCommitDataAsUUIDToItemDataDictionary(NSMutableDictionary *dest,
 
 static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifiedItems)
 {
-    /**
-     * NSString (UUID) -> COItem plist
-     */
-    NSMutableDictionary *contents = [NSMutableDictionary dictionary];
+    NSMutableData *result = [NSMutableData dataWithCapacity: 64536];
     
     for (COUUID *uuid in modifiedItems)
     {
-        [contents setObject: [[anItemTree itemForUUID: uuid] plist]
-                     forKey: [uuid stringValue]];
+        COItem *item = [anItemTree itemForUUID: uuid];
+        NSData *itemJson = [NSJSONSerialization dataWithJSONObject: [item plist] options: 0 error: NULL];
+        
+        AddCommitUUIDAndDataToCombinedCommitData(result, uuid, itemJson);
     }
     
-    return [NSJSONSerialization dataWithJSONObject: contents options: 0 error: NULL];
+    return result;
 }
 
 - (int64_t) nextRowid
@@ -331,20 +299,26 @@ static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifie
 
 - (void) iteratePartialItemTrees: (void (^)(NSSet *))aBlock
 {
+    NSMutableDictionary *dataForUUID = [[[NSMutableDictionary alloc] init] autorelease];
+    
     FMResultSet *rs = [db_ executeQuery: @"SELECT contents FROM commits"];
     while ([rs next])
     {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         
         NSData *contentsData = [rs dataForColumnIndex: 0];
-        NSDictionary *contents = [NSJSONSerialization JSONObjectWithData: contentsData options: 0 error: NULL];
         
-        NSMutableSet *items = [NSMutableSet setWithCapacity: [contents count]];
-        for (NSString *key in contents)
+        [dataForUUID removeAllObjects];
+        ParseCombinedCommitDataInToUUIDToItemDataDictionary(dataForUUID, contentsData, YES);
+        
+        NSMutableSet *items = [NSMutableSet setWithCapacity: [dataForUUID count]];
+        for (COUUID *uuid in dataForUUID)
         {
-            [items addObject: [[[COItem alloc] initWithPlist: [contents objectForKey: key]] autorelease]];
+            id plist = [NSJSONSerialization JSONObjectWithData: [dataForUUID objectForKey: uuid]
+                                                       options: 0 error: NULL];
+            COItem *item = [[[COItem alloc] initWithPlist: plist] autorelease];
+            [items addObject: item];
         }
-        
         aBlock(items);
         
         [pool release];

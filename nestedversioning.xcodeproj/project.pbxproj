@@ -174,6 +174,8 @@
 		66ED6D5C16F04A3B001B853E /* COValueTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = 66ED6D5A16F04A3B001B853E /* COValueTransformer.h */; };
 		66ED6D5D16F04A3B001B853E /* COValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 66ED6D5B16F04A3B001B853E /* COValueTransformer.m */; };
 		66ED6D6016F053EB001B853E /* BasicPersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = 66ED6D5F16F053EB001B853E /* BasicPersistence.m */; };
+		66ED6D6A16F41989001B853E /* COSQLiteStorePersistentRootBackingStoreBinaryFormats.h in Headers */ = {isa = PBXBuildFile; fileRef = 66ED6D6816F41988001B853E /* COSQLiteStorePersistentRootBackingStoreBinaryFormats.h */; };
+		66ED6D6B16F41989001B853E /* COSQLiteStorePersistentRootBackingStoreBinaryFormats.m in Sources */ = {isa = PBXBuildFile; fileRef = 66ED6D6916F41988001B853E /* COSQLiteStorePersistentRootBackingStoreBinaryFormats.m */; };
 		66EDAF3A16B4B55400B06DB2 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E552B4146B7799008FDFAF /* libcrypto.dylib */; };
 		66FCDBE41645DEF800E24A67 /* COBranch.h in Headers */ = {isa = PBXBuildFile; fileRef = 66FCDBE21645DEF700E24A67 /* COBranch.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79626467150EE07E009A0686 /* COSequenceMerge.h in Headers */ = {isa = PBXBuildFile; fileRef = 79626465150EE07E009A0686 /* COSequenceMerge.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -445,6 +447,8 @@
 		66ED6D5A16F04A3B001B853E /* COValueTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COValueTransformer.h; sourceTree = "<group>"; };
 		66ED6D5B16F04A3B001B853E /* COValueTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COValueTransformer.m; sourceTree = "<group>"; };
 		66ED6D5F16F053EB001B853E /* BasicPersistence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BasicPersistence.m; sourceTree = "<group>"; };
+		66ED6D6816F41988001B853E /* COSQLiteStorePersistentRootBackingStoreBinaryFormats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COSQLiteStorePersistentRootBackingStoreBinaryFormats.h; sourceTree = "<group>"; };
+		66ED6D6916F41988001B853E /* COSQLiteStorePersistentRootBackingStoreBinaryFormats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COSQLiteStorePersistentRootBackingStoreBinaryFormats.m; sourceTree = "<group>"; };
 		66EDAF2E16B258CF00B06DB2 /* TestSubtreeDiffMerge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSubtreeDiffMerge.m; sourceTree = "<group>"; };
 		66EDAF3816B4B53900B06DB2 /* libssl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.dylib; path = ../../../../usr/lib/libssl.dylib; sourceTree = "<group>"; };
 		66EDFD94148EF73200D0DC0B /* COType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COType.h; sourceTree = "<group>"; };
@@ -852,6 +856,8 @@
 				666CB02A166342E50066BC77 /* COSQLiteStore.m */,
 				66E4BB63166A7B64009BFE7D /* COSQLiteStorePersistentRootBackingStore.h */,
 				66E4BB64166A7B64009BFE7D /* COSQLiteStorePersistentRootBackingStore.m */,
+				66ED6D6816F41988001B853E /* COSQLiteStorePersistentRootBackingStoreBinaryFormats.h */,
+				66ED6D6916F41988001B853E /* COSQLiteStorePersistentRootBackingStoreBinaryFormats.m */,
 				665BD3C815D78BE600428355 /* COPersistentRootState.h */,
 				665BD3C915D78BE600428355 /* COPersistentRootState.m */,
 				664BBC62169BF06E00EE7C88 /* COBranchState.h */,
@@ -1141,6 +1147,7 @@
 				6622E9B016EBD5D100D82F2A /* COEditingContextDelegate.h in Headers */,
 				6622E9CB16ED1E1400D82F2A /* COSchema.h in Headers */,
 				66ED6D5C16F04A3B001B853E /* COValueTransformer.h in Headers */,
+				66ED6D6A16F41989001B853E /* COSQLiteStorePersistentRootBackingStoreBinaryFormats.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1473,6 +1480,7 @@
 				6622E9C816ED0EB100D82F2A /* COSchemaRegistry.m in Sources */,
 				6622E9CC16ED1E1400D82F2A /* COSchema.m in Sources */,
 				66ED6D5D16F04A3B001B853E /* COValueTransformer.m in Sources */,
+				66ED6D6B16F41989001B853E /* COSQLiteStorePersistentRootBackingStoreBinaryFormats.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
