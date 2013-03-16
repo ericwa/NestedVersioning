@@ -81,6 +81,10 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
 {
     return [branchForUUID_ objectForKey: aUUID];
 }
+- (COBranchState *)currentBranchState
+{
+    return [self branchPlistForUUID: [self currentBranchUUID]];
+}
 - (void)setBranchPlist: (COBranchState *)aBranch
                forUUID: (COUUID *)aUUID
 {

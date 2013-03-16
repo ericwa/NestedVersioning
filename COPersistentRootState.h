@@ -44,6 +44,7 @@
 - (void) addRevisionID: (CORevisionID *)aRevision;
 
 - (COBranchState *)branchPlistForUUID: (COUUID *)aUUID;
+- (COBranchState *)currentBranchState;
 - (void)setBranchPlist: (COBranchState *)aBranch
                forUUID: (COUUID *)aUUID;
 - (void)removeBranchForUUID: (COUUID *)aUUID;

@@ -59,7 +59,10 @@ static NSDictionary *copyValueDictionary(NSDictionary *input, BOOL mutable)
 		id value = [self valueForAttribute: attribute];
 		
 		if (![type validateValue: value])
+        {
+            [type validateValue: value];
 			return NO;
+        }
 	}
 	
 	// Test each embedded item UUID appears only once.
