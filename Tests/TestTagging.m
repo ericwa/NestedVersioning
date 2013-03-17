@@ -178,13 +178,13 @@
 								[COPath pathWithPathComponent: [photo2 UUID]],
 								[COPath pathWithPathComponent: [photo2 UUID]]) 
 				forAttribute: @"contents" 
-						type: [COType arrayWithPrimitiveType: [COType pathType]]];
+						type: [[COType pathType] arrayType]];
 
 			[album2 setValue: A([COPath pathWithPathComponent: [photo2 UUID]],
 								[COPath pathWithPathComponent: [photo3 UUID]],
 								[COPath pathWithPathComponent: [photo1 UUID]]) 
 				forAttribute: @"contents" 
-						type: [COType arrayWithPrimitiveType: [COType pathType]]];
+						type: [[COType pathType] arrayType]];
 		
 		[photolibCtx commitWithMetadata: D(@"setup photo library", @"menuLabel")];
 		
@@ -211,7 +211,7 @@
 			
 			[photo1Ctx_rootItem setValue: S(tag1, tag2, tag3)
 							forAttribute: @"tags"
-									type: [COType setWithPrimitiveType: [COType pathType]]];
+									type: [[COType pathType] setType]];
 			
 			[photo1Ctx commitWithMetadata: D(@"add photo tags", @"menuLabel")];
 		}
@@ -239,7 +239,7 @@
 						
 			[photo2Ctx_rootItem setValue: S(tag1, tag2, tag3)
 							forAttribute: @"tags"
-									type: [COType setWithPrimitiveType: [COType pathType]]];
+									type: [[COType pathType] setType]];
 			
 			[photo2Ctx commitWithMetadata: D(@"add photo tags", @"menuLabel")];
 		}
@@ -268,7 +268,7 @@
 			
 			[photo3Ctx_rootItem setValue: S(tag1, tag2, tag3)
 							forAttribute: @"tags"
-									type: [COType setWithPrimitiveType: [COType pathType]]];
+									type: [[COType pathType] setType]];
 			
 			[photo3Ctx commitWithMetadata: D(@"add photo tags", @"menuLabel")];
 		}

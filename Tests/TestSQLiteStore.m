@@ -45,7 +45,7 @@ static COUUID *childUUIDs[NUM_CHILDREN];
     [rootItem setValue: @"root" forAttribute: @"name" type: [COType stringType]];
     [rootItem setValue: A()
           forAttribute: @"children"
-                  type: [COType uniqueArrayWithPrimitiveType: [COType embeddedItemType]]];
+                  type: [[COType embeddedItemType] arrayType]];
     
     for (int i=0; i<NUM_CHILDREN; i++)
     {

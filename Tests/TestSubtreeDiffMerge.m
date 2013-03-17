@@ -80,14 +80,14 @@
 	
 	[doc setValue: A(line1, circle1, square1, image1)
 	 forAttribute: @"contents"
-			 type: [COType uniqueArrayWithPrimitiveType: [COType embeddedItemType]]];
+			 type: [[COType embeddedItemType] arrayType]];
 
 	// snapshot the state: (line1, circle1, square1, image1) into doc2
 	COSubtree *doc2 = [[doc copy] autorelease];
 	
 	COSubtree *group1 = [COSubtree subtree];
 	[group1 setValue: @"group1" forAttribute: @"name" type: [COType stringType]];
-	[doc addObject: group1 toOrderedAttribute: @"contents" atIndex: 1 type: [COType uniqueArrayWithPrimitiveType: [COType embeddedItemType]]];
+	[doc addObject: group1 toOrderedAttribute: @"contents" atIndex: 1 type: [[COType embeddedItemType] arrayType]];
 	[group1 addTree: circle1];
 	[group1 addTree: square1];
 	
@@ -96,7 +96,7 @@
 	
 	COSubtree *triangle1 = [COSubtree subtree];
 	[triangle1 setValue: @"triangle1" forAttribute: @"name" type: [COType stringType]];
-	[doc addObject: triangle1 toOrderedAttribute: @"contents" atIndex: 0 type: [COType uniqueArrayWithPrimitiveType: [COType embeddedItemType]]];
+	[doc addObject: triangle1 toOrderedAttribute: @"contents" atIndex: 0 type: [[COType embeddedItemType] arrayType]];
 	
 	
 	// doc state:  (triangl1, line1, group1=(circle1, square1), image1)
@@ -202,13 +202,13 @@
 	COSubtreeEdit *OAConflictingExpected = [[[COSetAttribute alloc] initWithUUID: [group1 UUID]
 																	   attribute: @"contents"
 																sourceIdentifier: @"OA"
-																			type: [COType setWithPrimitiveType: [COType embeddedItemType]]
+																			type: [[COType embeddedItemType] setType]
 																		   value: S([shape1 UUID])] autorelease];
 	
 	COSubtreeEdit *OBConflictingExpected = [[[COSetAttribute alloc] initWithUUID: [group2 UUID]
 																	   attribute: @"contents"
 																sourceIdentifier: @"OB"
-																			type: [COType setWithPrimitiveType: [COType embeddedItemType]]
+																			type: [[COType embeddedItemType] setType]
 																		   value: S([shape1 UUID])] autorelease];
 	
 	UKObjectsEqual(OAConflictingExpected, OAConflictingEdit);
@@ -324,9 +324,9 @@
 	NSSet *set1 = S(@"a", @"b", @"c", @"d", @"e");
 	NSSet *set3 = S(@"A", @"b", @"c", @"e", @"foo");
 
-	[doc2 setValue: set2 forAttribute: @"set" type: [COType setWithPrimitiveType: [COType stringType]]];
-	[doc1 setValue: set1 forAttribute: @"set" type: [COType setWithPrimitiveType: [COType stringType]]];
-	[doc3 setValue: set3 forAttribute: @"set" type: [COType setWithPrimitiveType: [COType stringType]]];
+	[doc2 setValue: set2 forAttribute: @"set" type: [[COType stringType] setType]];
+	[doc1 setValue: set1 forAttribute: @"set" type: [[COType stringType] setType]];
+	[doc3 setValue: set3 forAttribute: @"set" type: [[COType stringType] setType]];
 
 	COSubtreeDiff *diff12 = [COSubtreeDiff diffSubtree: doc1 withSubtree:doc2 sourceIdentifier: @"diff12"];
 	
@@ -363,9 +363,9 @@
 	NSArray *array1 = A(@"a", @"b", @"c", @"d", @"e");
 	NSArray *array3 = A(@"A", @"b", @"c", @"e", @"foo");
 	
-	[doc2 setValue: array2 forAttribute: @"array" type: [COType arrayWithPrimitiveType: [COType stringType]]];
-	[doc1 setValue: array1 forAttribute: @"array" type: [COType arrayWithPrimitiveType: [COType stringType]]];
-	[doc3 setValue: array3 forAttribute: @"array" type: [COType arrayWithPrimitiveType: [COType stringType]]];
+	[doc2 setValue: array2 forAttribute: @"array" type: [[COType stringType] arrayType]];
+	[doc1 setValue: array1 forAttribute: @"array" type: [[COType stringType] arrayType]];
+	[doc3 setValue: array3 forAttribute: @"array" type: [[COType stringType] arrayType]];
 
 	
 	/**
@@ -433,9 +433,9 @@
 	NSArray *array1 = A(@"a");
 	NSArray *array3 = A(@"b");
 	
-	[doc2 setValue: array2 forAttribute: @"array" type: [COType arrayWithPrimitiveType: [COType stringType]]];
-	[doc1 setValue: array1 forAttribute: @"array" type: [COType arrayWithPrimitiveType: [COType stringType]]];
-	[doc3 setValue: array3 forAttribute: @"array" type: [COType arrayWithPrimitiveType: [COType stringType]]];
+	[doc2 setValue: array2 forAttribute: @"array" type: [[COType stringType] arrayType]];
+	[doc1 setValue: array1 forAttribute: @"array" type: [[COType stringType] arrayType]];
+	[doc3 setValue: array3 forAttribute: @"array" type: [[COType stringType] arrayType]];
 	
 	
 	//
@@ -521,9 +521,9 @@
 	NSArray *array1 = A(@"a", @"b", @"c", @"d", @"e");
 	NSArray *array3 = A(@"a", @"X", @"c", @"Z", @"e");
 	
-	[doc2 setValue: array2 forAttribute: @"array" type: [COType arrayWithPrimitiveType: [COType stringType]]];
-	[doc1 setValue: array1 forAttribute: @"array" type: [COType arrayWithPrimitiveType: [COType stringType]]];
-	[doc3 setValue: array3 forAttribute: @"array" type: [COType arrayWithPrimitiveType: [COType stringType]]];
+	[doc2 setValue: array2 forAttribute: @"array" type: [[COType stringType] arrayType]];
+	[doc1 setValue: array1 forAttribute: @"array" type: [[COType stringType] arrayType]];
+	[doc3 setValue: array3 forAttribute: @"array" type: [[COType stringType] arrayType]];
 	
 	
 	COSubtreeDiff *diff12 = [COSubtreeDiff diffSubtree: doc1 withSubtree:doc2 sourceIdentifier: @"diff12"];

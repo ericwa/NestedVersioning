@@ -75,13 +75,9 @@
 - (id) valueForPlistValue: (id)aPlist
 {
 	id collection;
-	if (!ordered && unique)
+	if (!ordered)
 	{
 		collection = [NSMutableSet set];		
-	}
-	else if (!ordered && !unique)
-	{
-		collection = [NSCountedSet set];
 	}
 	else
 	{

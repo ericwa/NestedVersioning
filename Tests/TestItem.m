@@ -21,7 +21,7 @@
 	
 	[i1 setValue: S(p1)
 	forAttribute: @"contents"
-			type: [COType setWithPrimitiveType: [COType pathType]]];
+			type: [[COType pathType] setType]];
 	
 	// test round trip to plist
 	{
@@ -54,25 +54,15 @@
 		[i1 setValue: u1 forAttribute: @"key2" type: [COType embeddedItemType]];
 	});
 	
-	
-	// It is illegal to create an embedded item collection which allows duplicates
-	
-	UKRaisesException([COItem itemWithTypesForAttributes: D([COType bagWithPrimitiveType: [COType embeddedItemType]], @"key1")
-									 valuesForAttributes: D([NSCountedSet setWithObject: u1], @"key1")]);
-
-	UKRaisesException([COItem itemWithTypesForAttributes: D([COType arrayWithPrimitiveType: [COType embeddedItemType]], @"key1")
-									 valuesForAttributes: D(A(u1), @"key1")]);
-	
-	
 	// Test setting objects of the wrong type
 	
 	UKRaisesException({
 		COMutableItem *i1 = [COMutableItem item];
-		[i1 setValue: S(u1) forAttribute: @"key1" type: [COType arrayWithPrimitiveType: [COType embeddedItemType]]];
+		[i1 setValue: S(u1) forAttribute: @"key1" type: [[COType embeddedItemType] setType]];
 	});
 	UKRaisesException({
 		COMutableItem *i1 = [COMutableItem item];
-		[i1 setValue: A(u1) forAttribute: @"key1" type: [COType setWithPrimitiveType: [COType embeddedItemType]]];
+		[i1 setValue: A(u1) forAttribute: @"key1" type: [[COType embeddedItemType] setType]];
 	});
 	
 	// Test an item which contains itself
@@ -89,8 +79,8 @@
 
 - (void) testMutability
 {	
-	COItem *immutable = [COItem itemWithTypesForAttributes: D([COType setWithPrimitiveType: [COType stringType]], @"key1",
-															  [COType arrayWithPrimitiveType: [COType stringType]], @"key2",
+	COItem *immutable = [COItem itemWithTypesForAttributes: D([[COType stringType] setType], @"key1",
+															  [[COType stringType] arrayType], @"key2",
 															  [COType stringType], @"name")
 									   valuesForAttributes: D([NSMutableSet setWithObject: @"a"], @"key1",	
 															  [NSMutableArray arrayWithObject: @"A"], @"key2",
@@ -117,8 +107,8 @@
 
 - (void) testEquality
 {
-	COItem *immutable = [COItem itemWithTypesForAttributes: D([COType setWithPrimitiveType: [COType stringType]], @"key1",
-															  [COType arrayWithPrimitiveType: [COType stringType]], @"key2",
+	COItem *immutable = [COItem itemWithTypesForAttributes: D([[COType stringType] setType], @"key1",
+															  [[COType stringType] arrayType], @"key2",
 															  [COType stringType], @"name")
 									   valuesForAttributes: D([NSMutableSet setWithObject: @"a"], @"key1",	
 															  [NSMutableArray arrayWithObject: @"A"], @"key2",
@@ -132,7 +122,7 @@
 - (void) testEmptySet
 {
 	COMutableItem *item1 = [COMutableItem item];
-	[item1 setValue: [NSSet set] forAttribute: @"set" type: [COType setWithPrimitiveType: [COType stringType]]];
+	[item1 setValue: [NSSet set] forAttribute: @"set" type: [[COType stringType] setType]];
 	
 	COMutableItem *item2 = [COMutableItem item];
 	

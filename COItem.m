@@ -560,7 +560,7 @@ toUnorderedAttribute: (NSString*)anAttribute
 	
 	if ([self typeForAttribute: anAttribute] == nil)
 	{
-		[self setValue: [aType isUnique] ? [NSSet set] : [NSCountedSet set]
+		[self setValue: [NSSet set]
 		  forAttribute: anAttribute
 				  type: aType];
 	}

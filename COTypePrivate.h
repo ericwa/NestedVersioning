@@ -29,9 +29,7 @@
 {
 	COPrimitiveType *primitiveType;
 	BOOL ordered;
-	BOOL unique;
 }
 - (id) initWithPrimitiveType: (COType*)aType
-				   isOrdered: (BOOL)isOrdered
-					isUnique: (BOOL)isUnique;
+				   isOrdered: (BOOL)isOrdered;
 @end

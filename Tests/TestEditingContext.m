@@ -230,7 +230,7 @@
 	UKTrue(t2 == [t1 descendentObjectForUUID: [t2 UUID]]);
 	UKObjectsEqual([COItemPath pathWithItemUUID: [t1 UUID]
                         unorderedCollectionName: @"contents"
-                                           type: [COType setWithPrimitiveType: [COType embeddedItemType]]],
+                                           type: [[COType embeddedItemType] setType]],
                    [t1 itemPathOfDescendentObjectWithUUID: [t2 UUID]]);
 	
     COObject *t3 = [t2 addObjectToContents: [self itemWithLabel: @"t3"]];
@@ -245,7 +245,7 @@
 	UKObjectsSame(t3, [t1 descendentObjectForUUID: [t3 UUID]]);
 	UKObjectsEqual([COItemPath pathWithItemUUID: [t2 UUID]
                         unorderedCollectionName: @"contents"
-                                           type: [COType setWithPrimitiveType: [COType embeddedItemType]]],
+                                           type: [[COType embeddedItemType] setType]],
                    [t1 itemPathOfDescendentObjectWithUUID: [t3 UUID]]);
 }
 
@@ -300,7 +300,7 @@
 	COMutableItem *child2 = [COMutableItem item];
 	COMutableItem *shared = [COMutableItem item];
 	
-	[parent setValue: S([child1 UUID], [child2 UUID]) forAttribute: @"contents" type: [COType setWithPrimitiveType: [COType embeddedItemType]]];
+	[parent setValue: S([child1 UUID], [child2 UUID]) forAttribute: @"contents" type: [[COType embeddedItemType] setType]];
 	[child1 setValue: [shared UUID] forAttribute: @"shared" type: [COType embeddedItemType]];
 	[child2 setValue: [shared UUID] forAttribute: @"shared" type: [COType embeddedItemType]];
 	

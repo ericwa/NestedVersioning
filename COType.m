@@ -234,24 +234,16 @@
 
 - (id) initWithPrimitiveType: (COType*)aType
 				   isOrdered: (BOOL)isOrdered
-					isUnique: (BOOL)isUnique
 {
 	if (![aType isKindOfClass: [COPrimitiveType class]])
 	{
 		[NSException raise: NSInvalidArgumentException
 					format: @"%@ is not a primitive type", aType];
 	}
-	if ([aType isEqual: [COType embeddedItemType]] && !isUnique)
-	{
-		[NSException raise: NSInvalidArgumentException
-					format: @"[COType embeddedItemType] can only exist in a unique multivalue"];
-	}
 	
 	SUPERINIT;
 	ASSIGN(primitiveType, aType);
-	ordered = isOrdered;
-	unique = isUnique;
-	return self;
+	ordered = isOrdered;	return self;
 }
 
 - (void) dealloc
@@ -274,17 +266,9 @@
 {
 	NSString *prefix;
 	
-	if (!ordered && unique)
+	if (!ordered)
 	{
 		prefix = @"Set of ";
-	}
-	else if (!ordered && !unique)
-	{
-		prefix = @"Bag of ";
-	}
-	else if (ordered && unique)
-	{
-		prefix = @"Unique Array of ";
 	}
 	else
 	{
@@ -298,19 +282,11 @@
 {
 	NSString *suffix;
 	
-	if (!ordered && unique)
+	if (!ordered)
 	{
 		suffix = @"-Set";
 	}
-	else if (!ordered && !unique)
-	{
-		suffix = @"-Bag ";
-	}
-	else if (ordered && unique)
-	{
-		suffix = @"-UniqueArray";
-	}
-	else
+    else
 	{
 		suffix = @"-Array";
 	}			
@@ -332,23 +308,15 @@
 	COType *primitive = [COPrimitiveType typeWithString: primitiveString];
 	NSString *suffixString = [aTypeString substringFromIndex: separator.location];
 	
-	BOOL isOrdered, isUnique;
+	BOOL isOrdered;
 	
 	if ([suffixString isEqualToString: @"-Set"])
 	{
-		isOrdered = NO; isUnique = YES;
-	}
-	else if ([suffixString isEqualToString: @"-Bag"])
-	{
-		isOrdered = NO; isUnique = NO;
-	}
-	else if ([suffixString isEqualToString: @"-UniqueArray"])
-	{
-		isOrdered = YES; isUnique = YES;
+		isOrdered = NO;
 	}
 	else if ([suffixString isEqualToString: @"-Array"])
 	{
-		isOrdered = YES; isUnique = NO;
+		isOrdered = YES;
 	}
 	else
 	{
@@ -356,35 +324,16 @@
 	}
 	
 	return [[[COMultivaluedType alloc] initWithPrimitiveType: primitive
-												   isOrdered: isOrdered
-													isUnique: isUnique] autorelease];
+												   isOrdered: isOrdered] autorelease];
 }
 
 - (BOOL) validateValue: (id)aValue
 {
 	BOOL valid;
 	
-	if (!ordered && unique)
+	if (!ordered)
 	{
-		valid = [aValue isKindOfClass: [NSSet class]] && 
-			![aValue isKindOfClass: [NSCountedSet class]];
-	}
-	else if (!ordered && !unique)
-	{
-		valid = [aValue isKindOfClass: [NSCountedSet class]];			
-	}
-	else if (ordered && unique)
-	{
-		if ([aValue isKindOfClass: [NSArray class]])
-		{
-			NSSet *set = [[NSSet alloc] initWithArray: aValue];
-			valid = ([set count] == [aValue count]);
-			[set release];
-		}
-		else
-		{
-			valid = NO;
-		}
+		valid = [aValue isKindOfClass: [NSSet class]];
 	}
 	else
 	{
@@ -405,8 +354,7 @@
 		return NO;
 	COMultivaluedType *otherType = (COMultivaluedType *)object;
 	return ([primitiveType isEqual: otherType->primitiveType] 
-			&& ordered == otherType->ordered
-			&& unique == otherType->unique);
+			&& ordered == otherType->ordered);
 }
 
 - (COType *) primitiveType
@@ -417,10 +365,6 @@
 - (BOOL) isOrdered
 {
 	return ordered;
-}
-- (BOOL) isUnique
-{
-	return unique;
 }
 
 @end
@@ -480,36 +424,17 @@
     return [COReferenceType type];
 }
 
-+ (COType *) setWithPrimitiveType: (COType *)aType
+- (COType *) setType
 {
-	return [[[COMultivaluedType alloc]
-			 initWithPrimitiveType: aType
-			 isOrdered: NO
-			 isUnique: YES] autorelease];
+    return [[[COMultivaluedType alloc]
+			 initWithPrimitiveType: self
+			 isOrdered: NO] autorelease];
 }
-
-+ (COType *) bagWithPrimitiveType: (COType *)aType
+- (COType *) arrayType
 {
 	return [[[COMultivaluedType alloc]
-			 initWithPrimitiveType: aType
-			 isOrdered: NO
-			 isUnique: NO] autorelease];	
-}
-
-+ (COType *) arrayWithPrimitiveType: (COType *)aType
-{
-	return [[[COMultivaluedType alloc]
-			 initWithPrimitiveType: aType
-			 isOrdered: YES
-			 isUnique: NO] autorelease];
-}
-
-+ (COType *) uniqueArrayWithPrimitiveType: (COType *)aType
-{
-	return [[[COMultivaluedType alloc]
-			 initWithPrimitiveType: aType
-			 isOrdered: YES
-			 isUnique: YES] autorelease];
+			 initWithPrimitiveType: self
+			 isOrdered: YES] autorelease];
 }
 
 + (COType*) typeWithString: (NSString *)aTypeString
@@ -578,13 +503,6 @@
 {
 	[NSException raise: NSInternalInconsistencyException
 				format: @"%@ unimplemented", NSStringFromSelector(_cmd)];
-	return NO;
-}
-
-- (BOOL) isUnique
-{
-	[NSException raise: NSInternalInconsistencyException
-				 format: @"%@ unimplemented", NSStringFromSelector(_cmd)];
 	return NO;
 }
 

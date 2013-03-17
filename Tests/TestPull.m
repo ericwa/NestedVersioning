@@ -109,7 +109,7 @@ static COSubtree *subtreeInitialVersion(COUUID *aUUID)
 	
 	[tree setValue: A(@"b", @"c", @"d")
 	  forAttribute: @"letters"
-			  type: [COType arrayWithPrimitiveType: [COType stringType]]];
+			  type: [[COType stringType] arrayType]];
 	
 	return tree;
 }
@@ -124,7 +124,7 @@ static COSubtree *subtreeVariantA(COUUID *aUUID)
 	[tree addObject: @"a"
  toOrderedAttribute: @"letters"
 			atIndex: 0
-			   type: [COType arrayWithPrimitiveType: [COType stringType]]];
+			   type: [[COType stringType] arrayType]];
 		
 	return tree;
 }
@@ -139,7 +139,7 @@ static COSubtree *subtreeVariantB(COUUID *aUUID)
 	[tree addObject: @"e"
  toOrderedAttribute: @"letters"
 			atIndex: 3
-			   type: [COType arrayWithPrimitiveType: [COType stringType]]];
+			   type: [[COType stringType] arrayType]];
 	
 	return tree;
 }

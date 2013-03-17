@@ -35,11 +35,11 @@
         COEditingContext *workspaces = [COEditingContext editingContext];
         [[workspaces rootObject] setValue: A([workspace rootObject])
                       forAttribute: @"orderedContents"
-                              type: [COType uniqueArrayWithPrimitiveType: [COType embeddedItemType]]];
+                              type: [[COType embeddedItemType] arrayType]];
         
         [[workspaces rootObject] addObject: [self itemWithLabel: @"My Phat Workspace"]
                         toOrderedAttribute: @"orderedContents"
-                                      type: [COType uniqueArrayWithPrimitiveType: [COType embeddedItemType]]];
+                                      type: [[COType embeddedItemType] arrayType]];
         
         workspaces_ = [[store_ createPersistentRootWithInitialContents: [workspaces itemTree]
                                                               metadata: nil

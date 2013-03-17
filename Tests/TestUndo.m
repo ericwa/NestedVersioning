@@ -20,7 +20,7 @@
 		COSubtree *tree = [COSubtree subtree];
 		[tree setValue: A(@"a", @"c", @"d")
 		  forAttribute: @"letters"
-				  type: [COType arrayWithPrimitiveType: [COType stringType]]];
+				  type: [[COType stringType] arrayType]];
 		
 		innerdoc = [[COSubtreeFactory factory] createPersistentRootWithRootItem: tree
 																	displayName: @"My Inner Document"
@@ -54,7 +54,7 @@
 		COPersistentRootEditingContext *ctx2 = [COPersistentRootEditingContext editingContextForEditingPath: path
 																									inStore: store];	
 		COSubtree *tree = [ctx2 persistentRootTree];
-		[tree addObject: @"b" toOrderedAttribute: @"letters" atIndex: 1 type: [COType arrayWithPrimitiveType: [COType stringType]]];		
+		[tree addObject: @"b" toOrderedAttribute: @"letters" atIndex: 1 type: [[COType stringType] arrayType]];		
 		[ctx2 commitWithMetadata: nil];
 	}
 
@@ -74,7 +74,7 @@
 		COPersistentRootEditingContext *ctx2 = [COPersistentRootEditingContext editingContextForEditingPath: path
 																									inStore: store];	
 		COSubtree *tree = [ctx2 persistentRootTree];
-		[tree addObject: @"e" toOrderedAttribute: @"letters" atIndex: 4 type: [COType arrayWithPrimitiveType: [COType stringType]]];		
+		[tree addObject: @"e" toOrderedAttribute: @"letters" atIndex: 4 type: [[COType stringType] arrayType]];		
 		[ctx2 commitWithMetadata: nil];
 	}
 	

@@ -28,26 +28,10 @@
 + (COType *) attachmentType;
 + (COType *) referenceType;
 
-// TODO: Refactor to -set, -uniqueArray, -bag, -array
-
-+ (COType *) setWithPrimitiveType: (COType *)aType;
-+ (COType *) uniqueArrayWithPrimitiveType: (COType *)aType;
-
-/**
- * Creates a bag (a.k.a multiset) type. Can not be used with
- * [COType embeddedItemType] - an embedded item can be embedded
- * in only one place.
- */
-+ (COType *) bagWithPrimitiveType: (COType *)aType;
-
-/** Can not be used with
-* [COType embeddedItemType] - an embedded item can be embedded
-* in only one place.
-*/
-+ (COType *) arrayWithPrimitiveType: (COType *)aType;
+- (COType *) setType;
+- (COType *) arrayType;
 
 - (COType *) namedType: (NSString *)aName;
-
 - (COType *) storageType; // Type ignoring name
 
 - (BOOL) isMultivalued;
@@ -57,14 +41,6 @@
  * Throws an exception if the receiver is not multivalued
  */
 - (BOOL) isOrdered;
-
-/**
- * Throws an exception if the receiver is not multivalued.
- * 
- * @returns YES if the receiver can hold only one copy of a
- * value (i.e it is a set or "unique array")
- */
-- (BOOL) isUnique;
 
 /**
  * For primitive types, returns self.
