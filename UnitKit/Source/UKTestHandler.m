@@ -349,14 +349,14 @@
 - (void) testObject:(id)a equalTo:(id)b inFile:(char *)filename line:(int)line
 {
     NSString *msg;
-    NSString *dispA =[UKTestHandler displayStringForObject:a];
-    NSString *dispB = [UKTestHandler displayStringForObject:b];
 
     if ([a isEqual:b]) {
         msg = [UKTestHandler localizedString:@"msgUKObjectsEqual.pass"];
-        msg = [NSString stringWithFormat:msg, dispA, dispB];
+        //msg = [NSString stringWithFormat:msg, dispA, dispB];
         [self reportStatus:YES inFile:filename line:line message:msg];
     } else {
+        NSString *dispA =[UKTestHandler displayStringForObject:a];
+        NSString *dispB = [UKTestHandler displayStringForObject:b];
         msg = [UKTestHandler localizedString:@"msgUKObjectsEqual.fail"];
         msg = [NSString stringWithFormat:msg, dispA, dispB];
         [self reportStatus:NO inFile:filename line:line message:msg];
