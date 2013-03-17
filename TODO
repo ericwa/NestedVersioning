@@ -11,8 +11,15 @@ x Write binary serialization format
   \Per-item code must be pure C.
 
 
-- Full-text search
+X Full-text search
+- Other search
 - Cache references
+
+Performance problems:
+- why does increasing the delta run length make performance worse?
+- why does performance get linearly worse with more items even if we only modify one?
+  - The test reads back all items from each commit, even when only one is modified.
+    So
 
 COItem
 ------

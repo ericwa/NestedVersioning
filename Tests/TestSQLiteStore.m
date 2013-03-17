@@ -11,8 +11,8 @@
 
 @implementation TestSQLiteStore
 
-static const int NUM_CHILDREN = 10;
-static const int NUM_COMMITS = 100;
+static const int NUM_CHILDREN = 1000;
+static const int NUM_COMMITS = 1000;
 
 static COUUID *rootUUID;
 static COUUID *childUUIDs[NUM_CHILDREN];
@@ -82,6 +82,8 @@ static int itemChangedAtCommit(int i)
     return [NSString stringWithFormat: @"child %d never modified!", child];
 }
 
+#define RELOAD_ENTIRE_GRAPH_ON_EVERY_COMIT 0
+
 - (void)testBasic
 {
 //    for (int i=0; i<NUM_CHILDREN; i++)
@@ -129,7 +131,7 @@ static int itemChangedAtCommit(int i)
     
     // Now traverse them in reverse order and test that the items are as expected.
     // There are NUM_CHILDREN + 1 commits (the initial one made by creating the persistent roots)
-    
+#if RELOAD_ENTIRE_GRAPH_ON_EVERY_COMIT
     for (int rev=NUM_COMMITS-1; rev>=0; rev--)
     {
         COItemTree *tree = [store itemTreeForRevisionID: lastCommitId];
@@ -153,7 +155,27 @@ static int itemChangedAtCommit(int i)
         
         lastCommitId = [[store revisionForID: lastCommitId] parentRevisionID];
     }
-    
+#else
+    for (int rev=NUM_COMMITS-1; rev>=1; rev--)
+    {
+        CORevisionID *parentCommitId = [[store revisionForID: lastCommitId] parentRevisionID];
+        
+        COItemTree *tree = [store partialItemTreeFromRevisionID: parentCommitId
+                                                   toRevisionID: lastCommitId];
+        
+        int i = itemChangedAtCommit(rev);
+        COItem *item = [tree itemForUUID: childUUIDs[i]];
+        
+        NSString *expectedLabel = [self labelForCommit: rev child: i];
+        
+        UKObjectsEqual(expectedLabel,
+                       [item valueForAttribute: @"name"]);
+              
+        // Step back one revision
+        
+        lastCommitId = parentCommitId;
+    }
+#endif
     
     // Try search
     

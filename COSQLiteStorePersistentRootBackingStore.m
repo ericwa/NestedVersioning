@@ -283,7 +283,7 @@ static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifie
     int64_t bytesInDeltaRun;
     
     // Limit delta runs to 9 commits:
-    const BOOL delta = (parent_deltabase != -1 && rowid - parent_deltabase < 10);
+    const BOOL delta = (parent_deltabase != -1 && rowid - parent_deltabase < 200);
     
     // Limit delta runs to 4k
     //const BOOL delta = (parent_deltabase != -1 && lastBytesInDeltaRun < 4096);

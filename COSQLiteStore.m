@@ -201,6 +201,18 @@
     return result;
 }
 
+- (COItemTree *) partialItemTreeFromRevisionID: (CORevisionID *)baseRevid
+                                  toRevisionID: (CORevisionID *)finalRevid
+{
+    NSParameterAssert(baseRevid != nil);
+    NSParameterAssert(finalRevid != nil);
+    NSParameterAssert([[baseRevid backingStoreUUID] isEqual: [finalRevid backingStoreUUID]]);
+    
+    COSQLiteStorePersistentRootBackingStore *backing = [self backingStoreForRevisionID: baseRevid];
+    COItemTree *result = [backing partialItemTreeFromRevid: [baseRevid revisionIndex]
+                                                   toRevid: [finalRevid revisionIndex]];
+    return result;
+}
 
 - (COItemTree *) itemTreeForRevisionID: (CORevisionID *)aToken
 {

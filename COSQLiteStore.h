@@ -31,6 +31,9 @@
  */
 - (CORevision *) revisionForID: (CORevisionID *)aToken;
 
+- (COItemTree *) partialItemTreeFromRevisionID: (CORevisionID *)baseRevid
+                                  toRevisionID: (CORevisionID *)finalRevid;
+
 - (COItemTree *) itemTreeForRevisionID: (CORevisionID *)aToken;
 
 /** @taskunit writing states */
