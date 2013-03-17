@@ -74,7 +74,11 @@
     [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS persistentroots (uuid BLOB PRIMARY KEY,"
      "backingstore BLOB, plist BLOB, gcroot BOOLEAN)"];
     
-    [db_ executeUpdate: @"CREATE VIRTUAL TABLE fts USING fts4()"]; // implicit columns are docid, content
+    // Create search tables. This uses contentless FTS4 which was added in SQLite 3.7.9
+    
+    [db_ executeUpdate: @"CREATE VIRTUAL TABLE IF NOT EXISTS fts USING fts4(content=\"\", text)"]; // implicit column docid
+    [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS fts_docid_to_revisionid ("
+     "docid INTEGER PRIMARY KEY, revid STRING)"]; // FIXME: store revid efficiently! add UUID table!
     
     if ([db_ hadError])
     {
@@ -227,7 +231,42 @@
                               inItemTree: (COItemTree *)anItemTree
                               revisionID: (CORevisionID *)aRevision
 {
+    if (modifiedItems == nil)
+    {
+        modifiedItems = [anItemTree itemUUIDs];
+    }
+    
+    NSMutableArray *ftsContent = [NSMutableArray array];
+    for (COUUID *uuid in modifiedItems)
+    {
+        COItem *itemToIndex = [anItemTree itemForUUID: uuid];
+        NSString *itemFtsContent = [itemToIndex fullTextSearchContent];
+        [ftsContent addObject: itemFtsContent];
+    }
+    NSString *allItemsFtsContent = [ftsContent componentsJoinedByString: @" "];    
+    
+    [db_ beginTransaction];
+    [db_ executeUpdate: @"INSERT INTO fts_docid_to_revisionid(revid) VALUES(?)", [aRevision plist]]; // FIXME: Hack
+    [db_ executeUpdate: @"INSERT INTO fts(docid, text) VALUES(?,?)",
+     [NSNumber numberWithLongLong: [db_ lastInsertRowId]],
+     allItemsFtsContent];
+    [db_ commit];
+    
+    //NSLog(@"Index text '%@' at revision id %@", allItemsFtsContent, aRevision);
+    
+    assert(![db_ hadError]);
+}
 
+- (NSArray *) revisionIDsMatchingQuery: (NSString *)aQuery
+{
+    NSMutableArray *result = [NSMutableArray array];
+    FMResultSet *rs = [db_ executeQuery: @"SELECT revid FROM fts_docid_to_revisionid WHERE docid IN (SELECT docid FROM fts WHERE text MATCH ?)", aQuery];
+    while ([rs next])
+    {
+        [result addObject: [CORevisionID revisionIDWithPlist: [rs stringForColumnIndex: 0]]];
+    }
+    [rs close];
+    return result;
 }
 
 - (CORevisionID *) writeItemTree: (COItemTree *)anItemTree

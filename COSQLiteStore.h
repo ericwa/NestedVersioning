@@ -110,5 +110,8 @@
            forBranch: (COUUID *)aBranch
     ofPersistentRoot: (COUUID *)aRoot;
 
+/* Search */
+
+- (NSArray *) revisionIDsMatchingQuery: (NSString *)aQuery;
 
 @end

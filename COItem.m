@@ -283,6 +283,19 @@ static id importValueFromPlist(id aPlist)
 	return [NSSet setWithSet: result];
 }
 
+- (NSString *) fullTextSearchContent
+{
+    NSMutableArray *result = [NSMutableArray array];
+    for (NSString *key in [self attributeNames])
+	{
+		COType *type = [self typeForAttribute: key];
+		if ([type isPrimitiveTypeEqual: [COType stringType]])
+		{
+			[result addObject: [self valueForAttribute: key]];
+		}
+	}
+    return [result componentsJoinedByString: @" "];
+}
 
 - (NSString *)description
 {

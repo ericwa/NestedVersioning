@@ -60,6 +60,8 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes;
 - (NSSet *) attachments;
 - (NSSet *) allReferencedPersistentRootUUIDs;
 
+- (NSString *) fullTextSearchContent;
+
 /** @taskunit NSCopying and NSMutableCopying */
 
 - (id)copyWithZone:(NSZone *)zone;

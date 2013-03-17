@@ -153,6 +153,18 @@ static int itemChangedAtCommit(int i)
         
         lastCommitId = [[store revisionForID: lastCommitId] parentRevisionID];
     }
+    
+    
+    // Try search
+    
+    NSArray *results = [store revisionIDsMatchingQuery: @"modified 32"];
+    UKIntsEqual(1, [results count]);
+    if ([results count] == 1)
+    {
+        CORevisionID *revid = [results objectAtIndex: 0];
+        UKObjectsEqual([lastCommitId backingStoreUUID], [revid backingStoreUUID]);
+        UKIntsEqual(32, [revid revisionIndex]);
+    }
 }
 
 @end
