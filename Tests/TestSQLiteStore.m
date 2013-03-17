@@ -11,8 +11,8 @@
 
 @implementation TestSQLiteStore
 
-static const int NUM_CHILDREN = 100;
-static const int NUM_COMMITS = 1000;
+static const int NUM_CHILDREN = 10;
+static const int NUM_COMMITS = 100;
 
 static COUUID *rootUUID;
 static COUUID *childUUIDs[NUM_CHILDREN];
@@ -82,8 +82,6 @@ static int itemChangedAtCommit(int i)
     return [NSString stringWithFormat: @"child %d never modified!", child];
 }
 
-#define VALIDATE 0
-
 - (void)testBasic
 {
 //    for (int i=0; i<NUM_CHILDREN; i++)
@@ -137,7 +135,6 @@ static int itemChangedAtCommit(int i)
         COItemTree *tree = [store itemTreeForRevisionID: lastCommitId];
 
         // Check the state
-#if VALIDATE
         UKObjectsEqual(rootUUID, [tree rootItemUUID]);
         UKObjectsEqual([dict objectForKey: rootUUID],
                        [tree itemForUUID: rootUUID]);
@@ -151,7 +148,7 @@ static int itemChangedAtCommit(int i)
             UKObjectsEqual(expectedLabel,
                            [[tree itemForUUID: childUUIDs[i]] valueForAttribute: @"name"]);
         }
-#endif
+
         // Step back one revision
         
         lastCommitId = [[store revisionForID: lastCommitId] parentRevisionID];
