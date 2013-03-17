@@ -74,6 +74,8 @@
     [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS persistentroots (uuid BLOB PRIMARY KEY,"
      "backingstore BLOB, plist BLOB, gcroot BOOLEAN)"];
     
+    [db_ executeUpdate: @"CREATE VIRTUAL TABLE fts USING fts4()"]; // implicit columns are docid, content
+    
     if ([db_ hadError])
     {
 		NSLog(@"Error %d: %@", [db_ lastErrorCode], [db_ lastErrorMessage]);
@@ -214,35 +216,67 @@
                                                            error: NULL];
 }
 
-- (CORevisionID *) writeItemTreeWithNoParent: (COItemTree *)anItemTree
-                                withMetadata: (NSDictionary *)metadata
-                      inBackingStoreWithUUID: (COUUID *)aBacking
+/**
+ * Updates SQL indexes so given a search query containing contents of
+ * the items mentioned by modifiedItems, we can get back aRevision.
+ *
+ * We'll then have to search to see which persistent roots
+ * and which branches reference that revision ID, but that should be really fast.
+ */
+- (void) updateSearchIndexesForItemUUIDs: (NSArray *)modifiedItems
+                              inItemTree: (COItemTree *)anItemTree
+                              revisionID: (CORevisionID *)aRevision
 {
-    COSQLiteStorePersistentRootBackingStore *backing = [self backingStoreForUUID: aBacking];
-    
-    const int64_t revid = [backing writeItemTree: anItemTree
-                                    withMetadata: metadata
-                                      withParent: -1
-                                   modifiedItems: nil];
-    
-    return [[[CORevisionID alloc] initWithPersistentRootBackingStoreUUID: aBacking revisionIndex: revid] autorelease];
-}
 
+}
 
 - (CORevisionID *) writeItemTree: (COItemTree *)anItemTree
                     withMetadata: (NSDictionary *)metadata
             withParentRevisionID: (CORevisionID *)aParent
                    modifiedItems: (NSArray*)modifiedItems // array of COUUID
 {
+    NSParameterAssert(anItemTree != nil);
     NSParameterAssert(aParent != nil);
-    COSQLiteStorePersistentRootBackingStore *backing = [self backingStoreForRevisionID: aParent];
     
+    return [self writeItemTree: anItemTree
+                  withMetadata: metadata
+               withParentRevid: [aParent revisionIndex]
+        inBackingStoreWithUUID: [aParent backingStoreUUID]
+                 modifiedItems: modifiedItems];
+}
+
+- (CORevisionID *) writeItemTreeWithNoParent: (COItemTree *)anItemTree
+                                withMetadata: (NSDictionary *)metadata
+                      inBackingStoreWithUUID: (COUUID *)aBacking
+{
+    return [self writeItemTree: anItemTree
+                  withMetadata: metadata
+               withParentRevid: -1
+        inBackingStoreWithUUID: aBacking
+                 modifiedItems: nil];
+}
+
+
+- (CORevisionID *) writeItemTree: (COItemTree *)anItemTree
+                    withMetadata: (NSDictionary *)metadata
+                 withParentRevid: (int64_t)parentRevid
+          inBackingStoreWithUUID: (COUUID *)aBacking
+                   modifiedItems: (NSArray*)modifiedItems // array of COUUID
+{
+    COSQLiteStorePersistentRootBackingStore *backing = [self backingStoreForUUID: aBacking];
     const int64_t revid = [backing writeItemTree: anItemTree
                                     withMetadata: metadata
-                                      withParent: [aParent revisionIndex]
+                                      withParent: parentRevid
                                    modifiedItems: modifiedItems];
     
-    return [aParent revisionIDWithRevisionIndex: revid];
+    CORevisionID *revidObject = [[[CORevisionID alloc] initWithPersistentRootBackingStoreUUID: aBacking
+                                                                                revisionIndex: revid] autorelease];
+    
+    [self updateSearchIndexesForItemUUIDs: modifiedItems
+                               inItemTree: anItemTree
+                               revisionID: revidObject];
+    
+    return revidObject;
 }
 
 /** @taskunit persistent roots */
