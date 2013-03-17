@@ -120,7 +120,7 @@
         return;
     } else if (cond) {
         testsPassed++;
-        if (!quiet) {
+        if (NO && !quiet) {
             printf("%s:%i %s\n", filename, line, [msg UTF8String]);
         }
     } else {

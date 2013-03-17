@@ -59,6 +59,7 @@
 		662C1E5B1690EBFC002157F3 /* EWStoreDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 662C1E5A1690EBF7002157F3 /* EWStoreDocument.m */; };
 		662C1E6B169175F3002157F3 /* EWPersistentRootInspectorWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 662C1E6A169175F3002157F3 /* EWPersistentRootInspectorWindowController.m */; };
 		662C1E7416923F38002157F3 /* PersistentRootWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 662C1E7316923F38002157F3 /* PersistentRootWindow.xib */; };
+		662F9EA116F63C8D00CEB9B4 /* TestItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 6660E23914F84B3000D2F319 /* TestItem.m */; };
 		6635EA9716233EB900DBC629 /* EWGraphRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 6635EA9416233EB900DBC629 /* EWGraphRenderer.m */; };
 		6635EA9816233EB900DBC629 /* EWHistoryGraphView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6635EA9616233EB900DBC629 /* EWHistoryGraphView.m */; };
 		66365AA616D4A05F00525970 /* NOTES in Resources */ = {isa = PBXBuildFile; fileRef = 66365AA516D4A05F00525970 /* NOTES */; };
@@ -663,7 +664,6 @@
 			isa = PBXGroup;
 			children = (
 				66E778AC14E6080700D5DFFF /* TestPersistentRootEditingContext.m */,
-				6660E23914F84B3000D2F319 /* TestItem.m */,
 				7978700E14D799A200B45FC6 /* TestSubtree.m */,
 				66EADD6414732AEE003181FC /* TestUndo.m */,
 				66F4E315147C59F0004FC1BA /* TestTagging.m */,
@@ -1053,6 +1053,7 @@
 				66EDAF2E16B258CF00B06DB2 /* TestSubtreeDiffMerge.m */,
 				6622E9BD16EC725200D82F2A /* TestWorkspaces.m */,
 				66ED6D6D16F427FD001B853E /* TestSQLiteStore.m */,
+				6660E23914F84B3000D2F319 /* TestItem.m */,
 				662C1D5C168EE4D2002157F3 /* TODO: port */,
 				79FB63BD1486ABEF00751E1E /* Tests - docs and code sketch */,
 				79FB63B81486ABC600751E1E /* Tests - documented only */,
@@ -1451,6 +1452,7 @@
 				6622E9BE16EC725200D82F2A /* TestWorkspaces.m in Sources */,
 				66ED6D6016F053EB001B853E /* BasicPersistence.m in Sources */,
 				66ED6D6E16F427FD001B853E /* TestSQLiteStore.m in Sources */,
+				662F9EA116F63C8D00CEB9B4 /* TestItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

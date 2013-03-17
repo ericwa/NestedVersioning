@@ -45,61 +45,6 @@ static NSDictionary *copyValueDictionary(NSDictionary *input, BOOL mutable)
 
 @implementation COItem
 
-- (BOOL) validate
-{
-    // FIXME: Disabled for performance
-#if 0
-	if (![[NSSet setWithArray: [types allKeys]] isEqual:
-		  [NSSet setWithArray: [values allKeys]]])
-	{
-		return NO;
-	}
-	
-	for (NSString *attribute in types)
-	{
-		COType *type = [self typeForAttribute: attribute];
-		id value = [self valueForAttribute: attribute];
-		
-		if (![type validateValue: value])
-        {
-            [type validateValue: value];
-			return NO;
-        }
-	}
-	
-	// Test each embedded item UUID appears only once.
-	{
-		NSCountedSet *countedEmbeddedItems = [NSCountedSet set];
-		for (NSString *attribute in types)
-		{
-			if ([[types objectForKey: attribute] isPrimitiveTypeEqual: [COType embeddedItemType]])
-			{
-				NSArray *arr = [self allObjectsForAttribute: attribute];
-				[countedEmbeddedItems addObjectsFromArray: arr];
-			}
-		}
-
-		for (COUUID *embeddedItem in countedEmbeddedItems)
-		{
-			if ([countedEmbeddedItems countForObject: embeddedItem] != 1)
-			{
-				return NO;
-			}
-		}
-		
-		// An item can't contain itself.
-		for (COUUID *embeddedItem in countedEmbeddedItems)
-		{
-			if ([embeddedItem isEqual: uuid])
-			{
-				return NO;
-			}
-		}
-	}
-#endif
-	return YES;
-}
-
 - (id) initWithUUID: (COUUID *)aUUID
  typesForAttributes: (NSDictionary *)typesForAttributes
 valuesForAttributes: (NSDictionary *)valuesForAttributes
@@ -112,14 +57,7 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 	ASSIGN(uuid, aUUID);
 	types = [[NSDictionary alloc] initWithDictionary: typesForAttributes];
 	values = copyValueDictionary(valuesForAttributes, NO);
-	
-	if (![self validate])
-	{
-		[self release];
-		[NSException raise: NSInvalidArgumentException
-					format: @"validation failed"];
-	}
-	
+
 	return self;
 }
 
@@ -483,13 +421,6 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 	types = [[NSMutableDictionary alloc] initWithDictionary: typesForAttributes];
 	values = copyValueDictionary(valuesForAttributes, YES);
 	
-	if (![self validate])
-	{
-		[self release];
-		[NSException raise: NSInvalidArgumentException
-					format: @"validation failed"];
-	}
-	
 	return self;
 }
 
@@ -514,12 +445,6 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 {
 	NILARG_EXCEPTION_TEST(aUUID);
 	ASSIGN(uuid, aUUID);
-	
-	if (![self validate])
-	{
-		[NSException raise: NSInvalidArgumentException
-					format: @"validation failed"];
-	}
 }
 
 - (void) setValue: (id)aValue
@@ -532,12 +457,6 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 	
 	[(NSMutableDictionary *)types setObject: aType forKey: anAttribute];
 	[(NSMutableDictionary *)values setObject: aValue forKey: anAttribute];
-	
-	if (![self validate])
-	{
-		[NSException raise: NSInvalidArgumentException
-					format: @"validation failed"];
-	}
 }
 
 - (void)removeValueForAttribute: (NSString*)anAttribute
@@ -572,12 +491,6 @@ toUnorderedAttribute: (NSString*)anAttribute
 	  forAttribute: anAttribute
 			  type: aType];
 	[set release];
-	
-	if (![self validate])
-	{
-		[NSException raise: NSInvalidArgumentException
-					format: @"validation failed"];
-	}
 }
 
 - (void)   addObject: (id)aValue
@@ -606,12 +519,6 @@ toUnorderedAttribute: (NSString*)anAttribute
 	  forAttribute: anAttribute
 			  type: aType];
 	[array release];
-	
-	if (![self validate])
-	{
-		[NSException raise: NSInvalidArgumentException
-					format: @"validation failed"];
-	}
 }
 
 - (void) addObject: (id)aValue
@@ -628,12 +535,6 @@ toUnorderedAttribute: (NSString*)anAttribute
         
     }
     [container addObject: aValue];
-    
-	if (![self validate])
-	{
-		[NSException raise: NSInvalidArgumentException
-					format: @"validation failed"];
-	}
 }
 
 
@@ -643,12 +544,6 @@ toUnorderedAttribute: (NSString*)anAttribute
 	[self setValue: aValue 
 	  forAttribute: anAttribute
 			  type: [self typeForAttribute: anAttribute]];
-	
-	if (![self validate])
-	{
-		[NSException raise: NSInvalidArgumentException
-					format: @"validation failed"];
-	}
 }
 
 - (id) copyWithZone: (NSZone *)zone

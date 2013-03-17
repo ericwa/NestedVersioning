@@ -5,7 +5,7 @@ int main (int argc, const char *argv[])
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	[[UKTestHandler handler] setQuiet: YES];
+	[[UKTestHandler handler] setQuiet: NO];
 	
 	UKRunner *runner = [UKRunner new];
 	

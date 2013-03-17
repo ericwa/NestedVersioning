@@ -1,7 +1,4 @@
 #import "TestCommon.h"
-#import "COType.h"
-#import "COItemPath.h"
-#import "COSubtreeDiff.h"
 
 @interface TestItem : NSObject <UKTest> {
 	
@@ -15,13 +12,9 @@
 {
 	COMutableItem *i1 = [COMutableItem item];
 	
-	COPath *p1 = [[[COPath path]
-				   pathByAppendingPathComponent:[COUUID UUIDWithString: @"cdf68e39-8f4b-4afa-9f81-ba2f7cdf50e6"]]
-				  pathByAppendingPathComponent:[COUUID UUIDWithString: @"8a099b84-09eb-4a3e-828d-9a897778e5e3"]];
-	
-	[i1 setValue: S(p1)
+	[i1 setValue: S(@"hello", @"world")
 	forAttribute: @"contents"
-			type: [[COType pathType] setType]];
+			type: [[COType stringType] setType]];
 	
 	// test round trip to plist
 	{
@@ -35,46 +28,6 @@
 		COMutableItem *i1clone = [[[COMutableItem alloc] initWithPlist: plist] autorelease];
 		UKObjectsEqual(i1, i1clone);
 	}
-}
-
-- (void) testConsistency
-{
-	COUUID *u1 = [COUUID UUID];
-	
-	// It is illegal to have the same embedded item in two places.
-	
-	UKRaisesException([COItem itemWithTypesForAttributes: D([COType embeddedItemType], @"key1",
-															[COType embeddedItemType], @"key2")
-									 valuesForAttributes: D(u1, @"key1",	
-															u1, @"key2")]);
-
-	UKRaisesException({
-		COMutableItem *i1 = [COMutableItem item];
-		[i1 setValue: u1 forAttribute: @"key1" type: [COType embeddedItemType]];
-		[i1 setValue: u1 forAttribute: @"key2" type: [COType embeddedItemType]];
-	});
-	
-	// Test setting objects of the wrong type
-	
-	UKRaisesException({
-		COMutableItem *i1 = [COMutableItem item];
-		[i1 setValue: S(u1) forAttribute: @"key1" type: [[COType embeddedItemType] setType]];
-	});
-	UKRaisesException({
-		COMutableItem *i1 = [COMutableItem item];
-		[i1 setValue: A(u1) forAttribute: @"key1" type: [[COType embeddedItemType] setType]];
-	});
-	
-	// Test an item which contains itself
-	
-	UKRaisesException([[[COItem alloc] initWithUUID: u1
-								 typesForAttributes: D([COType embeddedItemType], @"key1")
-								valuesForAttributes: D(u1, @"key1")] autorelease]);
-	
-	UKRaisesException({
-		COMutableItem *i1 = [[[COMutableItem alloc] initWithUUID: u1] autorelease];
-		[i1 setValue: u1 forAttribute: @"key1" type: [COType embeddedItemType]];
-	});
 }
 
 - (void) testMutability

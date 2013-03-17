@@ -24,7 +24,7 @@ COItem
 Types
 -----
 
-- remove bag / unique array types
+x remove bag / unique array types
 - figure out where to put type names for primitives (<NSData> is org.etoile.bezier-path)
 
 Schema

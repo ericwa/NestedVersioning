@@ -234,17 +234,7 @@ static void loadBundle(UKRunner *runner, NSString *cwd, NSString *bundlePath)
 #ifndef GNUSTEP
 - (void) runTest:(SEL)testSelector onObject:(id)testObject
 {
-    NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-    [runLoop performSelector:testSelector 
-                      target:testObject 
-                    argument:nil 
-                       order:0 
-                       modes:[NSArray arrayWithObject:NSDefaultRunLoopMode]];
-    CFRunLoopRef cfRunLoop = [runLoop getCFRunLoop];
-    [runLoop runUntilDate:nil];
-    while (CFRunLoopIsWaiting(cfRunLoop)) {
-        [runLoop runUntilDate:nil];
-    }
+    [testObject performSelector:testSelector];
 }
 #endif
 
@@ -298,8 +288,6 @@ static void loadBundle(UKRunner *runner, NSString *cwd, NSString *bundlePath)
         testMethodsRun++;
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
-#ifdef NEW_EXCEPTION_MODEL
-
         if (isClass == NO)
         {
             object = [testClass alloc];
@@ -333,68 +321,7 @@ static void loadBundle(UKRunner *runner, NSString *cwd, NSString *bundlePath)
             }
         }
 
-#else
 
-        NS_DURING
-	{
-	    if (isClass == NO)
-	    {
-		object = [testClass alloc];
-		if ([object respondsToSelector: @selector(initForTest)])
-		{
-			object = [object initForTest];
-		}
-		else if ([object respondsToSelector: @selector(init)])
-		{
-			object = [object init];
-		}
-	    }
-	}
-        NS_HANDLER
-	{
-			[[UKTestHandler handler] reportException: localException inClass: testClass hint: @"errExceptionOnInit"];
-            [pool release];
-            NS_VOIDRETURN;	
-	}
-        NS_ENDHANDLER
-        
-        NS_DURING
-	{
-            SEL testSel = NSSelectorFromString(testMethodName);
-            [object performSelector:testSel];
-	}
-        NS_HANDLER
-	{
-		[[UKTestHandler handler] reportException: localException inClass: testClass hint: @"errExceptionInTestMethod"];
-	    [pool release];
-	    NS_VOIDRETURN;
-	}
-        NS_ENDHANDLER
-        
-        NS_DURING
-	{
-	    if (isClass == NO)
-	    {
-		if ([object respondsToSelector: @selector(releaseForTest)])
-		{
-		    [object releaseForTest];
-		}
-		else if ([testObject respondsToSelector: @selector(release)])
-		{
-		    [object release];
-		}
-		object = nil;
-	    }
-	}
-        NS_HANDLER
-	{
-			[[UKTestHandler handler] reportException: localException inClass: testClass hint: @"errExceptionOnRelease"];
-            [pool release];
-            NS_VOIDRETURN;
-	}
-        NS_ENDHANDLER
-        
-#endif        
         [pool release];
     }
 }
