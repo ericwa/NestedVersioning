@@ -134,7 +134,7 @@
 	return result;
 }
 
-- (COPartialItemTree *) partialItemTreeFromRevid: (int64_t)baseRevid toRevid: (int64_t)revid
+- (COItemTree *) partialItemTreeFromRevid: (int64_t)baseRevid toRevid: (int64_t)revid
 {
     NSParameterAssert(baseRevid < revid);
     
@@ -195,14 +195,14 @@
                        forKey: uuid];
     }
     
-    COPartialItemTree *result = [[[COPartialItemTree alloc] initWithItemForUUID: resultDict
+    COItemTree *result = [[[COItemTree alloc] initWithItemForUUID: resultDict
                                                                    rootItemUUID: root] autorelease];
     return result;
 }
 
 - (COItemTree *) itemTreeForRevid: (int64_t)revid
 {
-    return [[self partialItemTreeFromRevid: -1 toRevid: revid] itemTree];
+    return [self partialItemTreeFromRevid: -1 toRevid: revid];
 }
 
 static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifiedItems)

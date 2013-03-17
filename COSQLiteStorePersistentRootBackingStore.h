@@ -2,7 +2,7 @@
 #import "COItemTree.h"
 
 @class FMDatabase;
-@class COPartialItemTree;
+@class COItemTree;
 
 /**
  * Database connection for manipulating a persistent root backing store.
@@ -23,7 +23,7 @@
 
 - (COItemTree *) itemTreeForRevid: (int64_t)revid;
 
-- (COPartialItemTree *) partialItemTreeFromRevid: (int64_t)baseRevid toRevid: (int64_t)finalRevid;
+- (COItemTree *) partialItemTreeFromRevid: (int64_t)baseRevid toRevid: (int64_t)finalRevid;
 
 - (int64_t) writeItemTree: (COItemTree *)anItemTree
              withMetadata: (NSDictionary *)metadata

@@ -3,19 +3,13 @@
 #import "COUUID.h"
 #import "COItem.h"
 
-@implementation COPartialItemTree
+@implementation COItemTree
 
 - (id) initWithItemForUUID: (NSDictionary *) itemForUUID
               rootItemUUID: (COUUID *)root
 {
-    NSParameterAssert([itemForUUID isKindOfClass: [NSDictionary class]]);
-    NSParameterAssert([root isKindOfClass: [COUUID class]]);
-    
     SUPERINIT;
-    
-    // For some reason this is reallllly slow!
-    
-    itemForUUID_ = [[NSDictionary alloc] initWithDictionary: itemForUUID copyItems: YES];
+    itemForUUID_ = [itemForUUID retain];
     rootItemUUID_ = [root copy];
     return self;
 }
@@ -27,21 +21,6 @@
     [super dealloc];
 }
 
-+ (id) itemTreeWithItems: (NSArray *)items rootItemUUID: (COUUID *)aUUID
-{
-    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity: [items count]];
-    for (COItem *item in items)
-    {
-        [dict setObject: item forKey: [item UUID]];
-    }
-    
-    return [[[self alloc] initWithItemForUUID: dict rootItemUUID: aUUID] autorelease];
-}
-
-- (id) copyWithZone: (NSZone *)zone
-{
-    return [self retain];
-}
 
 - (COUUID *) rootItemUUID
 {
@@ -56,65 +35,6 @@
 - (NSArray *) itemUUIDs
 {
     return [itemForUUID_ allKeys];
-}
-
-- (id) itemTreeByAddingItemTree: (COPartialItemTree *)partialTree
-{
-    NSMutableDictionary *resultDict = [NSMutableDictionary dictionaryWithDictionary: itemForUUID_];
-    [resultDict addEntriesFromDictionary: partialTree->itemForUUID_];
-    return [[[[self class] alloc] initWithItemForUUID: resultDict
-                                         rootItemUUID: partialTree->rootItemUUID_] autorelease];
-}
-
-- (id) itemTreeWithNameMapping: (NSDictionary *)aMapping;
-{
-	NSMutableDictionary *newItems = [NSMutableDictionary dictionary];
-	
-	for (COUUID *uuid in itemForUUID_)
-	{
-        COItem *oldItem = [itemForUUID_ objectForKey: uuid];
-        COItem *newItem = [[oldItem mutableCopyWithNameMapping: aMapping] autorelease];
-        [newItems setObject: newItem forKey: [newItem UUID]];
-	}
-	
-    COUUID *newRoot = [aMapping objectForKey: rootItemUUID_];
-    if (newRoot == nil)
-    {
-        newRoot = rootItemUUID_;
-    }
-    
-	return [[[[self class] alloc] initWithItemForUUID: newItems rootItemUUID:newRoot] autorelease];
-}
-
-- (COItemTree *) itemTree
-{
-	return [[[COItemTree alloc] initWithItemForUUID: itemForUUID_
-                                       rootItemUUID: rootItemUUID_] autorelease];
-
-}
-
-/** @taskunit equality testing */
-
-- (BOOL) isEqual: (id)object
-{
-	if (object == self)
-	{
-		return YES;
-	}
-	if (![object isKindOfClass: [COPartialItemTree class]])
-	{
-		return NO;
-	}
-	COPartialItemTree *otherTree = (COPartialItemTree*)object;
-	
-	if (![otherTree->rootItemUUID_ isEqual: rootItemUUID_]) return NO;
-	if (![otherTree->itemForUUID_ isEqual: itemForUUID_]) return NO;
-	return YES;
-}
-
-- (NSUInteger) hash
-{
-	return [rootItemUUID_ hash] ^ [itemForUUID_ hash] ^ 16921545442590332862ULL;
 }
 
 - (NSString *)description
@@ -133,74 +53,3 @@
 
 @end
 
-@implementation COItemTree
-
-+ (void) collectAllDescendentsOfItem: (COUUID *)aUUID
-                               inSet: (NSMutableSet *)dest
-                  withItemDictionary: (NSDictionary *)aDict
-{
-	[dest addObject: aUUID];
-	for (COUUID *child in [[aDict objectForKey: aUUID] embeddedItemUUIDs])
-	{
-        if (![dest containsObject: child])
-        {
-            [self collectAllDescendentsOfItem: child
-                                        inSet: dest
-                           withItemDictionary: aDict];
-        }
-        else
-        {
-            [NSException raise: NSInvalidArgumentException
-                        format: @"Cycle detected"];
-        }
-	}
-}
-
-+ (void) assertTreeHasNoCyclesWithRoot: (COUUID *)aRoot
-                        itemDictionary: (NSDictionary *)aDict
-{
-    NSMutableSet *temp = [NSMutableSet set];
-    [self collectAllDescendentsOfItem: aRoot
-                                inSet: temp
-                   withItemDictionary: aDict];
-}
-
-+ (void) collectAllReferencesFromItem: (COUUID *)aUUID
-                                inSet: (NSMutableSet *)dest
-                   withItemDictionary: (NSDictionary *)aDict
-{
-	[dest addObject: aUUID];
-    COItem *item = [aDict objectForKey: aUUID];
-	for (COUUID *child in [[item referencedItemUUIDs] setByAddingObjectsFromSet: [item embeddedItemUUIDs]])
-	{
-        if (![dest containsObject: child])
-        {
-            [self collectAllReferencesFromItem: child
-                                         inSet: dest
-                            withItemDictionary: aDict];
-        }
-	}
-}
-
-- (id) initWithItemForUUID: (NSDictionary *) itemForUUID
-              rootItemUUID: (COUUID *)root
-{
-    [COItemTree assertTreeHasNoCyclesWithRoot: root
-                               itemDictionary: itemForUUID];
-    
-    NSMutableSet *itemsToKeep = [NSMutableSet setWithCapacity: [itemForUUID count]];
-    [COItemTree collectAllReferencesFromItem: root
-                                       inSet: itemsToKeep
-                          withItemDictionary: itemForUUID];
-    
-    NSMutableDictionary *filteredDictionary = [NSMutableDictionary dictionaryWithCapacity:[itemsToKeep count]];
-    for (COUUID *uuid in itemsToKeep)
-    {
-        [filteredDictionary setObject: [itemForUUID objectForKey: uuid] forKey: uuid];
-    }
-    
-    return [super initWithItemForUUID: filteredDictionary
-                         rootItemUUID: root];
-}
-
-@end

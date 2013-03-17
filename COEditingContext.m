@@ -264,6 +264,27 @@
     [embeddedObjectParentUUIDForUUID_ setObject:aTarget forKey: aUUID];
 }
 
+#if 0
+- (COItemTree *) itemTreeWithNameMapping: (NSDictionary *)aMapping;
+{
+	NSMutableDictionary *newItems = [NSMutableDictionary dictionary];
+	
+	for (COUUID *uuid in itemForUUID_)
+	{
+        COItem *oldItem = [itemForUUID_ objectForKey: uuid];
+        COItem *newItem = [[oldItem mutableCopyWithNameMapping: aMapping] autorelease];
+        [newItems setObject: newItem forKey: [newItem UUID]];
+	}
+	
+    COUUID *newRoot = [aMapping objectForKey: rootItemUUID_];
+    if (newRoot == nil)
+    {
+        newRoot = rootItemUUID_;
+    }
+    
+	return [[[[self class] alloc] initWithItemForUUID: newItems rootItemUUID:newRoot] autorelease];
+}
+#endif
 - (COObject *) insertItemTree: (COItemTree *)aTree
 {
     // see if there are any name conflicts

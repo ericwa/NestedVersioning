@@ -7,7 +7,10 @@ Store
 - GC unreachable revisions (aka history compacting)
 - Merge all gc code into a single GC pass.
 x Write binary serialization format
-- Write COItem import/export using binary parser
+- Write COItem import/export using binary parser.
+  \Per-item code must be pure C.
+
+
 - Full-text search
 - Cache references
 
