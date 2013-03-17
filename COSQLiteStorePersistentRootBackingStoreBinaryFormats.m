@@ -38,7 +38,7 @@ void ParseCombinedCommitDataInToUUIDToItemDataDictionary(NSMutableDictionary *de
 
 void AddCommitUUIDAndDataToCombinedCommitData(NSMutableData *combinedCommitData, COUUID *uuidToAdd, NSData *dataToAdd)
 {
-    [combinedCommitData appendData: [uuidToAdd dataValue]];
+    [combinedCommitData appendBytes: uuidToAdd->uuid length: 16];
     
     const NSUInteger len = [dataToAdd length];
     if (len > UINT32_MAX)

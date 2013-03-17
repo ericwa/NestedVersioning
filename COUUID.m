@@ -163,10 +163,14 @@ static Class COUUIDClass;
 	{
 		return YES;
 	}
-	if (object_getClass(anObject) == COUUIDClass)
+	else if (object_getClass(anObject) == COUUIDClass)
 	{
 		return (0 == memcmp(uuid, ((COUUID *)anObject)->uuid, 16));
 	}
+    else if ([anObject isKindOfClass: [self class]])
+    {
+        return (0 == memcmp(uuid, [(COUUID *)anObject bytes], 16));
+    }
 	return NO;
 }
 
