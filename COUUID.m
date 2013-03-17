@@ -10,6 +10,7 @@
 #import <Foundation/Foundation.h>
 #import "COMacros.h"
 #import "COUUID.h"
+#include <objc/runtime.h>
 
 // FIXME: these macros violate the C aliasing rules
 #define TIME_LOW(uuid) (*(uint32_t*)(uuid))
@@ -56,6 +57,16 @@ static void COUUIDGet16RandomBytes(unsigned char bytes[16])
 #endif
 
 @implementation COUUID
+
+static Class COUUIDClass;
+
++ (void) initialize
+{
+    if (self == [COUUID class])
+    {
+        COUUIDClass = self;
+    }
+}
 
 + (COUUID *) UUID
 {
@@ -141,24 +152,9 @@ static void COUUIDGet16RandomBytes(unsigned char bytes[16])
 	return [self retain];
 }
 
-/* Returns the UUID hash.
-
-   Rough collision estimate for a given number of generated UUIDs, computed 
-   with -testHash in TestUUID.m. For each case, -testHash has been run around 
-   15 times.
- 
-           32-bit NSUInteger               64-bit NSUInteger
-   100000: ~1 (between 0 to 3 collisions)  0
-   200000: ~4 (1 to 11)                    0
-   300000: ~11 (4 to 16)                   0
-   400000: ~19 (13 to 31)                  0
-   500000: ~28 (20 to 35)                  0
- */
 - (NSUInteger) hash
 {
-	uint64_t hash;
-	memcpy(&hash, uuid, 8);
-	return hash;
+	return *((NSUInteger *)uuid);
 }
 
 - (BOOL) isEqual: (id)anObject
@@ -167,7 +163,7 @@ static void COUUIDGet16RandomBytes(unsigned char bytes[16])
 	{
 		return YES;
 	}
-	if ([anObject isKindOfClass: [self class]])
+	if (object_getClass(anObject) == COUUIDClass)
 	{
 		return (0 == memcmp(uuid, ((COUUID *)anObject)->uuid, 16));
 	}
