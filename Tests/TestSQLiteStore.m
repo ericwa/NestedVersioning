@@ -182,9 +182,9 @@ static int itemChangedAtCommit(int i)
     
     // Try search
     
-    NSArray *results = [store revisionIDsMatchingQuery: @"modified 32"];
-    UKTrue([results count] >= 1);
-    if ([results count] >= 1)
+    NSArray *results = [store revisionIDsMatchingQuery: @"\"modified 43 in commit 32\"'"];
+    UKTrue([results count] == 1);
+    if ([results count] == 1)
     {
         CORevisionID *revid = [results objectAtIndex: 0];
         UKObjectsEqual([lastCommitId backingStoreUUID], [revid backingStoreUUID]);
