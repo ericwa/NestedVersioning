@@ -12,18 +12,23 @@
 - (void)testCreate
 {
 	COEditingContext *ctx = [COEditingContext editingContext];
-	UKNotNil(ctx);
-    
+	UKNotNil(ctx);    
     UKNil([ctx rootObject]);
 }
 
-- (COObject *) itemWithLabel: (NSString *)label
+- (COObject *) addObjectWithLabel: (NSString *)label toObject: (COObject *)dest
 {
-	COEditingContext *ctx = [[[COEditingContext alloc] init] autorelease];
-    [[ctx rootObject] setValue: label
-                  forAttribute: @"label"
-                          type: [COType stringType]];
-    return [ctx rootObject];    
+    COObject *obj = [[dest editingContext] insertObject];
+    [obj setValue: label
+     forAttribute: @"label"
+             type: [COType stringType]];
+    
+    [obj setValue: S() forAttribute: @"contents" type: [[COType embeddedItemType] setType]];
+    
+    [dest addObject: obj
+toUnorderedAttribute: @"contents"];
+    
+    return obj;
 }
 
 - (void)testCopyingBetweenContextsWithNoStoreAdvanced
@@ -31,13 +36,20 @@
 	COEditingContext *ctx1 = [[COEditingContext alloc] init];
 	COEditingContext *ctx2 = [[COEditingContext alloc] init];
 	
-	COObject *parent = [[ctx1 rootObject] addObjectToContents: [self itemWithLabel: @"Shopping"]];
-	COObject *child = [parent addObjectToContents: [self itemWithLabel: @"Groceries"]];
-	COObject *subchild = [child addObjectToContents: [self itemWithLabel: @"Pizza"]];
+    COObject *root = [ctx1 insertObject];
+    [ctx1 setRootObject: root];
+    [root setValue: S() forAttribute: @"contents" type: [[COType embeddedItemType] setType]];
+    
+	COObject *parent = [self addObjectWithLabel: @"Shopping" toObject: root];
+	COObject *child = [self addObjectWithLabel: @"Groceries" toObject: parent];
+	COObject *subchild = [self addObjectWithLabel: @"Pizza" toObject: child];
     
     UKObjectsEqual(S([[ctx1 rootObject] UUID], [parent UUID], [child UUID], [subchild UUID]),
                    [ctx1 allObjectUUIDs]);
     
+}
+
+#if 0
 	// We are going to copy 'child' from ctx1 to ctx2. It should copy both
 	// 'child' and 'subchild', but not 'parent'
 	                                                  
@@ -267,8 +279,6 @@
     UKObjectsEqual(t2, [t2copyCtx rootObject]);
 }
 
-
-#if 0
 
 - (void)testCopyingBetweenContextsWithManyToMany
 {

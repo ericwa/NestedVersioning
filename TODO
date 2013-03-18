@@ -8,7 +8,7 @@ General
 Store
 -----
 
-- GC unreachable revisions (aka history compacting)
+- GC unreachable revisions (aka history compacting)including unreachable non-gc-root persistent "roots"
 - Merge all gc code into a single GC pass.
 x Write binary serialization format
 - Write COItem import/export using binary parser.
