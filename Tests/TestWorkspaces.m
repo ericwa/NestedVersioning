@@ -68,7 +68,7 @@
     COObject *o3 = [ctx insertObjectWithSchemaName: @"Group"];
     COObject *o4 = [ctx insertObject];
     
-    UKTrue([S(@"name", @"contents", @"embeddedGroups") isSubsetOfSet: [o1 attributeNames]]);
+    UKTrue([S(@"name", @"contents", @"embeddedGroups") isSubsetOfSet: [NSSet setWithArray:[o1 attributeNames]]]);
     
     [o1 setValue: S(o2, o3) forAttribute: @"embeddedGroups"];
     [o2 setValue: S(o4) forAttribute: @"contents"];

@@ -54,7 +54,7 @@ NSString *kCOSchemaName;
 
 - (COUUID *) UUID;
 
-- (NSSet *) attributeNames;
+- (NSArray *) attributeNames;
 
 - (COType *) typeForAttribute: (NSString *)anAttribute;
 

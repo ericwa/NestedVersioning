@@ -38,7 +38,7 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes;
 
 - (COUUID *) UUID;
 
-- (NSSet *) attributeNames;
+- (NSArray *) attributeNames;
 
 - (COType *) typeForAttribute: (NSString *)anAttribute;
 - (id) valueForAttribute: (NSString*)anAttribute;

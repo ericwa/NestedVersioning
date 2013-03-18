@@ -62,13 +62,13 @@ NSString *kCOSchemaName = @"COSchemaName";
 	return [item_ UUID];
 }
 
-- (NSSet *) attributeNames
+- (NSArray *) attributeNames
 {
     COSchema *schema = [self schema];
     if (schema != nil)
     {
-        return [[schema propertyNames] setByAddingObjectsFromSet:
-                    [item_ attributeNames]];
+        return [[[schema propertyNames] setByAddingObjectsFromArray:
+                    [item_ attributeNames]] allObjects];
     }
     else
     {
