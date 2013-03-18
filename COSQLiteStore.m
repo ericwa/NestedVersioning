@@ -71,6 +71,7 @@
     
     // Set up schema
     
+    [db_ beginTransaction];    
     [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS persistentroots (uuid BLOB PRIMARY KEY,"
      "backingstore BLOB, plist BLOB, gcroot BOOLEAN)"];
     
@@ -79,6 +80,7 @@
     [db_ executeUpdate: @"CREATE VIRTUAL TABLE IF NOT EXISTS fts USING fts4(content=\"\", text)"]; // implicit column docid
     [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS fts_docid_to_revisionid ("
      "docid INTEGER PRIMARY KEY, revid STRING)"]; // FIXME: store revid efficiently! add UUID table!
+    [db_ commit];
     
     if ([db_ hadError])
     {

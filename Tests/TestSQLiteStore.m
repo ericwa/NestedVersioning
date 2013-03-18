@@ -11,8 +11,10 @@
 
 @implementation TestSQLiteStore
 
-static const int NUM_CHILDREN = 1000;
+static const int NUM_CHILDREN = 100;
 static const int NUM_COMMITS = 1000;
+static const int NUM_PERSISTENT_ROOTS = 10;
+static const int NUM_PERSISTENT_ROOT_COPIES = 100;
 
 static COUUID *rootUUID;
 static COUUID *childUUIDs[NUM_CHILDREN];
@@ -84,6 +86,7 @@ static int itemChangedAtCommit(int i)
 
 #define RELOAD_ENTIRE_GRAPH_ON_EVERY_COMIT 0
 
+#if 1
 - (void)testBasic
 {
 //    for (int i=0; i<NUM_CHILDREN; i++)
@@ -180,13 +183,57 @@ static int itemChangedAtCommit(int i)
     // Try search
     
     NSArray *results = [store revisionIDsMatchingQuery: @"modified 32"];
-    UKIntsEqual(1, [results count]);
-    if ([results count] == 1)
+    UKTrue([results count] >= 1);
+    if ([results count] >= 1)
     {
         CORevisionID *revid = [results objectAtIndex: 0];
         UKObjectsEqual([lastCommitId backingStoreUUID], [revid backingStoreUUID]);
         UKIntsEqual(32, [revid revisionIndex]);
     }
+}
+#endif
+
+- (COItemTree*) initialItemTree
+{
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity: NUM_CHILDREN+1];
+    [dict setObject: [self initialRootItem] forKey: rootUUID];
+    for (int i=0; i<NUM_CHILDREN; i++)
+    {
+        [dict setObject: [self initialChildItem: i]
+                 forKey: childUUIDs[i]];
+    }
+    COItemTree *it = [[[COItemTree alloc] initWithItemForUUID: dict rootItemUUID: rootUUID] autorelease];
+    return it;
+}
+
+- (void)testLotsOfPersistentRoots
+{
+    COItemTree *it = [self initialItemTree];
+    
+    for (int i =0; i<NUM_PERSISTENT_ROOTS; i++)
+    {
+        COPersistentRootState *proot = [store createPersistentRootWithInitialContents: it
+                                                                             metadata: nil
+                                                                             isGCRoot: YES];
+    }
+    UKPass();
+}
+
+- (void)testLotsOfPersistentRootCopies
+{
+    COItemTree *it = [self initialItemTree];
+
+    COPersistentRootState *proot = [store createPersistentRootWithInitialContents: it
+                                                                         metadata: nil
+                                                                         isGCRoot: YES];
+    
+    for (int i =0; i<NUM_PERSISTENT_ROOT_COPIES; i++)
+    {
+        [store createPersistentRootWithInitialRevision: [[proot currentBranchState] currentState]
+                                              metadata: nil
+                                              isGCRoot: YES];
+    }
+    UKPass();
 }
 
 @end
