@@ -322,6 +322,7 @@
                                       withParent: parentRevid
                                    modifiedItems: modifiedItems];
     
+    assert(revid >= 0);
     CORevisionID *revidObject = [[[CORevisionID alloc] initWithPersistentRootBackingStoreUUID: aBacking
                                                                                 revisionIndex: revid] autorelease];
     
