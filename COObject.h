@@ -98,8 +98,7 @@ NSString *kCOSchemaName;
 	 forAttribute: (NSString*)anAttribute;
 
 - (void) setValue: (id)aValue
-	 forAttribute: (NSString*)anAttribute
-			 type: (COType *)aType;
+	 forAttribute: (NSString*)anAttribute;
 
 - (void) setValue: (id)aValue
 	 forAttribute: (NSString*)anAttribute;

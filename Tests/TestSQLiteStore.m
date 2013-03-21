@@ -11,7 +11,7 @@
 
 @implementation TestSQLiteStore
 
-static const int NUM_CHILDREN = 100;
+static const int NUM_CHILDREN = 10000;
 static const int NUM_COMMITS = 1000;
 static const int NUM_PERSISTENT_ROOTS = 10;
 static const int NUM_PERSISTENT_ROOT_COPIES = 100;

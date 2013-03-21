@@ -85,7 +85,35 @@
  
  suppose we want to reconstruct the delta revision 500000:
  
- SELECT * FROM test WHERE revid <= 500000 AND revid >= (SELECT MAX(revid) FROM test WHERE delta = 0 AND revid < 500000);
+ 
+
+ 
+ Alt schema:
+ 
+ revid INTEGER | itemid INTEGER | contents BLOB |
+ -------------------------------+---------------+
+ 0             | 1              | ???           |
+ 0             | 2              | ???           |
+ 1             | 1              | ???           |
+ 2             | 3              | ???           |
+ 2             | 4              | ???           |
+ 2             | 4              | ???           |
+ 3             | 4              | ???           |
+
+ revid INTEGER PRIMARY KEY | metadata BLOB | parent INTEGER | root BLOB | deltabase INTEGER
+ --------------------------+---------------+----------------+-----------+------------------
+ 0                         | ???           | null           | xxxxxxxxx | 0
+ 1                         | ???           | 0              | xxxxxxxxx | 0
+ 2                         | ???           | 1              | xxxxxxxxx | 2
+ 3                         | ???           | 2              | xxxxxxxxx | 2
+ 4                         | ???           | 3              | xxxxxxxxx | 2
+ 5                         | ???           | 2              | xxxxxxxxx | 2
+ 6                         | ???           | 0              | xxxxxxxxx | 6
+
+SELECT revid, contents, parent, deltabase 
+ "FROM commits "
+ "WHERE revid <= ? AND revid >= (SELECT deltabase FROM commits WHERE revid = ?) "
+ "ORDER BY revid DESC", revidObj, revidObj];
 
  */
 

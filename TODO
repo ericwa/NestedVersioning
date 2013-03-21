@@ -8,6 +8,7 @@ General
 Store
 -----
 
+- Implement the JOIN based schema on ipad. It will be faster I think and enable filtering by item.
 - GC unreachable revisions (aka history compacting)including unreachable non-gc-root persistent "roots"
 - Merge all gc code into a single GC pass.
 x Write binary serialization format

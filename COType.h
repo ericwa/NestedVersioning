@@ -22,9 +22,10 @@
 + (COType *) doubleType;
 + (COType *) stringType;
 + (COType *) blobType;
-+ (COType *) commitUUIDType;
 + (COType *) pathType;
 + (COType *) embeddedItemType;
+
++ (COType *) commitUUIDType;
 + (COType *) attachmentType;
 + (COType *) referenceType;
 

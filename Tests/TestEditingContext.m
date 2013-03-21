@@ -21,7 +21,13 @@
     COObject *obj = [[dest editingContext] insertObject];
     [obj setValue: label
      forAttribute: @"label"
-             type: [COType stringType]];
+           /*  type: [COType stringType] */];
+    
+    // or:
+    
+    [obj setValue: label
+     forAttribute: @"label"
+             type: @"org.etoile.fts-string"];
     
     [obj setValue: S() forAttribute: @"contents" type: [[COType embeddedItemType] setType]];
     
