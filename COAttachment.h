@@ -7,8 +7,8 @@
  * In the "conceptual schema" the type of attachment property should still be a regular blob.
  */
 @interface COAttachment : NSObject
-
+#if 0
 + (COAttachment *) createAttachmentWithPath: (NSString *)aPath
                                     inStore: (COSQLiteStore *)aStore;
-
+#endif
 @end
