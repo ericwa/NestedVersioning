@@ -15,6 +15,11 @@
     path_ = [aPath retain];
 	db_ = [[FMDatabase alloc] initWithPath: [aPath stringByAppendingPathComponent: @"revisions.sqlite"]];
     
+    // Setup UUID<->Key map tables
+    UUIDKeyToUUID_ = NSCreateMapTable(NSIntegerMapKeyCallBacks, NSObjectMapValueCallBacks, 1024);
+    UUIDToUUIDKey_ = NSCreateMapTable(NSObjectMapKeyCallBacks, NSIntegerMapValueCallBacks, 1024);
+    
+    [db_ setCrashOnErrors: YES];
     [db_ setShouldCacheStatements: YES];
 	
 	if (![db_ open])
@@ -37,9 +42,14 @@
     
     // Set up schema
     
-    [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS commits (revid INTEGER PRIMARY KEY ASC, "
-                        "contents BLOB, metadata BLOB, parent INTEGER, root BLOB, deltabase INTEGER, "
-                        "bytesInDeltaRun INTEGER)"];
+    [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS data (revid INTEGER, itemid INTEGER, data BLOB)"];
+    [db_ executeUpdate: @"CREATE INDEX IF NOT EXISTS data_index ON data(revid)"];
+    [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS revs (revid INTEGER PRIMARY KEY ASC, "
+                         "parent INTEGER, root INTEGER, deltabase INTEGER, bytesInDeltaRun INTEGER, metadata BLOB)"];
+    
+    // N.B.: The UNIQUE constraint automatically creates an index on the uuid column,
+    // which is used like a normal index to optimise uuid searches. (http://www.sqlite.org/lang_createtable.html)
+    [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS uuids(uuid_index INTEGER PRIMARY KEY, uuid  BLOB UNIQUE)"];
     
     if ([db_ hadError])
     {
@@ -47,6 +57,7 @@
         [self release];
 		return nil;
 	}
+    
 
 	return self;
 }
@@ -61,6 +72,57 @@
     [path_ release];
 	[db_ release];
 	[super dealloc];
+}
+
+/* UUID cache */
+
+- (int64_t)keyForUUID: (COUUID*)uuid
+{
+    BOOL useTransaction = ![db_ inTransaction];
+    if (useTransaction)
+    {
+        [db_ beginTransaction];
+    }
+    
+    NSData *uuidBlob = [uuid dataValue];
+    
+    int64_t key = -1;
+    FMResultSet *rs = [db_ executeQuery:@"SELECT uuid_index FROM uuids WHERE uuid = ?", uuidBlob];
+	if ([rs next])
+	{
+		key = [rs longLongIntForColumnIndex: 0];
+		[rs close];
+	}
+	else
+	{
+		[rs close];
+        [db_ executeUpdate: @"INSERT INTO uuids(uuid) VALUES(?)", uuidBlob];
+        key = [db_ lastInsertRowId];
+	}
+    
+    if (useTransaction)
+    {
+        [db_ commit];
+    }
+    
+    return key;
+}
+
+- (COUUID *) UUIDForKey: (int64_t)key
+{
+    COUUID *result = nil;
+    FMResultSet *rs = [db_ executeQuery:@"SELECT uuid FROM uuids WHERE uuid_index = ?", [NSNumber numberWithLongLong: key]];
+	if ([rs next])
+	{
+		result = [COUUID UUIDWithData: [rs dataForColumnIndex: 0]];
+		[rs close];
+	}
+	else
+	{
+		[rs close];
+	}
+
+    return result;
 }
 
 /* DB Setup */
@@ -92,7 +154,7 @@
 - (NSDictionary *) metadataForRevid: (int64_t)revid
 {
     NSDictionary *result = nil;
-    FMResultSet *rs = [db_ executeQuery: @"SELECT metadata FROM commits WHERE revid = ?", [NSNumber numberWithLongLong: revid]];
+    FMResultSet *rs = [db_ executeQuery: @"SELECT metadata FROM revs WHERE revid = ?", [NSNumber numberWithLongLong: revid]];
 	if ([rs next])
 	{
         NSData *data = [rs dataForColumnIndex: 0];
@@ -111,7 +173,7 @@
 - (int64_t) parentForRevid: (int64_t)revid
 {
     int64_t result = -1;
-    FMResultSet *rs = [db_ executeQuery: @"SELECT parent FROM commits WHERE revid = ?", [NSNumber numberWithLongLong: revid]];
+    FMResultSet *rs = [db_ executeQuery: @"SELECT parent FROM revs WHERE revid = ?", [NSNumber numberWithLongLong: revid]];
 	if ([rs next])
 	{
         result = [rs longLongIntForColumnIndex: 0];
@@ -124,10 +186,10 @@
 - (COUUID *) rootUUIDForRevid: (int64_t)revid
 {
     COUUID *result = nil;
-    FMResultSet *rs = [db_ executeQuery: @"SELECT root FROM commits WHERE revid = ?", [NSNumber numberWithLongLong: revid]];
+    FMResultSet *rs = [db_ executeQuery: @"SELECT root FROM revs WHERE revid = ?", [NSNumber numberWithLongLong: revid]];
 	if ([rs next])
 	{
-        result = [COUUID UUIDWithData: [rs dataForColumnIndex: 0]];
+        result = [self UUIDForKey: [rs longLongIntForColumnIndex: 0]];
 	}
     [rs close];
     
@@ -142,22 +204,28 @@
     
     NSMutableDictionary *dataForUUID = [NSMutableDictionary dictionary];
     
-    FMResultSet *rs = [db_ executeQuery: @"SELECT revid, contents, parent, deltabase "
-                                          "FROM commits "
-                                          "WHERE revid <= ? AND revid >= (SELECT deltabase FROM commits WHERE revid = ?) "
+    FMResultSet *rs = [db_ executeQuery: @"SELECT revid, itemid, data, parent, deltabase "
+                                          "FROM data INNER JOIN revs USING(revid) "
+                                          "WHERE revid <= ? AND revid >= (SELECT deltabase FROM revs WHERE revid = ?) "
                                           "ORDER BY revid DESC", revidObj, revidObj];
     int64_t nextRevId = -1;
     
     while ([rs next])
     {
         const int64_t revid = [rs longLongIntForColumnIndex: 0];
-        NSData *contentsData = [rs dataForColumnIndex: 1];
-        const int64_t parent = [rs longLongIntForColumnIndex: 2];
-        const int64_t deltabase = [rs boolForColumnIndex: 3];
         
         if (revid == nextRevId || nextRevId == -1)
-        {
-            ParseCombinedCommitDataInToUUIDToItemDataDictionary(dataForUUID, contentsData, NO);
+        {            
+            COUUID *itemUUID = [self UUIDForKey: [rs longLongIntForColumnIndex: 1]];
+            const int64_t parent = [rs longLongIntForColumnIndex: 3];
+            const int64_t deltabase = [rs boolForColumnIndex: 4];
+            
+            if (nil == [dataForUUID objectForKey: itemUUID])
+            {
+                NSData *itemData = [rs dataForColumnIndex: 2];
+                [dataForUUID setObject: itemData
+                                forKey: itemUUID];
+            }
             
             if (parent == baseRevid)
             {
@@ -205,25 +273,10 @@
     return [self partialItemTreeFromRevid: -1 toRevid: revid];
 }
 
-static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifiedItems)
-{
-    NSMutableData *result = [NSMutableData dataWithCapacity: 64536];
-    
-    for (COUUID *uuid in modifiedItems)
-    {
-        COItem *item = [anItemTree itemForUUID: uuid];
-        NSData *itemJson = [NSJSONSerialization dataWithJSONObject: [item plist] options: 0 error: NULL];
-        
-        AddCommitUUIDAndDataToCombinedCommitData(result, uuid, itemJson);
-    }
-    
-    return result;
-}
-
 - (int64_t) nextRowid
 {
     int64_t result = 0;
-    FMResultSet *rs = [db_ executeQuery: @"SELECT MAX(rowid) FROM commits"];
+    FMResultSet *rs = [db_ executeQuery: @"SELECT MAX(rowid) FROM revs"];
 	if ([rs next])
 	{
         if (![rs columnIndexIsNull: 0])
@@ -240,7 +293,7 @@ static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifie
 {
     int64_t deltabase = -1;
     
-    FMResultSet *rs = [db_ executeQuery: @"SELECT deltabase FROM commits WHERE rowid = ?", [NSNumber numberWithLongLong: aRowid]];
+    FMResultSet *rs = [db_ executeQuery: @"SELECT deltabase FROM revs WHERE rowid = ?", [NSNumber numberWithLongLong: aRowid]];
     if ([rs next])
     {
         deltabase = [rs longLongIntForColumnIndex: 0];
@@ -250,18 +303,34 @@ static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifie
     return deltabase;
 }
 
-- (int64_t) bytesInDeltaRunForRowid: (int64_t)aRowid
+//- (int64_t) bytesInDeltaRunForRowid: (int64_t)aRowid
+//{
+//    int64_t bytesInDeltaRun = 0;
+//    
+//    FMResultSet *rs = [db_ executeQuery: @"SELECT bytesInDeltaRun FROM commits WHERE rowid = ?", [NSNumber numberWithLongLong: aRowid]];
+//    if ([rs next])
+//    {
+//        bytesInDeltaRun = [rs longLongIntForColumnIndex: 0];
+//    }
+//    [rs close];
+//    
+//    return bytesInDeltaRun;
+//}
+
+- (void) writeItems: (NSArray*)modifiedItems
+             inTree: (COItemTree *)anItemTree
+              revid: (int64_t)aRevid
 {
-    int64_t bytesInDeltaRun = 0;
-    
-    FMResultSet *rs = [db_ executeQuery: @"SELECT bytesInDeltaRun FROM commits WHERE rowid = ?", [NSNumber numberWithLongLong: aRowid]];
-    if ([rs next])
+    for (COUUID *uuid in modifiedItems)
     {
-        bytesInDeltaRun = [rs longLongIntForColumnIndex: 0];
+        int64_t itemid = [self keyForUUID: uuid];
+        COItem *item = [anItemTree itemForUUID: uuid];
+        NSData *itemJson = [NSJSONSerialization dataWithJSONObject: [item plist] options: 0 error: NULL];
+        [db_ executeUpdate: @"INSERT INTO data(revid, itemid, data) VALUES(?,?,?)",
+            [NSNumber numberWithLongLong: aRevid],
+            [NSNumber numberWithLongLong: itemid],
+            itemJson];
     }
-    [rs close];
-    
-    return bytesInDeltaRun;
 }
 
 /**
@@ -277,7 +346,7 @@ static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifie
     
     const int64_t parent_deltabase = [self deltabaseForRowid: aParent];
     const int64_t rowid = [self nextRowid];
-    const int64_t lastBytesInDeltaRun = [self bytesInDeltaRunForRowid: rowid - 1];
+    //const int64_t lastBytesInDeltaRun = [self bytesInDeltaRunForRowid: rowid - 1];
     int64_t deltabase;
     NSData *contentsBlob;
     int64_t bytesInDeltaRun;
@@ -294,14 +363,14 @@ static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifie
         {
             modifiedItems = [anItemTree itemUUIDs];
         }
-        contentsBlob = contentsBLOBWithItemTree(anItemTree, modifiedItems);
-        bytesInDeltaRun = lastBytesInDeltaRun + [contentsBlob length];
+        [self writeItems: modifiedItems inTree: anItemTree revid: rowid];
+        //bytesInDeltaRun = lastBytesInDeltaRun + [contentsBlob length];
     }
     else
     {
         deltabase = rowid;
-        contentsBlob = contentsBLOBWithItemTree(anItemTree, [anItemTree itemUUIDs]);
-        bytesInDeltaRun = [contentsBlob length];
+        [self writeItems: [anItemTree itemUUIDs] inTree: anItemTree revid: rowid];
+        //bytesInDeltaRun = [contentsBlob length];
     }
 
     NSData *metadataBlob = nil;
@@ -311,14 +380,14 @@ static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifie
     }
     
     // revid INTEGER PRIMARY KEY | contents BLOB | metadata BLOB | parent INTEGER | root BLOB | deltabase INTEGER | bytesInDeltaRun
-    [db_ executeUpdate: @"INSERT INTO commits VALUES (?, ?, ?, ?, ?, ?, ?)",
+    [db_ executeUpdate: @"INSERT INTO revs(revid, parent, root, deltabase, bytesInDeltaRun, metadata) "
+                         " VALUES (?, ?, ?, ?, ?, ?)",
         [NSNumber numberWithLongLong: rowid],
-        contentsBlob,
-        metadataBlob,
         [NSNumber numberWithLongLong: aParent],
-        [[anItemTree rootItemUUID] dataValue],
+        [NSNumber numberWithLongLong: [self keyForUUID: [anItemTree rootItemUUID]]],
         [NSNumber numberWithLongLong: deltabase],
-        [NSNumber numberWithLongLong: bytesInDeltaRun]];
+        [NSNumber numberWithLongLong: 0],
+        metadataBlob];
     
     [db_ commit];
     
@@ -327,32 +396,32 @@ static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifie
 
 - (void) iteratePartialItemTrees: (void (^)(NSSet *))aBlock
 {
-    NSMutableDictionary *dataForUUID = [[[NSMutableDictionary alloc] init] autorelease];
-    
-    FMResultSet *rs = [db_ executeQuery: @"SELECT contents FROM commits"];
-    while ([rs next])
-    {
-        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-        
-        NSData *contentsData = [rs dataForColumnIndex: 0];
-        
-        [dataForUUID removeAllObjects];
-        ParseCombinedCommitDataInToUUIDToItemDataDictionary(dataForUUID, contentsData, YES);
-        
-        NSMutableSet *items = [NSMutableSet setWithCapacity: [dataForUUID count]];
-        for (COUUID *uuid in dataForUUID)
-        {
-            id plist = [NSJSONSerialization JSONObjectWithData: [dataForUUID objectForKey: uuid]
-                                                       options: 0 error: NULL];
-            COItem *item = [[[COItem alloc] initWithPlist: plist] autorelease];
-            [items addObject: item];
-        }
-        aBlock(items);
-        
-        [pool release];
-    }
-	
-    [rs close];
+//    NSMutableDictionary *dataForUUID = [[[NSMutableDictionary alloc] init] autorelease];
+//    
+//    FMResultSet *rs = [db_ executeQuery: @"SELECT contents FROM commits"];
+//    while ([rs next])
+//    {
+//        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+//        
+//        NSData *contentsData = [rs dataForColumnIndex: 0];
+//        
+//        [dataForUUID removeAllObjects];
+//        ParseCombinedCommitDataInToUUIDToItemDataDictionary(dataForUUID, contentsData, YES);
+//        
+//        NSMutableSet *items = [NSMutableSet setWithCapacity: [dataForUUID count]];
+//        for (COUUID *uuid in dataForUUID)
+//        {
+//            id plist = [NSJSONSerialization JSONObjectWithData: [dataForUUID objectForKey: uuid]
+//                                                       options: 0 error: NULL];
+//            COItem *item = [[[COItem alloc] initWithPlist: plist] autorelease];
+//            [items addObject: item];
+//        }
+//        aBlock(items);
+//        
+//        [pool release];
+//    }
+//	
+//    [rs close];
 }
 
 @end

@@ -11,6 +11,9 @@
 {
     NSString *path_;
     FMDatabase *db_;
+    
+    NSMapTable *UUIDKeyToUUID_;
+    NSMapTable *UUIDToUUIDKey_;
 }
 
 - (id)initWithPath: (NSString *)aPath;
