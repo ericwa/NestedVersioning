@@ -208,17 +208,32 @@
                                           "FROM data INNER JOIN revs USING(revid) "
                                           "WHERE revid <= ? AND revid >= (SELECT deltabase FROM revs WHERE revid = ?) "
                                           "ORDER BY revid DESC", revidObj, revidObj];
+    BOOL expectNext = NO; // validity check
     int64_t nextRevId = -1;
-    
+    int64_t lastUsedRevId = -1;
+
     while ([rs next])
     {
         const int64_t revid = [rs longLongIntForColumnIndex: 0];
+
+        if (revid == baseRevid)
+        {
+            // The caller _already_ has the state of baseRevid. If we are about to processe
+            // an item from baseRevid, we can stop because we have everything already.
+            expectNext = NO; // validity check
+            break;
+        }
         
-        if (revid == nextRevId || nextRevId == -1)
-        {            
+        const BOOL foundNextRevid = (revid == nextRevId || nextRevId == -1);
+        const BOOL onSameRevid = (revid == lastUsedRevId);
+        
+        if (foundNextRevid || onSameRevid)
+        {
+            // Read all of the items in this revision
+            
             COUUID *itemUUID = [self UUIDForKey: [rs longLongIntForColumnIndex: 1]];
             const int64_t parent = [rs longLongIntForColumnIndex: 3];
-            const int64_t deltabase = [rs boolForColumnIndex: 4];
+            const int64_t deltabase = [rs longLongIntForColumnIndex: 4];
             
             if (nil == [dataForUUID objectForKey: itemUUID])
             {
@@ -227,25 +242,20 @@
                                 forKey: itemUUID];
             }
             
-            if (parent == baseRevid)
-            {
-                // The caller _already_ has the state of baseRevid. If the state we just processed's
-                // parent is baseRevid, we can stop because we have everything already.
-                break;
-            }
-            
             nextRevId = parent;
+                        
+            expectNext = (deltabase != revid); // validity check
             
-            // validity check            
-            assert([rs hasAnotherRow] || deltabase == revid);
+            lastUsedRevId = revid;
         }
         else
         {
-            // validity check
-            assert([rs hasAnotherRow]);
-        }
+            expectNext = NO; // validity check
+        }        
     }
 	
+    assert(!expectNext);// validity check
+    
     [rs close];
     
     COUUID *root = [self rootUUIDForRevid: revid];

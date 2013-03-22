@@ -27,6 +27,9 @@ x why does performance get linearly worse with more items even if we only modify
   - The test reads back all items from each commit, even when only one is modified.
     So
 
+X Switch to new schema that doesn't require loading whole proot into memory
+- fix test failures
+
 COItem
 ------
 
