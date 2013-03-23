@@ -8,7 +8,7 @@ General
 Store
 -----
 
-- Implement the JOIN based schema on ipad. It will be faster I think and enable filtering by item.
+x Implement the JOIN based schema on ipad. It will be faster I think and enable filtering by item.
 - GC unreachable revisions (aka history compacting)including unreachable non-gc-root persistent "roots"
 - Merge all gc code into a single GC pass.
 x Write binary serialization format
@@ -29,7 +29,7 @@ x why does performance get linearly worse with more items even if we only modify
     So
 
 X Switch to new schema that doesn't require loading whole proot into memory
-- fix test failures
+X fix test failures
 
 COItem
 ------
