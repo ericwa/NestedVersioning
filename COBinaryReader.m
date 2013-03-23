@@ -73,14 +73,6 @@ static inline uint64_t readUint64(const unsigned char *bytes)
             [delegate_ readInt64: (int64_t)readUint64(bytes_ + pos_)];
             pos_ += 8;
             break;
-        case '@':
-        {
-            COUUID *uuid = [[COUUID alloc] initWithBytes: &bytes_[pos_]];
-            [delegate_ readUUID: uuid];
-            [uuid release];
-            pos_ += 16;
-            break;
-        }
         case 's':
         {
             uint8_t dataLen = readUint8(&bytes_[pos_]);

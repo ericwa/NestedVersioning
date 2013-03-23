@@ -1,104 +1,115 @@
 #import "COBinaryWriter.h"
 #import "COMacros.h"
-#import "COUUID.h"
 
-@implementation COBinaryWriter
+#define CO_BUFFER_INITIAL_LENGTH 4096
 
-- (id) initWithMutableData: (NSMutableData*)aDest
+void
+co_buffer_init(co_buffer_t *dest)
 {
-    SUPERINIT;
-    ASSIGN(dest, aDest);
-    return self;
+    dest->allocated_length = CO_BUFFER_INITIAL_LENGTH;
+    dest->data = malloc(CO_BUFFER_INITIAL_LENGTH);
+    dest->length = 0;
 }
 
-- (void) dealloc
+void
+co_buffer_free(co_buffer_t *dest)
 {
-    [dest release];
-    [super dealloc];
+    free(dest->data);
 }
 
-#define WRITE_BYTES(b, l) [dest appendBytes: b length: l]
-#define WRITE(v) WRITE_BYTES(&v, sizeof(v))
 
-static inline void storeUint8(NSMutableData *dest, uint8_t value)
+static inline void
+co_buffer_write(co_buffer_t *dest, const char *data, size_t len)
+{
+    const size_t currlength = dest->length;
+    if (currlength + len > dest->allocated_length)
+    {
+        dest->allocated_length = currlength + len + CO_BUFFER_INITIAL_LENGTH;
+        dest->data = realloc(dest->data, dest->allocated_length);
+    }
+    
+    memcpy(dest->data + currlength, data, len);
+    dest->length += len;
+}
+
+#define WRITE(v) co_buffer_write(dest, (const char *)&v, sizeof(v))
+#define WRTITE_TYPE(t) co_buffer_write(dest, t, 1)
+
+static inline void
+co_buffer_store_uint8(co_buffer_t *dest, uint8_t value)
 {
     WRITE(value);
 }
 
-static inline void storeUint16(NSMutableData *dest, uint16_t value)
+static inline void
+co_buffer_store_uint16(co_buffer_t *dest, uint16_t value)
 {
     uint16_t swapped = CFSwapInt16HostToBig(value);
     WRITE(swapped);
 }
 
-static inline void storeUint32(NSMutableData *dest, uint32_t value)
+static inline void
+co_buffer_store_uint32(co_buffer_t *dest, uint32_t value)
 {
     uint32_t swapped = CFSwapInt32HostToBig(value);
     WRITE(swapped);
 }
      
-static inline void storeUint64(NSMutableData *dest, uint64_t value)
+static inline void
+co_buffer_store_uint64(co_buffer_t *dest, uint64_t value)
 {
     uint64_t swapped = CFSwapInt64HostToBig(value);
     WRITE(swapped);
 }
 
-static inline void storeType(NSMutableData *dest, char value)
-{
-    [dest appendBytes: &value length: 1];
-}
-
-- (void) storeInt64: (int64_t)value
+void
+co_buffer_store_integer(co_buffer_t *dest, int64_t value)
 {
     if (value <= INT8_MAX && value >= INT8_MIN)
     {
-        storeType(dest, 'B');
-        storeUint8(dest, (uint8_t)value);
+        WRTITE_TYPE("B");
+        co_buffer_store_uint8(dest, (uint8_t)value);
     }
     else if (value <= INT16_MAX && value >= INT16_MIN)
     {
-        storeType(dest, 'i');
-        storeUint16(dest, (uint16_t)value);
+        WRTITE_TYPE("i");
+        co_buffer_store_uint16(dest, (uint16_t)value);
     }
     else if (value <= INT32_MAX && value >= INT32_MIN)
     {
-        storeType(dest, 'I');
-        storeUint32(dest, (uint32_t)value);
+        WRTITE_TYPE("I");
+        co_buffer_store_uint32(dest, (uint32_t)value);
     }
     else
     {
-        storeType(dest, 'L');
-        storeUint64(dest, (uint64_t)value);
+        WRTITE_TYPE("L");
+        co_buffer_store_uint64(dest, (uint64_t)value);
     }
 }
 
-- (void) storeDouble: (double)aDouble
+void
+co_buffer_store_double(co_buffer_t *dest, double value)
 {
-	NSSwappedDouble swapped = NSSwapHostDoubleToBig(aDouble);
-	storeType(dest, 'F');
+	NSSwappedDouble swapped = NSSwapHostDoubleToBig(value);
+	WRTITE_TYPE("F");
     WRITE(swapped);
 }
 
-- (void) storeUUID: (COUUID *)aUUID
+void
+co_buffer_store_string(co_buffer_t *dest, NSString *value)
 {
-    storeType(dest, '@');
-    WRITE_BYTES([aUUID bytes], 16);
-}
-
-- (void) storeString: (NSString *)aString
-{
-    const char *utf8String = [aString UTF8String];
+    const char *utf8String = [value UTF8String];
     const size_t length = strlen(utf8String);
  
     if (length <= UINT8_MAX)
     {
-        storeType(dest, 's');
-        storeUint8(dest, (uint8_t)length);
+        WRTITE_TYPE("s");
+        co_buffer_store_uint8(dest, (uint8_t)length);
     }
     else if (length <= UINT32_MAX)
     {
-        storeType(dest, 'S');
-        storeUint32(dest, (uint32_t)length);
+        WRTITE_TYPE("S");
+        co_buffer_store_uint32(dest, (uint32_t)length);
     }
     else
     {
@@ -106,51 +117,51 @@ static inline void storeType(NSMutableData *dest, char value)
                     format: @"Strings longer than 2^32-1 not supported."];
     }
 
-    WRITE_BYTES(utf8String, length);
+    co_buffer_write(dest, utf8String, length);
 }
 
-- (void) storeData: (NSData *)aData
+void
+co_buffer_store_bytes(co_buffer_t *dest, const char *bytes, size_t length)
 {
-    const char *bytes = [aData bytes];
-    const size_t length = [aData length];
-    
     if (length <= UINT8_MAX)
     {
-        storeType(dest, 'd');
-        storeUint8(dest, (uint8_t)length);        
+        WRTITE_TYPE("d");
+        co_buffer_store_uint8(dest, (uint8_t)length);        
     }
     else if (length <= UINT32_MAX)
     {
-        storeType(dest, 'D');
-        storeUint32(dest, (uint32_t)length);
+        WRTITE_TYPE("D");
+        co_buffer_store_uint32(dest, (uint32_t)length);
     }
     else
     {
         [NSException raise: NSInvalidArgumentException
-                    format: @"Strings longer than 2^32-1 not supported."];
+                    format: @"Data longer than 2^32-1 not supported."];
     }
     
-    WRITE_BYTES(bytes, length);
+    co_buffer_write(dest, bytes, length);
 }
 
-- (void) beginObject
+void
+co_buffer_begin_object(co_buffer_t *dest)
 {
-    storeType(dest, '{');
+    WRTITE_TYPE("{");
 }
 
-- (void) endObject
+void
+co_buffer_end_object(co_buffer_t *dest)
 {
-    storeType(dest, '}');
+    WRTITE_TYPE("}");
 }
 
-- (void) beginArray
+void
+co_buffer_begin_array(co_buffer_t *dest)
 {
-    storeType(dest, '[');
+    WRTITE_TYPE("[");
 }
 
-- (void) endArray
+void
+co_buffer_end_array(co_buffer_t *dest)
 {
-    storeType(dest, ']');
+    WRTITE_TYPE("]");
 }
-
-@end

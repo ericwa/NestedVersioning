@@ -13,6 +13,8 @@
 		660ED2F216D3475900BF6BB8 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 660ED2F016D3475900BF6BB8 /* Credits.rtf */; };
 		660ED2F516D3475900BF6BB8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 660ED2F416D3475900BF6BB8 /* AppDelegate.m */; };
 		660ED2F816D3475900BF6BB8 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 660ED2F616D3475900BF6BB8 /* MainMenu.xib */; };
+		661AAB3016FC27DA00A9DEB2 /* COItem+Binary.h in Headers */ = {isa = PBXBuildFile; fileRef = 661AAB2E16FC27DA00A9DEB2 /* COItem+Binary.h */; };
+		661AAB3116FC27DA00A9DEB2 /* COItem+Binary.m in Sources */ = {isa = PBXBuildFile; fileRef = 661AAB2F16FC27DA00A9DEB2 /* COItem+Binary.m */; };
 		662115BD16BD92F400F037BB /* list-add.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 662115BC16BD92F400F037BB /* list-add.tiff */; };
 		662115C116BD938B00F037BB /* edit-redo.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 662115BF16BD938B00F037BB /* edit-redo.tiff */; };
 		662115C216BD938B00F037BB /* edit-undo.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 662115C016BD938B00F037BB /* edit-undo.tiff */; };
@@ -245,6 +247,8 @@
 		660ED2F716D3475900BF6BB8 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		66101A0914D09FAA00B50075 /* diff.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = diff.cc; path = Diff/diff.cc; sourceTree = "<group>"; };
 		66101A0D14D09FB700B50075 /* diff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = diff.h; path = Diff/diff.h; sourceTree = "<group>"; };
+		661AAB2E16FC27DA00A9DEB2 /* COItem+Binary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COItem+Binary.h"; sourceTree = "<group>"; };
+		661AAB2F16FC27DA00A9DEB2 /* COItem+Binary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "COItem+Binary.m"; sourceTree = "<group>"; };
 		662115BC16BD92F400F037BB /* list-add.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "list-add.tiff"; sourceTree = "<group>"; };
 		662115BF16BD938B00F037BB /* edit-redo.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "edit-redo.tiff"; sourceTree = "<group>"; };
 		662115C016BD938B00F037BB /* edit-undo.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "edit-undo.tiff"; sourceTree = "<group>"; };
@@ -1067,6 +1071,8 @@
 				668DA36114E0E4210062E6C2 /* COItemPath.h */,
 				66E4BB6D166B3D10009BFE7D /* COItemTree.h */,
 				79999EAB14DE50CA00FFBC99 /* Implementation */,
+				661AAB2E16FC27DA00A9DEB2 /* COItem+Binary.h */,
+				661AAB2F16FC27DA00A9DEB2 /* COItem+Binary.m */,
 			);
 			name = "In-Memory Item Tree";
 			sourceTree = "<group>";
@@ -1219,6 +1225,7 @@
 				66ED6D8716F4EB4F001B853E /* COBinaryWriter.h in Headers */,
 				66ED6D8B16F507BF001B853E /* COBinaryReader.h in Headers */,
 				66C2FAB316F840B200AF16C8 /* COAttachment.h in Headers */,
+				661AAB3016FC27DA00A9DEB2 /* COItem+Binary.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1557,6 +1564,7 @@
 				66ED6D8816F4EB4F001B853E /* COBinaryWriter.m in Sources */,
 				66ED6D8C16F507BF001B853E /* COBinaryReader.m in Sources */,
 				66C2FAB416F840B200AF16C8 /* COAttachment.m in Sources */,
+				661AAB3116FC27DA00A9DEB2 /* COItem+Binary.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

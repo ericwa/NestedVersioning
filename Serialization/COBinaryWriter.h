@@ -1,21 +1,37 @@
 #import <Foundation/Foundation.h>
-@class COUUID;
 
-@interface COBinaryWriter : NSObject
-{
-    NSMutableData *dest;
-}
+typedef struct {
+    unsigned char *data;
+    size_t length;
+    size_t allocated_length;
+} co_buffer_t;
 
-- (id) initWithMutableData: (NSMutableData*)aDest;
+void
+co_buffer_init(co_buffer_t *buf);
 
-- (void) storeInt64: (int64_t)value;
-- (void) storeDouble: (double)aDouble;
-- (void) storeUUID: (COUUID *)aUUID;
-- (void) storeString: (NSString *)aString;
-- (void) storeData: (NSData *)aData;
-- (void) beginObject;
-- (void) endObject;
-- (void) beginArray;
-- (void) endArray;
+void
+co_buffer_free(co_buffer_t *buf);
 
-@end
+void
+co_buffer_store_integer(co_buffer_t *buf, int64_t value);
+
+void
+co_buffer_store_double(co_buffer_t *buf, double value);
+
+void
+co_buffer_store_string(co_buffer_t *buf, NSString *value);
+
+void
+co_buffer_store_bytes(co_buffer_t *dest, const char *bytes, size_t length);
+
+void
+co_buffer_begin_object(co_buffer_t *buf);
+
+void
+co_buffer_end_object(co_buffer_t *buf);
+
+void
+co_buffer_begin_array(co_buffer_t *buf);
+
+void
+co_buffer_end_array(co_buffer_t *buf);
