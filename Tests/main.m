@@ -1,6 +1,48 @@
 #import <UnitKit/UKRunner.h>
 #import <UnitKit/UKTestHandler.h>
 
+#import "TestCommon.h"
+
+@implementation COSQLiteStoreTestCase
+
+- (id) init
+{
+    self = [super init];
+    
+    [[NSFileManager defaultManager] removeItemAtPath: STOREPATH error: NULL];
+    store = [[COSQLiteStore alloc] initWithURL: STOREURL];
+    
+    return self;
+}
+
+- (void) dealloc
+{
+    [store release];
+    [super dealloc];
+}
+
+@end
+
+@implementation COStoreTestCase
+
+- (id) init
+{
+    self = [super init];
+    
+    [[NSFileManager defaultManager] removeItemAtPath: STOREPATH error: NULL];
+    store = [[COStore alloc] initWithURL: STOREURL];
+    
+    return self;
+}
+
+- (void) dealloc
+{
+    [store release];
+    [super dealloc];
+}
+
+@end
+
 int main (int argc, const char *argv[])
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];

@@ -1,10 +1,9 @@
 #import "TestCommon.h"
 
 
-@interface TestWorkspaces : NSObject <UKTest> {
-	
+@interface TestWorkspaces : COStoreTestCase
+{
 }
-
 @end
 
 
@@ -82,6 +81,11 @@
     [ctx setRootObject: o1];
     
     UKIntsEqual(4, [[[ctx itemTree] itemUUIDs] count]);
+}
+
+- (void) testPersistentRootCreation
+{
+    
 }
 
 @end

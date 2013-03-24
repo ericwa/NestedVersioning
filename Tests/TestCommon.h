@@ -32,3 +32,17 @@
 
 #define STOREPATH [@"~/om6teststore" stringByExpandingTildeInPath]
 #define STOREURL [NSURL fileURLWithPath: STOREPATH]
+
+@interface COSQLiteStoreTestCase : NSObject
+{
+    COSQLiteStore *store;
+}
+
+@end
+
+@interface COStoreTestCase : NSObject
+{
+    COStore *store;
+}
+
+@end

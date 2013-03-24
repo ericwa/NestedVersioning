@@ -680,7 +680,6 @@
 			children = (
 				66ED6D5F16F053EB001B853E /* BasicPersistence.m */,
 				6628FBA6142FA7840072767A /* TestStore.m */,
-				662C1D5E168F8FDC002157F3 /* TestStoreEditQueue.m */,
 				66EDAF2E16B258CF00B06DB2 /* TestSubtreeDiffMerge.m */,
 				66E778AC14E6080700D5DFFF /* TestPersistentRootEditingContext.m */,
 				7978700E14D799A200B45FC6 /* TestSubtree.m */,
@@ -1092,6 +1091,7 @@
 				66ED6D6D16F427FD001B853E /* TestSQLiteStore.m */,
 				6660E23914F84B3000D2F319 /* TestItem.m */,
 				6628FBA2142FA7840072767A /* TestEditingContext.m */,
+				662C1D5E168F8FDC002157F3 /* TestStoreEditQueue.m */,
 				662F9EA616F6ECD900CEB9B4 /* CoreObject Trunk */,
 				662C1D5C168EE4D2002157F3 /* TODO: port */,
 				79FB63BD1486ABEF00751E1E /* Tests - docs and code sketch */,

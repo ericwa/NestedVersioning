@@ -1,11 +1,7 @@
 #import "TestCommon.h"
 
 
-@interface TestSQLiteStore : NSObject <UKTest>
-{
-    COSQLiteStore *store;
-}
-
+@interface TestSQLiteStore : COSQLiteStoreTestCase <UKTest>
 @end
 
 
@@ -29,16 +25,6 @@ static COUUID *childUUIDs[NUM_CHILDREN];
             childUUIDs[i] = [[COUUID alloc] init];
         }
     }
-}
-
-- (id) init
-{
-    self = [super init];
-    
-    [[NSFileManager defaultManager] removeItemAtPath: STOREPATH error: NULL];
-    store = [[COSQLiteStore alloc] initWithURL: STOREURL];
-    
-    return self;
 }
 
 - (COItem *) initialRootItem
