@@ -15,6 +15,7 @@ x Write binary serialization format
   \Per-item code must be pure C.
 - Never store UUIDs explictly but use a int <-> UUID table (in every database.)
   since they tend to be reused a lot.
+- Same with property names
 - Even the proot metadata is slow to write to json and back. Store it directly in tables.
 
 X Full-text search
