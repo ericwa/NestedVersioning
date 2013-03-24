@@ -369,7 +369,96 @@
 
 @end
 
+@implementation CONamedType
 
+@synthesize name;
+
+- (id)initWithName: (NSString *)aName storageType: (COType *)stype
+{
+    SUPERINIT;
+    self.name = aName;
+    self.storageType = stype;
+    return self;
+}
+
+- (void)dealloc
+{
+    [self.name release];
+    [self.storageType release];
+    [super dealloc];
+}
+
++ (COType*) typeWithString: (NSString *)aTypeString
+{
+    if ([aTypeString hasPrefix: @"{"])
+    {
+        NSRange separator = [aTypeString rangeOfString: @":"];
+        if (separator.location == NSNotFound)
+        {
+            return nil;
+        }
+        
+        NSString *name = [aTypeString substringToIndex: separator.location];
+        NSString *suffixString = [aTypeString substringWithRange:
+                                  NSMakeRange(separator.location + 1, [aTypeString length] - (separator.location + 1))];
+        return [[[self alloc] initWithName: name
+                               storageType: [COType typeWithString: suffixString]] autorelease];
+    }
+    return nil;
+}
+
+- (BOOL) isMultivalued
+{
+	return [self.storageType isMultivalued];
+}
+
+- (BOOL) isPrimitive
+{
+    return [self.storageType isPrimitive];
+}
+
+- (BOOL) validateValue: (id)aValue
+{
+	return [self.storageType validateValue: aValue];
+}
+
+- (NSString *) description
+{
+	return [NSString stringWithFormat: @"{%@:%@}", self.name, self.storageType];
+}
+
+- (NSString *) stringValue
+{
+	return [NSString stringWithFormat: @"{%@:%@}", self.name, [self.storageType stringValue]];
+}
+
+- (COType *) primitiveType
+{
+    return [[self storageType] primitiveType];
+}
+
+- (BOOL) isOrdered
+{
+    return [[self storageType] isOrdered];
+}
+
+- (BOOL) isEqual: (id)object
+{
+    if (![object isKindOfClass: [CONamedType class]]) return NO;
+    return [self.name isEqual: ((CONamedType *)object).name] && [[self storageType] isEqual: ((CONamedType *)object).storageType];
+}
+
+- (id) copyWithZone:(NSZone *)zone
+{
+	return [self retain];
+}
+
+- (BOOL) isPrimitiveTypeEqual: (id)object
+{
+    return [self.storageType isPrimitiveTypeEqual: object];
+}
+
+@end
 
 
 @implementation COType
@@ -437,11 +526,27 @@
 			 isOrdered: YES] autorelease];
 }
 
+- (COType *) namedType: (NSString *)aName
+{
+    return [[[CONamedType alloc] initWithName: aName storageType: self] autorelease];
+}
+- (COType *) storageType // Type ignoring name
+{
+    return self;
+}
+- (NSString *) name
+{
+    return nil;
+}
 + (COType*) typeWithString: (NSString *)aTypeString
 {
 	NILARG_EXCEPTION_TEST(aTypeString);
-	
-	COType *result = [COMultivaluedType typeWithString: aTypeString];
+
+	COType *result = [CONamedType typeWithString: aTypeString];
+	if (result == nil)
+    {
+        result = [COMultivaluedType typeWithString: aTypeString];
+    }
 	if (result == nil)
 	{
 		result = [COPrimitiveType typeWithString: aTypeString];

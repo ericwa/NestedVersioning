@@ -34,6 +34,8 @@
 - (COType *) namedType: (NSString *)aName;
 - (COType *) storageType; // Type ignoring name
 
+- (NSString *) name;
+
 - (BOOL) isMultivalued;
 - (BOOL) isPrimitive;
 

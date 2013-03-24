@@ -82,4 +82,12 @@
 	UKObjectsNotEqual(item2, item1);
 }
 
+- (void) testNamedType
+{
+	COMutableItem *item1 = [COMutableItem item];
+	[item1 setValue: [NSSet set] forAttribute: @"set" type: [[[COType stringType] setType] namedType: @"testName"]];
+
+    UKObjectsEqual(@"testName", [[item1 typeForAttribute: @"set"] name]);
+}
+
 @end

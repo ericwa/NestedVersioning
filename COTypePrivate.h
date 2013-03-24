@@ -24,6 +24,10 @@
 @end
 @interface COReferenceType : COUUIDType
 @end
+@interface CONamedType : COType
+@property (readwrite, nonatomic, retain) NSString *name;
+@property (readwrite, nonatomic, retain) COType *storageType;
+@end
 
 @interface COMultivaluedType : COType
 {
