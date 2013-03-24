@@ -40,6 +40,16 @@ Types
 
 x remove bag / unique array types
 - figure out where to put type names for primitives (<NSData> is org.etoile.bezier-path)
+- Get rid of COType and use an int:
+
+kCOStringType 1
+kCOIntType 2
+...
+
+kCOSetType 1024
+kCOArrayType 2048
+
+(kCOSetType | kCOIntType)
 
 Schema
 ------
