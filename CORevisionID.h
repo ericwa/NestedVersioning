@@ -20,6 +20,9 @@
     int64_t revisionIndex_;
 }
 
++ (CORevisionID *) revisionWithBackinStoreUUID: (COUUID *)aUUID
+                                 revisionIndex: (int64_t)anIndex;
+
 - (id) initWithPersistentRootBackingStoreUUID: (COUUID *)aUUID
                                 revisionIndex: (int64_t)anIndex;
 

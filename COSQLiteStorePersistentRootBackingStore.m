@@ -278,6 +278,31 @@
     return result;
 }
 
+- (void) benchmarkTableWalk
+{
+//    FMResultSet *rs = [db_ executeQuery: @"SELECT revid, itemid, data, parent, deltabase "
+//                       "FROM data INNER JOIN revs USING(revid) "
+//                       "ORDER BY revid DESC"];
+
+    FMResultSet *rs = [db_ executeQuery: @"SELECT itemid FROM data"];
+
+    
+    NSLog(@"start walk");
+    NSDate *start = [NSDate date];
+    
+    int64_t rows = 0;
+    while ([rs next])
+    {
+        const int64_t revid = [rs longLongIntForColumnIndex: 0];
+        rows ++;
+    }
+    
+    [rs close];
+
+    NSLog(@"walking all commits and reading revid took %lld ns", (long long) ([[NSDate date] timeIntervalSinceDate: start] * 1000000000.0));
+}
+
+
 - (COItemTree *) itemTreeForRevid: (int64_t)revid
 {
     return [self partialItemTreeFromRevid: -1 toRevid: revid];

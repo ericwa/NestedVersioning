@@ -11,8 +11,8 @@
 
 @implementation TestSQLiteStore
 
-static const int NUM_CHILDREN = 100;
-static const int NUM_COMMITS = 1000;
+static const int NUM_CHILDREN = 1;
+static const int NUM_COMMITS = 10000;
 static const int NUM_PERSISTENT_ROOTS = 10;
 static const int NUM_PERSISTENT_ROOT_COPIES = 100;
 
@@ -158,7 +158,7 @@ static int itemChangedAtCommit(int i)
         
         lastCommitId = [[store revisionForID: lastCommitId] parentRevisionID];
     }
-#else
+#elif 0
     for (int rev=NUM_COMMITS-1; rev>=1; rev--)
     {
         CORevisionID *parentCommitId = [[store revisionForID: lastCommitId] parentRevisionID];
@@ -190,6 +190,10 @@ static int itemChangedAtCommit(int i)
         UKObjectsEqual([lastCommitId backingStoreUUID], [revid backingStoreUUID]);
         UKIntsEqual(32, [revid revisionIndex]);
     }
+    
+    // Try walk commits
+    
+    [[store backingStoreForRevisionID: lastCommitId] benchmarkTableWalk];
 }
 #endif
 
