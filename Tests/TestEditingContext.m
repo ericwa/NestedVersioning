@@ -8,7 +8,7 @@
 
 
 @implementation TestEditingContext
-
+#if 0
 - (void)testCreate
 {
 	COEditingContext *ctx = [COEditingContext editingContext];
@@ -49,7 +49,7 @@ toUnorderedAttribute: @"contents"];
     
 }
 
-#if 0
+
 	// We are going to copy 'child' from ctx1 to ctx2. It should copy both
 	// 'child' and 'subchild', but not 'parent'
 	                                                  
