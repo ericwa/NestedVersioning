@@ -7,6 +7,16 @@ General
 
 Store
 -----
+- Basically there are 3 designs we could do:
+    1. simple 1 row per commit design. The row has a BLOB containing a binary-encoded
+       [ uuid-number | item-data | uuid-number | item-data ... ] list.
+    2. 1-row per item changed per commit. OPtionally keep the delta base and the rev parent
+       in another table, and join them
+    3. 1 row per property changed per item changed per commit. OPtionally keep the delta base and the rev parent
+       in another table, and join them.
+       Will work well if we only typically change one or two properties per commit.
+       
+    4. We could have a hybrid system of a "full-saves" table and a "delta-saves" table.
 
 - GC unreachable revisions (aka history compacting)including unreachable non-gc-root persistent "roots"
 - Merge all gc code into a single GC pass.
