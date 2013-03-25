@@ -132,6 +132,7 @@
 		66D6FA7716B2558300D9AF11 /* COArrayDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E503931495F9CF003C69C7 /* COArrayDiff.m */; };
 		66D6FA7816B2558300D9AF11 /* COItemTreeDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 669CADE71491844000D0CF5F /* COItemTreeDiff.m */; };
 		66D6FA7916B2558300D9AF11 /* COSubtreeEdits.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F5947B15119C7D007C517E /* COSubtreeEdits.m */; };
+		66D84FC6170001D4004C1BA4 /* TestPerformance.m in Sources */ = {isa = PBXBuildFile; fileRef = 662F9EB016F6ECEB00CEB9B4 /* TestPerformance.m */; };
 		66E22EC91421D47100C00A98 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E22EC81421D47100C00A98 /* Foundation.framework */; };
 		66E4BB65166A7B64009BFE7D /* COSQLiteStorePersistentRootBackingStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E4BB63166A7B64009BFE7D /* COSQLiteStorePersistentRootBackingStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E4BB66166A7B64009BFE7D /* COSQLiteStorePersistentRootBackingStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E4BB64166A7B64009BFE7D /* COSQLiteStorePersistentRootBackingStore.m */; };
@@ -321,7 +322,6 @@
 		662C1E7316923F38002157F3 /* PersistentRootWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PersistentRootWindow.xib; sourceTree = "<group>"; };
 		662F9EA716F6ECEB00CEB9B4 /* TestArrayDiff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestArrayDiff.m; path = "CoreObject Mar2013/TestArrayDiff.m"; sourceTree = "<group>"; };
 		662F9EA816F6ECEB00CEB9B4 /* TestCommitTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestCommitTrack.m; path = "CoreObject Mar2013/TestCommitTrack.m"; sourceTree = "<group>"; };
-		662F9EA916F6ECEB00CEB9B4 /* TestCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestCommon.h; path = "CoreObject Mar2013/TestCommon.h"; sourceTree = "<group>"; };
 		662F9EAA16F6ECEB00CEB9B4 /* TestCommon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestCommon.m; path = "CoreObject Mar2013/TestCommon.m"; sourceTree = "<group>"; };
 		662F9EAB16F6ECEB00CEB9B4 /* TestCopy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestCopy.m; path = "CoreObject Mar2013/TestCopy.m"; sourceTree = "<group>"; };
 		662F9EAC16F6ECEB00CEB9B4 /* TestCustomTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestCustomTrack.m; path = "CoreObject Mar2013/TestCustomTrack.m"; sourceTree = "<group>"; };
@@ -750,14 +750,12 @@
 			children = (
 				662F9EA716F6ECEB00CEB9B4 /* TestArrayDiff.m */,
 				662F9EA816F6ECEB00CEB9B4 /* TestCommitTrack.m */,
-				662F9EA916F6ECEB00CEB9B4 /* TestCommon.h */,
 				662F9EAA16F6ECEB00CEB9B4 /* TestCommon.m */,
 				662F9EAB16F6ECEB00CEB9B4 /* TestCopy.m */,
 				662F9EAC16F6ECEB00CEB9B4 /* TestCustomTrack.m */,
 				662F9EAD16F6ECEB00CEB9B4 /* TestEditingContext.m */,
 				662F9EAE16F6ECEB00CEB9B4 /* TestHistoryTrack.m */,
 				662F9EAF16F6ECEB00CEB9B4 /* TestObjectGraphDiff.m */,
-				662F9EB016F6ECEB00CEB9B4 /* TestPerformance.m */,
 				662F9EB116F6ECEB00CEB9B4 /* TestRelationshipIntegrity.m */,
 				662F9EB216F6ECEB00CEB9B4 /* TestRevisionNumber.m */,
 				662F9EB316F6ECEB00CEB9B4 /* TestStore.m */,
@@ -1092,6 +1090,7 @@
 				6660E23914F84B3000D2F319 /* TestItem.m */,
 				6628FBA2142FA7840072767A /* TestEditingContext.m */,
 				662C1D5E168F8FDC002157F3 /* TestStoreEditQueue.m */,
+				662F9EB016F6ECEB00CEB9B4 /* TestPerformance.m */,
 				662F9EA616F6ECD900CEB9B4 /* CoreObject Trunk */,
 				662C1D5C168EE4D2002157F3 /* TODO: port */,
 				79FB63BD1486ABEF00751E1E /* Tests - docs and code sketch */,
@@ -1491,6 +1490,7 @@
 				66ED6D6E16F427FD001B853E /* TestSQLiteStore.m in Sources */,
 				662F9EA116F63C8D00CEB9B4 /* TestItem.m in Sources */,
 				662F9EA216F6E84000CEB9B4 /* TestEditingContext.m in Sources */,
+				66D84FC6170001D4004C1BA4 /* TestPerformance.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,51 +1,69 @@
-#import <Foundation/Foundation.h>
-#import <UnitKit/UnitKit.h>
-#import "COEditingContext.h"
 #import "TestCommon.h"
-#import "COContainer.h"
 
-@interface TestPerformance : NSObject <UKTest>
+@interface TestPerformance : COSQLiteStoreTestCase <UKTest>
 @end
 
 @implementation TestPerformance
 
-#if 0
+- (COSchemaRegistry *) outlineSchemaRegistry
+{
+    COSchemaRegistry *reg = [COSchemaRegistry registry];
+    
+    COSchemaTemplate *schema = [COSchemaTemplate schemaWithName: @"OutlineItem"];
+    [schema setType: [COType stringType] forProperty: @"label"];
+    
+    [schema setType: [[COType embeddedItemType] setType]
+         schemaName: @"OutlineItem"
+        forProperty: @"contents"];
+    
+    [reg addSchema: schema];
+    
+    return reg;
+}
+
+
 - (void)testManyObjects
 {
-	UKFalse([ctx hasChanges]);
+    NSDate *startDate = [NSDate date];
 	
-	NSLog(@"Starting performance test");
-	
-	COContainer *root = [ctx insertObjectWithEntityName: @"Anonymous.OutlineItem"];
+    COEditingContext *ctx = [COEditingContext editingContextWithSchemaRegistry: [self outlineSchemaRegistry]];
+	COObject *root = [ctx insertObjectWithSchemaName: @"OutlineItem"];
+    [ctx setRootObject: root];
+    
 	for (int i=0; i<10; i++)
 	{
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		COContainer *level1 = [ctx insertObjectWithEntityName: @"Anonymous.OutlineItem"];
-		[level1 setValue: [NSString stringWithFormat: @"%d", i] forProperty: @"label"];
-		[root addObject: level1];
+		COObject *level1 = [ctx insertObjectWithSchemaName: @"OutlineItem"];
+		[level1 setValue: [NSString stringWithFormat: @"%d", i] forAttribute: @"label"];
+		[root addObject: level1 toUnorderedAttribute: @"contents"];
 		for (int j=0; j<10; j++)
 		{
-			COContainer *level2 = [ctx insertObjectWithEntityName: @"Anonymous.OutlineItem"];
-			[level2 setValue: [NSString stringWithFormat: @"%d.%d", i, j] forProperty: @"label"];
-			[level1 addObject: level2];
+			COObject *level2 = [ctx insertObjectWithSchemaName: @"OutlineItem"];
+			[level2 setValue: [NSString stringWithFormat: @"%d.%d", i, j] forAttribute: @"label"];
+			[level1 addObject: level2 toUnorderedAttribute: @"contents"];
 			for (int k=0; k<10; k++)
 			{
-				COContainer *level3 = [ctx insertObjectWithEntityName: @"Anonymous.OutlineItem"];
-				[level3 setValue: [NSString stringWithFormat: @"%d.%d.%d", i, j, k] forProperty: @"label"];
-				[level2 addObject: level3];
+				COObject *level3 = [ctx insertObjectWithSchemaName: @"OutlineItem"];
+				[level3 setValue: [NSString stringWithFormat: @"%d.%d.%d", i, j, k] forAttribute: @"label"];
+				[level2 addObject: level3 toUnorderedAttribute: @"contents"];
 			}
 		}
 		[pool release];
 	}
 
-	NSLog(@"Comitting...");
-	
-	[ctx commit];
-	
-	NSLog(@"Done.");
+    UKIntsEqual(1111, [[ctx allObjectUUIDs] count]);
+    
+    
+    COPersistentRootState *proot = [store createPersistentRootWithInitialContents:  [ctx itemTree]
+                                                                         metadata: nil
+                                                                         isGCRoot: YES];
+    
+    COItemTree *items = [store itemTreeForRevisionID: proot.currentBranchState.currentState];
+    UKIntsEqual(1111, [[items itemUUIDs] count]);
+    
+	NSLog(@"TestPerformance took %lf ms", 1000.0 * [[NSDate date] timeIntervalSinceDate: startDate]);
 
 	UKPass();
 }
-#endif
 
 @end
