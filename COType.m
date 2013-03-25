@@ -371,7 +371,8 @@
 
 @implementation CONamedType
 
-@synthesize name;
+@synthesize storageType = storageType_;
+@synthesize name = name_;
 
 - (id)initWithName: (NSString *)aName storageType: (COType *)stype
 {
