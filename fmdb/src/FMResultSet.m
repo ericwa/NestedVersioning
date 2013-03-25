@@ -220,6 +220,13 @@
     return (long)sqlite3_column_int64(statement.statement, columnIdx);
 }
 
+- (int64_t)int64ForColumn:(NSString*)columnName {
+    return [self int64ForColumnIndex:[self columnIndexForName:columnName]];
+}
+- (int64_t)int64ForColumnIndex:(int)columnIdx {
+    return sqlite3_column_int64(statement.statement, columnIdx);
+}
+
 - (long long int)longLongIntForColumn:(NSString*)columnName {
     return [self longLongIntForColumnIndex:[self columnIndexForName:columnName]];
 }
@@ -233,7 +240,7 @@
 }
 
 - (BOOL)boolForColumnIndex:(int)columnIdx {
-    return ([self intForColumnIndex:columnIdx] != 0);
+    return sqlite3_column_int64(statement.statement, columnIdx) != 0;
 }
 
 - (double)doubleForColumn:(NSString*)columnName {
