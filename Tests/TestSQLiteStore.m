@@ -9,8 +9,8 @@
 
 static const int NUM_CHILDREN = 100;
 static const int NUM_COMMITS = 1000;
-static const int NUM_PERSISTENT_ROOTS = 10;
-static const int NUM_PERSISTENT_ROOT_COPIES = 100;
+static const int NUM_PERSISTENT_ROOTS = 100;
+static const int NUM_PERSISTENT_ROOT_COPIES = 1000;
 
 static COUUID *rootUUID;
 static COUUID *childUUIDs[NUM_CHILDREN];
@@ -75,6 +75,8 @@ static int itemChangedAtCommit(int i)
 #if 1
 - (void)testBasic
 {
+    NSDate *startDate = [NSDate date];
+    
 //    for (int i=0; i<NUM_CHILDREN; i++)
 //    {
 //        NSLog(@"label: %@", [self labelForCommit: NUM_COMMITS - 1
@@ -166,6 +168,9 @@ static int itemChangedAtCommit(int i)
     }
 #endif
     
+    NSLog(@"committing a %d-item persistent root and then making %d commits which touched 1 item each took %lf ms",
+          NUM_CHILDREN, NUM_COMMITS, 1000.0 * [[NSDate date] timeIntervalSinceDate: startDate]);
+    
     // Try search
     
     NSArray *results = [store revisionIDsMatchingQuery: @"\"modified 43 in commit 32\"'"];
@@ -194,6 +199,7 @@ static int itemChangedAtCommit(int i)
 
 - (void)testLotsOfPersistentRoots
 {
+    NSDate *startDate = [NSDate date];
     COItemTree *it = [self initialItemTree];
     
     for (int i =0; i<NUM_PERSISTENT_ROOTS; i++)
@@ -203,10 +209,14 @@ static int itemChangedAtCommit(int i)
                                                                              isGCRoot: YES];
     }
     UKPass();
+    NSLog(@"creating %d persistent roots each containing a %d-item tree took %lf ms", NUM_PERSISTENT_ROOT_COPIES,
+          NUM_CHILDREN, 1000.0 * [[NSDate date] timeIntervalSinceDate: startDate]);
 }
 
 - (void)testLotsOfPersistentRootCopies
 {
+    NSDate *startDate = [NSDate date];
+    
     COItemTree *it = [self initialItemTree];
 
     COPersistentRootState *proot = [store createPersistentRootWithInitialContents: it
@@ -219,7 +229,10 @@ static int itemChangedAtCommit(int i)
                                               metadata: nil
                                               isGCRoot: YES];
     }
+    
     UKPass();
+    NSLog(@"creating %d persistent root copies took %lf ms", NUM_PERSISTENT_ROOT_COPIES,
+          1000.0 * [[NSDate date] timeIntervalSinceDate: startDate]);
 }
 
 @end
