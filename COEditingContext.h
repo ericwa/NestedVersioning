@@ -7,6 +7,43 @@
 @class COSchemaRegistry;
 @class COSchema;
 
+/**
+ * Maintaining relationship caches within a persistent root:
+ * ========================================================
+ 
+ we want to do it with one operation:
+ 
+    update( [set of modified items] )
+ 
+ The cache state is:
+ 
+    embedded-object-parents:
+        uuid -> parent uuid
+ 
+    relationship-parents:
+        uuid -> ( reference sources )
+ 
+ 
+ define update(items-before, items-after) as:
+    for item in items-before:
+        for embedded-item in item:
+            embedded-object-parents[embedded-item.uuid] = nil
+        for referenced-item in item:
+            relationship-parents[referenced-item.uuid] -= item;
+ 
+    for item in items-after:
+        " update embedded objects parents cache "
+        for embedded-item in item:
+            embedded-object-parents[embedded-item.uuid] = item.uuid
+
+        " update relationships cache "
+        for referenced-item in item:
+            relationship-parents[referenced-item.uuid] += item;
+ 
+ This can trivially be given finer-grained change info ( key:val pairs before and after)
+ to be more efficient.
+ 
+ */
 @interface COEditingContext : NSObject <NSCopying>
 {
     COUUID *rootObjectUUID_;
@@ -21,6 +58,7 @@
     // relationship caches:
     
     NSMutableDictionary *embeddedObjectParentUUIDForUUID_;
+    NSMutableDictionary *objects;
 }
 
 #pragma mark Creation
