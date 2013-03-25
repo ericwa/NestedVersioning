@@ -71,7 +71,7 @@
     
     // Set up schema
     
-    [db_ beginTransaction];    
+    [self beginTransactionIfNeeded];
     [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS persistentroots (uuid BLOB PRIMARY KEY,"
      "backingstore BLOB, plist BLOB, gcroot BOOLEAN)"];
     
@@ -80,7 +80,7 @@
     [db_ executeUpdate: @"CREATE VIRTUAL TABLE IF NOT EXISTS fts USING fts4(content=\"\", text)"]; // implicit column docid
     [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS fts_docid_to_revisionid ("
      "docid INTEGER PRIMARY KEY, revid STRING)"]; // FIXME: store revid efficiently! add UUID table!
-    [db_ commit];
+    [self commitTransactionIfNeeded];
     
     if ([db_ hadError])
     {
@@ -105,6 +105,36 @@
 - (NSURL*)URL
 {
 	return url_;
+}
+
+/** @taskunit Transactions */
+
+- (void) beginTransaction
+{
+    [db_ beginTransaction];
+    inUserTransaction_ = YES;
+}
+- (void) commitTransaction
+{
+    [db_ commit];
+    inUserTransaction_ = NO;
+}
+
+- (BOOL) beginTransactionIfNeeded
+{
+    if (!inUserTransaction_)
+    {
+        return [db_ beginTransaction];
+    }
+    return YES;
+}
+- (BOOL) commitTransactionIfNeeded
+{
+    if (!inUserTransaction_)
+    {
+        return [db_ commit];
+    }
+    return YES;
 }
 
 - (NSSet *) allBackingUUIDs
@@ -259,12 +289,12 @@
     }
     NSString *allItemsFtsContent = [ftsContent componentsJoinedByString: @" "];    
     
-    [db_ beginTransaction];
+    [self beginTransactionIfNeeded];
     [db_ executeUpdate: @"INSERT INTO fts_docid_to_revisionid(revid) VALUES(?)", [aRevision plist]]; // FIXME: Hack
     [db_ executeUpdate: @"INSERT INTO fts(docid, text) VALUES(?,?)",
      [NSNumber numberWithLongLong: [db_ lastInsertRowId]],
      allItemsFtsContent];
-    [db_ commit];
+    [self commitTransactionIfNeeded];
     
     //NSLog(@"Index text '%@' at revision id %@", allItemsFtsContent, aRevision);
     
@@ -391,9 +421,9 @@
 {
     NSData *data = [NSJSONSerialization dataWithJSONObject: [plist plist] options: 0 error: NULL];
 
-    [db_ beginTransaction];
+    [self beginTransactionIfNeeded];
     [db_ executeUpdate: @"UPDATE persistentroots SET plist = ? WHERE uuid = ?", data, [[plist UUID] dataValue]];
-    return [db_ commit];
+    return [self commitTransactionIfNeeded];
 }
 
 - (BOOL) insertPersistentRoot: (COPersistentRootState *)plist
@@ -478,7 +508,7 @@
 
 - (BOOL) deletePersistentRoot: (COUUID *)aRoot
 {
-    [db_ beginTransaction];
+    [self beginTransactionIfNeeded];
     
     COUUID *backingUUID = [self backingUUIDForPersistentRootUUID: aRoot];
     
@@ -491,7 +521,7 @@
     }
     [rs close];
     
-    [db_ commit];
+    [self commitTransactionIfNeeded];
     
     [backingStoreUUIDForPersistentRootUUID_ removeObjectForKey: aRoot];
     return YES;

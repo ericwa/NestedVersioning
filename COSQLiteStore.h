@@ -16,10 +16,27 @@
     
     NSMutableDictionary *backingStores_; // COUUID (backing store UUID => COCQLiteStorePersistentRootBackingStore)
     NSMutableDictionary *backingStoreUUIDForPersistentRootUUID_;
+    
+    /**
+     * The user has called -beginTransaction.
+     * This flag tells us internally we don't need to create extra transactions.
+     */
+    BOOL inUserTransaction_;
 }
 
 - (id)initWithURL: (NSURL*)aURL;
 - (NSURL*)URL;
+
+/** @taskunit Transactions */
+
+/*
+ These are purely for improving performance when making many changes at a time to the store.
+ If you don't use them, transactions are created internally to ensure correct atomicity of all operations.
+ */
+
+- (void) beginTransaction;
+- (void) commitTransaction;
+
 
 /** @taskunit reading states */
 

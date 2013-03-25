@@ -10,7 +10,7 @@
 static const int NUM_CHILDREN = 100;
 static const int NUM_COMMITS = 1000;
 static const int NUM_PERSISTENT_ROOTS = 100;
-static const int NUM_PERSISTENT_ROOT_COPIES = 1000;
+static const int NUM_PERSISTENT_ROOT_COPIES = 5000;
 
 static COUUID *rootUUID;
 static COUUID *childUUIDs[NUM_CHILDREN];
@@ -201,15 +201,15 @@ static int itemChangedAtCommit(int i)
 {
     NSDate *startDate = [NSDate date];
     COItemTree *it = [self initialItemTree];
-    
     for (int i =0; i<NUM_PERSISTENT_ROOTS; i++)
     {
         COPersistentRootState *proot = [store createPersistentRootWithInitialContents: it
                                                                              metadata: nil
                                                                              isGCRoot: YES];
     }
+
     UKPass();
-    NSLog(@"creating %d persistent roots each containing a %d-item tree took %lf ms", NUM_PERSISTENT_ROOT_COPIES,
+    NSLog(@"creating %d persistent roots each containing a %d-item tree took %lf ms", NUM_PERSISTENT_ROOTS,
           NUM_CHILDREN, 1000.0 * [[NSDate date] timeIntervalSinceDate: startDate]);
 }
 
@@ -219,6 +219,7 @@ static int itemChangedAtCommit(int i)
     
     COItemTree *it = [self initialItemTree];
 
+    [store beginTransaction];
     COPersistentRootState *proot = [store createPersistentRootWithInitialContents: it
                                                                          metadata: nil
                                                                          isGCRoot: YES];
@@ -229,6 +230,7 @@ static int itemChangedAtCommit(int i)
                                               metadata: nil
                                               isGCRoot: YES];
     }
+    [store commitTransaction];
     
     UKPass();
     NSLog(@"creating %d persistent root copies took %lf ms", NUM_PERSISTENT_ROOT_COPIES,
