@@ -6,6 +6,7 @@
 @class COItem;
 @class COSchemaRegistry;
 @class COSchema;
+@class CORelationshipCache;
 
 /**
  * Maintaining relationship caches within a persistent root:
@@ -57,8 +58,7 @@
     
     // relationship caches:
     
-    NSMutableDictionary *embeddedObjectParentUUIDForUUID_;
-    NSMutableDictionary *objects;
+    CORelationshipCache *relationshipCache_;
 }
 
 #pragma mark Creation

@@ -2,7 +2,7 @@
 #import "COEditingContextPrivate.h"
 #import "COItemTree.h"
 #import "COMacros.h"
-
+#import "CORelationshipCache.h"
 
 @implementation COEditingContext
 
@@ -16,7 +16,7 @@
     deletedObjects_ = [[NSMutableSet alloc] init];
     modifiedObjects_ = [[NSMutableSet alloc] init];
     schemaRegistry_ = [aRegistry retain];
-    embeddedObjectParentUUIDForUUID_ = [[NSMutableDictionary alloc] init];
+    relationshipCache_ = [[CORelationshipCache alloc] init];
     return self;
 }
 
@@ -50,7 +50,7 @@
     [deletedObjects_ release];
     [modifiedObjects_ release];
     [schemaRegistry_ release];
-    [embeddedObjectParentUUIDForUUID_ release];
+    [relationshipCache_ release];
     [super dealloc];
 }
 
@@ -256,12 +256,11 @@
 
 - (COObject *) embeddedObjectParent: (COObject *)anObject
 {
-    return [self objectForUUID: [embeddedObjectParentUUIDForUUID_ objectForKey: [anObject UUID]]];
+    return [self objectForUUID: [relationshipCache_ parentForUUID: [anObject UUID]]];
 }
 
 - (void) recordAddedEmbededObject: (COUUID *)aUUID toObject: (COUUID *)aTarget
 {
-    [embeddedObjectParentUUIDForUUID_ setObject:aTarget forKey: aUUID];
 }
 
 #if 0
@@ -347,5 +346,9 @@
     // Release it from the objects dictionary
     [objectsByUUID_ removeObjectForKey: uuid];
 }
+
+// Relationship cache
+
+
 
 @end

@@ -104,6 +104,8 @@
 		666CB036166343420066BC77 /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 666CB0301663433A0066BC77 /* FMDatabaseAdditions.m */; };
 		666CB037166343420066BC77 /* FMResultSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 666CB0311663433C0066BC77 /* FMResultSet.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		666CB038166343420066BC77 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 666CB0321663433E0066BC77 /* FMResultSet.m */; };
+		6675C91B17016D44007C8DB6 /* CORelationshipCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 6675C91917016D44007C8DB6 /* CORelationshipCache.h */; };
+		6675C91C17016D44007C8DB6 /* CORelationshipCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6675C91A17016D44007C8DB6 /* CORelationshipCache.m */; };
 		667CD1D416B7B3EC00C50906 /* EWIconTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 662C1DE0168FACC9002157F3 /* EWIconTextFieldCell.m */; };
 		667CD1D516B7B3EC00C50906 /* EWOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 662C1DE2168FACC9002157F3 /* EWOutlineView.m */; };
 		667CD1D616B7B3EC00C50906 /* EWPersistentRootOutlineRow.m in Sources */ = {isa = PBXBuildFile; fileRef = 662C1DE4168FACC9002157F3 /* EWPersistentRootOutlineRow.m */; };
@@ -395,6 +397,8 @@
 		666CB0301663433A0066BC77 /* FMDatabaseAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMDatabaseAdditions.m; path = fmdb/src/FMDatabaseAdditions.m; sourceTree = "<group>"; };
 		666CB0311663433C0066BC77 /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMResultSet.h; path = fmdb/src/FMResultSet.h; sourceTree = "<group>"; };
 		666CB0321663433E0066BC77 /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMResultSet.m; path = fmdb/src/FMResultSet.m; sourceTree = "<group>"; };
+		6675C91917016D44007C8DB6 /* CORelationshipCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CORelationshipCache.h; sourceTree = "<group>"; };
+		6675C91A17016D44007C8DB6 /* CORelationshipCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CORelationshipCache.m; sourceTree = "<group>"; };
 		66816C50166343B200BC5F40 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		66816C701663562300BC5F40 /* CORevision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CORevision.h; sourceTree = "<group>"; };
 		66816C711663562300BC5F40 /* CORevision.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CORevision.m; sourceTree = "<group>"; };
@@ -1076,6 +1080,8 @@
 				6622E9AF16EBD5D000D82F2A /* COEditingContextDelegate.h */,
 				66ED6D5A16F04A3B001B853E /* COValueTransformer.h */,
 				66ED6D5B16F04A3B001B853E /* COValueTransformer.m */,
+				6675C91917016D44007C8DB6 /* CORelationshipCache.h */,
+				6675C91A17016D44007C8DB6 /* CORelationshipCache.m */,
 			);
 			name = "Editing Context";
 			sourceTree = "<group>";
@@ -1211,6 +1217,7 @@
 				66ED6D6A16F41989001B853E /* COSQLiteStorePersistentRootBackingStoreBinaryFormats.h in Headers */,
 				66ED6D8716F4EB4F001B853E /* COBinaryWriter.h in Headers */,
 				66ED6D8B16F507BF001B853E /* COBinaryReader.h in Headers */,
+				6675C91B17016D44007C8DB6 /* CORelationshipCache.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1549,6 +1556,7 @@
 				66ED6D6B16F41989001B853E /* COSQLiteStorePersistentRootBackingStoreBinaryFormats.m in Sources */,
 				66ED6D8816F4EB4F001B853E /* COBinaryWriter.m in Sources */,
 				66ED6D8C16F507BF001B853E /* COBinaryReader.m in Sources */,
+				6675C91C17016D44007C8DB6 /* CORelationshipCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
