@@ -349,6 +349,40 @@
 
 // Relationship cache
 
-
+- (void) updateRelationshipIntegrityWithOldValue: (id)oldVal
+                                         oldType: (COType *)oldType
+                                        newValue: (id)newVal
+                                         newType: (COType *)newType
+                                     forProperty: (NSString *)aProperty
+                                        ofObject: (COUUID *)anObject
+{
+    if ([[newType primitiveType] isEqual: [COType embeddedItemType]])
+    {
+        if ([newType isMultivalued])
+        {
+            for (id obj in newVal)
+            {
+                COUUID *oldParent = [relationshipCache_ parentForUUID: obj];
+                if (oldParent != nil && ![anObject isEqual: oldParent])
+                {
+                    // Remove obj from oldParent.
+                    // Mark it as dirty but don't fire this trigger
+                    // or update the relationship cache.
+                }
+            }
+        }
+        else
+        {
+            // Same as body of for {}
+        }
+    }
+    
+    [relationshipCache_ updateRelationshipCacheWithOldValue: oldVal
+                                                    oldType: oldType
+                                                   newValue: newVal
+                                                    newType: newType
+                                                forProperty: aProperty
+                                                   ofObject: anObject];
+}
 
 @end

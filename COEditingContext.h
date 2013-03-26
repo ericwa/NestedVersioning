@@ -44,6 +44,12 @@
  This can trivially be given finer-grained change info ( key:val pairs before and after)
  to be more efficient.
  
+ 
+ Besides updating the relationship cache, the only other "trigger"-like
+ behaviour that happens when making an edit is:
+  - when _adding_ an embedded object to a property, that embedded object
+    is removed from its old parent.
+ 
  */
 @interface COEditingContext : NSObject <NSCopying>
 {
