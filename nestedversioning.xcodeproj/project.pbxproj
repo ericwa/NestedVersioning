@@ -106,6 +106,7 @@
 		666CB038166343420066BC77 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 666CB0321663433E0066BC77 /* FMResultSet.m */; };
 		6675C91B17016D44007C8DB6 /* CORelationshipCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 6675C91917016D44007C8DB6 /* CORelationshipCache.h */; };
 		6675C91C17016D44007C8DB6 /* CORelationshipCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6675C91A17016D44007C8DB6 /* CORelationshipCache.m */; };
+		6675C9221702C6FB007C8DB6 /* TestRelationshipCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6675C9211702C6FB007C8DB6 /* TestRelationshipCache.m */; };
 		667CD1D416B7B3EC00C50906 /* EWIconTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 662C1DE0168FACC9002157F3 /* EWIconTextFieldCell.m */; };
 		667CD1D516B7B3EC00C50906 /* EWOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 662C1DE2168FACC9002157F3 /* EWOutlineView.m */; };
 		667CD1D616B7B3EC00C50906 /* EWPersistentRootOutlineRow.m in Sources */ = {isa = PBXBuildFile; fileRef = 662C1DE4168FACC9002157F3 /* EWPersistentRootOutlineRow.m */; };
@@ -399,6 +400,7 @@
 		666CB0321663433E0066BC77 /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMResultSet.m; path = fmdb/src/FMResultSet.m; sourceTree = "<group>"; };
 		6675C91917016D44007C8DB6 /* CORelationshipCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CORelationshipCache.h; sourceTree = "<group>"; };
 		6675C91A17016D44007C8DB6 /* CORelationshipCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CORelationshipCache.m; sourceTree = "<group>"; };
+		6675C9211702C6FB007C8DB6 /* TestRelationshipCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestRelationshipCache.m; sourceTree = "<group>"; };
 		66816C50166343B200BC5F40 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		66816C701663562300BC5F40 /* CORevision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CORevision.h; sourceTree = "<group>"; };
 		66816C711663562300BC5F40 /* CORevision.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CORevision.m; sourceTree = "<group>"; };
@@ -1093,6 +1095,7 @@
 				66DFAEBF142A726100623060 /* main.m */,
 				6622E9BD16EC725200D82F2A /* TestWorkspaces.m */,
 				66ED6D6D16F427FD001B853E /* TestSQLiteStore.m */,
+				6675C9211702C6FB007C8DB6 /* TestRelationshipCache.m */,
 				6660E23914F84B3000D2F319 /* TestItem.m */,
 				6628FBA2142FA7840072767A /* TestEditingContext.m */,
 				662C1D5E168F8FDC002157F3 /* TestStoreEditQueue.m */,
@@ -1498,6 +1501,7 @@
 				662F9EA116F63C8D00CEB9B4 /* TestItem.m in Sources */,
 				662F9EA216F6E84000CEB9B4 /* TestEditingContext.m in Sources */,
 				66D84FC6170001D4004C1BA4 /* TestPerformance.m in Sources */,
+				6675C9221702C6FB007C8DB6 /* TestRelationshipCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

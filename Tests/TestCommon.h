@@ -30,6 +30,8 @@
 #import "COSchemaTemplate.h"
 #import "COSchemaRegistry.h"
 
+#import "CORelationshipCache.h"
+
 #define STOREPATH [@"~/om6teststore" stringByExpandingTildeInPath]
 #define STOREURL [NSURL fileURLWithPath: STOREPATH]
 

@@ -3,6 +3,40 @@
 #import "COMacros.h"
 #import "COType.h"
 
+@implementation CORelationshipRecord
+
+@synthesize uuid = uuid_;
+@synthesize property = property_;
+
++ (CORelationshipRecord *) recordWithUUID: (COUUID *)aUUID property: (NSString *)aProp
+{
+    CORelationshipRecord *result = [[[self alloc] init] autorelease];
+    result.uuid = aUUID;
+    result.property = aProp;
+    return result;
+}
+
+- (void) dealloc
+{
+    [uuid_ release];
+    [property_ release];
+    [super dealloc];
+}
+
+- (NSUInteger)hash
+{
+    return *(NSUInteger *)(uuid_->uuid);
+}
+
+- (BOOL)isEqual:(id)object
+{
+	CORelationshipRecord *other = object;
+    return [property_ isEqualToString: other->property_]
+        && (0 == memcmp(uuid_->uuid, other->uuid_->uuid, 16));
+}
+
+@end
+
 @implementation CORelationshipCache
 
 #define INITIAL_DICTIONARY_CAPACITY 256
@@ -13,6 +47,7 @@
     SUPERINIT;
     referrerUUIDsForUUID_ = [[NSMutableDictionary alloc] initWithCapacity: INITIAL_DICTIONARY_CAPACITY];
     embeddedObjectParentUUIDForUUID_ = [[NSMutableDictionary alloc] initWithCapacity: INITIAL_DICTIONARY_CAPACITY];
+    tempRecord_ = [[CORelationshipRecord alloc] init];
     return self;
 }
 
@@ -20,16 +55,34 @@
 {
     [referrerUUIDsForUUID_ release];
     [embeddedObjectParentUUIDForUUID_ release];
+    [tempRecord_ release];
     [super dealloc];
 }
 
-- (COUUID *) parentForUUID: (COUUID *)anObject
+- (CORelationshipRecord *) parentForUUID: (COUUID *)anObject
 {
     return [embeddedObjectParentUUIDForUUID_ objectForKey: anObject];
 }
 
+- (void) setParentUUID: (COUUID *)aParent
+               forUUID: (COUUID*)anObject
+           forProperty: (NSString *)aProperty
+{
+    CORelationshipRecord *record = [[CORelationshipRecord alloc] init];
+    record.uuid = aParent;
+    record.property = aProperty;
+    [embeddedObjectParentUUIDForUUID_ setObject: record forKey: anObject];
+    [record release];
+}
+
+- (void) clearParentForUUID: (COUUID*)anObject
+{
+    [embeddedObjectParentUUIDForUUID_ removeObjectForKey: anObject];
+}
+
 - (void) addReferrerUUID: (COUUID *)aReferrer
                  forUUID: (COUUID*)anObject
+             forProperty: (NSString *)aProperty
 {
     NSMutableSet *set = [referrerUUIDsForUUID_ objectForKey: anObject];
     if (set == nil)
@@ -38,13 +91,21 @@
         [referrerUUIDsForUUID_ setObject: set forKey: anObject];
         [set release];
     }
-    [set addObject: aReferrer];
+    
+    CORelationshipRecord *record = [[CORelationshipRecord alloc] init];
+    record.uuid = aReferrer;
+    record.property = aProperty;
+    [set addObject: record];
+    [record release];
 }
 
 - (void) removeReferrerUUID: (COUUID *)aReferrer
                     forUUID: (COUUID*)anObject
+                forProperty: (NSString *)aProperty
 {
-    [(NSMutableSet *)[referrerUUIDsForUUID_ objectForKey: anObject] removeObject: aReferrer];
+    tempRecord_.uuid = aReferrer;
+    tempRecord_.property = aProperty;
+    [(NSMutableSet *)[referrerUUIDsForUUID_ objectForKey: anObject] removeObject: tempRecord_];
 }
 
 - (NSSet *) referrersForUUID: (COUUID *)anObject
@@ -62,63 +123,69 @@
 {
     // Remove possibly stale cache entries
     
-    if ([[oldType primitiveType] isEqual: [COType embeddedItemType]])
+    if (oldVal != nil)
     {
-        if ([oldType isMultivalued])
+        if ([[oldType primitiveType] isEqual: [COType embeddedItemType]])
         {
-            for (id obj in oldVal)
+            if ([oldType isMultivalued])
             {
-                [embeddedObjectParentUUIDForUUID_ removeObjectForKey: obj];
+                for (id obj in oldVal)
+                {
+                    [self clearParentForUUID: obj];
+                }
+            }
+            else
+            {
+                [self clearParentForUUID: oldVal];
             }
         }
-        else
+        else if ([[oldType primitiveType] isEqual: [COType referenceType]])
         {
-            [embeddedObjectParentUUIDForUUID_ removeObjectForKey: oldVal];
-        }
-    }
-    else if ([[oldType primitiveType] isEqual: [COType referenceType]])
-    {
-        if ([oldType isMultivalued])
-        {
-            for (id obj in oldVal)
+            if ([oldType isMultivalued])
             {
-                [self removeReferrerUUID: anObject forUUID: obj];
+                for (id obj in oldVal)
+                {
+                    [self removeReferrerUUID: anObject forUUID: obj forProperty: aProperty];
+                }
             }
-        }
-        else
-        {
-            [self removeReferrerUUID: anObject forUUID: oldVal];
+            else
+            {
+                [self removeReferrerUUID: anObject forUUID: oldVal forProperty: aProperty];
+            }
         }
     }
     
     // Maybe add new cache entries
     
-    if ([[newType primitiveType] isEqual: [COType embeddedItemType]])
+    if (newVal != nil)
     {
-        if ([newType isMultivalued])
+        if ([[newType primitiveType] isEqual: [COType embeddedItemType]])
         {
-            for (id obj in newVal)
+            if ([newType isMultivalued])
             {
-                [embeddedObjectParentUUIDForUUID_ setObject: anObject forKey: obj];
+                for (id obj in newVal)
+                {
+                    [self setParentUUID: anObject forUUID: obj forProperty: aProperty];
+                }
+            }
+            else
+            {
+                [self setParentUUID: anObject forUUID: newVal forProperty: aProperty];
             }
         }
-        else
+        else if ([[newType primitiveType] isEqual: [COType referenceType]])
         {
-            [embeddedObjectParentUUIDForUUID_ setObject: anObject forKey: newVal];
-        }
-    }
-    else if ([[newType primitiveType] isEqual: [COType referenceType]])
-    {
-        if ([newType isMultivalued])
-        {
-            for (id obj in newVal)
+            if ([newType isMultivalued])
             {
-                [self addReferrerUUID: anObject forUUID: obj];
+                for (id obj in newVal)
+                {
+                    [self addReferrerUUID: anObject forUUID: obj forProperty: aProperty];
+                }
             }
-        }
-        else
-        {
-            [self addReferrerUUID: anObject forUUID: oldVal];
+            else
+            {
+                [self addReferrerUUID: anObject forUUID: newVal forProperty: aProperty];
+            }
         }
     }
 }

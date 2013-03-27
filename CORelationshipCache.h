@@ -4,6 +4,21 @@
 @class COType;
 @class COItem;
 
+
+@interface CORelationshipRecord : NSObject
+{
+@private
+    COUUID *uuid_;
+    NSString *property_;
+}
+
++ (CORelationshipRecord *) recordWithUUID: (COUUID *)aUUID property: (NSString *)aProp;
+
+// FIXME: Make not mutable to the public
+@property (readwrite, nonatomic, retain) COUUID *uuid;
+@property (readwrite, nonatomic, retain) NSString *property;
+@end
+
 /**
  * Simple wrapper around an NSMutableDictionary mapping COUUID's to mutable sets of COUUID's.
  */
@@ -11,6 +26,7 @@
 {
     NSMutableDictionary *embeddedObjectParentUUIDForUUID_;
     NSMutableDictionary *referrerUUIDsForUUID_;
+    CORelationshipRecord *tempRecord_;
 }
 
 - (void) updateRelationshipCacheWithOldValue: (id)oldVal
@@ -20,10 +36,10 @@
                                  forProperty: (NSString *)aProperty
                                     ofObject: (COUUID *)anObject;
 
-- (void) updateRelationshipCacheWithOldItems: (NSArray *)oldItems
-                                    newItems: (NSArray *)newItems;
-
+/**
+ * @returns a set of CORelationshipRecord
+ */
 - (NSSet *) referrersForUUID: (COUUID *)anObject;
-- (COUUID *) parentForUUID: (COUUID *)anObject;
+- (CORelationshipRecord *) parentForUUID: (COUUID *)anObject;
 
 @end

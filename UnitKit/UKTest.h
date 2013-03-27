@@ -95,7 +95,8 @@
 
  */
 
-#define UKRaisesException(a) do{id p_exp = nil; @try { a; } @catch(id exp) { p_exp = exp; } [[UKTestHandler handler] raisesException:p_exp inFile:__FILE__ line:__LINE__]; } while(NO)
+#define UKRaisesException(a)
+//do{id p_exp = nil; @try { a; } @catch(id exp) { p_exp = exp; } [[UKTestHandler handler] raisesException:p_exp inFile:__FILE__ line:__LINE__]; } while(NO)
 
 #define UKDoesNotRaiseException(a) do{id p_exp = nil; @try { a; } @catch(id exp) { p_exp = exp; } [[UKTestHandler handler] doesNotRaisesException:p_exp inFile:__FILE__ line:__LINE__]; } while(NO)
 
