@@ -42,4 +42,10 @@
 - (NSSet *) referrersForUUID: (COUUID *)anObject;
 - (CORelationshipRecord *) parentForUUID: (COUUID *)anObject;
 
+/**
+ * @returns a set of COUUID
+ */
+- (NSSet *) referrersForUUID: (COUUID *)anObject
+            propertyInParent: (NSString*)propInParent;
+
 @end

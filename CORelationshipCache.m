@@ -113,6 +113,21 @@
     return [referrerUUIDsForUUID_ objectForKey: anObject];
 }
 
+- (NSSet *) referrersForUUID: (COUUID *)anObject
+            propertyInParent: (NSString*)propInParent
+{
+    NSMutableSet *results = [NSMutableSet set];
+    NSSet *all = [referrerUUIDsForUUID_ objectForKey: anObject];
+    
+    for (CORelationshipRecord *record in all)
+    {
+        if ([record.property isEqualToString: propInParent])
+        {
+            [results addObject: record.uuid];
+        }
+    }
+    return results;
+}
 
 - (void) updateRelationshipCacheWithOldValue: (id)oldVal
                                      oldType: (COType *)oldType

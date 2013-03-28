@@ -148,6 +148,7 @@
 {
     COUUID *g1 = [COUUID UUID];
     COUUID *g2 = [COUUID UUID];
+    COUUID *t1 = [COUUID UUID];
     
     COUUID *u1 = [COUUID UUID];
     COUUID *u2 = [COUUID UUID];
@@ -167,13 +168,26 @@
                                    forProperty: @"groupContents"
                                       ofObject: g2];
     
+    [cache updateRelationshipCacheWithOldValue: nil
+                                       oldType: nil
+                                      newValue: S(u3, g1)
+                                       newType: [[COType referenceType] setType]
+                                   forProperty: @"taggedObjects"
+                                      ofObject: t1];
+    
     UKObjectsEqual(S([CORelationshipRecord recordWithUUID: g1 property: @"groupContents"]), [cache referrersForUUID: u1]);
 
     UKObjectsEqual(S([CORelationshipRecord recordWithUUID: g1 property: @"groupContents"],
                      [CORelationshipRecord recordWithUUID: g2 property: @"groupContents"]), [cache referrersForUUID: u2]);
 
-    UKObjectsEqual(S([CORelationshipRecord recordWithUUID: g2 property: @"groupContents"]), [cache referrersForUUID: u3]);
+    UKObjectsEqual(S([CORelationshipRecord recordWithUUID: g2 property: @"groupContents"],
+                     [CORelationshipRecord recordWithUUID: t1 property: @"taggedObjects"]), [cache referrersForUUID: u3]);
+    
+    UKObjectsEqual(S([CORelationshipRecord recordWithUUID: t1 property: @"taggedObjects"]), [cache referrersForUUID: g1]);
 
+    UKObjectsEqual(S(g2), [cache referrersForUUID: u3 propertyInParent: @"groupContents"]);
+    UKObjectsEqual(S(t1), [cache referrersForUUID: u3 propertyInParent: @"taggedObjects"]);
+    
     [cache updateRelationshipCacheWithOldValue: S(u1, u2)
                                        oldType: [[COType referenceType] setType]
                                       newValue: S(u1, u3)
@@ -191,7 +205,8 @@
     
     UKObjectsEqual(S([CORelationshipRecord recordWithUUID: g1 property: @"groupContents"]), [cache referrersForUUID: u1]);    
     UKObjectsEqual([NSSet set], [cache referrersForUUID: u2]);
-    UKObjectsEqual(S([CORelationshipRecord recordWithUUID: g1 property: @"groupContents"]), [cache referrersForUUID: u3]);
+    UKObjectsEqual(S([CORelationshipRecord recordWithUUID: g1 property: @"groupContents"],
+                     [CORelationshipRecord recordWithUUID: t1 property: @"taggedObjects"]), [cache referrersForUUID: u3]);
 }
 
 @end
