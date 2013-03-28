@@ -219,4 +219,10 @@
     }
 }
 
+- (void) removeAllEntries
+{
+    [embeddedObjectParentUUIDForUUID_ removeAllObjects];
+    [referrerUUIDsForUUID_ removeAllObjects];
+}
+
 @end
