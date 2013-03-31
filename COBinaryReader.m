@@ -1,4 +1,5 @@
 #import "COBinaryReader.h"
+#import "COUUID.h"
 
 static inline uint8_t readUint8(const unsigned char *bytes)
 {
@@ -102,6 +103,14 @@ void co_reader_read(const unsigned char *bytes, size_t length, void *context, co
                 pos += 4;
                 callbacks.co_read_bytes(context, bytes + pos, dataLen);
                 pos += dataLen;
+                break;
+            }
+            case '#':
+            {
+                COUUID *uuid = [[COUUID alloc] initWithBytes: bytes + pos];
+                callbacks.co_read_uuid(context, uuid);
+                [uuid release];
+                pos += 16;
                 break;
             }
             case '{':

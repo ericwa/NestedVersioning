@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+#import "COUUID.h"
 
 typedef struct {
     unsigned char *data;
@@ -194,6 +195,14 @@ co_buffer_store_bytes(co_buffer_t *dest, const char *bytes, size_t length)
     }
     
     co_buffer_write(dest, bytes, length);
+}
+
+static inline
+void
+co_buffer_store_uuid(co_buffer_t *dest, COUUID *uuid)
+{
+    WRTITE_TYPE("#");
+    co_buffer_write(dest, (char *)uuid->uuid, 16);
 }
 
 static inline

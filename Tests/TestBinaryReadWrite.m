@@ -21,6 +21,10 @@ static void co_read_string(void *ctx, NSString *val)
 {
     NSLog(@"read string '%@'", val);
 }
+static void co_read_uuid(void *ctx, COUUID *uuid)
+{
+    NSLog(@"read uuid %@", uuid);
+}
 static void co_read_bytes(void *ctx, const unsigned char *val, size_t size)
 {
     NSLog(@"read bytes '%@'", [NSData dataWithBytes: val length: size]);
@@ -44,6 +48,8 @@ static void co_read_end_array(void *ctx)
 
 - (void)testBasic
 {
+    COUUID *uuid = [COUUID UUID];
+    
     co_buffer_t buf;
     co_buffer_init(&buf);
     co_buffer_begin_object(&buf);
@@ -61,6 +67,7 @@ static void co_read_end_array(void *ctx)
     co_buffer_store_integer(&buf, 65536);
     co_buffer_store_double(&buf, 3.14159);
     co_buffer_store_string(&buf, @"hello world!");
+    co_buffer_store_uuid(&buf, uuid);
     co_buffer_end_array(&buf);
     co_buffer_end_object(&buf);
     
@@ -68,6 +75,7 @@ static void co_read_end_array(void *ctx)
         co_read_int64,
         co_read_double,
         co_read_string,
+        co_read_uuid,
         co_read_bytes,
         co_read_begin_object,
         co_read_end_object,
@@ -89,6 +97,7 @@ static volatile char dest[2048];
 
 - (void) testWritePerf
 {
+    COUUID *uuid = [COUUID UUID];
     NSDate *startDate = [NSDate date];
     int64_t iter = 0;
     for (int64_t i=0; i<WRITE_ITERATIONS; i++)
@@ -110,6 +119,7 @@ static volatile char dest[2048];
         co_buffer_store_integer(&buf, 65536);
         co_buffer_store_double(&buf, 3.14159);
         co_buffer_store_string(&buf, @"hello world!");
+        co_buffer_store_uuid(&buf, uuid);
         co_buffer_end_array(&buf);
         co_buffer_end_object(&buf);
         

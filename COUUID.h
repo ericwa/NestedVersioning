@@ -32,7 +32,7 @@
  */
 @interface COUUID : NSObject <NSCopying>
 {
-	@package
+	@public
 	unsigned char uuid[16];
 }
 
