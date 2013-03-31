@@ -129,15 +129,11 @@
     return results;
 }
 
-- (void) updateRelationshipCacheWithOldValue: (id)oldVal
-                                     oldType: (COType *)oldType
-                                    newValue: (id)newVal
-                                     newType: (COType *)newType
-                                 forProperty: (NSString *)aProperty
-                                    ofObject: (COUUID *)anObject
+- (void) clearOldValue: (id)oldVal
+               oldType: (COType *)oldType
+           forProperty: (NSString *)aProperty
+              ofObject: (COUUID *)anObject
 {
-    // Remove possibly stale cache entries
-    
     if (oldVal != nil)
     {
         if ([[oldType primitiveType] isEqual: [COType embeddedItemType]])
@@ -169,9 +165,13 @@
             }
         }
     }
-    
-    // Maybe add new cache entries
-    
+}
+
+- (void) setNewValue: (id)newVal
+             newType: (COType *)newType
+         forProperty: (NSString *)aProperty
+            ofObject: (COUUID *)anObject
+{
     if (newVal != nil)
     {
         if ([[newType primitiveType] isEqual: [COType embeddedItemType]])
@@ -203,6 +203,24 @@
             }
         }
     }
+}
+
+- (void) updateRelationshipCacheWithOldValue: (id)oldVal
+                                     oldType: (COType *)oldType
+                                    newValue: (id)newVal
+                                     newType: (COType *)newType
+                                 forProperty: (NSString *)aProperty
+                                    ofObject: (COUUID *)anObject
+{
+    [self clearOldValue: oldVal
+                oldType: oldType
+            forProperty: aProperty
+               ofObject: anObject];
+    
+    [self setNewValue: newVal
+              newType: newType
+          forProperty: aProperty
+             ofObject: anObject];
 }
 
 - (void) updateRelationshipCacheWithOldItems: (NSArray *)oldItems

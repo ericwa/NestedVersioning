@@ -36,6 +36,16 @@
                                  forProperty: (NSString *)aProperty
                                     ofObject: (COUUID *)anObject;
 
+- (void) clearOldValue: (id)oldVal
+               oldType: (COType *)oldType
+           forProperty: (NSString *)aProperty
+              ofObject: (COUUID *)anObject;
+
+- (void) setNewValue: (id)newVal
+             newType: (COType *)newType
+         forProperty: (NSString *)aProperty
+            ofObject: (COUUID *)anObject;
+
 /**
  * @returns a set of CORelationshipRecord
  */
