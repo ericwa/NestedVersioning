@@ -1,7 +1,4 @@
 #import "COBinaryReader.h"
-#import "COUUID.h"
-
-@implementation COBinaryReader
 
 static inline uint8_t readUint8(const unsigned char *bytes)
 {
@@ -29,116 +26,99 @@ static inline uint64_t readUint64(const unsigned char *bytes)
     return CFSwapInt64BigToHost(unswapped);
 }
 
-- (void) readData: (NSData*)aData
-     withDelegate: (id<COBinaryReaderDelegate>)aDelegate
+void co_reader_read(const unsigned char *bytes, size_t length, void *context, co_reader_callback_t callbacks)
 {
-    data_ = aData;
-    delegate_ = aDelegate;
-    bytes_ = [aData bytes];
-    length_ = [aData length];
+    size_t pos = 0;
     
-    while ([self canReadValue])
+    while (pos < length)
     {
-        [self readValue];
+        const char type = bytes[pos];
+        pos++;
+        
+        switch (type)
+        {
+            case 'B':
+                callbacks.co_read_int64(context, (int8_t)readUint8(bytes + pos));
+                pos++;
+                break;
+            case 'i':
+                callbacks.co_read_int64(context, (int16_t)readUint16(bytes + pos));
+                pos += 2;
+                break;
+            case 'I':
+                callbacks.co_read_int64(context, (int32_t)readUint32(bytes + pos));
+                pos += 4;
+                break;
+            case 'L':
+                callbacks.co_read_int64(context, (int64_t)readUint64(bytes + pos));
+                pos += 8;
+                break;
+            case 'F':
+            {
+                CFSwappedFloat64 swapped;
+                memcpy(&swapped, bytes + pos, 8);
+                const double value = CFConvertDoubleSwappedToHost(swapped);
+                callbacks.co_read_double(context, value);
+                pos += 8;
+                break;
+            }
+            case 's':
+            {
+                uint8_t dataLen = readUint8(&bytes[pos]);
+                pos++;
+                
+                NSString *str = [[NSString alloc] initWithBytes: bytes + pos
+                                                         length: dataLen
+                                                       encoding: NSUTF8StringEncoding];
+                callbacks.co_read_string(context, str);
+                [str release];
+                pos += dataLen;
+                break;
+            }
+            case 'S':
+            {
+                uint32_t dataLen = readUint32(&bytes[pos]);
+                pos += 4;
+
+                NSString *str = [[NSString alloc] initWithBytes: bytes + pos
+                                                         length: dataLen
+                                                       encoding: NSUTF8StringEncoding];
+                callbacks.co_read_string(context, str);
+                [str release];
+                pos += dataLen;
+                break;
+            }
+            case 'd':
+            {
+                uint8_t dataLen = readUint8(&bytes[pos]);
+                pos++;
+                callbacks.co_read_bytes(context, bytes + pos, dataLen);
+                pos += dataLen;
+                break;
+            }
+            case 'D':
+            {
+                uint32_t dataLen = readUint32(&bytes[pos]);
+                pos += 4;
+                callbacks.co_read_bytes(context, bytes + pos, dataLen);
+                pos += dataLen;
+                break;
+            }
+            case '{':
+                callbacks.co_read_begin_object(context);
+                break;
+            case '}':
+                callbacks.co_read_end_object(context);
+                break;
+            case '[':
+                callbacks.co_read_begin_array(context);
+                break;
+            case ']':
+                callbacks.co_read_end_array(context);
+                break;
+            default:
+                [NSException raise: NSGenericException
+                            format: @"unknown type '%c'", type];
+        }
     }
 }
-
-- (BOOL) canReadValue
-{
-    return pos_ < length_;
-}
-
-- (void) readValue
-{
-    NSAssert(pos_ >= length_, @"Read beyond end of data");
-
-    const char type = bytes_[pos_];
-    pos_++;
-    
-    switch (type)
-    {
-        case 'B':
-            [delegate_ readInt64: (int64_t)readUint8(bytes_ + pos_)];
-            pos_++;
-            break;
-        case 'i':
-            [delegate_ readInt64: (int64_t)readUint16(bytes_ + pos_)];
-            pos_ += 2;
-            break;
-        case 'I':
-            [delegate_ readInt64: (int64_t)readUint32(bytes_ + pos_)];
-            pos_ += 4;
-            break;
-        case 'L':
-            [delegate_ readInt64: (int64_t)readUint64(bytes_ + pos_)];
-            pos_ += 8;
-            break;
-        case '@':
-        {
-            COUUID *uuid = [[COUUID alloc] initWithBytes: &bytes_[pos_]];
-            [delegate_ readUUID: uuid];
-            [uuid release];
-            pos_ += 16;
-            break;
-        }
-        case 's':
-        {
-            uint8_t dataLen = readUint8(&bytes_[pos_]);
-            pos_++;
-            
-            NSString *str = [[NSString alloc] initWithBytes: bytes_ + pos_
-                                                     length: dataLen
-                                                   encoding: NSUTF8StringEncoding];
-            [delegate_ readString: str];
-            [str release];
-            pos_ += dataLen;
-            break;
-        }
-        case 'S':
-        {
-            uint32_t dataLen = readUint32(&bytes_[pos_]);
-            pos_ += 4;
-
-            NSString *str = [[NSString alloc] initWithBytes: bytes_ + pos_
-                                                     length: dataLen
-                                                   encoding: NSUTF8StringEncoding];
-            [delegate_ readString: str];
-            [str release];
-            pos_ += dataLen;
-            break;
-        }
-        case 'd':
-        {
-            uint8_t dataLen = readUint8(&bytes_[pos_]);
-            pos_++;
-            [delegate_ readData: [data_ subdataWithRange: NSMakeRange(pos_, dataLen)]];
-            pos_ += dataLen;
-            break;
-        }
-        case 'D':
-        {
-            uint32_t dataLen = readUint32(&bytes_[pos_]);
-            pos_ += 4;
-            [delegate_ readData: [data_ subdataWithRange: NSMakeRange(pos_, dataLen)]];
-            pos_ += dataLen;
-            break;
-        }
-        case '{':
-            [delegate_ beginObject];
-            break;
-        case '}':
-            [delegate_ endObject];
-            break;
-        case '[':
-            [delegate_ beginArray];
-            break;
-        case ']':
-            [delegate_ endArray];            
-            break;
-        default:
-            [NSException raise: NSGenericException
-                        format: @"unknown type '%c'", type];
-    }
-}
-
-@end

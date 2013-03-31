@@ -32,6 +32,9 @@
 
 #import "CORelationshipCache.h"
 
+#import "COBinaryReader.h"
+#import "COBinaryWriter.h"
+
 #define STOREPATH [@"~/om6teststore" stringByExpandingTildeInPath]
 #define STOREURL [NSURL fileURLWithPath: STOREPATH]
 

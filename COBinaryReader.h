@@ -1,31 +1,14 @@
 #import <Foundation/Foundation.h>
 
-@class COUUID;
+typedef struct {
+    void (*co_read_int64)(void*, int64_t);
+    void (*co_read_double)(void*, double);
+    void (*co_read_string)(void*, NSString *);
+    void (*co_read_bytes)(void*, const unsigned char *, size_t);
+    void (*co_read_begin_object)(void*);
+    void (*co_read_end_object)(void*);
+    void (*co_read_begin_array)(void*);
+    void (*co_read_end_array)(void*);
+} co_reader_callback_t;
 
-@protocol COBinaryReaderDelegate <NSObject>
-
-- (void) readInt64: (int64_t)value;
-- (void) readDouble: (double)aDouble;
-- (void) readUUID: (COUUID *)aUUID;
-- (void) readString: (NSString *)aString;
-- (void) readData: (NSData *)aData;
-- (void) beginObject;
-- (void) endObject;
-- (void) beginArray;
-- (void) endArray;
-
-@end
-
-
-@interface COBinaryReader : NSObject
-{
-    id<COBinaryReaderDelegate> delegate_;
-    NSData *data_;
-    const unsigned char *bytes_;
-    NSUInteger pos_;
-    NSUInteger length_;
-}
-
-- (void) readData: (NSData*)aData withDelegate: (id<COBinaryReaderDelegate>)aDelegate;
-
-@end
+void co_reader_read(const unsigned char *bytes, size_t length, void *context, co_reader_callback_t callbacks);
