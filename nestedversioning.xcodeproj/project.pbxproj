@@ -33,6 +33,9 @@
 		6622E9CC16ED1E1400D82F2A /* COSchema.m in Sources */ = {isa = PBXBuildFile; fileRef = 6622E9CA16ED1E1400D82F2A /* COSchema.m */; };
 		66238164162FD04A00CA0CC4 /* COEdit.h in Headers */ = {isa = PBXBuildFile; fileRef = 66238162162FD04A00CA0CC4 /* COEdit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66238165162FD04A00CA0CC4 /* COEdit.m in Sources */ = {isa = PBXBuildFile; fileRef = 66238163162FD04A00CA0CC4 /* COEdit.m */; };
+		6623BD3B1706BD0D00E9E2D6 /* COWorkspace.h in Headers */ = {isa = PBXBuildFile; fileRef = 6623BD391706BD0D00E9E2D6 /* COWorkspace.h */; };
+		6623BD3C1706BD0D00E9E2D6 /* COWorkspace.m in Sources */ = {isa = PBXBuildFile; fileRef = 6623BD3A1706BD0D00E9E2D6 /* COWorkspace.m */; };
+		6623BD3E1706BECB00E9E2D6 /* NOTES-REVIEW in Resources */ = {isa = PBXBuildFile; fileRef = 6623BD3D1706BECB00E9E2D6 /* NOTES-REVIEW */; };
 		66243A6515ECC13300D00813 /* COPersistentRootState.m in Sources */ = {isa = PBXBuildFile; fileRef = 665BD3C915D78BE600428355 /* COPersistentRootState.m */; };
 		66285D9016E8446600F64338 /* EWFormatBooleanValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 66285D8F16E8446600F64338 /* EWFormatBooleanValueTransformer.m */; };
 		662C1DB9168FAC6B002157F3 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66EB756B148CA9D300C2114B /* Cocoa.framework */; };
@@ -269,6 +272,9 @@
 		6622E9CA16ED1E1400D82F2A /* COSchema.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COSchema.m; sourceTree = "<group>"; };
 		66238162162FD04A00CA0CC4 /* COEdit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COEdit.h; sourceTree = "<group>"; };
 		66238163162FD04A00CA0CC4 /* COEdit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COEdit.m; sourceTree = "<group>"; };
+		6623BD391706BD0D00E9E2D6 /* COWorkspace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COWorkspace.h; sourceTree = "<group>"; };
+		6623BD3A1706BD0D00E9E2D6 /* COWorkspace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COWorkspace.m; sourceTree = "<group>"; };
+		6623BD3D1706BECB00E9E2D6 /* NOTES-REVIEW */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "NOTES-REVIEW"; sourceTree = "<group>"; };
 		66285D8E16E8446600F64338 /* EWFormatBooleanValueTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWFormatBooleanValueTransformer.h; sourceTree = "<group>"; };
 		66285D8F16E8446600F64338 /* EWFormatBooleanValueTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWFormatBooleanValueTransformer.m; sourceTree = "<group>"; };
 		6628FBA1142FA7840072767A /* TestCopyEmbeddedObjects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCopyEmbeddedObjects.m; sourceTree = "<group>"; };
@@ -618,6 +624,7 @@
 		662811EB13F8B5000075BBC2 = {
 			isa = PBXGroup;
 			children = (
+				6623BD3D1706BECB00E9E2D6 /* NOTES-REVIEW */,
 				66EDAF3816B4B53900B06DB2 /* libssl.dylib */,
 				66816C50166343B200BC5F40 /* libsqlite3.dylib */,
 				663FC97D16099313000A9608 /* NOTES */,
@@ -1084,6 +1091,8 @@
 				66ED6D5B16F04A3B001B853E /* COValueTransformer.m */,
 				6675C91917016D44007C8DB6 /* CORelationshipCache.h */,
 				6675C91A17016D44007C8DB6 /* CORelationshipCache.m */,
+				6623BD391706BD0D00E9E2D6 /* COWorkspace.h */,
+				6623BD3A1706BD0D00E9E2D6 /* COWorkspace.m */,
 			);
 			name = "Editing Context";
 			sourceTree = "<group>";
@@ -1221,6 +1230,7 @@
 				66ED6D8716F4EB4F001B853E /* COBinaryWriter.h in Headers */,
 				66ED6D8B16F507BF001B853E /* COBinaryReader.h in Headers */,
 				6675C91B17016D44007C8DB6 /* CORelationshipCache.h in Headers */,
+				6623BD3B1706BD0D00E9E2D6 /* COWorkspace.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1436,6 +1446,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6623BD3E1706BECB00E9E2D6 /* NOTES-REVIEW in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1561,6 +1572,7 @@
 				66ED6D8816F4EB4F001B853E /* COBinaryWriter.m in Sources */,
 				66ED6D8C16F507BF001B853E /* COBinaryReader.m in Sources */,
 				6675C91C17016D44007C8DB6 /* CORelationshipCache.m in Sources */,
+				6623BD3C1706BD0D00E9E2D6 /* COWorkspace.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

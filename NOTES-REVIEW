@@ -1,0 +1,25 @@
+From TestUserRequirements
+-------------------------
+
+// 1. user creates a photo montage, and drags in a vector graphic which was another persistent root.
+// - the vector graphic can be modified externally without affecting the photo montage.
+
+OK, make a persistent root copy when pasting a persistent root into another. (that would be the default. There would be a modifier for "paste link")
+
+// - the photo montage can be branched and the vector graphic can be edited without affecting the original
+//   branch of the photo montage.
+
+This would require a recursive branch and recursive branch switch, but doable.
+
+// - the vector graphic can be updated to the latest changes made outside the photo montage.
+
+doable.
+
+// - the montage can be reverted to an older version, which will also revert the vector graphic (when viewed
+//   from within the photo montage - should not affect other branches or other documents where the vector graphic is embedded)
+
+Not really doable.
+
+// => the version of a persistent should encapsulate the versions of embedded persistent roots.
+
+If that's the case, it should probably be pasted directly into the photo montage.
