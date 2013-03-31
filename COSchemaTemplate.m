@@ -32,17 +32,17 @@
     return [[[self alloc] initWithName: aName] autorelease];
 }
 
-- (void) setType: (COType *)aType
+- (void) setType: (COType)aType
       schemaName: (NSString *)aSchema
      forProperty: (NSString *)aProperty
 {
-    NSParameterAssert(([[aType primitiveType] isEqual: [COType embeddedItemType]]
-                       || [[aType primitiveType] isEqual: [COType referenceType]]));
+    NSParameterAssert(COPrimitiveType(aType) == kCOEmbeddedItemType
+                       || COPrimitiveType(aType) == kCOReferenceType);
     [typeForAttribute_ setObject: aType forKey: aProperty];
     [schemaNameForAttribute_ setObject: [NSString stringWithString: aSchema] forKey: aProperty];
 }
 
-- (void) setType: (COType *)aType
+- (void) setType: (COType)aType
      forProperty: (NSString *)aProperty
 {
     [typeForAttribute_ setObject: aType forKey: aProperty];    

@@ -14,17 +14,21 @@
 	
 	[i1 setValue: S(@"hello", @"world")
 	forAttribute: @"contents"
-			type: [[COType stringType] setType]];
+			type: kCOStringType | kCOSetType];
 	
 	// test round trip to plist
 	{
+        NSString *err = nil;
 		id plist = [NSPropertyListSerialization propertyListFromData:
 					[NSPropertyListSerialization dataFromPropertyList: [i1 plist]
-															   format:NSPropertyListXMLFormat_v1_0
-													 errorDescription:NULL]
+															   format: NSPropertyListXMLFormat_v1_0
+													 errorDescription: &err]
 													mutabilityOption: NSPropertyListMutableContainersAndLeaves
 															  format: NULL
 													errorDescription:NULL];
+        
+        NSLog(@"%@", err);
+        
 		COMutableItem *i1clone = [[[COMutableItem alloc] initWithPlist: plist] autorelease];
 		UKObjectsEqual(i1, i1clone);
 	}
@@ -32,14 +36,14 @@
 
 - (void) testMutability
 {	
-	COItem *immutable = [COItem itemWithTypesForAttributes: D([[COType stringType] setType], @"key1",
-															  [[COType stringType] arrayType], @"key2",
-															  [COType stringType], @"name")
+	COItem *immutable = [COItem itemWithTypesForAttributes: D(kCOStringType | kCOSetType, @"key1",
+															  kCOStringType | kCOArrayType, @"key2",
+															  kCOStringType, @"name")
 									   valuesForAttributes: D([NSMutableSet setWithObject: @"a"], @"key1",	
 															  [NSMutableArray arrayWithObject: @"A"], @"key2",
 															  @"my name", @"name")];
 
-	UKRaisesException([(COMutableItem *)immutable setValue: @"foo" forAttribute: @"bar" type: [COType stringType]]);
+	UKRaisesException([(COMutableItem *)immutable setValue: @"foo" forAttribute: @"bar" type: kCOStringType]);
 
 	UKRaisesException([[immutable valueForAttribute: @"key1"] addObject: @"b"]);
 	UKRaisesException([[immutable valueForAttribute: @"key2"] addObject: @"B"]);
@@ -60,9 +64,9 @@
 
 - (void) testEquality
 {
-	COItem *immutable = [COItem itemWithTypesForAttributes: D([[COType stringType] setType], @"key1",
-															  [[COType stringType] arrayType], @"key2",
-															  [COType stringType], @"name")
+	COItem *immutable = [COItem itemWithTypesForAttributes: D(kCOStringType | kCOSetType, @"key1",
+															  kCOStringType | kCOArrayType, @"key2",
+															  kCOStringType, @"name")
 									   valuesForAttributes: D([NSMutableSet setWithObject: @"a"], @"key1",	
 															  [NSMutableArray arrayWithObject: @"A"], @"key2",
 															  @"my name", @"name")];
@@ -75,19 +79,19 @@
 - (void) testEmptySet
 {
 	COMutableItem *item1 = [COMutableItem item];
-	[item1 setValue: [NSSet set] forAttribute: @"set" type: [[COType stringType] setType]];
+	[item1 setValue: [NSSet set] forAttribute: @"set" type: kCOStringType | kCOSetType];
 	
 	COMutableItem *item2 = [COMutableItem item];
 	
 	UKObjectsNotEqual(item2, item1);
 }
 
-- (void) testNamedType
-{
-	COMutableItem *item1 = [COMutableItem item];
-	[item1 setValue: [NSSet set] forAttribute: @"set" type: [[[COType stringType] setType] namedType: @"testName"]];
-
-    UKObjectsEqual(@"testName", [[item1 typeForAttribute: @"set"] name]);
-}
+//- (void) testNamedType
+//{
+//	COMutableItem *item1 = [COMutableItem item];
+//	item1 setValue: [NSSet set] forAttribute: @"set" type: [kCOStringType | kCOSetType namedType: @"testName"]];
+//
+//    UKObjectsEqual(@"testName", [[item1 typeForAttribute: @"set"] name]);
+//}
 
 @end

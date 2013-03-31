@@ -23,7 +23,7 @@
 	COSubtree *contents1 = [COSubtree subtree];
 	[contents1 setPrimitiveValue: @"red"
 					forAttribute: @"color"
-							type: [COType stringType]];
+							type: kCOStringType];
 	
 	COSubtree *i1 = [[COSubtreeFactory factory] createPersistentRootWithRootItem: contents1
 																	 displayName: @"My Document"
@@ -33,8 +33,8 @@
 	
 	COSubtree *u1BranchA = [[COSubtreeFactory factory] currentBranchOfPersistentRoot: i1];
 	COSubtree *u1BranchB = [[COSubtreeFactory factory] createBranchOfPersistentRoot: i1];
-	[u1BranchA setPrimitiveValue: @"Branch A" forAttribute: @"name" type: [COType stringType]];
-	[u1BranchB setPrimitiveValue: @"Branch B" forAttribute: @"name" type: [COType stringType]];
+	[u1BranchA setPrimitiveValue: @"Branch A" forAttribute: @"name" type: kCOStringType];
+	[u1BranchB setPrimitiveValue: @"Branch B" forAttribute: @"name" type: kCOStringType];
 	
 	
 	[iroot addTree: i1];
@@ -49,7 +49,7 @@
 		COSubtree *contents2 = [ctx2 persistentRootTree];
 		[contents2 setPrimitiveValue: @"orange"
 						forAttribute: @"color"
-								type: [COType stringType]];
+								type: kCOStringType];
 		
 		[ctx2 commitWithMetadata: nil];
 	}
@@ -61,7 +61,7 @@
 		COSubtree *contents3 = [ctx3 persistentRootTree];
 		[contents3 setPrimitiveValue: @"yellow"
 						forAttribute: @"color"
-								type: [COType stringType]];
+								type: kCOStringType];
 		[ctx3 commitWithMetadata: nil];
 	}
 	
@@ -109,7 +109,7 @@ static COSubtree *subtreeInitialVersion(COUUID *aUUID)
 	
 	[tree setValue: A(@"b", @"c", @"d")
 	  forAttribute: @"letters"
-			  type: [[COType stringType] arrayType]];
+			  type: kCOStringType | kCOArrayType];
 	
 	return tree;
 }
@@ -124,7 +124,7 @@ static COSubtree *subtreeVariantA(COUUID *aUUID)
 	[tree addObject: @"a"
  toOrderedAttribute: @"letters"
 			atIndex: 0
-			   type: [[COType stringType] arrayType]];
+			   type: kCOStringType | kCOArrayType];
 		
 	return tree;
 }
@@ -139,7 +139,7 @@ static COSubtree *subtreeVariantB(COUUID *aUUID)
 	[tree addObject: @"e"
  toOrderedAttribute: @"letters"
 			atIndex: 3
-			   type: [[COType stringType] arrayType]];
+			   type: kCOStringType | kCOArrayType];
 	
 	return tree;
 }
@@ -169,8 +169,8 @@ static COSubtree *subtreeVariantB(COUUID *aUUID)
 	
 	COSubtree *u1BranchA = [[COSubtreeFactory factory] currentBranchOfPersistentRoot: i1];
 	COSubtree *u1BranchB = [[COSubtreeFactory factory] createBranchOfPersistentRoot: i1];
-	[u1BranchA setPrimitiveValue: @"Branch A" forAttribute: @"name" type: [COType stringType]];
-	[u1BranchB setPrimitiveValue: @"Branch B" forAttribute: @"name" type: [COType stringType]];
+	[u1BranchA setPrimitiveValue: @"Branch A" forAttribute: @"name" type: kCOStringType];
+	[u1BranchB setPrimitiveValue: @"Branch B" forAttribute: @"name" type: kCOStringType];
 	
 	
 	[iroot addTree: i1];

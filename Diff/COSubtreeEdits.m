@@ -80,36 +80,30 @@
 - (void)dealloc
 {
 	[value release];
-	[type release];
 	[super dealloc];
 }
 
 - (BOOL) isEqualIgnoringSourceIdentifier: (id)other
 {
 	return [super isEqualIgnoringSourceIdentifier: other]
-	&&	[type isEqual: ((COSetAttribute*)other).type]
+	&&	type != ((COSetAttribute*)other).type
 	&&	[value isEqual: ((COSetAttribute*)other).value];
 }
 
 - (NSUInteger) hash
 {
-	return 4265092495078449026ULL ^ [super hash] ^ [type hash] ^ [value hash];
+	return 4265092495078449026ULL ^ [super hash] ^ type ^ [value hash];
 }
 
 - (id) initWithUUID: (COUUID *)aUUID
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier
-			   type: (COType *)aType
+			   type: (COType)aType
 			  value: (id)aValue
 {
-	NILARG_EXCEPTION_TEST(aType);
 	NILARG_EXCEPTION_TEST(aValue);
-	if (![aType validateValue: aValue])
-	{
-		[NSException raise: NSInvalidArgumentException format: @"value %@ did not conform to type %@", aValue, aType];
-	}
 	self = [super initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier];
-	type = [aType copy];
+	type = aType;
 	value = [aValue copy];
 	return self;
 }
@@ -121,15 +115,15 @@
 
 - (NSSet *) insertedEmbeddedItemUUIDs
 {
-	if ([type isPrimitiveTypeEqual: [COType embeddedItemType]])
+	if (COPrimitiveType(type) == kCOEmbeddedItemType)
 	{
-		if ([type isPrimitive])
+		if (COTypeIsPrimitive(type))
 		{
 			return [NSSet setWithObject: value];
 		}
 		else
 		{
-			if ([type isOrdered])
+			if (COTypeIsOrdered(type))
 			{
 				return [NSSet setWithArray: value];
 			}
@@ -173,23 +167,18 @@
 - (id) initWithUUID: (COUUID *)aUUID
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier
-			   type: (COType *)aType
+			   type: (COType)aType
 			 object: (id)anObject
 {
 	NILARG_EXCEPTION_TEST(anObject);
-	if (![[aType primitiveType] validateValue: anObject])
-	{
-		[NSException raise: NSInvalidArgumentException format: @"value %@ did not conform to type %@", anObject, aType];
-	}
 	self = [super initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier];
-	type = [aType copy];
+	type = aType;
 	object = [anObject copy];
 	return self;
 }
 
 - (void)dealloc
 {
-	[type release];
 	[object release];
 	[super dealloc];
 }
@@ -197,13 +186,13 @@
 - (BOOL) isEqualIgnoringSourceIdentifier: (id)other
 {
 	return [super isEqualIgnoringSourceIdentifier: other]
-	&& [type isEqual: ((COSetInsertion*)other).type]
+	&& type == ((COSetInsertion*)other).type
 	&& [object isEqual: ((COSetInsertion*)other).object];
 }
 
 - (NSUInteger) hash
 {
-	return 595258568559201742ULL ^ [super hash] ^ [type hash] ^ [object hash];
+	return 595258568559201742ULL ^ [super hash] ^ type ^ [object hash];
 }
 
 - (NSString *) description
@@ -213,7 +202,7 @@
 
 - (NSSet *) insertedEmbeddedItemUUIDs
 {
-	if ([type isPrimitiveTypeEqual: [COType embeddedItemType]])
+	if (COPrimitiveType(type) == kCOEmbeddedItemType)
 	{
 		return [NSSet setWithObject: object];
 	}
@@ -316,23 +305,18 @@
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier
 			  range: (NSRange)aRange
-			   type: (COType *)aType
+			   type: (COType)aType
 			objects: (NSArray *)anArray
 {
 	NILARG_EXCEPTION_TEST(anArray);
-	if (![aType validateValue: anArray])
-	{
-		[NSException raise: NSInvalidArgumentException format: @"value %@ did not conform to type %@", anArray, aType];
-	}
-	self = [super initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier range: aRange];	
-	type = [aType copy];
+	self = [super initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier range: aRange];
+	type = aType;
 	objects = [[NSArray alloc] initWithArray: anArray copyItems: YES];
 	return self;
 }
 
 - (void)dealloc
 {
-	[type release];
 	[objects release];
 	[super dealloc];
 }
@@ -340,13 +324,13 @@
 - (BOOL) isEqualIgnoringSourceIdentifier: (id)other
 {
 	return [super isEqualIgnoringSourceIdentifier: other]
-	&& [type isEqual: ((COSequenceInsertion*)other).type]
+	&& type == ((COSequenceInsertion*)other).type
 	&& [objects isEqual: ((COSequenceInsertion*)other).objects];
 }
 
 - (NSUInteger) hash
 {
-	return 11773746616539821587ULL ^ [super hash] ^ [type hash] ^ [objects hash];
+	return 11773746616539821587ULL ^ [super hash] ^ type ^ [objects hash];
 }
 
 - (NSString *) description
@@ -356,7 +340,7 @@
 
 - (NSSet *) insertedEmbeddedItemUUIDs
 {
-	if ([type isPrimitiveTypeEqual: [COType embeddedItemType]])
+	if (COPrimitiveType(type) == kCOEmbeddedItemType)
 	{
 		return [NSSet setWithArray: objects];
 	}
@@ -376,7 +360,7 @@
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier
 		   location: (NSUInteger)aLocation
-			   type: (COType *)aType
+			   type: (COType)aType
 			objects: (NSArray *)anArray
 {
 	self = [super initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier range: NSMakeRange(aLocation, 0) type: aType objects: anArray];

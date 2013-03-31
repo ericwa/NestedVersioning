@@ -10,9 +10,9 @@
     COSchemaRegistry *reg = [COSchemaRegistry registry];
     
     COSchemaTemplate *schema = [COSchemaTemplate schemaWithName: @"OutlineItem"];
-    [schema setType: [COType stringType] forProperty: @"label"];
+    [schema setType: kCOStringType forProperty: @"label"];
     
-    [schema setType: [[COType embeddedItemType] setType]
+    [schema setType: kCOEmbeddedItemType | kCOSetType
          schemaName: @"OutlineItem"
         forProperty: @"contents"];
     

@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
+#import "COType.h"
 
 @class COUUID;
-@class COType;
 @class COItem;
 
 
@@ -30,19 +30,19 @@
 }
 
 - (void) updateRelationshipCacheWithOldValue: (id)oldVal
-                                     oldType: (COType *)oldType
+                                     oldType: (COType)oldType
                                     newValue: (id)newVal
-                                     newType: (COType *)newType
+                                     newType: (COType)newType
                                  forProperty: (NSString *)aProperty
                                     ofObject: (COUUID *)anObject;
 
 - (void) clearOldValue: (id)oldVal
-               oldType: (COType *)oldType
+               oldType: (COType)oldType
            forProperty: (NSString *)aProperty
               ofObject: (COUUID *)anObject;
 
 - (void) setNewValue: (id)newVal
-             newType: (COType *)newType
+             newType: (COType)newType
          forProperty: (NSString *)aProperty
             ofObject: (COUUID *)anObject;
 

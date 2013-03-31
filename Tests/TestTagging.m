@@ -178,13 +178,13 @@
 								[COPath pathWithPathComponent: [photo2 UUID]],
 								[COPath pathWithPathComponent: [photo2 UUID]]) 
 				forAttribute: @"contents" 
-						type: [[COType pathType] arrayType]];
+						type: kCOPathType | kCOArrayType];
 
 			[album2 setValue: A([COPath pathWithPathComponent: [photo2 UUID]],
 								[COPath pathWithPathComponent: [photo3 UUID]],
 								[COPath pathWithPathComponent: [photo1 UUID]]) 
 				forAttribute: @"contents" 
-						type: [[COType pathType] arrayType]];
+						type: kCOPathType | kCOArrayType];
 		
 		[photolibCtx commitWithMetadata: D(@"setup photo library", @"menuLabel")];
 		
@@ -211,7 +211,7 @@
 			
 			[photo1Ctx_rootItem setValue: S(tag1, tag2, tag3)
 							forAttribute: @"tags"
-									type: [[COType pathType] setType]];
+									type: kCOPathType | kCOSetType];
 			
 			[photo1Ctx commitWithMetadata: D(@"add photo tags", @"menuLabel")];
 		}
@@ -239,7 +239,7 @@
 						
 			[photo2Ctx_rootItem setValue: S(tag1, tag2, tag3)
 							forAttribute: @"tags"
-									type: [[COType pathType] setType]];
+									type: kCOPathType | kCOSetType];
 			
 			[photo2Ctx commitWithMetadata: D(@"add photo tags", @"menuLabel")];
 		}
@@ -268,7 +268,7 @@
 			
 			[photo3Ctx_rootItem setValue: S(tag1, tag2, tag3)
 							forAttribute: @"tags"
-									type: [[COType pathType] setType]];
+									type: kCOPathType | kCOSetType];
 			
 			[photo3Ctx commitWithMetadata: D(@"add photo tags", @"menuLabel")];
 		}
@@ -286,7 +286,7 @@
 	COSubtree *photolibBranchB = [[COSubtreeFactory factory] createBranchOfPersistentRoot: photolib];
 	[photolibBranchB setValue: @"Test Branch"
 				 forAttribute: @"name"
-						 type: [COType stringType]];
+						 type: kCOStringType];
 	[rootCtx commitWithMetadata: D(@"create branch", @"menuLabel")];
 	
 	

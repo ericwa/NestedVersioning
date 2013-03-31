@@ -38,16 +38,16 @@
 
 @interface COSetAttribute : COSubtreeEdit 
 {
-	COType *type;
+	COType type;
 	id value;
 }
-@property (readonly, nonatomic) COType *type;
+@property (readonly, nonatomic) COType type;
 @property (readonly, nonatomic) id value;
 
 - (id) initWithUUID: (COUUID *)aUUID
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier
-			   type: (COType *)aType
+			   type: (COType)aType
 			  value: (id)aValue;
 
 @end
@@ -61,16 +61,16 @@
 
 @interface COSetInsertion : COSubtreeEdit
 {
-	COType *type;
+	COType type;
 	id object;
 }
-@property (readonly, nonatomic) COType *type;
+@property (readonly, nonatomic) COType type;
 @property (readonly, nonatomic) id object;
 
 - (id) initWithUUID: (COUUID *)aUUID
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier
-			   type: (COType *)aType
+			   type: (COType)aType
 			 object: (id)anObject;
 
 @end
@@ -101,17 +101,17 @@
 
 @interface COSequenceModification : COSequenceEdit
 {
-	COType *type;
+	COType type;
 	NSArray *objects;
 }
-@property (readonly, nonatomic) COType *type;
+@property (readonly, nonatomic) COType type;
 @property (readonly, nonatomic) NSArray *objects;
 
 - (id) initWithUUID: (COUUID *)aUUID
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier
 			  range: (NSRange)aRange
-			   type: (COType *)aType
+			   type: (COType)aType
 			objects: (NSArray *)anArray;
 @end
 
@@ -122,7 +122,7 @@
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier
 		   location: (NSUInteger)aLocation
-			   type: (COType *)aType
+			   type: (COType)aType
 			objects: (NSArray *)anArray;
 
 @end

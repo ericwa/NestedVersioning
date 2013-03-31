@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 
-@class COType;
+#import "COType.h"
+
 @class COSchemaRegistry;
 @class COSchemaTemplate;
 
@@ -20,7 +21,7 @@
 
 - (COSchema *) parent;
 - (NSSet *) propertyNames;
-- (COType *) typeForProperty: (NSString *)aProperty;
+- (COType) typeForProperty: (NSString *)aProperty;
 - (NSString *) schemaForProperty: (NSString *)aProperty;
 
 @end

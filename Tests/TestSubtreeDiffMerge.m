@@ -35,7 +35,7 @@
 	
 	[u4 setPrimitiveValue: @"This node was added"
 			 forAttribute: @"comment"
-					 type: [COType stringType]];
+					 type: kCOStringType];
 	
 	
 	// Test creating a diff
@@ -55,7 +55,7 @@
 	
 	[t1 setPrimitiveValue: @"This node was added"
 			 forAttribute: @"comment"
-					 type: [COType stringType]];
+					 type: kCOStringType];
 		
 	COSubtreeDiff *diff_t1_t2 = [COSubtreeDiff diffSubtree: t1 withSubtree: t2 sourceIdentifier: @"my source"];
 	
@@ -72,22 +72,22 @@
 	COSubtree *square1 = [COSubtree subtree];
 	COSubtree *image1 = [COSubtree subtree];
 
-	[doc setValue: @"doc" forAttribute: @"name" type: [COType stringType]];		
-	[line1 setValue: @"line1" forAttribute: @"name" type: [COType stringType]];	
-	[circle1 setValue: @"circle1" forAttribute: @"name" type: [COType stringType]];
-	[square1 setValue: @"square1" forAttribute: @"name" type: [COType stringType]];	
-	[image1 setValue: @"image1" forAttribute: @"name" type: [COType stringType]];
+	[doc setValue: @"doc" forAttribute: @"name" type: kCOStringType];		
+	[line1 setValue: @"line1" forAttribute: @"name" type: kCOStringType];	
+	[circle1 setValue: @"circle1" forAttribute: @"name" type: kCOStringType];
+	[square1 setValue: @"square1" forAttribute: @"name" type: kCOStringType];	
+	[image1 setValue: @"image1" forAttribute: @"name" type: kCOStringType];
 	
 	[doc setValue: A(line1, circle1, square1, image1)
 	 forAttribute: @"contents"
-			 type: [[COType embeddedItemType] arrayType]];
+			 type: kCOEmbeddedItemType | kCOArrayType];
 
 	// snapshot the state: (line1, circle1, square1, image1) into doc2
 	COSubtree *doc2 = [[doc copy] autorelease];
 	
 	COSubtree *group1 = [COSubtree subtree];
-	[group1 setValue: @"group1" forAttribute: @"name" type: [COType stringType]];
-	[doc addObject: group1 toOrderedAttribute: @"contents" atIndex: 1 type: [[COType embeddedItemType] arrayType]];
+	[group1 setValue: @"group1" forAttribute: @"name" type: kCOStringType];
+	doc addObject: group1 toOrderedAttribute: @"contents" atIndex: 1 type: [kCOEmbeddedItemType | kCOArrayType];
 	[group1 addTree: circle1];
 	[group1 addTree: square1];
 	
@@ -95,8 +95,8 @@
 	COSubtree *doc3 = [[doc copy] autorelease];
 	
 	COSubtree *triangle1 = [COSubtree subtree];
-	[triangle1 setValue: @"triangle1" forAttribute: @"name" type: [COType stringType]];
-	[doc addObject: triangle1 toOrderedAttribute: @"contents" atIndex: 0 type: [[COType embeddedItemType] arrayType]];
+	[triangle1 setValue: @"triangle1" forAttribute: @"name" type: kCOStringType];
+	doc addObject: triangle1 toOrderedAttribute: @"contents" atIndex: 0 type: [kCOEmbeddedItemType | kCOArrayType];
 	
 	
 	// doc state:  (triangl1, line1, group1=(circle1, square1), image1)
@@ -147,10 +147,10 @@
 
 	// 1. Setup docO, docA, docB
 	{		
-		[doc setValue: @"doc" forAttribute: @"name" type: [COType stringType]];		
-		[group1 setValue: @"group1" forAttribute: @"name" type: [COType stringType]];	
-		[group2 setValue: @"group2" forAttribute: @"name" type: [COType stringType]];
-		[shape1 setValue: @"shape1" forAttribute: @"name" type: [COType stringType]];	
+		[doc setValue: @"doc" forAttribute: @"name" type: kCOStringType];		
+		[group1 setValue: @"group1" forAttribute: @"name" type: kCOStringType];	
+		[group2 setValue: @"group2" forAttribute: @"name" type: kCOStringType];
+		[shape1 setValue: @"shape1" forAttribute: @"name" type: kCOStringType];	
 		
 		[doc addTree: shape1];
 		
@@ -202,13 +202,13 @@
 	COSubtreeEdit *OAConflictingExpected = [[[COSetAttribute alloc] initWithUUID: [group1 UUID]
 																	   attribute: @"contents"
 																sourceIdentifier: @"OA"
-																			type: [[COType embeddedItemType] setType]
+																			type: kCOEmbeddedItemType | kCOSetType
 																		   value: S([shape1 UUID])] autorelease];
 	
 	COSubtreeEdit *OBConflictingExpected = [[[COSetAttribute alloc] initWithUUID: [group2 UUID]
 																	   attribute: @"contents"
 																sourceIdentifier: @"OB"
-																			type: [[COType embeddedItemType] setType]
+																			type: kCOEmbeddedItemType | kCOSetType
 																		   value: S([shape1 UUID])] autorelease];
 	
 	UKObjectsEqual(OAConflictingExpected, OAConflictingEdit);
@@ -247,10 +247,10 @@
 		
 	[t2 setPrimitiveValue: @"This node was added"
 			 forAttribute: @"comment"
-					 type: [COType stringType]];
+					 type: kCOStringType];
 	[t3 setPrimitiveValue: @"This node was added"
 			 forAttribute: @"comment"
-					 type: [COType stringType]];
+					 type: kCOStringType];
 	
 	UKObjectsEqual(t2, t3);
 	
@@ -271,10 +271,10 @@
 	
 	[t2 setPrimitiveValue: @"abc"
 			 forAttribute: @"string"
-					 type: [COType stringType]];
+					 type: kCOStringType];
 	[t3 setPrimitiveValue: @"def"
 			 forAttribute: @"string"
-					 type: [COType stringType]];
+					 type: kCOStringType];
 
 	COSubtreeDiff *diff12 = [COSubtreeDiff diffSubtree: t1 withSubtree: t2 sourceIdentifier: @"diff12"];
 	COSubtreeDiff *diff13 = [COSubtreeDiff diffSubtree: t1 withSubtree: t3 sourceIdentifier: @"diff13"];
@@ -324,9 +324,9 @@
 	NSSet *set1 = S(@"a", @"b", @"c", @"d", @"e");
 	NSSet *set3 = S(@"A", @"b", @"c", @"e", @"foo");
 
-	[doc2 setValue: set2 forAttribute: @"set" type: [[COType stringType] setType]];
-	[doc1 setValue: set1 forAttribute: @"set" type: [[COType stringType] setType]];
-	[doc3 setValue: set3 forAttribute: @"set" type: [[COType stringType] setType]];
+	doc2 setValue: set2 forAttribute: @"set" type: [kCOStringType | kCOSetType];
+	doc1 setValue: set1 forAttribute: @"set" type: [kCOStringType | kCOSetType];
+	doc3 setValue: set3 forAttribute: @"set" type: [kCOStringType | kCOSetType];
 
 	COSubtreeDiff *diff12 = [COSubtreeDiff diffSubtree: doc1 withSubtree:doc2 sourceIdentifier: @"diff12"];
 	
@@ -363,9 +363,9 @@
 	NSArray *array1 = A(@"a", @"b", @"c", @"d", @"e");
 	NSArray *array3 = A(@"A", @"b", @"c", @"e", @"foo");
 	
-	[doc2 setValue: array2 forAttribute: @"array" type: [[COType stringType] arrayType]];
-	[doc1 setValue: array1 forAttribute: @"array" type: [[COType stringType] arrayType]];
-	[doc3 setValue: array3 forAttribute: @"array" type: [[COType stringType] arrayType]];
+	doc2 setValue: array2 forAttribute: @"array" type: [kCOStringType | kCOArrayType];
+	doc1 setValue: array1 forAttribute: @"array" type: [kCOStringType | kCOArrayType];
+	doc3 setValue: array3 forAttribute: @"array" type: [kCOStringType | kCOArrayType];
 
 	
 	/**
@@ -433,9 +433,9 @@
 	NSArray *array1 = A(@"a");
 	NSArray *array3 = A(@"b");
 	
-	[doc2 setValue: array2 forAttribute: @"array" type: [[COType stringType] arrayType]];
-	[doc1 setValue: array1 forAttribute: @"array" type: [[COType stringType] arrayType]];
-	[doc3 setValue: array3 forAttribute: @"array" type: [[COType stringType] arrayType]];
+	doc2 setValue: array2 forAttribute: @"array" type: [kCOStringType | kCOArrayType];
+	doc1 setValue: array1 forAttribute: @"array" type: [kCOStringType | kCOArrayType];
+	doc3 setValue: array3 forAttribute: @"array" type: [kCOStringType | kCOArrayType];
 	
 	
 	//
@@ -521,9 +521,9 @@
 	NSArray *array1 = A(@"a", @"b", @"c", @"d", @"e");
 	NSArray *array3 = A(@"a", @"X", @"c", @"Z", @"e");
 	
-	[doc2 setValue: array2 forAttribute: @"array" type: [[COType stringType] arrayType]];
-	[doc1 setValue: array1 forAttribute: @"array" type: [[COType stringType] arrayType]];
-	[doc3 setValue: array3 forAttribute: @"array" type: [[COType stringType] arrayType]];
+	doc2 setValue: array2 forAttribute: @"array" type: [kCOStringType | kCOArrayType];
+	doc1 setValue: array1 forAttribute: @"array" type: [kCOStringType | kCOArrayType];
+	doc3 setValue: array3 forAttribute: @"array" type: [kCOStringType | kCOArrayType];
 	
 	
 	COSubtreeDiff *diff12 = [COSubtreeDiff diffSubtree: doc1 withSubtree:doc2 sourceIdentifier: @"diff12"];

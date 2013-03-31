@@ -7,7 +7,7 @@
 
 - (id) initWithItemUUID: (COUUID *)aUUID
 			  valueName: (NSString *)aName
-				   type: (COType *)aType;
+				   type: (COType)aType;
 
 @end
 
@@ -23,7 +23,7 @@
 - (id) initWithItemUUID: (COUUID *)aUUID
 			  arrayName: (NSString *)collection
 		 insertionIndex: (NSUInteger)anIndex
-				   type: (COType *)aType;
+				   type: (COType)aType;
 
 @end
 
@@ -36,7 +36,7 @@
 
 - (id) initWithItemUUID: (COUUID *)aUUID
 		  attributeName: (NSString *)aName
-				   type: (COType *)aType
+				   type: (COType)aType
 {
 	SUPERINIT;
 	ASSIGN(uuid, aUUID);
@@ -47,7 +47,7 @@
 
 + (COItemPath *) pathWithItemUUID: (COUUID *)aUUID
 		  unorderedCollectionName: (NSString *)collection
-							 type: (COType *)aType
+							 type: (COType)aType
 {
 	return [[[COItemPathToUnorderedContainer alloc] initWithItemUUID: aUUID
 													   attributeName: collection
@@ -57,7 +57,7 @@
 + (COItemPath *) pathWithItemUUID: (COUUID *)aUUID
 						arrayName: (NSString *)collection
 				   insertionIndex: (NSUInteger)index
-							 type: (COType *)aType
+							 type: (COType)aType
 {
 	return [[[COItemPathToOrderedContainer alloc] initWithItemUUID: aUUID
 														 arrayName: collection
@@ -67,7 +67,7 @@
 
 + (COItemPath *) pathWithItemUUID: (COUUID *)aUUID
 						valueName: (NSString *)aName
-							 type: (COType *)aType
+							 type: (COType)aType
 {
 	return [[[COItemPathToUnorderedContainer alloc] initWithItemUUID: aUUID
 													   attributeName: aName
@@ -78,7 +78,6 @@
 {
 	[uuid release];
 	[attribute release];
-	[type release];
 	[super dealloc];
 }
 
@@ -124,7 +123,7 @@
 - (id) initWithItemUUID: (COUUID *)aUUID
 			  arrayName: (NSString *)collection
 		 insertionIndex: (NSUInteger)anIndex
-				   type: (COType *)aType
+				   type: (COType)aType
 {
 	if ((self = [super initWithItemUUID: aUUID
 						  attributeName: collection

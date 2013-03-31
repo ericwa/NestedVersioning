@@ -11,7 +11,7 @@ static COObject *makeTree(NSString *label)
     COEditingContext *ctx = [[[COEditingContext alloc] init] autorelease];
     [[ctx rootObject] setValue: label
                   forAttribute: @"label"
-                          type: [COType stringType]];
+                          type: kCOStringType];
     return [ctx rootObject];
 }
 

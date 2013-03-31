@@ -21,9 +21,9 @@
     COObject *obj = [[dest editingContext] insertObject];
     [obj setValue: label
      forAttribute: @"label"
-             type: [COType stringType]];
+             type: kCOStringType];
     
-    [obj setValue: S() forAttribute: @"contents" type: [[COType embeddedItemType] setType]];
+    [obj setValue: S() forAttribute: @"contents" type: kCOEmbeddedItemType | kCOSetType];
     
     [dest addObject: obj
 toUnorderedAttribute: @"contents"];
@@ -38,7 +38,7 @@ toUnorderedAttribute: @"contents"];
 	
     COObject *root = [ctx1 insertObject];
     [ctx1 setRootObject: root];
-    [root setValue: S() forAttribute: @"contents" type: [[COType embeddedItemType] setType]];
+    [root setValue: S() forAttribute: @"contents" type: kCOEmbeddedItemType | kCOSetType];
     
 	COObject *parent = [self addObjectWithLabel: @"Shopping" toObject: root];
 	COObject *child = [self addObjectWithLabel: @"Groceries" toObject: parent];
@@ -134,7 +134,7 @@ toUnorderedAttribute: @"contents"];
 
     // now make an edit in ctx2
     
-    [[ctx2 objectForUUID: [itemA UUID]] setValue: @"modified" forAttribute: @"test" type: [COType stringType]];
+    [[ctx2 objectForUUID: [itemA UUID]] setValue: @"modified" forAttribute: @"test" type: kCOStringType];
     
     UKObjectsNotEqual(ctx1, ctx2);
     UKObjectsNotEqual([ctx1 rootObject], [ctx2 rootObject]);
@@ -208,8 +208,8 @@ toUnorderedAttribute: @"contents"];
 {
 	COMutableItem *parent = [COMutableItem item];
 	COMutableItem *child = [COMutableItem item];
-	[parent setValue: [child UUID] forAttribute: @"cycle" type: [COType embeddedItemType]];
-	[child setValue: [parent UUID] forAttribute: @"cycle" type: [COType embeddedItemType]];
+	[parent setValue: [child UUID] forAttribute: @"cycle" type: kCOEmbeddedItemType];
+	[child setValue: [parent UUID] forAttribute: @"cycle" type: kCOEmbeddedItemType];
     
     UKRaisesException([COItemTree itemTreeWithItems: A(parent, child) rootItemUUID: [parent UUID]]);
 }
@@ -242,7 +242,7 @@ toUnorderedAttribute: @"contents"];
 	UKTrue(t2 == [t1 descendentObjectForUUID: [t2 UUID]]);
 	UKObjectsEqual([COItemPath pathWithItemUUID: [t1 UUID]
                         unorderedCollectionName: @"contents"
-                                           type: [[COType embeddedItemType] setType]],
+                                           type: kCOEmbeddedItemType | kCOSetType],
                    [t1 itemPathOfDescendentObjectWithUUID: [t2 UUID]]);
 	
     COObject *t3 = [t2 addObjectToContents: [self itemWithLabel: @"t3"]];
@@ -257,7 +257,7 @@ toUnorderedAttribute: @"contents"];
 	UKObjectsSame(t3, [t1 descendentObjectForUUID: [t3 UUID]]);
 	UKObjectsEqual([COItemPath pathWithItemUUID: [t2 UUID]
                         unorderedCollectionName: @"contents"
-                                           type: [[COType embeddedItemType] setType]],
+                                           type: kCOEmbeddedItemType | kCOSetType],
                    [t1 itemPathOfDescendentObjectWithUUID: [t3 UUID]]);
 }
 
@@ -310,9 +310,9 @@ toUnorderedAttribute: @"contents"];
 	COMutableItem *child2 = [COMutableItem item];
 	COMutableItem *shared = [COMutableItem item];
 	
-	[parent setValue: S([child1 UUID], [child2 UUID]) forAttribute: @"contents" type: [[COType embeddedItemType] setType]];
-	[child1 setValue: [shared UUID] forAttribute: @"shared" type: [COType embeddedItemType]];
-	[child2 setValue: [shared UUID] forAttribute: @"shared" type: [COType embeddedItemType]];
+	[parent setValue: S([child1 UUID], [child2 UUID]) forAttribute: @"contents" type: kCOEmbeddedItemType | kCOSetType];
+	[child1 setValue: [shared UUID] forAttribute: @"shared" type: kCOEmbeddedItemType];
+	[child2 setValue: [shared UUID] forAttribute: @"shared" type: kCOEmbeddedItemType];
 	
 	// illegal, because "shared" is embedded in two places
 	

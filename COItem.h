@@ -40,7 +40,7 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes;
 
 - (NSArray *) attributeNames;
 
-- (COType *) typeForAttribute: (NSString *)anAttribute;
+- (COType) typeForAttribute: (NSString *)anAttribute;
 - (id) valueForAttribute: (NSString*)anAttribute;
 
 /** @taskunit plist import/export */
@@ -93,7 +93,7 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes;
 
 - (void) setValue: (id)aValue
 	 forAttribute: (NSString*)anAttribute
-			 type: (COType *)aType;
+			 type: (COType)aType;
 
 - (void)removeValueForAttribute: (NSString*)anAttribute;
 
@@ -102,7 +102,7 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes;
  */
 - (void)   addObject: (id)aValue
 toUnorderedAttribute: (NSString*)anAttribute
-				type: (COType *)aType;
+				type: (COType)aType;
 
 /**
  * Creates the container if needed. 
@@ -110,7 +110,7 @@ toUnorderedAttribute: (NSString*)anAttribute
 - (void)   addObject: (id)aValue
   toOrderedAttribute: (NSString*)anAttribute
 			 atIndex: (NSUInteger)anIndex
-				type: (COType *)aType;
+				type: (COType)aType;
 
 
 /** @taskunit convenience */

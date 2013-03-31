@@ -30,10 +30,10 @@ static COUUID *childUUIDs[NUM_CHILDREN];
 - (COItem *) initialRootItem
 {
     COMutableItem *rootItem = [[[COMutableItem alloc] initWithUUID: rootUUID] autorelease];
-    [rootItem setValue: @"root" forAttribute: @"name" type: [COType stringType]];
+    [rootItem setValue: @"root" forAttribute: @"name" type: kCOStringType];
     [rootItem setValue: A()
           forAttribute: @"children"
-                  type: [[COType embeddedItemType] arrayType]];
+                  type: kCOEmbeddedItemType | kCOArrayType];
     
     for (int i=0; i<NUM_CHILDREN; i++)
     {
@@ -47,7 +47,7 @@ static COUUID *childUUIDs[NUM_CHILDREN];
     COMutableItem *child = [[[COMutableItem alloc] initWithUUID: childUUIDs[i]] autorelease];
     [child setValue: [self labelForCommit: 0 child: i]
        forAttribute: @"name"
-               type: [COType stringType]];
+               type: kCOStringType];
     return child;
 }
 

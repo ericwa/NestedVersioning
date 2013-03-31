@@ -42,7 +42,7 @@ static COObject *makeTree(NSString *label)
     COEditingContext *ctx = [[[COEditingContext alloc] init] autorelease];
     [[ctx rootObject] setValue: label
                   forAttribute: @"label"
-                          type: [COType stringType]];
+                          type: kCOStringType];
     return [ctx rootObject];
 }
 
@@ -69,7 +69,7 @@ static COObject *makeTree(NSString *label)
     // make a second commit
     
     COMutableItem *modifiedItem = [[[basicTree itemForUUID: [basicTree rootItemUUID]] mutableCopy] autorelease];
-    [modifiedItem setValue: @"hello world 2" forAttribute: @"label" type: [COType stringType]];
+    [modifiedItem setValue: @"hello world 2" forAttribute: @"label" type: kCOStringType];
     COItemTree *basicTree2 = [COItemTree itemTreeWithItems: A(modifiedItem) rootItemUUID: [modifiedItem UUID]];
     
     CORevisionID *token2 = [store writeItemTree: basicTree2
@@ -95,7 +95,7 @@ static COObject *makeTree(NSString *label)
         COEditingContext *ctx = [COEditingContext editingContext];
         [[ctx rootObject] setValue: @"Photo groups"
                       forAttribute: @"label"
-                              type: [COType stringType]];
+                              type: kCOStringType];
         
         //             /- friends---\
         // photo groups              photo1
@@ -122,7 +122,7 @@ static COObject *makeTree(NSString *label)
 //    
 //    // make a second commit
 //    
-//    [[ctx persistentRootTree] setValue: @"changed with context" forAttribute: @"name" type: [COType stringType]];
+//    [[ctx persistentRootTree] setValue: @"changed with context" forAttribute: @"name" type: kCOStringType];
 //
 //    [ctx commitWithMetadata: nil];
 //    

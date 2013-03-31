@@ -15,7 +15,7 @@
 	COEditingContext *ctx = [[[COEditingContext alloc] init] autorelease];
     [[ctx rootObject] setValue: label
                   forAttribute: @"name"
-                          type: [COType stringType]];
+                          type: kCOStringType];
     return [ctx rootObject];
 }
 
@@ -30,16 +30,16 @@
     if (count == 0)
     {
         COEditingContext *workspace = [COEditingContext editingContext];
-        [[workspace rootObject] setValue: @"Default Workspace" forAttribute: @"name" type: [COType stringType]];
+        [[workspace rootObject] setValue: @"Default Workspace" forAttribute: @"name" type: kCOStringType];
         
         COEditingContext *workspaces = [COEditingContext editingContext];
         [[workspaces rootObject] setValue: A([workspace rootObject])
                       forAttribute: @"orderedContents"
-                              type: [[COType embeddedItemType] arrayType]];
+                              type: kCOEmbeddedItemType | kCOArrayType];
         
         [[workspaces rootObject] addObject: [self itemWithLabel: @"My Phat Workspace"]
                         toOrderedAttribute: @"orderedContents"
-                                      type: [[COType embeddedItemType] arrayType]];
+                                      type: kCOEmbeddedItemType | kCOArrayType];
         
         workspaces_ = [[store_ createPersistentRootWithInitialContents: [workspaces itemTree]
                                                               metadata: nil

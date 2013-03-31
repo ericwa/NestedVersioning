@@ -240,7 +240,7 @@
     COMutableItem *item = [COMutableItem item];
     if (aSchemaName != nil)
     {
-        [item setValue: aSchemaName forAttribute: kCOSchemaName type: [COType stringType]];
+        [item setValue: aSchemaName forAttribute: kCOSchemaName type: kCOStringType];
     }
     
     COObject *object = [[[COObject alloc] initWithItem: item parentContext: self] autorelease];
@@ -350,15 +350,15 @@
 // Relationship cache
 
 - (void) updateRelationshipIntegrityWithOldValue: (id)oldVal
-                                         oldType: (COType *)oldType
+                                         oldType: (COType)oldType
                                         newValue: (id)newVal
-                                         newType: (COType *)newType
+                                         newType: (COType)newType
                                      forProperty: (NSString *)aProperty
                                         ofObject: (COUUID *)anObject
 {
-    if ([[newType primitiveType] isEqual: [COType embeddedItemType]])
+    if (COPrimitiveType(newType) == kCOEmbeddedItemType)
     {
-        if ([newType isMultivalued])
+        if (COTypeIsMultivalued(newType))
         {
             for (id obj in newVal)
             {

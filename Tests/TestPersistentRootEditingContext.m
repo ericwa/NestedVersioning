@@ -35,7 +35,7 @@
 	COSubtree *nestedDocumentRootItem = [COSubtree subtree];
 	[nestedDocumentRootItem setPrimitiveValue: @"red"
 								 forAttribute: @"color"
-										 type: [COType stringType]];
+										 type: kCOStringType];
 	
 	COSubtree *u1Tree = [[COSubtreeFactory factory] createPersistentRootWithRootItem: nestedDocumentRootItem
 																		 displayName: @"My Document"
@@ -52,8 +52,8 @@
 	COSubtree *u1BranchA = [[COSubtreeFactory factory] currentBranchOfPersistentRoot: u1Tree];
 	COSubtree *u1BranchB = [[COSubtreeFactory factory] createBranchOfPersistentRoot: u1Tree];
 	
-	[u1BranchA setPrimitiveValue: @"Development Branch" forAttribute: @"name" type: [COType stringType]];
-	[u1BranchB setPrimitiveValue: @"Stable Branch" forAttribute: @"name" type: [COType stringType]];	
+	[u1BranchA setPrimitiveValue: @"Development Branch" forAttribute: @"name" type: kCOStringType];
+	[u1BranchB setPrimitiveValue: @"Stable Branch" forAttribute: @"name" type: kCOStringType];	
 	
 	UKObjectsEqual(u1BranchA, [[COSubtreeFactory factory] currentBranchOfPersistentRoot: u1Tree]);
 	UKObjectsEqual(S(u1BranchA, u1BranchB), [[COSubtreeFactory factory] branchesOfPersistentRoot: u1Tree]);
@@ -102,7 +102,7 @@
 	
 	[nestedDocCtx2 setPrimitiveValue: @"green"
 						forAttribute: @"color"
-								type: [COType stringType]];
+								type: kCOStringType];
 	
 	COUUID *commitInNestedDocCtx2 = [ctx2 commitWithMetadata: nil];
 	

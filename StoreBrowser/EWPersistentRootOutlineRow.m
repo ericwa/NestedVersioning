@@ -138,16 +138,16 @@ isPrimitiveInContainer: (BOOL)aFlag
 	}
 	else // outlineitem specifies an attribute
 	{
-		COType *type = [subtree typeForAttribute: attribute];
+		COType type = [subtree typeForAttribute: attribute];
 		
-		if ([type isPrimitive] &&
-			![type isEqual: [COType embeddedItemType]])
+		if (COTypeIsPrimitive(type) &&
+			![type isEqual: kCOEmbeddedItemType])
 		{
 			return [NSArray array];
 		}
 		
 		// if it contains embedded objects, just return their UUIDs.
-		if ([type isPrimitiveTypeEqual: [COType embeddedItemType]])
+		if (COPrimitiveType(type) == kCOEmbeddedItemType)
 		{
 			NSMutableArray *result = [NSMutableArray array];
 			
@@ -229,9 +229,9 @@ isPrimitiveInContainer: (BOOL)aFlag
 		if (attribute != nil)
 		{
 			COItem *item = [[self rowSubtree] item];
-			COType *type = [item typeForAttribute: attribute];
+			COType type = [item typeForAttribute: attribute];
 			
-			if ([type isPrimitive])
+			if (COTypeIsPrimitive(type))
 			{
 				return [item valueForAttribute: attribute];
 			}
@@ -240,7 +240,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 	else if ([[column identifier] isEqualToString: @"type"])
 	{
 		COItem *item = [[self rowSubtree] item];
-		COType *type = [item typeForAttribute: attribute];
+		COType type = [item typeForAttribute: attribute];
 
 		if (isPrimitiveInContainer)
 		{
@@ -252,7 +252,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 		}
 		else
 		{
-			return [[COType embeddedItemType] description];
+			return [kCOEmbeddedItemType description];
 		}
 	}
 	
@@ -267,9 +267,9 @@ isPrimitiveInContainer: (BOOL)aFlag
 	}
 	else
 	{
-		COType *type = [[self rowSubtree] typeForAttribute: attribute];
+		COType type = [[self rowSubtree] typeForAttribute: attribute];
 		
-		if ([type isPrimitive])
+		if (COTypeIsPrimitive(type))
 		{
 			return [NSImage imageNamed: @"bullet_yellow"]; // primitive attribute
 		}
@@ -314,7 +314,7 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 			// Store the old value under a new name
 			
 			COObject *storeItem = [self rowSubtree];
-			COType *type = [storeItem typeForAttribute: [self attribute]];
+			COType type = [storeItem typeForAttribute: [self attribute]];
 			id value = [storeItem valueForAttribute: [self attribute]];
 			
 			[storeItem removeValueForAttribute: [self attribute]];			
@@ -334,7 +334,7 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 			
 			COObject *storeItem = [self rowSubtree];
 			
-			COType *type = [storeItem typeForAttribute: [self attribute]];
+			COType type = [storeItem typeForAttribute: [self attribute]];
 			
 			if (![type supportsRepresentationAsString])
 			{
@@ -446,7 +446,7 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 //	{
 //		[newRoot setPrimitiveValue: [NSString stringWithFormat: @"Copy of %@", [newRoot valueForAttribute: @"name"]]
 //					  forAttribute: @"name"
-//							  type: [COType stringType]];
+//							  type: kCOStringType];
 //	}	
 //	[dest addTree: newRoot];
 //	
@@ -484,7 +484,7 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 	COEditingContext *ctx = [[[COEditingContext alloc] init] autorelease];
     [[ctx rootObject] setValue: label
                   forAttribute: @"label"
-                          type: [COType stringType]];
+                          type: kCOStringType];
     return [ctx rootObject];
 }
 
@@ -492,7 +492,7 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 - (void) addStringKeyValue: (id)sender
 {
 	COObject *subtree = [self rowSubtree];
-	[subtree setValue: @"new value" forAttribute: @"newAttribute" type: [COType stringType]];
+	[subtree setValue: @"new value" forAttribute: @"newAttribute" type: kCOStringType];
 
 	[self commitWithMetadata: nil];
 }

@@ -130,15 +130,15 @@
 }
 
 - (void) clearOldValue: (id)oldVal
-               oldType: (COType *)oldType
+               oldType: (COType)oldType
            forProperty: (NSString *)aProperty
               ofObject: (COUUID *)anObject
 {
     if (oldVal != nil)
     {
-        if ([[oldType primitiveType] isEqual: [COType embeddedItemType]])
+        if (COPrimitiveType(oldType) == kCOEmbeddedItemType)
         {
-            if ([oldType isMultivalued])
+            if (COTypeIsMultivalued(oldType))
             {
                 for (id obj in oldVal)
                 {
@@ -150,9 +150,9 @@
                 [self clearParentForUUID: oldVal];
             }
         }
-        else if ([[oldType primitiveType] isEqual: [COType referenceType]])
+        else if (COPrimitiveType(oldType) == kCOReferenceType)
         {
-            if ([oldType isMultivalued])
+            if (COTypeIsMultivalued(oldType))
             {
                 for (id obj in oldVal)
                 {
@@ -168,15 +168,15 @@
 }
 
 - (void) setNewValue: (id)newVal
-             newType: (COType *)newType
+             newType: (COType)newType
          forProperty: (NSString *)aProperty
             ofObject: (COUUID *)anObject
 {
     if (newVal != nil)
     {
-        if ([[newType primitiveType] isEqual: [COType embeddedItemType]])
+        if (COPrimitiveType(newType) == kCOEmbeddedItemType)
         {
-            if ([newType isMultivalued])
+            if (COTypeIsMultivalued(newType))
             {
                 for (id obj in newVal)
                 {
@@ -188,9 +188,9 @@
                 [self setParentUUID: anObject forUUID: newVal forProperty: aProperty];
             }
         }
-        else if ([[newType primitiveType] isEqual: [COType referenceType]])
+        else if (COPrimitiveType(newType) == kCOReferenceType)
         {
-            if ([newType isMultivalued])
+            if (COTypeIsMultivalued(newType))
             {
                 for (id obj in newVal)
                 {
@@ -206,9 +206,9 @@
 }
 
 - (void) updateRelationshipCacheWithOldValue: (id)oldVal
-                                     oldType: (COType *)oldType
+                                     oldType: (COType)oldType
                                     newValue: (id)newVal
-                                     newType: (COType *)newType
+                                     newType: (COType)newType
                                  forProperty: (NSString *)aProperty
                                     ofObject: (COUUID *)anObject
 {

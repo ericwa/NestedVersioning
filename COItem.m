@@ -2,7 +2,6 @@
 #import "COMacros.h"
 #import "COPath.h"
 #import "COType.h"
-#import "COType+Plist.h"
 
 static NSDictionary *copyValueDictionary(NSDictionary *input, BOOL mutable)
 {
@@ -87,9 +86,9 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 	return [types allKeys];
 }
 
-- (COType *) typeForAttribute: (NSString *)anAttribute
+- (COType) typeForAttribute: (NSString *)anAttribute
 {
-	return [types objectForKey: anAttribute];
+	return [[types objectForKey: anAttribute] intValue];
 }
 
 - (id) valueForAttribute: (NSString *)anAttribute
@@ -99,22 +98,106 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 
 /** @taskunit plist import/export */
 
-static id exportToPlist(id aValue, COType *aType)
+static id plistValueForPrimitiveValue(id aValue, COType aType)
+{
+    switch (COPrimitiveType(aType))
+    {
+        case kCOInt64Type: return aValue;
+        case kCODoubleType: return aValue;
+        case kCOStringType: return aValue;
+        case kCOBlobType: return aValue;
+        case kCOReferenceType:
+        case kCOEmbeddedItemType:
+        case kCOCommitUUIDType:
+            return [(COUUID *)aValue stringValue];
+        case kCOPathType: return [(COPath *)aValue stringValue];
+        case kCOAttachmentType: return aValue;
+        default:
+            [NSException raise: NSInvalidArgumentException format: @"unknown type %d", aType];
+            return nil;
+    }
+}
+
+static id plistValueForValue(id aValue, COType aType)
+{
+    if (COTypeIsPrimitive(aType))
+    {
+        return plistValueForPrimitiveValue(aValue, aType);
+    }
+    else
+    {
+        NSMutableArray *collection = [NSMutableArray array];
+        for (id obj in aValue)
+        {
+            [collection addObject: plistValueForPrimitiveValue(obj, aType)];
+        }
+        return collection;
+    }
+}
+
+static id valueForPrimitivePlistValue(id aValue, COType aType)
+{
+    switch (COPrimitiveType(aType))
+    {
+        case kCOInt64Type: return aValue;
+        case kCODoubleType: return aValue;
+        case kCOStringType: return aValue;
+        case kCOBlobType: return aValue;
+        case kCOReferenceType:
+        case kCOEmbeddedItemType:
+        case kCOCommitUUIDType:
+            return [COUUID UUIDWithString: aValue];
+        case kCOPathType: return [COPath pathWithString: aValue];
+        case kCOAttachmentType: return aValue;
+        default:
+            [NSException raise: NSInvalidArgumentException format: @"unknown type %d", aType];
+            return nil;
+    }
+}
+
+static id valueForPlistValue(id aValue, COType aType)
+{
+    if (COTypeIsPrimitive(aType))
+    {
+        return valueForPrimitivePlistValue(aValue, aType);
+    }
+    else
+    {
+        id collection;
+        if (COTypeIsOrdered(aType))
+        {
+            collection = [NSMutableArray array];
+        }
+        else
+        {
+            collection = [NSMutableSet set];
+        }
+        
+        for (id obj in aValue)
+        {
+            [collection addObject: valueForPrimitivePlistValue(obj, aType)];
+        }
+        return collection;
+    }
+}
+
+static id exportToPlist(id aValue, COType aType)
 {
 	NSMutableDictionary *result = [NSMutableDictionary dictionaryWithCapacity: 2];
-	[result setObject: [aType stringValue] forKey: @"type"];
-	[result setObject: [aType plistValueForValue: aValue] forKey: @"value"];
+	[result setObject: [NSNumber numberWithInt: aType] forKey: @"type"];
+	[result setObject: plistValueForValue(aValue, aType) forKey: @"value"];
 	return result;
 }
 
-static COType *importTypeFromPlist(id aPlist)
+static COType importTypeFromPlist(id aPlist)
 {
-	return [COType typeWithString: [aPlist objectForKey: @"type"]];
+    return [[aPlist objectForKey: @"type"] intValue];
 }
 
 static id importValueFromPlist(id aPlist)
 {
-	return [importTypeFromPlist(aPlist) valueForPlistValue: [aPlist objectForKey: @"value"]];
+    return valueForPlistValue([aPlist objectForKey: @"value"],
+                              [[aPlist objectForKey: @"type"] intValue]);
 }
 
 - (id) plist
@@ -123,7 +206,7 @@ static id importValueFromPlist(id aPlist)
 	
 	for (NSString *key in values)
 	{
-		id plistValue = exportToPlist([values objectForKey: key], [types objectForKey: key]);
+		id plistValue = exportToPlist([values objectForKey: key], [[types objectForKey: key] intValue]);
 		[plistValues setObject: plistValue 
 						forKey: key];
 	}
@@ -147,7 +230,7 @@ static id importValueFromPlist(id aPlist)
 		[importedValues setObject: importValueFromPlist(objPlist)
 						   forKey: key];
 		
-		[importedTypes setObject: importTypeFromPlist(objPlist)
+		[importedTypes setObject: [NSNumber numberWithInt: importTypeFromPlist(objPlist)]
 						  forKey: key];
 	}
 	
@@ -187,7 +270,7 @@ static id importValueFromPlist(id aPlist)
 {
 	id value = [self valueForAttribute: attribute];
 	
-	if ([[self typeForAttribute: attribute] isPrimitive])
+	if (COTypeIsPrimitive([self typeForAttribute: attribute]))
 	{
 		return [NSArray arrayWithObject: value];
 	}
@@ -214,8 +297,8 @@ static id importValueFromPlist(id aPlist)
 	
 	for (NSString *key in [self attributeNames])
 	{
-		COType *type = [self typeForAttribute: key];
-		if ([type isPrimitiveTypeEqual: [COType embeddedItemType]])
+		COType type = [self typeForAttribute: key];
+		if (COPrimitiveType(type) == kCOEmbeddedItemType)
 		{		
 			for (COUUID *embedded in [self allObjectsForAttribute: key])
 			{
@@ -232,8 +315,8 @@ static id importValueFromPlist(id aPlist)
 	
 	for (NSString *key in [self attributeNames])
 	{
-		COType *type = [self typeForAttribute: key];
-		if ([type isPrimitiveTypeEqual: [COType referenceType]])
+		COType type = [self typeForAttribute: key];
+		if (COPrimitiveType(type) == kCOReferenceType)
 		{
 			for (COUUID *embedded in [self allObjectsForAttribute: key])
 			{
@@ -253,8 +336,8 @@ static id importValueFromPlist(id aPlist)
 	
 	for (NSString *key in [self attributeNames])
 	{
-		COType *type = [self typeForAttribute: key];
-		if ([type isPrimitiveTypeEqual: [COType attachmentType]])
+		COType type = [self typeForAttribute: key];
+		if (COPrimitiveType(type) == kCOAttachmentType)
 		{
 			for (NSData *embedded in [self allObjectsForAttribute: key])
 			{
@@ -271,8 +354,8 @@ static id importValueFromPlist(id aPlist)
 	
 	for (NSString *key in [self attributeNames])
 	{
-		COType *type = [self typeForAttribute: key];
-		if ([type isPrimitiveTypeEqual: [COType pathType]])
+		COType type = [self typeForAttribute: key];
+		if (COPrimitiveType(type) == kCOPathType)
 		{
 			for (COPath *path in [self allObjectsForAttribute: key])
 			{
@@ -288,8 +371,8 @@ static id importValueFromPlist(id aPlist)
     NSMutableArray *result = [NSMutableArray array];
     for (NSString *key in [self attributeNames])
 	{
-		COType *type = [self typeForAttribute: key];
-		if ([type isPrimitiveTypeEqual: [COType stringType]])
+		COType type = [self typeForAttribute: key];
+		if (COPrimitiveType(type) == kCOStringType)
 		{
 			[result addObject: [self valueForAttribute: key]];
 		}
@@ -305,7 +388,7 @@ static id importValueFromPlist(id aPlist)
 	
 	for (NSString *attrib in [self attributeNames])
 	{
-		[result appendFormat: @"\t%@ <%@> = '%@'\n",
+		[result appendFormat: @"\t%@ <%d> = '%@'\n",
 			attrib,
 			[self typeForAttribute: attrib],
 			[self valueForAttribute:attrib]];
@@ -343,11 +426,11 @@ static id importValueFromPlist(id aPlist)
 	for (NSString *attr in [aCopy attributeNames])
 	{
 		id value = [aCopy valueForAttribute: attr];
-		COType *type = [aCopy typeForAttribute: attr];
+		COType type = [aCopy typeForAttribute: attr];
 		
-		if ([type isPrimitiveTypeEqual: [COType embeddedItemType]])
+		if (COPrimitiveType(type) == kCOEmbeddedItemType)
 		{
-			if ([type isPrimitive])
+			if (COTypeIsPrimitive(type))
 			{
 				COUUID *UUIDValue = (COUUID*)value;
 				if ([aMapping objectForKey: UUIDValue] != nil)
@@ -377,9 +460,9 @@ static id importValueFromPlist(id aPlist)
 						   type: type];
 			}
 		}
-		else if ([type isPrimitiveTypeEqual: [COType pathType]])
+		else if (COPrimitiveType(type) == kCOPathType)
 		{
-			if ([type isPrimitive])
+			if (COTypeIsPrimitive(type))
 			{
 				COPath *pathValue = (COPath*)value;
 				
@@ -462,13 +545,12 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 
 - (void) setValue: (id)aValue
 	 forAttribute: (NSString *)anAttribute
-			 type: (COType *)aType
+			 type: (COType)aType
 {
 	NILARG_EXCEPTION_TEST(aValue);
 	NILARG_EXCEPTION_TEST(anAttribute);
-	NILARG_EXCEPTION_TEST(aType);
 	
-	[(NSMutableDictionary *)types setObject: aType forKey: anAttribute];
+	[(NSMutableDictionary *)types setObject: [NSNumber numberWithInt: aType] forKey: anAttribute];
 	[(NSMutableDictionary *)values setObject: aValue forKey: anAttribute];
 }
 
@@ -482,15 +564,15 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 
 - (void)   addObject: (id)aValue
 toUnorderedAttribute: (NSString*)anAttribute
-				type: (COType *)aType
+				type: (COType)aType
 {
-	if (![aType isMultivalued] || [aType isOrdered])
+	if (!COTypeIsMultivalued(aType) || COTypeIsOrdered(aType))
 	{
 		[NSException raise: NSInvalidArgumentException
 					format: @"expected unordered type"];
 	}
 	
-	if ([self typeForAttribute: anAttribute] == nil)
+	if ([self typeForAttribute: anAttribute] == 0)
 	{
 		[self setValue: [NSSet set]
 		  forAttribute: anAttribute
@@ -509,15 +591,15 @@ toUnorderedAttribute: (NSString*)anAttribute
 - (void)   addObject: (id)aValue
   toOrderedAttribute: (NSString*)anAttribute
 			 atIndex: (NSUInteger)anIndex
-				type: (COType *)aType
+				type: (COType)aType
 {
-	if (![aType isMultivalued] || ![aType isOrdered])
+	if (!COTypeIsMultivalued(aType) || !COTypeIsOrdered(aType))
 	{
 		[NSException raise: NSInvalidArgumentException
 					format: @"expected ordered type"];
 	}
 	
-	if ([self typeForAttribute: anAttribute] == nil)
+	if ([self typeForAttribute: anAttribute] == 0)
 	{
 		[self setValue: [NSMutableArray array]
 		  forAttribute: anAttribute
@@ -537,7 +619,7 @@ toUnorderedAttribute: (NSString*)anAttribute
 - (void) addObject: (id)aValue
 	  forAttribute: (NSString*)anAttribute
 {
-	assert([[types objectForKey: anAttribute] isMultivalued]);
+	assert(COTypeIsMultivalued([types objectForKey: anAttribute]));
 	
     id container = [values objectForKey: anAttribute];
     if (![container isKindOfClass: [NSMutableArray class]]

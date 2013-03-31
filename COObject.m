@@ -76,10 +76,10 @@ NSString *kCOSchemaName = @"COSchemaName";
     }
 }
 
-- (COType *) typeForAttribute: (NSString *)anAttribute
+- (COType) typeForAttribute: (NSString *)anAttribute
 {
-    COType *schemaType = [[self schema] typeForProperty: anAttribute];
-    if (schemaType != nil)
+    COType schemaType = [[self schema] typeForProperty: anAttribute];
+    if (schemaType != 0)
     {
         return schemaType;
     }
@@ -89,13 +89,13 @@ NSString *kCOSchemaName = @"COSchemaName";
 - (id) valueForAttribute: (NSString*)anAttribute
 {
 	id rootValue = [item_ valueForAttribute: anAttribute];
-	COType *type = [self typeForAttribute: anAttribute];
+	COType type = [self typeForAttribute: anAttribute];
 	
-	if ([type isPrimitiveTypeEqual: [COType embeddedItemType]])
+	if (COPrimitiveType(type) == kCOEmbeddedItemType)
 	{
 		return [self convertCOUUIDValueToCOObject: rootValue];
 	}
-    else if ([type isPrimitiveTypeEqual: [COType referenceType]])
+    else if (COPrimitiveType(type) == kCOReferenceType)
     {
         return [self convertCOUUIDValueToCOObject: rootValue];
     }
@@ -219,10 +219,10 @@ NSString *kCOSchemaName = @"COSchemaName";
 	{
 		if ([[destObjectParent->item_ allObjectsForAttribute: attr] containsObject: [destObject UUID]])
 		{
-			COType *type = [destObjectParent typeForAttribute: attr];
-			if ([type isMultivalued])
+			COType type = [destObjectParent typeForAttribute: attr];
+			if (COTypeIsMultivalued(type))
 			{
-				if ([type isOrdered])
+				if (COTypeIsOrdered(type))
 				{
 					NSUInteger index = [[destObjectParent->item_ allObjectsForAttribute: attr] indexOfObject: [destObject UUID]];
 					
@@ -347,13 +347,13 @@ NSString *kCOSchemaName = @"COSchemaName";
 
 - (void) setValue: (id)aValue
 	 forAttribute: (NSString*)anAttribute
-			 type: (COType *)aType
+			 type: (COType)aType
 {
-    NSParameterAssert(aType != nil);
+    NSParameterAssert(aType != 0);
     
-	if ([aType isPrimitiveTypeEqual: [COType embeddedItemType]])
+	if (COPrimitiveType(aType) == kCOEmbeddedItemType)
 	{
-		if (![aType isMultivalued])
+		if (!COTypeIsMultivalued(aType))
 		{
 			[self addObject:  aValue atItemPath: [COItemPath pathWithItemUUID: [self UUID]
                                                                               valueName: anAttribute
@@ -363,7 +363,7 @@ NSString *kCOSchemaName = @"COSchemaName";
 		{
 			[self removeValueForAttribute: anAttribute];
 			
-			if ([aType isOrdered])
+			if (COTypeIsOrdered(aType))
 			{
 				NSArray *array = (NSArray *)aValue;
 				const NSUInteger count = [array count];
@@ -390,7 +390,7 @@ NSString *kCOSchemaName = @"COSchemaName";
 			}
 		}
 	}
-	else if ([aType isPrimitiveTypeEqual: [COType referenceType]])
+	else if (COPrimitiveType(aType) == kCOReferenceType)
 	{
 		[item_ setValue: [self convertCOObjectValueToCOUUID: aValue]
            forAttribute: anAttribute
@@ -413,16 +413,16 @@ NSString *kCOSchemaName = @"COSchemaName";
 - (void)   addObject: (id)aValue
 toUnorderedAttribute: (NSString*)anAttribute
 {
-    COType *aType = [self typeForAttribute: anAttribute];
-    NSParameterAssert(aType != nil);
+    COType aType = [self typeForAttribute: anAttribute];
+    NSParameterAssert(aType != 0);
     
-	if ([aType isPrimitiveTypeEqual: [COType embeddedItemType]])
+	if (COPrimitiveType(aType) == kCOEmbeddedItemType)
 	{
 		[self addObject:  aValue atItemPath: [COItemPath pathWithItemUUID: [self UUID]
 												  unorderedCollectionName: anAttribute
 																	 type: aType]];
 	}
-    else if ([aType isPrimitiveTypeEqual: [COType referenceType]])
+    else if (COPrimitiveType(aType) == kCOReferenceType)
     {
 		[item_ addObject: [aValue UUID]
     toUnorderedAttribute: anAttribute
@@ -445,17 +445,17 @@ toUnorderedAttribute: (NSString*)anAttribute
   toOrderedAttribute: (NSString*)anAttribute
 			 atIndex: (NSUInteger)anIndex
 {
-    COType *aType = [self typeForAttribute: anAttribute];
-    NSParameterAssert(aType != nil);
+    COType aType = [self typeForAttribute: anAttribute];
+    NSParameterAssert(aType != 0);
 
-	if ([aType isPrimitiveTypeEqual: [COType embeddedItemType]])
+	if (COPrimitiveType(aType) == kCOEmbeddedItemType)
 	{
 		[self addObject:  aValue atItemPath: [COItemPath pathWithItemUUID: [self UUID]
 																arrayName: anAttribute
 														   insertionIndex: anIndex
 																	 type: aType]];
 	}
-    else if ([aType isPrimitiveTypeEqual: [COType referenceType]])
+    else if (COPrimitiveType(aType) == kCOReferenceType)
     {
 		[item_ addObject: [aValue UUID]
       toOrderedAttribute: anAttribute
@@ -478,8 +478,8 @@ toUnorderedAttribute: (NSString*)anAttribute
 - (void)   addObject: (id)aValue
   toOrderedAttribute: (NSString*)anAttribute
 {
-    COType *aType = [self typeForAttribute: anAttribute];
-    NSParameterAssert([aType isOrdered]);
+    COType aType = [self typeForAttribute: anAttribute];
+    NSParameterAssert(COTypeIsOrdered(aType));
 
 	NSUInteger anIndex = [[item_ valueForAttribute: anAttribute] count];
     
@@ -490,7 +490,7 @@ toUnorderedAttribute: (NSString*)anAttribute
 
 - (void) removeValueForAttribute: (NSString*)anAttribute
 {
-	if ([[item_ typeForAttribute: anAttribute] isPrimitiveTypeEqual: [COType embeddedItemType]])
+	if (COPrimitiveType([item_ typeForAttribute: anAttribute]) == kCOEmbeddedItemType)
 	{
 		for (COUUID *uuidToRemove in [item_ allObjectsForAttribute: anAttribute])
 		{

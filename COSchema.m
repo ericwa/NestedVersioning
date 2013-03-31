@@ -58,7 +58,7 @@
     [result addObjectsFromArray: [typeForAttribute_ allKeys]];
     return [NSSet setWithSet: result];
 }
-- (COType *) typeForProperty: (NSString *)aProperty
+- (COType) typeForProperty: (NSString *)aProperty
 {
     return [typeForAttribute_ objectForKey: aProperty];
 }

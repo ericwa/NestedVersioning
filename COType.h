@@ -16,71 +16,46 @@
  *  - validation of ObjC objects against the schema
  *  - plist import/export of ObjC objects of a known COType
  */
-@interface COType : NSObject <NSCopying>
+typedef int32_t COType;
 
-+ (COType *) int64Type;
-+ (COType *) doubleType;
-+ (COType *) stringType;
-+ (COType *) blobType;
-+ (COType *) commitUUIDType;
-+ (COType *) pathType;
-+ (COType *) embeddedItemType;
-+ (COType *) attachmentType;
-+ (COType *) referenceType;
+enum {
+    kCOInt64Type = 1,
+    kCODoubleType = 2,
+    kCOStringType = 3,
+    kCOBlobType = 4,
+    kCOCommitUUIDType = 5,
+    kCOPathType = 6,
+    kCOEmbeddedItemType = 7,
+    kCOAttachmentType = 8,
+    kCOReferenceType = 9,
+    
+    kCOSetType = 16,
+    kCOArrayType = 32,
+    
+    kCOPrimitiveTypeMask = 0x0f,
+    kCOMultivaluedTypeMask = 0xf0
+};
 
-- (COType *) setType;
-- (COType *) arrayType;
+static inline
+BOOL COTypeIsMultivalued(COType type)
+{
+    return (type & kCOMultivaluedTypeMask) != 0;
+}
 
-- (COType *) namedType: (NSString *)aName;
-- (COType *) storageType; // Type ignoring name
+static inline
+BOOL COTypeIsPrimitive(COType type)
+{
+    return (type & kCOMultivaluedTypeMask) == 0;
+}
 
-- (NSString *) name;
+static inline
+BOOL COTypeIsOrdered(COType type)
+{
+    return (type & kCOMultivaluedTypeMask) == kCOArrayType;
+}
 
-- (BOOL) isMultivalued;
-- (BOOL) isPrimitive;
-
-/**
- * Throws an exception if the receiver is not multivalued
- */
-- (BOOL) isOrdered;
-
-/**
- * For primitive types, returns self.
- * For multivalued types, returns the type of objects in the multivalue
- */
-- (COType *) primitiveType;
-
-/**
- * @returns YES if the given ObjC value conforms to the receiver's type
- */
-- (BOOL) validateValue: (id)aValue;
-
-
-/** @taskunit String Import/Export */
-
-/**
- * @returns a string identifier which can be used to recreate
- * the type with +typeWithString:
- */
-- (NSString *) stringValue;
-+ (COType*) typeWithString: (NSString *)aTypeString;
-
-- (NSString *) description;
-
-- (BOOL) isEqual: (id)object;
-
-/**
- * @returns YES if the primitiveType of the receiver is equal to the argument
- * throws an exception if the argument is not a primitive type.
- */
-- (BOOL) isPrimitiveTypeEqual: (id)object;
-
-
-/** @taskunit NSCopying protocol */
-
-/**
- * Since the receiver is immutable this just returns [self retain];
- */
-- (id) copyWithZone: (NSZone *)zone;
-
-@end
+static inline
+COType COPrimitiveType(COType type)
+{
+    return type & kCOPrimitiveTypeMask;
+}

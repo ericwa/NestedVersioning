@@ -17,9 +17,9 @@
     COObject *o3 = [ctx insertObject];
     COObject *o4 = [ctx insertObject];
     
-    [o1 setValue: S(o2, o3) forAttribute: @"embeddedGroups" type: [[COType embeddedItemType] setType]];
-    [o2 setValue: S(o4) forAttribute: @"contents" type: [[COType referenceType] setType]];
-    [o3 setValue: S(o4) forAttribute: @"contents" type: [[COType referenceType] setType]];
+    [o1 setValue: S(o2, o3) forAttribute: @"embeddedGroups" type: kCOEmbeddedItemType | kCOSetType];
+    [o2 setValue: S(o4) forAttribute: @"contents" type: kCOReferenceType | kCOSetType];
+    [o3 setValue: S(o4) forAttribute: @"contents" type: kCOReferenceType | kCOSetType];
     
     UKRaisesException([ctx itemTree]);
     
@@ -31,7 +31,7 @@
     
     COObject *t1 = [ctx insertObject];
     [ctx setRootObject: t1];
-    [t1 setValue: S(o1) forAttribute: @"embeddedGroups" type: [[COType embeddedItemType] setType]];
+    [t1 setValue: S(o1) forAttribute: @"embeddedGroups" type: kCOEmbeddedItemType | kCOSetType];
 
     UKIntsEqual(5, [[[ctx itemTree] itemUUIDs] count]);
 }
@@ -41,15 +41,15 @@
     COSchemaRegistry *reg = [COSchemaRegistry registry];
     
     COSchemaTemplate *namedObjectSchema = [COSchemaTemplate schemaWithName: @"NamedObject"];
-    [namedObjectSchema setType: [COType stringType] forProperty: @"name"];
+    [namedObjectSchema setType: kCOStringType forProperty: @"name"];
     [reg addSchema: namedObjectSchema];
     
     COSchemaTemplate *groupSchema = [COSchemaTemplate schemaWithName: @"Group"];
     [groupSchema setParent: @"NamedObject"];
-    [groupSchema setType: [[COType embeddedItemType] setType]
+    [groupSchema setType: kCOEmbeddedItemType | kCOSetType
               schemaName: @"Group"
              forProperty: @"embeddedGroups"];
-    [groupSchema setType: [[COType referenceType] setType]
+    [groupSchema setType: kCOReferenceType | kCOSetType
              forProperty: @"contents"];
     [reg addSchema: groupSchema];
 

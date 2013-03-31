@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 
 #import "COArrayDiff.h"
+#import "COType.h"
 
 @class COUUID;
 @class COMutableItem;
@@ -9,7 +10,7 @@
 @class COItemTreeConflict;
 @class COItemTreeDiff;
 @class COSetDiff, COArrayDiff;
-@class COType;
+
 @class CODiffDictionary;
 
 @interface COItemTreeConflict : NSObject // not publically copyable.

@@ -270,7 +270,7 @@ static NSRange paragraphRangeForLocationInString(NSString *aString, NSUInteger a
 
 - (BOOL) setTypewriterDocument: (COSubtree *)aTree
 {
-    if (![[aTree typeForAttribute: @"paragraphs"] isEqual: [[COType embeddedItemType] arrayType]])
+    if (![aTree typeForAttribute: @"paragraphs"] isEqual: [kCOEmbeddedItemType | kCOArrayType])
     {
         return NO;
     }
@@ -280,7 +280,7 @@ static NSRange paragraphRangeForLocationInString(NSString *aString, NSUInteger a
         
     for (COSubtree *paragraph in [aTree valueForAttribute: @"paragraphs"])
     {
-        if (![[paragraph typeForAttribute: @"data"] isEqual: [COType blobType]])
+        if (![[paragraph typeForAttribute: @"data"] isEqual: kCOBlobType])
         {
             return NO;
         }
@@ -321,7 +321,7 @@ static NSRange paragraphRangeForLocationInString(NSString *aString, NSUInteger a
         
         [result addObject: paragraphTree
        toOrderedAttribute: @"paragraphs"
-                     type: [[COType embeddedItemType] arrayType]];
+                     type: kCOEmbeddedItemType | kCOArrayType];
     }
     
     return result;
@@ -336,7 +336,7 @@ static NSRange paragraphRangeForLocationInString(NSString *aString, NSUInteger a
     COSubtree *paragraphTree = [[[COSubtree alloc] initWithUUID: paragraphUUID] autorelease];
     [paragraphTree setValue: paragraphAsRTF
                forAttribute: @"data"
-                       type: [COType blobType]];
+                       type: kCOBlobType];
     
     return paragraphTree;
 }

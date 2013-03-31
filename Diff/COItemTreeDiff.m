@@ -404,7 +404,7 @@
 
 // end CODiffArraysDelegate
 
-- (void) _recordSetValue: (id)aValue type: (COType *)aType forAttribute: (NSString*)anAttribute UUID: (COUUID *)aUUID sourceIdentifier: (id)aSourceIdentifier
+- (void) _recordSetValue: (id)aValue type: (COType)aType forAttribute: (NSString*)anAttribute UUID: (COUUID *)aUUID sourceIdentifier: (id)aSourceIdentifier
 {
 	COSetAttribute *op = [[COSetAttribute alloc] initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier type: aType value: aValue];
 	[self addEdit: op];
@@ -418,14 +418,14 @@
 	[op release];
 }
 
-- (void) _recordSetInsertionOfValue: (id)aValue type: (COType *)aType forAttribute: (NSString*)anAttribute UUID: (COUUID *)aUUID sourceIdentifier: (id)aSourceIdentifier
+- (void) _recordSetInsertionOfValue: (id)aValue type: (COType)aType forAttribute: (NSString*)anAttribute UUID: (COUUID *)aUUID sourceIdentifier: (id)aSourceIdentifier
 {
 	COSetInsertion *op = [[COSetInsertion alloc] initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier type: aType object: aValue];
 	[self addEdit: op];
 	[op release];
 }
 
-- (void) _recordSetDeletionOfValue: (id)aValue type: (COType *)aType forAttribute: (NSString*)anAttribute UUID: (COUUID *)aUUID sourceIdentifier: (id)aSourceIdentifier
+- (void) _recordSetDeletionOfValue: (id)aValue type: (COType)aType forAttribute: (NSString*)anAttribute UUID: (COUUID *)aUUID sourceIdentifier: (id)aSourceIdentifier
 {
 	COSetDeletion *op = [[COSetDeletion alloc] initWithUUID: aUUID attribute: anAttribute sourceIdentifier: aSourceIdentifier type: aType object: aValue];
 	[self addEdit: op];
@@ -435,12 +435,12 @@
 
 - (void) _diffValueBefore: (id)valueA
 					after: (id)valueB
-					 type: (COType *)type
+					 type: (COType)type
 				 itemUUID: (COUUID *)itemUUID
 				attribute: (NSString *)anAttribute
 		 sourceIdentifier: (id)aSource
 {
-	if ([type isMultivalued] && ![type isOrdered])
+	if (COTypeIsMultivalued(type) && !COTypeIsOrdered(type))
 	{
 		NSMutableSet *insertions = [NSMutableSet setWithSet: (NSSet *)valueB];
 		[insertions minusSet: (NSSet *)valueA];
@@ -458,7 +458,7 @@
 			[self _recordSetDeletionOfValue: value type: type forAttribute: anAttribute UUID: itemUUID sourceIdentifier: aSource];
 		}
 	}
-	else if ([type isMultivalued] && [type isOrdered])
+	else if (COTypeIsMultivalued(type) && COTypeIsOrdered(type))
 	{
 		CODiffArrays(valueA, valueB, self, D(itemUUID, @"UUID", anAttribute, @"attribute", aSource, @"sourceIdentifier", type, @"type"));
 	}
@@ -518,15 +518,15 @@
 	
 	for (NSString *commonAttr in commonAttrs)
 	{
-		COType *typeA = [itemA typeForAttribute: commonAttr];
-		COType *typeB = [itemB typeForAttribute: commonAttr];
+		COType typeA = [itemA typeForAttribute: commonAttr];
+		COType typeB = [itemB typeForAttribute: commonAttr];
 		id valueA = [itemA valueForAttribute: commonAttr];
 		id valueB = [itemB valueForAttribute: commonAttr];
 		
 		NSAssert(valueA != nil, @"value should not be nil");
 		NSAssert(valueB != nil, @"value should not be nil");
 		
-		if (![typeB isEqual: typeA])
+		if (typeB != typeA)
 		{
 			[self _recordSetValue: valueB
 							 type: typeB

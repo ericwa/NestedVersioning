@@ -1,8 +1,9 @@
 #import <Foundation/Foundation.h>
 #import "COUUID.h"
+#import "COType.h"
 
 @class COMutableItem;
-@class COType;
+
 
 /**
  * COItemPath is a utiltiy class which represents a _destination_ in a COSubtree for
@@ -14,21 +15,21 @@
 {
 	COUUID *uuid;
 	NSString *attribute;
-	COType *type;
+	COType type;
 }
 
 + (COItemPath *) pathWithItemUUID: (COUUID *)aUUID
 		  unorderedCollectionName: (NSString *)collection
-							 type: (COType *)aType;
+							 type: (COType)aType;
 
 + (COItemPath *) pathWithItemUUID: (COUUID *)aUUID
 						arrayName: (NSString *)collection
 				   insertionIndex: (NSUInteger)index
-							 type: (COType *)aType;
+							 type: (COType)aType;
 
 + (COItemPath *) pathWithItemUUID: (COUUID *)aUUID
 						valueName: (NSString *)aName
-							 type: (COType *)aType;
+							 type: (COType)aType;
 
 @end
 

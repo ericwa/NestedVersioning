@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-@class COType;
+#import "COType.h"
 
 /*
  
@@ -30,11 +30,11 @@
 
 + (COSchemaTemplate *) schemaWithName: (NSString *) aName;
 
-- (void) setType: (COType *)aType
+- (void) setType: (COType)aType
       schemaName: (NSString *)aSchema
      forProperty: (NSString *)aProperty;
 
-- (void) setType: (COType *)aType
+- (void) setType: (COType)aType
      forProperty: (NSString *)aProperty;
 
 @end
