@@ -27,11 +27,15 @@
 															  format: NULL
 													errorDescription:NULL];
         
-        NSLog(@"%@", err);
-        
 		COMutableItem *i1clone = [[[COMutableItem alloc] initWithPlist: plist] autorelease];
 		UKObjectsEqual(i1, i1clone);
 	}
+    
+    // test round trip to NSData
+    {
+		COMutableItem *i1clone = [[[COMutableItem alloc] initWithData: [i1 dataValue]] autorelease];
+		UKObjectsEqual(i1, i1clone);        
+    }
 }
 
 - (void) testMutability
@@ -64,9 +68,9 @@
 
 - (void) testEquality
 {
-	COItem *immutable = [COItem itemWithTypesForAttributes: D(kCOStringType | kCOSetType, @"key1",
-															  kCOStringType | kCOArrayType, @"key2",
-															  kCOStringType, @"name")
+	COItem *immutable = [COItem itemWithTypesForAttributes: D([NSNumber numberWithInt: kCOStringType | kCOSetType], @"key1",
+															  [NSNumber numberWithInt: kCOStringType | kCOArrayType], @"key2",
+															  [NSNumber numberWithInt: kCOStringType], @"name")
 									   valuesForAttributes: D([NSMutableSet setWithObject: @"a"], @"key1",	
 															  [NSMutableArray arrayWithObject: @"A"], @"key2",
 															  @"my name", @"name")];
