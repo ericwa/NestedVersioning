@@ -5,6 +5,7 @@
 #import "COUUID.h"
 #import "FMDatabase.h"
 #import "COSQLiteStorePersistentRootBackingStoreBinaryFormats.h"
+#import "COItem+Binary.h"
 
 @implementation COSQLiteStorePersistentRootBackingStore
 
@@ -188,11 +189,11 @@
     NSMutableDictionary *resultDict = [NSMutableDictionary dictionary];
     for (COUUID *uuid in dataForUUID)
     {        
-        id plist = [NSJSONSerialization JSONObjectWithData: [dataForUUID objectForKey: uuid]
-                                                   options: 0 error: NULL];
-        COItem *item = [[[COItem alloc] initWithPlist: plist] autorelease];
+        NSData *data = [dataForUUID objectForKey: uuid];
+        COItem *item = [[COItem alloc] initWithData: data];
         [resultDict setObject: item
                        forKey: uuid];
+        [item release];
     }
     
     COItemTree *result = [[[COItemTree alloc] initWithItemForUUID: resultDict
@@ -212,7 +213,7 @@ static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifie
     for (COUUID *uuid in modifiedItems)
     {
         COItem *item = [anItemTree itemForUUID: uuid];
-        NSData *itemJson = [NSJSONSerialization dataWithJSONObject: [item plist] options: 0 error: NULL];
+        NSData *itemJson = [item dataValue];
         
         AddCommitUUIDAndDataToCombinedCommitData(result, uuid, itemJson);
     }
