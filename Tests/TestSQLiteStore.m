@@ -9,8 +9,8 @@
 
 static const int NUM_CHILDREN = 1000;
 static const int NUM_COMMITS = 1000;
-static const int NUM_PERSISTENT_ROOTS = 25;
-static const int NUM_PERSISTENT_ROOT_COPIES = 2500;
+static const int NUM_PERSISTENT_ROOTS = 100;
+static const int NUM_PERSISTENT_ROOT_COPIES = 10000;
 
 static COUUID *rootUUID;
 static COUUID *childUUIDs[NUM_CHILDREN];
