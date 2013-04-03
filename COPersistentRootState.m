@@ -7,7 +7,6 @@
 
 NSString *kCOPersistentRootUUID = @"COPersistentRootUUID";
 
-NSString *kCOPersistentRootRevisionIDs= @"COPersistentRootRevisionIDs";
 NSString *kCOPersistentRootBranchForUUID= @"COPersistentRootBranchForUUID";
 NSString *kCOPersistentRootCurrentBranchUUID = @"COPersistentRootCurrentBranchUUID";
 NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
@@ -19,7 +18,6 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
 @synthesize currentBranchUUID = currentBranch_;
 
 - (id) initWithUUID: (COUUID *)aUUID
-        revisionIDs: (NSArray *)allRevisions
       branchForUUID: (NSDictionary *)branchForUUID
   currentBranchUUID: (COUUID *)currentBranch
            metadata: (NSDictionary *)theMetadata
@@ -29,7 +27,6 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
     SUPERINIT;
     
     uuid_ = [aUUID retain];
-    revisionIDs_ = [[NSMutableArray alloc] initWithArray: allRevisions copyItems: YES];
     branchForUUID_ = [[NSMutableDictionary alloc] initWithDictionary: branchForUUID copyItems: YES];
 
     [self setCurrentBranchUUID: currentBranch];
@@ -41,7 +38,6 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
 - (id) initWithPersistentRootPlist: (COPersistentRootState *)aPlist
 {
     return [self initWithUUID: aPlist->uuid_
-                  revisionIDs: aPlist->revisionIDs_
                 branchForUUID: aPlist->branchForUUID_
             currentBranchUUID: aPlist->currentBranch_            
                      metadata: aPlist->metadata_];
@@ -56,7 +52,6 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
 - (void) dealloc
 {
     [uuid_ release];
-    [revisionIDs_ release];
     [branchForUUID_ release];
     [currentBranch_ release];
     [metadata_ release];
@@ -66,15 +61,6 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
 - (NSSet *) branchUUIDs
 {
     return [NSSet setWithArray: [branchForUUID_ allKeys]];
-}
-
-- (NSArray *) revisionIDs
-{
-    return revisionIDs_;
-}
-- (void) addRevisionID: (CORevisionID *)aRevision
-{
-    [revisionIDs_ addObject: aRevision];
 }
 
 - (COBranchState *)branchPlistForUUID: (COUUID *)aUUID
@@ -100,7 +86,6 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
 - (id) initWithPlist: (id)aPlist
 {
     return [self initWithUUID: [COUUID UUIDWithString: [aPlist objectForKey: kCOPersistentRootUUID]]
-                  revisionIDs: stateTokensFromPlist([aPlist objectForKey: kCOPersistentRootRevisionIDs])
                 branchForUUID: UUIDToBranchMapFromPlist([aPlist objectForKey: kCOPersistentRootBranchForUUID])
             currentBranchUUID: [COUUID UUIDWithString: [aPlist objectForKey: kCOPersistentRootCurrentBranchUUID]]
                      metadata: [aPlist objectForKey: kCOPersistentRootMetadata]];
@@ -110,7 +95,6 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
 {
     NSMutableDictionary *results = [NSMutableDictionary dictionary];
     [results setObject: [uuid_ stringValue] forKey: kCOPersistentRootUUID];
-    [results setObject: plistFromStateTokens(revisionIDs_) forKey: kCOPersistentRootRevisionIDs];
     [results setObject: plistFromUUIDToBranchMap(branchForUUID_) forKey: kCOPersistentRootBranchForUUID];
     [results setObject: [currentBranch_ stringValue] forKey: kCOPersistentRootCurrentBranchUUID];
     if (metadata_ != nil)
@@ -126,7 +110,6 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
     {
         COPersistentRootState *other = (COPersistentRootState *)object;
         return [uuid_ isEqual: other->uuid_]
-        && [revisionIDs_ isEqual: other->revisionIDs_]
         && [branchForUUID_ isEqual: other->branchForUUID_]
         && [currentBranch_ isEqual: other->currentBranch_]
         && [metadata_ isEqual: other->metadata_];
@@ -144,25 +127,6 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
     return [[self plist] description];
 }
 
-static NSArray *plistFromStateTokens(NSArray *stateTokens)
-{
-    NSMutableArray *result = [NSMutableArray array];
-    for (CORevisionID *token in stateTokens)
-    {
-        [result addObject: [token plist]];
-    }
-    return result;
-}
-
-static NSArray *stateTokensFromPlist(NSArray *array)
-{
-    NSMutableArray *result = [NSMutableArray array];
-    for (id plist in array)
-    {
-        [result addObject: [CORevisionID revisionIDWithPlist: plist]];
-    }
-    return result;
-}
 static NSDictionary *plistFromUUIDToBranchMap(NSDictionary *map)
 {
     NSMutableDictionary *result = [NSMutableDictionary dictionary];

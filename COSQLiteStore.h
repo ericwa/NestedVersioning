@@ -62,7 +62,7 @@
 
 /** @taskunit reading persistent roots */
 
-- (NSSet *) persistentRootUUIDs;
+- (NSArray *) persistentRootUUIDs;
 - (NSSet *) gcRootUUIDs;
 
 /**

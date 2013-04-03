@@ -19,9 +19,6 @@
 @interface COPersistentRootState : NSObject <NSCopying>
 {
     COUUID *uuid_;
-   
-    // TODO: Store as cache UUID + set of integer ranges for space efficiency
-    NSMutableArray *revisionIDs_;
     
     NSMutableDictionary *branchForUUID_; // COUUID : COBranchPlist
     
@@ -31,7 +28,6 @@
 }
 
 - (id) initWithUUID: (COUUID *)aUUID
-        revisionIDs: (NSArray *)allRevisions
       branchForUUID: (NSDictionary *)branchForUUID
   currentBranchUUID: (COUUID *)currentBranch
            metadata: (NSDictionary *)theMetadata;
@@ -39,9 +35,6 @@
 - (id) initWithPersistentRootPlist: (COPersistentRootState *)aPlist;
  
 - (NSSet *) branchUUIDs;
-
-- (NSArray *) revisionIDs;
-- (void) addRevisionID: (CORevisionID *)aRevision;
 
 - (COBranchState *)branchPlistForUUID: (COUUID *)aUUID;
 - (COBranchState *)currentBranchState;

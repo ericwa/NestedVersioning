@@ -16,6 +16,12 @@
     return self;
 }
 
++ (CORevisionID *) revisionWithBackinStoreUUID: (COUUID *)aUUID
+                                 revisionIndex: (int64_t)anIndex
+{
+    return [[[self alloc] initWithPersistentRootBackingStoreUUID: aUUID revisionIndex: anIndex] autorelease];
+}
+
 - (void) dealloc
 {
     [backingStoreUUID_ release];
