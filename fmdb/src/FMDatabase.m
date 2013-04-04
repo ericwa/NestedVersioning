@@ -600,6 +600,8 @@
     BOOL b =  [self executeUpdate:@"BEGIN EXCLUSIVE TRANSACTION;"];
     if (b) {
         inTransaction = YES;
+    } else {
+        NSLog(@"wtf?");
     }
     return b;
 }

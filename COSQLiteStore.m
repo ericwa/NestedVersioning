@@ -15,6 +15,7 @@
 #import "COItem.h"
 
 #import "FMDatabase.h"
+#import "FMDatabaseAdditions.h"
 
 #include <openssl/sha.h>
 
@@ -50,7 +51,9 @@
     db_ = [[FMDatabase alloc] initWithPath: [[url_ path] stringByAppendingPathComponent: @"index.sqlite"]];
     
     [db_ setShouldCacheStatements: YES];
-	
+	[db_ setCrashOnErrors: YES];
+    [db_ setLogsErrors: YES];
+    
 	if (![db_ open])
 	{
         [self release];
@@ -76,18 +79,18 @@
     
     [db_ executeUpdate: @"CREATE VIRTUAL TABLE IF NOT EXISTS fts USING fts4(content=\"\", text)"]; // implicit column docid
     [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS fts_docid_to_revisionid ("
-     "docid INTEGER PRIMARY KEY, backingstore INTEGER, revid INTEGER)"];
+     "docid INTEGER PRIMARY KEY, root_id INTEGER, revid INTEGER)"];
     
     // Create persistent root tables
-    [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS persistentroots (uuid INTEGER PRIMARY KEY, "
-     "backingstore INTEGER, gcroot BOOLEAN, currentbranch INTEGER, metadata BLOB)"];
+    [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS persistentroots (root_id INTEGER PRIMARY KEY, "
+     "uuid BLOB, backingstore BLOB, gcroot BOOLEAN, currentbranch INTEGER, metadata BLOB, deleted BOOLEAN)"];
+    
+    [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS branches (branch_id INTEGER PRIMARY KEY, "
+     "uuid BLOB, proot INTEGER, head_revid INTEGER, tail_revid INTEGER, current_revid INTEGER, metadata BLOB)"];
 
-    [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS branches (branch INTEGER PRIMARY KEY, "
-     "proot INTEGER, head_revid INTEGER, tail_revid INTEGER, current_revid INTEGER, metadata BLOB)"];
-
-    // N.B.: The UNIQUE constraint automatically creates an index on the uuid column,
-    // which is used like a normal index to optimise uuid searches. (http://www.sqlite.org/lang_createtable.html)
-    [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS uuids(uuid_index INTEGER PRIMARY KEY, uuid BLOB UNIQUE)"];
+    // Create indexes
+    [db_ executeUpdate: @"CREATE INDEX IF NOT EXISTS persistentroots_uuid_index ON persistentroots(uuid)"];
+    [db_ executeUpdate: @"CREATE INDEX IF NOT EXISTS branches_proot_index ON branches(proot)"];
     
     [db_ commit];
     
@@ -146,74 +149,22 @@
     return YES;
 }
 
-
-/* UUID cache */
-
-// FIXME: Copied & pasted from backing store
-
-- (int64_t)keyForUUID: (COUUID*)uuid
-{
-    BOOL useTransaction = ![db_ inTransaction];
-    if (useTransaction)
-    {
-        [db_ beginTransaction];
-    }
-    
-    NSData *uuidBlob = [uuid dataValue];
-    
-    int64_t key = -1;
-    FMResultSet *rs = [db_ executeQuery:@"SELECT uuid_index FROM uuids WHERE uuid = ?", uuidBlob];
-	if ([rs next])
-	{
-		key = [rs longLongIntForColumnIndex: 0];
-		[rs close];
-	}
-	else
-	{
-		[rs close];
-        [db_ executeUpdate: @"INSERT INTO uuids(uuid) VALUES(?)", uuidBlob];
-        key = [db_ lastInsertRowId];
-	}
-    
-    if (useTransaction)
-    {
-        [db_ commit];
-    }
-    
-    return key;
-}
-
-- (NSNumber *) numberForUUID: (COUUID *)aUUID
-{
-    return [NSNumber numberWithLongLong: [self keyForUUID: aUUID]];
-}
-
-- (COUUID *) UUIDForKey: (int64_t)key
-{
-    COUUID *result = nil;
-    FMResultSet *rs = [db_ executeQuery:@"SELECT uuid FROM uuids WHERE uuid_index = ?", [NSNumber numberWithLongLong: key]];
-	if ([rs next])
-	{
-		result = [COUUID UUIDWithData: [rs dataForColumnIndex: 0]];
-		[rs close];
-	}
-	else
-	{
-		[rs close];
-	}
-    
-    return result;
-}
-
-/* */
-
 - (NSArray *) allBackingUUIDs
 {
     NSMutableArray *result = [NSMutableArray array];
-    FMResultSet *rs = [db_ executeQuery: @"SELECT DISTINCT backingstore FROM persistentroots"];
+    FMResultSet *rs = [db_ executeQuery: @"SELECT coalesce(backingstore, uuid) FROM persistentroots"];
+    sqlite3_stmt *statement = [[rs statement] statement];
+    
     while ([rs next])
     {
-        [result addObject: [self UUIDForKey: [rs int64ForColumnIndex: 0]]];
+        const void *data = sqlite3_column_blob(statement, 0);
+        const int dataSize = sqlite3_column_bytes(statement, 0);
+      
+        assert(dataSize == 16);
+        
+        COUUID *uuid = [[COUUID alloc] initWithBytes: data];
+        [result addObject: uuid];
+        [uuid release];
     }
     [rs close];
     return result;
@@ -223,22 +174,30 @@
 {
     COUUID *backingUUID = [backingStoreUUIDForPersistentRootUUID_ objectForKey: aUUID];
     if (backingUUID == nil)
-    {        
-        FMResultSet *rs = [db_ executeQuery: @"SELECT backingstore FROM persistentroots WHERE uuid = ?", [self numberForUUID: aUUID]];
+    {
+        // NOTE: NULL indicates that the backing store UUID is the persistent root UUID
+        FMResultSet *rs = [db_ executeQuery: @"SELECT backingstore FROM persistentroots WHERE uuid = ?", [aUUID dataValue]];
         if ([rs next])
         {
-            backingUUID = [self UUIDForKey: [rs int64ForColumnIndex: 0]];
-        }
-        [rs close];
-
-        if (backingUUID == nil)
-        {
-            [NSException raise: NSInvalidArgumentException format: @"persistent root %@ not found", aUUID];
+            NSData *data = [rs dataForColumnIndex: 0];
+            if (data == nil)
+            {
+                // Common case
+                backingUUID = aUUID;
+            }
+            else
+            {
+                backingUUID = [COUUID UUIDWithData: data];
+            }
+            [rs close];
         }
         else
         {
-            [backingStoreUUIDForPersistentRootUUID_ setObject: backingUUID forKey: aUUID];
+            [rs close];
+            [NSException raise: NSInvalidArgumentException format: @"persistent root %@ not found", aUUID];
         }
+        
+        [backingStoreUUIDForPersistentRootUUID_ setObject: backingUUID forKey: aUUID];
     }
     return backingUUID;
 }
@@ -360,9 +319,9 @@
     NSString *allItemsFtsContent = [ftsContent componentsJoinedByString: @" "];    
     
     [self beginTransactionIfNeeded];
-    [db_ executeUpdate: @"INSERT INTO fts_docid_to_revisionid(backingstore, revid) VALUES(?,?)",
-      [NSNumber numberWithLongLong: [self keyForUUID: [aRevision backingStoreUUID]]],
-      [NSNumber numberWithLongLong: [aRevision revisionIndex]]];
+    [db_ executeUpdate: @"INSERT INTO fts_docid_to_revisionid(root_id, revid) VALUES((SELECT root_id FROM persistentroots WHERE uuid = ?), ?)",
+     [[aRevision backingStoreUUID] dataValue],
+     [NSNumber numberWithLongLong: [aRevision revisionIndex]]];
     [db_ executeUpdate: @"INSERT INTO fts(docid, text) VALUES(?,?)",
      [NSNumber numberWithLongLong: [db_ lastInsertRowId]],
      allItemsFtsContent];
@@ -376,10 +335,13 @@
 - (NSArray *) revisionIDsMatchingQuery: (NSString *)aQuery
 {
     NSMutableArray *result = [NSMutableArray array];
-    FMResultSet *rs = [db_ executeQuery: @"SELECT backingstore, revid FROM fts_docid_to_revisionid WHERE docid IN (SELECT docid FROM fts WHERE text MATCH ?)", aQuery];
+    FMResultSet *rs = [db_ executeQuery: @"SELECT uuid, revid FROM "
+                       "(SELECT root_id, revid FROM fts_docid_to_revisionid WHERE docid IN (SELECT docid FROM fts WHERE text MATCH ?)) "
+                       "INNER JOIN persistentroots USING(root_id)", aQuery];
+
     while ([rs next])
     {
-        CORevisionID *revId = [[CORevisionID alloc] initWithPersistentRootBackingStoreUUID: [self UUIDForKey: [rs int64ForColumnIndex: 0]]
+        CORevisionID *revId = [[CORevisionID alloc] initWithPersistentRootBackingStoreUUID: [COUUID UUIDWithData: [rs dataForColumnIndex: 0]]
                                                                              revisionIndex: [rs int64ForColumnIndex: 1]];
         [result addObject: revId];
         [revId release];
@@ -447,7 +409,7 @@
     FMResultSet *rs = [db_ executeQuery: @"SELECT uuid FROM persistentroots"];
     while ([rs next])
     {
-        [result addObject: [self UUIDForKey: [rs int64ForColumnIndex: 0]]];
+        [result addObject: [COUUID UUIDWithData: [rs dataForColumnIndex: 0]]];
     }
     [rs close];
     return result;
@@ -459,7 +421,7 @@
     FMResultSet *rs = [db_ executeQuery: @"SELECT uuid FROM persistentroots WHERE gcroot = 1"];
     while ([rs next])
     {
-        [result addObject: [self UUIDForKey: [rs int64ForColumnIndex: 0]]];
+        [result addObject: [COUUID UUIDWithData: [rs dataForColumnIndex: 0]]];
     }
     [rs close];
     return result;
@@ -473,12 +435,14 @@
     
     [db_ beginTransaction]; // N.B. The transaction is so the two SELECTs see the same DB
     
+    NSNumber *root_id = [db_ numberForQuery: @"SELECT root_id FROM persistentroots WHERE uuid = ?", [aUUID dataValue]];
+    
     {
-        FMResultSet *rs = [db_ executeQuery: @"SELECT currentbranch, backingstore, metadata FROM persistentroots WHERE uuid = ?", [self numberForUUID: aUUID]];
+        FMResultSet *rs = [db_ executeQuery: @"SELECT (SELECT uuid FROM branches WHERE branch_id = currentbranch), coalesce(backingstore, uuid), metadata FROM persistentroots WHERE root_id = ?", root_id];
         if ([rs next])
         {
-            currBranch = [self UUIDForKey: [rs int64ForColumnIndex: 0]];
-            backingUUID = [self UUIDForKey: [rs int64ForColumnIndex: 1]];
+            currBranch = [COUUID UUIDWithData: [rs dataForColumnIndex: 0]];
+            backingUUID = [COUUID UUIDWithData: [rs dataForColumnIndex: 1]];
             meta = [NSJSONSerialization JSONObjectWithData: [rs dataForColumnIndex: 2]
                                                    options: 0
                                                      error: NULL];
@@ -489,10 +453,10 @@
     NSMutableDictionary *branchDict = [NSMutableDictionary dictionary];
     
     {
-        FMResultSet *rs = [db_ executeQuery: @"SELECT branch, head_revid, tail_revid, current_revid, metadata FROM branches WHERE proot = ?", [self numberForUUID: aUUID]];
+        FMResultSet *rs = [db_ executeQuery: @"SELECT uuid, head_revid, tail_revid, current_revid, metadata FROM branches WHERE proot = ?",  root_id];
         while ([rs next])
         {
-            COUUID *branch = [self UUIDForKey: [rs int64ForColumnIndex: 0]];
+            COUUID *branch = [COUUID UUIDWithData: [rs dataForColumnIndex: 0]];
             CORevisionID *headRevid = [CORevisionID revisionWithBackinStoreUUID: backingUUID
                                                                   revisionIndex: [rs int64ForColumnIndex: 1]];
             CORevisionID *tailRevid = [CORevisionID revisionWithBackinStoreUUID: backingUUID
@@ -525,64 +489,15 @@
 
 /** @taskunit writing persistent roots */
 
-- (BOOL) insertPersistentRoot: (COUUID *)aUUID
-             backingStoreUUID: (COUUID *)aBackingUUID
-                     isGCRoot: (BOOL)isGCRoot
-                currentBranch: (COUUID *)aBranch
-                     metadata: (NSDictionary *)meta
-
+- (NSData *) writeMetadata: (NSDictionary *)meta
 {
     NSData *data = nil;
     if (meta != nil)
     {
         data = [NSJSONSerialization dataWithJSONObject: meta options: 0 error: NULL];
     }
-    
-    [self beginTransactionIfNeeded];
-    
-    BOOL ok = [db_ executeUpdate: @"INSERT INTO persistentroots (uuid, "
-            "backingstore, gcroot, currentbranch, metadata) VALUES(?,?,?,?,?)",
-            [NSNumber numberWithLongLong: [self keyForUUID: aUUID]],
-            [NSNumber numberWithLongLong: [self keyForUUID: aBackingUUID]],
-            [NSNumber numberWithBool: isGCRoot],
-            [NSNumber numberWithLongLong: [self keyForUUID: aBranch]],
-            data];
-    
-    [self commitTransactionIfNeeded];
-
-    return ok;
+    return data;
 }
-
-- (BOOL) insertBranch: (COUUID *)aUUID
-       persistentRoot: (COUUID *)aRoot
-       headRevisionId: (CORevisionID *)headRevid
-       tailRevisionId: (CORevisionID *)tailRevid
-    currentRevisionId: (CORevisionID *)currentRevid
-             metadata: (NSDictionary *)meta
-
-{
-    NSData *data = nil;
-    if (meta != nil)
-    {
-        data = [NSJSONSerialization dataWithJSONObject: meta options: 0 error: NULL];
-    }
-    
-     
-    [self beginTransactionIfNeeded];
-    
-    BOOL ok = [db_ executeUpdate: @"INSERT INTO branches (branch, proot, head_revid, tail_revid, current_revid, metadata) VALUES(?,?,?,?,?,?)",
-               [NSNumber numberWithLongLong: [self keyForUUID: aUUID]],
-               [NSNumber numberWithLongLong: [self keyForUUID: aRoot]],
-               [NSNumber numberWithLongLong: [headRevid revisionIndex]],
-               [NSNumber numberWithLongLong: [tailRevid revisionIndex]],
-               [NSNumber numberWithLongLong: [currentRevid revisionIndex]],
-               data];
-    
-    [self commitTransactionIfNeeded];
-    
-    return ok;
-}
-
 
 - (COPersistentRootState *) createPersistentRootWithUUID: (COUUID *)uuid
                                          initialRevision: (CORevisionID *)revId
@@ -590,19 +505,34 @@
                                                 metadata: (NSDictionary *)metadata
 {
     COUUID *branchUUID = [COUUID UUID];
+
+    [self beginTransactionIfNeeded];
     
-    [self insertBranch: branchUUID
-        persistentRoot: uuid
-        headRevisionId: revId
-        tailRevisionId: revId
-     currentRevisionId: revId
-              metadata: nil];
+    [db_ executeUpdate: @"INSERT INTO persistentroots (uuid, "
+           "backingstore, gcroot, currentbranch, metadata, deleted) VALUES(?,?,?,?,?, 0)",
+           [uuid dataValue],
+           [uuid isEqual: [revId backingStoreUUID]] ? nil : [[revId backingStoreUUID] dataValue],
+           [NSNumber numberWithBool: isGCRoot],
+           nil,
+           [self writeMetadata: metadata]];
+
+    const int64_t root_id = [db_ lastInsertRowId];
     
-    [self insertPersistentRoot: uuid
-              backingStoreUUID: [revId backingStoreUUID]
-                      isGCRoot: isGCRoot
-                 currentBranch: branchUUID
-                      metadata: metadata];
+    [db_ executeUpdate: @"INSERT INTO branches (uuid, proot, head_revid, tail_revid, current_revid, metadata) VALUES(?,?,?,?,?,?)",
+           [branchUUID dataValue],
+           [NSNumber numberWithLongLong: root_id],
+           [NSNumber numberWithLongLong: [revId revisionIndex]],
+           [NSNumber numberWithLongLong: [revId revisionIndex]],
+           [NSNumber numberWithLongLong: [revId revisionIndex]],
+           nil];
+    
+    const int64_t branch_id = [db_ lastInsertRowId];
+    
+    [db_ executeUpdate: @"UPDATE persistentroots SET currentbranch = ? WHERE root_id = ?",
+      [NSNumber numberWithLongLong: branch_id],
+      [NSNumber numberWithLongLong: root_id]];
+
+    [self commitTransactionIfNeeded];
     
     // Return info
     
@@ -653,7 +583,7 @@
 - (BOOL) isPersistentRootGCRoot: (COUUID *)aRoot
 {
     FMResultSet *rs = [db_ executeQuery: @"SELECT gcroot FROM persistentroots WHERE uuid = ?",
-                       [NSNumber numberWithLongLong: [self keyForUUID: aRoot]]];
+                       [aRoot dataValue]];
     if (![rs next])
     {
         [rs close];
@@ -670,17 +600,19 @@
 {
     [self beginTransactionIfNeeded];
     
-    COUUID *backingUUID = [self backingUUIDForPersistentRootUUID: aRoot];
+//    COUUID *backingUUID = [self backingUUIDForPersistentRootUUID: aRoot];
     
-    [db_ executeUpdate: @"DELETE FROM persistentroots WHERE uuid = ?", [NSNumber numberWithLongLong: [self keyForUUID: aRoot]]];
-    [db_ executeUpdate: @"DELETE FROM branches WHERE proot = ?", [NSNumber numberWithLongLong: [self keyForUUID: aRoot]]];
+    NSNumber *root_id = [db_ numberForQuery: @"SELECT root_id FROM persistentroots WHERE uuid = ?", [aRoot dataValue]];
     
-    FMResultSet *rs = [db_ executeQuery: @"SELECT COUNT(backingstore) FROM persistentroots WHERE backingstore = ?", [NSNumber numberWithLongLong: [self keyForUUID: backingUUID]]];
-    if (![rs next])
-    {
-        [self deleteBackingStoreWithUUID: backingUUID];
-    }
-    [rs close];
+    [db_ executeUpdate: @"UPDATE persistentroots SET deleted = 1 WHERE uuid = ?", root_id];
+    [db_ executeUpdate: @"UPDATE branches SET deleted = 1 WHERE proot = ?", root_id];
+    
+//    FMResultSet *rs = [db_ executeQuery: @"SELECT COUNT(*) FROM persistentroots WHERE backingstore = ?", [NSNumber numberWithLongLong: [self keyForUUID: backingUUID]]];
+//    if (![rs next])
+//    {
+//        [self deleteBackingStoreWithUUID: backingUUID];
+//    }
+//    [rs close];
     
     [self commitTransactionIfNeeded];
     
@@ -763,16 +695,18 @@
 {
     [self beginTransactionIfNeeded];
     
-    BOOL ok = [db_ executeUpdate: @"UPDATE persistentroots SET currentbranch = ? WHERE uuid = ?",
-               [NSNumber numberWithLongLong:[self keyForUUID: aBranch]],
-               [NSNumber numberWithLongLong:[self keyForUUID: aRoot]]];
-    
+    NSNumber *root_id = [db_ numberForQuery: @"SELECT root_id FROM persistentroots WHERE uuid = ?", [aRoot dataValue]];
+    BOOL ok = [db_ executeUpdate: @"UPDATE persistentroots SET currentbranch = (SELECT branch_id FROM branches WHERE proot = ? AND uuid = ?) WHERE root_id = ?",
+               root_id,
+               root_id,
+               [aBranch dataValue]];
+
     [self commitTransactionIfNeeded];
     
     return ok;
 }
 
-- (COUUID *) createBranchWithInitialRevision: (CORevisionID *)aToken
+- (COUUID *) createBranchWithInitialRevision: (CORevisionID *)revId
                                   setCurrent: (BOOL)setCurrent
                            forPersistentRoot: (COUUID *)aRoot
 {
@@ -780,12 +714,14 @@
     
     COUUID *branchUUID = [COUUID UUID];
     
-    [self insertBranch: branchUUID
-        persistentRoot: aRoot
-        headRevisionId: aToken
-        tailRevisionId: aToken
-     currentRevisionId: aToken
-              metadata: nil];
+    NSNumber *root_id = [db_ numberForQuery: @"SELECT root_id FROM persistentroots WHERE uuid = ?", [aRoot dataValue]];
+    [db_ executeUpdate: @"INSERT INTO branches (uuid, proot, head_revid, tail_revid, current_revid, metadata) VALUES(?,?,?,?,?,?)",
+     [branchUUID dataValue],
+     [NSNumber numberWithLongLong: root_id],
+     [NSNumber numberWithLongLong: [revId revisionIndex]],
+     [NSNumber numberWithLongLong: [revId revisionIndex]],
+     [NSNumber numberWithLongLong: [revId revisionIndex]],
+     nil];    
     
     if (setCurrent)
     {
@@ -808,26 +744,18 @@
                  forBranch: (COUUID *)aBranch
           ofPersistentRoot: (COUUID *)aRoot
 {
-    [self beginTransactionIfNeeded];
-    
-    BOOL ok = [db_ executeUpdate: @"UPDATE branches SET current_revid = ? WHERE branch = ?",
+    BOOL ok = [db_ executeUpdate: @"UPDATE branches SET current_revid = ? WHERE uuid = ?",
                [NSNumber numberWithLongLong: [aVersion revisionIndex]],
-               [NSNumber numberWithLongLong: [self keyForUUID: aBranch]]];
-    
-    [self commitTransactionIfNeeded];
-    
+               [aBranch dataValue]];
+        
     return ok;
 }
 
 - (BOOL) deleteBranch: (COUUID *)aBranch
      ofPersistentRoot: (COUUID *)aRoot
 {
-    [self beginTransactionIfNeeded];
-    
-    BOOL ok = [db_ executeUpdate: @"REMOVE FROM branches WHERE branch = ?",
-               [NSNumber numberWithLongLong:[self keyForUUID: aBranch]]];
-    
-    [self commitTransactionIfNeeded];
+    BOOL ok = [db_ executeUpdate: @"REMOVE FROM branches WHERE uuid = ?",
+               [aBranch dataValue]];
     
     return ok;
 }
@@ -842,14 +770,10 @@
         data = [NSJSONSerialization dataWithJSONObject: meta options: 0 error: NULL];
     }
     
-    [self beginTransactionIfNeeded];
-    
-    BOOL ok = [db_ executeUpdate: @"UPDATE branches SET metadata = ? WHERE branch = ?",
+    BOOL ok = [db_ executeUpdate: @"UPDATE branches SET metadata = ? WHERE uuid = ?",
                data,
-               [NSNumber numberWithLongLong:[self keyForUUID: aBranch]]];
+               [aBranch dataValue]];
     
-    [self commitTransactionIfNeeded];
-
     return ok;
 }
 
@@ -861,14 +785,10 @@
     {
         data = [NSJSONSerialization dataWithJSONObject: meta options: 0 error: NULL];
     }
-    
-    [self beginTransactionIfNeeded];
-    
+
     BOOL ok = [db_ executeUpdate: @"UPDATE persistentroots SET metadata = ? WHERE uuid = ?",
                data,
-               [NSNumber numberWithLongLong:[self keyForUUID: aRoot]]];
-    
-    [self commitTransactionIfNeeded];
+               [aRoot dataValue]];
     
     return ok;
 }
