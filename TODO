@@ -21,7 +21,7 @@ Store
 - GC unreachable revisions (aka history compacting)including unreachable non-gc-root persistent "roots"
 - Merge all gc code into a single GC pass.
 x Write binary serialization format
-- Write COItem import/export using binary parser.
+x Write COItem import/export using binary parser.
   \Per-item code must be pure C.
 - Never store UUIDs explictly but use a int <-> UUID table (in every database.)
   since they tend to be reused a lot.
@@ -50,7 +50,7 @@ Types
 
 x remove bag / unique array types
 - figure out where to put type names for primitives (<NSData> is org.etoile.bezier-path)
-- Get rid of COType and use an int:
+x Get rid of COType and use an int:
 
 kCOStringType 1
 kCOIntType 2
@@ -83,3 +83,6 @@ Tests
 -----
 
 - port all...
+- test branch creation, switching
+- test committing with "update head" off/on.
+- test undo/redo
