@@ -118,7 +118,8 @@
  */
 - (BOOL) setCurrentVersion: (CORevisionID*)aVersion
                  forBranch: (COUUID *)aBranch
-          ofPersistentRoot: (COUUID *)aRoot;
+          ofPersistentRoot: (COUUID *)aRoot
+                updateHead: (BOOL)updateHead;
 
 - (BOOL) deleteBranch: (COUUID *)aBranch
      ofPersistentRoot: (COUUID *)aRoot;

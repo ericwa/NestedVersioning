@@ -743,12 +743,22 @@
 - (BOOL) setCurrentVersion: (CORevisionID*)aVersion
                  forBranch: (COUUID *)aBranch
           ofPersistentRoot: (COUUID *)aRoot
+                updateHead: (BOOL)updateHead
 {
-    BOOL ok = [db_ executeUpdate: @"UPDATE branches SET current_revid = ? WHERE uuid = ?",
-               [NSNumber numberWithLongLong: [aVersion revisionIndex]],
-               [aBranch dataValue]];
+    if (updateHead)
+    {
+        return [db_ executeUpdate: @"UPDATE branches SET current_revid = ?, head_revid = ? WHERE uuid = ?",
+                [NSNumber numberWithLongLong: [aVersion revisionIndex]],
+                [NSNumber numberWithLongLong: [aVersion revisionIndex]],
+                [aBranch dataValue]];
         
-    return ok;
+    }
+    else
+    {
+        return [db_ executeUpdate: @"UPDATE branches SET current_revid = ? WHERE uuid = ?",
+                [NSNumber numberWithLongLong: [aVersion revisionIndex]],
+                [aBranch dataValue]];
+    }
 }
 
 - (BOOL) deleteBranch: (COUUID *)aBranch
