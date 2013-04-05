@@ -7,6 +7,10 @@
 
 @implementation TestSQLiteStore
 
+// --------------------------------------------
+// Test case setup
+// --------------------------------------------
+
 static const int NUM_CHILDREN = 1000;
 static const int NUM_COMMITS = 1000;
 static const int NUM_PERSISTENT_ROOTS = 100;
@@ -70,21 +74,8 @@ static int itemChangedAtCommit(int i)
     return [NSString stringWithFormat: @"child %d never modified!", child];
 }
 
-#define RELOAD_ENTIRE_GRAPH_ON_EVERY_COMIT 0
-
-#if 1
-- (void)testBasic
+- (COItemTree*) makeInitialItemTree
 {
-    NSDate *startDate = [NSDate date];
-    
-//    for (int i=0; i<NUM_CHILDREN; i++)
-//    {
-//        NSLog(@"label: %@", [self labelForCommit: NUM_COMMITS - 1
-//                                           child: i]);
-//    }
-    
-    // Set up the initial items
-    
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity: NUM_CHILDREN+1];
     [dict setObject: [self initialRootItem] forKey: rootUUID];
     for (int i=0; i<NUM_CHILDREN; i++)
@@ -92,10 +83,20 @@ static int itemChangedAtCommit(int i)
         [dict setObject: [self initialChildItem: i]
                  forKey: childUUIDs[i]];
     }
+    COItemTree *it = [[[COItemTree alloc] initWithItemForUUID: dict rootItemUUID: rootUUID] autorelease];
+    return it;
+}
+
+
+- (COUUID *) makeDemoPersistentRoot
+{
+    NSDate *startDate = [NSDate date];
+    
+    COItemTree *initialTree = [self makeInitialItemTree];
     
     // Commit them to a persistet root
     
-    COPersistentRootState *proot = [store createPersistentRootWithInitialContents: [[[COItemTree alloc] initWithItemForUUID: dict rootItemUUID: rootUUID] autorelease]
+    COPersistentRootState *proot = [store createPersistentRootWithInitialContents: initialTree
                                                                          metadata: nil
                                                                          isGCRoot: YES];
     
@@ -108,45 +109,54 @@ static int itemChangedAtCommit(int i)
         
         NSString *label = [self labelForCommit: commit child: i];
         
-//        NSLog(@"item %d changed in commit %d - seting label to %@", i, commit, label);
+        //        NSLog(@"item %d changed in commit %d - seting label to %@", i, commit, label);
         
-        COMutableItem *item = [dict objectForKey: childUUIDs[i]];
+        COMutableItem *item = (COMutableItem *)[initialTree itemForUUID: childUUIDs[i]];
         [item setValue:label
           forAttribute: @"name"];
         
-        lastCommitId = [store writeItemTree: [[[COItemTree alloc] initWithItemForUUID: dict rootItemUUID: rootUUID] autorelease]
+        lastCommitId = [store writeItemTree: initialTree
                                withMetadata: nil
                        withParentRevisionID: lastCommitId
                               modifiedItems: A(childUUIDs[i])];
     }
     
+    // Set the persistent root's state to the last commit
+    
+    [store setCurrentVersion: lastCommitId
+                   forBranch: [proot currentBranchUUID]
+            ofPersistentRoot: [proot UUID]
+                  updateHead: YES];
+    
+    NSLog(@"committing a %d-item persistent root and then making %d commits which touched 1 item each took %lf ms",
+          NUM_CHILDREN, NUM_COMMITS, 1000.0 * [[NSDate date] timeIntervalSinceDate: startDate]);
+    
+//    for (int i=0; i<NUM_CHILDREN; i++)
+//    {
+//        NSLog(@"label: %@", [self labelForCommit: NUM_COMMITS - 1
+//                                           child: i]);
+//    }
+    
+    return [proot UUID];
+}
+
+// --------------------------------------------
+// End test case setup
+// --------------------------------------------
+
+- (void)testReadDelta
+{
+    COUUID *prootUUID = [self makeDemoPersistentRoot];
+
+    NSDate *startDate = [NSDate date];
+    
+    COPersistentRootState *proot = [store persistentRootWithUUID: prootUUID];
+    
+    CORevisionID *lastCommitId = [[proot currentBranchState] currentState];
+    
     // Now traverse them in reverse order and test that the items are as expected.
     // There are NUM_CHILDREN + 1 commits (the initial one made by creating the persistent roots)
-#if RELOAD_ENTIRE_GRAPH_ON_EVERY_COMIT
-    for (int rev=NUM_COMMITS-1; rev>=0; rev--)
-    {
-        COItemTree *tree = [store itemTreeForRevisionID: lastCommitId];
 
-        // Check the state
-        UKObjectsEqual(rootUUID, [tree rootItemUUID]);
-        UKObjectsEqual([dict objectForKey: rootUUID],
-                       [tree itemForUUID: rootUUID]);
-        
-        for (int i=0; i<NUM_CHILDREN; i++)
-        {
-            // on rev=NUM_CHILDREN, child[NUM_CHILDREN - 1]'s name was changed
-            
-            NSString *expectedLabel = [self labelForCommit: rev child: i];
-            
-            UKObjectsEqual(expectedLabel,
-                           [[tree itemForUUID: childUUIDs[i]] valueForAttribute: @"name"]);
-        }
-
-        // Step back one revision
-        
-        lastCommitId = [[store revisionForID: lastCommitId] parentRevisionID];
-    }
-#else
     for (int rev=NUM_COMMITS-1; rev>=1; rev--)
     {
         CORevisionID *parentCommitId = [[store revisionForID: lastCommitId] parentRevisionID];
@@ -166,41 +176,84 @@ static int itemChangedAtCommit(int i)
         
         lastCommitId = parentCommitId;
     }
-#endif
     
-    NSLog(@"committing a %d-item persistent root and then making %d commits which touched 1 item each took %lf ms",
-          NUM_CHILDREN, NUM_COMMITS, 1000.0 * [[NSDate date] timeIntervalSinceDate: startDate]);
+    NSLog(@"reading back %d deltas which touched 1 item each of a %d-item persistent root took %lf ms",
+          NUM_COMMITS, NUM_CHILDREN, 1000.0 * [[NSDate date] timeIntervalSinceDate: startDate]);
+}
+
+- (void) testReloadFullStates
+{
+    COItemTree *initialTree = [self makeInitialItemTree];
+    COUUID *prootUUID = [self makeDemoPersistentRoot];
     
-    // Try search
+    NSDate *startDate = [NSDate date];
+
+    COPersistentRootState *proot = [store persistentRootWithUUID: prootUUID];
     
-    NSArray *results = [store revisionIDsMatchingQuery: [NSString stringWithFormat: @"\"modified %d in commit 32\"", itemChangedAtCommit(32)]];
+    CORevisionID *lastCommitId = [[proot currentBranchState] currentState];
+    
+    int iters = 0;
+    for (int rev=NUM_COMMITS-1; rev>=0; rev--)
+    {
+        COItemTree *tree = [store itemTreeForRevisionID: lastCommitId];
+        
+        // Check the state
+        UKObjectsEqual(rootUUID, [tree rootItemUUID]);
+        UKObjectsEqual([initialTree itemForUUID: rootUUID],
+                       [tree itemForUUID: rootUUID]);
+        
+        for (int i=0; i<NUM_CHILDREN; i++)
+        {
+            // on rev=NUM_CHILDREN, child[NUM_CHILDREN - 1]'s name was changed
+            
+            NSString *expectedLabel = [self labelForCommit: rev child: i];
+            
+            UKObjectsEqual(expectedLabel,
+                           [[tree itemForUUID: childUUIDs[i]] valueForAttribute: @"name"]);
+        }
+        
+        // Step back one revision
+        
+        lastCommitId = [[store revisionForID: lastCommitId] parentRevisionID];
+        
+        iters++;
+        if (iters > 25) break; // This is the slowest test, so only read 25 revisions
+    }
+    
+    NSLog(@"reading back %d full snapshots of a %d-item persistent root took %lf ms",
+          MIN(25, NUM_COMMITS), NUM_CHILDREN, 1000.0 * [[NSDate date] timeIntervalSinceDate: startDate]);
+
+}
+
+- (void) testFTS
+{
+    COUUID *prootUUID = [self makeDemoPersistentRoot];
+    COPersistentRootState *proot = [store persistentRootWithUUID: prootUUID];
+    
+    int itemIndex = itemChangedAtCommit(32);
+    
+    NSDate *startDate = [NSDate date];
+    
+    NSArray *results = [store revisionIDsMatchingQuery: [NSString stringWithFormat: @"\"modified %d in commit 32\"",
+                                                         itemIndex]];
+    
+    NSLog(@"FTS took %lf ms", 1000.0 * [[NSDate date] timeIntervalSinceDate: startDate]);
+    
     UKTrue([results count] == 1);
     if ([results count] == 1)
     {
         CORevisionID *revid = [results objectAtIndex: 0];
-        UKObjectsEqual([lastCommitId backingStoreUUID], [revid backingStoreUUID]);
+        UKObjectsEqual([proot UUID], [revid backingStoreUUID]);
         UKIntsEqual(32, [revid revisionIndex]);
     }
 }
-#endif
 
-- (COItemTree*) initialItemTree
-{
-    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity: NUM_CHILDREN+1];
-    [dict setObject: [self initialRootItem] forKey: rootUUID];
-    for (int i=0; i<NUM_CHILDREN; i++)
-    {
-        [dict setObject: [self initialChildItem: i]
-                 forKey: childUUIDs[i]];
-    }
-    COItemTree *it = [[[COItemTree alloc] initWithItemForUUID: dict rootItemUUID: rootUUID] autorelease];
-    return it;
-}
 
 - (void)testLotsOfPersistentRoots
 {
+    COItemTree *it = [self makeInitialItemTree];
+    
     NSDate *startDate = [NSDate date];
-    COItemTree *it = [self initialItemTree];
     
     [store beginTransaction];
     for (int i =0; i<NUM_PERSISTENT_ROOTS; i++)
@@ -220,7 +273,7 @@ static int itemChangedAtCommit(int i)
 {
     NSDate *startDate = [NSDate date];
     
-    COItemTree *it = [self initialItemTree];
+    COItemTree *it = [self makeInitialItemTree];
 
     [store beginTransaction];
     COPersistentRootState *proot = [store createPersistentRootWithInitialContents: it

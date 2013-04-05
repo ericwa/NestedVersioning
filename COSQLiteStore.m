@@ -465,9 +465,7 @@
         {
             currBranch = [COUUID UUIDWithData: [rs dataForColumnIndex: 0]];
             backingUUID = [COUUID UUIDWithData: [rs dataForColumnIndex: 1]];
-            meta = [NSJSONSerialization JSONObjectWithData: [rs dataForColumnIndex: 2]
-                                                   options: 0
-                                                     error: NULL];
+            meta = [self readMetadata: [rs dataForColumnIndex: 2]];
         }
         [rs close];
     }
@@ -485,14 +483,13 @@
                                                                   revisionIndex: [rs int64ForColumnIndex: 2]];
             CORevisionID *currentRevid = [CORevisionID revisionWithBackinStoreUUID: backingUUID
                                                                      revisionIndex: [rs int64ForColumnIndex: 3]];
-            id branchMeta = [NSJSONSerialization JSONObjectWithData: [rs dataForColumnIndex: 4]
-                                                   options: 0
-                                                     error: NULL];
+            id branchMeta = [self readMetadata: [rs dataForColumnIndex: 4]];
             
             COBranchState *state = [[[COBranchState alloc] initWithUUID: branch
                                                         headRevisionId: headRevid
                                                         tailRevisionId: tailRevid
-                                                          currentState: currentRevid metadata: branchMeta] autorelease];
+                                                          currentState: currentRevid
+                                                               metadata: branchMeta] autorelease];
             [branchDict setObject: state forKey: branch];
         }
         [rs close];
@@ -519,6 +516,17 @@
         data = [NSJSONSerialization dataWithJSONObject: meta options: 0 error: NULL];
     }
     return data;
+}
+
+- (NSDictionary *) readMetadata: (NSData*)data
+{
+    if (data != nil)
+    {
+        return [NSJSONSerialization JSONObjectWithData: data
+                                               options: 0
+                                                 error: NULL];
+    }
+    return nil;
 }
 
 - (COPersistentRootState *) createPersistentRootWithUUID: (COUUID *)uuid

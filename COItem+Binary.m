@@ -150,6 +150,7 @@ static void co_read_int64(void *ctx, int64_t val)
             co_read_object_value(state, [NSNumber numberWithLongLong: val]);
             break;
         case co_reader_expect_type:
+            state->currentType = (COType)val;
             [state->types setObject: [NSNumber numberWithLongLong: val]
                              forKey: state->currentProperty];
             state->state = co_reader_expect_value;
@@ -234,6 +235,8 @@ static void co_read_begin_array(void *ctx)
 {
     COReaderState *state = (COReaderState *)ctx;
     state->isReadingMultivalue = YES;
+    
+    assert(COTypeIsMultivalued(state->currentType));
     
     if (COTypeIsOrdered(state->currentType))
     {

@@ -90,6 +90,23 @@
 	UKObjectsNotEqual(item2, item1);
 }
 
+- (void) testBinaryExportForSetAttribute
+{
+	COMutableItem *item1 = [COMutableItem item];
+	[item1 setValue: S(@"a", @"b", @"c") forAttribute: @"set" type: kCOStringType | kCOSetType];
+		
+	UKObjectsEqual(item1, [[[COItem alloc] initWithData: [item1 dataValue]] autorelease]);
+}
+
+- (void) testBinaryExportForArrayAttribute
+{
+	COMutableItem *item1 = [COMutableItem item];
+	[item1 setValue: A(@"a", @"b", @"c") forAttribute: @"array" type: kCOStringType | kCOArrayType];
+    
+	UKObjectsEqual(item1, [[[COItem alloc] initWithData: [item1 dataValue]] autorelease]);
+}
+
+
 //- (void) testNamedType
 //{
 //	COMutableItem *item1 = [COMutableItem item];
