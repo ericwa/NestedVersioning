@@ -16,6 +16,8 @@ static const int NUM_COMMITS = 1000;
 static const int NUM_PERSISTENT_ROOTS = 100;
 static const int NUM_PERSISTENT_ROOT_COPIES = 10000;
 
+static const int LOTS_OF_EMBEDDED_ITEMS = 1000000;
+
 static COUUID *rootUUID;
 static COUUID *childUUIDs[NUM_CHILDREN];
 
@@ -138,6 +140,30 @@ static int itemChangedAtCommit(int i)
 //    }
     
     return [proot UUID];
+}
+
+
+- (COItemTree*) makeBigItemTree
+{
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity: LOTS_OF_EMBEDDED_ITEMS+1];
+    
+    for (int i=0; i<LOTS_OF_EMBEDDED_ITEMS; i++)
+    {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        COMutableItem *item = [COMutableItem item];
+        [item setValue: [NSNumber numberWithInt: i] forAttribute: @"name" type: kCOInt64Type];
+        [dict setObject: item forKey: [item UUID]];
+        [pool release];
+    }
+    
+    COMutableItem *rootItem = [COMutableItem item];
+    [rootItem setValue: [dict allKeys]
+          forAttribute: @"children" type: kCOArrayType | kCOEmbeddedItemType];
+    [dict setObject: rootItem forKey: [rootItem UUID]];
+    
+    COItemTree *it = [[[COItemTree alloc] initWithItemForUUID: dict
+                                                 rootItemUUID: [rootItem UUID]] autorelease];
+    return it;
 }
 
 // --------------------------------------------
@@ -290,6 +316,17 @@ static int itemChangedAtCommit(int i)
     
     UKPass();
     NSLog(@"creating %d persistent root copies took %lf ms", NUM_PERSISTENT_ROOT_COPIES,
+          1000.0 * [[NSDate date] timeIntervalSinceDate: startDate]);
+}
+
+
+- (void) testMakeBigItemTree
+{
+    NSDate *startDate = [NSDate date];
+    
+    COItemTree *it = [self makeBigItemTree];
+    
+    NSLog(@"creating %d item itemtree took %lf ms", LOTS_OF_EMBEDDED_ITEMS,
           1000.0 * [[NSDate date] timeIntervalSinceDate: startDate]);
 }
 
