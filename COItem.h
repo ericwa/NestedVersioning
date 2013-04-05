@@ -22,8 +22,8 @@
 @interface COItem : NSObject <NSCopying, NSMutableCopying>
 {
 	COUUID *uuid;
-	NSDictionary *types;
-	NSDictionary *values;
+	NSMutableDictionary *types;
+    NSMutableDictionary *values;
 }
 
 /**
@@ -72,22 +72,12 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes;
  */
 - (id)mutableCopyWithNameMapping: (NSDictionary *)aMapping;
 
-@end
-
-
-
-@interface COMutableItem : COItem
-{
-}
-
 - (id) initWithUUID: (COUUID*)aUUID;
 
-+ (COMutableItem *) itemWithTypesForAttributes: (NSDictionary *)typesForAttributes
-						   valuesForAttributes: (NSDictionary *)valuesForAttributes;
 /**
  * new item with new UIID
  */
-+ (COMutableItem *) item;
++ (COItem *) item;
 
 - (void) setUUID: (COUUID *)aUUID;
 
@@ -98,14 +88,14 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes;
 - (void)removeValueForAttribute: (NSString*)anAttribute;
 
 /**
- * Creates the container if needed. 
+ * Creates the container if needed.
  */
 - (void)   addObject: (id)aValue
 toUnorderedAttribute: (NSString*)anAttribute
 				type: (COType)aType;
 
 /**
- * Creates the container if needed. 
+ * Creates the container if needed.
  */
 - (void)   addObject: (id)aValue
   toOrderedAttribute: (NSString*)anAttribute
@@ -123,5 +113,8 @@ toUnorderedAttribute: (NSString*)anAttribute
 
 - (id) copyWithZone:(NSZone *)zone;
 
+@end
+
+@interface COMutableItem : COItem
 @end
 

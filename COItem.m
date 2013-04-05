@@ -3,6 +3,15 @@
 #import "COPath.h"
 #import "COType.h"
 
+@interface COItemValue : NSObject
+{
+    COType storageType_;
+    NSString *schemaType_;
+    
+}
+
+@end
+
 static NSDictionary *copyValueDictionary(NSDictionary *input, BOOL mutable)
 {
 	NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
@@ -43,22 +52,6 @@ static NSDictionary *copyValueDictionary(NSDictionary *input, BOOL mutable)
 }
 
 @implementation COItem
-
-- (id) initWithUUID: (COUUID *)aUUID
- typesForAttributes: (NSDictionary *)typesForAttributes
-valuesForAttributes: (NSDictionary *)valuesForAttributes
-{
-	NILARG_EXCEPTION_TEST(aUUID);
-	NILARG_EXCEPTION_TEST(typesForAttributes);
-	NILARG_EXCEPTION_TEST(valuesForAttributes);
-		
-	SUPERINIT;
-	ASSIGN(uuid, aUUID);
-	types = [[NSDictionary alloc] initWithDictionary: typesForAttributes];
-	values = copyValueDictionary(valuesForAttributes, NO);
-
-	return self;
-}
 
 - (void) dealloc
 {
@@ -401,11 +394,6 @@ static id importValueFromPlist(id aPlist)
 
 /** @taskunit copy */
 
-- (id) copyWithZone: (NSZone *)zone
-{
-	return [self retain];
-}
-
 - (id) mutableCopyWithZone: (NSZone *)zone
 {
 	return [[COMutableItem alloc] initWithUUID: uuid			
@@ -490,19 +478,6 @@ static id importValueFromPlist(id aPlist)
 	return aCopy;
 }
 
-@end
-
-
-
-
-@implementation COMutableItem
-
-+ (COMutableItem *) itemWithTypesForAttributes: (NSDictionary *)typesForAttributes
-						   valuesForAttributes: (NSDictionary *)valuesForAttributes
-{
-    return (COMutableItem *)[super itemWithTypesForAttributes: typesForAttributes
-                                          valuesForAttributes: valuesForAttributes];
-}
 
 - (id) initWithUUID: (COUUID *)aUUID
  typesForAttributes: (NSDictionary *)typesForAttributes
@@ -522,14 +497,20 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 
 - (id) initWithUUID: (COUUID*)aUUID
 {
-	return [self initWithUUID: aUUID
-		   typesForAttributes: [NSDictionary dictionary]
-		  valuesForAttributes: [NSDictionary dictionary]];
+	SUPERINIT;
+	uuid = [aUUID retain];
+	types = [[NSMutableDictionary alloc] init];
+	values = [[NSMutableDictionary alloc] init];
+    return self;
 }
 
 - (id) init
 {
-	return [self initWithUUID: [COUUID UUID]];
+	SUPERINIT;
+	uuid = [[COUUID alloc] init];
+	types = [[NSMutableDictionary alloc] init];
+	values = [[NSMutableDictionary alloc] init];
+    return self;
 }
 
 + (COMutableItem *) item
@@ -650,3 +631,5 @@ toUnorderedAttribute: (NSString*)anAttribute
 
 @end
 
+@implementation COMutableItem
+@end
