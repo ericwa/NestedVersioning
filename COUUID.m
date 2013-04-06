@@ -149,8 +149,7 @@ static Class COUUIDClass;
 
 - (id) copyWithZone: (NSZone *)zone
 {
-	NSIncrementExtraRefCount(self);
-    return self;
+	return [self retain];
 }
 
 - (NSUInteger) hash
