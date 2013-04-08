@@ -326,34 +326,35 @@ static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifie
     return rowid;
 }
 
-- (void) iteratePartialItemTrees: (void (^)(NSSet *))aBlock
-{
-    NSMutableDictionary *dataForUUID = [[[NSMutableDictionary alloc] init] autorelease];
-    
-    FMResultSet *rs = [db_ executeQuery: @"SELECT contents FROM commits"];
-    while ([rs next])
-    {
-        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-        
-        NSData *contentsData = [rs dataForColumnIndex: 0];
-        
-        [dataForUUID removeAllObjects];
-        ParseCombinedCommitDataInToUUIDToItemDataDictionary(dataForUUID, contentsData, YES);
-        
-        NSMutableSet *items = [NSMutableSet setWithCapacity: [dataForUUID count]];
-        for (COUUID *uuid in dataForUUID)
-        {
-            id plist = [NSJSONSerialization JSONObjectWithData: [dataForUUID objectForKey: uuid]
-                                                       options: 0 error: NULL];
-            COItem *item = [[[COItem alloc] initWithPlist: plist] autorelease];
-            [items addObject: item];
-        }
-        aBlock(items);
-        
-        [pool release];
-    }
-	
-    [rs close];
-}
+// DO not want!
+//- (void) iteratePartialItemTrees: (void (^)(NSSet *))aBlock
+//{
+//    NSMutableDictionary *dataForUUID = [[[NSMutableDictionary alloc] init] autorelease];
+//    
+//    FMResultSet *rs = [db_ executeQuery: @"SELECT contents FROM commits"];
+//    while ([rs next])
+//    {
+//        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+//        
+//        NSData *contentsData = [rs dataForColumnIndex: 0];
+//        
+//        [dataForUUID removeAllObjects];
+//        ParseCombinedCommitDataInToUUIDToItemDataDictionary(dataForUUID, contentsData, YES);
+//        
+//        NSMutableSet *items = [NSMutableSet setWithCapacity: [dataForUUID count]];
+//        for (COUUID *uuid in dataForUUID)
+//        {
+//            id plist = [NSJSONSerialization JSONObjectWithData: [dataForUUID objectForKey: uuid]
+//                                                       options: 0 error: NULL];
+//            COItem *item = [[[COItem alloc] initWithPlist: plist] autorelease];
+//            [items addObject: item];
+//        }
+//        aBlock(items);
+//        
+//        [pool release];
+//    }
+//	
+//    [rs close];
+//}
 
 @end

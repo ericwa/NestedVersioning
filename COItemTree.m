@@ -51,5 +51,51 @@
 	return result;
 }
 
+/**
+ * For debugging/testing only
+ */
+- (BOOL) isEqualToItemTree: (COItemTree *)aTree
+         comparingItemUUID: (COUUID *)aUUID
+{
+    COItem *my = [self itemForUUID: aUUID];
+    COItem *other = [aTree itemForUUID: aUUID];
+    if (![my isEqual: other])
+    {
+        return NO;
+    }
+    
+    if (![[my embeddedItemUUIDs] isEqual: [other embeddedItemUUIDs]])
+    {
+        return NO;
+    }
+    
+    for (COUUID *aChild in [my embeddedItemUUIDs])
+    {
+        if (![self isEqualToItemTree: aTree comparingItemUUID: aChild])
+        {
+            return NO;
+        }
+    }
+    return YES;
+}
+
+/**
+ * For debugging/testing only
+ */
+- (BOOL) isEqual:(id)object
+{
+    NSLog(@"WARNING, COItemTree should be compared for debugging only");
+    
+    if (![object isKindOfClass: [self class]])
+    {
+        return NO;
+    }
+    if (![[object rootItemUUID] isEqual: rootItemUUID_])
+    {
+        return NO;
+    }
+    return [self isEqualToItemTree: object comparingItemUUID: rootItemUUID_];
+}
+
 @end
 

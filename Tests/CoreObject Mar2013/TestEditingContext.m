@@ -234,6 +234,7 @@
 
 	UKObjectsSame(obj2, [persistentRoot objectWithUUID: [persistentRoot2 persistentRootUUID]]);
 	UKObjectsSame(obj, [persistentRoot2 objectWithUUID: [persistentRoot persistentRootUUID]]);
+    // Why is the commit track UUID interchangable for the persistent root UUID? -- Eric
 	UKObjectsSame(obj2, [persistentRoot objectWithUUID: [[persistentRoot2 commitTrack] UUID]]);
 	UKObjectsSame(obj, [persistentRoot2 objectWithUUID: [[persistentRoot commitTrack] UUID]]);
 

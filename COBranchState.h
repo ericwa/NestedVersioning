@@ -12,6 +12,8 @@
     CORevisionID *currentState_;
     
     NSDictionary *metadata_;
+    
+    BOOL deleted_;
 }
 
 @property (readonly, nonatomic) COUUID *UUID;
@@ -19,6 +21,7 @@
 @property (readwrite, copy, nonatomic) CORevisionID *tailRevisionID;
 @property (readwrite, copy, nonatomic) CORevisionID *currentState;
 @property (readwrite, copy, nonatomic) NSDictionary *metadata;
+@property (readwrite, nonatomic, setter = setDeleted:, getter = isDeleted) BOOL deleted;
 
 - (id) initWithUUID: (COUUID *)aUUID
      headRevisionId: (CORevisionID *)head

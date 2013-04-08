@@ -24,8 +24,7 @@ static COObject *makeTree(NSString *label)
         COItemTree *basicTree = [makeTree(@"hello world") itemTree];
         
         COPersistentRoot *proot = [store_ createPersistentRootWithInitialContents: basicTree
-                                                                         metadata: [NSDictionary dictionary]
-                                                                         isGCRoot: YES];
+                                                                         metadata: [NSDictionary dictionary]];
     }
     return self;
 }

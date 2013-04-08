@@ -23,7 +23,6 @@
 - (NSURL*)URL;
 
 - (NSSet *) persistentRoots;
-- (NSSet *) GCRoots;
 
 - (COPersistentRoot *) persistentRootWithUUID: (COUUID *)aUUID;
 
@@ -33,13 +32,11 @@
  * Commits immediately.
  */
 - (COPersistentRoot *) createPersistentRootWithInitialContents: (COEditingContext *)contents
-                                                      metadata: (NSDictionary *)metadata
-                                                      isGCRoot: (BOOL)isGCRoot;
+                                                      metadata: (NSDictionary *)metadata;
 
 // does a cheap copy
 - (COPersistentRoot *) createPersistentRootWithInitialRevision: (CORevisionID *)aRevision
-                                                      metadata: (NSDictionary *)metadata
-                                                      isGCRoot: (BOOL)isGCRoot;
+                                                      metadata: (NSDictionary *)metadata;
 
 /**
  * Deletes the requested persistent root immediately

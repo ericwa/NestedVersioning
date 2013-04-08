@@ -323,9 +323,9 @@ static id importValueFromPlist(id aPlist)
 
 // Helper methods for doing GC
 
-- (NSSet *) attachments
+- (NSArray *) attachments
 {
-	NSMutableSet *result = [NSMutableSet set];
+	NSMutableArray *result = [NSMutableArray array];
 	
 	for (NSString *key in [self attributeNames])
 	{
@@ -338,12 +338,12 @@ static id importValueFromPlist(id aPlist)
 			}
 		}
 	}
-	return [NSSet setWithSet: result];
+	return result;
 }
 
-- (NSSet *) allReferencedPersistentRootUUIDs
+- (NSArray *) allReferencedPersistentRootUUIDs
 {
-	NSMutableSet *result = [NSMutableSet set];
+	NSMutableArray *result = [NSMutableArray array];
 	
 	for (NSString *key in [self attributeNames])
 	{
@@ -356,7 +356,7 @@ static id importValueFromPlist(id aPlist)
 			}
 		}
 	}
-	return [NSSet setWithSet: result];
+	return result;
 }
 
 - (NSString *) fullTextSearchContent

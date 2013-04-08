@@ -57,8 +57,8 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes;
 - (NSSet *) referencedItemUUIDs;
 
 // GC helper methods
-- (NSSet *) attachments;
-- (NSSet *) allReferencedPersistentRootUUIDs;
+- (NSArray *) attachments;
+- (NSArray *) allReferencedPersistentRootUUIDs;
 
 - (NSString *) fullTextSearchContent;
 

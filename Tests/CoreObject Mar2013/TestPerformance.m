@@ -55,8 +55,7 @@
     
     
     COPersistentRootState *proot = [store createPersistentRootWithInitialContents:  [ctx itemTree]
-                                                                         metadata: nil
-                                                                         isGCRoot: YES];
+                                                                         metadata: nil];
     
     COItemTree *items = [store itemTreeForRevisionID: proot.currentBranchState.currentState];
     UKIntsEqual(1111, [[items itemUUIDs] count]);

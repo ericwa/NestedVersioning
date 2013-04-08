@@ -6,6 +6,8 @@
 
 /**
  * Database connection for manipulating a persistent root backing store.
+ *
+ *
  */
 @interface COSQLiteStorePersistentRootBackingStore : NSObject
 {
@@ -29,7 +31,5 @@
              withMetadata: (NSDictionary *)metadata
                withParent: (int64_t)aParent
             modifiedItems: (NSArray*)modifiedItems; // array of COUUID
-
-- (void) iteratePartialItemTrees: (void (^)(NSSet *))aBlock;
 
 @end

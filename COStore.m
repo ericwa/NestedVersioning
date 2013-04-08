@@ -52,18 +52,6 @@
     return [NSSet setWithArray: [rootForUUID_ allValues]];
 }
 
-- (NSSet *) GCRoots
-{
-    [self fetchPersistentRoots];
-    
-    NSMutableSet *result = [NSMutableSet set];
-    for (COUUID *uuid in [store_ gcRootUUIDs])
-    {
-        [result addObject: [rootForUUID_ objectForKey: uuid]];        
-    }
-    return [NSSet setWithSet: result];
-}
-
 - (COPersistentRoot *) persistentRootWithUUID: (COUUID *)aUUID
 {
     [self fetchPersistentRoots];
@@ -73,18 +61,16 @@
 
 - (COPersistentRoot *) createPersistentRootWithInitialContents: (COEditingContext *)contents
                                                       metadata: (NSDictionary *)metadata
-                                                      isGCRoot: (BOOL)isGCRoot
 {
-    COPersistentRootState *persistentRoot = [store_ createPersistentRootWithInitialContents: contents metadata: metadata isGCRoot: isGCRoot];
+    COPersistentRootState *persistentRoot = [store_ createPersistentRootWithInitialContents: contents metadata: metadata];
     
     return [self cachePersistentRootEditPlist: persistentRoot];
 }
 
 - (COPersistentRoot *) createPersistentRootWithInitialRevision: (CORevisionID *)aRevision
                                                       metadata: (NSDictionary *)metadata
-                                                      isGCRoot: (BOOL)isGCRoot
 {
-    COPersistentRootState *persistentRoot = [store_ createPersistentRootWithInitialRevision: aRevision metadata: metadata  isGCRoot: isGCRoot];
+    COPersistentRootState *persistentRoot = [store_ createPersistentRootWithInitialRevision: aRevision metadata: metadata ];
     
     return [self cachePersistentRootEditPlist: persistentRoot];
 }
@@ -93,7 +79,7 @@
 - (void) deletePersistentRootWithUUID: (COUUID *)aUUID
 {
     [self fetchPersistentRoots];
-    [store_ deleteGCRoot: aUUID];
+    [store_ deletePersistentRoot: aUUID];
     [rootForUUID_ removeObjectForKey: aUUID];
 }
 

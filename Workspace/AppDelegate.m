@@ -42,8 +42,7 @@
                                       type: kCOEmbeddedItemType | kCOArrayType];
         
         workspaces_ = [[store_ createPersistentRootWithInitialContents: [workspaces itemTree]
-                                                              metadata: nil
-                                                              isGCRoot: YES] retain];
+                                                              metadata: nil] retain];
         NSLog(@"New workspaces: %@", workspaces_);
     }
     else

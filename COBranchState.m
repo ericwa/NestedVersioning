@@ -13,6 +13,7 @@ NSString *kCOBranchMetadata= @"COBranchMetadata";
 @synthesize headRevisionID = headRevisionId_;
 @synthesize tailRevisionID = tailRevisionId_;
 @synthesize currentState = currentState_;
+@synthesize deleted = deleted_;
 
 - (NSDictionary *)metadata
 {

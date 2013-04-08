@@ -75,26 +75,28 @@
     
     [db_ beginTransaction];
     
-    // Create search tables. This uses contentless FTS4 which was added in SQLite 3.7.9
+    // Persistent Root and Branch tables
     
-    [db_ executeUpdate: @"CREATE VIRTUAL TABLE IF NOT EXISTS fts USING fts4(content=\"\", text)"]; // implicit column docid
-    [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS fts_docid_to_revisionid ("
-     "docid INTEGER PRIMARY KEY, root_id INTEGER, revid INTEGER)"];
-    
-    // Create persistent root tables
     [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS persistentroots (root_id INTEGER PRIMARY KEY, "
-     "uuid BLOB, backingstore BLOB, gcroot BOOLEAN, currentbranch INTEGER, metadata BLOB, deleted BOOLEAN)"];
+     "uuid BLOB, backingstore BLOB, currentbranch INTEGER, metadata BLOB, deleted BOOLEAN)"];
     
     [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS branches (branch_id INTEGER PRIMARY KEY, "
      "uuid BLOB, proot INTEGER, head_revid INTEGER, tail_revid INTEGER, current_revid INTEGER, metadata BLOB, deleted BOOLEAN)"];
 
-    // Create indexes
     [db_ executeUpdate: @"CREATE INDEX IF NOT EXISTS persistentroots_uuid_index ON persistentroots(uuid)"];
     [db_ executeUpdate: @"CREATE INDEX IF NOT EXISTS branches_proot_index ON branches(proot)"];
 
-    // Reference table
-    [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS refs (root_id INTEGER PRIMARY KEY, "
-     "dest_root_id INTEGER, revid INTEGER)"];
+    // FTS indexes & reference caching tables (in theory, could be regenerated - although not supported)
+    
+    /**
+     * In revid of root_id, there was a reference to dest_root_id
+     */
+    [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS proot_refs (root_id INTEGER, revid INTEGER, dest_root_id INTEGER)"];
+    [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS attachment_refs (root_id INTEGER, revid INTEGER, attachment_hash BLOB)"];    
+    
+    [db_ executeUpdate: @"CREATE VIRTUAL TABLE IF NOT EXISTS fts USING fts4(content=\"\", text)"]; // implicit column docid
+    [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS fts_docid_to_revisionid ("
+     "docid INTEGER PRIMARY KEY, root_id INTEGER, revid INTEGER)"];
     
     [db_ commit];
     
@@ -311,7 +313,7 @@
  */
 - (void) updateSearchIndexesForItemUUIDs: (NSArray *)modifiedItems
                               inItemTree: (COItemTree *)anItemTree
-                              revisionID: (CORevisionID *)aRevision
+                  revisionIDBeingWritten: (CORevisionID *)aRevision
 {
     if (modifiedItems == nil)
     {
@@ -332,10 +334,19 @@
         // Look for references to other persistent roots.
         for (COUUID *referenced in [itemToIndex allReferencedPersistentRootUUIDs])
         {
-            [db_ executeUpdate: @"INSERT INTO refs VALUES(?,?,?)",
+            [db_ executeUpdate: @"INSERT INTO proot_refs(root_id, revid, dest_root_id) VALUES(?,?,?)",
                 backingId,
-                [self rootIdForPersistentRootUUID: referenced],
-                [NSNumber numberWithLongLong: [aRevision revisionIndex]]];
+                [NSNumber numberWithLongLong: [aRevision revisionIndex]],
+                [self rootIdForPersistentRootUUID: referenced]];
+        }
+        
+        // Look for attachments
+        for (NSData *attachment in [itemToIndex attachments])
+        {
+            [db_ executeUpdate: @"INSERT INTO attachment_refs(root_id, revid, attachment_hash) VALUES(?,?,?)",
+             backingId,
+             [NSNumber numberWithLongLong: [aRevision revisionIndex]],
+             attachment];
         }
     }
     NSString *allItemsFtsContent = [ftsContent componentsJoinedByString: @" "];    
@@ -417,7 +428,7 @@
     
     [self updateSearchIndexesForItemUUIDs: modifiedItems
                                inItemTree: anItemTree
-                               revisionID: revidObject];
+                   revisionIDBeingWritten: revidObject];
     
     return revidObject;
 }
@@ -429,18 +440,6 @@
     NSMutableArray *result = [NSMutableArray array];
     // FIXME: Benchmark vs join
     FMResultSet *rs = [db_ executeQuery: @"SELECT uuid FROM persistentroots"];
-    while ([rs next])
-    {
-        [result addObject: [COUUID UUIDWithData: [rs dataForColumnIndex: 0]]];
-    }
-    [rs close];
-    return result;
-}
-
-- (NSArray *) gcRootUUIDs
-{
-    NSMutableArray *result = [NSMutableArray array];
-    FMResultSet *rs = [db_ executeQuery: @"SELECT uuid FROM persistentroots WHERE gcroot = 1"];
     while ([rs next])
     {
         [result addObject: [COUUID UUIDWithData: [rs dataForColumnIndex: 0]]];
@@ -531,7 +530,6 @@
 
 - (COPersistentRootState *) createPersistentRootWithUUID: (COUUID *)uuid
                                          initialRevision: (CORevisionID *)revId
-                                                isGCRoot: (BOOL)isGCRoot
                                                 metadata: (NSDictionary *)metadata
 {
     COUUID *branchUUID = [COUUID UUID];
@@ -539,10 +537,9 @@
     [self beginTransactionIfNeeded];
     
     [db_ executeUpdate: @"INSERT INTO persistentroots (uuid, "
-           "backingstore, gcroot, currentbranch, metadata, deleted) VALUES(?,?,?,?,?, 0)",
+           "backingstore, currentbranch, metadata, deleted) VALUES(?,?,?,?, 0)",
            [uuid dataValue],
            [uuid isEqual: [revId backingStoreUUID]] ? nil : [[revId backingStoreUUID] dataValue],
-           [NSNumber numberWithBool: isGCRoot],
            nil,
            [self writeMetadata: metadata]];
 
@@ -582,7 +579,6 @@
 
 - (COPersistentRootState *) createPersistentRootWithInitialContents: (COItemTree *)contents
                                                            metadata: (NSDictionary *)metadata
-                                                           isGCRoot: (BOOL)isGCRoot
 {
     COUUID *uuid = [COUUID UUID];
     
@@ -594,116 +590,96 @@
 
     return [self createPersistentRootWithUUID: uuid
                               initialRevision: revId
-                                     isGCRoot: isGCRoot
                                      metadata: metadata];
 }
 
 
 - (COPersistentRootState *) createPersistentRootWithInitialRevision: (CORevisionID *)revId
                                                            metadata: (NSDictionary *)metadata
-                                                           isGCRoot: (BOOL)isGCRoot
 {
     COUUID *uuid = [COUUID UUID];
     return [self createPersistentRootWithUUID: uuid
                               initialRevision: revId
-                                     isGCRoot: isGCRoot
                                      metadata: metadata];
-}
-
-- (BOOL) isPersistentRootGCRoot: (COUUID *)aRoot
-{
-    FMResultSet *rs = [db_ executeQuery: @"SELECT gcroot FROM persistentroots WHERE uuid = ?",
-                       [aRoot dataValue]];
-    if (![rs next])
-    {
-        [rs close];
-        [NSException raise: NSInvalidArgumentException format: @"persistent root not found"];
-    }
-    
-    BOOL isGcRoot = [rs boolForColumnIndex: 0];
-    [rs close];
-    
-    return isGcRoot;
 }
 
 - (BOOL) deletePersistentRoot: (COUUID *)aRoot
 {
-    [self beginTransactionIfNeeded];
-    
-//    COUUID *backingUUID = [self backingUUIDForPersistentRootUUID: aRoot];
-    
     NSNumber *root_id = [self rootIdForPersistentRootUUID: aRoot];
-    
-    [db_ executeUpdate: @"UPDATE persistentroots SET deleted = 1 WHERE uuid = ?", root_id];
-    [db_ executeUpdate: @"UPDATE branches SET deleted = 1 WHERE proot = ?", root_id];
-    
-//    FMResultSet *rs = [db_ executeQuery: @"SELECT COUNT(*) FROM persistentroots WHERE backingstore = ?", [NSNumber numberWithLongLong: [self keyForUUID: backingUUID]]];
-//    if (![rs next])
-//    {
-//        [self deleteBackingStoreWithUUID: backingUUID];
-//    }
-//    [rs close];
-    
-    [self commitTransactionIfNeeded];
-    
-    [backingStoreUUIDForPersistentRootUUID_ removeObjectForKey: aRoot];
-    return YES;
+    return [db_ executeUpdate: @"UPDATE persistentroots SET deleted = 1 WHERE uuid = ?", root_id];
 }
 
-- (BOOL) deleteGCRoot: (COUUID *)aRoot
+- (BOOL) deleteRevision: (CORevision *)aRevision
 {
-    if (![self isPersistentRootGCRoot: aRoot])
+    // Delete all attachments that this revid was the last remaining reference to
     {
-        [NSException raise: NSInvalidArgumentException format: @"expected GC root"];
-    }
-
-    return [self deletePersistentRoot: aRoot];
-}
-
-- (NSSet *)allPersistentRootUUIDsReferencedByPersistentRootWithUUID: (COUUID*)aUUID
-{
-    NSMutableSet *result = [NSMutableSet set];
-    
-    // NOTE: This is a bit too coarse; it will return all persistent roots referenced
-    // from within the backing store.
-    COSQLiteStorePersistentRootBackingStore *backingStore = [self backingStoreForPersistentRootUUID: aUUID];    
-    [backingStore iteratePartialItemTrees: ^(NSSet *items)
-     {
-         for (COItem *item in items)
-         {
-             [result unionSet: [item allReferencedPersistentRootUUIDs]];
-         }
-     }];
-    
-    return result;
-}
-
-- (void)recursivelyCollectPersistentRootUUIDsReferencedByPersistentRootWithUUID: (COUUID*)aUUID
-                                                                             in: (NSMutableSet *)result
-{
-    for (COUUID *referenced in [self allPersistentRootUUIDsReferencedByPersistentRootWithUUID: aUUID])
-    {
-        if (![result containsObject: referenced])
+        FMResultSet *rs = [db_ executeQuery: @"SELECT attachment_hash FROM attachment_refs GROUP BY attachment_hash HAVING COUNT(*) = 1 AND revid = ?",
+                                [NSNumber numberWithLongLong: [aRevision revisionIndex]]];
+        while ([rs next])
         {
-            [result addObject: referenced];
-            [self recursivelyCollectPersistentRootUUIDsReferencedByPersistentRootWithUUID: referenced
-                                                                                       in: result];
+            [self deleteAttachment: [rs dataForColumnIndex: 0]];
         }
+        [rs close];
     }
+    
+    [db_ executeUpdate: @"DELETE FROM attachment_refs WHERE revid = ?"];
+
+    // FIXME: Rest of the code
 }
 
-
-- (NSSet *)livePersistentRootUUIDs
+- (BOOL) deleteFromRevision: (CORevisionID *)aRevision
+                 toRevision: (CORevisionID *)anotherRevision
 {
-    NSSet *gcRoots = [self gcRootUUIDs];
-    NSMutableSet *result = [NSMutableSet setWithSet: gcRoots];
-    for (COUUID *gcRoot in gcRoots)
-    {
-        [self recursivelyCollectPersistentRootUUIDsReferencedByPersistentRootWithUUID: gcRoot
-                                                                                   in: result];
-    }
-    return result;
+    // FIXME: foreach...
+    [self deleteRevision: aRevision];
 }
+
+// No longer doing persistent root GC, and don't want full-store scan anyways
+
+//- (NSSet *)allPersistentRootUUIDsReferencedByPersistentRootWithUUID: (COUUID*)aUUID
+//{
+//    NSMutableSet *result = [NSMutableSet set];
+//    
+//    // NOTE: This is a bit too coarse; it will return all persistent roots referenced
+//    // from within the backing store.
+//    COSQLiteStorePersistentRootBackingStore *backingStore = [self backingStoreForPersistentRootUUID: aUUID];    
+//    [backingStore iteratePartialItemTrees: ^(NSSet *items)
+//     {
+//         for (COItem *item in items)
+//         {
+//             [result unionSet: [item allReferencedPersistentRootUUIDs]];
+//         }
+//     }];
+//    
+//    return result;
+//}
+//
+//- (void)recursivelyCollectPersistentRootUUIDsReferencedByPersistentRootWithUUID: (COUUID*)aUUID
+//                                                                             in: (NSMutableSet *)result
+//{
+//    for (COUUID *referenced in [self allPersistentRootUUIDsReferencedByPersistentRootWithUUID: aUUID])
+//    {
+//        if (![result containsObject: referenced])
+//        {
+//            [result addObject: referenced];
+//            [self recursivelyCollectPersistentRootUUIDsReferencedByPersistentRootWithUUID: referenced
+//                                                                                       in: result];
+//        }
+//    }
+//}
+//
+//
+//- (NSSet *)livePersistentRootUUIDs
+//{
+//    NSSet *gcRoots = [self gcRootUUIDs];
+//    NSMutableSet *result = [NSMutableSet setWithSet: gcRoots];
+//    for (COUUID *gcRoot in gcRoots)
+//    {
+//        [self recursivelyCollectPersistentRootUUIDsReferencedByPersistentRootWithUUID: gcRoot
+//                                                                                   in: result];
+//    }
+//    return result;
+//}
 
 - (void) gcPersistentRoots
 {
@@ -723,16 +699,12 @@
 - (BOOL) setCurrentBranch: (COUUID *)aBranch
 		forPersistentRoot: (COUUID *)aRoot
 {
-    [self beginTransactionIfNeeded];
-    
     NSNumber *root_id = [self rootIdForPersistentRootUUID: aRoot];
     BOOL ok = [db_ executeUpdate: @"UPDATE persistentroots SET currentbranch = (SELECT branch_id FROM branches WHERE proot = ? AND uuid = ?) WHERE root_id = ?",
                root_id,
                root_id,
                [aBranch dataValue]];
-
-    [self commitTransactionIfNeeded];
-    
+   
     return ok;
 }
 
@@ -794,22 +766,24 @@
 - (BOOL) deleteBranch: (COUUID *)aBranch
      ofPersistentRoot: (COUUID *)aRoot
 {
-    BOOL ok = [db_ executeUpdate: @"REMOVE FROM branches WHERE uuid = ?",
+    BOOL ok = [db_ executeUpdate: @"DELETE FROM branches WHERE uuid = ?",
                [aBranch dataValue]];
     
     return ok;
+}
+
+- (BOOL) undeleteBranch: (COUUID *)aBranch
+       ofPersistentRoot: (COUUID *)aRoot
+{
+    return NO;
 }
 
 - (BOOL) setMetadata: (NSDictionary *)meta
            forBranch: (COUUID *)aBranch
     ofPersistentRoot: (COUUID *)aRoot
 {
-    NSData *data = nil;
-    if (meta != nil)
-    {
-        data = [NSJSONSerialization dataWithJSONObject: meta options: 0 error: NULL];
-    }
-    
+    NSNumber *root_id = [self rootIdForPersistentRootUUID: aRoot];
+    NSData *data = [self writeMetadata: meta];    
     BOOL ok = [db_ executeUpdate: @"UPDATE branches SET metadata = ? WHERE uuid = ?",
                data,
                [aBranch dataValue]];
@@ -820,17 +794,23 @@
 - (BOOL) setMetadata: (NSDictionary *)meta
    forPersistentRoot: (COUUID *)aRoot
 {
-    NSData *data = nil;
-    if (meta != nil)
-    {
-        data = [NSJSONSerialization dataWithJSONObject: meta options: 0 error: NULL];
-    }
-
+    NSNumber *root_id = [self rootIdForPersistentRootUUID: aRoot];
+    NSData *data = [self writeMetadata: meta];
     BOOL ok = [db_ executeUpdate: @"UPDATE persistentroots SET metadata = ? WHERE uuid = ?",
                data,
-               [aRoot dataValue]];
+               root_id];
     
     return ok;
+}
+
+- (BOOL) finalizeDeletions
+{
+    [db_ beginTransaction];
+    [db_ executeUpdate: @"DELETE FROM branches WHERE proot IN (SELECT root_id FROM persistentroots WHERE deleted = 1)"];
+    [db_ executeUpdate: @"DELETE FROM branches WHERE deleted = 1"];
+    [db_ executeUpdate: @"DELETE FROM persistentroots WHERE deleted = 1"];
+    [db_ commit];
+    return [db_ hadError];
 }
 
 /* Attachments */
@@ -948,59 +928,25 @@ static NSData *dataFromHexString(NSString *hexString)
     return hash;
 }
 
-- (NSSet *) attachments
-{
-    NSMutableSet *result = [NSMutableSet set];
-    NSArray *files = [[NSFileManager defaultManager] directoryContentsAtPath: [[self attachmentsURL] path]];
-    for (NSString *file in files)
-    {
-        NSString *attachmentHexString = [file stringByDeletingLastPathComponent];
-        NSData *hash = dataFromHexString(attachmentHexString);
-        [result addObject: hash];
-    }
-    return result;
-}
+// Shouldn't be needed.
 
-- (NSSet *)allReferencedAttachments
-{
-    NSMutableSet *result = [NSMutableSet set];
-    
-    NSArray *backingStores = [self allBackingUUIDs];
-    for (COUUID *backingUUID in backingStores)
-    {
-        COSQLiteStorePersistentRootBackingStore *backingStore = [self backingStoreForUUID: backingUUID];
-        
-        [backingStore iteratePartialItemTrees: ^(NSSet *items)
-        {
-            for (COItem *item in items)
-            {
-                [result unionSet: [item attachments]];
-            }
-        }];
-    }
-    
-    return result;
-}
+//- (NSSet *) attachments
+//{
+//    NSMutableSet *result = [NSMutableSet set];
+//    NSArray *files = [[NSFileManager defaultManager] directoryContentsAtPath: [[self attachmentsURL] path]];
+//    for (NSString *file in files)
+//    {
+//        NSString *attachmentHexString = [file stringByDeletingLastPathComponent];
+//        NSData *hash = dataFromHexString(attachmentHexString);
+//        [result addObject: hash];
+//    }
+//    return result;
+//}
 
 - (BOOL) deleteAttachment: (NSData *)hash
 {
     return [[NSFileManager defaultManager] removeItemAtPath: [[self URLForAttachment: hash] path]
                                                       error: NULL];
-}
-
-- (void) gcAttachments
-{
-    // FIXME: Lock store
-    
-    NSMutableSet *garbage = [NSMutableSet setWithSet: [self attachments]];
-    [garbage minusSet: [self allReferencedAttachments]];
-    
-    for (NSData *hash in garbage)
-    {
-        [self deleteAttachment: hash];
-    }
-    
-    // FIXME: Unlock store
 }
 
 @end

@@ -7,6 +7,11 @@ General
 
 Store
 -----
+
+- FInish docs
+- FInish rewrite of attachment GC with no full-store scan.
+
+
 - Basically there are 3 designs we could do:
     1. simple 1 row per commit design. The row has a BLOB containing a binary-encoded
        [ uuid-number | item-data | uuid-number | item-data ... ] list.

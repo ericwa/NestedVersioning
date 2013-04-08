@@ -1,333 +1,371 @@
 #import "TestCommon.h"
 
-
+/**
+ * For each execution of a test method, the store is recreated and a persistent root
+ * is created in -init with a single commit, with the contents returned by -makeInitialItemTree.
+ */
 @interface TestSQLiteStore : COSQLiteStoreTestCase <UKTest>
+{
+    COPersistentRootState *proot;
+    COUUID *prootUUID;
+    COUUID *initialBranchUUID;
+    CORevisionID *initialRevisionId;
+}
 @end
-
 
 @implementation TestSQLiteStore
 
-// --------------------------------------------
-// Test case setup
-// --------------------------------------------
-
-static const int NUM_CHILDREN = 1000;
-static const int NUM_COMMITS = 1000;
-static const int NUM_PERSISTENT_ROOTS = 100;
-static const int NUM_PERSISTENT_ROOT_COPIES = 10000;
-
-static const int LOTS_OF_EMBEDDED_ITEMS = 1000000;
-
 static COUUID *rootUUID;
-static COUUID *childUUIDs[NUM_CHILDREN];
+static COUUID *childUUID;
 
 + (void) initialize
 {
     if (self == [TestSQLiteStore class])
     {
         rootUUID = [[COUUID alloc] init];
-        for (int i=0; i<NUM_CHILDREN; i++)
-        {
-            childUUIDs[i] = [[COUUID alloc] init];
-        }
+        childUUID = [[COUUID alloc] init];
     }
 }
+
+// --- Example data setup
 
 - (COItem *) initialRootItem
 {
     COMutableItem *rootItem = [[[COMutableItem alloc] initWithUUID: rootUUID] autorelease];
     [rootItem setValue: @"root" forAttribute: @"name" type: kCOStringType];
-    [rootItem setValue: A()
+    [rootItem setValue: A(childUUID)
           forAttribute: @"children"
                   type: kCOEmbeddedItemType | kCOArrayType];
-    
-    for (int i=0; i<NUM_CHILDREN; i++)
-    {
-        [rootItem addObject: childUUIDs[i] forAttribute: @"children"];
-    }
     return rootItem;
 }
 
-- (COItem *) initialChildItem: (int)i
+- (COItem *) initialChildItem
 {
-    COMutableItem *child = [[[COMutableItem alloc] initWithUUID: childUUIDs[i]] autorelease];
-    [child setValue: [self labelForCommit: 0 child: i]
+    COMutableItem *child = [[[COMutableItem alloc] initWithUUID: childUUID] autorelease];
+    [child setValue: @"child"
        forAttribute: @"name"
                type: kCOStringType];
     return child;
 }
 
-// returns index of the item that was changed at the given commit index
-static int itemChangedAtCommit(int i)
-{
-    return ((1 + i) * 9871) % NUM_CHILDREN;
-}
-
-- (NSString *) labelForCommit: (int)commit // 0..(NUM_COMMITS - 1)
-                        child: (int)child
-{
-    for (int i=commit; i>=0; i--)
-    {
-        if (itemChangedAtCommit(i) == child)
-        {
-            return [NSString stringWithFormat: @"modified %d in commit %d", child, i];
-        }
-    }
-    return [NSString stringWithFormat: @"child %d never modified!", child];
-}
-
 - (COItemTree*) makeInitialItemTree
 {
-    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity: NUM_CHILDREN+1];
-    [dict setObject: [self initialRootItem] forKey: rootUUID];
-    for (int i=0; i<NUM_CHILDREN; i++)
-    {
-        [dict setObject: [self initialChildItem: i]
-                 forKey: childUUIDs[i]];
-    }
-    COItemTree *it = [[[COItemTree alloc] initWithItemForUUID: dict rootItemUUID: rootUUID] autorelease];
+    return [[[COItemTree alloc] initWithItemForUUID: D([self initialRootItem], rootUUID,
+                                                       [self initialChildItem], childUUID)
+                                       rootItemUUID: rootUUID] autorelease];
+}
+
+- (COItemTree *)itemTreeWithChildNameChange: (NSString*)aName
+{
+    COItemTree *it = [self makeInitialItemTree];    
+    COMutableItem *item = (COMutableItem *)[it itemForUUID: childUUID];
+    [item setValue: aName
+      forAttribute: @"name"];
     return it;
 }
 
-
-- (COUUID *) makeDemoPersistentRoot
+- (CORevisionID *)commitChildNameChange: (NSString*)aName
+                              parentRev: (CORevisionID *)aParent
 {
-    NSDate *startDate = [NSDate date];
-    
-    COItemTree *initialTree = [self makeInitialItemTree];
-    
-    // Commit them to a persistet root
-    
-    COPersistentRootState *proot = [store createPersistentRootWithInitialContents: initialTree
-                                                                         metadata: nil
-                                                                         isGCRoot: YES];
-    
-    // Commit a change to each object
-    
-    CORevisionID *lastCommitId = [[proot currentBranchState] currentState];
-    for (int commit=1; commit<NUM_COMMITS; commit++)
-    {
-        int i = itemChangedAtCommit(commit);
-        
-        NSString *label = [self labelForCommit: commit child: i];
-        
-        //        NSLog(@"item %d changed in commit %d - seting label to %@", i, commit, label);
-        
-        COMutableItem *item = (COMutableItem *)[initialTree itemForUUID: childUUIDs[i]];
-        [item setValue:label
-          forAttribute: @"name"];
-        
-        lastCommitId = [store writeItemTree: initialTree
-                               withMetadata: nil
-                       withParentRevisionID: lastCommitId
-                              modifiedItems: A(childUUIDs[i])];
-    }
-    
-    // Set the persistent root's state to the last commit
-    
-    [store setCurrentVersion: lastCommitId
-                   forBranch: [proot currentBranchUUID]
-            ofPersistentRoot: [proot UUID]
-                  updateHead: YES];
-    
-    NSLog(@"committing a %d-item persistent root and then making %d commits which touched 1 item each took %lf ms",
-          NUM_CHILDREN, NUM_COMMITS, 1000.0 * [[NSDate date] timeIntervalSinceDate: startDate]);
-    
-//    for (int i=0; i<NUM_CHILDREN; i++)
-//    {
-//        NSLog(@"label: %@", [self labelForCommit: NUM_COMMITS - 1
-//                                           child: i]);
-//    }
-    
-    return [proot UUID];
+    return [store writeItemTree: [self itemTreeWithChildNameChange: aName]
+                   withMetadata: nil
+           withParentRevisionID: aParent
+                  modifiedItems: A(childUUID)];
 }
 
-
-- (COItemTree*) makeBigItemTree
+- (id) init
 {
-    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity: LOTS_OF_EMBEDDED_ITEMS+1];
-    
-    for (int i=0; i<LOTS_OF_EMBEDDED_ITEMS; i++)
-    {
-        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-        COMutableItem *item = [COMutableItem item];
-        [item setValue: [NSNumber numberWithInt: i] forAttribute: @"name" type: kCOInt64Type];
-        [dict setObject: item forKey: [item UUID]];
-        [pool release];
-    }
-    
-    COMutableItem *rootItem = [COMutableItem item];
-    [rootItem setValue: [dict allKeys]
-          forAttribute: @"children" type: kCOArrayType | kCOEmbeddedItemType];
-    [dict setObject: rootItem forKey: [rootItem UUID]];
-    
-    COItemTree *it = [[[COItemTree alloc] initWithItemForUUID: dict
-                                                 rootItemUUID: [rootItem UUID]] autorelease];
-    return it;
-}
-
-// --------------------------------------------
-// End test case setup
-// --------------------------------------------
-
-- (void)testReadDelta
-{
-    COUUID *prootUUID = [self makeDemoPersistentRoot];
-
-    NSDate *startDate = [NSDate date];
-    
-    COPersistentRootState *proot = [store persistentRootWithUUID: prootUUID];
-    
-    CORevisionID *lastCommitId = [[proot currentBranchState] currentState];
-    
-    // Now traverse them in reverse order and test that the items are as expected.
-    // There are NUM_CHILDREN + 1 commits (the initial one made by creating the persistent roots)
-
-    for (int rev=NUM_COMMITS-1; rev>=1; rev--)
-    {
-        CORevisionID *parentCommitId = [[store revisionForID: lastCommitId] parentRevisionID];
-        
-        COItemTree *tree = [store partialItemTreeFromRevisionID: parentCommitId
-                                                   toRevisionID: lastCommitId];
-        
-        int i = itemChangedAtCommit(rev);
-        COItem *item = [tree itemForUUID: childUUIDs[i]];
-        
-        NSString *expectedLabel = [self labelForCommit: rev child: i];
-        
-        UKObjectsEqual(expectedLabel,
-                       [item valueForAttribute: @"name"]);
-              
-        // Step back one revision
-        
-        lastCommitId = parentCommitId;
-    }
-    
-    NSLog(@"reading back %d deltas which touched 1 item each of a %d-item persistent root took %lf ms",
-          NUM_COMMITS, NUM_CHILDREN, 1000.0 * [[NSDate date] timeIntervalSinceDate: startDate]);
-}
-
-- (void) testReloadFullStates
-{
-    COItemTree *initialTree = [self makeInitialItemTree];
-    COUUID *prootUUID = [self makeDemoPersistentRoot];
-    
-    NSDate *startDate = [NSDate date];
-
-    COPersistentRootState *proot = [store persistentRootWithUUID: prootUUID];
-    
-    CORevisionID *lastCommitId = [[proot currentBranchState] currentState];
-    
-    int iters = 0;
-    for (int rev=NUM_COMMITS-1; rev>=0; rev--)
-    {
-        COItemTree *tree = [store itemTreeForRevisionID: lastCommitId];
-        
-        // Check the state
-        UKObjectsEqual(rootUUID, [tree rootItemUUID]);
-        UKObjectsEqual([initialTree itemForUUID: rootUUID],
-                       [tree itemForUUID: rootUUID]);
-        
-        for (int i=0; i<NUM_CHILDREN; i++)
-        {
-            // on rev=NUM_CHILDREN, child[NUM_CHILDREN - 1]'s name was changed
-            
-            NSString *expectedLabel = [self labelForCommit: rev child: i];
-            
-            UKObjectsEqual(expectedLabel,
-                           [[tree itemForUUID: childUUIDs[i]] valueForAttribute: @"name"]);
-        }
-        
-        // Step back one revision
-        
-        lastCommitId = [[store revisionForID: lastCommitId] parentRevisionID];
-        
-        iters++;
-        if (iters > 25) break; // This is the slowest test, so only read 25 revisions
-    }
-    
-    NSLog(@"reading back %d full snapshots of a %d-item persistent root took %lf ms",
-          MIN(25, NUM_COMMITS), NUM_CHILDREN, 1000.0 * [[NSDate date] timeIntervalSinceDate: startDate]);
-
-}
-
-- (void) testFTS
-{
-    COUUID *prootUUID = [self makeDemoPersistentRoot];
-    COPersistentRootState *proot = [store persistentRootWithUUID: prootUUID];
-    
-    int itemIndex = itemChangedAtCommit(32);
-    
-    NSDate *startDate = [NSDate date];
-    
-    NSArray *results = [store revisionIDsMatchingQuery: [NSString stringWithFormat: @"\"modified %d in commit 32\"",
-                                                         itemIndex]];
-    
-    NSLog(@"FTS took %lf ms", 1000.0 * [[NSDate date] timeIntervalSinceDate: startDate]);
-    
-    UKTrue([results count] == 1);
-    if ([results count] == 1)
-    {
-        CORevisionID *revid = [results objectAtIndex: 0];
-        UKObjectsEqual([proot UUID], [revid backingStoreUUID]);
-        UKIntsEqual(32, [revid revisionIndex]);
-    }
-}
-
-
-- (void)testLotsOfPersistentRoots
-{
+    SUPERINIT;
     COItemTree *it = [self makeInitialItemTree];
-    
-    NSDate *startDate = [NSDate date];
-    
-    [store beginTransaction];
-    for (int i =0; i<NUM_PERSISTENT_ROOTS; i++)
-    {
-        COPersistentRootState *proot = [store createPersistentRootWithInitialContents: it
-                                                                             metadata: nil
-                                                                             isGCRoot: YES];
-    }
-    [store commitTransaction];
-    
-    UKPass();
-    NSLog(@"creating %d persistent roots each containing a %d-item tree took %lf ms", NUM_PERSISTENT_ROOTS,
-          NUM_CHILDREN, 1000.0 * [[NSDate date] timeIntervalSinceDate: startDate]);
+    ASSIGN(proot, [store createPersistentRootWithInitialContents: it
+                                                        metadata: D(@"test1", @"name")]);
+    ASSIGN(prootUUID, [proot UUID]);
+    ASSIGN(initialBranchUUID, [proot currentBranchUUID]);
+    ASSIGN(initialRevisionId, [[proot currentBranchState] currentState]);
+    return self;
 }
 
-- (void)testLotsOfPersistentRootCopies
+- (void) dealloc
 {
-    NSDate *startDate = [NSDate date];
-    
-    COItemTree *it = [self makeInitialItemTree];
-
-    [store beginTransaction];
-    COPersistentRootState *proot = [store createPersistentRootWithInitialContents: it
-                                                                         metadata: nil
-                                                                         isGCRoot: YES];
-    
-    for (int i =0; i<NUM_PERSISTENT_ROOT_COPIES; i++)
-    {
-        [store createPersistentRootWithInitialRevision: [[proot currentBranchState] currentState]
-                                              metadata: nil
-                                              isGCRoot: YES];
-    }
-    [store commitTransaction];
-    
-    UKPass();
-    NSLog(@"creating %d persistent root copies took %lf ms", NUM_PERSISTENT_ROOT_COPIES,
-          1000.0 * [[NSDate date] timeIntervalSinceDate: startDate]);
+    [proot release];
+    [prootUUID release];
+    [initialBranchUUID release];
+    [initialRevisionId release];
+    [super dealloc];
 }
 
 
-- (void) testMakeBigItemTree
+// --- The tests themselves
+
+- (void) testDeleteBranch
 {
-    NSDate *startDate = [NSDate date];
+    // Create it
+    COUUID *branch = [store createBranchWithInitialRevision: [[proot currentBranchState] currentState]
+                                                 setCurrent: YES
+                                          forPersistentRoot: [proot UUID]];
     
-    COItemTree *it = [self makeBigItemTree];
+    UKObjectKindOf(branch, COUUID);
+    UKObjectsNotEqual(initialBranchUUID, branch);
+    UKObjectsEqual(S(branch, initialBranchUUID), [[store persistentRootWithUUID: [proot UUID]] branchUUIDs]);
     
-    NSLog(@"creating %d item itemtree took %lf ms", LOTS_OF_EMBEDDED_ITEMS,
-          1000.0 * [[NSDate date] timeIntervalSinceDate: startDate]);
+    // Delete it
+    UKTrue([store deleteBranch: branch ofPersistentRoot: prootUUID]);
+    
+    {
+        COBranchState *branchObj = [[store persistentRootWithUUID: [proot UUID]] branchPlistForUUID: branch];
+        UKNotNil(branchObj);
+        UKTrue([branchObj isDeleted]);
+    }
+
+    // Undelete it
+    UKTrue([store undeleteBranch: branch ofPersistentRoot: prootUUID]);
+    {
+        COBranchState *branchObj = [[store persistentRootWithUUID: [proot UUID]] branchPlistForUUID: branch];
+        UKNotNil(branchObj);
+        UKFalse([branchObj isDeleted]);
+    }
 }
+
+
+- (void) testBranchMetadata
+{
+    UKNil([[[store persistentRootWithUUID: prootUUID] currentBranchState] metadata]);
+    
+    UKTrue([store setMetadata: D(@"hello world", @"msg")
+                    forBranch: initialBranchUUID
+             ofPersistentRoot: prootUUID]);
+    
+    UKObjectsEqual(D(@"hello world", @"msg"), [[[store persistentRootWithUUID: prootUUID] currentBranchState] metadata]);
+    
+    UKTrue([store setMetadata: nil
+                    forBranch: initialBranchUUID
+             ofPersistentRoot: prootUUID]);
+    
+    UKNil([[[store persistentRootWithUUID: prootUUID] currentBranchState] metadata]);
+}
+
+- (void) testPersistentRootMetadata
+{
+    UKObjectsEqual(D(@"test1", @"name"), [[store persistentRootWithUUID: prootUUID] metadata]);
+    
+    UKTrue([store setMetadata: D(@"hello world", @"name")
+            forPersistentRoot: prootUUID]);
+    
+    UKObjectsEqual(D(@"hello world", @"name"), [[store persistentRootWithUUID: prootUUID] metadata]);
+    
+    UKTrue([store setMetadata: nil
+             forPersistentRoot: prootUUID]);
+    
+    UKNil([[store persistentRootWithUUID: prootUUID] metadata]);
+}
+
+- (void) testCrossPersistentRootReference
+{
+    
+}
+
+- (void) testAttachmentsGCDoesNotCollectReferenced
+{
+    NSString *fakeAttachment = @"this is a large attachment";
+    NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent: @"cotest.txt"];
+    
+    UKTrue([fakeAttachment writeToFile: path
+                            atomically: YES
+                              encoding: NSUTF8StringEncoding
+                                 error: NULL]);
+    
+    NSData *hash = [store addAttachmentAtURL: [NSURL fileURLWithPath: path]];
+    UKNotNil(hash);
+    
+    NSString *internalPath = [[store URLForAttachment: hash] path];
+    
+    UKTrue([path hasPrefix: NSTemporaryDirectory()]);
+    UKFalse([internalPath hasPrefix: NSTemporaryDirectory()]);
+    
+    NSLog(@"external path: %@", path);
+    NSLog(@"internal path: %@", internalPath);
+    
+    UKObjectsEqual(fakeAttachment, [NSString stringWithContentsOfURL: [store URLForAttachment: hash]
+                                                            encoding: NSUTF8StringEncoding
+                                                               error: NULL]);
+    
+    // Test attachment GC
+    
+    COItemTree *tree = [self makeInitialItemTree];
+    [[tree itemForUUID: childUUID] setValue: hash forAttribute: @"attachment" type: kCOAttachmentType];
+    CORevisionID *withAttachment = [store writeItemTree: tree withMetadata: nil withParentRevisionID: initialRevisionId modifiedItems: nil];
+    UKNotNil(withAttachment);
+    UKTrue([store setCurrentVersion: withAttachment
+                          forBranch: initialBranchUUID
+                   ofPersistentRoot: prootUUID
+                         updateHead: YES]);
+    
+    UKTrue([store finalizeDeletions]);
+    
+    UKObjectsEqual(fakeAttachment, [NSString stringWithContentsOfURL: [store URLForAttachment: hash]
+                                                            encoding: NSUTF8StringEncoding
+                                                               error: NULL]);
+}
+
+- (void) testAttachmentsGCCollectsUnReferenced
+{
+    NSString *fakeAttachment = @"this is a large attachment";
+    NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent: @"cotest.txt"];
+    [fakeAttachment writeToFile: path
+                     atomically: YES
+                       encoding: NSUTF8StringEncoding
+                          error: NULL];    
+    NSData *hash = [store addAttachmentAtURL: [NSURL fileURLWithPath: path]];
+    
+    UKObjectsEqual(fakeAttachment, [NSString stringWithContentsOfURL: [store URLForAttachment: hash]
+                                                            encoding: NSUTF8StringEncoding
+                                                               error: NULL]);
+
+    UKTrue([store finalizeDeletions]);    
+    UKNil([store URLForAttachment: hash]);
+}
+
+/**
+ * See the conceptual model of the store in the COSQLiteStore comment. Revisions are not 
+ * first class citizes; we garbage-collect them when they are not referenced.
+ */
+- (void) testRevisionGCDoesNotCollectReferenced
+{
+    COItemTree *tree = [self makeInitialItemTree];
+    CORevisionID *referencedRevision = [store writeItemTree: tree
+                                               withMetadata: nil
+                                       withParentRevisionID: initialRevisionId
+                                              modifiedItems: nil];
+    
+    UKTrue([store setCurrentVersion: referencedRevision
+                          forBranch: initialBranchUUID
+                   ofPersistentRoot: prootUUID
+                         updateHead: YES]);
+    
+    UKTrue([store finalizeDeletions]);
+    
+    UKObjectsEqual(tree, [store itemTreeForRevisionID: referencedRevision]);
+}
+
+- (void) testRevisionGCCollectsUnReferenced
+{
+    COItemTree *tree = [self makeInitialItemTree];
+    CORevisionID *unreferencedRevision = [store writeItemTree: tree
+                                                 withMetadata: nil
+                                         withParentRevisionID: initialRevisionId
+                                                modifiedItems: nil];
+    
+    UKObjectsEqual(tree, [store itemTreeForRevisionID: unreferencedRevision]);
+    
+    UKTrue([store finalizeDeletions]);
+    
+    UKNil([store itemTreeForRevisionID: unreferencedRevision]);
+}
+
+- (void) testDeletePersistentRoot
+{    
+    UKTrue([store deletePersistentRoot: [proot UUID]]);
+    UKObjectsEqual([NSArray array], [store persistentRootUUIDs]);
+    
+    // Persistent root returned since we have not called finalizeDeletions.
+    UKNotNil([store persistentRootWithUUID: [proot UUID]]);
+    
+    [store finalizeDeletions];
+    
+    UKObjectsEqual([NSArray array], [store persistentRootUUIDs]);
+    UKNil([store persistentRootWithUUID: [proot UUID]]);    
+}
+
+- (void) testPersistentRootBasic
+{
+    UKObjectsEqual(S(prootUUID), [NSSet setWithArray:[store persistentRootUUIDs]]);
+    UKObjectsEqual(initialBranchUUID, [[store persistentRootWithUUID: prootUUID] currentBranchUUID]);
+    UKObjectsEqual(proot, [store persistentRootWithUUID: prootUUID]);
+    UKObjectsEqual([self makeInitialItemTree], [store itemTreeForRevisionID: initialRevisionId]);
+}
+
+/**
+ * Tests creating a persistent root, proot, making a copy of it, and then making a commit
+ * to proot and a commit to the copy.
+ */
+- (void)testPersistentRootCopies
+{
+    COPersistentRootState *copy = [store createPersistentRootWithInitialRevision: initialRevisionId
+                                                                        metadata: D(@"test2", @"name")];
+
+    UKObjectsEqual(S(prootUUID, [copy UUID]), [NSSet setWithArray:[store persistentRootUUIDs]]);
+
+    // 1. check setup
+    
+    // Verify that new UUIDs were generated
+    UKObjectsNotEqual(prootUUID, [copy UUID]);
+    UKObjectsNotEqual([proot branchUUIDs], [copy branchUUIDs]);
+    
+    // Make sure metadata was read out properly
+    UKObjectsEqual(D(@"test2", @"name"), [copy metadata]);
+    
+    // Check that the current branch is set correctly
+    UKObjectsEqual([[copy branchUUIDs] anyObject], [copy currentBranchUUID]);
+    
+    // Check that the branch data is the same
+    UKNotNil([[proot currentBranchState] headRevisionID]);
+    UKNotNil([[proot currentBranchState] tailRevisionID]);
+    UKNotNil(initialRevisionId);
+    UKObjectsEqual([[proot currentBranchState] headRevisionID], [[copy currentBranchState] headRevisionID]);
+    UKObjectsEqual([[proot currentBranchState] tailRevisionID], [[copy currentBranchState] tailRevisionID]);
+    UKObjectsEqual(initialRevisionId, [[copy currentBranchState] currentState]);
+    
+    // Make sure the persistent root state returned from createPersistentRoot matches what the store
+    // gives us when we read it back.
+
+    UKObjectsEqual(copy, [store persistentRootWithUUID: [copy UUID]]);
+    
+    // 2. try changing. Verify that proot and copy are totally independent
+    
+    CORevisionID *mod1 = [self commitChildNameChange: @"edit1"
+                                           parentRev: initialRevisionId];
+    
+    CORevisionID *mod2 = [self commitChildNameChange: @"edit2"
+                                           parentRev: initialRevisionId];
+    
+
+    UKObjectsEqual([self itemTreeWithChildNameChange: @"edit1"], [store itemTreeForRevisionID: mod1]);
+    UKObjectsEqual([self itemTreeWithChildNameChange: @"edit2"], [store itemTreeForRevisionID: mod2]);
+
+    UKTrue([store setCurrentVersion: mod1
+                          forBranch: [[proot currentBranchState] UUID]
+                   ofPersistentRoot: prootUUID
+                         updateHead: YES]);
+    
+    // Reload proot's and copy's metadata
+    
+    ASSIGN(proot, [store persistentRootWithUUID: prootUUID]);
+    copy = [store persistentRootWithUUID: [copy UUID]];
+    UKObjectsEqual(mod1, [[proot currentBranchState] currentState]);
+    UKObjectsEqual(mod1, [[proot currentBranchState] headRevisionID]);
+    UKObjectsEqual(initialRevisionId, [[proot currentBranchState] tailRevisionID]);
+    UKObjectsEqual(initialRevisionId, [[copy currentBranchState] currentState]);
+    UKObjectsEqual(initialRevisionId, [[copy currentBranchState] headRevisionID]);
+    UKObjectsEqual(initialRevisionId, [[copy currentBranchState] tailRevisionID]);
+    
+    // Commit to copy as well.
+    
+    UKTrue([store setCurrentVersion: mod2
+                          forBranch: [[copy currentBranchState] UUID]
+                   ofPersistentRoot: [copy UUID]
+                         updateHead: YES]);
+    
+    // Reload proot's and copy's metadata
+    
+    ASSIGN(proot, [store persistentRootWithUUID: prootUUID]);
+    copy = [store persistentRootWithUUID: [copy UUID]];
+    UKObjectsEqual(mod1, [[proot currentBranchState] currentState]);
+    UKObjectsEqual(mod1, [[proot currentBranchState] headRevisionID]);
+    UKObjectsEqual(initialRevisionId, [[proot currentBranchState] tailRevisionID]);
+    UKObjectsEqual(mod2, [[copy currentBranchState] currentState]);
+    UKObjectsEqual(mod2, [[copy currentBranchState] headRevisionID]);
+    UKObjectsEqual(initialRevisionId, [[copy currentBranchState] tailRevisionID]);
+}
+
 
 @end
