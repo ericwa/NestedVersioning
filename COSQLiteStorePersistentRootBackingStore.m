@@ -34,6 +34,9 @@
             NSLog(@"Enabling WAL mode failed.");
         }
         [setToWAL close];
+        
+        // See comments in COSQiteStore
+        [db_ executeUpdate: @"PRAGMA synchronous=NORMAL"];
     }
     
     // Set up schema
