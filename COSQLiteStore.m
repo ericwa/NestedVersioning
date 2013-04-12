@@ -140,7 +140,7 @@
 
 - (void) beginTransaction
 {
-    [db_ beginTransaction];
+    [db_ beginDeferredTransaction];
     inUserTransaction_ = YES;
 }
 - (void) commitTransaction
@@ -472,13 +472,19 @@
             backingUUID = [COUUID UUIDWithData: [rs dataForColumnIndex: 1]];
             meta = [self readMetadata: [rs dataForColumnIndex: 2]];
         }
+        else
+        {
+            [rs close];
+            [db_ commit];
+            return nil;
+        }
         [rs close];
     }
     
     NSMutableDictionary *branchDict = [NSMutableDictionary dictionary];
     
     {
-        FMResultSet *rs = [db_ executeQuery: @"SELECT uuid, head_revid, tail_revid, current_revid, metadata FROM branches WHERE proot = ?",  root_id];
+        FMResultSet *rs = [db_ executeQuery: @"SELECT uuid, head_revid, tail_revid, current_revid, metadata, deleted FROM branches WHERE proot = ?",  root_id];
         while ([rs next])
         {
             COUUID *branch = [COUUID UUIDWithData: [rs dataForColumnIndex: 0]];
@@ -488,13 +494,15 @@
                                                                   revisionIndex: [rs int64ForColumnIndex: 2]];
             CORevisionID *currentRevid = [CORevisionID revisionWithBackinStoreUUID: backingUUID
                                                                      revisionIndex: [rs int64ForColumnIndex: 3]];
-            id branchMeta = [self readMetadata: [rs dataForColumnIndex: 4]];
+            id branchMeta = [self readMetadata: [rs dataForColumnIndex: 4]];            
             
             COBranchState *state = [[[COBranchState alloc] initWithUUID: branch
                                                         headRevisionId: headRevid
                                                         tailRevisionId: tailRevid
                                                           currentState: currentRevid
                                                                metadata: branchMeta] autorelease];
+            state.deleted = [rs boolForColumnIndex: 5];
+            
             [branchDict setObject: state forKey: branch];
         }
         [rs close];
@@ -612,7 +620,7 @@
 - (BOOL) deletePersistentRoot: (COUUID *)aRoot
 {
     NSNumber *root_id = [self rootIdForPersistentRootUUID: aRoot];
-    return [db_ executeUpdate: @"UPDATE persistentroots SET deleted = 1 WHERE uuid = ?", root_id];
+    return [db_ executeUpdate: @"UPDATE persistentroots SET deleted = 1 WHERE root_id = ?", root_id];
 }
 
 - (BOOL) deleteRevision: (CORevision *)aRevision
@@ -723,9 +731,9 @@
     COUUID *branchUUID = [COUUID UUID];
     
     NSNumber *root_id = [self rootIdForPersistentRootUUID: aRoot];
-    [db_ executeUpdate: @"INSERT INTO branches (uuid, proot, head_revid, tail_revid, current_revid, metadata) VALUES(?,?,?,?,?,?)",
+    [db_ executeUpdate: @"INSERT INTO branches (uuid, proot, head_revid, tail_revid, current_revid, metadata, deleted) VALUES(?,?,?,?,?,?,0)",
      [branchUUID dataValue],
-     [NSNumber numberWithLongLong: root_id],
+     root_id,
      [NSNumber numberWithLongLong: [revId revisionIndex]],
      [NSNumber numberWithLongLong: [revId revisionIndex]],
      [NSNumber numberWithLongLong: [revId revisionIndex]],
@@ -772,7 +780,7 @@
 - (BOOL) deleteBranch: (COUUID *)aBranch
      ofPersistentRoot: (COUUID *)aRoot
 {
-    BOOL ok = [db_ executeUpdate: @"DELETE FROM branches WHERE uuid = ?",
+    BOOL ok = [db_ executeUpdate: @"UPDATE branches SET deleted = 1 WHERE uuid = ?",
                [aBranch dataValue]];
     
     return ok;
@@ -781,7 +789,10 @@
 - (BOOL) undeleteBranch: (COUUID *)aBranch
        ofPersistentRoot: (COUUID *)aRoot
 {
-    return NO;
+    BOOL ok = [db_ executeUpdate: @"UPDATE branches SET deleted = 0 WHERE uuid = ?",
+               [aBranch dataValue]];
+    
+    return ok;
 }
 
 - (BOOL) setMetadata: (NSDictionary *)meta
@@ -812,11 +823,22 @@
 - (BOOL) finalizeDeletions
 {
     [db_ beginTransaction];
+    
+    // Delete all branches of deleted proots
     [db_ executeUpdate: @"DELETE FROM branches WHERE proot IN (SELECT root_id FROM persistentroots WHERE deleted = 1)"];
+    
+    // Delete all deleted branches
     [db_ executeUpdate: @"DELETE FROM branches WHERE deleted = 1"];
+
+    // Delete all deleted proots
     [db_ executeUpdate: @"DELETE FROM persistentroots WHERE deleted = 1"];
+    
+    // Delete revisions not referenced by branches
+    // Delete attachments not referenced by revisions
+    
+    
     [db_ commit];
-    return [db_ hadError];
+    return ![db_ hadError];
 }
 
 /* Attachments */

@@ -22,7 +22,7 @@ NSString *kCOBranchMetadata= @"COBranchMetadata";
 
 - (void) setMetadata:(NSDictionary *)metadata
 {
-    ASSIGN(metadata_, [NSDictionary dictionaryWithDictionary: metadata]);
+    ASSIGN(metadata_, metadata);
 }
 
 - (id) initWithUUID: (COUUID *)aUUID
@@ -85,8 +85,11 @@ NSString *kCOBranchMetadata= @"COBranchMetadata";
     [results setObject: [uuid_ stringValue] forKey: kCOBranchUUID];
     [results setObject: [headRevisionId_ plist] forKey: kCOBranchHeadRevisionId];
     [results setObject: [tailRevisionId_ plist] forKey: kCOBranchTailRevisionId];
-    [results setObject: [currentState_ plist] forKey: kCOBranchCurrentState];    
-    [results setObject: metadata_ forKey: kCOBranchMetadata];
+    [results setObject: [currentState_ plist] forKey: kCOBranchCurrentState];
+    if (metadata_ != nil)
+    {
+        [results setObject: metadata_  forKey: kCOBranchMetadata];
+    }
     return results;
 }
 

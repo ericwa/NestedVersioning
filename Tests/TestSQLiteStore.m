@@ -221,8 +221,9 @@ static COUUID *childUUID;
                                                             encoding: NSUTF8StringEncoding
                                                                error: NULL]);
 
-    UKTrue([store finalizeDeletions]);    
-    UKNil([store URLForAttachment: hash]);
+    UKTrue([[NSFileManager defaultManager] fileExistsAtPath: [[store URLForAttachment: hash] path]]);
+    UKTrue([store finalizeDeletions]);
+    UKFalse([[NSFileManager defaultManager] fileExistsAtPath: [[store URLForAttachment: hash] path]]);
 }
 
 /**
@@ -265,7 +266,8 @@ static COUUID *childUUID;
 - (void) testDeletePersistentRoot
 {    
     UKTrue([store deletePersistentRoot: [proot UUID]]);
-    UKObjectsEqual([NSArray array], [store persistentRootUUIDs]);
+    // Persistent root returned since we have not called finalizeDeletions.
+    UKObjectsEqual(A([proot UUID]), [store persistentRootUUIDs]);
     
     // Persistent root returned since we have not called finalizeDeletions.
     UKNotNil([store persistentRootWithUUID: [proot UUID]]);

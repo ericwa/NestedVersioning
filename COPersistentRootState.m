@@ -27,7 +27,7 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
     SUPERINIT;
     
     uuid_ = [aUUID retain];
-    branchForUUID_ = [[NSMutableDictionary alloc] initWithDictionary: branchForUUID copyItems: YES];
+    branchForUUID_ = [[NSMutableDictionary alloc] initWithDictionary: branchForUUID];
 
     [self setCurrentBranchUUID: currentBranch];
     [self setMetadata: theMetadata];
