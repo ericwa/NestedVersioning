@@ -32,4 +32,12 @@
                withParent: (int64_t)aParent
             modifiedItems: (NSArray*)modifiedItems; // array of COUUID
 
+- (NSIndexSet *) revidsFromRevid: (int64_t)baseRevid toRevid: (int64_t)finalRevid;
+
+/**
+ * Marks the given set of revids as garbage.
+ * The parent store will never try to access them again.
+ */
+- (void) markRevidsGarbage: (NSIndexSet *)revids;
+
 @end

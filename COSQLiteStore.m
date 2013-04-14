@@ -62,20 +62,21 @@
     
     // Use write-ahead-log mode
     {
-        FMResultSet *setToWAL = [db_ executeQuery: @"PRAGMA journal_mode=WAL"];
-        [setToWAL next];
-        if (![@"wal" isEqualToString: [setToWAL stringForColumnIndex: 0]])
+        NSString *result = [db_ stringForQuery: @"PRAGMA journal_mode=WAL"];
+        
+        if ([@"wal" isEqualToString: result])
+        {
+            // The default setting is synchronous=FULL, but according to:
+            // http://www.sqlite.org/pragma.html#pragma_synchronous
+            // NORMAL is just as safe w.r.t. consistency. FULL only guarantees that the commits
+            // will block until data is safely on disk, which we don't need.
+            [db_ executeUpdate: @"PRAGMA synchronous=NORMAL"];
+        }
+        else
         {
             NSLog(@"Enabling WAL mode failed.");
         }
-        [setToWAL close];
-        
-        // The default setting is synchronous=FULL, but according to:
-        // http://www.sqlite.org/pragma.html#pragma_synchronous
-        // NORMAL is just as safe w.r.t. consistency. FULL only guarantees that the commits
-        // will block until data is safely on disk, which we don't need.
-        [db_ executeUpdate: @"PRAGMA synchronous=NORMAL"];
-    }
+    }    
     
     // Set up schema
     
@@ -834,7 +835,34 @@
     [db_ executeUpdate: @"DELETE FROM persistentroots WHERE deleted = 1"];
     
     // Delete revisions not referenced by branches
+    
+    /*
+     
+     possibilities:
+     
+      * each branch has a list of revisions referenced:
+        - con: lots of space req'd, slows copying of proots.
+        => 6/10
+     
+      * each rev has a list of branches referencing it
+        - slow to delete a branch 
+        - breaks append-only aspect when new branches reference old revs
+        => 0/10
+     
+      * each branch has a list of revisions referenced, specified as start/end.
+        - then hit the backing store to expand it to a full list.
+        => 10/10.
+     */
+    
+    
     // Delete attachments not referenced by revisions
+    
+    /*
+     
+     Whenever we delete a revision, call a hook that updates the attachment ref table,
+     and deletes attachments that are no longer referenced.
+     
+     */
     
     
     [db_ commit];

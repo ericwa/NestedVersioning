@@ -4,6 +4,7 @@
 #import "COItem.h"
 #import "COUUID.h"
 #import "FMDatabase.h"
+#import "FMDatabaseAdditions.h"
 #import "COSQLiteStorePersistentRootBackingStoreBinaryFormats.h"
 #import "COItem+Binary.h"
 
@@ -27,23 +28,24 @@
     
     // Use write-ahead-log mode
     {
-        FMResultSet *setToWAL = [db_ executeQuery: @"PRAGMA journal_mode=WAL"];
-        [setToWAL next];
-        if (![@"wal" isEqualToString: [setToWAL stringForColumnIndex: 0]])
+        NSString *result = [db_ stringForQuery: @"PRAGMA journal_mode=WAL"];
+
+        if ([@"wal" isEqualToString: result])
+        {
+            // See comments in COSQiteStore
+            [db_ executeUpdate: @"PRAGMA synchronous=NORMAL"];
+        }
+        else
         {
             NSLog(@"Enabling WAL mode failed.");
         }
-        [setToWAL close];
-        
-        // See comments in COSQiteStore
-        [db_ executeUpdate: @"PRAGMA synchronous=NORMAL"];
     }
     
     // Set up schema
     
     [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS commits (revid INTEGER PRIMARY KEY ASC, "
                         "contents BLOB, metadata BLOB, parent INTEGER, root BLOB, deltabase INTEGER, "
-                        "bytesInDeltaRun INTEGER)"];
+                        "bytesInDeltaRun INTEGER, garbage BOOLEAN)"];
     
     if ([db_ hadError])
     {
@@ -327,6 +329,66 @@ static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifie
     [db_ commit];
     
     return rowid;
+}
+
+- (NSIndexSet *) revidsFromRevid: (int64_t)baseRevid toRevid: (int64_t)revid
+{
+    NSParameterAssert(baseRevid < revid);
+    
+    NSMutableIndexSet *result = [NSMutableIndexSet indexSet];
+
+    FMResultSet *rs = [db_ executeQuery: @"SELECT revid, parent "
+                       "FROM commits "
+                       "WHERE revid <= ? AND revid >= ? "
+                       "ORDER BY revid DESC",
+                       [NSNumber numberWithLongLong: revid],
+                       [NSNumber numberWithLongLong: baseRevid]];
+    
+    int64_t nextRevId = revid;
+    
+    while ([rs next])
+    {
+        const int64_t current = [rs longLongIntForColumnIndex: 0];
+        const int64_t parent = [rs longLongIntForColumnIndex: 1];
+        
+        if (current == nextRevId)
+        {
+            [result addIndex: current];
+            
+            nextRevId = parent;
+            
+            // validity check
+            assert([rs hasAnotherRow] || baseRevid == current);
+        }
+        else
+        {
+            // validity check
+            assert([rs hasAnotherRow]);
+        }
+    }
+	
+    [rs close];
+
+    return result;
+}
+
+- (void) markRevidsGarbage: (NSIndexSet *)revids
+{
+    [db_ beginTransaction];
+    
+    for (NSUInteger i = [revids firstIndex]; i != NSNotFound; i = [revids indexGreaterThanIndex: i])
+    {
+        [db_ executeUpdate: @"UPDATE commits SET garbage = 1 WHERE revid = ?",
+            [NSNumber numberWithUnsignedInteger: i]];
+    }
+    
+    [db_ commit];
+}
+
+- (BOOL) finalizeDeletions
+{
+    // Delete all commits where all rows with the same deltabase are marked as garbage.
+    return [db_ executeUpdate: @"DELETE FROM commits WHERE deltabase IN (SELECT deltabase FROM commits GROUP BY deltabase HAVING garbage = 1)"];
 }
 
 // DO not want!

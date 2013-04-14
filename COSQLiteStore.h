@@ -49,17 +49,12 @@
  * Garbage collection / deletion semantics:
  *
  * - Persistent roots are never garbage collected, they must be deleted explicitly by the user.
- *   For convenience, once deleted, they can be undeleted. (TODO: We can implement this at the store level,
- *   but does it make sense to? We could equally well implement it at a higher level, with a trash group,
- *   and have the store expose only a irreversible delete method. Pros/cons?
- *       Typical use case:
+ *   For convenience, once deleted, they can be undeleted. Typical use case:
  *        - user creates a document, types in it a bit.
  *        - It's a temporary note, so when theyy're done with it, they delete it.
  *        - Note is moved to trash. CMD+Z undoes the move to trash.
  *   So by having the not deleted/deleted flag at the store level, that would let us easily
  *   make "delete" a command-pattern invertible undo action.
- *   Currently leaning that way, then.
- *   )
  *
  * - There are attachments which are stored separately from the revision data in backing stores,
  *   however from the point of view of data lifetime, it's as if the attachment is part of the revision
@@ -68,6 +63,23 @@
  * - Branches can be deleted. Like persistent roots, they can be undeleted, and the list of deleted braches
  *   for a persistent root can be queried.  
  *
+ * - There is a "finalize deletions" command that the user can invoke, which permanently removes:
+ *   * persistent roots marked as deleted
+ *   * branches marked as deleted
+ *   * unreachable revisions
+ *   * unreachable attachments
+ *
+ * - Additionally, over time, the user may want to prune the history of a branch. This is implemented
+ *   by moving ahead the 'base' pointer of a branch, and performing a "finalize deletions".
+ * 
+ * - Since "finalize deletions" actually deletes data and frees disk space, there are the following
+ *   side effects:
+ *   * Calling -undeletePersistentRoot: will return NO if "finalize deletions" has been performed
+ *     since the persistent root was deleted with -deletePersistentRoot:
+ *   * Calling -undeleteBranch: will return NO if "finalize deletions" has been performed
+ *     since the branch was deleted with -deleteBranch:
+ *   * Calling -setCurrentVersion:... will return NO if the revision has been deleted.
+ * 
  * Implementation summary:
  *
  * - COSQLiteStore has one SQLite database which stores the persistent root and branch metadata,
@@ -165,15 +177,11 @@
 - (BOOL) deletePersistentRoot: (COUUID *)aRoot;
 - (BOOL) undeletePersistentRoot: (COUUID *)aRoot;
 
-/**
- * History compacting. Irreversible.
- */
-- (BOOL) deleteFromRevision: (CORevisionID *)aRevision
-                 toRevision: (CORevisionID *)anotherRevision;
-
-
 /* Undoable changes */
 
+/**
+ * Returns NO if the branch does not exist, or is deleted (finalized or not).
+ */
 - (BOOL) setCurrentBranch: (COUUID *)aBranch
 		forPersistentRoot: (COUUID *)aRoot;
 
@@ -197,6 +205,18 @@
                  forBranch: (COUUID *)aBranch
           ofPersistentRoot: (COUUID *)aRoot
                 updateHead: (BOOL)updateHead;
+
+/**
+ * History compacting.
+ *
+ * Throws an exception if aVersion is not a parent of the current version and a child of the current tail.
+ *
+ * Reversible until -finalizeDeletions is called.
+ */
+- (BOOL) setTailRevision: (CORevisionID*)aVersion
+               forBranch: (COUUID *)aBranch
+        ofPersistentRoot: (COUUID *)aRoot;
+
 
 - (BOOL) deleteBranch: (COUUID *)aBranch
      ofPersistentRoot: (COUUID *)aRoot;

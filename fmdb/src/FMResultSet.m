@@ -310,7 +310,11 @@
 }
 - (NSNumber*)numberForColumnIndex:(int)columnIdx
 {
-    return [NSNumber numberWithLongLong: sqlite3_column_int64(statement.statement, columnIdx)];
+    if (sqlite3_column_type(statement.statement, columnIdx) == SQLITE_FLOAT) {
+        return [NSNumber numberWithDouble: sqlite3_column_double(statement.statement, columnIdx)];
+    } else {
+        return [NSNumber numberWithLongLong: sqlite3_column_int64(statement.statement, columnIdx)];
+    }
 }
 
 - (NSData*)dataNoCopyForColumn:(NSString*)columnName {
