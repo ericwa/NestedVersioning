@@ -7,9 +7,7 @@
 /**
  * Database connection for manipulating a persistent root backing store.
  *
- * Not a public class.
- *
- * Note that this class is 
+ * Not a public class, only intended to be used by COSQLiteStore.
  */
 @interface COSQLiteStorePersistentRootBackingStore : NSObject
 {
@@ -52,6 +50,9 @@
 
 - (NSIndexSet *) revidsFromRevid: (int64_t)baseRevid toRevid: (int64_t)finalRevid;
 
+/**
+ * Unconditionally deletes the specified revisions
+ */
 - (BOOL) deleteRevids: (NSIndexSet *)revids;
 
 @end

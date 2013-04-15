@@ -453,7 +453,7 @@
     COUUID *backingUUID = nil;
     id meta = nil;
     
-    [db_ beginTransaction]; // N.B. The transaction is so the two SELECTs see the same DB
+    [db_ beginTransaction]; // N.B. The transaction is so the two SELECTs see the same DB. Needed?
     
     NSNumber *root_id = [self rootIdForPersistentRootUUID: aUUID];
     
@@ -614,93 +614,6 @@
     return [db_ executeUpdate: @"UPDATE persistentroots SET deleted = 1 WHERE root_id = ?", root_id];
 }
 
-- (BOOL) deleteRevision: (CORevision *)aRevision
-{
-    // Delete all attachments that this revid was the last remaining reference to
-    {
-        FMResultSet *rs = [db_ executeQuery: @"SELECT attachment_hash FROM attachment_refs GROUP BY attachment_hash HAVING COUNT(*) = 1 AND revid = ?",
-                                [NSNumber numberWithLongLong: [aRevision revisionIndex]]];
-        while ([rs next])
-        {
-            [self deleteAttachment: [rs dataForColumnIndex: 0]];
-        }
-        [rs close];
-    }
-    
-    [db_ executeUpdate: @"DELETE FROM attachment_refs WHERE revid = ?"];
-
-    // FIXME: Rest of the code
-}
-
-- (BOOL) deleteFromRevision: (CORevisionID *)aRevision
-                 toRevision: (CORevisionID *)anotherRevision
-{
-    // FIXME: foreach...
-    [self deleteRevision: aRevision];
-}
-
-// No longer doing persistent root GC, and don't want full-store scan anyways
-
-//- (NSSet *)allPersistentRootUUIDsReferencedByPersistentRootWithUUID: (COUUID*)aUUID
-//{
-//    NSMutableSet *result = [NSMutableSet set];
-//    
-//    // NOTE: This is a bit too coarse; it will return all persistent roots referenced
-//    // from within the backing store.
-//    COSQLiteStorePersistentRootBackingStore *backingStore = [self backingStoreForPersistentRootUUID: aUUID];    
-//    [backingStore iteratePartialItemTrees: ^(NSSet *items)
-//     {
-//         for (COItem *item in items)
-//         {
-//             [result unionSet: [item allReferencedPersistentRootUUIDs]];
-//         }
-//     }];
-//    
-//    return result;
-//}
-//
-//- (void)recursivelyCollectPersistentRootUUIDsReferencedByPersistentRootWithUUID: (COUUID*)aUUID
-//                                                                             in: (NSMutableSet *)result
-//{
-//    for (COUUID *referenced in [self allPersistentRootUUIDsReferencedByPersistentRootWithUUID: aUUID])
-//    {
-//        if (![result containsObject: referenced])
-//        {
-//            [result addObject: referenced];
-//            [self recursivelyCollectPersistentRootUUIDsReferencedByPersistentRootWithUUID: referenced
-//                                                                                       in: result];
-//        }
-//    }
-//}
-//
-//
-//- (NSSet *)livePersistentRootUUIDs
-//{
-//    NSSet *gcRoots = [self gcRootUUIDs];
-//    NSMutableSet *result = [NSMutableSet setWithSet: gcRoots];
-//    for (COUUID *gcRoot in gcRoots)
-//    {
-//        [self recursivelyCollectPersistentRootUUIDsReferencedByPersistentRootWithUUID: gcRoot
-//                                                                                   in: result];
-//    }
-//    return result;
-//}
-
-- (void) gcPersistentRoots
-{
-    // FIXME: Lock store
-    
-    NSMutableSet *garbage = [NSMutableSet setWithArray: [self persistentRootUUIDs]];
-    [garbage minusSet: [self livePersistentRootUUIDs]];
-    
-    for (COUUID *uuid in garbage)
-    {
-        [self deletePersistentRoot: uuid];
-    }
-    
-    // FIXME: Unlock store
-}
-
 - (BOOL) setCurrentBranch: (COUUID *)aBranch
 		forPersistentRoot: (COUUID *)aRoot
 {
@@ -811,52 +724,128 @@
     return ok;
 }
 
+- (void) handleSideEffectsOfDeletingRevision: (CORevisionID *)aRevision
+{
+    NSNumber *rootId = [self rootIdForPersistentRootUUID: [aRevision backingStoreUUID]];
+    
+    // Delete all attachments that this revid was the last remaining reference to
+    {
+        FMResultSet *rs = [db_ executeQuery: @"SELECT attachment_hash FROM attachment_refs GROUP BY attachment_hash HAVING COUNT(*) = 1 AND revid = ? AND root_id = ?",
+                           [NSNumber numberWithLongLong: [aRevision revisionIndex]],
+                           rootId];
+        while ([rs next])
+        {
+            [self deleteAttachment: [rs dataForColumnIndex: 0]];
+        }
+        [rs close];
+    }
+    
+    [db_ executeUpdate: @"DELETE FROM attachment_refs WHERE revid = ?",
+        [NSNumber numberWithLongLong: [aRevision revisionIndex]]];
+    
+    // FIXME: FTS, proot_refs
+}
+
 - (BOOL) finalizeDeletions
 {
+    /*
+     
+     Basic algorithm:
+     
+     - Given a 10000 root store where 5 have been deleted and 5 others have deleted branches,
+     we've narrowed ourselves down to a set of around 5 to 10 backing stores.
+     
+     - First, convert deleted persistent roots to a set of deleted branches.
+     
+     - For each affected backing store:
+        * Compile 2 sets: the set of deleted branches, and the set of remaining branches.
+        * For each branch in the two sets, expand it in to a set of revids by calling
+        -revidsFromRevid:toRevid: on the backing store.
+        * The set of deleted revids minus the set of non-deleted ones = the ones that can
+          really be deleted.
+        * call deleteRevids: with the final set.
+        * call our deleteRevision: hook for each revision we are really deleting.
+     
+     In practice we want to do everything on this database, commit, and then 
+     if it succedes, do the -deleteRevids: calls on each backing store in sequence.
+     
+     */
+    
     [db_ beginTransaction];
-    
-    // Delete all branches of deleted proots
-    [db_ executeUpdate: @"DELETE FROM branches WHERE proot IN (SELECT root_id FROM persistentroots WHERE deleted = 1)"];
-    
-    // Delete all deleted branches
-    [db_ executeUpdate: @"DELETE FROM branches WHERE deleted = 1"];
 
-    // Delete all deleted proots
+    NSMutableDictionary *deletedRevisionsForBackingStore = [NSMutableDictionary dictionary];
+    NSMutableDictionary *keptRevisionsForBackingStore = [NSMutableDictionary dictionary];
+    
+    FMResultSet *rs = [db_ executeQuery:
+                       @"SELECT "
+                        "coalesce(persistentroots.backingstore, persistentroots.uuid) AS backingstore, "
+                        "(persistentroots.deleted OR branches.deleted) AS deleted, "
+                        "branches.head_revid AS head_revid, "
+                        "branches.tail_revid AS tail_revid "
+                        "FROM persistentroots "
+                        "INNER JOIN branches ON persistentroots.root_id = branches.proot "
+                        "WHERE persistentroots.deleted = 1 "
+                        "OR persistentroots.root_id IN (SELECT proot FROM branches WHERE deleted = 1)"];
+    while ([rs next])
+    {
+        COUUID *backingstore = [COUUID UUIDWithData: [rs dataForColumnIndex: 0]];
+        const BOOL deleted = [rs boolForColumnIndex: 1];
+        const int64_t head = [rs int64ForColumnIndex: 2];
+        const int64_t tail = [rs int64ForColumnIndex: 3];
+        
+        COSQLiteStorePersistentRootBackingStore *bs = [self backingStoreForUUID: backingstore];
+        
+        NSMutableDictionary *dict = deleted ? deletedRevisionsForBackingStore : keptRevisionsForBackingStore;
+        NSMutableIndexSet *set = [dict objectForKey: backingstore];
+        if (set == nil)
+        {
+            set = [NSMutableIndexSet indexSet];
+            [dict setObject: set forKey: backingstore];
+        }
+        [set addIndexes: [bs revidsFromRevid: tail toRevid: head]];
+    }
+    [rs close];
+    
+    [db_ executeUpdate: @"DELETE FROM branches WHERE proot IN (SELECT root_id FROM persistentroots WHERE deleted = 1)"];
+    [db_ executeUpdate: @"DELETE FROM branches WHERE deleted = 1"];
     [db_ executeUpdate: @"DELETE FROM persistentroots WHERE deleted = 1"];
     
-    // Delete revisions not referenced by branches
+    // Now for each index set in deletedRevisionsForBackingStore, subtract the index set
+    // in keptRevisionsForBackingStore
     
-    /*
-     
-     possibilities:
-     
-      * each branch has a list of revisions referenced:
-        - con: lots of space req'd, slows copying of proots.
-        => 6/10
-     
-      * each rev has a list of branches referencing it
-        - slow to delete a branch 
-        - breaks append-only aspect when new branches reference old revs
-        => 0/10
-     
-      * each branch has a list of revisions referenced, specified as start/end.
-        - then hit the backing store to expand it to a full list.
-        => 10/10.
-     */
+    for (COUUID *backinguuid in deletedRevisionsForBackingStore)
+    {
+        NSMutableIndexSet *deletedRevisions = [deletedRevisionsForBackingStore objectForKey: backinguuid];
+        NSMutableIndexSet *keptRevisions = [keptRevisionsForBackingStore objectForKey: backinguuid];
+        [deletedRevisions removeIndexes: keptRevisions];
+                
+        for (NSUInteger i = [deletedRevisions firstIndex]; i != NSNotFound; i = [deletedRevisions indexGreaterThanIndex: i])
+        {
+            [self handleSideEffectsOfDeletingRevision: [CORevisionID revisionWithBackinStoreUUID: backinguuid
+                                                                                   revisionIndex: i]];
+        }
+    }
     
     
-    // Delete attachments not referenced by revisions
+    if (![db_ commit])
+    {
+        return NO;
+    }
     
-    /*
-     
-     Whenever we delete a revision, call a hook that updates the attachment ref table,
-     and deletes attachments that are no longer referenced.
-     
-     */
+    // Delete the actual revisions
     
+    for (COUUID *backinguuid in deletedRevisionsForBackingStore)
+    {
+        COSQLiteStorePersistentRootBackingStore *bs = [self backingStoreForUUID: backinguuid];
+        NSMutableIndexSet *deletedRevisions = [deletedRevisionsForBackingStore objectForKey: backinguuid];
+        
+        if (![bs deleteRevids: deletedRevisions])
+        {
+            return NO;
+        }
+    }
     
-    [db_ commit];
-    return ![db_ hadError];
+    return YES;
 }
 
 /* Attachments */
