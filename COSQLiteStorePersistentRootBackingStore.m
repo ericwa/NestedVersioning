@@ -12,8 +12,23 @@
 
 - (id)initWithPath: (NSString *)aPath
 {
-	SUPERINIT;
+    BOOL isDirectory;
+	BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath: aPath
+													   isDirectory: &isDirectory];
+	
+	if (!exists)
+	{
+		if (![[NSFileManager defaultManager] createDirectoryAtPath: aPath
+                                       withIntermediateDirectories: YES
+                                                        attributes: nil
+                                                             error: NULL])
+		{
+			[NSException raise: NSGenericException
+						format: @"Error creating backing store at %@", aPath];
+		}
+	}
     
+    SUPERINIT;
     path_ = [aPath retain];
 	db_ = [[FMDatabase alloc] initWithPath: [aPath stringByAppendingPathComponent: @"revisions.sqlite"]];
     
@@ -57,9 +72,9 @@
 	return self;
 }
 
-- (void)close
+- (BOOL)close
 {
-    [db_ close];
+    return [db_ close];
 }
 
 - (void)dealloc
@@ -67,6 +82,15 @@
     [path_ release];
 	[db_ release];
 	[super dealloc];
+}
+
+- (BOOL) beginTransaction
+{
+    return [db_ beginTransaction];
+}
+- (BOOL) commit
+{
+    return [db_ commit];
 }
 
 /* DB Setup */
@@ -152,10 +176,14 @@
                                           "FROM commits "
                                           "WHERE revid <= ? AND revid >= (SELECT deltabase FROM commits WHERE revid = ?) "
                                           "ORDER BY revid DESC", revidObj, revidObj];
-    int64_t nextRevId = -1;
     
+    int64_t nextRevId = -1;
+  
+    BOOL wasEmpty = YES;    
     while ([rs next])
     {
+        wasEmpty = NO;
+        
         const int64_t revid = [rs longLongIntForColumnIndex: 0];
         NSData *contentsData = [rs dataForColumnIndex: 1];
         const int64_t parent = [rs longLongIntForColumnIndex: 2];
@@ -185,6 +213,11 @@
     }
 	
     [rs close];
+    
+    if (wasEmpty)
+    {
+        return nil;
+    }
     
     COUUID *root = [self rootUUIDForRevid: revid];
     
@@ -279,7 +312,11 @@ static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifie
                withParent: (int64_t)aParent
             modifiedItems: (NSArray*)modifiedItems
 {
-    [db_ beginTransaction];
+    BOOL inTransaction = [db_ inTransaction];
+    if (!inTransaction)
+    {
+        [db_ beginTransaction];   
+    }
     
     const int64_t parent_deltabase = [self deltabaseForRowid: aParent];
     const int64_t rowid = [self nextRowid];
@@ -289,7 +326,7 @@ static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifie
     int64_t bytesInDeltaRun;
     
     // Limit delta runs to 9 commits:
-    const BOOL delta = (parent_deltabase != -1 && rowid - parent_deltabase < 200);
+    const BOOL delta = (parent_deltabase != -1 && rowid - parent_deltabase < 50);
     
     // Limit delta runs to 4k
     //const BOOL delta = (parent_deltabase != -1 && lastBytesInDeltaRun < 4096);
@@ -316,8 +353,9 @@ static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifie
         metadataBlob = [NSJSONSerialization dataWithJSONObject: metadata options: 0 error: NULL];
     }
     
-    // revid INTEGER PRIMARY KEY | contents BLOB | metadata BLOB | parent INTEGER | root BLOB | deltabase INTEGER | bytesInDeltaRun
-    [db_ executeUpdate: @"INSERT INTO commits VALUES (?, ?, ?, ?, ?, ?, ?)",
+    [db_ executeUpdate: @"INSERT INTO commits(revid, "
+        "contents, metadata, parent, root, deltabase, "
+        "bytesInDeltaRun, garbage) VALUES (?, ?, ?, ?, ?, ?, ?, 0)",
         [NSNumber numberWithLongLong: rowid],
         contentsBlob,
         metadataBlob,
@@ -326,14 +364,17 @@ static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifie
         [NSNumber numberWithLongLong: deltabase],
         [NSNumber numberWithLongLong: bytesInDeltaRun]];
     
-    [db_ commit];
+    if (!inTransaction)
+    {
+        [db_ commit];
+    }
     
     return rowid;
 }
 
 - (NSIndexSet *) revidsFromRevid: (int64_t)baseRevid toRevid: (int64_t)revid
 {
-    NSParameterAssert(baseRevid < revid);
+    NSParameterAssert(baseRevid <= revid);
     
     NSMutableIndexSet *result = [NSMutableIndexSet indexSet];
 
@@ -369,57 +410,51 @@ static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifie
 	
     [rs close];
 
+    if (![result containsIndex: baseRevid]
+        || ![result containsIndex: revid])
+    {
+        NSLog(@"Warning, -revidsFromRevid:toRevid: given invalid arguments");
+        return nil;
+    }
+    
     return result;
 }
 
-- (void) markRevidsGarbage: (NSIndexSet *)revids
+- (BOOL) deleteRevids: (NSIndexSet *)revids
 {
-    [db_ beginTransaction];
+    BOOL inTransaction = [db_ inTransaction];
+    if (!inTransaction)
+    {
+        [db_ beginTransaction];
+    }
     
     for (NSUInteger i = [revids firstIndex]; i != NSNotFound; i = [revids indexGreaterThanIndex: i])
     {
         [db_ executeUpdate: @"UPDATE commits SET garbage = 1 WHERE revid = ?",
             [NSNumber numberWithUnsignedInteger: i]];
     }
-    
-    [db_ commit];
-}
 
-- (BOOL) finalizeDeletions
-{
-    // Delete all commits where all rows with the same deltabase are marked as garbage.
-    return [db_ executeUpdate: @"DELETE FROM commits WHERE deltabase IN (SELECT deltabase FROM commits GROUP BY deltabase HAVING garbage = 1)"];
-}
-
-// DO not want!
-//- (void) iteratePartialItemTrees: (void (^)(NSSet *))aBlock
-//{
-//    NSMutableDictionary *dataForUUID = [[[NSMutableDictionary alloc] init] autorelease];
-//    
-//    FMResultSet *rs = [db_ executeQuery: @"SELECT contents FROM commits"];
+    // Debugging:
+//    NSLog(@"In response to delete %@", revids);
+//    FMResultSet *rs = [db_ executeQuery: @"SELECT revid, deltabase FROM commits WHERE deltabase IN (SELECT deltabase FROM commits GROUP BY deltabase HAVING garbage = 1)"];
 //    while ([rs next])
 //    {
-//        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-//        
-//        NSData *contentsData = [rs dataForColumnIndex: 0];
-//        
-//        [dataForUUID removeAllObjects];
-//        ParseCombinedCommitDataInToUUIDToItemDataDictionary(dataForUUID, contentsData, YES);
-//        
-//        NSMutableSet *items = [NSMutableSet setWithCapacity: [dataForUUID count]];
-//        for (COUUID *uuid in dataForUUID)
-//        {
-//            id plist = [NSJSONSerialization JSONObjectWithData: [dataForUUID objectForKey: uuid]
-//                                                       options: 0 error: NULL];
-//            COItem *item = [[[COItem alloc] initWithPlist: plist] autorelease];
-//            [items addObject: item];
-//        }
-//        aBlock(items);
-//        
-//        [pool release];
+//        NSLog(@"Deleting %d (db: %d)", [rs intForColumnIndex:0], [rs intForColumnIndex: 1]);
 //    }
-//	
 //    [rs close];
-//}
+    
+    // Delete all commits where all rows with the same deltabase are marked as garbage.
+    // Could be done at a later time
+    [db_ executeUpdate: @"DELETE FROM commits WHERE deltabase IN (SELECT deltabase FROM commits GROUP BY deltabase HAVING garbage = 1)"];
+    
+    // TODO: Vacuum here?
+    
+    if (!inTransaction)
+    {
+        [db_ commit];
+    }
+    
+    return ![db_ hadError];
+}
 
 @end

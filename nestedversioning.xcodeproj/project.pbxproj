@@ -144,6 +144,7 @@
 		66D6FA7916B2558300D9AF11 /* COSubtreeEdits.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F5947B15119C7D007C517E /* COSubtreeEdits.m */; };
 		66D84FC6170001D4004C1BA4 /* TestPerformance.m in Sources */ = {isa = PBXBuildFile; fileRef = 662F9EB016F6ECEB00CEB9B4 /* TestPerformance.m */; };
 		66E22EC91421D47100C00A98 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E22EC81421D47100C00A98 /* Foundation.framework */; };
+		66E3AA2D171BA56200D5DD8A /* TestSQLiteStorePersistentRootBackingStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E3AA2C171BA56200D5DD8A /* TestSQLiteStorePersistentRootBackingStore.m */; };
 		66E4BB65166A7B64009BFE7D /* COSQLiteStorePersistentRootBackingStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E4BB63166A7B64009BFE7D /* COSQLiteStorePersistentRootBackingStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E4BB66166A7B64009BFE7D /* COSQLiteStorePersistentRootBackingStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E4BB64166A7B64009BFE7D /* COSQLiteStorePersistentRootBackingStore.m */; };
 		66E4BB6F166B3D10009BFE7D /* COItemTree.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E4BB6D166B3D10009BFE7D /* COItemTree.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -439,6 +440,7 @@
 		66E22EC61421D47100C00A98 /* test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test; sourceTree = BUILT_PRODUCTS_DIR; };
 		66E22EC81421D47100C00A98 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		66E2A3031430569C00487419 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
+		66E3AA2C171BA56200D5DD8A /* TestSQLiteStorePersistentRootBackingStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSQLiteStorePersistentRootBackingStore.m; sourceTree = "<group>"; };
 		66E46D47146A3D490042123E /* TestDeletion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestDeletion.m; sourceTree = "<group>"; };
 		66E4BB63166A7B64009BFE7D /* COSQLiteStorePersistentRootBackingStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COSQLiteStorePersistentRootBackingStore.h; sourceTree = "<group>"; };
 		66E4BB64166A7B64009BFE7D /* COSQLiteStorePersistentRootBackingStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COSQLiteStorePersistentRootBackingStore.m; sourceTree = "<group>"; };
@@ -1089,6 +1091,7 @@
 				66C5B3B91707BD4E00AE0BCC /* TestBinaryReadWrite.m */,
 				6622E9BD16EC725200D82F2A /* TestWorkspaces.m */,
 				66BC3D261713E775002274E0 /* TestSQLiteStore.m */,
+				66E3AA2C171BA56200D5DD8A /* TestSQLiteStorePersistentRootBackingStore.m */,
 				66ED6D6D16F427FD001B853E /* TestSQLiteStorePerformance.m */,
 				6675C9211702C6FB007C8DB6 /* TestRelationshipCache.m */,
 				6660E23914F84B3000D2F319 /* TestItem.m */,
@@ -1499,6 +1502,7 @@
 				6675C9221702C6FB007C8DB6 /* TestRelationshipCache.m in Sources */,
 				66C5B3BA1707BD4E00AE0BCC /* TestBinaryReadWrite.m in Sources */,
 				66BC3D271713E775002274E0 /* TestSQLiteStore.m in Sources */,
+				66E3AA2D171BA56200D5DD8A /* TestSQLiteStorePersistentRootBackingStore.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -14,6 +14,21 @@
     return self;
 }
 
++ (COItemTree *)treeWithItemsRootFirst: (NSArray*)items
+{
+    NSParameterAssert([items count] >= 1);
+
+    COItemTree *result = [[self alloc] init];
+    result->rootItemUUID_ = [[[items objectAtIndex: 0] UUID] copy];
+    result->itemForUUID_ = [[NSMutableDictionary alloc] initWithCapacity: [items count]];
+    
+    for (COItem *item in items)
+    {
+        [result->itemForUUID_ setObject: item forKey: [item UUID]];
+    }
+    return result;
+}
+
 - (void) dealloc
 {
     [itemForUUID_ release];

@@ -303,14 +303,6 @@
 
 /** @taskunit writing states */
 
-- (BOOL) createBackingStoreWithUUID: (COUUID *)aUUID
-{
-    return [[NSFileManager defaultManager] createDirectoryAtPath: [[url_ path] stringByAppendingPathComponent: [aUUID stringValue]]
-                                     withIntermediateDirectories: NO
-                                                      attributes: nil
-                                                           error: NULL];
-}
-
 /**
  * Updates SQL indexes so given a search query containing contents of
  * the items mentioned by modifiedItems, we can get back aRevision.
@@ -596,8 +588,6 @@
                                                            metadata: (NSDictionary *)metadata
 {
     COUUID *uuid = [COUUID UUID];
-    
-    [self createBackingStoreWithUUID: uuid];
     
     CORevisionID *revId = [self writeItemTreeWithNoParent: contents
                                              withMetadata: [NSDictionary dictionary]
