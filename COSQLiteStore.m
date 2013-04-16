@@ -746,18 +746,17 @@
     // FIXME: FTS, proot_refs
 }
 
-- (BOOL) finalizeDeletions
+- (BOOL) finalizeDeletionsForPersistentRoot: (COUUID *)aRoot
 {
+    NSNumber *aRootId = [self rootIdForPersistentRootUUID: aRoot];
+    COSQLiteStorePersistentRootBackingStore *backing = [self backingStoreForPersistentRootUUID: aRoot];
+
     /*
      
      Basic algorithm:
      
-     - Given a 10000 root store where 5 have been deleted and 5 others have deleted branches,
-     we've narrowed ourselves down to a set of around 5 to 10 backing stores.
-     
-     - First, convert deleted persistent roots to a set of deleted branches.
-     
-     - For each affected backing store:
+     - First, convert deleted persistent root to a set of deleted branches.
+
         * Compile 2 sets: the set of deleted branches, and the set of remaining branches.
         * For each branch in the two sets, expand it in to a set of revids by calling
         -revidsFromRevid:toRevid: on the backing store.
@@ -767,65 +766,61 @@
         * call our deleteRevision: hook for each revision we are really deleting.
      
      In practice we want to do everything on this database, commit, and then 
-     if it succedes, do the -deleteRevids: calls on each backing store in sequence.
+     if it succedes, do the -deleteRevids: calls on the backing store.
      
      */
     
     [db_ beginTransaction];
 
-    NSMutableDictionary *deletedRevisionsForBackingStore = [NSMutableDictionary dictionary];
-    NSMutableDictionary *keptRevisionsForBackingStore = [NSMutableDictionary dictionary];
+    NSMutableIndexSet *deletedRevisions = [NSMutableIndexSet indexSet];
+    NSMutableIndexSet *keptRevisions = [NSMutableIndexSet indexSet];
     
-    FMResultSet *rs = [db_ executeQuery:
-                       @"SELECT "
-                        "coalesce(persistentroots.backingstore, persistentroots.uuid) AS backingstore, "
-                        "(persistentroots.deleted OR branches.deleted) AS deleted, "
-                        "branches.head_revid AS head_revid, "
-                        "branches.tail_revid AS tail_revid "
-                        "FROM persistentroots "
-                        "INNER JOIN branches ON persistentroots.root_id = branches.proot "
-                        "WHERE persistentroots.deleted = 1 "
-                        "OR persistentroots.root_id IN (SELECT proot FROM branches WHERE deleted = 1)"];
+    FMResultSet *rs = [db_ executeQuery: @"SELECT "
+                                            "persistentroots.root_id, "
+                                            "(persistentroots.deleted OR branches.deleted), "
+                                            "branches.head_revid, "
+                                            "branches.tail_revid "
+                                            "FROM persistentroots "
+                                            "INNER JOIN branches ON persistentroots.root_id = branches.proot "
+                                            "WHERE persistentroots.backingstore = ?"];
     while ([rs next])
     {
-        COUUID *backingstore = [COUUID UUIDWithData: [rs dataForColumnIndex: 0]];
+        const int64_t rootId = [rs int64ForColumnIndex: 0];
         const BOOL deleted = [rs boolForColumnIndex: 1];
         const int64_t head = [rs int64ForColumnIndex: 2];
         const int64_t tail = [rs int64ForColumnIndex: 3];
         
-        COSQLiteStorePersistentRootBackingStore *bs = [self backingStoreForUUID: backingstore];
+        NSIndexSet *revs = [backing revidsFromRevid: tail toRevid: head];        
         
-        NSMutableDictionary *dict = deleted ? deletedRevisionsForBackingStore : keptRevisionsForBackingStore;
-        NSMutableIndexSet *set = [dict objectForKey: backingstore];
-        if (set == nil)
+        if (deleted)
         {
-            set = [NSMutableIndexSet indexSet];
-            [dict setObject: set forKey: backingstore];
+            if ([aRootId longLongValue] == rootId)
+            {
+                [deletedRevisions addIndexes: revs];
+            }
         }
-        [set addIndexes: [bs revidsFromRevid: tail toRevid: head]];
+        else
+        {
+            [keptRevisions addIndexes: revs];
+        }
     }
     [rs close];
     
-    [db_ executeUpdate: @"DELETE FROM branches WHERE proot IN (SELECT root_id FROM persistentroots WHERE deleted = 1)"];
-    [db_ executeUpdate: @"DELETE FROM branches WHERE deleted = 1"];
-    [db_ executeUpdate: @"DELETE FROM persistentroots WHERE deleted = 1"];
+    // Delete branches / the persistent root
+    
+    [db_ executeUpdate: @"DELETE FROM branches WHERE proot IN (SELECT root_id FROM persistentroots WHERE deleted = 1 AND root_id = ?)", aRootId];
+    [db_ executeUpdate: @"DELETE FROM branches WHERE deleted = 1 AND root_id = ?", aRootId];
+    [db_ executeUpdate: @"DELETE FROM persistentroots WHERE deleted = 1 AND root_id = ?", aRootId];
     
     // Now for each index set in deletedRevisionsForBackingStore, subtract the index set
     // in keptRevisionsForBackingStore
     
-    for (COUUID *backinguuid in deletedRevisionsForBackingStore)
+    [deletedRevisions removeIndexes: keptRevisions];
+    for (NSUInteger i = [deletedRevisions firstIndex]; i != NSNotFound; i = [deletedRevisions indexGreaterThanIndex: i])
     {
-        NSMutableIndexSet *deletedRevisions = [deletedRevisionsForBackingStore objectForKey: backinguuid];
-        NSMutableIndexSet *keptRevisions = [keptRevisionsForBackingStore objectForKey: backinguuid];
-        [deletedRevisions removeIndexes: keptRevisions];
-                
-        for (NSUInteger i = [deletedRevisions firstIndex]; i != NSNotFound; i = [deletedRevisions indexGreaterThanIndex: i])
-        {
-            [self handleSideEffectsOfDeletingRevision: [CORevisionID revisionWithBackinStoreUUID: backinguuid
-                                                                                   revisionIndex: i]];
-        }
+        [self handleSideEffectsOfDeletingRevision: [CORevisionID revisionWithBackinStoreUUID: [backing UUID]
+                                                                               revisionIndex: i]];
     }
-    
     
     if (![db_ commit])
     {
@@ -833,18 +828,11 @@
     }
     
     // Delete the actual revisions
-    
-    for (COUUID *backinguuid in deletedRevisionsForBackingStore)
+    if (![backing deleteRevids: deletedRevisions])
     {
-        COSQLiteStorePersistentRootBackingStore *bs = [self backingStoreForUUID: backinguuid];
-        NSMutableIndexSet *deletedRevisions = [deletedRevisionsForBackingStore objectForKey: backinguuid];
-        
-        if (![bs deleteRevids: deletedRevisions])
-        {
-            return NO;
-        }
+        return NO;
     }
-    
+
     return YES;
 }
 

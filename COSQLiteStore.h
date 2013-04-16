@@ -231,7 +231,11 @@
            forBranch: (COUUID *)aBranch
     ofPersistentRoot: (COUUID *)aRoot;
 
-- (BOOL) finalizeDeletions;
+/**
+ * Finalizes the deletions of any deleted branches in the persistent root
+ * or the persistent root itself.
+ */
+- (BOOL) finalizeDeletionsForPersistentRoot: (COUUID *)aRoot;
 
 /* Search */
 
