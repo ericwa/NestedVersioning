@@ -55,4 +55,6 @@
  */
 - (BOOL) deleteRevids: (NSIndexSet *)revids;
 
+- (NSIndexSet *) revidsUsedRange;
+
 @end

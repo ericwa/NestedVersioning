@@ -457,4 +457,14 @@ static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifie
     return ![db_ hadError];
 }
 
+- (NSIndexSet *) revidsUsedRange
+{
+    NSNumber *max = [db_ numberForQuery: @"SELECT MAX(rowid) FROM commits"];
+    if (max != nil)
+    {
+        return [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0, [max longLongValue] + 1)];
+    }
+    return nil;
+}
+
 @end

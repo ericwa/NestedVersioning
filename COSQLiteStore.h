@@ -232,10 +232,13 @@
     ofPersistentRoot: (COUUID *)aRoot;
 
 /**
- * Finalizes the deletions of any deleted branches in the persistent root
- * or the persistent root itself.
+ * Finalizes the deletions of any unreachable commits (whether due to -setTailRevision:... moving the tail pointer,
+ * or branches being deleted), any deleted branches, or the persistent root itself.
+ *
  */
 - (BOOL) finalizeDeletionsForPersistentRoot: (COUUID *)aRoot;
+
+- (BOOL) finalizeGarbageAttachments;
 
 /* Search */
 

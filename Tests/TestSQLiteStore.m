@@ -102,17 +102,17 @@ static COUUID *childUUID;
     // Create it
     COUUID *branch = [store createBranchWithInitialRevision: [[proot currentBranchState] currentState]
                                                  setCurrent: YES
-                                          forPersistentRoot: [proot UUID]];
+                                          forPersistentRoot: prootUUID];
     
     UKObjectKindOf(branch, COUUID);
     UKObjectsNotEqual(initialBranchUUID, branch);
-    UKObjectsEqual(S(branch, initialBranchUUID), [[store persistentRootWithUUID: [proot UUID]] branchUUIDs]);
+    UKObjectsEqual(S(branch, initialBranchUUID), [[store persistentRootWithUUID: prootUUID] branchUUIDs]);
     
     // Delete it
     UKTrue([store deleteBranch: branch ofPersistentRoot: prootUUID]);
     
     {
-        COBranchState *branchObj = [[store persistentRootWithUUID: [proot UUID]] branchPlistForUUID: branch];
+        COBranchState *branchObj = [[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branch];
         UKNotNil(branchObj);
         UKTrue([branchObj isDeleted]);
     }
@@ -120,7 +120,7 @@ static COUUID *childUUID;
     // Undelete it
     UKTrue([store undeleteBranch: branch ofPersistentRoot: prootUUID]);
     {
-        COBranchState *branchObj = [[store persistentRootWithUUID: [proot UUID]] branchPlistForUUID: branch];
+        COBranchState *branchObj = [[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branch];
         UKNotNil(branchObj);
         UKFalse([branchObj isDeleted]);
     }
@@ -200,7 +200,7 @@ static COUUID *childUUID;
                    ofPersistentRoot: prootUUID
                          updateHead: YES]);
     
-    UKTrue([store finalizeDeletions]);
+    UKTrue([store finalizeDeletionsForPersistentRoot: prootUUID]);
     
     UKObjectsEqual(fakeAttachment, [NSString stringWithContentsOfURL: [store URLForAttachment: hash]
                                                             encoding: NSUTF8StringEncoding
@@ -222,7 +222,7 @@ static COUUID *childUUID;
                                                                error: NULL]);
 
     UKTrue([[NSFileManager defaultManager] fileExistsAtPath: [[store URLForAttachment: hash] path]]);
-    UKTrue([store finalizeDeletions]);
+    UKTrue([store finalizeGarbageAttachments]);
     UKFalse([[NSFileManager defaultManager] fileExistsAtPath: [[store URLForAttachment: hash] path]]);
 }
 
@@ -243,7 +243,7 @@ static COUUID *childUUID;
                    ofPersistentRoot: prootUUID
                          updateHead: YES]);
     
-    UKTrue([store finalizeDeletions]);
+    UKTrue([store finalizeDeletionsForPersistentRoot: prootUUID]);
     
     UKObjectsEqual(tree, [store itemTreeForRevisionID: referencedRevision]);
 }
@@ -258,24 +258,24 @@ static COUUID *childUUID;
     
     UKObjectsEqual(tree, [store itemTreeForRevisionID: unreferencedRevision]);
     
-    UKTrue([store finalizeDeletions]);
+    UKTrue([store finalizeDeletionsForPersistentRoot: prootUUID]);
     
     UKNil([store itemTreeForRevisionID: unreferencedRevision]);
 }
 
 - (void) testDeletePersistentRoot
 {    
-    UKTrue([store deletePersistentRoot: [proot UUID]]);
+    UKTrue([store deletePersistentRoot: prootUUID]);
     // Persistent root returned since we have not called finalizeDeletions.
-    UKObjectsEqual(A([proot UUID]), [store persistentRootUUIDs]);
+    UKObjectsEqual(A(prootUUID), [store persistentRootUUIDs]);
     
     // Persistent root returned since we have not called finalizeDeletions.
-    UKNotNil([store persistentRootWithUUID: [proot UUID]]);
+    UKNotNil([store persistentRootWithUUID: prootUUID]);
     
-    [store finalizeDeletions];
+    [store finalizeDeletionsForPersistentRoot: prootUUID];
     
     UKObjectsEqual([NSArray array], [store persistentRootUUIDs]);
-    UKNil([store persistentRootWithUUID: [proot UUID]]);    
+    UKNil([store persistentRootWithUUID: prootUUID]);    
 }
 
 - (void) testPersistentRootBasic

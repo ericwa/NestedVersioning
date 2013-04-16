@@ -724,102 +724,78 @@
     return ok;
 }
 
-- (void) handleSideEffectsOfDeletingRevision: (CORevisionID *)aRevision
+
+// How to deal with finalizing unreferenced attachments that aren't associated with any persistent root?
+
+- (BOOL) finalizeGarbageAttachments
 {
-    NSNumber *rootId = [self rootIdForPersistentRootUUID: [aRevision backingStoreUUID]];
+    NSMutableSet *garbage = [NSMutableSet setWithArray: [self attachments]];
     
-    // Delete all attachments that this revid was the last remaining reference to
+    FMResultSet *rs = [db_ executeQuery: @"SELECT attachment_hash FROM attachment_refs"];
+    while ([rs next])
     {
-        FMResultSet *rs = [db_ executeQuery: @"SELECT attachment_hash FROM attachment_refs GROUP BY attachment_hash HAVING COUNT(*) = 1 AND revid = ? AND root_id = ?",
-                           [NSNumber numberWithLongLong: [aRevision revisionIndex]],
-                           rootId];
-        while ([rs next])
-        {
-            [self deleteAttachment: [rs dataForColumnIndex: 0]];
-        }
-        [rs close];
+        [garbage removeObject: [rs dataForColumnIndex: 0]];
     }
-    
-    [db_ executeUpdate: @"DELETE FROM attachment_refs WHERE revid = ?",
-        [NSNumber numberWithLongLong: [aRevision revisionIndex]]];
-    
-    // FIXME: FTS, proot_refs
+    [rs close];
+
+    for (NSData *hash in garbage)
+    {
+        if (![self deleteAttachment: hash])
+        {
+            return NO;
+        }
+    }
+    return YES;
 }
 
 - (BOOL) finalizeDeletionsForPersistentRoot: (COUUID *)aRoot
 {
-    NSNumber *aRootId = [self rootIdForPersistentRootUUID: aRoot];
-    COSQLiteStorePersistentRootBackingStore *backing = [self backingStoreForPersistentRootUUID: aRoot];
-
-    /*
-     
-     Basic algorithm:
-     
-     - First, convert deleted persistent root to a set of deleted branches.
-
-        * Compile 2 sets: the set of deleted branches, and the set of remaining branches.
-        * For each branch in the two sets, expand it in to a set of revids by calling
-        -revidsFromRevid:toRevid: on the backing store.
-        * The set of deleted revids minus the set of non-deleted ones = the ones that can
-          really be deleted.
-        * call deleteRevids: with the final set.
-        * call our deleteRevision: hook for each revision we are really deleting.
-     
-     In practice we want to do everything on this database, commit, and then 
-     if it succedes, do the -deleteRevids: calls on the backing store.
-     
-     */
+    COUUID *backingUUID = [self backingUUIDForPersistentRootUUID: aRoot];
+    COSQLiteStorePersistentRootBackingStore *backing = [self backingStoreForUUID: backingUUID];
+    NSNumber *backingId = [self rootIdForPersistentRootUUID: backingUUID];
+    NSData *backingUUIDData = [backingUUID dataValue];
     
     [db_ beginTransaction];
-
-    NSMutableIndexSet *deletedRevisions = [NSMutableIndexSet indexSet];
+    
+    // Delete branches / the persistent root
+    
+    [db_ executeUpdate: @"DELETE FROM branches WHERE proot IN (SELECT root_id FROM persistentroots WHERE deleted = 1 AND backingstore = ?)", backingUUIDData];
+    [db_ executeUpdate: @"DELETE FROM branches WHERE deleted = 1 AND proot IN (SELECT root_id FROM persistentroots WHERE backingstore = ?)", backingUUIDData];
+    [db_ executeUpdate: @"DELETE FROM persistentroots WHERE deleted = 1 AND backingstore = ?", backingUUIDData];
+    
     NSMutableIndexSet *keptRevisions = [NSMutableIndexSet indexSet];
     
     FMResultSet *rs = [db_ executeQuery: @"SELECT "
-                                            "persistentroots.root_id, "
-                                            "(persistentroots.deleted OR branches.deleted), "
                                             "branches.head_revid, "
                                             "branches.tail_revid "
                                             "FROM persistentroots "
                                             "INNER JOIN branches ON persistentroots.root_id = branches.proot "
-                                            "WHERE persistentroots.backingstore = ?"];
+                                            "WHERE persistentroots.backingstore = ?", backingUUIDData];
     while ([rs next])
     {
-        const int64_t rootId = [rs int64ForColumnIndex: 0];
-        const BOOL deleted = [rs boolForColumnIndex: 1];
-        const int64_t head = [rs int64ForColumnIndex: 2];
-        const int64_t tail = [rs int64ForColumnIndex: 3];
+        const int64_t head = [rs int64ForColumnIndex: 0];
+        const int64_t tail = [rs int64ForColumnIndex: 1];
         
         NSIndexSet *revs = [backing revidsFromRevid: tail toRevid: head];        
-        
-        if (deleted)
-        {
-            if ([aRootId longLongValue] == rootId)
-            {
-                [deletedRevisions addIndexes: revs];
-            }
-        }
-        else
-        {
-            [keptRevisions addIndexes: revs];
-        }
+        [keptRevisions addIndexes: revs];
     }
     [rs close];
-    
-    // Delete branches / the persistent root
-    
-    [db_ executeUpdate: @"DELETE FROM branches WHERE proot IN (SELECT root_id FROM persistentroots WHERE deleted = 1 AND root_id = ?)", aRootId];
-    [db_ executeUpdate: @"DELETE FROM branches WHERE deleted = 1 AND root_id = ?", aRootId];
-    [db_ executeUpdate: @"DELETE FROM persistentroots WHERE deleted = 1 AND root_id = ?", aRootId];
     
     // Now for each index set in deletedRevisionsForBackingStore, subtract the index set
     // in keptRevisionsForBackingStore
     
+    NSMutableIndexSet *deletedRevisions = [NSMutableIndexSet indexSet];
+    [deletedRevisions addIndexes: [backing revidsUsedRange]];
     [deletedRevisions removeIndexes: keptRevisions];
+    
     for (NSUInteger i = [deletedRevisions firstIndex]; i != NSNotFound; i = [deletedRevisions indexGreaterThanIndex: i])
     {
-        [self handleSideEffectsOfDeletingRevision: [CORevisionID revisionWithBackinStoreUUID: [backing UUID]
-                                                                               revisionIndex: i]];
+        
+        [db_ executeUpdate: @"DELETE FROM attachment_refs WHERE root_id = ? AND revid = ?",
+         backingId,
+         [NSNumber numberWithLongLong: i]];
+        
+        // FIXME: FTS, proot_refs
     }
     
     if (![db_ commit])
@@ -951,20 +927,18 @@ static NSData *dataFromHexString(NSString *hexString)
     return hash;
 }
 
-// Shouldn't be needed.
-
-//- (NSSet *) attachments
-//{
-//    NSMutableSet *result = [NSMutableSet set];
-//    NSArray *files = [[NSFileManager defaultManager] directoryContentsAtPath: [[self attachmentsURL] path]];
-//    for (NSString *file in files)
-//    {
-//        NSString *attachmentHexString = [file stringByDeletingLastPathComponent];
-//        NSData *hash = dataFromHexString(attachmentHexString);
-//        [result addObject: hash];
-//    }
-//    return result;
-//}
+- (NSArray *) attachments
+{
+    NSMutableArray *result = [NSMutableArray array];
+    NSArray *files = [[NSFileManager defaultManager] directoryContentsAtPath: [[self attachmentsURL] path]];
+    for (NSString *file in files)
+    {
+        NSString *attachmentHexString = [file stringByDeletingLastPathComponent];
+        NSData *hash = dataFromHexString(attachmentHexString);
+        [result addObject: hash];
+    }
+    return result;
+}
 
 - (BOOL) deleteAttachment: (NSData *)hash
 {
