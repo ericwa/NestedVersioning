@@ -103,6 +103,7 @@ static COUUID *childUUID;
     COUUID *branch = [store createBranchWithInitialRevision: [[proot currentBranchState] currentState]
                                                  setCurrent: YES
                                           forPersistentRoot: prootUUID];
+    COBranchState *initialState = [[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branch];
     
     UKObjectKindOf(branch, COUUID);
     UKObjectsNotEqual(initialBranchUUID, branch);
@@ -113,7 +114,6 @@ static COUUID *childUUID;
     
     {
         COBranchState *branchObj = [[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branch];
-        UKNotNil(branchObj);
         UKTrue([branchObj isDeleted]);
     }
 
@@ -121,9 +121,24 @@ static COUUID *childUUID;
     UKTrue([store undeleteBranch: branch ofPersistentRoot: prootUUID]);
     {
         COBranchState *branchObj = [[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branch];
-        UKNotNil(branchObj);
         UKFalse([branchObj isDeleted]);
+        UKObjectsEqual(initialState, branchObj);
     }
+
+    // Should have no effect
+    UKTrue([store finalizeDeletionsForPersistentRoot: prootUUID]);
+
+    // Verify the branch is still there
+    {
+        COBranchState *branchObj = [[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branch];
+        UKObjectsEqual(initialState, branchObj);
+    }
+    
+    // Really delete it
+    UKTrue([store deleteBranch: branch ofPersistentRoot: prootUUID]);
+    UKTrue([store finalizeDeletionsForPersistentRoot: prootUUID]);
+    UKNil([[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branch]);
+    UKIntsEqual(1, [[[store persistentRootWithUUID: prootUUID] branchUUIDs] count]);
 }
 
 
@@ -369,6 +384,5 @@ static COUUID *childUUID;
     UKObjectsEqual(mod2, [[copy currentBranchState] headRevisionID]);
     UKObjectsEqual(initialRevisionId, [[copy currentBranchState] tailRevisionID]);
 }
-
 
 @end
