@@ -16,6 +16,7 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
 @synthesize UUID = uuid_;
 @synthesize metadata = metadata_;
 @synthesize currentBranchUUID = currentBranch_;
+@synthesize  branchForUUID = branchForUUID_;
 
 - (id) initWithUUID: (COUUID *)aUUID
       branchForUUID: (NSDictionary *)branchForUUID

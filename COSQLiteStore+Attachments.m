@@ -67,25 +67,28 @@ static NSString *hexString(NSData *aData)
     {
         [result appendFormat:@"%02x", (int)bytes[i]];
     }
-    return [NSString stringWithString: result];
+    return result;
 }
 
 static NSData *dataFromHexString(NSString *hexString)
 {
     NSMutableData *result = [NSMutableData dataWithCapacity: [hexString length] / 2];
+    const char *cstring = [hexString UTF8String];
     
-    NSScanner *scanner = [NSScanner scannerWithString: hexString];
-    unsigned int i;
-    while ([scanner scanHexInt: &i])
+    unsigned byteAsInt;
+    while (1 == sscanf(cstring, "%2x", &byteAsInt))
     {
-        unsigned char c = i;
-        [result appendBytes: &c length: 1];
+        unsigned char byte = byteAsInt;
+        [result appendBytes: &byte length: 1];
+        cstring += 2;
     }
-    return [NSData dataWithData: result];
+    
+    return result;
 }
 
 - (NSURL *) URLForAttachment: (NSData *)aHash
 {
+    NSParameterAssert([aHash length] == SHA_DIGEST_LENGTH);
     return [[[self attachmentsURL] URLByAppendingPathComponent: hexString(aHash)]
             URLByAppendingPathExtension: @"attachment"];
 }
@@ -123,7 +126,7 @@ static NSData *dataFromHexString(NSString *hexString)
     NSArray *files = [[NSFileManager defaultManager] directoryContentsAtPath: [[self attachmentsURL] path]];
     for (NSString *file in files)
     {
-        NSString *attachmentHexString = [file stringByDeletingLastPathComponent];
+        NSString *attachmentHexString = [file stringByDeletingPathExtension];
         NSData *hash = dataFromHexString(attachmentHexString);
         [result addObject: hash];
     }
@@ -132,6 +135,7 @@ static NSData *dataFromHexString(NSString *hexString)
 
 - (BOOL) deleteAttachment: (NSData *)hash
 {
+    NSParameterAssert([hash length] == SHA_DIGEST_LENGTH);
     return [[NSFileManager defaultManager] removeItemAtPath: [[self URLForAttachment: hash] path]
                                                       error: NULL];
 }

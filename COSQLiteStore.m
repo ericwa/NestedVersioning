@@ -716,7 +716,7 @@
 {
     NSNumber *root_id = [self rootIdForPersistentRootUUID: aRoot];
     NSData *data = [self writeMetadata: meta];
-    BOOL ok = [db_ executeUpdate: @"UPDATE persistentroots SET metadata = ? WHERE uuid = ?",
+    BOOL ok = [db_ executeUpdate: @"UPDATE persistentroots SET metadata = ? WHERE root_id = ?",
                data,
                root_id];
     
@@ -758,9 +758,9 @@
     
     // Delete branches / the persistent root
     
-    [db_ executeUpdate: @"DELETE FROM branches WHERE proot IN (SELECT root_id FROM persistentroots WHERE deleted = 1 AND backingstore = ?)", backingUUIDData];
-    [db_ executeUpdate: @"DELETE FROM branches WHERE deleted = 1 AND proot IN (SELECT root_id FROM persistentroots WHERE backingstore = ?)", backingUUIDData];
-    [db_ executeUpdate: @"DELETE FROM persistentroots WHERE deleted = 1 AND backingstore = ?", backingUUIDData];
+    [db_ executeUpdate: @"DELETE FROM branches WHERE proot IN (SELECT root_id FROM persistentroots WHERE deleted = 1 AND coalesce(backingstore, uuid) = ?)", backingUUIDData];
+    [db_ executeUpdate: @"DELETE FROM branches WHERE deleted = 1 AND proot IN (SELECT root_id FROM persistentroots WHERE coalesce(backingstore, uuid) = ?)", backingUUIDData];
+    [db_ executeUpdate: @"DELETE FROM persistentroots WHERE deleted = 1 AND coalesce(backingstore, uuid) = ?", backingUUIDData];
     
     NSMutableIndexSet *keptRevisions = [NSMutableIndexSet indexSet];
     
@@ -769,7 +769,7 @@
                                             "branches.tail_revid "
                                             "FROM persistentroots "
                                             "INNER JOIN branches ON persistentroots.root_id = branches.proot "
-                                            "WHERE persistentroots.backingstore = ?", backingUUIDData];
+                                            "WHERE coalesce(persistentroots.backingstore, persistentroots.uuid) = ?", backingUUIDData];
     while ([rs next])
     {
         const int64_t head = [rs int64ForColumnIndex: 0];

@@ -272,7 +272,7 @@ static COUUID *childUUID;
     // Persistent root returned since we have not called finalizeDeletions.
     UKNotNil([store persistentRootWithUUID: prootUUID]);
     
-    [store finalizeDeletionsForPersistentRoot: prootUUID];
+    UKTrue([store finalizeDeletionsForPersistentRoot: prootUUID]);
     
     UKObjectsEqual([NSArray array], [store persistentRootUUIDs]);
     UKNil([store persistentRootWithUUID: prootUUID]);    
@@ -282,7 +282,8 @@ static COUUID *childUUID;
 {
     UKObjectsEqual(S(prootUUID), [NSSet setWithArray:[store persistentRootUUIDs]]);
     UKObjectsEqual(initialBranchUUID, [[store persistentRootWithUUID: prootUUID] currentBranchUUID]);
-    UKObjectsEqual(proot, [store persistentRootWithUUID: prootUUID]);
+    COPersistentRootState *refetched = [store persistentRootWithUUID: prootUUID];
+    UKObjectsEqual(proot, refetched);
     UKObjectsEqual([self makeInitialItemTree], [store itemTreeForRevisionID: initialRevisionId]);
 }
 

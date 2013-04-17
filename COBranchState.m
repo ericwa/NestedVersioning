@@ -102,7 +102,8 @@ NSString *kCOBranchMetadata= @"COBranchMetadata";
         && [headRevisionId_ isEqual: other->headRevisionId_]
         && [tailRevisionId_ isEqual: other->tailRevisionId_]
         && [currentState_ isEqual: other->currentState_]
-        && [metadata_ isEqual: other->metadata_];
+        && ([metadata_ isEqual: other->metadata_]
+            || (metadata_ == nil && other->metadata_ == nil));
     }
     return NO;
 }

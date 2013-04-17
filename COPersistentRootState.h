@@ -45,6 +45,7 @@
 @property (readonly, nonatomic) COUUID *UUID;
 @property (nonatomic, copy, readwrite) NSDictionary *metadata;
 @property (nonatomic, copy, readwrite) COUUID *currentBranchUUID;
+@property (nonatomic, copy, readwrite) NSDictionary *branchForUUID;
 
 // Plist import/export
 
