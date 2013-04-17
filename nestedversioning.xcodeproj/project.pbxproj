@@ -1502,13 +1502,13 @@
 			files = (
 				66E778A114E607CD00D5DFFF /* main.m in Sources */,
 				6622E9BE16EC725200D82F2A /* TestWorkspaces.m in Sources */,
-				66ED6D6E16F427FD001B853E /* TestSQLiteStorePerformance.m in Sources */,
 				662F9EA116F63C8D00CEB9B4 /* TestItem.m in Sources */,
 				662F9EA216F6E84000CEB9B4 /* TestEditingContext.m in Sources */,
 				66D84FC6170001D4004C1BA4 /* TestPerformance.m in Sources */,
 				6675C9221702C6FB007C8DB6 /* TestRelationshipCache.m in Sources */,
 				66C5B3BA1707BD4E00AE0BCC /* TestBinaryReadWrite.m in Sources */,
 				66BC3D271713E775002274E0 /* TestSQLiteStore.m in Sources */,
+				66ED6D6E16F427FD001B853E /* TestSQLiteStorePerformance.m in Sources */,
 				66E3AA2D171BA56200D5DD8A /* TestSQLiteStorePersistentRootBackingStore.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

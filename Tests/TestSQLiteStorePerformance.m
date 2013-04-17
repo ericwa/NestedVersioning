@@ -7,18 +7,21 @@
 
 @implementation TestSQLiteStorePerformance
 
+#define TEST_PERFORMANCE 1
 #if TEST_PERFORMANCE
 
 // --------------------------------------------
 // Test case setup
 // --------------------------------------------
 
-static const int NUM_CHILDREN = 1000;
-static const int NUM_COMMITS = 1000;
-static const int NUM_PERSISTENT_ROOTS = 100;
-static const int NUM_PERSISTENT_ROOT_COPIES = 10000;
+static const int NUM_CHILDREN = 200;
+static const int NUM_COMMITS = 200;
 
-static const int LOTS_OF_EMBEDDED_ITEMS = 1000000;
+static const int NUM_PERSISTENT_ROOTS = 100;
+static const int NUM_CHILDREN_PER_PERSISTENT_ROOT = 100;
+static const int NUM_PERSISTENT_ROOT_COPIES = 200;
+
+static const int LOTS_OF_EMBEDDED_ITEMS = 200;
 
 static COUUID *rootUUID;
 static COUUID *childUUIDs[NUM_CHILDREN];
@@ -144,20 +147,20 @@ static int itemChangedAtCommit(int i)
 }
 
 
-- (COItemTree*) makeBigItemTree
+- (COItemTree*) makeItemTreeWithChildCount: (NSUInteger)numChildren
 {
-    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity: LOTS_OF_EMBEDDED_ITEMS+1];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity: numChildren+1];
     
-    for (int i=0; i<LOTS_OF_EMBEDDED_ITEMS; i++)
+    for (int i=0; i<numChildren; i++)
     {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-        COMutableItem *item = [COMutableItem item];
+        COMutableItem *item = [COItem item];
         [item setValue: [NSNumber numberWithInt: i] forAttribute: @"name" type: kCOInt64Type];
         [dict setObject: item forKey: [item UUID]];
         [pool release];
     }
     
-    COMutableItem *rootItem = [COMutableItem item];
+    COMutableItem *rootItem = [COItem item];
     [rootItem setValue: [dict allKeys]
           forAttribute: @"children" type: kCOArrayType | kCOEmbeddedItemType];
     [dict setObject: rootItem forKey: [rootItem UUID]];
@@ -278,7 +281,7 @@ static int itemChangedAtCommit(int i)
 
 - (void)testLotsOfPersistentRoots
 {
-    COItemTree *it = [self makeInitialItemTree];
+    COItemTree *it = [self makeItemTreeWithChildCount: NUM_CHILDREN_PER_PERSISTENT_ROOT];
     
     NSDate *startDate = [NSDate date];
     
@@ -292,14 +295,14 @@ static int itemChangedAtCommit(int i)
     
     UKPass();
     NSLog(@"creating %d persistent roots each containing a %d-item tree took %lf ms", NUM_PERSISTENT_ROOTS,
-          NUM_CHILDREN, 1000.0 * [[NSDate date] timeIntervalSinceDate: startDate]);
+          NUM_CHILDREN_PER_PERSISTENT_ROOT, 1000.0 * [[NSDate date] timeIntervalSinceDate: startDate]);
 }
 
 - (void)testLotsOfPersistentRootCopies
 {
     NSDate *startDate = [NSDate date];
     
-    COItemTree *it = [self makeInitialItemTree];
+    COItemTree *it = [self makeItemTreeWithChildCount: NUM_CHILDREN_PER_PERSISTENT_ROOT];
 
     [store beginTransaction];
     COPersistentRootState *proot = [store createPersistentRootWithInitialContents: it
@@ -322,7 +325,7 @@ static int itemChangedAtCommit(int i)
 {
     NSDate *startDate = [NSDate date];
     
-    COItemTree *it = [self makeBigItemTree];
+    COItemTree *it = [self makeItemTreeWithChildCount: LOTS_OF_EMBEDDED_ITEMS];
     
     NSLog(@"creating %d item itemtree took %lf ms", LOTS_OF_EMBEDDED_ITEMS,
           1000.0 * [[NSDate date] timeIntervalSinceDate: startDate]);

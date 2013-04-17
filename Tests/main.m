@@ -15,9 +15,26 @@
     return self;
 }
 
++ (NSUInteger) sizeOfPath: (NSString *)aPath
+{
+    NSUInteger result = 0;
+    for (NSString *subpath in [[NSFileManager defaultManager] subpathsAtPath: aPath])
+    {
+        NSDictionary *attribs = [[NSFileManager defaultManager] fileAttributesAtPath: [aPath stringByAppendingPathComponent: subpath]
+                                                                        traverseLink: NO];
+        result += [[attribs objectForKey: NSFileSize] longLongValue];
+    }
+    return result;
+}
+
 - (void) dealloc
 {
     [store release];
+    
+    NSLog(@"Store size is %lld K", (long long)[COSQLiteStoreTestCase sizeOfPath: STOREPATH] / 1024);
+    
+    [[NSFileManager defaultManager] removeItemAtPath: STOREPATH error: NULL];
+    
     [super dealloc];
 }
 
