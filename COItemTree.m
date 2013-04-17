@@ -18,7 +18,7 @@
 {
     NSParameterAssert([items count] >= 1);
 
-    COItemTree *result = [[self alloc] init];
+    COItemTree *result = [[[self alloc] init] autorelease];
     result->rootItemUUID_ = [[[items objectAtIndex: 0] UUID] copy];
     result->itemForUUID_ = [[NSMutableDictionary alloc] initWithCapacity: [items count]];
     

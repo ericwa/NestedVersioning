@@ -101,7 +101,7 @@ static COUUID *childUUID;
 {
     // Create it
     COUUID *branch = [store createBranchWithInitialRevision: [[proot currentBranchState] currentState]
-                                                 setCurrent: YES
+                                                 setCurrent: NO
                                           forPersistentRoot: prootUUID];
     COBranchState *initialState = [[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branch];
     
@@ -116,6 +116,9 @@ static COUUID *childUUID;
         COBranchState *branchObj = [[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branch];
         UKTrue([branchObj isDeleted]);
     }
+    
+    // Ensure we can't switch to it, since it is deleted
+    UKFalse([store setCurrentBranch: branch forPersistentRoot: prootUUID]);
 
     // Undelete it
     UKTrue([store undeleteBranch: branch ofPersistentRoot: prootUUID]);
@@ -136,11 +139,39 @@ static COUUID *childUUID;
     
     // Really delete it
     UKTrue([store deleteBranch: branch ofPersistentRoot: prootUUID]);
+    
+    // FIXME: Test what happens when deleting the current branch
+    [store setCurrentBranch: initialBranchUUID forPersistentRoot: prootUUID];
+    
     UKTrue([store finalizeDeletionsForPersistentRoot: prootUUID]);
     UKNil([[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branch]);
     UKIntsEqual(1, [[[store persistentRootWithUUID: prootUUID] branchUUIDs] count]);
 }
 
+- (void) testDeleteCurrentBranch
+{
+    // Create it
+    COUUID *branch = [store createBranchWithInitialRevision: [[proot currentBranchState] currentState]
+                                                 setCurrent: YES
+                                          forPersistentRoot: prootUUID];
+    COBranchState *initialState = [[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branch];
+
+    // Delete it - should return NO because you can't delete the current branch
+    UKFalse([store deleteBranch: branch ofPersistentRoot: prootUUID]);
+
+    // Should have no effect
+    UKTrue([store finalizeDeletionsForPersistentRoot: prootUUID]);
+    
+    // Verify the branch is still there
+    {
+        COBranchState *branchObj = [[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branch];
+        UKObjectsEqual(initialState, branchObj);
+    }
+    
+    UKTrue([store setCurrentBranch: initialBranchUUID forPersistentRoot: prootUUID]);
+
+    UKTrue([store deleteBranch: branch ofPersistentRoot: prootUUID]);
+}
 
 - (void) testBranchMetadata
 {
@@ -172,6 +203,33 @@ static COUUID *childUUID;
              forPersistentRoot: prootUUID]);
     
     UKNil([[store persistentRootWithUUID: prootUUID] metadata]);
+    
+    UKTrue([store setMetadata: D(@"hello 2", @"name")
+            forPersistentRoot: prootUUID]);
+    
+    UKObjectsEqual(D(@"hello 2", @"name"), [[store persistentRootWithUUID: prootUUID] metadata]);
+}
+
+- (void) testSetCurrentBranch
+{
+    // Create it
+    COUUID *branch = [store createBranchWithInitialRevision: [[proot currentBranchState] currentState]
+                                                 setCurrent: NO
+                                          forPersistentRoot: prootUUID];
+
+    UKObjectsEqual(S(branch, initialBranchUUID), [[store persistentRootWithUUID: prootUUID] branchUUIDs]);
+    
+    UKObjectsEqual(initialBranchUUID, [[store persistentRootWithUUID: prootUUID] currentBranchUUID]);
+    
+    UKTrue([store setCurrentBranch: branch
+                 forPersistentRoot: prootUUID]);
+    
+    UKObjectsEqual(branch, [[store persistentRootWithUUID: prootUUID] currentBranchUUID]);    
+}
+
+- (void) testSetCurrentVersion
+{
+    
 }
 
 - (void) testCrossPersistentRootReference
@@ -292,6 +350,31 @@ static COUUID *childUUID;
     UKObjectsEqual([NSArray array], [store persistentRootUUIDs]);
     UKNil([store persistentRootWithUUID: prootUUID]);    
 }
+
+// FIXME: Not sure if this is worth the bother
+
+//- (void) testAllOperationsFailOnDeletedPersistentRoot
+//{
+//    // Used later in test
+//    COUUID *branch = [store createBranchWithInitialRevision: [[proot currentBranchState] currentState]
+//                                                 setCurrent: NO
+//                                          forPersistentRoot: prootUUID];
+//    
+//    UKTrue([store deletePersistentRoot: prootUUID]);
+//    // Persistent root returned since we have not called finalizeDeletions.
+//    UKObjectsEqual(A(prootUUID), [store persistentRootUUIDs]);
+//    
+//    // Persistent root returned since we have not called finalizeDeletions.
+//    UKNotNil([store persistentRootWithUUID: prootUUID]);
+//    
+//    // All write operations on prootUUID should return NO.
+//    
+//    UKFalse([store setCurrentBranch: branch forPersistentRoot: prootUUID]);
+//    UKFalse([store setCurrentVersion: [[proot currentBranchState] currentState] forBranch: branch ofPersistentRoot: prootUUID updateHead: NO]);
+//    UKFalse([store setTailRevision: [[proot currentBranchState] currentState] forBranch: branch ofPersistentRoot:prootUUID]);
+//    UKFalse([store deleteBranch: branch ofPersistentRoot: prootUUID]);
+//    UKFalse([store undeleteBranch: branch ofPersistentRoot: prootUUID]);
+//}
 
 - (void) testPersistentRootBasic
 {

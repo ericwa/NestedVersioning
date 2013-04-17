@@ -84,10 +84,10 @@
     // Persistent Root and Branch tables
     
     [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS persistentroots (root_id INTEGER PRIMARY KEY, "
-     "uuid BLOB, backingstore BLOB, currentbranch INTEGER, metadata BLOB, deleted BOOLEAN)"];
+     "uuid BLOB, backingstore BLOB, currentbranch INTEGER, metadata BLOB, deleted BOOLEAN DEFAULT 0)"];
     
     [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS branches (branch_id INTEGER PRIMARY KEY, "
-     "uuid BLOB, proot INTEGER, head_revid INTEGER, tail_revid INTEGER, current_revid INTEGER, metadata BLOB, deleted BOOLEAN)"];
+     "uuid BLOB, proot INTEGER, head_revid INTEGER, tail_revid INTEGER, current_revid INTEGER, metadata BLOB, deleted BOOLEAN DEFAULT 0)"];
 
     [db_ executeUpdate: @"CREATE INDEX IF NOT EXISTS persistentroots_uuid_index ON persistentroots(uuid)"];
     [db_ executeUpdate: @"CREATE INDEX IF NOT EXISTS branches_proot_index ON branches(proot)"];
@@ -551,7 +551,7 @@
 
     const int64_t root_id = [db_ lastInsertRowId];
     
-    [db_ executeUpdate: @"INSERT INTO branches (uuid, proot, head_revid, tail_revid, current_revid, metadata) VALUES(?,?,?,?,?,?)",
+    [db_ executeUpdate: @"INSERT INTO branches (uuid, proot, head_revid, tail_revid, current_revid, metadata, deleted) VALUES(?,?,?,?,?,?,0)",
            [branchUUID dataValue],
            [NSNumber numberWithLongLong: root_id],
            [NSNumber numberWithLongLong: [revId revisionIndex]],
@@ -617,12 +617,14 @@
 		forPersistentRoot: (COUUID *)aRoot
 {
     NSNumber *root_id = [self rootIdForPersistentRootUUID: aRoot];
-    BOOL ok = [db_ executeUpdate: @"UPDATE persistentroots SET currentbranch = (SELECT branch_id FROM branches WHERE proot = ? AND uuid = ?) WHERE root_id = ?",
-               root_id,
-               root_id,
-               [aBranch dataValue]];
-   
-    return ok;
+    NSNumber *branch_id = [db_ numberForQuery: @"SELECT branch_id FROM branches WHERE proot = ? AND uuid = ? AND deleted = 0", root_id, [aBranch dataValue]];
+    if (branch_id != nil)
+    {
+        return [db_ executeUpdate: @"UPDATE persistentroots SET currentbranch = ? WHERE root_id = ?",
+                   branch_id,
+                   root_id];
+    }
+    return NO;
 }
 
 - (COUUID *) createBranchWithInitialRevision: (CORevisionID *)revId
@@ -644,8 +646,8 @@
     
     if (setCurrent)
     {
-        [self setCurrentBranch: branchUUID
-             forPersistentRoot: aRoot];
+        assert([self setCurrentBranch: branchUUID
+                    forPersistentRoot: aRoot]);
     }
     
     [self commitTransactionIfNeeded];
@@ -683,9 +685,12 @@
 - (BOOL) deleteBranch: (COUUID *)aBranch
      ofPersistentRoot: (COUUID *)aRoot
 {
-    BOOL ok = [db_ executeUpdate: @"UPDATE branches SET deleted = 1 WHERE uuid = ?",
+    BOOL ok = [db_ executeUpdate: @"UPDATE branches SET deleted = 1 WHERE uuid = ? AND branch_id != (SELECT currentbranch FROM persistentroots WHERE root_id = proot)",
                [aBranch dataValue]];
-    
+    if (ok)
+    {
+        return [db_ changes] > 0;
+    }
     return ok;
 }
 
@@ -702,7 +707,6 @@
            forBranch: (COUUID *)aBranch
     ofPersistentRoot: (COUUID *)aRoot
 {
-    NSNumber *root_id = [self rootIdForPersistentRootUUID: aRoot];
     NSData *data = [self writeMetadata: meta];    
     BOOL ok = [db_ executeUpdate: @"UPDATE branches SET metadata = ? WHERE uuid = ?",
                data,
