@@ -147,15 +147,6 @@
 
 - (NSArray *) persistentRootUUIDs;
 
-
-
-
-/* Attachments */
-
-- (NSURL *) URLForAttachment: (NSData *)aHash;
-- (NSData *) addAttachmentAtURL: (NSURL *)aURL;
-
-
 /** @taskunit writing persistent roots */
 
 /*

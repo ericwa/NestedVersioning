@@ -179,6 +179,8 @@
 		66E778BE14E60ED900D5DFFF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 66E778BA14E60ED900D5DFFF /* InfoPlist.strings */; };
 		66E778BF14E60ED900D5DFFF /* UKTestHandler.strings in Resources */ = {isa = PBXBuildFile; fileRef = 66E778BC14E60ED900D5DFFF /* UKTestHandler.strings */; };
 		66EA0D59163E04E30023A12A /* EWUtilityWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EA0D58163E04E30023A12A /* EWUtilityWindowController.m */; };
+		66EC2EB6171E594F00F27B2D /* COSQLiteStore+Attachments.h in Headers */ = {isa = PBXBuildFile; fileRef = 66EC2EB4171E594F00F27B2D /* COSQLiteStore+Attachments.h */; };
+		66EC2EB7171E594F00F27B2D /* COSQLiteStore+Attachments.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EC2EB5171E594F00F27B2D /* COSQLiteStore+Attachments.m */; };
 		66ED6D5C16F04A3B001B853E /* COValueTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = 66ED6D5A16F04A3B001B853E /* COValueTransformer.h */; };
 		66ED6D5D16F04A3B001B853E /* COValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 66ED6D5B16F04A3B001B853E /* COValueTransformer.m */; };
 		66ED6D6A16F41989001B853E /* COSQLiteStorePersistentRootBackingStoreBinaryFormats.h in Headers */ = {isa = PBXBuildFile; fileRef = 66ED6D6816F41988001B853E /* COSQLiteStorePersistentRootBackingStoreBinaryFormats.h */; };
@@ -479,6 +481,8 @@
 		66EB756E148CA9D300C2114B /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		66EB756F148CA9D300C2114B /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		66EB7570148CA9D300C2114B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		66EC2EB4171E594F00F27B2D /* COSQLiteStore+Attachments.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COSQLiteStore+Attachments.h"; sourceTree = "<group>"; };
+		66EC2EB5171E594F00F27B2D /* COSQLiteStore+Attachments.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "COSQLiteStore+Attachments.m"; sourceTree = "<group>"; };
 		66ED6D5A16F04A3B001B853E /* COValueTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COValueTransformer.h; sourceTree = "<group>"; };
 		66ED6D5B16F04A3B001B853E /* COValueTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COValueTransformer.m; sourceTree = "<group>"; };
 		66ED6D5F16F053EB001B853E /* BasicPersistence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BasicPersistence.m; sourceTree = "<group>"; };
@@ -903,6 +907,8 @@
 				66ED6D6F16F4EA9C001B853E /* Serializer */,
 				666CB029166342E50066BC77 /* COSQLiteStore.h */,
 				666CB02A166342E50066BC77 /* COSQLiteStore.m */,
+				66EC2EB4171E594F00F27B2D /* COSQLiteStore+Attachments.h */,
+				66EC2EB5171E594F00F27B2D /* COSQLiteStore+Attachments.m */,
 				66E4BB63166A7B64009BFE7D /* COSQLiteStorePersistentRootBackingStore.h */,
 				66E4BB64166A7B64009BFE7D /* COSQLiteStorePersistentRootBackingStore.m */,
 				66ED6D6816F41988001B853E /* COSQLiteStorePersistentRootBackingStoreBinaryFormats.h */,
@@ -1218,6 +1224,7 @@
 				6675C91B17016D44007C8DB6 /* CORelationshipCache.h in Headers */,
 				6623BD3B1706BD0D00E9E2D6 /* COWorkspace.h in Headers */,
 				66C5B3BD1708FA0500AE0BCC /* COItem+Binary.h in Headers */,
+				66EC2EB6171E594F00F27B2D /* COSQLiteStore+Attachments.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1561,6 +1568,7 @@
 				6675C91C17016D44007C8DB6 /* CORelationshipCache.m in Sources */,
 				6623BD3C1706BD0D00E9E2D6 /* COWorkspace.m in Sources */,
 				66C5B3BE1708FA0500AE0BCC /* COItem+Binary.m in Sources */,
+				66EC2EB7171E594F00F27B2D /* COSQLiteStore+Attachments.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
