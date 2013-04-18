@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <UnitKit/UnitKit.h>
 #import "COSQLiteStore.h"
+#import "COSQLiteStore+Attachments.h"
 #import "COPath.h"
 #import "COItem.h"
 

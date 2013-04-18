@@ -8,7 +8,10 @@
 {
     COPersistentRootState *proot;
     COUUID *prootUUID;
+    
     COUUID *initialBranchUUID;
+    COUUID *branchAUUID;
+    COUUID *branchBUUID;
     CORevisionID *initialRevisionId;
 }
 @end
@@ -16,33 +19,53 @@
 @implementation TestSQLiteStore
 
 static COUUID *rootUUID;
-static COUUID *childUUID;
+static COUUID *childUUID1;
+static COUUID *childUUID2;
 
 + (void) initialize
 {
     if (self == [TestSQLiteStore class])
     {
         rootUUID = [[COUUID alloc] init];
-        childUUID = [[COUUID alloc] init];
+        childUUID1 = [[COUUID alloc] init];
+        childUUID2 = [[COUUID alloc] init];
     }
 }
 
 // --- Example data setup
+// FIXME: Factor out to ExampleStore class shared by the backing store test and this and others.
+// FIXME: Test another isolated persistent root with its own backing store.
+#define BRANCH_LENGTH 5
 
-- (COItem *) initialRootItem
+/*
+ * The sample store will look like this
+ *
+ *  Fist commit
+ *
+ *    revid 0---------[ revid 1 through BRANCH_LENGTH ]  ("branch A")
+ *           \
+ *            \
+ *             ------------[ revid (BRANCH_LENGTH + 1) through (2 * BRANCH_LENGTH) ] ("branch B")
+ *
+ * revid 0 through BRANCH_LENGTH will contain rootUUID and childUUID1.
+ * revid (BRANCH_LENGTH + 1) through (2 * BRANCH_LENGTH) will contain rootUUID and childUUID2.
+ */
+
+- (COItem *) initialRootItemForChildren: (NSArray *)children
 {
     COMutableItem *rootItem = [[[COMutableItem alloc] initWithUUID: rootUUID] autorelease];
     [rootItem setValue: @"root" forAttribute: @"name" type: kCOStringType];
-    [rootItem setValue: A(childUUID)
+    [rootItem setValue: children
           forAttribute: @"children"
                   type: kCOEmbeddedItemType | kCOArrayType];
     return rootItem;
 }
 
-- (COItem *) initialChildItem
+- (COItem *) initialChildItemForUUID: (COUUID*)aUUID
+                                name: (NSString *)name
 {
-    COMutableItem *child = [[[COMutableItem alloc] initWithUUID: childUUID] autorelease];
-    [child setValue: @"child"
+    COMutableItem *child = [[[COMutableItem alloc] initWithUUID: aUUID] autorelease];
+    [child setValue: name
        forAttribute: @"name"
                type: kCOStringType];
     return child;
@@ -50,38 +73,104 @@ static COUUID *childUUID;
 
 - (COItemTree*) makeInitialItemTree
 {
-    return [[[COItemTree alloc] initWithItemForUUID: D([self initialRootItem], rootUUID,
-                                                       [self initialChildItem], childUUID)
-                                       rootItemUUID: rootUUID] autorelease];
+    return [COItemTree treeWithItemsRootFirst: A([self initialRootItemForChildren: A(childUUID1)],
+                                                 [self initialChildItemForUUID: childUUID1 name: @"initial child"])];
+}
+
+- (COItemTree*) makeBranchAItemTreeAtRevid: (int64_t)aRev
+{
+    NSString *name = [NSString stringWithFormat: @"child for commit %lld", (long long int)aRev];
+    return [COItemTree treeWithItemsRootFirst: A([self initialRootItemForChildren: A(childUUID1)],
+                                                 [self initialChildItemForUUID: childUUID1 name: name])];
+}
+
+- (COItemTree*) makeBranchBItemTreeAtRevid: (int64_t)aRev
+{
+    NSString *name = [NSString stringWithFormat: @"child for commit %lld", (long long int)aRev];
+    return [COItemTree treeWithItemsRootFirst: A([self initialRootItemForChildren: A(childUUID2)],
+                                                 [self initialChildItemForUUID: childUUID2 name: name])];
 }
 
 - (COItemTree *)itemTreeWithChildNameChange: (NSString*)aName
 {
-    COItemTree *it = [self makeInitialItemTree];    
-    COMutableItem *item = (COMutableItem *)[it itemForUUID: childUUID];
+    COItemTree *it = [self makeInitialItemTree];
+    COMutableItem *item = (COMutableItem *)[it itemForUUID: childUUID1];
     [item setValue: aName
       forAttribute: @"name"];
     return it;
 }
 
-- (CORevisionID *)commitChildNameChange: (NSString*)aName
-                              parentRev: (CORevisionID *)aParent
+- (NSDictionary *)initialMetadata
 {
-    return [store writeItemTree: [self itemTreeWithChildNameChange: aName]
-                   withMetadata: nil
-           withParentRevisionID: aParent
-                  modifiedItems: A(childUUID)];
+    return D(@"first commit", @"name");
+}
+
+- (NSDictionary *)branchAMetadata
+{
+    return D(@"branch A", @"name");
+}
+
+- (NSDictionary *)branchBMetadata
+{
+    return D(@"branch B", @"name");
 }
 
 - (id) init
 {
     SUPERINIT;
-    COItemTree *it = [self makeInitialItemTree];
-    ASSIGN(proot, [store createPersistentRootWithInitialContents: it
-                                                        metadata: D(@"test1", @"name")]);
+    
+    // First commit
+    
+    ASSIGN(proot, [store createPersistentRootWithInitialContents: [self makeInitialItemTree]
+                                                        metadata: [self initialMetadata]]);    
     ASSIGN(prootUUID, [proot UUID]);
+    
+    // Branch A
+    
+    for (int64_t i = 1; i<=BRANCH_LENGTH; i++)
+    {
+        [store writeItemTree: [self makeBranchAItemTreeAtRevid: i]
+                withMetadata: [self branchAMetadata]
+        withParentRevisionID: [CORevisionID revisionWithBackinStoreUUID: [proot UUID] revisionIndex: i - 1]
+               modifiedItems: A(childUUID1)];
+    }
+    
+    // Branch B
+    
+    [store writeItemTree: [self makeBranchBItemTreeAtRevid: BRANCH_LENGTH + 1]    
+            withMetadata: [self branchBMetadata]
+    withParentRevisionID: [[proot currentBranchState] currentState]
+           modifiedItems: A(rootUUID, childUUID2)];
+    
+    for (int64_t i = (BRANCH_LENGTH + 2); i <= (2 * BRANCH_LENGTH); i++)
+    {
+        [store writeItemTree: [self makeBranchBItemTreeAtRevid: i]
+                withMetadata: [self branchBMetadata]
+        withParentRevisionID: [CORevisionID revisionWithBackinStoreUUID: [proot UUID] revisionIndex: i]
+               modifiedItems: A(childUUID2)];
+    }
+
+
     ASSIGN(initialBranchUUID, [proot currentBranchUUID]);
     ASSIGN(initialRevisionId, [[proot currentBranchState] currentState]);
+    
+    ASSIGN(branchAUUID, [store createBranchWithInitialRevision: initialRevisionId
+                                                    setCurrent: NO
+                                             forPersistentRoot: prootUUID]);
+    assert([store setCurrentVersion: [CORevisionID revisionWithBackinStoreUUID: [proot UUID] revisionIndex: BRANCH_LENGTH]
+                          forBranch: branchAUUID
+                   ofPersistentRoot: prootUUID
+                         updateHead: YES]);
+    
+    ASSIGN(branchBUUID, [store createBranchWithInitialRevision: initialRevisionId
+                                                    setCurrent: NO
+                                             forPersistentRoot: prootUUID]);
+    
+    assert([store setCurrentVersion: [CORevisionID revisionWithBackinStoreUUID: [proot UUID] revisionIndex: 2 * BRANCH_LENGTH]
+                          forBranch: branchBUUID
+                   ofPersistentRoot: prootUUID
+                         updateHead: YES]);
+
     return self;
 }
 
@@ -91,39 +180,35 @@ static COUUID *childUUID;
     [prootUUID release];
     [initialBranchUUID release];
     [initialRevisionId release];
+    [branchAUUID release];
+    [branchBUUID release];
     [super dealloc];
 }
 
 
 // --- The tests themselves
 
-- (void) testDeleteBranch
+- (void) testDeleteBranchA
 {
-    // Create it
-    COUUID *branch = [store createBranchWithInitialRevision: [[proot currentBranchState] currentState]
-                                                 setCurrent: NO
-                                          forPersistentRoot: prootUUID];
-    COBranchState *initialState = [[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branch];
+    COBranchState *initialState = [[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branchAUUID];
     
-    UKObjectKindOf(branch, COUUID);
-    UKObjectsNotEqual(initialBranchUUID, branch);
-    UKObjectsEqual(S(branch, initialBranchUUID), [[store persistentRootWithUUID: prootUUID] branchUUIDs]);
+    UKObjectsEqual(S(branchAUUID, branchBUUID, initialBranchUUID), [[store persistentRootWithUUID: prootUUID] branchUUIDs]);
     
     // Delete it
-    UKTrue([store deleteBranch: branch ofPersistentRoot: prootUUID]);
+    UKTrue([store deleteBranch: branchAUUID ofPersistentRoot: prootUUID]);
     
     {
-        COBranchState *branchObj = [[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branch];
+        COBranchState *branchObj = [[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branchAUUID];
         UKTrue([branchObj isDeleted]);
     }
     
     // Ensure we can't switch to it, since it is deleted
-    UKFalse([store setCurrentBranch: branch forPersistentRoot: prootUUID]);
+    UKFalse([store setCurrentBranch: branchAUUID forPersistentRoot: prootUUID]);
 
     // Undelete it
-    UKTrue([store undeleteBranch: branch ofPersistentRoot: prootUUID]);
+    UKTrue([store undeleteBranch: branchAUUID ofPersistentRoot: prootUUID]);
     {
-        COBranchState *branchObj = [[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branch];
+        COBranchState *branchObj = [[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branchAUUID];
         UKFalse([branchObj isDeleted]);
         UKObjectsEqual(initialState, branchObj);
     }
@@ -133,44 +218,32 @@ static COUUID *childUUID;
 
     // Verify the branch is still there
     {
-        COBranchState *branchObj = [[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branch];
+        COBranchState *branchObj = [[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branchAUUID];
         UKObjectsEqual(initialState, branchObj);
     }
     
     // Really delete it
-    UKTrue([store deleteBranch: branch ofPersistentRoot: prootUUID]);
-    
-    // FIXME: Test what happens when deleting the current branch
-    [store setCurrentBranch: initialBranchUUID forPersistentRoot: prootUUID];
+    UKTrue([store deleteBranch: branchAUUID ofPersistentRoot: prootUUID]);
     
     UKTrue([store finalizeDeletionsForPersistentRoot: prootUUID]);
-    UKNil([[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branch]);
-    UKIntsEqual(1, [[[store persistentRootWithUUID: prootUUID] branchUUIDs] count]);
+    UKNil([[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branchAUUID]);
+    UKObjectsEqual(S(branchBUUID, initialBranchUUID), [[store persistentRootWithUUID: prootUUID] branchUUIDs]);
 }
 
 - (void) testDeleteCurrentBranch
 {
-    // Create it
-    COUUID *branch = [store createBranchWithInitialRevision: [[proot currentBranchState] currentState]
-                                                 setCurrent: YES
-                                          forPersistentRoot: prootUUID];
-    COBranchState *initialState = [[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branch];
-
     // Delete it - should return NO because you can't delete the current branch
-    UKFalse([store deleteBranch: branch ofPersistentRoot: prootUUID]);
+    UKFalse([store deleteBranch: initialBranchUUID ofPersistentRoot: prootUUID]);
 
     // Should have no effect
     UKTrue([store finalizeDeletionsForPersistentRoot: prootUUID]);
     
     // Verify the branch is still there
     {
-        COBranchState *branchObj = [[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branch];
-        UKObjectsEqual(initialState, branchObj);
+        COBranchState *branchObj = [[store persistentRootWithUUID: prootUUID] branchPlistForUUID: initialBranchUUID];
+        UKNotNil(branchObj);
+        UKFalse([branchObj isDeleted]);
     }
-    
-    UKTrue([store setCurrentBranch: initialBranchUUID forPersistentRoot: prootUUID]);
-
-    UKTrue([store deleteBranch: branch ofPersistentRoot: prootUUID]);
 }
 
 - (void) testBranchMetadata
@@ -192,7 +265,7 @@ static COUUID *childUUID;
 
 - (void) testPersistentRootMetadata
 {
-    UKObjectsEqual(D(@"test1", @"name"), [[store persistentRootWithUUID: prootUUID] metadata]);
+    UKObjectsEqual([self initialMetadata], [[store persistentRootWithUUID: prootUUID] metadata]);
     
     UKTrue([store setMetadata: D(@"hello world", @"name")
             forPersistentRoot: prootUUID]);
@@ -212,19 +285,18 @@ static COUUID *childUUID;
 
 - (void) testSetCurrentBranch
 {
-    // Create it
-    COUUID *branch = [store createBranchWithInitialRevision: [[proot currentBranchState] currentState]
-                                                 setCurrent: NO
-                                          forPersistentRoot: prootUUID];
-
-    UKObjectsEqual(S(branch, initialBranchUUID), [[store persistentRootWithUUID: prootUUID] branchUUIDs]);
-    
     UKObjectsEqual(initialBranchUUID, [[store persistentRootWithUUID: prootUUID] currentBranchUUID]);
     
-    UKTrue([store setCurrentBranch: branch
+    UKTrue([store setCurrentBranch: branchAUUID
                  forPersistentRoot: prootUUID]);
     
-    UKObjectsEqual(branch, [[store persistentRootWithUUID: prootUUID] currentBranchUUID]);    
+    UKObjectsEqual(branchAUUID, [[store persistentRootWithUUID: prootUUID] currentBranchUUID]);
+
+    UKTrue([store setCurrentBranch: branchBUUID
+                 forPersistentRoot: prootUUID]);
+    
+    UKObjectsEqual(branchBUUID, [[store persistentRootWithUUID: prootUUID] currentBranchUUID]);
+
 }
 
 - (void) testSetCurrentVersion
@@ -265,7 +337,7 @@ static COUUID *childUUID;
     // Test attachment GC
     
     COItemTree *tree = [self makeInitialItemTree];
-    [[tree itemForUUID: childUUID] setValue: hash forAttribute: @"attachment" type: kCOAttachmentType];
+    [[tree itemForUUID: childUUID1] setValue: hash forAttribute: @"attachment" type: kCOAttachmentType];
     CORevisionID *withAttachment = [store writeItemTree: tree withMetadata: nil withParentRevisionID: initialRevisionId modifiedItems: nil];
     UKNotNil(withAttachment);
     UKTrue([store setCurrentVersion: withAttachment
@@ -380,8 +452,6 @@ static COUUID *childUUID;
 {
     UKObjectsEqual(S(prootUUID), [NSSet setWithArray:[store persistentRootUUIDs]]);
     UKObjectsEqual(initialBranchUUID, [[store persistentRootWithUUID: prootUUID] currentBranchUUID]);
-    COPersistentRootState *refetched = [store persistentRootWithUUID: prootUUID];
-    UKObjectsEqual(proot, refetched);
     UKObjectsEqual([self makeInitialItemTree], [store itemTreeForRevisionID: initialRevisionId]);
 }
 
@@ -401,6 +471,7 @@ static COUUID *childUUID;
     // Verify that new UUIDs were generated
     UKObjectsNotEqual(prootUUID, [copy UUID]);
     UKObjectsNotEqual([proot branchUUIDs], [copy branchUUIDs]);
+    UKIntsEqual(1,  [[copy branchUUIDs] count]);
     
     // Make sure metadata was read out properly
     UKObjectsEqual(D(@"test2", @"name"), [copy metadata]);
@@ -422,18 +493,10 @@ static COUUID *childUUID;
     UKObjectsEqual(copy, [store persistentRootWithUUID: [copy UUID]]);
     
     // 2. try changing. Verify that proot and copy are totally independent
-    
-    CORevisionID *mod1 = [self commitChildNameChange: @"edit1"
-                                           parentRev: initialRevisionId];
-    
-    CORevisionID *mod2 = [self commitChildNameChange: @"edit2"
-                                           parentRev: initialRevisionId];
-    
 
-    UKObjectsEqual([self itemTreeWithChildNameChange: @"edit1"], [store itemTreeForRevisionID: mod1]);
-    UKObjectsEqual([self itemTreeWithChildNameChange: @"edit2"], [store itemTreeForRevisionID: mod2]);
-
-    UKTrue([store setCurrentVersion: mod1
+    CORevisionID *rev1 = [CORevisionID revisionWithBackinStoreUUID: [proot UUID] revisionIndex: 1];
+    
+    UKTrue([store setCurrentVersion: rev1
                           forBranch: [[proot currentBranchState] UUID]
                    ofPersistentRoot: prootUUID
                          updateHead: YES]);
@@ -442,8 +505,8 @@ static COUUID *childUUID;
     
     ASSIGN(proot, [store persistentRootWithUUID: prootUUID]);
     copy = [store persistentRootWithUUID: [copy UUID]];
-    UKObjectsEqual(mod1, [[proot currentBranchState] currentState]);
-    UKObjectsEqual(mod1, [[proot currentBranchState] headRevisionID]);
+    UKObjectsEqual(rev1, [[proot currentBranchState] currentState]);
+    UKObjectsEqual(rev1, [[proot currentBranchState] headRevisionID]);
     UKObjectsEqual(initialRevisionId, [[proot currentBranchState] tailRevisionID]);
     UKObjectsEqual(initialRevisionId, [[copy currentBranchState] currentState]);
     UKObjectsEqual(initialRevisionId, [[copy currentBranchState] headRevisionID]);
@@ -451,7 +514,9 @@ static COUUID *childUUID;
     
     // Commit to copy as well.
     
-    UKTrue([store setCurrentVersion: mod2
+    CORevisionID *rev2 = [CORevisionID revisionWithBackinStoreUUID: [proot UUID] revisionIndex: 2];
+    
+    UKTrue([store setCurrentVersion: rev2
                           forBranch: [[copy currentBranchState] UUID]
                    ofPersistentRoot: [copy UUID]
                          updateHead: YES]);
@@ -460,11 +525,11 @@ static COUUID *childUUID;
     
     ASSIGN(proot, [store persistentRootWithUUID: prootUUID]);
     copy = [store persistentRootWithUUID: [copy UUID]];
-    UKObjectsEqual(mod1, [[proot currentBranchState] currentState]);
-    UKObjectsEqual(mod1, [[proot currentBranchState] headRevisionID]);
+    UKObjectsEqual(rev1, [[proot currentBranchState] currentState]);
+    UKObjectsEqual(rev1, [[proot currentBranchState] headRevisionID]);
     UKObjectsEqual(initialRevisionId, [[proot currentBranchState] tailRevisionID]);
-    UKObjectsEqual(mod2, [[copy currentBranchState] currentState]);
-    UKObjectsEqual(mod2, [[copy currentBranchState] headRevisionID]);
+    UKObjectsEqual(rev2, [[copy currentBranchState] currentState]);
+    UKObjectsEqual(rev2, [[copy currentBranchState] headRevisionID]);
     UKObjectsEqual(initialRevisionId, [[copy currentBranchState] tailRevisionID]);
 }
 

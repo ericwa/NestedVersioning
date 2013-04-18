@@ -169,7 +169,7 @@
 - (NSArray *) allBackingUUIDs
 {
     NSMutableArray *result = [NSMutableArray array];
-    FMResultSet *rs = [db_ executeQuery: @"SELECT coalesce(backingstore, uuid) FROM persistentroots"];
+    FMResultSet *rs = [db_ executeQuery: @"SELECT UNIQUE backingstore FROM persistentroots"];
     sqlite3_stmt *statement = [[rs statement] statement];
     
     while ([rs next])
@@ -192,28 +192,15 @@
     COUUID *backingUUID = [backingStoreUUIDForPersistentRootUUID_ objectForKey: aUUID];
     if (backingUUID == nil)
     {
-        // NOTE: NULL indicates that the backing store UUID is the persistent root UUID
-        FMResultSet *rs = [db_ executeQuery: @"SELECT backingstore FROM persistentroots WHERE uuid = ?", [aUUID dataValue]];
-        if ([rs next])
+        NSData *data = [db_ dataForQuery: @"SELECT backingstore FROM persistentroots WHERE uuid = ?", [aUUID dataValue]];
+        if (data != nil)
         {
-            NSData *data = [rs dataForColumnIndex: 0];
-            if (data == nil)
-            {
-                // Common case
-                backingUUID = aUUID;
-            }
-            else
-            {
-                backingUUID = [COUUID UUIDWithData: data];
-            }
-            [rs close];
+            backingUUID = [COUUID UUIDWithData: data];
         }
         else
         {
-            [rs close];
             [NSException raise: NSInvalidArgumentException format: @"persistent root %@ not found", aUUID];
-        }
-        
+        }        
         [backingStoreUUIDForPersistentRootUUID_ setObject: backingUUID forKey: aUUID];
     }
     return backingUUID;
@@ -457,7 +444,7 @@
     NSNumber *root_id = [self rootIdForPersistentRootUUID: aUUID];
     
     {
-        FMResultSet *rs = [db_ executeQuery: @"SELECT (SELECT uuid FROM branches WHERE branch_id = currentbranch), coalesce(backingstore, uuid), metadata FROM persistentroots WHERE root_id = ?", root_id];
+        FMResultSet *rs = [db_ executeQuery: @"SELECT (SELECT uuid FROM branches WHERE branch_id = currentbranch), backingstore, metadata FROM persistentroots WHERE root_id = ?", root_id];
         if ([rs next])
         {
             currBranch = [COUUID UUIDWithData: [rs dataForColumnIndex: 0]];
@@ -545,7 +532,7 @@
     [db_ executeUpdate: @"INSERT INTO persistentroots (uuid, "
            "backingstore, currentbranch, metadata, deleted) VALUES(?,?,?,?, 0)",
            [uuid dataValue],
-           [uuid isEqual: [revId backingStoreUUID]] ? nil : [[revId backingStoreUUID] dataValue],
+           [[revId backingStoreUUID] dataValue],
            nil,
            [self writeMetadata: metadata]];
 
@@ -762,9 +749,9 @@
     
     // Delete branches / the persistent root
     
-    [db_ executeUpdate: @"DELETE FROM branches WHERE proot IN (SELECT root_id FROM persistentroots WHERE deleted = 1 AND coalesce(backingstore, uuid) = ?)", backingUUIDData];
-    [db_ executeUpdate: @"DELETE FROM branches WHERE deleted = 1 AND proot IN (SELECT root_id FROM persistentroots WHERE coalesce(backingstore, uuid) = ?)", backingUUIDData];
-    [db_ executeUpdate: @"DELETE FROM persistentroots WHERE deleted = 1 AND coalesce(backingstore, uuid) = ?", backingUUIDData];
+    [db_ executeUpdate: @"DELETE FROM branches WHERE proot IN (SELECT root_id FROM persistentroots WHERE deleted = 1 AND backingstore = ?)", backingUUIDData];
+    [db_ executeUpdate: @"DELETE FROM branches WHERE deleted = 1 AND proot IN (SELECT root_id FROM persistentroots WHERE backingstore = ?)", backingUUIDData];
+    [db_ executeUpdate: @"DELETE FROM persistentroots WHERE deleted = 1 AND backingstore = ?", backingUUIDData];
     
     NSMutableIndexSet *keptRevisions = [NSMutableIndexSet indexSet];
     
@@ -773,7 +760,7 @@
                                             "branches.tail_revid "
                                             "FROM persistentroots "
                                             "INNER JOIN branches ON persistentroots.root_id = branches.proot "
-                                            "WHERE coalesce(persistentroots.backingstore, persistentroots.uuid) = ?", backingUUIDData];
+                                            "WHERE persistentroots.backingstore = ?", backingUUIDData];
     while ([rs next])
     {
         const int64_t head = [rs int64ForColumnIndex: 0];

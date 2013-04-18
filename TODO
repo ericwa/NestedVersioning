@@ -9,7 +9,7 @@ Store
 -----
 
 - FInish docs
-- FInish rewrite of attachment GC with no full-store scan.
+x FInish rewrite of attachment GC with no full-store scan.
 
 
 - Basically there are 3 designs we could do:
@@ -23,19 +23,19 @@ Store
        
     4. We could have a hybrid system of a "full-saves" table and a "delta-saves" table.
 
-- GC unreachable revisions (aka history compacting)including unreachable non-gc-root persistent "roots"
-- Merge all gc code into a single GC pass.
+x GC unreachable revisions (aka history compacting)including unreachable non-gc-root persistent "roots"
+x Merge all gc code into a single GC pass.
 x Write binary serialization format
 x Write COItem import/export using binary parser.
-  \Per-item code must be pure C.
+  more or less done: Per-item code must be pure C.
 - Never store UUIDs explictly but use a int <-> UUID table (in every database.)
   since they tend to be reused a lot.
 - Same with property names
-- Even the proot metadata is slow to write to json and back. Store it directly in tables.
+x Even the proot metadata is slow to write to json and back. Store it directly in tables.
 
 X Full-text search
 - Other search
-- Cache references
+x Cache references
 
 Performance problems:
 - why does increasing the delta run length make performance worse?
