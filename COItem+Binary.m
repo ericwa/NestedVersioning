@@ -6,6 +6,7 @@
 
 typedef enum {
     co_reader_expect_object_uuid,
+    co_reader_expect_object_schemaname,
     co_reader_expect_property,
     co_reader_expect_type,
     co_reader_expect_value,
@@ -16,6 +17,7 @@ typedef enum {
 {
 @public
     COUUID *uuid;
+    NSString *schemaName;
     NSMutableDictionary *values;
     NSMutableDictionary *types;
     NSString *currentProperty;
@@ -104,6 +106,7 @@ static void writeValue(co_buffer_t *dest, id aValue, COType aType)
     co_buffer_t buf;
     co_buffer_init(&buf);
     co_buffer_store_uuid(&buf, [self UUID]);
+    co_buffer_store_string(&buf, [self schemaName]);
     co_buffer_begin_object(&buf);
     
     for (NSString *prop in [self attributeNames])
@@ -186,6 +189,10 @@ static void co_read_string(void *ctx, NSString *val)
             ASSIGN(state->currentProperty, val);
             state->state = co_reader_expect_type;
             break;
+        case co_reader_expect_object_schemaname:
+            ASSIGN(state->schemaName, val);
+            state->state = co_reader_expect_property;
+            break;
         default:
             state->state = co_reader_error;
             break;
@@ -202,7 +209,7 @@ static void co_read_uuid(void *ctx, COUUID *uuid)
             break;
         case co_reader_expect_object_uuid:
             ASSIGN(state->uuid, uuid);
-            state->state = co_reader_expect_property;
+            state->state = co_reader_expect_object_schemaname;
             break;
         default:
             state->state = co_reader_error;
@@ -260,6 +267,20 @@ static void co_read_end_array(void *ctx)
     // Do state transition
     state->state = co_reader_expect_property;
 }
+static void co_read_null(void *ctx)
+{
+    COReaderState *state = (COReaderState *)ctx;
+    switch (state->state)
+    {
+        case co_reader_expect_object_schemaname:
+            ASSIGN(state->schemaName, nil);
+            state->state = co_reader_expect_property;
+            break;
+        default:
+            state->state = co_reader_error;
+            break;
+    }
+}
 
 - (id) initWithData: (NSData *)aData
 {
@@ -274,7 +295,8 @@ static void co_read_end_array(void *ctx)
         co_read_begin_object,
         co_read_end_object,
         co_read_begin_array,
-        co_read_end_array
+        co_read_end_array,
+        co_read_null
     };
     co_reader_read([aData bytes],
                    [aData length],
@@ -285,7 +307,7 @@ static void co_read_end_array(void *ctx)
     ASSIGN(uuid, state->uuid);
     ASSIGN(types, state->types);
     ASSIGN(values, state->values);
-
+    ASSIGN(schemaName, state->schemaName);
     [state release];
     
     return self;

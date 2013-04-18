@@ -45,6 +45,10 @@ static void co_read_end_array(void *ctx)
 {
     NSLog(@"end array");
 }
+static void co_read_null(void *ctx)
+{
+    NSLog(@"null");
+}
 
 - (void)testBasic
 {
@@ -67,7 +71,9 @@ static void co_read_end_array(void *ctx)
     co_buffer_store_integer(&buf, 65536);
     co_buffer_store_double(&buf, 3.14159);
     co_buffer_store_string(&buf, @"hello world!");
+    co_buffer_store_string(&buf, @"");
     co_buffer_store_uuid(&buf, uuid);
+    co_buffer_store_null(&buf);
     co_buffer_end_array(&buf);
     co_buffer_end_object(&buf);
     
@@ -80,7 +86,8 @@ static void co_read_end_array(void *ctx)
         co_read_begin_object,
         co_read_end_object,
         co_read_begin_array,
-        co_read_end_array
+        co_read_end_array,
+        co_read_null
     };
     co_reader_read(co_buffer_get_data(&buf),
                    co_buffer_get_length(&buf),

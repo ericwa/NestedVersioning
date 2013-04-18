@@ -11,7 +11,8 @@
 - (void) testBasic
 {
 	COMutableItem *i1 = [COMutableItem item];
-	
+	i1.schemaName = @"org.etoile.test";
+    
 	[i1 setValue: S(@"hello", @"world")
 	forAttribute: @"contents"
 			type: kCOStringType | kCOSetType];
@@ -36,6 +37,25 @@
 		COMutableItem *i1clone = [[[COMutableItem alloc] initWithData: [i1 dataValue]] autorelease];
 		UKObjectsEqual(i1, i1clone);        
     }
+}
+
+- (COItem *) roundTrip: (COItem *)anItem
+{
+    return [[[COMutableItem alloc] initWithData: [anItem dataValue]] autorelease];
+}
+
+- (void) testSchemaName
+{
+    COMutableItem *i1 = [COMutableItem item];
+	i1.schemaName = nil;
+
+    UKNil([[self roundTrip: i1] schemaName]);
+    
+    i1.schemaName = @"";
+    UKObjectsEqual(@"", [[self roundTrip: i1] schemaName]);
+    
+    i1.schemaName = @"x";
+    UKObjectsEqual(@"x", [[self roundTrip: i1] schemaName]);
 }
 
 - (void) testMutability

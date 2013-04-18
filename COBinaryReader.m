@@ -125,6 +125,9 @@ void co_reader_read(const unsigned char *bytes, size_t length, void *context, co
             case ']':
                 callbacks.co_read_end_array(context);
                 break;
+            case '0':
+                callbacks.co_read_null(context);
+                break;
             default:
                 [NSException raise: NSGenericException
                             format: @"unknown type '%c'", type];

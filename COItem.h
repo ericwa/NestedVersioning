@@ -24,7 +24,16 @@
 	COUUID *uuid;
 	NSMutableDictionary *types;
     NSMutableDictionary *values;
+    /**
+     * I think this makes sense to store at the COItem level.
+     * My hunch is we should store this here, but don't persist the 
+     * schema names for individual properties.
+     *
+     */
+    NSString *schemaName;
 }
+
+@property (nonatomic, readwrite, copy) NSString *schemaName;
 
 /**
  * designated initializer.

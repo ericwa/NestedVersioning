@@ -12,6 +12,7 @@ typedef struct {
     void (*co_read_end_object)(void*);
     void (*co_read_begin_array)(void*);
     void (*co_read_end_array)(void*);
+    void (*co_read_null)(void*);
 } co_reader_callback_t;
 
 void co_reader_read(const unsigned char *bytes, size_t length, void *context, co_reader_callback_t callbacks);

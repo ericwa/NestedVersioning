@@ -1,11 +1,17 @@
 #import <Foundation/Foundation.h>
 #import "COUUID.h"
 
+
 typedef struct {
     unsigned char *data;
     size_t length;
     size_t allocated_length;
 } co_buffer_t;
+
+static inline
+void
+co_buffer_store_null(co_buffer_t *dest);
+
 
 #define CO_BUFFER_INITIAL_LENGTH 4096
 
@@ -135,8 +141,14 @@ static inline
 void
 co_buffer_store_string(co_buffer_t *dest, NSString *value)
 {
+    if (value == nil)
+    {
+        co_buffer_store_null(dest);
+        return;
+    }
+    
     const NSUInteger numChars = [value length];
-    NSUInteger length;
+    NSUInteger length = 0;
     [value getBytes: NULL
           maxLength: 0
          usedLength: &length
@@ -201,6 +213,12 @@ static inline
 void
 co_buffer_store_uuid(co_buffer_t *dest, COUUID *uuid)
 {
+    if (uuid == nil)
+    {
+        co_buffer_store_null(dest);
+        return;
+    }
+    
     WRTITE_TYPE("#");
     co_buffer_write(dest, (char *)uuid->uuid, 16);
 }
@@ -231,4 +249,11 @@ void
 co_buffer_end_array(co_buffer_t *dest)
 {
     WRTITE_TYPE("]");
+}
+
+static inline
+void
+co_buffer_store_null(co_buffer_t *dest)
+{
+    WRTITE_TYPE("0");
 }
