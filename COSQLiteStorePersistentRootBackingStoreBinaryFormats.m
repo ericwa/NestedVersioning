@@ -1,7 +1,7 @@
 #import "COSQLiteStorePersistentRootBackingStoreBinaryFormats.h"
 #import "COUUID.h"
 
-void ParseCombinedCommitDataInToUUIDToItemDataDictionary(NSMutableDictionary *dest, NSData *commitData, BOOL replaceExisting)
+void ParseCombinedCommitDataInToUUIDToItemDataDictionary(NSMutableDictionary *dest, NSData *commitData, BOOL replaceExisting, NSSet *restrictToItemUUIDs)
 {
     // format:
     //
@@ -24,9 +24,12 @@ void ParseCombinedCommitDataInToUUIDToItemDataDictionary(NSMutableDictionary *de
         length = CFSwapInt32LittleToHost(length);
         offset += 4;
         
-        if (replaceExisting
-            || nil == [dest objectForKey: uuid])
+        if ((replaceExisting
+             || nil == [dest objectForKey: uuid])
+            && (nil == restrictToItemUUIDs
+                || [restrictToItemUUIDs containsObject: uuid]))
         {
+
             NSData *data = [commitData subdataWithRange: NSMakeRange(offset, length)];
             [dest setObject: data
                      forKey: uuid];

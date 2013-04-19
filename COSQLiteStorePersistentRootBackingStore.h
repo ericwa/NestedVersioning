@@ -3,6 +3,8 @@
 
 @class FMDatabase;
 @class COItemTree;
+@class CORevision;
+@class CORevisionID;
 
 /**
  * Database connection for manipulating a persistent root backing store.
@@ -27,17 +29,21 @@
 - (BOOL) beginTransaction;
 - (BOOL) commit;
 
-- (NSDictionary *) metadataForRevid: (int64_t)revid;
-
-- (int64_t) parentForRevid: (int64_t)revid;
+- (CORevision *) revisionForID: (CORevisionID *)aToken;
 
 - (COItemTree *) itemTreeForRevid: (int64_t)revid;
+
+- (COItemTree *) itemTreeForRevid: (int64_t)revid restrictToItemUUIDs: (NSSet *)itemSet;
 
 /**
  * baseRevid must be < finalRevid.
  * returns nil if baseRevid or finalRevid are not valid revisions.
  */
 - (COItemTree *) partialItemTreeFromRevid: (int64_t)baseRevid toRevid: (int64_t)finalRevid;
+
+- (COItemTree *) partialItemTreeFromRevid: (int64_t)baseRevid
+                                  toRevid: (int64_t)revid
+                      restrictToItemUUIDs: (NSSet *)itemSet;
 
 /**
  * 

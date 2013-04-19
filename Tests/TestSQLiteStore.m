@@ -409,18 +409,33 @@ static COUUID *childUUID2;
 }
 
 - (void) testDeletePersistentRoot
-{    
+{
+    UKObjectsEqual([NSArray array], [store deletedPersistentRootUUIDs]);
+    UKObjectsEqual(A(prootUUID), [store persistentRootUUIDs]);
+
+    // Delete it
     UKTrue([store deletePersistentRoot: prootUUID]);
-    // Persistent root returned since we have not called finalizeDeletions.
+
+    UKObjectsEqual(A(prootUUID), [store deletedPersistentRootUUIDs]);
+    UKObjectsEqual([NSArray array], [store persistentRootUUIDs]);
+    UKNotNil([store persistentRootWithUUID: prootUUID]);
+    UKFalse([[[store persistentRootWithUUID: prootUUID] currentBranchState] isDeleted]); // Deleting proot does not mark branch as deleted.
+    
+    // Undelete it
+    UKTrue([store undeletePersistentRoot: prootUUID]);
+    
+    UKObjectsEqual([NSArray array], [store deletedPersistentRootUUIDs]);
     UKObjectsEqual(A(prootUUID), [store persistentRootUUIDs]);
     
-    // Persistent root returned since we have not called finalizeDeletions.
-    UKNotNil([store persistentRootWithUUID: prootUUID]);
-    
+    // Delete it, and finalize the deletion
+    UKTrue([store deletePersistentRoot: prootUUID]);
     UKTrue([store finalizeDeletionsForPersistentRoot: prootUUID]);
     
     UKObjectsEqual([NSArray array], [store persistentRootUUIDs]);
-    UKNil([store persistentRootWithUUID: prootUUID]);    
+    UKObjectsEqual([NSArray array], [store deletedPersistentRootUUIDs]);
+    UKNil([store persistentRootWithUUID: prootUUID]);
+    UKNil([store revisionForID: initialRevisionId]);
+    UKNil([store itemTreeForRevisionID: initialRevisionId]);
 }
 
 // FIXME: Not sure if this is worth the bother

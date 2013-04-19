@@ -22,7 +22,7 @@
  *
  *     - a set of _branches_, and a marker indicating the current branch
  *     - a flexible, user-facing metadata dictionary, for storing thigns like name, author.
- *       This metadata is not interpreted or used by the framework.
+ *       This metadata is not interpreted or used by COSQLiteStore.
  *
  *   A _branch_ consists of a linear sequence of _revisions_, which were produced by making
  *   sequential edits to the _contents_ of the persistent root, as well as a marker indicating the
@@ -51,9 +51,9 @@
  * - Persistent roots are never garbage collected, they must be deleted explicitly by the user.
  *   For convenience, once deleted, they can be undeleted. Typical use case:
  *        - user creates a document, types in it a bit.
- *        - It's a temporary note, so when theyy're done with it, they delete it.
- *        - Note is moved to trash. CMD+Z undoes the move to trash.
- *   So by having the not deleted/deleted flag at the store level, that would let us easily
+ *        - It's a temporary note, so when they're done with it, they delete it.
+ *        - The note is moved to the trash. CMD+Z undoes the move to trash.
+ *   So by having the not deleted/deleted flag at the store level, we can easily
  *   make "delete" a command-pattern invertible undo action.
  *
  * - There are attachments which are stored separately from the revision data in backing stores,
@@ -63,14 +63,16 @@
  * - Branches can be deleted. Like persistent roots, they can be undeleted, and the list of deleted braches
  *   for a persistent root can be queried.  
  *
- * - There is a "finalize deletions" command that the user can invoke, which permanently removes:
- *   * persistent roots marked as deleted
- *   * branches marked as deleted
- *   * unreachable revisions
- *   * unreachable attachments
+ * - There is a "finalize deletions" command that the user can invoke on a persistent root, which permanently removes:
+ *   * the persistent root, if it is marked as deleted
+ *   * branches of the persistent root marked as deleted
+ *   * all unreachable revisions in the same backing store as the persistent root
  *
- * - Additionally, over time, the user may want to prune the history of a branch. This is implemented
- *   by moving ahead the 'base' pointer of a branch, and performing a "finalize deletions".
+ * - Additionally there is a separate command to delete all unreachable attachments in the store
+ *
+ * - Over time, the user may want to prune the history of a branch. This is implemented
+ *   by moving ahead the 'base' pointer of a branch, and performing a "finalize deletions" command on the
+ *   persistent root.
  * 
  * - Since "finalize deletions" actually deletes data and frees disk space, there are the following
  *   side effects:
@@ -146,6 +148,7 @@
 /** @taskunit reading persistent roots */
 
 - (NSArray *) persistentRootUUIDs;
+- (NSArray *) deletedPersistentRootUUIDs;
 
 /** @taskunit writing persistent roots */
 
@@ -223,12 +226,15 @@
     ofPersistentRoot: (COUUID *)aRoot;
 
 /**
- * Finalizes the deletions of any unreachable commits (whether due to -setTailRevision:... moving the tail pointer,
+ * Finalizes the deletion of any unreachable commits (whether due to -setTailRevision:... moving the tail pointer,
  * or branches being deleted), any deleted branches, or the persistent root itself.
  *
  */
 - (BOOL) finalizeDeletionsForPersistentRoot: (COUUID *)aRoot;
 
+/**
+ * Finalizes the deletion of any unreachable attachments in the store.
+ */
 - (BOOL) finalizeGarbageAttachments;
 
 /* Search */

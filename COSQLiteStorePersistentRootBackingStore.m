@@ -7,6 +7,8 @@
 #import "FMDatabaseAdditions.h"
 #import "COSQLiteStorePersistentRootBackingStoreBinaryFormats.h"
 #import "COItem+Binary.h"
+#import "CORevision.h"
+#import "CORevisionID.h"
 
 @implementation COSQLiteStorePersistentRootBackingStore
 
@@ -119,32 +121,27 @@
 
  */
 
-- (NSDictionary *) metadataForRevid: (int64_t)revid
+- (CORevision *) revisionForID: (CORevisionID *)aToken
 {
-    NSDictionary *result = nil;
-    FMResultSet *rs = [db_ executeQuery: @"SELECT metadata FROM commits WHERE revid = ?", [NSNumber numberWithLongLong: revid]];
+    CORevision *result = nil;
+    FMResultSet *rs = [db_ executeQuery: @"SELECT parent, metadata FROM commits WHERE revid = ?",
+                       [NSNumber numberWithLongLong: [aToken revisionIndex]]];
 	if ([rs next])
 	{
-        NSData *data = [rs dataForColumnIndex: 0];
+        int64_t parent = [rs longLongIntForColumnIndex: 0];
+        
+        NSDictionary *metadata = nil;
+        NSData *data = [rs dataForColumnIndex: 1];
         if (data != nil)
         {
-            result = [NSJSONSerialization JSONObjectWithData: data
-                                                     options: 0
-                                                       error: NULL];
+            metadata = [NSJSONSerialization JSONObjectWithData: data
+                                                       options: 0
+                                                         error: NULL];
         }
-	}
-    [rs close];
-    
-	return result;
-}
-
-- (int64_t) parentForRevid: (int64_t)revid
-{
-    int64_t result = -1;
-    FMResultSet *rs = [db_ executeQuery: @"SELECT parent FROM commits WHERE revid = ?", [NSNumber numberWithLongLong: revid]];
-	if ([rs next])
-	{
-        result = [rs longLongIntForColumnIndex: 0];
+        
+        result = [[[CORevision alloc] initWithRevisionID: aToken
+                                        parentRevisionID: [aToken revisionIDWithRevisionIndex: parent]
+                                                metadata: metadata] autorelease];
 	}
     [rs close];
     
@@ -164,7 +161,12 @@
 	return result;
 }
 
-- (COItemTree *) partialItemTreeFromRevid: (int64_t)baseRevid toRevid: (int64_t)revid
+/**
+ * Returns the item tree 
+ */
+- (COItemTree *) partialItemTreeFromRevid: (int64_t)baseRevid
+                                  toRevid: (int64_t)revid
+                      restrictToItemUUIDs: (NSSet *)itemSet
 {
     NSParameterAssert(baseRevid < revid);
     
@@ -191,7 +193,9 @@
         
         if (revid == nextRevId || nextRevId == -1)
         {
-            ParseCombinedCommitDataInToUUIDToItemDataDictionary(dataForUUID, contentsData, NO);
+            ParseCombinedCommitDataInToUUIDToItemDataDictionary(dataForUUID, contentsData, NO, itemSet);
+            
+            // TODO: If we are filtering to a known set of items, we can break out once we have all of them.
             
             if (parent == baseRevid)
             {
@@ -239,10 +243,21 @@
     return result;
 }
 
+- (COItemTree *) partialItemTreeFromRevid: (int64_t)baseRevid toRevid: (int64_t)revid
+{
+    return [self partialItemTreeFromRevid: baseRevid toRevid: revid restrictToItemUUIDs: nil];
+}
+
 - (COItemTree *) itemTreeForRevid: (int64_t)revid
 {
-    return [self partialItemTreeFromRevid: -1 toRevid: revid];
+    return [self partialItemTreeFromRevid: -1 toRevid: revid restrictToItemUUIDs: nil];
 }
+
+- (COItemTree *) itemTreeForRevid: (int64_t)revid restrictToItemUUIDs: (NSSet *)itemSet
+{
+    return [self partialItemTreeFromRevid: -1 toRevid: revid restrictToItemUUIDs: itemSet];
+}
+
 
 static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifiedItems)
 {

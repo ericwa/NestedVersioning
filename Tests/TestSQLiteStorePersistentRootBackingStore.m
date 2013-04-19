@@ -165,41 +165,56 @@ static COUUID *childUUID2;
 
 // --- The tests themselves
 
+- (CORevision *) revisionForRevid: (int64_t)revid
+{
+    return [store revisionForID: [CORevisionID revisionWithBackinStoreUUID: nil revisionIndex: revid]];
+}
+
+- (NSDictionary *) metadataForRevid: (int64_t)revid
+{
+    return [[self revisionForRevid: revid] metadata];
+}
+
+- (int64_t) parentForRevid: (int64_t)revid
+{
+    return [[[self revisionForRevid: revid] parentRevisionID] revisionIndex];
+}
+
 - (void) testMetadataForRevid
 {
-    UKNil([store metadataForRevid: 0]);
+    UKNil([store revisionForID: 0]);
     
     [self setupExampleStore];
     
-    UKObjectsEqual([self initialMetadata], [store metadataForRevid: 0]);
+    UKObjectsEqual([self initialMetadata], [self metadataForRevid: 0]);
     
     for (int64_t i = 1; i<=BRANCH_LENGTH; i++)
     {
-        UKObjectsEqual([self branchAMetadata], [store metadataForRevid: i]);
+        UKObjectsEqual([self branchAMetadata], [self metadataForRevid: i]);
     }
     
     for (int64_t i = (BRANCH_LENGTH + 1); i <= (2 * BRANCH_LENGTH); i++)
     {
-        UKObjectsEqual([self branchBMetadata], [store metadataForRevid: i]);
+        UKObjectsEqual([self branchBMetadata], [self metadataForRevid: i]);
     }
 }
 
 - (void) testParentForRevid
 {
-    UKIntsEqual(-1, [store parentForRevid: 0]);
+    UKNil([self revisionForRevid: 0]);
     
     [self setupExampleStore];
     
-    UKIntsEqual(-1, [store parentForRevid: 0]);
+    UKIntsEqual(-1, [self parentForRevid: 0]);
     
     for (int64_t i = 1; i<=BRANCH_LENGTH; i++)
     {
-        UKIntsEqual(i - 1, [store parentForRevid: i]);
+        UKIntsEqual(i - 1, [self parentForRevid: i]);
     }
     
     for (int64_t i = (BRANCH_LENGTH + 1); i <= (2 * BRANCH_LENGTH); i++)
     {
-        UKIntsEqual(i == (BRANCH_LENGTH + 1) ? 0 : i - 1, [store parentForRevid: i]);
+        UKIntsEqual(i == (BRANCH_LENGTH + 1) ? 0 : i - 1, [self parentForRevid: i]);
     }
 }
 

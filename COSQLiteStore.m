@@ -18,6 +18,13 @@
 #import "FMDatabase.h"
 #import "FMDatabaseAdditions.h"
 
+@interface COSQLiteStore (AttachmentsPrivate)
+
+- (NSArray *) attachments;
+- (BOOL) deleteAttachment: (NSData *)hash;
+
+@end
+
 @implementation COSQLiteStore
 
 - (id)initWithURL: (NSURL*)aURL
@@ -255,15 +262,7 @@
 - (CORevision *) revisionForID: (CORevisionID *)aToken
 {
     COSQLiteStorePersistentRootBackingStore *backing = [self backingStoreForRevisionID: aToken];
-    
-    const int64_t parent = [backing parentForRevid: [aToken revisionIndex]];
-    NSDictionary *metadata = [backing metadataForRevid: [aToken revisionIndex]];
-    
-    CORevision *result = [[[CORevision alloc] initWithRevisionID: aToken
-                                                parentRevisionID: [aToken revisionIDWithRevisionIndex: parent]
-                                                        metadata: metadata] autorelease];
-    
-    return result;
+    return [backing revisionForID: aToken];
 }
 
 - (COItemTree *) partialItemTreeFromRevisionID: (CORevisionID *)baseRevid
@@ -285,6 +284,15 @@
     COSQLiteStorePersistentRootBackingStore *backing = [self backingStoreForRevisionID: aToken];
     COItemTree *result = [backing itemTreeForRevid: [aToken revisionIndex]];
     return result;
+}
+
+- (COItem *) item: (COUUID *)anitem atRevisionID: (CORevisionID *)aToken
+{
+    NSParameterAssert(aToken != nil);
+    COSQLiteStorePersistentRootBackingStore *backing = [self backingStoreForRevisionID: aToken];
+    COItemTree *tree = [backing itemTreeForRevid: [aToken revisionIndex] restrictToItemUUIDs: S(anitem)];
+    COItem *item = [tree itemForUUID: anitem];
+    return item;
 }
 
 /** @taskunit writing states */
@@ -424,7 +432,19 @@
 {
     NSMutableArray *result = [NSMutableArray array];
     // FIXME: Benchmark vs join
-    FMResultSet *rs = [db_ executeQuery: @"SELECT uuid FROM persistentroots"];
+    FMResultSet *rs = [db_ executeQuery: @"SELECT uuid FROM persistentroots WHERE deleted = 0"];
+    while ([rs next])
+    {
+        [result addObject: [COUUID UUIDWithData: [rs dataForColumnIndex: 0]]];
+    }
+    [rs close];
+    return result;
+}
+
+- (NSArray *) deletedPersistentRootUUIDs
+{
+    NSMutableArray *result = [NSMutableArray array];
+    FMResultSet *rs = [db_ executeQuery: @"SELECT uuid FROM persistentroots WHERE deleted = 1"];
     while ([rs next])
     {
         [result addObject: [COUUID UUIDWithData: [rs dataForColumnIndex: 0]]];
@@ -438,18 +458,20 @@
     COUUID *currBranch = nil;
     COUUID *backingUUID = nil;
     id meta = nil;
+    BOOL deleted = NO;
     
     [db_ beginTransaction]; // N.B. The transaction is so the two SELECTs see the same DB. Needed?
     
     NSNumber *root_id = [self rootIdForPersistentRootUUID: aUUID];
     
     {
-        FMResultSet *rs = [db_ executeQuery: @"SELECT (SELECT uuid FROM branches WHERE branch_id = currentbranch), backingstore, metadata FROM persistentroots WHERE root_id = ?", root_id];
+        FMResultSet *rs = [db_ executeQuery: @"SELECT (SELECT uuid FROM branches WHERE branch_id = currentbranch), backingstore, metadata, deleted FROM persistentroots WHERE root_id = ?", root_id];
         if ([rs next])
         {
             currBranch = [COUUID UUIDWithData: [rs dataForColumnIndex: 0]];
             backingUUID = [COUUID UUIDWithData: [rs dataForColumnIndex: 1]];
             meta = [self readMetadata: [rs dataForColumnIndex: 2]];
+            deleted = [rs boolForColumnIndex: 3];
         }
         else
         {
@@ -597,7 +619,21 @@
 - (BOOL) deletePersistentRoot: (COUUID *)aRoot
 {
     NSNumber *root_id = [self rootIdForPersistentRootUUID: aRoot];
-    return [db_ executeUpdate: @"UPDATE persistentroots SET deleted = 1 WHERE root_id = ?", root_id];
+    if (root_id != nil)
+    {
+        return [db_ executeUpdate: @"UPDATE persistentroots SET deleted = 1 WHERE root_id = ?", root_id];
+    }
+    return NO;
+}
+
+- (BOOL) undeletePersistentRoot: (COUUID *)aRoot
+{
+    NSNumber *root_id = [self rootIdForPersistentRootUUID: aRoot];
+    if (root_id != nil)
+    {
+        return [db_ executeUpdate: @"UPDATE persistentroots SET deleted = 0 WHERE root_id = ?", root_id];
+    }
+    return NO;
 }
 
 - (BOOL) setCurrentBranch: (COUUID *)aBranch
@@ -667,6 +703,20 @@
                 [NSNumber numberWithLongLong: [aVersion revisionIndex]],
                 [aBranch dataValue]];
     }
+    
+    // TODO: Validae that tail .. current .. head are a linear sequence, and rollback + return NO if not.
+}
+
+- (BOOL) setTailRevision: (CORevisionID*)aVersion
+               forBranch: (COUUID *)aBranch
+        ofPersistentRoot: (COUUID *)aRoot
+{
+    return [db_ executeUpdate: @"UPDATE branches SET tail_revid = ? WHERE uuid = ?",
+            [NSNumber numberWithLongLong: [aVersion revisionIndex]],
+            [NSNumber numberWithLongLong: [aVersion revisionIndex]],
+            [aBranch dataValue]];
+
+    // TODO: Validae that tail .. current .. head are a linear sequence, and rollback + return NO if not.
 }
 
 - (BOOL) deleteBranch: (COUUID *)aBranch
