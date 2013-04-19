@@ -206,10 +206,16 @@ static id importValueFromPlist(id aPlist)
 						forKey: key];
 	}
 	
-	return [NSDictionary dictionaryWithObjectsAndKeys:
+	NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 			plistValues, @"values",
 			[uuid stringValue], @"uuid",
 			nil];
+    
+    if (self.schemaName != nil) {
+        [dict setObject: self.schemaName forKey: @"schema"];
+    }
+    
+    return dict;
 }
 
 - (id) initWithPlist: (id)aPlist
@@ -229,9 +235,13 @@ static id importValueFromPlist(id aPlist)
 						  forKey: key];
 	}
 	
-	return [self initWithUUID: aUUID
+	self = [self initWithUUID: aUUID
 		   typesForAttributes: importedTypes
 		  valuesForAttributes: importedValues];
+    
+    self.schemaName = [aPlist objectForKey: @"schema"];
+    
+    return self;
 }
 
 /** @taskunit equality testing */

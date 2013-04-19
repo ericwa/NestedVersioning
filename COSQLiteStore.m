@@ -713,7 +713,6 @@
 {
     return [db_ executeUpdate: @"UPDATE branches SET tail_revid = ? WHERE uuid = ?",
             [NSNumber numberWithLongLong: [aVersion revisionIndex]],
-            [NSNumber numberWithLongLong: [aVersion revisionIndex]],
             [aBranch dataValue]];
 
     // TODO: Validae that tail .. current .. head are a linear sequence, and rollback + return NO if not.

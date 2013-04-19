@@ -35,8 +35,9 @@ static COUUID *childUUID2;
 // --- Example data setup
 // FIXME: Factor out to ExampleStore class shared by the backing store test and this and others.
 // FIXME: Test another isolated persistent root with its own backing store.
-#define BRANCH_LENGTH 5
-
+#define BRANCH_LENGTH 15
+#define BRANCH_EARLY 4
+#define BRANCH_LATER 7
 /*
  * The sample store will look like this
  *
@@ -301,7 +302,39 @@ static COUUID *childUUID2;
 
 - (void) testSetCurrentVersion
 {
+    COBranchState *branchA = [[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branchAUUID];
+    UKIntsEqual(0, [[branchA tailRevisionID] revisionIndex]);
+    UKIntsEqual(BRANCH_LENGTH, [[branchA headRevisionID] revisionIndex]);
+    UKIntsEqual(BRANCH_LENGTH, [[branchA currentState] revisionIndex]);
+
+    UKTrue([store setCurrentVersion: [[branchA currentState] revisionIDWithRevisionIndex: BRANCH_LATER]
+                          forBranch: branchAUUID
+                   ofPersistentRoot: prootUUID
+                         updateHead: NO]);
     
+    branchA = [[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branchAUUID];
+    UKIntsEqual(0, [[branchA tailRevisionID] revisionIndex]);
+    UKIntsEqual(BRANCH_LENGTH, [[branchA headRevisionID] revisionIndex]);
+    UKIntsEqual(BRANCH_LATER, [[branchA currentState] revisionIndex]);
+
+    UKTrue([store setCurrentVersion: [[branchA currentState] revisionIDWithRevisionIndex: BRANCH_LATER]
+                          forBranch: branchAUUID
+                   ofPersistentRoot: prootUUID
+                         updateHead: YES]);
+    
+    branchA = [[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branchAUUID];
+    UKIntsEqual(0, [[branchA tailRevisionID] revisionIndex]);
+    UKIntsEqual(BRANCH_LATER, [[branchA headRevisionID] revisionIndex]);
+    UKIntsEqual(BRANCH_LATER, [[branchA currentState] revisionIndex]);
+    
+    UKTrue([store setTailRevision: [[branchA currentState] revisionIDWithRevisionIndex: BRANCH_EARLY]
+                        forBranch: branchAUUID
+                 ofPersistentRoot: prootUUID]);
+    
+    branchA = [[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branchAUUID];
+    UKIntsEqual(BRANCH_EARLY, [[branchA tailRevisionID] revisionIndex]);
+    UKIntsEqual(BRANCH_LATER, [[branchA headRevisionID] revisionIndex]);
+    UKIntsEqual(BRANCH_LATER, [[branchA currentState] revisionIndex]);
 }
 
 - (void) testCrossPersistentRootReference
@@ -406,6 +439,9 @@ static COUUID *childUUID2;
     UKTrue([store finalizeDeletionsForPersistentRoot: prootUUID]);
     
     UKNil([store itemTreeForRevisionID: unreferencedRevision]);
+    UKNil([store revisionForID: unreferencedRevision]);
+    
+    // TODO: Expand, test using -setTail...
 }
 
 - (void) testDeletePersistentRoot
