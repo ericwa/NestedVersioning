@@ -686,7 +686,7 @@
  *
  * TODO: enforce if current != head, then updateHead must be YES.
  */
-- (BOOL) setCurrentVersion: (CORevisionID*)aVersion
+- (BOOL) setCurrentRevision: (CORevisionID*)aVersion
                  forBranch: (COUUID *)aBranch
           ofPersistentRoot: (COUUID *)aRoot
                 updateHead: (BOOL)updateHead

@@ -99,7 +99,7 @@ NSString *kCOBranchName = @"COBranchName";
 - (void) setCurrentRevisionID: (CORevisionID *)aState
 {
     [self unfaultEditingContext];
-    BOOL ok = [[persistentRoot_ store] setCurrentVersion: aState
+    BOOL ok = [[persistentRoot_ store] setCurrentRevision: aState
                                                forBranch: branch_
                                         ofPersistentRoot: [persistentRoot_ UUID]
                                               updateHead: NO]; // FIXME: YES or NO depending on aState
@@ -123,7 +123,7 @@ NSString *kCOBranchName = @"COBranchName";
                                                    modifiedItems: [[editingContext_ insertedOrModifiedObjectUUIDs] allObjects]];
     [editingContext_ clearChangeTracking];
     
-    BOOL ok = [[persistentRoot_ store] setCurrentVersion: revId
+    BOOL ok = [[persistentRoot_ store] setCurrentRevision: revId
                                                forBranch: branch_
                                         ofPersistentRoot: [persistentRoot_ UUID]
                                               updateHead: YES];

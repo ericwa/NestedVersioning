@@ -158,7 +158,7 @@ static COUUID *childUUID2;
     ASSIGN(branchAUUID, [store createBranchWithInitialRevision: initialRevisionId
                                                     setCurrent: NO
                                              forPersistentRoot: prootUUID]);
-    assert([store setCurrentVersion: [CORevisionID revisionWithBackinStoreUUID: [proot UUID] revisionIndex: BRANCH_LENGTH]
+    assert([store setCurrentRevision: [CORevisionID revisionWithBackinStoreUUID: [proot UUID] revisionIndex: BRANCH_LENGTH]
                           forBranch: branchAUUID
                    ofPersistentRoot: prootUUID
                          updateHead: YES]);
@@ -167,7 +167,7 @@ static COUUID *childUUID2;
                                                     setCurrent: NO
                                              forPersistentRoot: prootUUID]);
     
-    assert([store setCurrentVersion: [CORevisionID revisionWithBackinStoreUUID: [proot UUID] revisionIndex: 2 * BRANCH_LENGTH]
+    assert([store setCurrentRevision: [CORevisionID revisionWithBackinStoreUUID: [proot UUID] revisionIndex: 2 * BRANCH_LENGTH]
                           forBranch: branchBUUID
                    ofPersistentRoot: prootUUID
                          updateHead: YES]);
@@ -307,7 +307,7 @@ static COUUID *childUUID2;
     UKIntsEqual(BRANCH_LENGTH, [[branchA headRevisionID] revisionIndex]);
     UKIntsEqual(BRANCH_LENGTH, [[branchA currentState] revisionIndex]);
 
-    UKTrue([store setCurrentVersion: [[branchA currentState] revisionIDWithRevisionIndex: BRANCH_LATER]
+    UKTrue([store setCurrentRevision: [[branchA currentState] revisionIDWithRevisionIndex: BRANCH_LATER]
                           forBranch: branchAUUID
                    ofPersistentRoot: prootUUID
                          updateHead: NO]);
@@ -317,7 +317,7 @@ static COUUID *childUUID2;
     UKIntsEqual(BRANCH_LENGTH, [[branchA headRevisionID] revisionIndex]);
     UKIntsEqual(BRANCH_LATER, [[branchA currentState] revisionIndex]);
 
-    UKTrue([store setCurrentVersion: [[branchA currentState] revisionIDWithRevisionIndex: BRANCH_LATER]
+    UKTrue([store setCurrentRevision: [[branchA currentState] revisionIDWithRevisionIndex: BRANCH_LATER]
                           forBranch: branchAUUID
                    ofPersistentRoot: prootUUID
                          updateHead: YES]);
@@ -373,7 +373,7 @@ static COUUID *childUUID2;
     [[tree itemForUUID: childUUID1] setValue: hash forAttribute: @"attachment" type: kCOAttachmentType];
     CORevisionID *withAttachment = [store writeItemTree: tree withMetadata: nil withParentRevisionID: initialRevisionId modifiedItems: nil];
     UKNotNil(withAttachment);
-    UKTrue([store setCurrentVersion: withAttachment
+    UKTrue([store setCurrentRevision: withAttachment
                           forBranch: initialBranchUUID
                    ofPersistentRoot: prootUUID
                          updateHead: YES]);
@@ -416,7 +416,7 @@ static COUUID *childUUID2;
                                        withParentRevisionID: initialRevisionId
                                               modifiedItems: nil];
     
-    UKTrue([store setCurrentVersion: referencedRevision
+    UKTrue([store setCurrentRevision: referencedRevision
                           forBranch: initialBranchUUID
                    ofPersistentRoot: prootUUID
                          updateHead: YES]);
@@ -547,7 +547,7 @@ static COUUID *childUUID2;
 
     CORevisionID *rev1 = [CORevisionID revisionWithBackinStoreUUID: [proot UUID] revisionIndex: 1];
     
-    UKTrue([store setCurrentVersion: rev1
+    UKTrue([store setCurrentRevision: rev1
                           forBranch: [[proot currentBranchState] UUID]
                    ofPersistentRoot: prootUUID
                          updateHead: YES]);
@@ -567,7 +567,7 @@ static COUUID *childUUID2;
     
     CORevisionID *rev2 = [CORevisionID revisionWithBackinStoreUUID: [proot UUID] revisionIndex: 2];
     
-    UKTrue([store setCurrentVersion: rev2
+    UKTrue([store setCurrentRevision: rev2
                           forBranch: [[copy currentBranchState] UUID]
                    ofPersistentRoot: [copy UUID]
                          updateHead: YES]);
