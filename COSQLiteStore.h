@@ -176,8 +176,9 @@
  *   - if "old" references (that exist in old revisions but not in newer) keep a persistent root alive,
  *     then it becomes very difficult to ever delete persistent roots. Suppose you create a temporary
  *     persistent root T, and a reference to it in a long-lived workspace persistent root W.
+ *     Later, the reference in W is deleted.
  *     The only way to have T's underlying disk space freed would be to erase all history of W up to the
- *     point where T was deleted. To fix this we'd have to curcumvent the GC by doing manual deletion,
+ *     point where the reference to T was deleted. To fix this we'd have to curcumvent the GC by doing manual deletion,
  *     making the effort of doing GC wasted.
  *
  *  - a possible scheme could be, only references in the current version of all branches of all persistent roots
