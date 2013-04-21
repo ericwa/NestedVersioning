@@ -439,7 +439,7 @@ static COUUID *childUUID2;
     UKTrue([store finalizeDeletionsForPersistentRoot: prootUUID]);
     
     UKNil([store contentsForRevisionID: unreferencedRevision]);
-    UKNil([store revisionForID: unreferencedRevision]);
+    UKNil([store revisionInfoForRevisionID: unreferencedRevision]);
     
     // TODO: Expand, test using -setTail...
 }
@@ -470,7 +470,7 @@ static COUUID *childUUID2;
     UKObjectsEqual([NSArray array], [store persistentRootUUIDs]);
     UKObjectsEqual([NSArray array], [store deletedPersistentRootUUIDs]);
     UKNil([store persistentRootWithUUID: prootUUID]);
-    UKNil([store revisionForID: initialRevisionId]);
+    UKNil([store revisionInfoForRevisionID: initialRevisionId]);
     UKNil([store contentsForRevisionID: initialRevisionId]);
 }
 

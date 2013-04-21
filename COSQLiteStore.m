@@ -259,7 +259,7 @@
 
 /** @taskunit reading states */
 
-- (CORevision *) revisionForID: (CORevisionID *)aToken
+- (CORevision *) revisionInfoForRevisionID: (CORevisionID *)aToken
 {
     COSQLiteStorePersistentRootBackingStore *backing = [self backingStoreForRevisionID: aToken];
     return [backing revisionForID: aToken];

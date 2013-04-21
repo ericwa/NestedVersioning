@@ -227,7 +227,7 @@
  * 
  * Adding an in-memory cache for this will probably imporant.
  */
-- (CORevision *) revisionForID: (CORevisionID *)aToken;
+- (CORevision *) revisionInfoForRevisionID: (CORevisionID *)aToken;
 
 /**
  * Returns a delta between the given revision IDs.

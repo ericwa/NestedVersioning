@@ -189,7 +189,7 @@ static int itemChangedAtCommit(int i)
 
     for (int rev=NUM_COMMITS-1; rev>=1; rev--)
     {
-        CORevisionID *parentCommitId = [[store revisionForID: lastCommitId] parentRevisionID];
+        CORevisionID *parentCommitId = [[store revisionInfoForRevisionID: lastCommitId] parentRevisionID];
         
         COItemTree *tree = [store partialContentsFromRevisionID: parentCommitId
                                                    toRevisionID: lastCommitId];
@@ -244,7 +244,7 @@ static int itemChangedAtCommit(int i)
         
         // Step back one revision
         
-        lastCommitId = [[store revisionForID: lastCommitId] parentRevisionID];
+        lastCommitId = [[store revisionInfoForRevisionID: lastCommitId] parentRevisionID];
         
         iters++;
         if (iters > 25) break; // This is the slowest test, so only read 25 revisions
