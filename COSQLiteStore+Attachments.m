@@ -86,14 +86,14 @@ static NSData *dataFromHexString(NSString *hexString)
     return result;
 }
 
-- (NSURL *) URLForAttachment: (NSData *)aHash
+- (NSURL *) URLForAttachmentID: (NSData *)aHash
 {
     NSParameterAssert([aHash length] == SHA_DIGEST_LENGTH);
     return [[[self attachmentsURL] URLByAppendingPathComponent: hexString(aHash)]
             URLByAppendingPathExtension: @"attachment"];
 }
 
-- (NSData *) addAttachmentAtURL: (NSURL *)aURL
+- (NSData *) importAttachmentFromURL: (NSURL *)aURL
 {
     NSFileManager *fm = [NSFileManager defaultManager];
     if (![fm createDirectoryAtURL: [self attachmentsURL]
@@ -107,7 +107,7 @@ static NSData *dataFromHexString(NSString *hexString)
     // Hash it
     
     NSData *hash = hashItemAtURL(aURL);
-    NSURL *attachmentURL = [self URLForAttachment: hash];
+    NSURL *attachmentURL = [self URLForAttachmentID: hash];
     
     if (![fm fileExistsAtPath: [attachmentURL path]])
     {
@@ -136,7 +136,7 @@ static NSData *dataFromHexString(NSString *hexString)
 - (BOOL) deleteAttachment: (NSData *)hash
 {
     NSParameterAssert([hash length] == SHA_DIGEST_LENGTH);
-    return [[NSFileManager defaultManager] removeItemAtPath: [[self URLForAttachment: hash] path]
+    return [[NSFileManager defaultManager] removeItemAtPath: [[self URLForAttachmentID: hash] path]
                                                       error: NULL];
 }
 

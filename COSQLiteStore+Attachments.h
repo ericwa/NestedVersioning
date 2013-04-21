@@ -2,7 +2,7 @@
 
 @interface COSQLiteStore (Attachments)
 
-- (NSURL *) URLForAttachment: (NSData *)aHash;
-- (NSData *) addAttachmentAtURL: (NSURL *)aURL;
+- (NSURL *) URLForAttachmentID: (NSData *)aHash;
+- (NSData *) importAttachmentFromURL: (NSURL *)aURL;
 
 @end

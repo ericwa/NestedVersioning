@@ -352,10 +352,10 @@ static COUUID *childUUID2;
                               encoding: NSUTF8StringEncoding
                                  error: NULL]);
     
-    NSData *hash = [store addAttachmentAtURL: [NSURL fileURLWithPath: path]];
+    NSData *hash = [store importAttachmentFromURL: [NSURL fileURLWithPath: path]];
     UKNotNil(hash);
     
-    NSString *internalPath = [[store URLForAttachment: hash] path];
+    NSString *internalPath = [[store URLForAttachmentID: hash] path];
     
     UKTrue([path hasPrefix: NSTemporaryDirectory()]);
     UKFalse([internalPath hasPrefix: NSTemporaryDirectory()]);
@@ -363,7 +363,7 @@ static COUUID *childUUID2;
     NSLog(@"external path: %@", path);
     NSLog(@"internal path: %@", internalPath);
     
-    UKObjectsEqual(fakeAttachment, [NSString stringWithContentsOfURL: [store URLForAttachment: hash]
+    UKObjectsEqual(fakeAttachment, [NSString stringWithContentsOfURL: [store URLForAttachmentID: hash]
                                                             encoding: NSUTF8StringEncoding
                                                                error: NULL]);
     
@@ -380,7 +380,7 @@ static COUUID *childUUID2;
     
     UKTrue([store finalizeDeletionsForPersistentRoot: prootUUID]);
     
-    UKObjectsEqual(fakeAttachment, [NSString stringWithContentsOfURL: [store URLForAttachment: hash]
+    UKObjectsEqual(fakeAttachment, [NSString stringWithContentsOfURL: [store URLForAttachmentID: hash]
                                                             encoding: NSUTF8StringEncoding
                                                                error: NULL]);
 }
@@ -393,15 +393,15 @@ static COUUID *childUUID2;
                      atomically: YES
                        encoding: NSUTF8StringEncoding
                           error: NULL];    
-    NSData *hash = [store addAttachmentAtURL: [NSURL fileURLWithPath: path]];
+    NSData *hash = [store importAttachmentFromURL: [NSURL fileURLWithPath: path]];
     
-    UKObjectsEqual(fakeAttachment, [NSString stringWithContentsOfURL: [store URLForAttachment: hash]
+    UKObjectsEqual(fakeAttachment, [NSString stringWithContentsOfURL: [store URLForAttachmentID: hash]
                                                             encoding: NSUTF8StringEncoding
                                                                error: NULL]);
 
-    UKTrue([[NSFileManager defaultManager] fileExistsAtPath: [[store URLForAttachment: hash] path]]);
+    UKTrue([[NSFileManager defaultManager] fileExistsAtPath: [[store URLForAttachmentID: hash] path]]);
     UKTrue([store finalizeGarbageAttachments]);
-    UKFalse([[NSFileManager defaultManager] fileExistsAtPath: [[store URLForAttachment: hash] path]]);
+    UKFalse([[NSFileManager defaultManager] fileExistsAtPath: [[store URLForAttachmentID: hash] path]]);
 }
 
 /**
