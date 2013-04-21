@@ -376,9 +376,9 @@
     return result;
 }
 
-- (CORevisionID *) writeItemTree: (COItemTree *)anItemTree
+- (CORevisionID *) writeContents: (COItemTree *)anItemTree
                     withMetadata: (NSDictionary *)metadata
-            withParentRevisionID: (CORevisionID *)aParent
+            parentRevisionID: (CORevisionID *)aParent
                    modifiedItems: (NSArray*)modifiedItems // array of COUUID
 {
     NSParameterAssert(anItemTree != nil);

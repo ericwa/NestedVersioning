@@ -270,9 +270,9 @@
  *     Once we have an in-memory cache of revisionId to COItemTree, the performance hit will probably
  *     be negligible.
  */
-- (CORevisionID *) writeItemTree: (COItemTree *)anItemTree
+- (CORevisionID *) writeContents: (COItemTree *)anItemTree
                     withMetadata: (NSDictionary *)metadata
-            withParentRevisionID: (CORevisionID *)aParent
+            parentRevisionID: (CORevisionID *)aParent
                    modifiedItems: (NSArray*)modifiedItems; // TODO: Remove modifiedItems param
 
 

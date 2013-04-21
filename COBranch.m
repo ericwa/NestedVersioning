@@ -117,9 +117,9 @@ NSString *kCOBranchName = @"COBranchName";
 {
     [self unfaultEditingContext];
     
-    CORevisionID *revId = [[persistentRoot_ store] writeItemTree: [editingContext_ itemTree]
+    CORevisionID *revId = [[persistentRoot_ store] writeContents: [editingContext_ itemTree]
                                                     withMetadata: metadata
-                                            withParentRevisionID: [self currentRevisionID]
+                                            parentRevisionID: [self currentRevisionID]
                                                    modifiedItems: [[editingContext_ insertedOrModifiedObjectUUIDs] allObjects]];
     [editingContext_ clearChangeTracking];
     

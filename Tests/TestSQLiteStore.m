@@ -130,24 +130,24 @@ static COUUID *childUUID2;
     
     for (int64_t i = 1; i<=BRANCH_LENGTH; i++)
     {
-        [store writeItemTree: [self makeBranchAItemTreeAtRevid: i]
+        [store writeContents: [self makeBranchAItemTreeAtRevid: i]
                 withMetadata: [self branchAMetadata]
-        withParentRevisionID: [CORevisionID revisionWithBackinStoreUUID: [proot UUID] revisionIndex: i - 1]
+        parentRevisionID: [CORevisionID revisionWithBackinStoreUUID: [proot UUID] revisionIndex: i - 1]
                modifiedItems: A(childUUID1)];
     }
     
     // Branch B
     
-    [store writeItemTree: [self makeBranchBItemTreeAtRevid: BRANCH_LENGTH + 1]    
+    [store writeContents: [self makeBranchBItemTreeAtRevid: BRANCH_LENGTH + 1]    
             withMetadata: [self branchBMetadata]
-    withParentRevisionID: [[proot currentBranchState] currentState]
+    parentRevisionID: [[proot currentBranchState] currentState]
            modifiedItems: A(rootUUID, childUUID2)];
     
     for (int64_t i = (BRANCH_LENGTH + 2); i <= (2 * BRANCH_LENGTH); i++)
     {
-        [store writeItemTree: [self makeBranchBItemTreeAtRevid: i]
+        [store writeContents: [self makeBranchBItemTreeAtRevid: i]
                 withMetadata: [self branchBMetadata]
-        withParentRevisionID: [CORevisionID revisionWithBackinStoreUUID: [proot UUID] revisionIndex: i]
+        parentRevisionID: [CORevisionID revisionWithBackinStoreUUID: [proot UUID] revisionIndex: i]
                modifiedItems: A(childUUID2)];
     }
 
@@ -371,7 +371,7 @@ static COUUID *childUUID2;
     
     COItemTree *tree = [self makeInitialItemTree];
     [[tree itemForUUID: childUUID1] setValue: hash forAttribute: @"attachment" type: kCOAttachmentType];
-    CORevisionID *withAttachment = [store writeItemTree: tree withMetadata: nil withParentRevisionID: initialRevisionId modifiedItems: nil];
+    CORevisionID *withAttachment = [store writeContents: tree withMetadata: nil parentRevisionID: initialRevisionId modifiedItems: nil];
     UKNotNil(withAttachment);
     UKTrue([store setCurrentRevision: withAttachment
                           forBranch: initialBranchUUID
@@ -411,9 +411,9 @@ static COUUID *childUUID2;
 - (void) testRevisionGCDoesNotCollectReferenced
 {
     COItemTree *tree = [self makeInitialItemTree];
-    CORevisionID *referencedRevision = [store writeItemTree: tree
+    CORevisionID *referencedRevision = [store writeContents: tree
                                                withMetadata: nil
-                                       withParentRevisionID: initialRevisionId
+                                       parentRevisionID: initialRevisionId
                                               modifiedItems: nil];
     
     UKTrue([store setCurrentRevision: referencedRevision
@@ -429,9 +429,9 @@ static COUUID *childUUID2;
 - (void) testRevisionGCCollectsUnReferenced
 {
     COItemTree *tree = [self makeInitialItemTree];
-    CORevisionID *unreferencedRevision = [store writeItemTree: tree
+    CORevisionID *unreferencedRevision = [store writeContents: tree
                                                  withMetadata: nil
-                                         withParentRevisionID: initialRevisionId
+                                         parentRevisionID: initialRevisionId
                                                 modifiedItems: nil];
     
     UKObjectsEqual(tree, [store contentsForRevisionID: unreferencedRevision]);

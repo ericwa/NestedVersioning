@@ -121,9 +121,9 @@ static int itemChangedAtCommit(int i)
         [item setValue:label
           forAttribute: @"name"];
         
-        lastCommitId = [store writeItemTree: initialTree
+        lastCommitId = [store writeContents: initialTree
                                withMetadata: nil
-                       withParentRevisionID: lastCommitId
+                       parentRevisionID: lastCommitId
                               modifiedItems: A(childUUIDs[i])];
     }
     
