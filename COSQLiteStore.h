@@ -74,6 +74,9 @@
  *   A hash, like git and other dvcs's use, could be used instead - the current scheme was chosen for
  *   simplicity and speculated better performance but we may switch to a hash.
  *
+ *   TODO: Explain the propety types of embedded objects that are relevant to COSQLiteStore:
+ *   Attachment ID, path (inter-persistent root reference)
+ *
  * Basic Usage
  * -----------
  *
