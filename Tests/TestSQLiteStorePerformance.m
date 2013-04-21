@@ -108,7 +108,7 @@ static int itemChangedAtCommit(int i)
     
     // Commit a change to each object
     
-    CORevisionID *lastCommitId = [[proot currentBranchState] currentState];
+    CORevisionID *lastCommitId = [[proot currentBranchState] currentRevisionID];
     for (int commit=1; commit<NUM_COMMITS; commit++)
     {
         int i = itemChangedAtCommit(commit);
@@ -182,7 +182,7 @@ static int itemChangedAtCommit(int i)
     
     COPersistentRootState *proot = [store persistentRootWithUUID: prootUUID];
     
-    CORevisionID *lastCommitId = [[proot currentBranchState] currentState];
+    CORevisionID *lastCommitId = [[proot currentBranchState] currentRevisionID];
     
     // Now traverse them in reverse order and test that the items are as expected.
     // There are NUM_CHILDREN + 1 commits (the initial one made by creating the persistent roots)
@@ -220,7 +220,7 @@ static int itemChangedAtCommit(int i)
 
     COPersistentRootState *proot = [store persistentRootWithUUID: prootUUID];
     
-    CORevisionID *lastCommitId = [[proot currentBranchState] currentState];
+    CORevisionID *lastCommitId = [[proot currentBranchState] currentRevisionID];
     
     int iters = 0;
     for (int rev=NUM_COMMITS-1; rev>=0; rev--)
@@ -310,7 +310,7 @@ static int itemChangedAtCommit(int i)
     
     for (int i =0; i<NUM_PERSISTENT_ROOT_COPIES; i++)
     {
-        [store createPersistentRootWithInitialRevision: [[proot currentBranchState] currentState]
+        [store createPersistentRootWithInitialRevision: [[proot currentBranchState] currentRevisionID]
                                               metadata: nil];
     }
     [store commitTransaction];

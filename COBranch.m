@@ -68,7 +68,7 @@ NSString *kCOBranchName = @"COBranchName";
 
 - (CORevisionID *)currentRevisionID
 {
-    return [[[persistentRoot_ savedState] branchPlistForUUID: branch_] currentState];
+    return [[[persistentRoot_ savedState] branchPlistForUUID: branch_] currentRevisionID];
 }
 
 - (COItemTree *)currentStateObjectTree
@@ -105,7 +105,7 @@ NSString *kCOBranchName = @"COBranchName";
                                               updateHead: NO]; // FIXME: YES or NO depending on aState
     assert(ok);
     
-    [[[persistentRoot_ savedState] branchPlistForUUID: branch_] setCurrentState: aState];
+    [[[persistentRoot_ savedState] branchPlistForUUID: branch_] setCurrentRevisionID: aState];
     // FIXME: Update head/tail
         
     [editingContext_ setItemTree: [self currentStateObjectTree]];
@@ -129,7 +129,7 @@ NSString *kCOBranchName = @"COBranchName";
                                               updateHead: YES];
     assert(ok);
 
-    [[[persistentRoot_ savedState] branchPlistForUUID: branch_] setCurrentState:revId];
+    [[[persistentRoot_ savedState] branchPlistForUUID: branch_] setCurrentRevisionID:revId];
     // FIXME: Update head/tail
     
     return YES;

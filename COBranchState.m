@@ -12,7 +12,7 @@ NSString *kCOBranchMetadata= @"COBranchMetadata";
 @synthesize UUID = uuid_;
 @synthesize headRevisionID = headRevisionId_;
 @synthesize tailRevisionID = tailRevisionId_;
-@synthesize currentState = currentState_;
+@synthesize currentRevisionID = currentState_;
 @synthesize deleted = deleted_;
 
 - (NSDictionary *)metadata
@@ -38,7 +38,7 @@ NSString *kCOBranchMetadata= @"COBranchMetadata";
     uuid_ = [aUUID copy];
     [self setHeadRevisionID: head];
     [self setTailRevisionID: tail];
-    [self setCurrentState: state];
+    [self setCurrentRevisionID: state];
     [self setMetadata: metadata];
     
     return self;

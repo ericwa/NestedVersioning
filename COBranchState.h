@@ -19,7 +19,7 @@
 @property (readonly, nonatomic) COUUID *UUID;
 @property (readwrite, copy, nonatomic) CORevisionID *headRevisionID;
 @property (readwrite, copy, nonatomic) CORevisionID *tailRevisionID;
-@property (readwrite, copy, nonatomic) CORevisionID *currentState;
+@property (readwrite, copy, nonatomic) CORevisionID *currentRevisionID;
 @property (readwrite, copy, nonatomic) NSDictionary *metadata;
 @property (readwrite, nonatomic, setter = setDeleted:, getter = isDeleted) BOOL deleted;
 
