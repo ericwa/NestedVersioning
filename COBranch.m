@@ -73,7 +73,7 @@ NSString *kCOBranchName = @"COBranchName";
 
 - (COItemTree *)currentStateObjectTree
 {
-    return [[persistentRoot_ store] itemTreeForRevisionID: [self currentRevisionID]];
+    return [[persistentRoot_ store] contentsForRevisionID: [self currentRevisionID]];
 }
 
 - (CORevisionID *)headRevisionID

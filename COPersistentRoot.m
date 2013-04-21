@@ -177,7 +177,7 @@ NSString *kCOPersistentRootName = @"COPersistentRootName";
 - (COEditingContext *) readonlyContextForViewingRevision: (CORevisionID *)aRevision
 {
     COEditingContext *ctx =  [[COEditingContext alloc] init];
-    [ctx setItemTree: [[self store] itemTreeForRevisionID: aRevision]];
+    [ctx setItemTree: [[self store] contentsForRevisionID: aRevision]];
     return [ctx autorelease];
 }
 

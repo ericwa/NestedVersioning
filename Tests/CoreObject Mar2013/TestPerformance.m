@@ -57,7 +57,7 @@
     COPersistentRootState *proot = [store createPersistentRootWithInitialContents:  [ctx itemTree]
                                                                          metadata: nil];
     
-    COItemTree *items = [store itemTreeForRevisionID: proot.currentBranchState.currentState];
+    COItemTree *items = [store contentsForRevisionID: proot.currentBranchState.currentState];
     UKIntsEqual(1111, [[items itemUUIDs] count]);
     
 	NSLog(@"TestPerformance took %lf ms", 1000.0 * [[NSDate date] timeIntervalSinceDate: startDate]);

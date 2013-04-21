@@ -423,7 +423,7 @@ static COUUID *childUUID2;
     
     UKTrue([store finalizeDeletionsForPersistentRoot: prootUUID]);
     
-    UKObjectsEqual(tree, [store itemTreeForRevisionID: referencedRevision]);
+    UKObjectsEqual(tree, [store contentsForRevisionID: referencedRevision]);
 }
 
 - (void) testRevisionGCCollectsUnReferenced
@@ -434,11 +434,11 @@ static COUUID *childUUID2;
                                          withParentRevisionID: initialRevisionId
                                                 modifiedItems: nil];
     
-    UKObjectsEqual(tree, [store itemTreeForRevisionID: unreferencedRevision]);
+    UKObjectsEqual(tree, [store contentsForRevisionID: unreferencedRevision]);
     
     UKTrue([store finalizeDeletionsForPersistentRoot: prootUUID]);
     
-    UKNil([store itemTreeForRevisionID: unreferencedRevision]);
+    UKNil([store contentsForRevisionID: unreferencedRevision]);
     UKNil([store revisionForID: unreferencedRevision]);
     
     // TODO: Expand, test using -setTail...
@@ -471,7 +471,7 @@ static COUUID *childUUID2;
     UKObjectsEqual([NSArray array], [store deletedPersistentRootUUIDs]);
     UKNil([store persistentRootWithUUID: prootUUID]);
     UKNil([store revisionForID: initialRevisionId]);
-    UKNil([store itemTreeForRevisionID: initialRevisionId]);
+    UKNil([store contentsForRevisionID: initialRevisionId]);
 }
 
 // FIXME: Not sure if this is worth the bother
@@ -503,7 +503,7 @@ static COUUID *childUUID2;
 {
     UKObjectsEqual(S(prootUUID), [NSSet setWithArray:[store persistentRootUUIDs]]);
     UKObjectsEqual(initialBranchUUID, [[store persistentRootWithUUID: prootUUID] currentBranchUUID]);
-    UKObjectsEqual([self makeInitialItemTree], [store itemTreeForRevisionID: initialRevisionId]);
+    UKObjectsEqual([self makeInitialItemTree], [store contentsForRevisionID: initialRevisionId]);
 }
 
 /**

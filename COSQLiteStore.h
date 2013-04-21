@@ -238,13 +238,13 @@
  * In the future if we add an internal in-memory revision cache to COSQLiteStore, this may
  * no longer be of much use.
  */
-- (COItemTree *) partialItemTreeFromRevisionID: (CORevisionID *)baseRevid
+- (COItemTree *) partialContentsFromRevisionID: (CORevisionID *)baseRevid
                                   toRevisionID: (CORevisionID *)finalRevid;
 
 /**
  * Returns the state the embedded object graph at a given revision.
  */
-- (COItemTree *) itemTreeForRevisionID: (CORevisionID *)aToken;
+- (COItemTree *) contentsForRevisionID: (CORevisionID *)aToken;
 
 /**
  * Returns the state of a single embedded object at a given revision.

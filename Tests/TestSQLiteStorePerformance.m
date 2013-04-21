@@ -191,7 +191,7 @@ static int itemChangedAtCommit(int i)
     {
         CORevisionID *parentCommitId = [[store revisionForID: lastCommitId] parentRevisionID];
         
-        COItemTree *tree = [store partialItemTreeFromRevisionID: parentCommitId
+        COItemTree *tree = [store partialContentsFromRevisionID: parentCommitId
                                                    toRevisionID: lastCommitId];
         
         int i = itemChangedAtCommit(rev);
@@ -225,7 +225,7 @@ static int itemChangedAtCommit(int i)
     int iters = 0;
     for (int rev=NUM_COMMITS-1; rev>=0; rev--)
     {
-        COItemTree *tree = [store itemTreeForRevisionID: lastCommitId];
+        COItemTree *tree = [store contentsForRevisionID: lastCommitId];
         
         // Check the state
         UKObjectsEqual(rootUUID, [tree rootItemUUID]);

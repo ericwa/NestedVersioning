@@ -265,7 +265,7 @@
     return [backing revisionForID: aToken];
 }
 
-- (COItemTree *) partialItemTreeFromRevisionID: (CORevisionID *)baseRevid
+- (COItemTree *) partialContentsFromRevisionID: (CORevisionID *)baseRevid
                                   toRevisionID: (CORevisionID *)finalRevid
 {
     NSParameterAssert(baseRevid != nil);
@@ -278,7 +278,7 @@
     return result;
 }
 
-- (COItemTree *) itemTreeForRevisionID: (CORevisionID *)aToken
+- (COItemTree *) contentsForRevisionID: (CORevisionID *)aToken
 {
     NSParameterAssert(aToken != nil);
     COSQLiteStorePersistentRootBackingStore *backing = [self backingStoreForRevisionID: aToken];
