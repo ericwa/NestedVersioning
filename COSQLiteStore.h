@@ -11,7 +11,8 @@
 /**
  * This class implements a Core Object store using SQLite databases.
  *
- * Conceptual model:
+ * Conceptual model
+ * ----------------
  *
  * - A _store_ is comprised of a set of _persistent roots_.
  *   Each _persistent root_ has a UUID and it is unique within the store; however, it is possible for
@@ -24,11 +25,39 @@
  *     - a flexible, user-facing metadata dictionary, for storing thigns like name, author.
  *       This metadata is not interpreted or used by COSQLiteStore.
  *
- *   A _branch_ consists of a linear sequence of _revisions_, which were produced by making
- *   sequential edits to the _contents_ of the persistent root, as well as a marker indicating the
- *   current revision.
+ *   A _branch_ consists of a linear sequence of _revisions_:  A _revision_ is a snapshot of the 
+ *   persistent root contents. It also records its parent. In the future, metadata could be added per-revision.
  *
- *   A _revision_ is a snapshot of the persistent root contents. 
+ *   The revisions in a branch are produced by making
+ *   sequential edits to the _contents_ of the persistent root.
+ *
+ *   There is a  marker indicating the current revision, as well as two special revsions called
+ *   "head" and "tail".
+ *
+ *   oldest           newest
+ *     o--------o--------o
+ *    tail    current   head
+ *
+ *   The purpose of the head and tail pointers is to keep track of all revisions that have ever
+ *   been committed to a branch. The tail represents the start of the recorded history of the branch,
+ *   the head represents the newest. Normally the current revision is the same as the head,
+ *   but the current revision could be moved to an older revision if the user wants to revert to an
+ *   older sate.
+ *
+ *   Note: making a commit when the current branch is an older than the head revision would mean
+ *   that the old head is lost. When exposing this functionality in the UI, the user should
+ *   probably be encouraged/forced to make a new branch so that the old head isn't lost.
+ *
+ *   oldest                newest
+ *
+ *               /------------o
+ *              /            new head
+ *     o--------o . . . . o
+ *    tail    current   (lost head)
+ *
+ *   (Note that if -finalizeDeletionsForPersistentRoot: is called in this state, the dotted revisions
+ *   will be lost forever.) History compaction is accomplished by moving the tail pointer forward,
+ *   and calling -finalizeDeletionsForPersistentRoot:.
  *
  *   The contents of a revision consists of a graph of
  *   _embedded objects_, along with one designated as the _root embedded object_. The designation
@@ -36,19 +65,39 @@
  *   the persistent root represents. Note that the root embedded object does not have the same UUID
  *   as the _persistent root_ that contains it.
  *
- *   Core Objects and Branches are mutable, and any changes made are unversioned (only the current
+ *   Persistent roots and branches are mutable, and any changes made are unversioned (only the current
  *   state is stored.) Undo/redo should be implemented at a higher layer by logging changes made
  *   to the store.
  *
  *   The revisions of the versioned contents are stored in a DAG structure. Each revision is
  *   identified by, currently, an opaque ID (internally, backing store UUID + an integer).
- *   A hash, like git and other use, could be used instead - the current scheme was chosen for
+ *   A hash, like git and other dvcs's use, could be used instead - the current scheme was chosen for
  *   simplicity and speculated better performance but we may switch to a hash.
  *
+ * Basic Usage
+ * -----------
  *
- * Garbage collection / deletion semantics:
+ * - The basic usage pattern is:
  *
- * - Persistent roots are never garbage collected, they must be deleted explicitly by the user.
+ *    * Create a persistent root with -createPersistentRootWithInitialContents:metadata:,
+ *      or -createPersistentRootWithInitialRevision:metadata: if a cheap copy is desired.
+ *
+ *    * Write an embedded object graph as a revision using -writeItemTree:withMetadata:withParentRevisionID:modifiedItems:.
+ *
+ *    * Set the current version of the persistent root's current version to the newly committed
+ *      revision using -setCurrentVersion:forBranch:ofPersistentRoot:updateHead:
+ *
+ *    * Read back the embedded object graph at an old revision using -itemTreeForRevisionID:
+ *
+ * - Note that there is no deliberatly no support for copying persistent roots.
+ *
+ *
+ *
+ *
+ * Garbage collection / deletion semantics
+ * ---------------------------------------
+ *
+ * - Persistent roots are never garbage collected, they must be deleted explicitly by the user. [1]
  *   For convenience, once deleted, they can be undeleted. Typical use case:
  *        - user creates a document, types in it a bit.
  *        - It's a temporary note, so when they're done with it, they delete it.
@@ -82,7 +131,8 @@
  *     since the branch was deleted with -deleteBranch:
  *   * Calling -setCurrentVersion:... will return NO if the revision has been deleted.
  * 
- * Implementation summary:
+ * Implementation summary
+ * ----------------------
  *
  * - COSQLiteStore has one SQLite database which stores the persistent root and branch metadata,
  *   as well as full text indexes and an index of attachment references (for garbage collecting attachments),
@@ -90,6 +140,52 @@
  *   users of the class so we can quickly answer questions like "show all references to this persistent root")
  *
  * - Persistent root contents are stored in "backing stores". See COSQLiteStorePersistentRootBackingStore.
+ *
+ *
+ * Concurrency
+ * -----------
+ *
+ * COSQLiteStore is designed to support multiple processes having the same store opening and making concurrent
+ * changes. (at the moment it's not tested.)
+ *
+ * The only pieces of shared mutable state are the persistent root (and branch) metadata (current branch, 
+ * current revision), and right now there is no synchronization mechanisim for multiple processes to coordinate
+ * making a change... this will be needed.
+ *
+ * One idea was to add a fromVersion: paramater to -setCurrentVersion:forBranch:...,  and within the transaction, 
+ * fail if the current state is not the fromVersion.
+ *
+ * Footnotes
+ * ---------
+ *
+ * [1] Deletion modes: There are two designs we could have used for persistent root deletion:
+ *   - 1. explicit deletion
+ *   - 2. garbage collection
+ *
+ *   In the "explicit deletion" design, which is what we are using, persistent roots are never deleted
+ *   unless explicitly removed by the user. In addition, I setteled on a two step deletion, where first
+ *   the user calls -deletePersistentRoot:, and then -finalizeDeletionsForPersistentRoot: to permanently delete it.
+ *
+ *   The garbage collection design has serious problems. I was going to allow the user to designate some
+ *   persistent roots as GC roots, which would never be garbage collected, and the rest would be eligible
+ *   for collection unless there was a reference to them somehow. This is where the scheme starts to fall apart:
+ *
+ *   - if "old" references (that exist in old revisions but not in newer) keep a persistent root alive,
+ *     then it becomes very difficult to ever delete persistent roots. Suppose you create a temporary
+ *     persistent root T, and a reference to it in a long-lived workspace persistent root W.
+ *     The only way to have T's underlying disk space freed would be to erase all history of W up to the
+ *     point where T was deleted. To fix this we'd have to curcumvent the GC by doing manual deletion,
+ *     making the effort of doing GC wasted.
+ *
+ *  - a possible scheme could be, only references in the current version of all branches of all persistent roots
+ *    are counted as keeping other persistent roots alive.
+ *    This sceheme has a lot of problems:
+ *
+ *     * Could lead to accidental deletion if you temporairly revert the workspace W to an old version
+ *       and a GC is triggered; then all documents referenced only by W after the point you reveted to
+ *       will be permanently deleted.
+ *
+ *     * Hard to implement efficiently.
  *
  */
 @interface COSQLiteStore : NSObject
@@ -108,70 +204,130 @@
     BOOL inUserTransaction_;
 }
 
-- (id)initWithURL: (NSURL*)aURL;
-- (NSURL*)URL;
-
-/** @taskunit Transactions */
-
-/*
- These are purely for improving performance when making many changes at a time to the store.
- If you don't use them, transactions are created internally to ensure correct atomicity of all operations.
+/**
+ * Opens an exisiting, or creates a new CoreObject store at the given file:// URL.
  */
-
-- (void) beginTransaction;
-- (void) commitTransaction;
-
-
-/** @taskunit reading states */
-
-// because these are immutable, no atomicity/locking/concurrency
-// concerns exist.
+- (id)initWithURL: (NSURL*)aURL;
 
 /**
- * Read commit metadata for a given revision ID
+ * Returns the file:// URL the receiver was created with.
+ */
+- (NSURL*)URL;
+
+
+
+
+/** @taskunit Revision Reading */
+
+/**
+ * Read revision metadata for a given revision ID.
+ *
+ * This data in the store is immutable (except for the case that the revision becomes unreachable and is garbage collected
+ * by a call to -finalizeDeletionsForPersistentRoot), and so it could be cached in memory by COSQLiteStore (though isn't currently)
+ * 
+ * Adding an in-memory cache for this will probably imporant.
  */
 - (CORevision *) revisionForID: (CORevisionID *)aToken;
 
+/**
+ * Returns a delta between the given revision IDs.
+ * The delta is uses the granularity of single embedded objects, but not individual properties.
+ *
+ * This is only useful if the caller has the state of baseRevid in memory.
+ * 
+ * In the future if we add an internal in-memory revision cache to COSQLiteStore, this may
+ * no longer be of much use.
+ */
 - (COItemTree *) partialItemTreeFromRevisionID: (CORevisionID *)baseRevid
                                   toRevisionID: (CORevisionID *)finalRevid;
 
+/**
+ * Returns the state the embedded object graph at a given revision.
+ */
 - (COItemTree *) itemTreeForRevisionID: (CORevisionID *)aToken;
+
+/**
+ * Returns the state of a single embedded object at a given revision.
+ */
 - (COItem *) item: (COUUID *)anitem atRevisionID: (CORevisionID *)aToken;
 
-/** @taskunit writing states */
 
+
+
+
+/** @taskunit Revision Writing */
+
+/**
+ * Writes an embedded object graph as a revision in the store.
+ *
+ * aParent determines the backing store to write the revision to; must be non-null.
+ * modifiedItems is an array of the UUIDs of objects in anItemTree that were either added or changed from their state
+ *     in aParent. nil can be passed to indicate that all embedded objects were new/changed. This parameter
+ *     is the delta compression, so it should be provided and must be accurate.
+ *
+ *     We should remove probably remove this paramater, and calculate it internally. That would cause
+ *     a performance hit because we'd have to read the aParent revision, but make the API cleaner.
+ *     Once we have an in-memory cache of revisionId to COItemTree, the performance hit will probably
+ *     be negligible.
+ */
 - (CORevisionID *) writeItemTree: (COItemTree *)anItemTree
                     withMetadata: (NSDictionary *)metadata
             withParentRevisionID: (CORevisionID *)aParent
-                   modifiedItems: (NSArray*)modifiedItems; // array of COUUID
+                   modifiedItems: (NSArray*)modifiedItems; // TODO: Remove modifiedItems param
 
-/** @taskunit reading persistent roots */
 
-- (NSArray *) persistentRootUUIDs;
-- (NSArray *) deletedPersistentRootUUIDs;
 
-/** @taskunit writing persistent roots */
 
-/*
+/** @taskunit Persistent Root Creation */
 
- Handing creation/deletion properly:
- 
- Typical use case:
-   - user creates a document, types in it a bit.
-   - It's a temporary note, so when theyy're done with it, they delete it.
-   - Note is moved to trash. CMD+Z undoes the move to trash.
- 
+/**
+ * Standard method to create a persistent root.
+ *
+ * Always creates a new backing store, so the contents will not be stored as a delta against another
+ * persistent root. If the new persistent root is likely going to have content in common with another
+ * persistent root, use -createPersistentRootWithInitialRevision:metadata: instead.
  */
 - (COPersistentRootState *) createPersistentRootWithInitialContents: (COItemTree *)contents
                                                            metadata: (NSDictionary *)metadata;
 
+/**
+ * "Cheap copy" method of creating a persistent root.
+ *
+ * The created persistent root will have a single branch whose current revision is set to the
+ * provided revision.
+ *
+ * The persistent root will share its backing store with the backing store of aRevision,
+ * but this is an implementation detail and otherwise it's completely isolated from other
+ * persistent roots sharing the same backing store. 
+ * 
+ * (The only way that sharing backing stores should be visible to uses is a corner case in 
+ * the behaviour of -finalizeDeletionsForPersistentRoot:. It will garbage collect all unreferenced
+ * revisions in the backing store of the passed in persistent root)
+ */
 - (COPersistentRootState *) createPersistentRootWithInitialRevision: (CORevisionID *)aRevision
                                                            metadata: (NSDictionary *)metadata;
 
-- (BOOL) deletePersistentRoot: (COUUID *)aRoot;
-- (BOOL) undeletePersistentRoot: (COUUID *)aRoot;
 
-/* Undoable changes */
+
+
+/** @taskunit Persistent Root Reading */
+
+/**
+ * Only returns non-deleted persistent root UUIDs.
+ */
+- (NSArray *) persistentRootUUIDs;
+- (NSArray *) deletedPersistentRootUUIDs;
+
+/**
+ * @return  a snapshot of the state of a persistent root, or nil if
+ *          the persistent root does not exist.
+ */
+- (COPersistentRootState *) persistentRootWithUUID: (COUUID *)aUUID;
+
+
+
+
+/** @taskunit Persistent Root Modification */
 
 /**
  * Returns NO if the branch does not exist, or is deleted (finalized or not).
@@ -184,16 +340,8 @@
                            forPersistentRoot: (COUUID *)aRoot;
 
 /**
- * @return  a snapshot of the state of a persistent root, or nil if
- *          the persistent root does not exist.
- */
-- (COPersistentRootState *) persistentRootWithUUID: (COUUID *)aUUID;
-
-/**
- * If we care about detecting concurrent changes,
- * just add a fromVersoin: (token) paramater,
- * and within the transaction, fail if the current state is not the
- * fromVersion.
+ * Updates the current revision pointer of a branch, and optionally the head revision.
+ * TODO: enforce if current != head, then updateHead must be YES.
  */
 - (BOOL) setCurrentVersion: (CORevisionID*)aVersion
                  forBranch: (COUUID *)aBranch
@@ -211,19 +359,42 @@
                forBranch: (COUUID *)aBranch
         ofPersistentRoot: (COUUID *)aRoot;
 
-
-- (BOOL) deleteBranch: (COUUID *)aBranch
-     ofPersistentRoot: (COUUID *)aRoot;
-
-- (BOOL) undeleteBranch: (COUUID *)aBranch
-       ofPersistentRoot: (COUUID *)aRoot;
-
 - (BOOL) setMetadata: (NSDictionary *)metadata
    forPersistentRoot: (COUUID *)aRoot;
 
 - (BOOL) setMetadata: (NSDictionary *)metadata
            forBranch: (COUUID *)aBranch
     ofPersistentRoot: (COUUID *)aRoot;
+
+
+
+
+
+/** @taskunit Persistent Root Deletion */
+
+/**
+ * Marks the given persistent root as deleted, can be reverted by -undeletePersistentRoot:.
+ * Will be permanently removed when -finalizeDeletionsForPersistentRoot: is called.
+ */
+- (BOOL) deletePersistentRoot: (COUUID *)aRoot;
+
+/**
+ * Unmarks the given persistent root as deleted
+ */
+- (BOOL) undeletePersistentRoot: (COUUID *)aRoot;
+
+/**
+ * Marks the given branch of the persistent root as deleted, can be reverted by -undeleteBranch:ofPersistentRoot:.
+ * Will be permanently removed when -finalizeDeletionsForPersistentRoot: is called.
+ */
+- (BOOL) deleteBranch: (COUUID *)aBranch
+     ofPersistentRoot: (COUUID *)aRoot;
+
+/**
+ * Unmarks the given branch of a persistent root as deleted
+ */
+- (BOOL) undeleteBranch: (COUUID *)aBranch
+       ofPersistentRoot: (COUUID *)aRoot;
 
 /**
  * Finalizes the deletion of any unreachable commits (whether due to -setTailRevision:... moving the tail pointer,
@@ -237,9 +408,24 @@
  */
 - (BOOL) finalizeGarbageAttachments;
 
-/* Search */
+
+
+
+/** @taskunit Search. API not final. */
 
 // Low-level search
 - (NSArray *) revisionIDsMatchingQuery: (NSString *)aQuery;
+
+
+
+
+/** @taskunit Transactions. API not final. */
+
+/**
+ * Starts a transaction, purely for improving performance when making a batch of changes.
+ * Should not normally be used, except for in batch imports.
+ */
+- (void) beginTransaction;
+- (void) commitTransaction;
 
 @end

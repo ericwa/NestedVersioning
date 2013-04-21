@@ -3,7 +3,7 @@
 @class COUUID;
 
 /**
- * _Store-global_ identifier for a COPersistentRootState.
+ * Store-global_ identifier for a COPersistentRootState.
  * It should be regarded as opaque, and only the store knows how to interpret it.
  *
  * 
@@ -12,7 +12,7 @@
  *  - uuid (universally unique)
  *  - hash of contents (universally unique, guarantees data consistency)
  *
- * In any case, the object weights a few tens of bytes at most.
+ * 
  */
 @interface CORevisionID : NSObject <NSCopying>
 {

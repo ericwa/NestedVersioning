@@ -683,6 +683,8 @@
  * just add a fromVersoin: (token) paramater,
  * and within the transaction, fail if the current state is not the
  * fromVersion.
+ *
+ * TODO: enforce if current != head, then updateHead must be YES.
  */
 - (BOOL) setCurrentVersion: (CORevisionID*)aVersion
                  forBranch: (COUUID *)aBranch
