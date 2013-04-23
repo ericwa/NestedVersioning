@@ -334,10 +334,23 @@
 /** @taskunit Persistent Root Modification */
 
 /**
+ * Sets the current branch. The current branch is not used internally but intended
+ * to be used by COSQLiteStore users as the default branch to display when the user
+ * opens a persistent root.
+ *
  * Returns NO if the branch does not exist, or is deleted (finalized or not).
  */
 - (BOOL) setCurrentBranch: (COUUID *)aBranch
 		forPersistentRoot: (COUUID *)aRoot;
+
+/**
+ * Sets the main branch. The main branch is used to resolve inter-persistent-root references
+ * when no explicit branch is named.
+ *
+ * Returns NO if the branch does not exist, or is deleted (finalized or not).
+ */
+- (BOOL) setMainBranch: (COUUID *)aBranch
+     forPersistentRoot: (COUUID *)aRoot;
 
 - (COUUID *) createBranchWithInitialRevision: (CORevisionID *)aToken
                                   setCurrent: (BOOL)setCurrent

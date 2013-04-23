@@ -91,7 +91,7 @@
     // Persistent Root and Branch tables
     
     [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS persistentroots (root_id INTEGER PRIMARY KEY, "
-     "uuid BLOB, backingstore BLOB, currentbranch INTEGER, metadata BLOB, deleted BOOLEAN DEFAULT 0)"];
+     "uuid BLOB, backingstore BLOB, currentbranch INTEGER, mainbranch INTEGER, metadata BLOB, deleted BOOLEAN DEFAULT 0)"];
     
     [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS branches (branch_id INTEGER PRIMARY KEY, "
      "uuid BLOB, proot INTEGER, head_revid INTEGER, tail_revid INTEGER, current_revid INTEGER, metadata BLOB, deleted BOOLEAN DEFAULT 0)"];
@@ -456,6 +456,7 @@
 - (COPersistentRootState *) persistentRootWithUUID: (COUUID *)aUUID
 {
     COUUID *currBranch = nil;
+    COUUID *mainBranch = nil;
     COUUID *backingUUID = nil;
     id meta = nil;
     BOOL deleted = NO;
@@ -465,13 +466,16 @@
     NSNumber *root_id = [self rootIdForPersistentRootUUID: aUUID];
     
     {
-        FMResultSet *rs = [db_ executeQuery: @"SELECT (SELECT uuid FROM branches WHERE branch_id = currentbranch), backingstore, metadata, deleted FROM persistentroots WHERE root_id = ?", root_id];
+        FMResultSet *rs = [db_ executeQuery: @"SELECT (SELECT uuid FROM branches WHERE branch_id = currentbranch),"
+                                                    " (SELECT uuid FROM branches WHERE branch_id = mainbranch),"
+                                                    " backingstore, metadata, deleted FROM persistentroots WHERE root_id = ?", root_id];
         if ([rs next])
         {
             currBranch = [COUUID UUIDWithData: [rs dataForColumnIndex: 0]];
-            backingUUID = [COUUID UUIDWithData: [rs dataForColumnIndex: 1]];
-            meta = [self readMetadata: [rs dataForColumnIndex: 2]];
-            deleted = [rs boolForColumnIndex: 3];
+            mainBranch = [COUUID UUIDWithData: [rs dataForColumnIndex: 1]];
+            backingUUID = [COUUID UUIDWithData: [rs dataForColumnIndex: 2]];
+            meta = [self readMetadata: [rs dataForColumnIndex: 3]];
+            deleted = [rs boolForColumnIndex: 4];
         }
         else
         {
@@ -514,6 +518,7 @@
     COPersistentRootState *result = [[[COPersistentRootState alloc] initWithUUID: aUUID
                                                                    branchForUUID: branchDict
                                                                currentBranchUUID: currBranch
+                                                                  mainBranchUUID: mainBranch
                                                                         metadata: meta] autorelease];
     return result;
 }
@@ -552,10 +557,9 @@
     [self beginTransactionIfNeeded];
     
     [db_ executeUpdate: @"INSERT INTO persistentroots (uuid, "
-           "backingstore, currentbranch, metadata, deleted) VALUES(?,?,?,?, 0)",
+           "backingstore, currentbranch, mainbranch, metadata, deleted) VALUES(?,?,NULL,NULL,?,0)",
            [uuid dataValue],
            [[revId backingStoreUUID] dataValue],
-           nil,
            [self writeMetadata: metadata]];
 
     const int64_t root_id = [db_ lastInsertRowId];
@@ -570,7 +574,8 @@
     
     const int64_t branch_id = [db_ lastInsertRowId];
     
-    [db_ executeUpdate: @"UPDATE persistentroots SET currentbranch = ? WHERE root_id = ?",
+    [db_ executeUpdate: @"UPDATE persistentroots SET currentbranch = ?, mainbranch = ? WHERE root_id = ?",
+      [NSNumber numberWithLongLong: branch_id],
       [NSNumber numberWithLongLong: branch_id],
       [NSNumber numberWithLongLong: root_id]];
 
@@ -587,6 +592,7 @@
     COPersistentRootState *plist = [[[COPersistentRootState alloc] initWithUUID: uuid
                                                                   branchForUUID: D(branch, branchUUID)
                                                               currentBranchUUID: branchUUID
+                                                                 mainBranchUUID: branchUUID
                                                                        metadata: metadata] autorelease];
     
     return plist;
@@ -646,6 +652,20 @@
         return [db_ executeUpdate: @"UPDATE persistentroots SET currentbranch = ? WHERE root_id = ?",
                    branch_id,
                    root_id];
+    }
+    return NO;
+}
+
+- (BOOL) setMainBranch: (COUUID *)aBranch
+     forPersistentRoot: (COUUID *)aRoot
+{
+    NSNumber *root_id = [self rootIdForPersistentRootUUID: aRoot];
+    NSNumber *branch_id = [db_ numberForQuery: @"SELECT branch_id FROM branches WHERE proot = ? AND uuid = ? AND deleted = 0", root_id, [aBranch dataValue]];
+    if (branch_id != nil)
+    {
+        return [db_ executeUpdate: @"UPDATE persistentroots SET mainbranch = ? WHERE root_id = ?",
+                branch_id,
+                root_id];
     }
     return NO;
 }

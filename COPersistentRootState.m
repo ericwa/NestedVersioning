@@ -9,6 +9,7 @@ NSString *kCOPersistentRootUUID = @"COPersistentRootUUID";
 
 NSString *kCOPersistentRootBranchForUUID= @"COPersistentRootBranchForUUID";
 NSString *kCOPersistentRootCurrentBranchUUID = @"COPersistentRootCurrentBranchUUID";
+NSString *kCOPersistentRootMainBranchUUID = @"COPersistentRootMainBranchUUID";
 NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
 
 @implementation COPersistentRootState
@@ -16,11 +17,13 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
 @synthesize UUID = uuid_;
 @synthesize metadata = metadata_;
 @synthesize currentBranchUUID = currentBranch_;
-@synthesize  branchForUUID = branchForUUID_;
+@synthesize mainBranchUUID = mainBranch_;
+@synthesize branchForUUID = branchForUUID_;
 
 - (id) initWithUUID: (COUUID *)aUUID
       branchForUUID: (NSDictionary *)branchForUUID
   currentBranchUUID: (COUUID *)currentBranch
+     mainBranchUUID: (COUUID *)mainBranch
            metadata: (NSDictionary *)theMetadata
 {
     NSParameterAssert([aUUID isKindOfClass: [COUUID class]]);
@@ -31,6 +34,7 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
     branchForUUID_ = [[NSMutableDictionary alloc] initWithDictionary: branchForUUID];
 
     [self setCurrentBranchUUID: currentBranch];
+    [self setMainBranchUUID: mainBranch];
     [self setMetadata: theMetadata];
     
     return self;
@@ -40,7 +44,8 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
 {
     return [self initWithUUID: aPlist->uuid_
                 branchForUUID: aPlist->branchForUUID_
-            currentBranchUUID: aPlist->currentBranch_            
+            currentBranchUUID: aPlist->currentBranch_
+               mainBranchUUID: aPlist->mainBranch_
                      metadata: aPlist->metadata_];
 }
 
@@ -55,6 +60,7 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
     [uuid_ release];
     [branchForUUID_ release];
     [currentBranch_ release];
+    [mainBranch_ release];
     [metadata_ release];
     [super dealloc];
 }
@@ -89,6 +95,7 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
     return [self initWithUUID: [COUUID UUIDWithString: [aPlist objectForKey: kCOPersistentRootUUID]]
                 branchForUUID: UUIDToBranchMapFromPlist([aPlist objectForKey: kCOPersistentRootBranchForUUID])
             currentBranchUUID: [COUUID UUIDWithString: [aPlist objectForKey: kCOPersistentRootCurrentBranchUUID]]
+               mainBranchUUID: [COUUID UUIDWithString: [aPlist objectForKey: kCOPersistentRootMainBranchUUID]]
                      metadata: [aPlist objectForKey: kCOPersistentRootMetadata]];
 }
 
@@ -98,6 +105,7 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
     [results setObject: [uuid_ stringValue] forKey: kCOPersistentRootUUID];
     [results setObject: plistFromUUIDToBranchMap(branchForUUID_) forKey: kCOPersistentRootBranchForUUID];
     [results setObject: [currentBranch_ stringValue] forKey: kCOPersistentRootCurrentBranchUUID];
+    [results setObject: [mainBranch_ stringValue] forKey: kCOPersistentRootMainBranchUUID];
     if (metadata_ != nil)
     {
         [results setObject: metadata_ forKey: kCOPersistentRootMetadata];
@@ -113,6 +121,7 @@ NSString *kCOPersistentRootMetadata = @"COPersistentRootMetadata";
         return [uuid_ isEqual: other->uuid_]
         && [branchForUUID_ isEqual: other->branchForUUID_]
         && [currentBranch_ isEqual: other->currentBranch_]
+        && [mainBranch_ isEqual: other->mainBranch_]
         && [metadata_ isEqual: other->metadata_];
     }
     return NO;

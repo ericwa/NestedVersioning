@@ -23,6 +23,7 @@
     NSMutableDictionary *branchForUUID_; // COUUID : COBranchPlist
     
     COUUID *currentBranch_;
+    COUUID *mainBranch_;
     
     NSDictionary *metadata_;
 }
@@ -30,6 +31,7 @@
 - (id) initWithUUID: (COUUID *)aUUID
       branchForUUID: (NSDictionary *)branchForUUID
   currentBranchUUID: (COUUID *)currentBranch
+     mainBranchUUID: (COUUID *)mainBranch
            metadata: (NSDictionary *)theMetadata;
 
 - (id) initWithPersistentRootPlist: (COPersistentRootState *)aPlist;
@@ -45,6 +47,7 @@
 @property (readonly, nonatomic) COUUID *UUID;
 @property (nonatomic, copy, readwrite) NSDictionary *metadata;
 @property (nonatomic, copy, readwrite) COUUID *currentBranchUUID;
+@property (nonatomic, copy, readwrite) COUUID *mainBranchUUID;
 @property (nonatomic, copy, readwrite) NSDictionary *branchForUUID;
 
 // Plist import/export
