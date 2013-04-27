@@ -130,9 +130,10 @@ static int itemChangedAtCommit(int i)
     // Set the persistent root's state to the last commit
     
     [store setCurrentRevision: lastCommitId
-                   forBranch: [proot currentBranchUUID]
-            ofPersistentRoot: [proot UUID]
-                  updateHead: YES];
+                 headRevision: lastCommitId
+                 tailRevision: [[proot currentBranchState] currentRevisionID]
+                    forBranch: [proot currentBranchUUID]
+             ofPersistentRoot: [proot UUID]];
     
     NSLog(@"committing a %d-item persistent root and then making %d commits which touched 1 item each took %lf ms",
           NUM_CHILDREN, NUM_COMMITS, 1000.0 * [[NSDate date] timeIntervalSinceDate: startDate]);

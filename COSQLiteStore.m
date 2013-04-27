@@ -740,6 +740,39 @@
     // TODO: Validae that tail .. current .. head are a linear sequence, and rollback + return NO if not.
 }
 
+- (BOOL) setCurrentRevision: (CORevisionID*)currentRev
+               headRevision: (CORevisionID*)headRev
+               tailRevision: (CORevisionID*)tailRev
+                  forBranch: (COUUID *)aBranch
+           ofPersistentRoot: (COUUID *)aRoot
+{
+    [db_ beginTransaction];
+
+    NSData *branchData = [aBranch dataValue];
+    
+    if (currentRev != nil)
+    {
+        [db_ executeUpdate: @"UPDATE branches SET current_revid = ? WHERE uuid = ?",
+                [NSNumber numberWithLongLong: [currentRev revisionIndex]],
+                branchData];
+    }
+    if (headRev != nil)
+    {
+        [db_ executeUpdate: @"UPDATE branches SET head_revid = ? WHERE uuid = ?",
+                [NSNumber numberWithLongLong: [headRev revisionIndex]],
+                branchData];
+    }
+    if (tailRev != nil)
+    {
+        [db_ executeUpdate: @"UPDATE branches SET tail_revid = ? WHERE uuid = ?",
+                [NSNumber numberWithLongLong: [tailRev revisionIndex]],
+                branchData];
+    }
+
+    return [db_ commit];
+}
+
+
 - (BOOL) deleteBranch: (COUUID *)aBranch
      ofPersistentRoot: (COUUID *)aRoot
 {

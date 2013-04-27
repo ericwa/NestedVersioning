@@ -376,6 +376,18 @@
                forBranch: (COUUID *)aBranch
         ofPersistentRoot: (COUUID *)aRoot;
 
+/**
+ * All-in-one method for updating the current revision of a persistent root.
+ *
+ * Passing nil for any revision params means to keep the current value
+ */
+- (BOOL) setCurrentRevision: (CORevisionID*)currentRev
+               headRevision: (CORevisionID*)headRev
+               tailRevision: (CORevisionID*)tailRev
+                  forBranch: (COUUID *)aBranch
+           ofPersistentRoot: (COUUID *)aRoot;
+
+
 - (BOOL) setMetadata: (NSDictionary *)metadata
    forPersistentRoot: (COUUID *)aRoot;
 
