@@ -614,6 +614,20 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		66118A74172BA1230083C931 /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				66E4BB63166A7B64009BFE7D /* COSQLiteStorePersistentRootBackingStore.h */,
+				66E4BB64166A7B64009BFE7D /* COSQLiteStorePersistentRootBackingStore.m */,
+				66ED6D6816F41988001B853E /* COSQLiteStorePersistentRootBackingStoreBinaryFormats.h */,
+				66ED6D6916F41988001B853E /* COSQLiteStorePersistentRootBackingStoreBinaryFormats.m */,
+				66ED6D8116F4EB4F001B853E /* COBinaryWriter.h */,
+				66ED6D8916F507BE001B853E /* COBinaryReader.h */,
+				66ED6D8A16F507BF001B853E /* COBinaryReader.m */,
+			);
+			name = Internal;
+			sourceTree = "<group>";
+		};
 		6622E9C016ED0E8D00D82F2A /* Schema */ = {
 			isa = PBXGroup;
 			children = (
@@ -646,7 +660,6 @@
 				79E87A9414FA12C6005F6F70 /* Docs */,
 				66DFAEC4142A726100623060 /* COMacros.h */,
 				669CADED1491C14300D0CF5F /* UUID & Path */,
-				669CADEE1491C15400D0CF5F /* Type System */,
 				66EDFD8E148EF64600D0DC0B /* In-Memory Item Tree */,
 				66485D8D14D23A0A004C4431 /* Diff */,
 				791A0EBD148AF3C200334CB1 /* Tests */,
@@ -908,15 +921,12 @@
 		666CB028166342CE0066BC77 /* Real Store */ = {
 			isa = PBXGroup;
 			children = (
-				66ED6D6F16F4EA9C001B853E /* Serializer */,
+				66118A74172BA1230083C931 /* Internal */,
 				666CB029166342E50066BC77 /* COSQLiteStore.h */,
 				666CB02A166342E50066BC77 /* COSQLiteStore.m */,
+				66EDFD94148EF73200D0DC0B /* COType.h */,
 				66EC2EB4171E594F00F27B2D /* COSQLiteStore+Attachments.h */,
 				66EC2EB5171E594F00F27B2D /* COSQLiteStore+Attachments.m */,
-				66E4BB63166A7B64009BFE7D /* COSQLiteStorePersistentRootBackingStore.h */,
-				66E4BB64166A7B64009BFE7D /* COSQLiteStorePersistentRootBackingStore.m */,
-				66ED6D6816F41988001B853E /* COSQLiteStorePersistentRootBackingStoreBinaryFormats.h */,
-				66ED6D6916F41988001B853E /* COSQLiteStorePersistentRootBackingStoreBinaryFormats.m */,
 				665BD3C815D78BE600428355 /* COPersistentRootState.h */,
 				665BD3C915D78BE600428355 /* COPersistentRootState.m */,
 				664BBC62169BF06E00EE7C88 /* COBranchState.h */,
@@ -968,14 +978,6 @@
 				66EE5D3914637418008AA95B /* COPath.m */,
 			);
 			name = "UUID & Path";
-			sourceTree = "<group>";
-		};
-		669CADEE1491C15400D0CF5F /* Type System */ = {
-			isa = PBXGroup;
-			children = (
-				66EDFD94148EF73200D0DC0B /* COType.h */,
-			);
-			name = "Type System";
 			sourceTree = "<group>";
 		};
 		66DF0054166C865700753F67 /* New Code */ = {
@@ -1049,16 +1051,6 @@
 				66EB7570148CA9D300C2114B /* Foundation.framework */,
 			);
 			name = "Other Frameworks";
-			sourceTree = "<group>";
-		};
-		66ED6D6F16F4EA9C001B853E /* Serializer */ = {
-			isa = PBXGroup;
-			children = (
-				66ED6D8116F4EB4F001B853E /* COBinaryWriter.h */,
-				66ED6D8916F507BE001B853E /* COBinaryReader.h */,
-				66ED6D8A16F507BF001B853E /* COBinaryReader.m */,
-			);
-			name = Serializer;
 			sourceTree = "<group>";
 		};
 		66EDFD8E148EF64600D0DC0B /* In-Memory Item Tree */ = {
@@ -1231,6 +1223,7 @@
 				6623BD3B1706BD0D00E9E2D6 /* COWorkspace.h in Headers */,
 				66C5B3BD1708FA0500AE0BCC /* COItem+Binary.h in Headers */,
 				66EC2EB6171E594F00F27B2D /* COSQLiteStore+Attachments.h in Headers */,
+				66118A79172D9DC70083C931 /* COUndoController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
