@@ -357,26 +357,6 @@
                            forPersistentRoot: (COUUID *)aRoot;
 
 /**
- * Updates the current revision pointer of a branch, and optionally the head revision.
- * TODO: enforce if current != head, then updateHead must be YES.
- */
-- (BOOL) setCurrentRevision: (CORevisionID*)aVersion
-                 forBranch: (COUUID *)aBranch
-          ofPersistentRoot: (COUUID *)aRoot
-                updateHead: (BOOL)updateHead;
-
-/**
- * History compacting.
- *
- * Throws an exception if aVersion is not a parent of the current version and a child of the current tail.
- *
- * Reversible until -finalizeDeletions is called.
- */
-- (BOOL) setTailRevision: (CORevisionID*)aVersion
-               forBranch: (COUUID *)aBranch
-        ofPersistentRoot: (COUUID *)aRoot;
-
-/**
  * All-in-one method for updating the current revision of a persistent root.
  *
  * Passing nil for any revision params means to keep the current value
@@ -394,10 +374,6 @@
 - (BOOL) setMetadata: (NSDictionary *)metadata
            forBranch: (COUUID *)aBranch
     ofPersistentRoot: (COUUID *)aRoot;
-
-
-
-
 
 /** @taskunit Persistent Root Deletion */
 

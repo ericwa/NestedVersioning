@@ -13,6 +13,8 @@
 		660ED2F216D3475900BF6BB8 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 660ED2F016D3475900BF6BB8 /* Credits.rtf */; };
 		660ED2F516D3475900BF6BB8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 660ED2F416D3475900BF6BB8 /* AppDelegate.m */; };
 		660ED2F816D3475900BF6BB8 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 660ED2F616D3475900BF6BB8 /* MainMenu.xib */; };
+		66118A79172D9DC70083C931 /* COUndoController.h in Headers */ = {isa = PBXBuildFile; fileRef = 66118A77172D9DC70083C931 /* COUndoController.h */; };
+		66118A7A172D9DC70083C931 /* COUndoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66118A78172D9DC70083C931 /* COUndoController.m */; };
 		662115BD16BD92F400F037BB /* list-add.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 662115BC16BD92F400F037BB /* list-add.tiff */; };
 		662115C116BD938B00F037BB /* edit-redo.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 662115BF16BD938B00F037BB /* edit-redo.tiff */; };
 		662115C216BD938B00F037BB /* edit-undo.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 662115C016BD938B00F037BB /* edit-undo.tiff */; };
@@ -250,6 +252,8 @@
 		660ED2F716D3475900BF6BB8 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		66101A0914D09FAA00B50075 /* diff.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = diff.cc; path = Diff/diff.cc; sourceTree = "<group>"; };
 		66101A0D14D09FB700B50075 /* diff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = diff.h; path = Diff/diff.h; sourceTree = "<group>"; };
+		66118A77172D9DC70083C931 /* COUndoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COUndoController.h; sourceTree = "<group>"; };
+		66118A78172D9DC70083C931 /* COUndoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COUndoController.m; sourceTree = "<group>"; };
 		662115BC16BD92F400F037BB /* list-add.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "list-add.tiff"; sourceTree = "<group>"; };
 		662115BF16BD938B00F037BB /* edit-redo.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "edit-redo.tiff"; sourceTree = "<group>"; };
 		662115C016BD938B00F037BB /* edit-undo.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "edit-undo.tiff"; sourceTree = "<group>"; };
@@ -983,6 +987,8 @@
 				66FCDBE71645E0FC00E24A67 /* Editing Context */,
 				66409FAE16599EA000B9C491 /* High-level api */,
 				666CB028166342CE0066BC77 /* Real Store */,
+				66118A77172D9DC70083C931 /* COUndoController.h */,
+				66118A78172D9DC70083C931 /* COUndoController.m */,
 			);
 			name = "New Code";
 			sourceTree = "<group>";
@@ -1565,6 +1571,7 @@
 				6623BD3C1706BD0D00E9E2D6 /* COWorkspace.m in Sources */,
 				66C5B3BE1708FA0500AE0BCC /* COItem+Binary.m in Sources */,
 				66EC2EB7171E594F00F27B2D /* COSQLiteStore+Attachments.m in Sources */,
+				66118A7A172D9DC70083C931 /* COUndoController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

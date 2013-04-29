@@ -698,48 +698,6 @@
     return branchUUID;
 }
 
-/**
- * TODO: If we care about detecting concurrent changes,
- * just add a fromVersoin: (token) paramater,
- * and within the transaction, fail if the current state is not the
- * fromVersion.
- *
- * TODO: enforce if current != head, then updateHead must be YES.
- */
-- (BOOL) setCurrentRevision: (CORevisionID*)aVersion
-                 forBranch: (COUUID *)aBranch
-          ofPersistentRoot: (COUUID *)aRoot
-                updateHead: (BOOL)updateHead
-{
-    if (updateHead)
-    {
-        return [db_ executeUpdate: @"UPDATE branches SET current_revid = ?, head_revid = ? WHERE uuid = ?",
-                [NSNumber numberWithLongLong: [aVersion revisionIndex]],
-                [NSNumber numberWithLongLong: [aVersion revisionIndex]],
-                [aBranch dataValue]];
-        
-    }
-    else
-    {
-        return [db_ executeUpdate: @"UPDATE branches SET current_revid = ? WHERE uuid = ?",
-                [NSNumber numberWithLongLong: [aVersion revisionIndex]],
-                [aBranch dataValue]];
-    }
-    
-    // TODO: Validae that tail .. current .. head are a linear sequence, and rollback + return NO if not.
-}
-
-- (BOOL) setTailRevision: (CORevisionID*)aVersion
-               forBranch: (COUUID *)aBranch
-        ofPersistentRoot: (COUUID *)aRoot
-{
-    return [db_ executeUpdate: @"UPDATE branches SET tail_revid = ? WHERE uuid = ?",
-            [NSNumber numberWithLongLong: [aVersion revisionIndex]],
-            [aBranch dataValue]];
-
-    // TODO: Validae that tail .. current .. head are a linear sequence, and rollback + return NO if not.
-}
-
 - (BOOL) setCurrentRevision: (CORevisionID*)currentRev
                headRevision: (CORevisionID*)headRev
                tailRevision: (CORevisionID*)tailRev
