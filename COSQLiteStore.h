@@ -403,15 +403,10 @@
 
 /**
  * Finalizes the deletion of any unreachable commits (whether due to -setTailRevision:... moving the tail pointer,
- * or branches being deleted), any deleted branches, or the persistent root itself.
- *
+ * or branches being deleted), any deleted branches, or the persistent root itself, as well as all unreachable
+ * attachments.
  */
 - (BOOL) finalizeDeletionsForPersistentRoot: (COUUID *)aRoot;
-
-/**
- * Finalizes the deletion of any unreachable attachments in the store.
- */
-- (BOOL) finalizeGarbageAttachments;
 
 
 

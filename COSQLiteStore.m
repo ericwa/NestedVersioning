@@ -776,9 +776,6 @@
     return ok;
 }
 
-
-// How to deal with finalizing unreferenced attachments that aren't associated with any persistent root?
-
 - (BOOL) finalizeGarbageAttachments
 {
     NSMutableSet *garbage = [NSMutableSet setWithArray: [self attachments]];
@@ -861,6 +858,8 @@
         return NO;
     }
 
+    [self finalizeGarbageAttachments];
+    
     return YES;
 }
 

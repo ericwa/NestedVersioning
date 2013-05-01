@@ -423,7 +423,7 @@ static COUUID *childUUID2;
                                                                error: NULL]);
 
     UKTrue([[NSFileManager defaultManager] fileExistsAtPath: [[store URLForAttachmentID: hash] path]]);
-    UKTrue([store finalizeGarbageAttachments]);
+    UKTrue([store finalizeDeletionsForPersistentRoot: prootUUID]);
     UKFalse([[NSFileManager defaultManager] fileExistsAtPath: [[store URLForAttachmentID: hash] path]]);
 }
 
