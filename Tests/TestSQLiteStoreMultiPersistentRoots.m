@@ -60,7 +60,11 @@ static COUUID *tagUUID;
 
 - (void) testSearch
 {
-    UKFail();
+    NSArray *results = [store referencesToPersistentRoot: [docProot UUID]];
+    
+    COSearchResult *result = [results objectAtIndex: 0];
+    UKObjectsEqual([[tagProot currentBranchState] currentRevisionID], [result revision]);
+    UKObjectsEqual(tagUUID, [result embeddedObjectUUID]);
 }
 
 @end

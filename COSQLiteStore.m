@@ -14,6 +14,7 @@
 #import "COEditSetBranchMetadata.h"
 #import "COItem.h"
 #import "COSQLiteStore+Attachments.h"
+#import "COSearchResult.h"
 
 #import "FMDatabase.h"
 #import "FMDatabaseAdditions.h"
@@ -102,14 +103,14 @@
     // FTS indexes & reference caching tables (in theory, could be regenerated - although not supported)
     
     /**
-     * In revid of root_id, there was a reference to dest_root_id
+     * In embedded_object_uuid in revid of backing store root_id, there was a reference to dest_root_id
      */
-    [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS proot_refs (root_id INTEGER, revid INTEGER, dest_root_id INTEGER)"];
-    [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS attachment_refs (root_id INTEGER, revid INTEGER, attachment_hash BLOB)"];    
+    [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS proot_refs (root_id BLOB, revid INTEGER, embedded_object_uuid BLOB, dest_root_id BLOB)"];
+    [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS attachment_refs (root_id BLOB, revid INTEGER, attachment_hash BLOB)"];    
     
     [db_ executeUpdate: @"CREATE VIRTUAL TABLE IF NOT EXISTS fts USING fts4(content=\"\", text)"]; // implicit column docid
     [db_ executeUpdate: @"CREATE TABLE IF NOT EXISTS fts_docid_to_revisionid ("
-     "docid INTEGER PRIMARY KEY, root_id INTEGER, revid INTEGER)"];
+     "docid INTEGER PRIMARY KEY, backingstore BLOB, revid INTEGER)"];
     
     [db_ commit];
     
@@ -141,6 +142,13 @@
 - (NSNumber *) rootIdForPersistentRootUUID: (COUUID *)aUUID
 {
     return [db_ numberForQuery: @"SELECT root_id FROM persistentroots WHERE uuid = ?", [aUUID dataValue]];
+}
+
+- (COUUID *) UUIDForPersistentRootId: (int64_t)anId
+{
+    NSData *backingstore = [db_ dataForQuery: @"SELECT uuid FROM persistentroots WHERE root_id = ?", [NSNumber numberWithLongLong: anId]];
+    
+    return [COUUID UUIDWithData: backingstore];
 }
 
 /** @taskunit Transactions */
@@ -313,9 +321,13 @@
         modifiedItems = [anItemTree itemUUIDs];
     }
     
-    [self beginTransactionIfNeeded];
+    const BOOL wasInTransaction = [db_ inTransaction];
+    if (!wasInTransaction)
+    {
+        [self beginTransactionIfNeeded];
+    }
     
-    NSNumber *backingId = [self rootIdForPersistentRootUUID: [aRevision backingStoreUUID]];
+    NSData *backingUUIDData = [[aRevision backingStoreUUID] dataValue];
     
     NSMutableArray *ftsContent = [NSMutableArray array];
     for (COUUID *uuid in modifiedItems)
@@ -327,31 +339,36 @@
         // Look for references to other persistent roots.
         for (COUUID *referenced in [itemToIndex allReferencedPersistentRootUUIDs])
         {
-            [db_ executeUpdate: @"INSERT INTO proot_refs(root_id, revid, dest_root_id) VALUES(?,?,?)",
-                backingId,
+            [db_ executeUpdate: @"INSERT INTO proot_refs(root_id, revid, embedded_object_uuid, dest_root_id) VALUES(?,?,?,?)",
+                backingUUIDData,
                 [NSNumber numberWithLongLong: [aRevision revisionIndex]],
-                [self rootIdForPersistentRootUUID: referenced]];
+                [uuid dataValue],
+                [referenced dataValue]];
         }
         
         // Look for attachments
         for (NSData *attachment in [itemToIndex attachments])
         {
             [db_ executeUpdate: @"INSERT INTO attachment_refs(root_id, revid, attachment_hash) VALUES(?,?,?)",
-             backingId,
+             backingUUIDData ,
              [NSNumber numberWithLongLong: [aRevision revisionIndex]],
              attachment];
         }
     }
     NSString *allItemsFtsContent = [ftsContent componentsJoinedByString: @" "];    
     
-    [db_ executeUpdate: @"INSERT INTO fts_docid_to_revisionid(root_id, revid) VALUES(?, ?)",
-     backingId,
+    [db_ executeUpdate: @"INSERT INTO fts_docid_to_revisionid(backingstore, revid) VALUES(?, ?)",
+     backingUUIDData,
      [NSNumber numberWithLongLong: [aRevision revisionIndex]]];
     
     [db_ executeUpdate: @"INSERT INTO fts(docid, text) VALUES(?,?)",
      [NSNumber numberWithLongLong: [db_ lastInsertRowId]],
      allItemsFtsContent];
-    [self commitTransactionIfNeeded];
+    
+    if (!wasInTransaction)
+    {
+        [self commitTransactionIfNeeded];
+    }
     
     //NSLog(@"Index text '%@' at revision id %@", allItemsFtsContent, aRevision);
     
@@ -362,8 +379,8 @@
 {
     NSMutableArray *result = [NSMutableArray array];
     FMResultSet *rs = [db_ executeQuery: @"SELECT uuid, revid FROM "
-                       "(SELECT root_id, revid FROM fts_docid_to_revisionid WHERE docid IN (SELECT docid FROM fts WHERE text MATCH ?)) "
-                       "INNER JOIN persistentroots USING(root_id)", aQuery];
+                       "(SELECT backingstore, revid FROM fts_docid_to_revisionid WHERE docid IN (SELECT docid FROM fts WHERE text MATCH ?)) "
+                       "INNER JOIN persistentroots USING(backingstore)", aQuery];
 
     while ([rs next])
     {
@@ -841,7 +858,7 @@
     {
         
         [db_ executeUpdate: @"DELETE FROM attachment_refs WHERE root_id = ? AND revid = ?",
-         backingId,
+         [backingUUID dataValue],
          [NSNumber numberWithLongLong: i]];
         
         // FIXME: FTS, proot_refs
@@ -861,6 +878,32 @@
     [self finalizeGarbageAttachments];
     
     return YES;
+}
+
+/**
+ * @returns an array of COSearchResult
+ */
+- (NSArray *) referencesToPersistentRoot: (COUUID *)aUUID
+{
+    NSMutableArray *results = [NSMutableArray array];
+    
+    FMResultSet *rs = [db_ executeQuery: @"SELECT root_id, revid, embedded_object_uuid FROM proot_refs WHERE dest_root_id = ?", [aUUID dataValue]];
+    while ([rs next])
+    {
+        COUUID *root = [COUUID UUIDWithData: [rs dataForColumnIndex: 0]];
+        const int64_t revid = [rs int64ForColumnIndex: 1];
+        COUUID *embedded_object_uuid = [COUUID UUIDWithData: [rs dataForColumnIndex: 2]];
+        
+        COSearchResult *searchResult = [[COSearchResult alloc] init];
+        searchResult.embeddedObjectUUID = embedded_object_uuid;
+        searchResult.revision = [CORevisionID revisionWithBackinStoreUUID: root
+                                                            revisionIndex: revid];
+        [results addObject: searchResult];
+        [searchResult release];
+    }
+    [rs close];
+    
+    return results;
 }
 
 @end

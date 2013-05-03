@@ -416,7 +416,10 @@
 // Low-level search
 - (NSArray *) revisionIDsMatchingQuery: (NSString *)aQuery;
 
-
+/**
+ * @returns an array of COSearchResult
+ */
+- (NSArray *) referencesToPersistentRoot: (COUUID *)aUUID;
 
 
 /** @taskunit Transactions. API not final. */

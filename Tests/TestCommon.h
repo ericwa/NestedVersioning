@@ -36,6 +36,7 @@
 #import "COBinaryReader.h"
 #import "COBinaryWriter.h"
 #import "COItem+Binary.h"
+#import "COSearchResult.h"
 
 #define STOREPATH [@"~/om6teststore" stringByExpandingTildeInPath]
 #define STOREURL [NSURL fileURLWithPath: STOREPATH]
