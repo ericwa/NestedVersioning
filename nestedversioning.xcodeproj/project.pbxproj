@@ -99,6 +99,8 @@
 		666026F316082F1E00D84368 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 666026F216082F1E00D84368 /* main.m */; };
 		66672D1117337A5D00E5739C /* COSearchResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 66672D0F17337A5D00E5739C /* COSearchResult.h */; };
 		66672D1217337A5D00E5739C /* COSearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 66672D1017337A5D00E5739C /* COSearchResult.m */; };
+		66672D1517363EED00E5739C /* COCopier.h in Headers */ = {isa = PBXBuildFile; fileRef = 66672D1317363EEC00E5739C /* COCopier.h */; };
+		66672D1617363EED00E5739C /* COCopier.m in Sources */ = {isa = PBXBuildFile; fileRef = 66672D1417363EED00E5739C /* COCopier.m */; };
 		666CB021166206790066BC77 /* COObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 666CB01F166206790066BC77 /* COObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		666CB022166206790066BC77 /* COObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 666CB020166206790066BC77 /* COObject.m */; };
 		666CB026166206C80066BC77 /* COEditingContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 666CB024166206C70066BC77 /* COEditingContext.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -402,6 +404,8 @@
 		6660E23914F84B3000D2F319 /* TestItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestItem.m; sourceTree = "<group>"; };
 		66672D0F17337A5D00E5739C /* COSearchResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COSearchResult.h; sourceTree = "<group>"; };
 		66672D1017337A5D00E5739C /* COSearchResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COSearchResult.m; sourceTree = "<group>"; };
+		66672D1317363EEC00E5739C /* COCopier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COCopier.h; sourceTree = "<group>"; };
+		66672D1417363EED00E5739C /* COCopier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COCopier.m; sourceTree = "<group>"; };
 		666CB01F166206790066BC77 /* COObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COObject.h; sourceTree = "<group>"; };
 		666CB020166206790066BC77 /* COObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = COObject.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		666CB024166206C70066BC77 /* COEditingContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COEditingContext.h; sourceTree = "<group>"; };
@@ -1100,6 +1104,8 @@
 				6675C91A17016D44007C8DB6 /* CORelationshipCache.m */,
 				6623BD391706BD0D00E9E2D6 /* COWorkspace.h */,
 				6623BD3A1706BD0D00E9E2D6 /* COWorkspace.m */,
+				66672D1317363EEC00E5739C /* COCopier.h */,
+				66672D1417363EED00E5739C /* COCopier.m */,
 			);
 			name = "Editing Context";
 			sourceTree = "<group>";
@@ -1239,6 +1245,7 @@
 				66EC2EB6171E594F00F27B2D /* COSQLiteStore+Attachments.h in Headers */,
 				66118A79172D9DC70083C931 /* COUndoController.h in Headers */,
 				66672D1117337A5D00E5739C /* COSearchResult.h in Headers */,
+				66672D1517363EED00E5739C /* COCopier.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1585,6 +1592,7 @@
 				66EC2EB7171E594F00F27B2D /* COSQLiteStore+Attachments.m in Sources */,
 				66118A7A172D9DC70083C931 /* COUndoController.m in Sources */,
 				66672D1217337A5D00E5739C /* COSearchResult.m in Sources */,
+				66672D1617363EED00E5739C /* COCopier.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

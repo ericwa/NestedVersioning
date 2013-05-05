@@ -3,6 +3,14 @@
 @class COUUID;
 @class COItem;
 
+@protocol COItemGraph <NSObject>
+
+- (COUUID *) rootItemUUID;
+- (COItem *) itemForUUID: (COUUID *)aUUID;
+- (NSArray *) itemUUIDs;
+
+@end
+
 /**
  * An item tree is just an immutable set of COItem objects along
  * with the UUID of the root object.
@@ -13,7 +21,7 @@
  * The intended use for COItemTree is as a really simple
  * delta mechanism, so you can compute (COItemTree + COItemTree) = a new COItemTree
  */
-@interface COItemTree : NSObject
+@interface COItemTree : NSObject <COItemGraph>
 {
     COUUID *rootItemUUID_;
     NSDictionary *itemForUUID_;
