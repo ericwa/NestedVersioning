@@ -197,6 +197,7 @@
 		66ED6D8B16F507BF001B853E /* COBinaryReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 66ED6D8916F507BE001B853E /* COBinaryReader.h */; };
 		66ED6D8C16F507BF001B853E /* COBinaryReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 66ED6D8A16F507BF001B853E /* COBinaryReader.m */; };
 		66EDAF3A16B4B55400B06DB2 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E552B4146B7799008FDFAF /* libcrypto.dylib */; };
+		66F569CF1741F902003F33E2 /* TestCopier.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F569CE1741F902003F33E2 /* TestCopier.m */; };
 		66FCDBE41645DEF800E24A67 /* COBranch.h in Headers */ = {isa = PBXBuildFile; fileRef = 66FCDBE21645DEF700E24A67 /* COBranch.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79626467150EE07E009A0686 /* COSequenceMerge.h in Headers */ = {isa = PBXBuildFile; fileRef = 79626465150EE07E009A0686 /* COSequenceMerge.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79F5947C15119C7D007C517E /* COSubtreeEdits.h in Headers */ = {isa = PBXBuildFile; fileRef = 79F5947A15119C7D007C517E /* COSubtreeEdits.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -513,6 +514,7 @@
 		66EE5D491463AD67008AA95B /* TestBranchesAndCopies.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestBranchesAndCopies.m; sourceTree = "<group>"; };
 		66F4E315147C59F0004FC1BA /* TestTagging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestTagging.m; sourceTree = "<group>"; };
 		66F4E319147C606A004FC1BA /* TestGameEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestGameEditor.m; sourceTree = "<group>"; };
+		66F569CE1741F902003F33E2 /* TestCopier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCopier.m; sourceTree = "<group>"; };
 		66FCDBE21645DEF700E24A67 /* COBranch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COBranch.h; sourceTree = "<group>"; };
 		66FCDBE31645DEF800E24A67 /* COBranch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COBranch.m; sourceTree = "<group>"; };
 		790B1AE81485B184001ED869 /* TestSimpleUseOfNestedPersistentRoots.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSimpleUseOfNestedPersistentRoots.m; sourceTree = "<group>"; };
@@ -1118,6 +1120,7 @@
 				66DFAEBF142A726100623060 /* main.m */,
 				6622E9BD16EC725200D82F2A /* TestWorkspaces.m */,
 				6675C9211702C6FB007C8DB6 /* TestRelationshipCache.m */,
+				66F569CE1741F902003F33E2 /* TestCopier.m */,
 				6660E23914F84B3000D2F319 /* TestItem.m */,
 				6628FBA2142FA7840072767A /* TestEditingContext.m */,
 				662C1D5E168F8FDC002157F3 /* TestStoreEditQueue.m */,
@@ -1532,6 +1535,7 @@
 				66ED6D6E16F427FD001B853E /* TestSQLiteStorePerformance.m in Sources */,
 				66C2EA1B1730F730003864B1 /* TestSQLiteStoreMultiPersistentRoots.m in Sources */,
 				66E3AA2D171BA56200D5DD8A /* TestSQLiteStorePersistentRootBackingStore.m in Sources */,
+				66F569CF1741F902003F33E2 /* TestCopier.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

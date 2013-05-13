@@ -532,6 +532,11 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 	return [[[self alloc] init] autorelease];
 }
 
++ (COMutableItem *) itemWithUUID: (COUUID *)aUUID
+{
+	return [[[self alloc] initWithUUID: aUUID] autorelease];
+}
+
 - (void) setUUID: (COUUID *)aUUID
 {
 	NILARG_EXCEPTION_TEST(aUUID);

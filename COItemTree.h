@@ -8,6 +8,7 @@
 - (COUUID *) rootItemUUID;
 - (COItem *) itemForUUID: (COUUID *)aUUID;
 - (NSArray *) itemUUIDs;
+- (void) addItem: (COItem *)anItem;
 
 @end
 
@@ -24,17 +25,21 @@
 @interface COItemTree : NSObject <COItemGraph>
 {
     COUUID *rootItemUUID_;
-    NSDictionary *itemForUUID_;
+    NSMutableDictionary *itemForUUID_;
 }
 
 + (COItemTree *)treeWithItemsRootFirst: (NSArray*)items;
 
 - (id) initWithItemForUUID: (NSDictionary *) itemForUUID
               rootItemUUID: (COUUID *)root;
+- (id) initWithItems: (NSArray *)items
+        rootItemUUID: (COUUID *)root;
 
 - (COUUID *) rootItemUUID;
 - (COItem *) itemForUUID: (COUUID *)aUUID;
 
 - (NSArray *) itemUUIDs;
+
+- (void) addItem: (COItem *)anItem;
 
 @end

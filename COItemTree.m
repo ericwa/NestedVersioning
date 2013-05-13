@@ -9,10 +9,27 @@
               rootItemUUID: (COUUID *)root
 {
     SUPERINIT;
-    itemForUUID_ = [itemForUUID retain];
+    itemForUUID_ = [itemForUUID mutableCopy];
     rootItemUUID_ = [root copy];
     return self;
 }
+
+- (id) initWithItems: (NSArray *)items
+        rootItemUUID: (COUUID *)root
+{
+    SUPERINIT;
+    itemForUUID_ = [[NSMutableDictionary alloc] init];
+    rootItemUUID_ = [root copy];
+    
+    for (COItem *item in items)
+    {
+        [itemForUUID_ setObject: item forKey: [item UUID]];
+    }
+    NSParameterAssert([itemForUUID_ objectForKey: root] != nil);
+    
+    return self;
+}
+
 
 + (COItemTree *)treeWithItemsRootFirst: (NSArray*)items
 {
@@ -64,6 +81,12 @@
 	[result appendFormat: @"]"];
 	
 	return result;
+}
+
+- (void) addItem: (COItem *)anItem
+{
+    [itemForUUID_ setObject: anItem
+                     forKey: [anItem UUID]];
 }
 
 /**
