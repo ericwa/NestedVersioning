@@ -38,24 +38,25 @@
                                      fromGraph: (id<COItemGraph>)source
                                        toGraph: (id<COItemGraph>)dest
 {
-    NSSet *itemAndAllDescendents = [self itemAndAllDescendents: aUUID fromGraph: source];
+    NSSet *compositeObjectCopySet = [self itemAndAllDescendents: aUUID fromGraph: source];
+ 
+    NSMutableSet *result = [NSMutableSet setWithSet: compositeObjectCopySet];
     
-    if (source == dest)
+    for (COUUID *uuid in compositeObjectCopySet)
     {
-        // Copy all composite objects
-        return itemAndAllDescendents;
-    }
-    else
-    {
-        // Copy all composite objects as well as all referenced objects
-        NSMutableSet *itemAndAllReferenced = [NSMutableSet set];
-        for (COUUID *uuid in itemAndAllDescendents)
+        for (COUUID *referenced in [[source itemForUUID: uuid] referencedItemUUIDs])
         {
-            [itemAndAllReferenced addObject: uuid];
-            [itemAndAllReferenced unionSet: [[source itemForUUID: uuid] referencedItemUUIDs]];
+            if (![compositeObjectCopySet containsObject: referenced])
+            {
+                if ([dest itemForUUID: referenced] == nil)
+                {
+                    // If not in dest, copy it
+                    [result addObject: referenced];
+                }
+            }
         }
-        return itemAndAllReferenced;
     }
+    return result;
 }
 
 
