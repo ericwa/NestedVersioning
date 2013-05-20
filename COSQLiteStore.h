@@ -269,15 +269,14 @@
  *     in aParent. nil can be passed to indicate that all embedded objects were new/changed. This parameter
  *     is the delta compression, so it should be provided and must be accurate.
  *
- *     We should remove probably remove this paramater, and calculate it internally. That would cause
- *     a performance hit because we'd have to read the aParent revision, but make the API cleaner.
- *     Once we have an in-memory cache of revisionId to COItemTree, the performance hit will probably
- *     be negligible.
+ *     For optimal ease-of-use, this paramater would be removed, and the aParent revision would be feteched
+ *     from disk or memory and compared to anItemTree to compute the modifiedItems set. Only problem is this
+ *     requires comparing all items in the trees, which is fairly expensive.
  */
 - (CORevisionID *) writeContents: (COItemTree *)anItemTree
                     withMetadata: (NSDictionary *)metadata
-            parentRevisionID: (CORevisionID *)aParent
-                   modifiedItems: (NSArray*)modifiedItems; // TODO: Remove modifiedItems param
+                parentRevisionID: (CORevisionID *)aParent
+                   modifiedItems: (NSArray*)modifiedItems;
 
 
 
@@ -413,7 +412,9 @@
 
 /** @taskunit Search. API not final. */
 
-// Low-level search
+/**
+ * @returns an array of CORevisionID
+ */
 - (NSArray *) revisionIDsMatchingQuery: (NSString *)aQuery;
 
 /**
