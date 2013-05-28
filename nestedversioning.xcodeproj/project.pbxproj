@@ -654,32 +654,26 @@
 		662811EB13F8B5000075BBC2 = {
 			isa = PBXGroup;
 			children = (
-				6623BD3D1706BECB00E9E2D6 /* NOTES-REVIEW */,
+				66C9E91E1754707600D9BE1A /* Scraps or Deprecated */,
 				66EDAF3816B4B53900B06DB2 /* libssl.dylib */,
 				66816C50166343B200BC5F40 /* libsqlite3.dylib */,
-				663FC97D16099313000A9608 /* NOTES */,
 				66416D20142D3EE20016501D /* README */,
 				66E2A3031430569C00487419 /* TODO */,
 				666CB039166343460066BC77 /* fmdb */,
 				66E7785514E6062100D5DFFF /* NestedVersioning-Info.plist */,
-				669959581633BCCA00B6C022 /* Undo Actions */,
-				66DF0054166C865700753F67 /* New Code */,
-				79837D8C151024EB004EDD21 /* ODDS_AND_ENDS */,
-				668641991696C26B004772ED /* NestedVersioning.h */,
-				665BD3B815D62DA200428355 /* manual */,
-				79E87A9414FA12C6005F6F70 /* Docs */,
-				66DFAEC4142A726100623060 /* COMacros.h */,
-				669CADED1491C14300D0CF5F /* UUID & Path */,
+				6622E9C016ED0E8D00D82F2A /* Schema */,
+				66FCDBE71645E0FC00E24A67 /* Editing Context */,
+				669CADED1491C14300D0CF5F /* UUID, Path, etc */,
 				66EDFD8E148EF64600D0DC0B /* In-Memory Item Tree */,
 				66485D8D14D23A0A004C4431 /* Diff */,
+				666CB028166342CE0066BC77 /* Store */,
+				668641991696C26B004772ED /* NestedVersioning.h */,
+				66DFAEC4142A726100623060 /* COMacros.h */,
 				791A0EBD148AF3C200334CB1 /* Tests */,
 				66DFAECA142A726100623060 /* test-Prefix.pch */,
-				666026A216082DFE00D84368 /* Typewriter */,
-				662C1DBA168FAC6B002157F3 /* StoreBrowser */,
 				662811F913F8B5010075BBC2 /* Frameworks */,
 				662811F713F8B5010075BBC2 /* Products */,
 				66E7781214E6035F00D5DFFF /* UnitKit */,
-				660ED2E716D3475900BF6BB8 /* Workspace */,
 			);
 			sourceTree = "<group>";
 		};
@@ -940,7 +934,7 @@
 			name = Store;
 			sourceTree = "<group>";
 		};
-		666CB028166342CE0066BC77 /* Real Store */ = {
+		666CB028166342CE0066BC77 /* Store */ = {
 			isa = PBXGroup;
 			children = (
 				66118A74172BA1230083C931 /* Internal */,
@@ -956,7 +950,7 @@
 				66672D0F17337A5D00E5739C /* COSearchResult.h */,
 				66672D1017337A5D00E5739C /* COSearchResult.m */,
 			);
-			name = "Real Store";
+			name = Store;
 			sourceTree = "<group>";
 		};
 		666CB039166343460066BC77 /* fmdb */ = {
@@ -993,32 +987,42 @@
 			name = "Undo Actions";
 			sourceTree = "<group>";
 		};
-		669CADED1491C14300D0CF5F /* UUID & Path */ = {
+		669CADED1491C14300D0CF5F /* UUID, Path, etc */ = {
 			isa = PBXGroup;
 			children = (
 				66E877691455FE5B006CBE7E /* COUUID.h */,
 				66E8776A1455FE67006CBE7E /* COUUID.m */,
 				66EE5D3814637418008AA95B /* COPath.h */,
 				66EE5D3914637418008AA95B /* COPath.m */,
-			);
-			name = "UUID & Path";
-			sourceTree = "<group>";
-		};
-		66DF0054166C865700753F67 /* New Code */ = {
-			isa = PBXGroup;
-			children = (
-				6622E9C016ED0E8D00D82F2A /* Schema */,
 				66C6F62C15E764FE0079B7FB /* CORevisionID.h */,
 				66C6F62D15E764FE0079B7FB /* CORevisionID.m */,
 				66816C701663562300BC5F40 /* CORevision.h */,
 				66816C711663562300BC5F40 /* CORevision.m */,
-				66FCDBE71645E0FC00E24A67 /* Editing Context */,
-				66409FAE16599EA000B9C491 /* High-level api */,
-				666CB028166342CE0066BC77 /* Real Store */,
-				66118A77172D9DC70083C931 /* COUndoController.h */,
-				66118A78172D9DC70083C931 /* COUndoController.m */,
 			);
-			name = "New Code";
+			name = "UUID, Path, etc";
+			sourceTree = "<group>";
+		};
+		66C9E91E1754707600D9BE1A /* Scraps or Deprecated */ = {
+			isa = PBXGroup;
+			children = (
+				666026A216082DFE00D84368 /* Typewriter */,
+				662C1DBA168FAC6B002157F3 /* StoreBrowser */,
+				663FC97D16099313000A9608 /* NOTES */,
+				79E87A9414FA12C6005F6F70 /* Docs */,
+				6623BD3D1706BECB00E9E2D6 /* NOTES-REVIEW */,
+				79837D8C151024EB004EDD21 /* ODDS_AND_ENDS */,
+				66118A77172D9DC70083C931 /* COUndoController.h */,
+				660ED2E716D3475900BF6BB8 /* Workspace */,
+				66118A78172D9DC70083C931 /* COUndoController.m */,
+				6622E9AD16EBD45000D82F2A /* COManagedObject.h */,
+				665BD3B815D62DA200428355 /* manual */,
+				6622E9AF16EBD5D000D82F2A /* COEditingContextDelegate.h */,
+				66ED6D5A16F04A3B001B853E /* COValueTransformer.h */,
+				66ED6D5B16F04A3B001B853E /* COValueTransformer.m */,
+				66409FAE16599EA000B9C491 /* High-level api */,
+				669959581633BCCA00B6C022 /* Undo Actions */,
+			);
+			name = "Scraps or Deprecated";
 			sourceTree = "<group>";
 		};
 		66E503911495F9CF003C69C7 /* Diff for Object Graph */ = {
@@ -1098,10 +1102,6 @@
 				666CB024166206C70066BC77 /* COEditingContext.h */,
 				666CB025166206C70066BC77 /* COEditingContext.m */,
 				66C0EF411679857500D2D7CD /* COEditingContextPrivate.h */,
-				6622E9AD16EBD45000D82F2A /* COManagedObject.h */,
-				6622E9AF16EBD5D000D82F2A /* COEditingContextDelegate.h */,
-				66ED6D5A16F04A3B001B853E /* COValueTransformer.h */,
-				66ED6D5B16F04A3B001B853E /* COValueTransformer.m */,
 				6675C91917016D44007C8DB6 /* CORelationshipCache.h */,
 				6675C91A17016D44007C8DB6 /* CORelationshipCache.m */,
 				6623BD391706BD0D00E9E2D6 /* COWorkspace.h */,
