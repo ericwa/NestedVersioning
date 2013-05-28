@@ -46,10 +46,17 @@
          forProperty: (NSString *)aProperty
             ofObject: (COUUID *)anObject;
 
+- (void) removeReferrerUUID: (COUUID *)aReferrer
+                    forUUID: (COUUID*)anObject
+                forProperty: (NSString *)aProperty;
+
 /**
  * @returns a set of CORelationshipRecord
  */
 - (NSSet *) referrersForUUID: (COUUID *)anObject;
+
+- (void) clearParentForUUID: (COUUID*)anObject;
+
 - (CORelationshipRecord *) parentForUUID: (COUUID *)anObject;
 
 /**

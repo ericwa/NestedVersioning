@@ -1,6 +1,12 @@
 TODO
 ====
 
+May 2013
+--------
+
+- COEditingContext implements COItemGraph. If anyone wants to modify those items
+  returned by -itemForUUID:, then items need to tell the context when they're modified
+
 Apr 2013
 --------
 

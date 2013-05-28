@@ -21,7 +21,9 @@
  */
 @interface COItem : NSObject <NSCopying, NSMutableCopying>
 {
+    @package
 	COUUID *uuid;
+    @private
 	NSMutableDictionary *types;
     NSMutableDictionary *values;
     /**

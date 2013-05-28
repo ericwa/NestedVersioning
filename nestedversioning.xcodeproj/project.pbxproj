@@ -1005,6 +1005,8 @@
 		66C9E91E1754707600D9BE1A /* Scraps or Deprecated */ = {
 			isa = PBXGroup;
 			children = (
+				6623BD391706BD0D00E9E2D6 /* COWorkspace.h */,
+				6623BD3A1706BD0D00E9E2D6 /* COWorkspace.m */,
 				666026A216082DFE00D84368 /* Typewriter */,
 				662C1DBA168FAC6B002157F3 /* StoreBrowser */,
 				663FC97D16099313000A9608 /* NOTES */,
@@ -1023,6 +1025,16 @@
 				669959581633BCCA00B6C022 /* Undo Actions */,
 			);
 			name = "Scraps or Deprecated";
+			sourceTree = "<group>";
+		};
+		66C9E92017547A1300D9BE1A /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				6675C91917016D44007C8DB6 /* CORelationshipCache.h */,
+				66C0EF411679857500D2D7CD /* COEditingContextPrivate.h */,
+				6675C91A17016D44007C8DB6 /* CORelationshipCache.m */,
+			);
+			name = Internal;
 			sourceTree = "<group>";
 		};
 		66E503911495F9CF003C69C7 /* Diff for Object Graph */ = {
@@ -1097,15 +1109,11 @@
 		66FCDBE71645E0FC00E24A67 /* Editing Context */ = {
 			isa = PBXGroup;
 			children = (
+				66C9E92017547A1300D9BE1A /* Internal */,
 				666CB01F166206790066BC77 /* COObject.h */,
 				666CB020166206790066BC77 /* COObject.m */,
 				666CB024166206C70066BC77 /* COEditingContext.h */,
 				666CB025166206C70066BC77 /* COEditingContext.m */,
-				66C0EF411679857500D2D7CD /* COEditingContextPrivate.h */,
-				6675C91917016D44007C8DB6 /* CORelationshipCache.h */,
-				6675C91A17016D44007C8DB6 /* CORelationshipCache.m */,
-				6623BD391706BD0D00E9E2D6 /* COWorkspace.h */,
-				6623BD3A1706BD0D00E9E2D6 /* COWorkspace.m */,
 				66672D1317363EEC00E5739C /* COCopier.h */,
 				66672D1417363EED00E5739C /* COCopier.m */,
 			);

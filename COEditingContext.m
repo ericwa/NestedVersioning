@@ -4,6 +4,23 @@
 #import "COMacros.h"
 #import "CORelationshipCache.h"
 
+
+/**
+ * COEditingContext semantics:
+ *
+ * A mutable view on a set of COItem objects which materializes the relationships
+ * as actual ObjC object references.
+ *
+ * The main feature is that the underlying objects can be changed arbitrairly and
+ * the view will update accordingly.
+ *
+ * The COItems are garbage collected. See discussion in COItemTree.h.
+ * The main motivation is to avoid having to store semantically redundant
+ * "explicit delete" operations in diffs.
+ *
+ * Garbage collection shouldn't need to be invoked by the user. It happens
+ * at commit time, and when loading a new object graph.
+ */
 @implementation COEditingContext
 
 #pragma mark Creation
@@ -13,7 +30,6 @@
     SUPERINIT;
     objectsByUUID_ = [[NSMutableDictionary alloc] init];
     insertedObjects_ = [[NSMutableSet alloc] init];
-    deletedObjects_ = [[NSMutableSet alloc] init];
     modifiedObjects_ = [[NSMutableSet alloc] init];
     schemaRegistry_ = [aRegistry retain];
     relationshipCache_ = [[CORelationshipCache alloc] init];
@@ -37,52 +53,45 @@
     return schemaRegistry_;
 }
 
-- (NSSet *) allObjectUUIDs
-{
-    return [NSSet setWithArray: [objectsByUUID_ allKeys]];
-}
-
 - (void) dealloc
 {
     [objectsByUUID_ release];
     [rootObjectUUID_ release];
     [insertedObjects_ release];
-    [deletedObjects_ release];
     [modifiedObjects_ release];
     [schemaRegistry_ release];
     [relationshipCache_ release];
     [super dealloc];
 }
 
-- (COObject *) rootObject
+#pragma mark begin COItemGraph protocol
+
+- (COUUID *) rootItemUUID
 {
-    if (rootObjectUUID_ != nil)
+    return rootObjectUUID_;
+}
+
+- (COItem *) itemForUUID: (COUUID *)aUUID
+{
+    COObject *object = [objectsByUUID_ objectForKey: aUUID];
+    if (nil != object)
     {
-        return [self objectForUUID: rootObjectUUID_];
+        return object->item_;
     }
     return nil;
 }
 
-- (COObject *) objectForUUID: (COUUID *)uuid
+- (NSArray *) itemUUIDs
 {
-    return [objectsByUUID_ objectForKey: uuid];
+    return [objectsByUUID_ allKeys];
 }
 
-- (COItemTree *) itemTree
+- (void) addItem: (COItem *)anItem
 {
-    if (rootObjectUUID_ == nil)
-    {
-        [NSException raise: NSGenericException format: @"no root object!"];
-    }
-    NSMutableDictionary *itemByUUID = [NSMutableDictionary dictionary];
-    for (COUUID *uuid in objectsByUUID_)
-    {
-        [itemByUUID setObject: [self objectForUUID: uuid]->item_
-                       forKey: uuid];
-    }
-    return [[[COItemTree alloc] initWithItemForUUID: itemByUUID
-                                       rootItemUUID: rootObjectUUID_] autorelease];
+    
 }
+
+#pragma mark end COItemGraph protocol
 
 - (id) copyWithZone: (NSZone *)aZone
 {
@@ -131,9 +140,19 @@
 	return [rootObjectUUID_ hash] ^ 13803254444065375360ULL;
 }
 
-- (void) setItemTree: (COItemTree *)aTree
+/**
+ * Replaces the editing context.
+ *
+ * There are 3 kinds of change:
+ *  - New objects are inserted
+ *  - Removed objects are removed
+ *  - Changed objects are updated. (sub-case: identical objects)
+ */
+- (void) setItemTree: (id <COItemGraph>)aTree
 {
     [self clearChangeTracking];
+
+    // 1. Do updates.
     
     ASSIGN(rootObjectUUID_, [aTree rootItemUUID]);
     
@@ -142,25 +161,46 @@
         [self createOrUpdateObjectForItem: [aTree itemForUUID: uuid]];
     }
     
+    // 3. Do GC
+    
+    [self gc_];
+    
+
     // TODO: Send change notification
+}
+
+
+
+- (COObject *) createOrUpdateObjectForItem: (COItem *)item
+{
+    COUUID *aUUID = [item UUID];
+    COObject *currentObject = [objectsByUUID_ objectForKey: aUUID];
+    
+    if (currentObject == nil)
+    {
+        // Create new
+        
+        currentObject = [[[COObject alloc] initWithItem: item
+                                          parentContext: self] autorelease];
+        [objectsByUUID_ setObject: currentObject forKey: aUUID];
+        
+        // FIXME: Update relationship cache
+    }
+    else
+    {
+        // Update existing
+        
+        [currentObject setItem: item];
+        
+        // FIXME: update relationhsip cache
+    }
+    
+    return currentObject;
 }
 
 - (void) setRootObject: (COObject *)anObject
 {
-    if (anObject == nil)
-    {
-        DESTROY(rootObjectUUID_);
-        return;
-    }
-    
     NSParameterAssert([anObject editingContext] == self);
-    
-    COObject *newRootParent = [anObject embeddedObjectParent];
-    if (newRootParent != nil)
-    {
-        [newRootParent removeDescendentObject: anObject];
-    }
-    
     ASSIGN(rootObjectUUID_, [anObject UUID]);
 }
 
@@ -169,10 +209,6 @@
 - (NSSet *) insertedObjectUUIDs
 {
     return insertedObjects_;
-}
-- (NSSet *) deletedObjectUUIDs
-{
-    return deletedObjects_;
 }
 - (NSSet *) modifiedObjectUUIDs
 {
@@ -186,7 +222,6 @@
 - (void) clearChangeTracking
 {
     [insertedObjects_ removeAllObjects];
-    [deletedObjects_ removeAllObjects];
     [modifiedObjects_ removeAllObjects];
 }
 
@@ -197,37 +232,9 @@
 @implementation COEditingContext (Private)
 
 
-- (COObject *) createOrUpdateObjectForItem: (COItem *)item
-{
-    COUUID *aUUID = [item UUID];
-    COObject *currentObject = [objectsByUUID_ objectForKey: aUUID];
-    
-    if (currentObject == nil)
-    {
-        // Create new
-        currentObject = [[[COObject alloc] initWithItem: item
-                                          parentContext: self] autorelease];
-        [objectsByUUID_ setObject: currentObject forKey: aUUID];
-    }
-    else
-    {
-        // Update existing
-        
-        [currentObject setItem: item];
-    }
-
-    return currentObject;
-}
-
-
 - (void) recordInsertedObjectUUID: (COUUID *)aUUID
 {
     [insertedObjects_ addObject: aUUID];
-}
-
-- (void) recordDeletedObjectUUID: (COUUID *)aUUID
-{
-    [deletedObjects_ addObject: aUUID];
 }
 
 - (void) recordModifiedObjectUUID: (COUUID *)aUUID
@@ -256,96 +263,127 @@
 
 - (COObject *) embeddedObjectParent: (COObject *)anObject
 {
-    return [self objectForUUID: [relationshipCache_ parentForUUID: [anObject UUID]]];
+    return [objectsByUUID_ objectForKey: [relationshipCache_ parentForUUID: [anObject UUID]]];
 }
 
-- (void) recordAddedEmbededObject: (COUUID *)aUUID toObject: (COUUID *)aTarget
-{
-}
+#pragma mark garbage collection
 
-#if 0
-- (COItemTree *) itemTreeWithNameMapping: (NSDictionary *)aMapping;
+- (void) updateRelationshipCacheForItemRemoval: (COItem *)item
 {
-	NSMutableDictionary *newItems = [NSMutableDictionary dictionary];
-	
-	for (COUUID *uuid in itemForUUID_)
+    for (COUUID *embeddedUUID in [item embeddedItemUUIDs])
+    {
+        [relationshipCache_ clearParentForUUID: embeddedUUID];
+    }
+    
+    for (NSString *key in [item attributeNames])
 	{
-        COItem *oldItem = [itemForUUID_ objectForKey: uuid];
-        COItem *newItem = [[oldItem mutableCopyWithNameMapping: aMapping] autorelease];
-        [newItems setObject: newItem forKey: [newItem UUID]];
+		if (COPrimitiveType([item typeForAttribute: key]) == kCOReferenceType)
+		{
+			for (COUUID *referenced in [item allObjectsForAttribute: key])
+			{
+                [relationshipCache_ removeReferrerUUID: item->uuid
+                                               forUUID: referenced
+                                           forProperty: key];
+			}
+		}
 	}
-	
-    COUUID *newRoot = [aMapping objectForKey: rootItemUUID_];
-    if (newRoot == nil)
-    {
-        newRoot = rootItemUUID_;
-    }
-    
-	return [[[[self class] alloc] initWithItemForUUID: newItems rootItemUUID:newRoot] autorelease];
-}
-#endif
-- (COObject *) insertItemTree: (COItemTree *)aTree
-{
-    // see if there are any name conflicts
-    
-    NSMutableSet *conflictingNames = [NSMutableSet setWithSet: [self allObjectUUIDs]];
-    [conflictingNames intersectSet: [NSSet setWithArray: [aTree itemUUIDs]]];
-    
-    if ([conflictingNames count] > 0)
-    {
-        NSLog(@"names %@ need to be remapped", conflictingNames);
-        
-        NSMutableDictionary *mapping = [NSMutableDictionary dictionary];
-        for (COUUID *name in conflictingNames)
-        {
-            [mapping setObject: [COUUID UUID]
-                        forKey: name];
-        }
-        
-        aTree = [aTree itemTreeWithNameMapping: mapping];
-    }
-    
-    // now, there are no name conflicts.
-    
-    COObject *result = [self updateObject: [aTree rootItemUUID]
-                             fromItemTree: aTree];
-
-    for (COUUID *uuid in [aTree itemUUIDs])
-    {
-        [self recordInsertedObjectUUID: uuid];
-    }
-    
-    return result;
 }
 
-- (void) removeObject: (COObject *)anObject
+- (void) updateRelationshipCacheForItemInsertion: (COItem *)item
 {
-    NSParameterAssert([anObject editingContext] == self);
- 
-    COUUID *uuid = [anObject UUID];
-    
-    // If it has a parent, remove it from the parent
-    COObject *parent = [anObject embeddedObjectParent];
-    if (parent != nil)
+    for (COUUID *embeddedUUID in [item embeddedItemUUIDs])
     {
-        [parent removeDescendentObject: anObject];
+        [relationshipCache_ set : embeddedUUID];
     }
+    
+    for (NSString *key in [item attributeNames])
+	{
+		if (COPrimitiveType([item typeForAttribute: key]) == kCOReferenceType)
+		{
+			for (COUUID *referenced in [item allObjectsForAttribute: key])
+			{
+                [relationshipCache_ removeReferrerUUID: item->uuid
+                                               forUUID: referenced
+                                           forProperty: key];
+			}
+		}
+	}
+}
+
+
+/**
+ * Call to update the view to reflect one object becoming unavailable.
+ *
+ * Preconditions:
+ *  - No objects in the context should have composite relationsips
+ *    to uuid.
+ *
+ * Postconditions:
+ *  - objectForUUID: will return nil
+ *  - the COObject previously held by the context will be turned into a "zombie"
+ *    and the COEditingContext will release it, so it will be deallocated if
+ *    no user code holds a reference to it.
+ */
+- (void) removeSingleObject_: (COUUID *)uuid
+{
+    COObject *anObject = [objectsByUUID_ objectForKey: uuid];
+    COItem *item = anObject->item_;
+    
+    // Look at all outgoing references, and remove them from the
+    // relationship cache.
+    
+    [self updateRelationshipCacheForItemRemoval: item];
+    
+    // Update change tracking
+    
+    [insertedObjects_ removeObject: uuid];
+    [modifiedObjects_ removeObject: uuid];
+    
+    // Mark the object as a "zombie"
     
     [anObject markAsRemovedFromContext];
-
-    // Update change tracking
-    if ([insertedObjects_ containsObject: uuid])
-    {
-        [insertedObjects_ removeObject: uuid];
-    }
-    else
-    {
-        [deletedObjects_ addObject: uuid];
-    }
     
-    // Release it from the objects dictionary
+    // Release it from the objects dictionary (may release it)
+    
     [objectsByUUID_ removeObjectForKey: uuid];
+    anObject = nil;
 }
+
+- (void) gcDeadObjects: (NSSet *)dead
+{
+    for (COUUID *deadUUID : dead)
+    {
+        [self removeSingleObject_: deadUUID];
+    }
+}
+
+- (void) gcDfs_: (COObject *)anObject uuids: (NSMutableSet *)set
+{
+    COUUID *uuid = anObject->item_->uuid;
+    if ([set containsObject: uuid])
+    {
+        return;
+    }
+    [set addObject: uuid];
+//    for (COObject *obj : [anObject->item_ des])
+    
+    // Call recursively on all composite and referenced objects
+}
+
+- (void) gc_
+{
+    NSArray *allKeys = [objectsByUUID_ allKeys];
+    
+    NSMutableSet *live = [NSMutableSet setWithCapacity: [allKeys count]];
+    [self gcDfs_: [self rootObject] uuids: live];
+    
+    NSMutableSet *dead = [NSMutableSet setWithArray: allKeys];
+    [dead minusSet: live];
+    
+    [self gcDeadObjects: dead];
+}
+
+#pragma mark end gc
 
 // Relationship cache
 
@@ -356,27 +394,6 @@
                                      forProperty: (NSString *)aProperty
                                         ofObject: (COUUID *)anObject
 {
-    if (COPrimitiveType(newType) == kCOEmbeddedItemType)
-    {
-        if (COTypeIsMultivalued(newType))
-        {
-            for (id obj in newVal)
-            {
-                COUUID *oldParent = [relationshipCache_ parentForUUID: obj];
-                if (oldParent != nil && ![anObject isEqual: oldParent])
-                {
-                    // Remove obj from oldParent.
-                    // Mark it as dirty but don't fire this trigger
-                    // or update the relationship cache.
-                }
-            }
-        }
-        else
-        {
-            // Same as body of for {}
-        }
-    }
-    
     [relationshipCache_ updateRelationshipCacheWithOldValue: oldVal
                                                     oldType: oldType
                                                    newValue: newVal

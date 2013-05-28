@@ -206,3 +206,41 @@ Thought:
 Lessons about object context:
 
 Objects should send accurate change tracking info to the context
+
+
+
+
+Design decisions
+================
+
+- Persistent root deletion, gc?
+
+- Persistent root contents: garbage collected or not? tree structure?
+
+- 
+
+
+
+Editing Context requirements:
+=============================
+
+- Support gc'ed context contents
+- Track changes.
+- Maintain relationship cache within the graph
+- Copy algorithm can operate on editing context
+- convenience algorithms like "remove object from parent"
+
+Item graph requirements
+=======================
+
+- can make incremental changes where each change may not be a "totally valid" (may have missing _composite children_) state
+  => this is needed to apply diff.
+  
+Store requirements
+==================
+  
+
+Proposed plan:
+==============
+
+

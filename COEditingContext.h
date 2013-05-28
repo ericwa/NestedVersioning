@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+#import "COItemTree.h"
 
 @class COUUID;
 @class COItemTree;
@@ -8,71 +9,13 @@
 @class COSchema;
 @class CORelationshipCache;
 
-/**
- * Maintaining relationship caches within a persistent root:
- * ========================================================
- 
- we want to do it with one operation:
- 
-    update( [set of modified items] )
- 
- The cache state is:
- 
-    embedded-object-parents:
-        uuid -> parent uuid
- 
-    relationship-parents:
-        uuid -> ( reference sources )
- 
- 
- define update(items-before, items-after) as:
-    for item in items-before:
-        for embedded-item in item:
-            embedded-object-parents[embedded-item.uuid] = nil
-        for referenced-item in item:
-            relationship-parents[referenced-item.uuid] -= item;
- 
-    for item in items-after:
-        " update embedded objects parents cache "
-        for embedded-item in item:
-            embedded-object-parents[embedded-item.uuid] = item.uuid
 
-        " update relationships cache "
-        for referenced-item in item:
-            relationship-parents[referenced-item.uuid] += item;
- 
- This can trivially be given finer-grained change info ( key:val pairs before and after)
- to be more efficient.
- 
- 
- Besides updating the relationship cache, the only other "trigger"-like
- behaviour that happens when making an edit is:
-  - when _adding_ an embedded object to a property, that embedded object
-    is removed from its old parent.
- 
- 
-Fundamental question
- ==================
- 
- Can we track relationships that cross persistent root boundaries?
- seamlessly like within-persistent-root ones?
- 
- Clearly embedded object relations (composites) can't cross.
- 
- For relationships... we can, given the following:
-    - the query results depend on a "working set" of editing contexts, like CO trunk's COEditingContext
-    - the results may come from different persistent roots, so may have the same embdedded object UUID.
- 
- TODO: Talk to quentin about this
- 
- */
-@interface COEditingContext : NSObject <NSCopying>
+@interface COEditingContext : NSObject <COItemGraph, NSCopying>
 {
     COUUID *rootObjectUUID_;
     NSMutableDictionary *objectsByUUID_;
     
     NSMutableSet *insertedObjects_;
-    NSMutableSet *deletedObjects_;
     NSMutableSet *modifiedObjects_;
     
     COSchemaRegistry *schemaRegistry_;
