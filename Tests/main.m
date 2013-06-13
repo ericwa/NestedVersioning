@@ -40,25 +40,6 @@
 
 @end
 
-@implementation COStoreTestCase
-
-- (id) init
-{
-    self = [super init];
-    
-    [[NSFileManager defaultManager] removeItemAtPath: STOREPATH error: NULL];
-    store = [[COStore alloc] initWithURL: STOREURL];
-    
-    return self;
-}
-
-- (void) dealloc
-{
-    [store release];
-    [super dealloc];
-}
-
-@end
 
 int main (int argc, const char *argv[])
 {

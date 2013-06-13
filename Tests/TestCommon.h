@@ -49,10 +49,3 @@
 }
 
 @end
-
-@interface COStoreTestCase : NSObject
-{
-    COStore *store;
-}
-
-@end
