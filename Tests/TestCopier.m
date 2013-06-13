@@ -35,16 +35,16 @@ static COUUID *drawing2;
     SUPERINIT;
     copier = [[COCopier alloc] init];
     
-    COItem *drawingItem = [COItem itemWithUUID: drawing];
+    COItem *drawingItem = [COMutableItem itemWithUUID: drawing];
     [drawingItem setValue: A(group1) forAttribute: @"contents" type: kCOArrayType | kCOEmbeddedItemType];
     
-    COItem *group1Item = [COItem itemWithUUID: group1];
+    COItem *group1Item = [COMutableItem itemWithUUID: group1];
     [group1Item setValue: A(shape1) forAttribute: @"contents" type: kCOArrayType | kCOEmbeddedItemType];
     
-    COItem *shape1Item = [COItem itemWithUUID: shape1];
+    COItem *shape1Item = [COMutableItem itemWithUUID: shape1];
     [shape1Item setValue: A(style1) forAttribute: @"styles" type: kCOArrayType | kCOReferenceType];
     
-    COItem *style1Item = [COItem itemWithUUID: style1];
+    COItem *style1Item = [COMutableItem itemWithUUID: style1];
     
     initialGraph = [[COItemTree alloc] initWithItems: A(drawingItem, group1Item, shape1Item, style1Item)
                                         rootItemUUID: drawing];
@@ -109,9 +109,9 @@ static COUUID *drawing2;
  */
 - (void) testCopyToDifferentContext
 {
-    COItem *drawing2Item = [COItem itemWithUUID: drawing2];
+    COItem *drawing2Item = [COMutableItem itemWithUUID: drawing2];
     [drawing2Item setValue: A(style1) forAttribute: @"styles" type: kCOArrayType | kCOReferenceType];
-    COItem *style1Item = [COItem itemWithUUID: style1];
+    COItem *style1Item = [COMutableItem itemWithUUID: style1];
     
     COItemTree *drawing2Graph = [[COItemTree alloc] initWithItems: A(drawing2Item, style1Item)
                                                      rootItemUUID: drawing2];

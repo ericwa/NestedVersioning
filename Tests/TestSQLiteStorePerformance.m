@@ -155,13 +155,13 @@ static int itemChangedAtCommit(int i)
     for (int i=0; i<numChildren; i++)
     {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-        COMutableItem *item = [COItem item];
+        COMutableItem *item = [COMutableItem item];
         [item setValue: [NSNumber numberWithInt: i] forAttribute: @"name" type: kCOInt64Type];
         [dict setObject: item forKey: [item UUID]];
         [pool release];
     }
     
-    COMutableItem *rootItem = [COItem item];
+    COMutableItem *rootItem = [COMutableItem item];
     [rootItem setValue: [dict allKeys]
           forAttribute: @"children" type: kCOArrayType | kCOEmbeddedItemType];
     [dict setObject: rootItem forKey: [rootItem UUID]];

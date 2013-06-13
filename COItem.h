@@ -23,7 +23,8 @@
 {
     @package
 	COUUID *uuid;
-    @private
+    
+    @protected
 	NSMutableDictionary *types;
     NSMutableDictionary *values;
     /**
@@ -86,12 +87,22 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes;
  */
 - (id)mutableCopyWithNameMapping: (NSDictionary *)aMapping;
 
+@end
+
+
+
+@interface COMutableItem : COItem
+{
+}
+
 - (id) initWithUUID: (COUUID*)aUUID;
 
++ (COMutableItem *) itemWithTypesForAttributes: (NSDictionary *)typesForAttributes
+						   valuesForAttributes: (NSDictionary *)valuesForAttributes;
 /**
  * new item with new UIID
  */
-+ (COItem *) item;
++ (COMutableItem *) item;
 
 - (void) setUUID: (COUUID *)aUUID;
 
@@ -127,8 +138,5 @@ toUnorderedAttribute: (NSString*)anAttribute
 
 - (id) copyWithZone:(NSZone *)zone;
 
-@end
-
-@interface COMutableItem : COItem
 @end
 
