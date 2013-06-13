@@ -216,7 +216,19 @@ Design decisions
 - Persistent root deletion, gc?
 
 - Persistent root contents: garbage collected or not? tree structure?
-
+ * 3 options:
+ *  1. All objects must have a composite relationship path to the root item
+ *     (tree approach)
+ *  2. Same as 1, but objects can have a chain of references from the tree
+ *     (garbage-collected graph approach)
+ *  3. Objects don't need a reference to stay alive (multiple roots approach)
+ *
+ * 1 seems unnecessairily restrictive.
+ * 3 introduces an explicit "delete" operation. This will pollute diffs with
+ *   "Delete index 3 of files" + "delete file a, b, c, d" when the set of files
+ *   a,b,c,d is derived from "index 3". 
+ * 2 seems to be the best option.
+ 
 - 
 
 
@@ -228,7 +240,10 @@ Editing Context requirements:
 - Track changes.
 - Maintain relationship cache within the graph
 - Copy algorithm can operate on editing context
+- diff can operate on two editing contexts
 - convenience algorithms like "remove object from parent"
+- move object
+
 
 Item graph requirements
 =======================
@@ -242,5 +257,6 @@ Store requirements
 
 Proposed plan:
 ==============
+
 
 

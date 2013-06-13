@@ -3,34 +3,35 @@
 @class COUUID;
 @class COItem;
 
+
 /**
  * Protocol for a mutable item graph
  *
- * 3 options:
- *  1. All objects must have a composite relationship path to the root item
- *     (tree approach)
- *  2. Same as 1, but objects can have a chain of references from the tree
- *     (garbage-collected graph approach)
- *  3. Objects don't need a reference to stay alive (multiple roots approach)
+ * The object model is:
+ * All objects must have a composite or non-composite relationship path to the root
+ * (garbage-collected graph approach). This can be violated in the short term while
+ * making a batch of changes.
  *
- * 1 seems unnecessairily restrictive.
- * 3 introduces an explicit "delete" operation. This will pollute diffs with
- *   "Delete index 3 of files" + "delete file a, b, c, d" when the set of files
- *   a,b,c,d is derived from "index 3". 
- * 2 seems to be the best option.
- *
+ * Garbage collection is not covered by this protocol.
  */
 @protocol COItemGraph <NSObject>
 
 - (COUUID *) rootItemUUID;
+/**
+ * Returns immutable item
+ */
 - (COItem *) itemForUUID: (COUUID *)aUUID;
+
 - (NSArray *) itemUUIDs;
+/**
+ * Insert or update an item
+ */
 - (void) addItem: (COItem *)anItem;
 
 @end
 
 /**
- * An item tree is just an immutable set of COItem objects along
+ * An item tree is just a mutable set of COItem objects along
  * with the UUID of the root object.
  *
  * However, there is no guarantee that the items form a complete tree,

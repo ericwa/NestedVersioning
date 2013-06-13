@@ -706,8 +706,11 @@
 		662C1D5C168EE4D2002157F3 /* TODO: port */ = {
 			isa = PBXGroup;
 			children = (
+				662C1D5E168F8FDC002157F3 /* TestStoreEditQueue.m */,
+				662F9EB016F6ECEB00CEB9B4 /* TestPerformance.m */,
 				66ED6D5F16F053EB001B853E /* BasicPersistence.m */,
 				6628FBA6142FA7840072767A /* TestStore.m */,
+				6622E9BD16EC725200D82F2A /* TestWorkspaces.m */,
 				66EDAF2E16B258CF00B06DB2 /* TestSubtreeDiffMerge.m */,
 				66E778AC14E6080700D5DFFF /* TestPersistentRootEditingContext.m */,
 				7978700E14D799A200B45FC6 /* TestSubtree.m */,
@@ -914,18 +917,6 @@
 			path = en.lproj;
 			sourceTree = "<group>";
 		};
-		66672D0E173379C000E5739C /* Store */ = {
-			isa = PBXGroup;
-			children = (
-				66C5B3B91707BD4E00AE0BCC /* TestBinaryReadWrite.m */,
-				66BC3D261713E775002274E0 /* TestSQLiteStore.m */,
-				66118A75172D9C7B0083C931 /* TestSQLiteStoreMultiPersistentRoots.m */,
-				66E3AA2C171BA56200D5DD8A /* TestSQLiteStorePersistentRootBackingStore.m */,
-				66ED6D6D16F427FD001B853E /* TestSQLiteStorePerformance.m */,
-			);
-			name = Store;
-			sourceTree = "<group>";
-		};
 		666CB028166342CE0066BC77 /* Store */ = {
 			isa = PBXGroup;
 			children = (
@@ -956,6 +947,14 @@
 				666CB0321663433E0066BC77 /* FMResultSet.m */,
 			);
 			name = fmdb;
+			sourceTree = "<group>";
+		};
+		667E4B11176981770083E69D /* WIP */ = {
+			isa = PBXGroup;
+			children = (
+				6628FBA2142FA7840072767A /* TestEditingContext.m */,
+			);
+			name = WIP;
 			sourceTree = "<group>";
 		};
 		669959581633BCCA00B6C022 /* Undo Actions */ = {
@@ -1115,16 +1114,17 @@
 		791A0EBD148AF3C200334CB1 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				66672D0E173379C000E5739C /* Store */,
+				667E4B11176981770083E69D /* WIP */,
 				791A0EB7148AF39000334CB1 /* TestCommon.h */,
-				66DFAEBF142A726100623060 /* main.m */,
-				6622E9BD16EC725200D82F2A /* TestWorkspaces.m */,
-				6675C9211702C6FB007C8DB6 /* TestRelationshipCache.m */,
-				66F569CE1741F902003F33E2 /* TestCopier.m */,
 				6660E23914F84B3000D2F319 /* TestItem.m */,
-				6628FBA2142FA7840072767A /* TestEditingContext.m */,
-				662C1D5E168F8FDC002157F3 /* TestStoreEditQueue.m */,
-				662F9EB016F6ECEB00CEB9B4 /* TestPerformance.m */,
+				6675C9211702C6FB007C8DB6 /* TestRelationshipCache.m */,
+				66C5B3B91707BD4E00AE0BCC /* TestBinaryReadWrite.m */,
+				66BC3D261713E775002274E0 /* TestSQLiteStore.m */,
+				66118A75172D9C7B0083C931 /* TestSQLiteStoreMultiPersistentRoots.m */,
+				66E3AA2C171BA56200D5DD8A /* TestSQLiteStorePersistentRootBackingStore.m */,
+				66ED6D6D16F427FD001B853E /* TestSQLiteStorePerformance.m */,
+				66F569CE1741F902003F33E2 /* TestCopier.m */,
+				66DFAEBF142A726100623060 /* main.m */,
 				662F9EA616F6ECD900CEB9B4 /* CoreObject Trunk */,
 				662C1D5C168EE4D2002157F3 /* TODO: port */,
 				79FB63BD1486ABEF00751E1E /* Tests - docs and code sketch */,
