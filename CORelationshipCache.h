@@ -29,6 +29,21 @@
     CORelationshipRecord *tempRecord_;
 }
 
+/**
+ * @returns a set of CORelationshipRecord
+ */
+- (NSSet *) referrersForUUID: (COUUID *)anObject;
+
+- (CORelationshipRecord *) parentForUUID: (COUUID *)anObject;
+
+/**
+ * @returns a set of COUUID
+ */
+- (NSSet *) referrersForUUID: (COUUID *)anObject
+            propertyInParent: (NSString*)propInParent;
+
+#pragma mark modification
+
 - (void) updateRelationshipCacheWithOldValue: (id)oldVal
                                      oldType: (COType)oldType
                                     newValue: (id)newVal
@@ -46,23 +61,9 @@
          forProperty: (NSString *)aProperty
             ofObject: (COUUID *)anObject;
 
-- (void) removeReferrerUUID: (COUUID *)aReferrer
-                    forUUID: (COUUID*)anObject
-                forProperty: (NSString *)aProperty;
+- (void) addItem: (COItem *)anItem;
+- (void) removeItem: (COItem *)anItem;
 
-/**
- * @returns a set of CORelationshipRecord
- */
-- (NSSet *) referrersForUUID: (COUUID *)anObject;
-
-- (void) clearParentForUUID: (COUUID*)anObject;
-
-- (CORelationshipRecord *) parentForUUID: (COUUID *)anObject;
-
-/**
- * @returns a set of COUUID
- */
-- (NSSet *) referrersForUUID: (COUUID *)anObject
-            propertyInParent: (NSString*)propInParent;
+- (void) removeAllEntries;
 
 @end

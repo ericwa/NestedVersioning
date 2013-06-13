@@ -137,6 +137,9 @@
 		66C5B3BE1708FA0500AE0BCC /* COItem+Binary.m in Sources */ = {isa = PBXBuildFile; fileRef = 66C5B3BC1708FA0500AE0BCC /* COItem+Binary.m */; };
 		66C6F62E15E764FE0079B7FB /* CORevisionID.h in Headers */ = {isa = PBXBuildFile; fileRef = 66C6F62C15E764FE0079B7FB /* CORevisionID.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66C6F62F15E764FE0079B7FB /* CORevisionID.m in Sources */ = {isa = PBXBuildFile; fileRef = 66C6F62D15E764FE0079B7FB /* CORevisionID.m */; };
+		66CD6A53176DAACA00EB6D8C /* COObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 666CB020166206790066BC77 /* COObject.m */; };
+		66CD6A54176DAACA00EB6D8C /* COEditingContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 666CB025166206C70066BC77 /* COEditingContext.m */; };
+		66CD6A55176DACB800EB6D8C /* TestEditingContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 6628FBA2142FA7840072767A /* TestEditingContext.m */; };
 		66D6FA7516B2558300D9AF11 /* diff.cc in Sources */ = {isa = PBXBuildFile; fileRef = 66101A0914D09FAA00B50075 /* diff.cc */; };
 		66D6FA7616B2558300D9AF11 /* COSequenceMerge.m in Sources */ = {isa = PBXBuildFile; fileRef = 79626466150EE07E009A0686 /* COSequenceMerge.m */; };
 		66D6FA7716B2558300D9AF11 /* COArrayDiff.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E503931495F9CF003C69C7 /* COArrayDiff.m */; };
@@ -1524,6 +1527,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				66CD6A55176DACB800EB6D8C /* TestEditingContext.m in Sources */,
 				66E778A114E607CD00D5DFFF /* main.m in Sources */,
 				662F9EA116F63C8D00CEB9B4 /* TestItem.m in Sources */,
 				6675C9221702C6FB007C8DB6 /* TestRelationshipCache.m in Sources */,
@@ -1550,6 +1554,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				66CD6A53176DAACA00EB6D8C /* COObject.m in Sources */,
+				66CD6A54176DAACA00EB6D8C /* COEditingContext.m in Sources */,
 				66D6FA7516B2558300D9AF11 /* diff.cc in Sources */,
 				66D6FA7616B2558300D9AF11 /* COSequenceMerge.m in Sources */,
 				66D6FA7716B2558300D9AF11 /* COArrayDiff.m in Sources */,

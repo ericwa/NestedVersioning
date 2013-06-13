@@ -8,16 +8,12 @@
 
 @interface  COEditingContext (Private)
 
-- (void) recordInsertedObjectUUID: (COUUID *)aUUID;
-- (void) recordDeletedObjectUUID: (COUUID *)aUUID;
-- (void) recordModifiedObjectUUID: (COUUID *)aUUID;
-
-- (void) removeUnreachableObjectAndChildren: (COUUID *)anObject;
-
-- (COObject *) updateObject: (COUUID *)aUUID
-             fromItemTree: (COItemTree *)aTree
-                  setParent: (COObject *)parent;
-
+- (void) updateRelationshipIntegrityWithOldValue: (id)oldVal
+                                         oldType: (COType)oldType
+                                        newValue: (id)newVal
+                                         newType: (COType)newType
+                                     forProperty: (NSString *)aProperty
+                                        ofObject: (COUUID *)anObject;
 @end
 
 @interface COObject (Private)

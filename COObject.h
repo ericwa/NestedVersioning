@@ -17,20 +17,19 @@ NSString *kCOSchemaName;
 
 #pragma mark Access to the receivers attributes/values
 
+
 - (COEditingContext *) editingContext;
 
 - (COUUID *) UUID;
 
 - (NSArray *) attributeNames;
 
-- (COType *) typeForAttribute: (NSString *)anAttribute;
+- (COType) typeForAttribute: (NSString *)anAttribute;
 
 - (id) valueForAttribute: (NSString*)anAttribute;
 
 - (NSString *) schemaName;
-/**
- * Looks up -schemaName in our context's schema registry.
- */
+
 - (COSchema *) schema;
 
 #pragma mark Access to the tree stucture
@@ -41,19 +40,21 @@ NSString *kCOSchemaName;
 
 - (NSSet *) allObjectUUIDs;
 
-- (NSSet *) allStoreItems;
-
 - (NSSet *) allDescendentObjectUUIDs;
 
 - (NSSet *) directDescendentObjectUUIDs;
 
 - (NSSet *) directDescendentObjects;
 
+- (NSSet *) embeddedOrReferencedObjects;
+
+/**
+ * Searches the receiver for the Object with the givent UUID.
+ * Returns nil if not present
+ */
 - (COObject *) descendentObjectForUUID: (COUUID *)aUUID;
 
 - (COItemPath *) itemPathOfDescendentObjectWithUUID: (COUUID *)aUUID;
-
-- (COItemTree *) itemTree;
 
 #pragma mark Mutation
 
@@ -66,41 +67,5 @@ NSString *kCOSchemaName;
 
 - (void) setValue: (id)aValue
 	 forAttribute: (NSString*)anAttribute
-			 type: (COType *)aType;
-
-- (void) setValue: (id)aValue
-	 forAttribute: (NSString*)anAttribute;
-
-- (void)   addObject: (id)aValue
-toUnorderedAttribute: (NSString*)anAttribute;
-
-- (void)   addObject: (id)aValue
-  toOrderedAttribute: (NSString*)anAttribute
-			 atIndex: (NSUInteger)anIndex;
-
-- (void)   addObject: (id)aValue
-  toOrderedAttribute: (NSString*)anAttribute;
-
-- (void) removeValueForAttribute: (NSString*)anAttribute;
-
-- (void) removeDescendentObjectWithUUID: (COUUID *)aUUID;
-
-- (void) removeDescendentObject: (COObject *)anObject;
-
-#pragma mark Mutation Internal
-
-- (COObject *) addObject: (COObject *)anObject
-              atItemPath: (COItemPath *)aPath;
-
-- (void) moveDescendentObjectWithUUID: (COUUID *)aUUID
-                           toItemPath: (COItemPath *)aPath;
-
-#pragma mark contents property
-
-- (COObject *) addObjectToContents: (COObject *)aValue;
-
-- (NSSet *) contents;
-
-- (COEditingContext *) independentEditingContext;
-
+			 type: (COType)aType;
 @end

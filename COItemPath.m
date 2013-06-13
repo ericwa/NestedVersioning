@@ -176,7 +176,7 @@
 
 - (void) removeValue: (id)aValue inStoreItem: (COMutableItem *)aStoreItem
 {
-	NSMutableSet *set = [aStoreItem valueForAttribute: attribute];
+	NSMutableSet *set = [[aStoreItem valueForAttribute: attribute] mutableCopy];
 	NSAssert([set containsObject: aValue], @"value to be remove is not present in set");
 	[set removeObject: aValue];
 	[aStoreItem setValue: set forAttribute: attribute];

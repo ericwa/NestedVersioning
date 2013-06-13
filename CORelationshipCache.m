@@ -2,6 +2,7 @@
 #import "COUUID.h"
 #import "COMacros.h"
 #import "COType.h"
+#import "COItem.h"
 
 @implementation CORelationshipRecord
 
@@ -223,18 +224,30 @@
              ofObject: anObject];
 }
 
-- (void) updateRelationshipCacheWithOldItems: (NSArray *)oldItems
-                                    newItems: (NSArray *)newItems
+- (void) addItem: (COItem *)anItem
 {
-    for (COItem *oldItem in oldItems)
+    COUUID *uuid = [anItem UUID];
+    for (NSString *key in [anItem attributeNames])
     {
-        
+        [self setNewValue: [anItem valueForAttribute: key]
+                  newType: [anItem typeForAttribute: key]
+              forProperty: key
+                 ofObject: uuid];
     }
-    
-    for (COItem *newItem in newItems)
+}
+
+- (void) removeItem: (COItem *)anItem
+{
+    COUUID *uuid = [anItem UUID];
+    for (NSString *key in [anItem attributeNames])
     {
-        
+        [self clearOldValue: [anItem valueForAttribute: key]
+                    oldType: [anItem typeForAttribute: key]
+                forProperty: key
+                   ofObject: uuid];
     }
+    // N.B. We don't unset the parent of anItem.
+    // That data is conceptually owned by the parent, and will be unset when/if the parent is removed
 }
 
 - (void) removeAllEntries
