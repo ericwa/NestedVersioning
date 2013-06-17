@@ -65,6 +65,14 @@
  */
 - (void) setItemTree: (id <COItemGraph>)aTree;
 
+/**
+ * IDEA:
+ * Though COEditingContext implements COItemGraph, this method returns
+ * an independent snapshot of the editing context, suitable for passing
+ * to a background thread
+ */
+- (id<COItemGraph>) itemGraphSnapshot;
+
 - (COObject *) rootObject;
 - (void) setRootObject: (COObject *)anObject;
 

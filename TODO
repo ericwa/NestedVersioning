@@ -1,10 +1,20 @@
 TODO
 ====
 
+June 2013
+---------
+
+- Get rid of COItem in COObject and store COObject pointers in a weak NSPointerArray?
+  Barely worthwhile.
+  
+- Finish "Store controller" api
+- Finish workspace demo
+
+
 May 2013
 --------
 
-- COEditingContext implements COItemGraph. If anyone wants to modify those items
+x COEditingContext implements COItemGraph. If anyone wants to modify those items
   returned by -itemForUUID:, then items need to tell the context when they're modified
 
 Apr 2013
@@ -16,7 +26,8 @@ Apr 2013
 
 General
 -------
-- Change all uses of NSSet that don't NEED to be NSSet to NSArray for performance
+x Change all uses of NSSet that don't NEED to be NSSet to NSArray for performance
+  (mostly)
 
 Store
 -----
@@ -67,7 +78,7 @@ Types
 -----
 
 x remove bag / unique array types
-- figure out where to put type names for primitives (<NSData> is org.etoile.bezier-path)
+x figure out where to put type names for primitives (<NSData> is org.etoile.bezier-path)
 x Get rid of COType and use an int:
 
 kCOStringType 1
