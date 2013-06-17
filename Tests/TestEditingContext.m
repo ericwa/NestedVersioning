@@ -2,6 +2,8 @@
 
 @interface TestEditingContext : NSObject <UKTest> {
     COCopier *copier;
+    COEditingContext *ctx1;
+    COObject *root1;
 }
 
 @end
@@ -9,11 +11,29 @@
 
 @implementation TestEditingContext
 
+static NSString *kCOLabel = @"label";
+static NSString *kCOContents = @"contents";
+static NSString *kCOReferences = @"references";
+
 - (id) init
 {
     self = [super init];
     copier = [[COCopier alloc] init];
+    
+    ctx1 = [[COEditingContext alloc] init];
+    root1 = [self addObjectWithLabel: @"root1" toContext: ctx1];
+    [ctx1 setRootObject: root1];
+    
     return self;
+}
+
+- (void)dealloc
+{
+    [copier release];
+    [ctx1 release];
+    root1 = nil;
+    
+    [super dealloc];
 }
 
 - (void)testCreate
@@ -27,10 +47,11 @@
 {
     COObject *obj = [ctx insertObject];
     [obj setValue: label
-     forAttribute: @"label"
+     forAttribute: kCOLabel
              type: kCOStringType];
     
-    [obj setValue: S() forAttribute: @"contents" type: kCOEmbeddedItemType | kCOSetType];
+    [obj setValue: S() forAttribute: kCOContents type: kCOEmbeddedItemType | kCOSetType];
+    [obj setValue: S() forAttribute: kCOReferences type: kCOReferenceType | kCOSetType];
     
     return obj;
 }
@@ -38,23 +59,31 @@
 
 - (COObject *) addObjectWithLabel: (NSString *)label toObject: (COObject *)dest
 {
-    COObject *obj = [self addObjectWithLabel: label toContext: [dest editingContext]];
-    
-    // FIXME: Hack, use proper API when it is available.
-    [dest setValue: [[dest valueForAttribute: @"contents"] setByAddingObject: obj]
-      forAttribute: @"contents"];
-    
+    COObject *obj = [self addObjectWithLabel: label toContext: [dest editingContext]];    
+    [self addObject: obj toObject: dest];
     return obj;
 }
 
+- (void) addReferenceToObject: (COObject *)obj toObject: (COObject *)dest
+{
+    // FIXME: Hack, use proper API when it is available.
+    [dest setValue: [[dest valueForAttribute: kCOReferences] setByAddingObject: obj]
+      forAttribute: kCOReferences];
+}
+
+- (void) addObject: (COObject *)obj toObject: (COObject *)dest
+{
+    // FIXME: Hack, use proper API when it is available.
+    [dest setValue: [[dest valueForAttribute: kCOContents] setByAddingObject: obj]
+      forAttribute: kCOContents];
+}
+
+
+
 - (void)testCopyingBetweenContextsWithNoStoreAdvanced
 {
-	COEditingContext *ctx1 = [COEditingContext editingContext];
 	COEditingContext *ctx2 = [COEditingContext editingContext];
-	
-    COObject *root1 = [self addObjectWithLabel: @"root1" toContext: ctx1];
-    [ctx1 setRootObject: root1];
-    
+   
     COObject *root2 = [self addObjectWithLabel: @"root2" toContext: ctx2];
     [ctx2 setRootObject: root2];
         
@@ -85,12 +114,8 @@
 
 - (void)testCopyingBetweenContextsCornerCases
 {
-	COEditingContext *ctx1 = [COEditingContext editingContext];
 	COEditingContext *ctx2 = [COEditingContext editingContext];
-	
-    COObject *root1 = [self addObjectWithLabel: @"root1" toContext: ctx1];
-    [ctx1 setRootObject: root1];
-    
+   
     COObject *root2 = [self addObjectWithLabel: @"root2" toContext: ctx2];
     [ctx2 setRootObject: root2];
     
@@ -122,47 +147,37 @@
 
 - (void)testItemForUUID
 {
-	COEditingContext *ctx1 = [COEditingContext editingContext];
-	
-    COObject *root1 = [self addObjectWithLabel: @"root1" toContext: ctx1];
-
     COItem *root1Item = [ctx1 itemForUUID: [root1 UUID]];
     
     // Check that changes in the COObject don't propagate to the item
     
-    [root1 setValue: @"another label" forAttribute: @"label"];
+    [root1 setValue: @"another label" forAttribute: kCOLabel];
     
-    UKObjectsEqual(@"root1", [root1Item valueForAttribute: @"label"]);
-    UKObjectsEqual(@"another label", [root1 valueForAttribute: @"label"]);
+    UKObjectsEqual(@"root1", [root1Item valueForAttribute: kCOLabel]);
+    UKObjectsEqual(@"another label", [root1 valueForAttribute: kCOLabel]);
     
     // Check that we can't change the COItem
     
-    UKRaisesException([root1Item setValue: @"foo" forAttribute: @"label" type: kCOStringType]);    
+    UKRaisesException([root1Item setValue: @"foo" forAttribute: kCOLabel type: kCOStringType]);    
 }
 
 - (void)testAddItem
 {
-	COEditingContext *ctx1 = [COEditingContext editingContext];
 	COMutableItem *mutableItem = [COMutableItem item];
     
     [ctx1 addItem: mutableItem];
     COObject *object = [ctx1 objectForUUID: [mutableItem UUID]];
     
-    [mutableItem setValue: @"hello" forAttribute: @"label" type: kCOStringType];
+    [mutableItem setValue: @"hello" forAttribute: kCOLabel type: kCOStringType];
     
     // Ensure the change did not affect object in ctx1
     
-    UKObjectsEqual(@"hello", [mutableItem valueForAttribute: @"label"]);
-    UKNil([object valueForAttribute: @"label"]);
+    UKObjectsEqual(@"hello", [mutableItem valueForAttribute: kCOLabel]);
+    UKNil([object valueForAttribute: kCOLabel]);
 }
 
 - (void)testMovingWithinContext
-{
-	COEditingContext *ctx1 = [COEditingContext editingContext];
-
-    COObject *root1 = [self addObjectWithLabel: @"root1" toContext: ctx1];
-    [ctx1 setRootObject: root1];
-    
+{    
     COObject *list1 = [self addObjectWithLabel: @"List1" toObject: root1];
 	COObject *list2 = [self addObjectWithLabel: @"List2" toObject: root1];    
     COObject *itemA = [self addObjectWithLabel: @"ItemA" toObject: list1];
@@ -175,7 +190,7 @@
     
     // move itemA to list2
     
-    [list2 setValue: S(itemA, itemB) forAttribute: @"contents"];
+    [list2 setValue: S(itemA, itemB) forAttribute: kCOContents];
 
     UKObjectsSame(list2, [itemA embeddedObjectParent]);
     UKObjectsEqual([list1 directDescendentObjects], [NSSet set]);
@@ -183,13 +198,8 @@
 }
 
 
-- (void)testContextCopyAndObjectEquality
+- (void)testContextCopyContextEqualityAndObjectEquality
 {
-	COEditingContext *ctx1 = [COEditingContext editingContext];
-	
-    COObject *root1 = [self addObjectWithLabel: @"root1" toContext: ctx1];
-    [ctx1 setRootObject: root1];
-    
     COObject *list1 = [self addObjectWithLabel: @"List1" toObject: root1];
     COObject *itemA = [self addObjectWithLabel: @"ItemA" toObject: list1];
     COObject *itemA1 = [self addObjectWithLabel: @"ItemA1" toObject: itemA];
@@ -201,7 +211,9 @@
     
     // now make an edit in ctx2
     
-    [[ctx2 objectForUUID: [itemA UUID]] setValue: @"modified" forAttribute: @"test" type: kCOStringType];
+    COObject *itemACtx2 = [ctx2 objectForUUID: [itemA UUID]];
+    
+    [itemACtx2 setValue: @"modified" forAttribute: kCOLabel type: kCOStringType];
     
     UKObjectsNotEqual(ctx1, ctx2);
     UKObjectsNotEqual([ctx1 rootObject], [ctx2 rootObject]);
@@ -211,73 +223,101 @@
     
     // undo the change
     
-//    [[ctx2 objectForUUID: [itemA UUID]] removeValueForAttribute: @"test"];
-//    
-//    UKObjectsEqual(ctx1, ctx2);
-//    UKObjectsEqual([ctx1 rootObject], [ctx2 rootObject]);
+    [itemACtx2 setValue: @"ItemA" forAttribute: kCOLabel];
+    
+    UKObjectsEqual(ctx1, ctx2);
+    UKObjectsEqual([ctx1 rootObject], [ctx2 rootObject]);
 }
 
+- (void) testManyToMany
+{
+    COObject *t1 = [self addObjectWithLabel: @"tag1" toObject: root1];
+    COObject *t2 = [self addObjectWithLabel: @"tag2" toObject: root1];
+    COObject *t3 = [self addObjectWithLabel: @"tag3" toObject: root1];
+    
+    COObject *o1 = [self addObjectWithLabel: @"object1" toObject: root1];
+    COObject *o2 = [self addObjectWithLabel: @"object2" toObject: root1];
+    
+    [self addReferenceToObject: o1 toObject: t1];
+    [self addReferenceToObject: o1 toObject: t2];
+
+	UKObjectsEqual(S(t1, t2), [ctx1 objectsWithReferencesToObject:o1 inAttribute:kCOReferences]);
+	UKObjectsEqual([NSSet set], [ctx1 objectsWithReferencesToObject:o2 inAttribute:kCOReferences]);
+
+    [self addReferenceToObject: o1 toObject: t3];
+    [self addReferenceToObject: o2 toObject: t2];
+
+	UKObjectsEqual(S(t1, t2, t3), [ctx1 objectsWithReferencesToObject:o1 inAttribute:kCOReferences]);
+	UKObjectsEqual(S(t2), [ctx1 objectsWithReferencesToObject:o2 inAttribute:kCOReferences]);
+}
+
+- (void)testChangeTrackingBasic
+{
+	COEditingContext *ctx2 = [COEditingContext editingContext];
+	
+    UKObjectsEqual([NSSet set], [ctx2 insertedObjectUUIDs]);
+    UKObjectsEqual([NSSet set], [ctx2 modifiedObjectUUIDs]);
+    
+    COObject *root2 = [self addObjectWithLabel: @"root2" toContext: ctx2];
+    [ctx2 setRootObject: root2];
+    
+    // This modifies root2, but since root2 is still newly inserted, we don't
+    // count it as modified
+    COObject *list1 = [self addObjectWithLabel: @"List1" toObject: root2];
+
+    
+    UKObjectsEqual(S([list1 UUID], [root2 UUID]), [ctx2 insertedObjectUUIDs]);
+    UKObjectsEqual([NSSet set], [ctx2 modifiedObjectUUIDs]);
+    
+    [ctx2 clearChangeTracking];
+    
+    UKObjectsEqual([NSSet set], [ctx2 insertedObjectUUIDs]);
+    UKObjectsEqual([NSSet set], [ctx2 modifiedObjectUUIDs]);
+    
+    // After calling -clearChangeTracking, further changes to those recently inserted
+    // objects count as modifications.
+    
+    [root2 setValue: @"test" forAttribute: kCOLabel];
+    
+    UKObjectsEqual([NSSet set], [ctx2 insertedObjectUUIDs]);
+    UKObjectsEqual(S([root2 UUID]), [ctx2 modifiedObjectUUIDs]);
+}
+
+- (void)testShoppingList
+{
+	COObject *workspace = [self addObjectWithLabel: @"Workspace" toObject: root1];
+	COObject *document1 = [self addObjectWithLabel: @"Document1" toObject: workspace];
+	COObject *group1 = [self addObjectWithLabel: @"Group1" toObject: document1];
+	COObject *leaf1 = [self addObjectWithLabel: @"Leaf1" toObject: group1];
+	COObject *leaf2 = [self addObjectWithLabel: @"Leaf2" toObject: group1];
+	COObject *group2 = [self addObjectWithLabel: @"Group2" toObject: document1];
+	COObject *leaf3 = [self addObjectWithLabel: @"Leaf3" toObject: group2];
+	
+	COObject *document2 = [self addObjectWithLabel: @"Document2" toObject: workspace];
+    
+	// Now make some changes
+	
+	[self addObject: leaf2 toObject: group2];
+	[self addObject: group2 toObject: document2];
+	
+	UKObjectsSame(workspace, [document1 embeddedObjectParent]);
+	UKObjectsSame(workspace, [document2 embeddedObjectParent]);
+	UKObjectsSame(document1, [group1 embeddedObjectParent]);
+	UKObjectsSame(document2, [group2 embeddedObjectParent]);
+	UKObjectsSame(group1, [leaf1 embeddedObjectParent]);
+	UKObjectsSame(group2, [leaf2 embeddedObjectParent]);
+	UKObjectsSame(group2, [leaf3 embeddedObjectParent]);
+	UKObjectsEqual(S(document1, document2), [workspace valueForAttribute: kCOContents]);
+	UKObjectsEqual(S(group1), [document1 valueForAttribute: kCOContents]);
+	UKObjectsEqual(S(group2), [document2 valueForAttribute: kCOContents]);
+	UKObjectsEqual(S(leaf1), [group1 valueForAttribute: kCOContents]);
+	UKObjectsEqual(S(leaf2, leaf3), [group2 valueForAttribute: kCOContents]);
+}
 
 // Done up to this line....
 #if 0
 
 
-
-
-
-- (void)testChangeTrackingBasic
-{
-	COEditingContext *ctx1 = [[COEditingContext alloc] init];
-	
-    UKObjectsEqual([NSSet set], [ctx1 insertedObjectUUIDs]);
-    UKObjectsEqual([NSSet set], [ctx1 deletedObjectUUIDs]);
-    UKObjectsEqual([NSSet set], [ctx1 modifiedObjectUUIDs]);
-    
-    COObject *list1 = [[ctx1 rootObject] addObjectToContents: [self itemWithLabel: @"List1"]];
-
-    UKObjectsEqual(S([list1 UUID]), [ctx1 insertedObjectUUIDs]);
-    UKObjectsEqual([NSSet set], [ctx1 deletedObjectUUIDs]);
-    UKObjectsEqual(S([[ctx1 rootObject] UUID]), [ctx1 modifiedObjectUUIDs]);
-    
-    [ctx1 clearChangeTracking];
-    
-    UKObjectsEqual([NSSet set], [ctx1 insertedObjectUUIDs]);
-    UKObjectsEqual([NSSet set], [ctx1 deletedObjectUUIDs]);
-    UKObjectsEqual([NSSet set], [ctx1 modifiedObjectUUIDs]);
-}
-
-- (void)testShoppingList
-{
-	COEditingContext *ctx1 = [[COEditingContext alloc] init];    
-    
-	COObject *workspace = [[ctx1 rootObject] addObjectToContents: [self itemWithLabel: @"Workspace"]];
-	COObject *document1 = [workspace addObjectToContents: [self itemWithLabel: @"Document1"]];
-	COObject *group1 = [document1 addObjectToContents: [self itemWithLabel: @"Group1"]];
-	COObject *leaf1 = [group1 addObjectToContents: [self itemWithLabel: @"Leaf1"]];
-	COObject *leaf2 = [group1 addObjectToContents: [self itemWithLabel: @"Leaf2"]];
-	COObject *group2 = [document1 addObjectToContents: [self itemWithLabel: @"Group2"]];
-	COObject *leaf3 = [group2 addObjectToContents: [self itemWithLabel: @"Leaf3"]];
-	
-	COObject *document2 = [workspace addObjectToContents: [self itemWithLabel: @"Document2"]];
-		
-	// Now make some changes
-	
-	[group2 addObjectToContents: leaf2];
-	[document2 addObjectToContents: group2];
-	
-	UKObjectsSame(workspace, [document1 parentObject]);
-	UKObjectsSame(workspace, [document2 parentObject]);
-	UKObjectsSame(document1, [group1 parentObject]);
-	UKObjectsSame(document2, [group2 parentObject]);
-	UKObjectsSame(group1, [leaf1 parentObject]);
-	UKObjectsSame(group2, [leaf2 parentObject]);
-	UKObjectsSame(group2, [leaf3 parentObject]);
-	UKObjectsEqual(S(document1, document2), [workspace contents]);
-	UKObjectsEqual(S(group1), [document1 contents]);
-	UKObjectsEqual(S(group2), [document2 contents]);
-	UKObjectsEqual(S(leaf1), [group1 contents]);
-	UKObjectsEqual(S(leaf2, leaf3), [group2 contents]);
-}
 
 - (void) testSubtreeCreationFromItemsWithCycle
 {
@@ -316,7 +356,7 @@
 	UKIntsEqual(1, [[t2 allObjectUUIDs] count]);
 	UKTrue(t2 == [t1 descendentObjectForUUID: [t2 UUID]]);
 	UKObjectsEqual([COItemPath pathWithItemUUID: [t1 UUID]
-                        unorderedCollectionName: @"contents"
+                        unorderedCollectionName: kCOContents
                                            type: kCOEmbeddedItemType | kCOSetType],
                    [t1 itemPathOfDescendentObjectWithUUID: [t2 UUID]]);
 	
@@ -331,7 +371,7 @@
 	UKIntsEqual(2, [[t2 allObjectUUIDs] count]);
 	UKObjectsSame(t3, [t1 descendentObjectForUUID: [t3 UUID]]);
 	UKObjectsEqual([COItemPath pathWithItemUUID: [t2 UUID]
-                        unorderedCollectionName: @"contents"
+                        unorderedCollectionName: kCOContents
                                            type: kCOEmbeddedItemType | kCOSetType],
                    [t1 itemPathOfDescendentObjectWithUUID: [t3 UUID]]);
 }
@@ -385,7 +425,7 @@
 	COMutableItem *child2 = [COMutableItem item];
 	COMutableItem *shared = [COMutableItem item];
 	
-	[parent setValue: S([child1 UUID], [child2 UUID]) forAttribute: @"contents" type: kCOEmbeddedItemType | kCOSetType];
+	[parent setValue: S([child1 UUID], [child2 UUID]) forAttribute: kCOContents type: kCOEmbeddedItemType | kCOSetType];
 	[child1 setValue: [shared UUID] forAttribute: @"shared" type: kCOEmbeddedItemType];
 	[child2 setValue: [shared UUID] forAttribute: @"shared" type: kCOEmbeddedItemType];
 	
@@ -407,53 +447,6 @@
 	
 	COSubtree *t2a = [COSubtree subtreeWithPlist: [t2 plist]];
 	UKObjectsEqual(t2, t2a);
-}
-
-
-// From ObjectMerging - TestRelationshipIntegrity
-
-- (void)testBasicRelationshipIntegrity
-{
-	// Test one-to-many relationships
-	
-	COSubtree *o1 = [COSubtree subtree];
-	COSubtree *o2 = [COSubtree subtree];
-	COSubtree *o3 = [COSubtree subtree];
-	
-	[o1 addTree: o2];
-	[o2 addTree: o3];
-	
-	UKNil([o1 parent]);
-	UKObjectsEqual(S(o2), [o1 contents]);
-	UKObjectsSame(o1, [o2 parent]);
-	UKObjectsEqual(S(o3), [o2 contents]);
-	UKObjectsSame(o2, [o3 parent]);
-	UKObjectsEqual([NSSet set], [o3 contents]);
-    
-	
-	// FIXME: Not supported yet.
-	
-	// Test many-to-many relationships
-	
-    //	COObject *t1 = [ctx insertObjectWithEntityName: @"Anonymous.COCollection"]; // See COObject.m for metamodel definition
-    //	COObject *t2 = [ctx insertObjectWithEntityName: @"Anonymous.COCollection"];
-    //	COObject *t3 = [ctx insertObjectWithEntityName: @"Anonymous.COCollection"];
-    //
-    //	[t1 addObject: o1 forProperty: @"contents"];
-    //	[t2 addObject: o1 forProperty: @"contents"];
-    //
-    //	UKObjectsEqual(S(t1, t2), [o1 valueForProperty: @"parentCollections"]);
-    //
-    //	[o2 addObject: t2 forProperty: @"parentCollections"];
-    //	[o2 addObject: t3 forProperty: @"parentCollections"];
-    //
-    //	UKObjectsEqual(S(o1), [t1 valueForProperty: @"contents"]);
-    //	UKObjectsEqual(S(o1, o2), [t2 valueForProperty: @"contents"]);
-    //	UKObjectsEqual(S(o2), [t3 valueForProperty: @"contents"]);
-    //
-    //	[ctx release];
-    //	[store release];
-    //	DELETE_STORE;
 }
 
 #endif

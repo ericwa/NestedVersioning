@@ -45,9 +45,14 @@
     return self;
 }
 
+- (id) init
+{
+    return [self initWithSchemaRegistry: nil];
+}
+
 + (COEditingContext *) editingContext
 {
-    return [[[self alloc] initWithSchemaRegistry: nil] autorelease];
+    return [[[self alloc] init] autorelease];
 }
 
 + (COEditingContext *) editingContextWithSchemaRegistry: (COSchemaRegistry *)aRegistry
@@ -201,11 +206,9 @@
         [item setValue: aSchemaName forAttribute: kCOSchemaName type: kCOStringType];
     }
     
-    COObject *object = [[[COObject alloc] initWithItem: item parentContext: self] autorelease];
-    [objectsByUUID_ setObject: object forKey: [object UUID]];
+    [self addItem: item];
     
-    NSLog(@"Inserting object %@", [object UUID]);
-    return object;
+    return [objectsByUUID_ objectForKey: [item UUID]];
 }
 
 - (COObject *) insertObject
@@ -231,10 +234,18 @@
     return [objectsByUUID_ objectForKey: record.uuid];
 }
 
-// FIXME: How should this api look?
-- (NSSet *) referrersForUUID: (COUUID *)anObject
+- (NSSet *) objectsWithReferencesToObject: (COObject*)anObject
+                              inAttribute: (NSString*)anAttribute
 {
-    return [relationshipCache_ referrersForUUID: anObject];
+    NSSet *uuids = [relationshipCache_ referrersForUUID: [anObject UUID]
+                                       propertyInParent: anAttribute];
+    
+    NSMutableSet *objs = [NSMutableSet setWithCapacity: [uuids count]];
+    for (COUUID *uuid in uuids)
+    {
+        [objs addObject: [objectsByUUID_ objectForKey: uuid]];
+    }
+    return objs;
 }
 
 #pragma mark garbage collection
@@ -383,7 +394,11 @@
                                                     newType: newType
                                                 forProperty: aProperty
                                                    ofObject: anObject];
-    [modifiedObjects_ addObject: anObject];
+    
+    if (![insertedObjects_ containsObject: anObject])
+    {
+        [modifiedObjects_ addObject: anObject];
+    }
 }
 
 @end

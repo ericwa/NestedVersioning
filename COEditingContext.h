@@ -103,7 +103,8 @@
  * anObject, return that object. Otherwise return nil.
  */
 - (COObject *) embeddedObjectParent: (COObject *)anObject;
-// FIXME: How should this api look?
-- (NSSet *) referrersForUUID: (COUUID *)anObject;
+
+- (NSSet *) objectsWithReferencesToObject: (COObject*)anObject
+                              inAttribute: (NSString*)anAttribute;
 
 @end

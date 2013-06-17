@@ -1,14 +1,39 @@
-#import <NestedVersioning/CORevisionID.h>
-#import <NestedVersioning/CORevision.h>
-#import <NestedVersioning/COObject.h>
-#import <NestedVersioning/COEditingContext.h>
-#import <NestedVersioning/COStore.h>
-#import <NestedVersioning/COPersistentRoot.h>
-#import <NestedVersioning/COBranch.h>
-#import <NestedVersioning/COUUID.h>
-#import <NestedVersioning/COPath.h>
-#import <NestedVersioning/COType.h>
-#import <NestedVersioning/COType+String.h>
-#import <NestedVersioning/COItem.h>
-#import <NestedVersioning/COItemPath.h>
-#import <NestedVersioning/COItemTree.h>
+
+#import "COSQLiteStore.h"
+#import "COSQLiteStore+Attachments.h"
+#import "COPath.h"
+#import "COItem.h"
+
+#import "CORevisionID.h"
+#import "COMacros.h"
+#import "COStore.h"
+#import "COPersistentRoot.h"
+#import "COBranch.h"
+
+#import "CORevision.h"
+#import "COPersistentRootState.h"
+#import "COBranchState.h"
+
+#import "COItemTree.h"
+#import "COItemPath.h"
+#import "COEditingContext.h"
+#import "COObject.h"
+
+#import "COEdit.h"
+#import "COEditCreateBranch.h"
+#import "COEditDeleteBranch.h"
+#import "COEditSetCurrentBranch.h"
+#import "COEditSetCurrentVersionForBranch.h"
+#import "COEditSetMetadata.h"
+#import "COEditSetBranchMetadata.h"
+
+#import "COSchemaTemplate.h"
+#import "COSchemaRegistry.h"
+
+#import "CORelationshipCache.h"
+
+#import "COBinaryReader.h"
+#import "COBinaryWriter.h"
+#import "COItem+Binary.h"
+#import "COSearchResult.h"
+#import "COCopier.h"
