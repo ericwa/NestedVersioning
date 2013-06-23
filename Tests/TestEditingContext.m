@@ -251,6 +251,34 @@ static NSString *kCOReferences = @"references";
 	UKObjectsEqual(S(t2), [ctx1 objectsWithReferencesToObject:o2 inAttribute:kCOReferences]);
 }
 
+- (void)testCopyingBetweenContextsWithManyToMany
+{
+	COEditingContext *ctx2 = [[COEditingContext alloc] init];
+    
+	COObject *tag1 = [self addObjectWithLabel: @"tag1" toObject: root1];
+	COObject *child = [self addObjectWithLabel: @"OutlineItem" toObject: root1];
+    
+	[self addReferenceToObject: child toObject: tag1];
+    
+	// Copy the tag collection to ctx2.
+	
+    COUUID *tag1copyUUID = [copier copyItemWithUUID: [tag1 UUID]
+                                          fromGraph: ctx1
+                                            toGraph: ctx2];
+    UKObjectsNotEqual(tag1copyUUID, [tag1 UUID]);
+    
+    COObject *tag1copy = [ctx2 objectForUUID: tag1copyUUID];
+    
+    UKIntsEqual(2, [[ctx2 itemUUIDs] count]);
+    
+    NSSet *refs = [tag1copy valueForAttribute: kCOReferences];
+    UKIntsEqual(1, [refs count]);
+    
+    COObject *childcopy = [refs anyObject];
+    UKObjectsNotEqual([childcopy UUID], [child UUID]);
+    UKObjectsEqual(@"OutlineItem", [childcopy valueForAttribute: kCOLabel]);
+}
+
 - (void)testChangeTrackingBasic
 {
 	COEditingContext *ctx2 = [COEditingContext editingContext];
@@ -392,29 +420,6 @@ static NSString *kCOReferences = @"references";
     
 	UKObjectsEqual(t1, [t1copyCtx rootObject]);
     UKObjectsEqual(t2, [t2copyCtx rootObject]);
-}
-
-
-- (void)testCopyingBetweenContextsWithManyToMany
-{
-	COEditingContext *ctx1 = [[COEditingContext alloc] init];
-	COEditingContext *ctx2 = [[COEditingContext alloc] init];
-
-	COCollection *tag1 = [ctx1 insertObjectWithEntityName: @"Anonymous.Tag"];
-	COContainer *child = [ctx1 insertObjectWithEntityName: @"Anonymous.OutlineItem"];
-
-	[tag1 addObject: child];
-
-	// Copy the tag collection to ctx2. At first it will be empty since child isn't in ctx2 yet
-	
-	COCollection *tag1copy = [ctx2 insertObject: tag1];
-	UKObjectsEqual([NSArray array], [tag1copy contentArray]);
-	
-	COContainer *childcopy = [ctx2 insertObject: child];
-	UKObjectsEqual([NSArray arrayWithObject: childcopy], [tag1copy contentArray]);
-	
-	[ctx1 release];
-	[ctx2 release];
 }
 
 
