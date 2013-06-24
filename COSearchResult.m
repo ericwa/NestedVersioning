@@ -2,7 +2,7 @@
 
 @implementation COSearchResult
 
-@synthesize revision;
-@synthesize embeddedObjectUUID;
+@synthesize revision = revision_;
+@synthesize embeddedObjectUUID = embeddedObjectUUID_;
 
 @end
