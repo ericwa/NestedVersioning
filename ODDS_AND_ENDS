@@ -112,6 +112,66 @@ NSArray *COMergeSortedArraysUsingSelector(NSArray *sortredArrayA, NSArray *sortr
 }
 
 
+
+
+#define NUM 100
+#define RUNS 1
+
+- (void) testUUIDPerf
+{
+    COUUID *uuids[NUM];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity: NUM];
+    for (int i=0; i<NUM;i++) {
+        uuids[i] = [COUUID UUID];
+        [dict setObject: uuids[i] forKey: uuids[i]];
+    }
+
+    {
+        NSMutableArray *result = [NSMutableArray arrayWithCapacity: NUM];
+        
+        NSDate *s1 = [NSDate date];
+        
+        for (int j=0; j<RUNS; j++) {
+            for (int i=0; i<NUM;i++) {
+                [result addObject: uuids[i]];
+            }
+            [result removeAllObjects];
+        }
+        
+        NSLog(@"Adding %d UUIDS to array %d times took %lf ms", NUM, RUNS, 1000.0 * [s1 timeIntervalSinceNow]);
+        NSLog(@"%@", result);
+    }
+
+    {
+        NSMutableArray *result = [NSMutableArray arrayWithCapacity: NUM];
+        
+        NSDate *s1 = [NSDate date];
+        
+        for (int j=0; j<RUNS; j++) {
+            for (int i=0; i<NUM;i++) {
+                [result addObject: [dict objectForKey: uuids[i]]];
+            }
+            [result removeAllObjects]; 
+        }
+        
+        NSLog(@"Adding %d UUIDS to array %d times with lookup took %lf ms", NUM, RUNS, 1000.0 * [s1 timeIntervalSinceNow]);
+        NSLog(@"%@", result);
+    }
+}
+
+2013-06-23 22:31:28.929 test[47808:503] Adding 100 UUIDS to array 1 times took -0.014007 ms
+2013-06-23 22:31:28.930 test[47808:503] (
+)
+2013-06-23 22:31:28.930 test[47808:503] Adding 100 UUIDS to array 1 times with lookup took -0.036001 ms
+
+another run:
+
+2013-06-23 22:35:48.953 test[47946:303] Adding 100 UUIDS to array 1 times took -0.015020 ms
+2013-06-23 22:35:48.954 test[47946:303] (
+)
+2013-06-23 22:35:48.954 test[47946:303] Adding 100 UUIDS to array 1 times with lookup took -0.016987 ms
+
+
 Old TODO list
 =============
 
