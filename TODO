@@ -4,8 +4,10 @@ TODO
 June 2013
 ---------
 
+- Improve the copying semantics. See -[TestEditingContext testCopyingBetweenContextsWithManyToMany]
+
 - Get rid of COItem in COObject and store COObject pointers in a weak NSPointerArray?
-  Barely worthwhile.
+  Barely worthwhile. 
   
 - Finish "Store controller" api
 - Finish workspace demo

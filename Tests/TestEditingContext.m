@@ -277,6 +277,8 @@ static NSString *kCOReferences = @"references";
     COObject *childcopy = [refs anyObject];
     UKObjectsNotEqual([childcopy UUID], [child UUID]);
     UKObjectsEqual(@"OutlineItem", [childcopy valueForAttribute: kCOLabel]);
+    
+    // FIXME: At first glance this looks like ugly behaviour.
 }
 
 - (void)testChangeTrackingBasic
