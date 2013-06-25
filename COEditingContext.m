@@ -107,7 +107,7 @@
 /**
  * Insert or update an item.
  */
-- (void) addItem: (COItem *)item
+- (void) addItem: (COItem *)item markAsInserted: (BOOL)markInserted
 {
     NSParameterAssert(item != nil);
     
@@ -120,7 +120,10 @@
                                           parentContext: self] autorelease];
         [objectsByUUID_ setObject: currentObject forKey: uuid];
         [relationshipCache_ addItem: item];
-        [insertedObjects_ addObject: uuid];
+        if (markInserted)
+        {
+            [insertedObjects_ addObject: uuid];
+        }
     }
     else
     {
@@ -130,6 +133,12 @@
         [modifiedObjects_ addObject: uuid];
     }
 }
+
+- (void) addItem: (COItem *)item
+{
+    [self addItem: item markAsInserted: YES];
+}
+
 
 #pragma mark end COItemGraph protocol
 
@@ -151,7 +160,7 @@
     
     for (COUUID *uuid in [aTree itemUUIDs])
     {
-        [self addItem: [aTree itemForUUID: uuid]];
+        [self addItem: [aTree itemForUUID: uuid] markAsInserted: NO];
     }
     
     // 3. Do GC

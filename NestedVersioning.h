@@ -37,3 +37,5 @@
 #import "COItem+Binary.h"
 #import "COSearchResult.h"
 #import "COCopier.h"
+
+#import "COPersistentRootController.h"

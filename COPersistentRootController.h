@@ -9,22 +9,20 @@
 @class COStore;
 @class COEditingContext;
 
-/**
- * goals:
- *  - intended to be the model object backing a document window UI.
- *
- * - support having an object's branches open in their own
- *   windows an editing them simiultaneously
- *
- */
-@interface COPersistentRoot : NSObject
+@interface COPersistentRootController : NSObject
 {
-    COStore *rootStore_; // weak
+    COSQLiteStore *store_;
     COPersistentRootState *savedState_;
     COEditingContext *editingContext_;
 }
 
+- (id) initWithStore: (COSQLiteStore *)aStore
+  persistentRootUUID: (COUUID *)aUUID;
+
 - (COUUID *) UUID;
+
+// FIXME: Shouldn't give mutable access
+- (COPersistentRootState *) state;
 
 - (COUUID *) editingBranchUUID;
 /**
