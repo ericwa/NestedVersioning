@@ -4,7 +4,7 @@
 @class COItem;
 @class CORevisionID;
 @class CORevision;
-@class COItemTree;
+@class COItemGraph;
 @class FMDatabase;
 @class COPersistentRootState;
 
@@ -242,13 +242,13 @@
  * In the future if we add an internal in-memory revision cache to COSQLiteStore, this may
  * no longer be of much use.
  */
-- (COItemTree *) partialContentsFromRevisionID: (CORevisionID *)baseRevid
+- (COItemGraph *) partialContentsFromRevisionID: (CORevisionID *)baseRevid
                                   toRevisionID: (CORevisionID *)finalRevid;
 
 /**
  * Returns the state the embedded object graph at a given revision.
  */
-- (COItemTree *) contentsForRevisionID: (CORevisionID *)aToken;
+- (COItemGraph *) contentsForRevisionID: (CORevisionID *)aToken;
 
 /**
  * Returns the state of a single embedded object at a given revision.
@@ -273,7 +273,7 @@
  *     from disk or memory and compared to anItemTree to compute the modifiedItems set. Only problem is this
  *     requires comparing all items in the trees, which is fairly expensive.
  */
-- (CORevisionID *) writeContents: (COItemTree *)anItemTree
+- (CORevisionID *) writeContents: (COItemGraph *)anItemTree
                     withMetadata: (NSDictionary *)metadata
                 parentRevisionID: (CORevisionID *)aParent
                    modifiedItems: (NSArray*)modifiedItems;
@@ -290,7 +290,7 @@
  * persistent root. If the new persistent root is likely going to have content in common with another
  * persistent root, use -createPersistentRootWithInitialRevision:metadata: instead.
  */
-- (COPersistentRootState *) createPersistentRootWithInitialContents: (COItemTree *)contents
+- (COPersistentRootState *) createPersistentRootWithInitialContents: (COItemGraph *)contents
                                                            metadata: (NSDictionary *)metadata;
 
 /**

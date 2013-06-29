@@ -2,7 +2,7 @@
 #import "COMacros.h"
 #import "COUUID.h"
 #import "COItem.h"
-#import "COItemTree.h"
+#import "COItemGraph.h"
 #import "COArrayDiff.h"
 #import "COSubtreeEdits.h"
 
@@ -546,8 +546,8 @@
 	}
 }
 
-+ (COItemTreeDiff *) diffItemTree: (COItemTree *)a
-					withItemTree: (COItemTree *)b
++ (COItemTreeDiff *) diffItemTree: (COItemGraph *)a
+					withItemTree: (COItemGraph *)b
                 sourceIdentifier: (id)aSource
 {
 	COItemTreeDiff *result = [[[self alloc] initWithOldRootUUID: [a rootItemUUID]
@@ -668,7 +668,7 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 				format: @"unknown edit type %@", anyEdit];
 }
 
-- (COItemTree *) itemTreeWithDiffAppliedToItemTree: (COItemTree *)anItemTree
+- (COItemGraph *) itemTreeWithDiffAppliedToItemTree: (COItemGraph *)anItemTree
 {
 	/**
 	does applying a diff to a subtree in-place even make sense?
@@ -733,7 +733,7 @@ static void COApplyEditsToMutableItem(NSSet *edits, COMutableItem *anItem)
 		}
 	}
 	
-	return [[[COItemTree alloc] initWithItemForUUID: newItems
+	return [[[COItemGraph alloc] initWithItemForUUID: newItems
                                        rootItemUUID: newRoot] autorelease];
 }
 

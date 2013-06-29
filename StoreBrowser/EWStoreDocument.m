@@ -21,7 +21,7 @@ static COObject *makeTree(NSString *label)
     if (self) {
         store_ = [[COStore alloc] initWithURL: [NSURL fileURLWithPath: [@"~/teststore.coreobjectstore" stringByExpandingTildeInPath]]];
         
-        COItemTree *basicTree = [makeTree(@"hello world") itemTree];
+        COItemGraph *basicTree = [makeTree(@"hello world") itemTree];
         
         COPersistentRoot *proot = [store_ createPersistentRootWithInitialContents: basicTree
                                                                          metadata: [NSDictionary dictionary]];

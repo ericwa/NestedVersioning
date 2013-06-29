@@ -59,7 +59,7 @@
 - (void) resetToRevisionIDNoCommit: (CORevisionID *)aState
 {
     CORevisionID *revid = [[savedState_ currentBranchState] currentRevisionID];
-    COItemTree *tree = [store_ contentsForRevisionID: revid];
+    COItemGraph *tree = [store_ contentsForRevisionID: revid];
     [editingContext_ setItemTree: tree];
 }
 

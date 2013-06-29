@@ -61,29 +61,29 @@ static COUUID *childUUID2;
     return child;
 }
 
-- (COItemTree*) makeInitialItemTree
+- (COItemGraph*) makeInitialItemTree
 {
-    return [COItemTree treeWithItemsRootFirst: A([self initialRootItemForChildren: A(childUUID1)],
+    return [COItemGraph treeWithItemsRootFirst: A([self initialRootItemForChildren: A(childUUID1)],
                                                  [self initialChildItemForUUID: childUUID1 name: @"initial child"])];
 }
 
-- (COItemTree*) makeBranchAItemTreeAtRevid: (int64_t)aRev
+- (COItemGraph*) makeBranchAItemTreeAtRevid: (int64_t)aRev
 {
     NSString *name = [NSString stringWithFormat: @"child for commit %lld", (long long int)aRev];
-    return [COItemTree treeWithItemsRootFirst: A([self initialRootItemForChildren: A(childUUID1)],
+    return [COItemGraph treeWithItemsRootFirst: A([self initialRootItemForChildren: A(childUUID1)],
                                                  [self initialChildItemForUUID: childUUID1 name: name])];
 }
 
-- (COItemTree*) makeBranchBItemTreeAtRevid: (int64_t)aRev
+- (COItemGraph*) makeBranchBItemTreeAtRevid: (int64_t)aRev
 {
     NSString *name = [NSString stringWithFormat: @"child for commit %lld", (long long int)aRev];
-    return [COItemTree treeWithItemsRootFirst: A([self initialRootItemForChildren: A(childUUID2)],
+    return [COItemGraph treeWithItemsRootFirst: A([self initialRootItemForChildren: A(childUUID2)],
                                                  [self initialChildItemForUUID: childUUID2 name: name])];
 }
 
-- (COItemTree *)itemTreeWithChildNameChange: (NSString*)aName
+- (COItemGraph *)itemTreeWithChildNameChange: (NSString*)aName
 {
-    COItemTree *it = [self makeInitialItemTree];    
+    COItemGraph *it = [self makeInitialItemTree];    
     COMutableItem *item = (COMutableItem *)[it itemForUUID: childUUID1];
     [item setValue: aName
       forAttribute: @"name"];
@@ -246,7 +246,7 @@ static COUUID *childUUID2;
     UKRaisesException([store partialItemTreeFromRevid: 2 toRevid: 1]);
     
     // The first commit on branch B to the second only modified childUUID2
-    COItemTree *tree = [store partialItemTreeFromRevid: BRANCH_LENGTH + 1
+    COItemGraph *tree = [store partialItemTreeFromRevid: BRANCH_LENGTH + 1
                                                toRevid: BRANCH_LENGTH + 2];
     
     UKObjectsEqual(A(childUUID2), [tree itemUUIDs]);

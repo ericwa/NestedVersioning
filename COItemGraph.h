@@ -40,13 +40,13 @@
  * The intended use for COItemTree is as a really simple
  * delta mechanism, so you can compute (COItemTree + COItemTree) = a new COItemTree
  */
-@interface COItemTree : NSObject <COItemGraph>
+@interface COItemGraph : NSObject <COItemGraph>
 {
     COUUID *rootItemUUID_;
     NSMutableDictionary *itemForUUID_;
 }
 
-+ (COItemTree *)treeWithItemsRootFirst: (NSArray*)items;
++ (COItemGraph *)treeWithItemsRootFirst: (NSArray*)items;
 
 - (id) initWithItemForUUID: (NSDictionary *) itemForUUID
               rootItemUUID: (COUUID *)root;

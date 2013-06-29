@@ -14,7 +14,7 @@
 #import "COPersistentRootState.h"
 #import "COBranchState.h"
 
-#import "COItemTree.h"
+#import "COItemGraph.h"
 #import "COItemPath.h"
 #import "COEditingContext.h"
 #import "COObject.h"

@@ -2,7 +2,7 @@
 #import "COItem.h"
 
 @class COEditingContext;
-@class COItemTree;
+@class COItemGraph;
 @class COItemPath;
 @class COSchema;
 

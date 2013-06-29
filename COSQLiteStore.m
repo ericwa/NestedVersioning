@@ -273,7 +273,7 @@
     return [backing revisionForID: aToken];
 }
 
-- (COItemTree *) partialContentsFromRevisionID: (CORevisionID *)baseRevid
+- (COItemGraph *) partialContentsFromRevisionID: (CORevisionID *)baseRevid
                                   toRevisionID: (CORevisionID *)finalRevid
 {
     NSParameterAssert(baseRevid != nil);
@@ -281,16 +281,16 @@
     NSParameterAssert([[baseRevid backingStoreUUID] isEqual: [finalRevid backingStoreUUID]]);
     
     COSQLiteStorePersistentRootBackingStore *backing = [self backingStoreForRevisionID: baseRevid];
-    COItemTree *result = [backing partialItemTreeFromRevid: [baseRevid revisionIndex]
+    COItemGraph *result = [backing partialItemTreeFromRevid: [baseRevid revisionIndex]
                                                    toRevid: [finalRevid revisionIndex]];
     return result;
 }
 
-- (COItemTree *) contentsForRevisionID: (CORevisionID *)aToken
+- (COItemGraph *) contentsForRevisionID: (CORevisionID *)aToken
 {
     NSParameterAssert(aToken != nil);
     COSQLiteStorePersistentRootBackingStore *backing = [self backingStoreForRevisionID: aToken];
-    COItemTree *result = [backing itemTreeForRevid: [aToken revisionIndex]];
+    COItemGraph *result = [backing itemTreeForRevid: [aToken revisionIndex]];
     return result;
 }
 
@@ -298,7 +298,7 @@
 {
     NSParameterAssert(aToken != nil);
     COSQLiteStorePersistentRootBackingStore *backing = [self backingStoreForRevisionID: aToken];
-    COItemTree *tree = [backing itemTreeForRevid: [aToken revisionIndex] restrictToItemUUIDs: S(anitem)];
+    COItemGraph *tree = [backing itemTreeForRevid: [aToken revisionIndex] restrictToItemUUIDs: S(anitem)];
     COItem *item = [tree itemForUUID: anitem];
     return item;
 }
@@ -313,7 +313,7 @@
  * and which branches reference that revision ID, but that should be really fast.
  */
 - (void) updateSearchIndexesForItemUUIDs: (NSArray *)modifiedItems
-                              inItemTree: (COItemTree *)anItemTree
+                              inItemTree: (COItemGraph *)anItemTree
                   revisionIDBeingWritten: (CORevisionID *)aRevision
 {
     if (modifiedItems == nil)
@@ -393,7 +393,7 @@
     return result;
 }
 
-- (CORevisionID *) writeContents: (COItemTree *)anItemTree
+- (CORevisionID *) writeContents: (COItemGraph *)anItemTree
                     withMetadata: (NSDictionary *)metadata
             parentRevisionID: (CORevisionID *)aParent
                    modifiedItems: (NSArray*)modifiedItems // array of COUUID
@@ -408,7 +408,7 @@
                  modifiedItems: modifiedItems];
 }
 
-- (CORevisionID *) writeItemTreeWithNoParent: (COItemTree *)anItemTree
+- (CORevisionID *) writeItemTreeWithNoParent: (COItemGraph *)anItemTree
                                 withMetadata: (NSDictionary *)metadata
                       inBackingStoreWithUUID: (COUUID *)aBacking
 {
@@ -420,7 +420,7 @@
 }
 
 
-- (CORevisionID *) writeItemTree: (COItemTree *)anItemTree
+- (CORevisionID *) writeItemTree: (COItemGraph *)anItemTree
                     withMetadata: (NSDictionary *)metadata
                  withParentRevid: (int64_t)parentRevid
           inBackingStoreWithUUID: (COUUID *)aBacking
@@ -615,7 +615,7 @@
     return plist;
 }
 
-- (COPersistentRootState *) createPersistentRootWithInitialContents: (COItemTree *)contents
+- (COPersistentRootState *) createPersistentRootWithInitialContents: (COItemGraph *)contents
                                                            metadata: (NSDictionary *)metadata
 {
     COUUID *uuid = [COUUID UUID];

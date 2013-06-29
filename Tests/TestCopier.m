@@ -2,7 +2,7 @@
 
 @interface TestCopier : NSObject <UKTest>
 {
-    COItemTree *initialGraph;
+    COItemGraph *initialGraph;
     COCopier *copier;
 }
 @end
@@ -46,7 +46,7 @@ static COUUID *drawing2;
     
     COItem *style1Item = [COMutableItem itemWithUUID: style1];
     
-    initialGraph = [[COItemTree alloc] initWithItems: A(drawingItem, group1Item, shape1Item, style1Item)
+    initialGraph = [[COItemGraph alloc] initWithItems: A(drawingItem, group1Item, shape1Item, style1Item)
                                         rootItemUUID: drawing];
     return self;
 }
@@ -113,7 +113,7 @@ static COUUID *drawing2;
     [drawing2Item setValue: A(style1) forAttribute: @"styles" type: kCOArrayType | kCOReferenceType];
     COItem *style1Item = [COMutableItem itemWithUUID: style1];
     
-    COItemTree *drawing2Graph = [[COItemTree alloc] initWithItems: A(drawing2Item, style1Item)
+    COItemGraph *drawing2Graph = [[COItemGraph alloc] initWithItems: A(drawing2Item, style1Item)
                                                      rootItemUUID: drawing2];
     
     UKIntsEqual(2, [[drawing2Graph itemUUIDs] count]);

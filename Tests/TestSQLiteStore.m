@@ -72,29 +72,29 @@ static COUUID *childUUID2;
     return child;
 }
 
-- (COItemTree*) makeInitialItemTree
+- (COItemGraph*) makeInitialItemTree
 {
-    return [COItemTree treeWithItemsRootFirst: A([self initialRootItemForChildren: A(childUUID1)],
+    return [COItemGraph treeWithItemsRootFirst: A([self initialRootItemForChildren: A(childUUID1)],
                                                  [self initialChildItemForUUID: childUUID1 name: @"initial child"])];
 }
 
-- (COItemTree*) makeBranchAItemTreeAtRevid: (int64_t)aRev
+- (COItemGraph*) makeBranchAItemTreeAtRevid: (int64_t)aRev
 {
     NSString *name = [NSString stringWithFormat: @"child for commit %lld", (long long int)aRev];
-    return [COItemTree treeWithItemsRootFirst: A([self initialRootItemForChildren: A(childUUID1)],
+    return [COItemGraph treeWithItemsRootFirst: A([self initialRootItemForChildren: A(childUUID1)],
                                                  [self initialChildItemForUUID: childUUID1 name: name])];
 }
 
-- (COItemTree*) makeBranchBItemTreeAtRevid: (int64_t)aRev
+- (COItemGraph*) makeBranchBItemTreeAtRevid: (int64_t)aRev
 {
     NSString *name = [NSString stringWithFormat: @"child for commit %lld", (long long int)aRev];
-    return [COItemTree treeWithItemsRootFirst: A([self initialRootItemForChildren: A(childUUID2)],
+    return [COItemGraph treeWithItemsRootFirst: A([self initialRootItemForChildren: A(childUUID2)],
                                                  [self initialChildItemForUUID: childUUID2 name: name])];
 }
 
-- (COItemTree *)itemTreeWithChildNameChange: (NSString*)aName
+- (COItemGraph *)itemTreeWithChildNameChange: (NSString*)aName
 {
-    COItemTree *it = [self makeInitialItemTree];
+    COItemGraph *it = [self makeInitialItemTree];
     COMutableItem *item = (COMutableItem *)[it itemForUUID: childUUID1];
     [item setValue: aName
       forAttribute: @"name"];
@@ -391,7 +391,7 @@ static COUUID *childUUID2;
     
     // Test attachment GC
     
-    COItemTree *tree = [self makeInitialItemTree];
+    COItemGraph *tree = [self makeInitialItemTree];
     [[tree itemForUUID: childUUID1] setValue: hash forAttribute: @"attachment" type: kCOAttachmentType];
     CORevisionID *withAttachment = [store writeContents: tree withMetadata: nil parentRevisionID: initialRevisionId modifiedItems: nil];
     UKNotNil(withAttachment);
@@ -433,7 +433,7 @@ static COUUID *childUUID2;
  */
 - (void) testRevisionGCDoesNotCollectReferenced
 {
-    COItemTree *tree = [self makeInitialItemTree];
+    COItemGraph *tree = [self makeInitialItemTree];
     CORevisionID *referencedRevision = [store writeContents: tree
                                                withMetadata: nil
                                            parentRevisionID: initialRevisionId
@@ -452,7 +452,7 @@ static COUUID *childUUID2;
 
 - (void) testRevisionGCCollectsUnReferenced
 {
-    COItemTree *tree = [self makeInitialItemTree];
+    COItemGraph *tree = [self makeInitialItemTree];
     CORevisionID *unreferencedRevision = [store writeContents: tree
                                                  withMetadata: nil
                                          parentRevisionID: initialRevisionId

@@ -1,6 +1,6 @@
 #import "COSQLiteStorePersistentRootBackingStore.h"
 #import "COMacros.h"
-#import "COItemTree.h"
+#import "COItemGraph.h"
 #import "COItem.h"
 #import "COUUID.h"
 #import "FMDatabase.h"
@@ -164,7 +164,7 @@
 /**
  * Returns the item tree 
  */
-- (COItemTree *) partialItemTreeFromRevid: (int64_t)baseRevid
+- (COItemGraph *) partialItemTreeFromRevid: (int64_t)baseRevid
                                   toRevid: (int64_t)revid
                       restrictToItemUUIDs: (NSSet *)itemSet
 {
@@ -238,28 +238,28 @@
         [item release];
     }
     
-    COItemTree *result = [[[COItemTree alloc] initWithItemForUUID: resultDict
+    COItemGraph *result = [[[COItemGraph alloc] initWithItemForUUID: resultDict
                                                                    rootItemUUID: root] autorelease];
     return result;
 }
 
-- (COItemTree *) partialItemTreeFromRevid: (int64_t)baseRevid toRevid: (int64_t)revid
+- (COItemGraph *) partialItemTreeFromRevid: (int64_t)baseRevid toRevid: (int64_t)revid
 {
     return [self partialItemTreeFromRevid: baseRevid toRevid: revid restrictToItemUUIDs: nil];
 }
 
-- (COItemTree *) itemTreeForRevid: (int64_t)revid
+- (COItemGraph *) itemTreeForRevid: (int64_t)revid
 {
     return [self partialItemTreeFromRevid: -1 toRevid: revid restrictToItemUUIDs: nil];
 }
 
-- (COItemTree *) itemTreeForRevid: (int64_t)revid restrictToItemUUIDs: (NSSet *)itemSet
+- (COItemGraph *) itemTreeForRevid: (int64_t)revid restrictToItemUUIDs: (NSSet *)itemSet
 {
     return [self partialItemTreeFromRevid: -1 toRevid: revid restrictToItemUUIDs: itemSet];
 }
 
 
-static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifiedItems)
+static NSData *contentsBLOBWithItemTree(COItemGraph *anItemTree, NSArray *modifiedItems)
 {
     NSMutableData *result = [NSMutableData dataWithCapacity: 64536];
     
@@ -322,7 +322,7 @@ static NSData *contentsBLOBWithItemTree(COItemTree *anItemTree, NSArray *modifie
  * @param aParent -1 for no parent, otherwise the parent of this commit
  * @param modifiedItems nil for all items in anItemTree, otherwise a subset
  */
-- (int64_t) writeItemTree: (COItemTree *)anItemTree
+- (int64_t) writeItemTree: (COItemGraph *)anItemTree
              withMetadata: (NSDictionary *)metadata
                withParent: (int64_t)aParent
             modifiedItems: (NSArray*)modifiedItems

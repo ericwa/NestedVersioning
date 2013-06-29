@@ -81,7 +81,7 @@ static int itemChangedAtCommit(int i)
     return [NSString stringWithFormat: @"child %d never modified!", child];
 }
 
-- (COItemTree*) makeInitialItemTree
+- (COItemGraph*) makeInitialItemTree
 {
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity: NUM_CHILDREN+1];
     [dict setObject: [self initialRootItem] forKey: rootUUID];
@@ -90,7 +90,7 @@ static int itemChangedAtCommit(int i)
         [dict setObject: [self initialChildItem: i]
                  forKey: childUUIDs[i]];
     }
-    COItemTree *it = [[[COItemTree alloc] initWithItemForUUID: dict rootItemUUID: rootUUID] autorelease];
+    COItemGraph *it = [[[COItemGraph alloc] initWithItemForUUID: dict rootItemUUID: rootUUID] autorelease];
     return it;
 }
 
@@ -99,7 +99,7 @@ static int itemChangedAtCommit(int i)
 {
     NSDate *startDate = [NSDate date];
     
-    COItemTree *initialTree = [self makeInitialItemTree];
+    COItemGraph *initialTree = [self makeInitialItemTree];
     
     // Commit them to a persistet root
     
@@ -148,7 +148,7 @@ static int itemChangedAtCommit(int i)
 }
 
 
-- (COItemTree*) makeItemTreeWithChildCount: (NSUInteger)numChildren
+- (COItemGraph*) makeItemTreeWithChildCount: (NSUInteger)numChildren
 {
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity: numChildren+1];
     
@@ -166,7 +166,7 @@ static int itemChangedAtCommit(int i)
           forAttribute: @"children" type: kCOArrayType | kCOEmbeddedItemType];
     [dict setObject: rootItem forKey: [rootItem UUID]];
     
-    COItemTree *it = [[[COItemTree alloc] initWithItemForUUID: dict
+    COItemGraph *it = [[[COItemGraph alloc] initWithItemForUUID: dict
                                                  rootItemUUID: [rootItem UUID]] autorelease];
     return it;
 }
@@ -192,7 +192,7 @@ static int itemChangedAtCommit(int i)
     {
         CORevisionID *parentCommitId = [[store revisionInfoForRevisionID: lastCommitId] parentRevisionID];
         
-        COItemTree *tree = [store partialContentsFromRevisionID: parentCommitId
+        COItemGraph *tree = [store partialContentsFromRevisionID: parentCommitId
                                                    toRevisionID: lastCommitId];
         
         int i = itemChangedAtCommit(rev);
@@ -214,7 +214,7 @@ static int itemChangedAtCommit(int i)
 
 - (void) testReloadFullStates
 {
-    COItemTree *initialTree = [self makeInitialItemTree];
+    COItemGraph *initialTree = [self makeInitialItemTree];
     COUUID *prootUUID = [self makeDemoPersistentRoot];
     
     NSDate *startDate = [NSDate date];
@@ -226,7 +226,7 @@ static int itemChangedAtCommit(int i)
     int iters = 0;
     for (int rev=NUM_COMMITS-1; rev>=0; rev--)
     {
-        COItemTree *tree = [store contentsForRevisionID: lastCommitId];
+        COItemGraph *tree = [store contentsForRevisionID: lastCommitId];
         
         // Check the state
         UKObjectsEqual(rootUUID, [tree rootItemUUID]);
@@ -282,7 +282,7 @@ static int itemChangedAtCommit(int i)
 
 - (void)testLotsOfPersistentRoots
 {
-    COItemTree *it = [self makeItemTreeWithChildCount: NUM_CHILDREN_PER_PERSISTENT_ROOT];
+    COItemGraph *it = [self makeItemTreeWithChildCount: NUM_CHILDREN_PER_PERSISTENT_ROOT];
     
     NSDate *startDate = [NSDate date];
     
@@ -303,7 +303,7 @@ static int itemChangedAtCommit(int i)
 {
     NSDate *startDate = [NSDate date];
     
-    COItemTree *it = [self makeItemTreeWithChildCount: NUM_CHILDREN_PER_PERSISTENT_ROOT];
+    COItemGraph *it = [self makeItemTreeWithChildCount: NUM_CHILDREN_PER_PERSISTENT_ROOT];
 
     [store beginTransaction];
     COPersistentRootState *proot = [store createPersistentRootWithInitialContents: it
@@ -326,7 +326,7 @@ static int itemChangedAtCommit(int i)
 {
     NSDate *startDate = [NSDate date];
     
-    COItemTree *it = [self makeItemTreeWithChildCount: LOTS_OF_EMBEDDED_ITEMS];
+    COItemGraph *it = [self makeItemTreeWithChildCount: LOTS_OF_EMBEDDED_ITEMS];
     
     NSLog(@"creating %d item itemtree took %lf ms", LOTS_OF_EMBEDDED_ITEMS,
           1000.0 * [[NSDate date] timeIntervalSinceDate: startDate]);

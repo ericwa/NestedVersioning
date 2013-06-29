@@ -1,7 +1,7 @@
 #import "COObject.h"
 #import "COType.h"
 #import "COItem.h"
-#import "COItemTree.h"
+#import "COItemGraph.h"
 #import "COEditingContext.h"
 #import "COEditingContextPrivate.h"
 #import "COItemPath.h"

@@ -21,7 +21,7 @@ static COUUID *tagUUID;
     }
 }
 
-- (COItemTree *) tagItemTreeWithDocProoUUID: (COUUID*)aUUID
+- (COItemGraph *) tagItemTreeWithDocProoUUID: (COUUID*)aUUID
 {
     COMutableItem *rootItem = [[[COMutableItem alloc] initWithUUID: tagUUID] autorelease];
     [rootItem setValue: @"favourites" forAttribute: @"name" type: kCOStringType];
@@ -29,15 +29,15 @@ static COUUID *tagUUID;
           forAttribute: @"taggedDocuments"
                   type: kCOPathType | kCOSetType];
 
-    return [COItemTree treeWithItemsRootFirst: A(rootItem)];
+    return [COItemGraph treeWithItemsRootFirst: A(rootItem)];
 }
 
-- (COItemTree *) docItemTree
+- (COItemGraph *) docItemTree
 {
     COMutableItem *rootItem = [[[COMutableItem alloc] initWithUUID: tagUUID] autorelease];
     [rootItem setValue: @"my document" forAttribute: @"name" type: kCOStringType];
     
-    return [COItemTree treeWithItemsRootFirst: A(rootItem)];
+    return [COItemGraph treeWithItemsRootFirst: A(rootItem)];
 }
 
 - (id) init

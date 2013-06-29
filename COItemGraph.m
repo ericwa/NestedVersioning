@@ -1,9 +1,9 @@
-#import "COItemTree.h"
+#import "COItemGraph.h"
 #import "COMacros.h"
 #import "COUUID.h"
 #import "COItem.h"
 
-@implementation COItemTree
+@implementation COItemGraph
 
 - (id) initWithItemForUUID: (NSDictionary *) itemForUUID
               rootItemUUID: (COUUID *)root
@@ -31,11 +31,11 @@
 }
 
 
-+ (COItemTree *)treeWithItemsRootFirst: (NSArray*)items
++ (COItemGraph *)treeWithItemsRootFirst: (NSArray*)items
 {
     NSParameterAssert([items count] >= 1);
 
-    COItemTree *result = [[[self alloc] init] autorelease];
+    COItemGraph *result = [[[self alloc] init] autorelease];
     result->rootItemUUID_ = [[[items objectAtIndex: 0] UUID] copy];
     result->itemForUUID_ = [[NSMutableDictionary alloc] initWithCapacity: [items count]];
     
@@ -92,7 +92,7 @@
 /**
  * For debugging/testing only
  */
-- (BOOL) isEqualToItemTree: (COItemTree *)aTree
+- (BOOL) isEqualToItemTree: (COItemGraph *)aTree
          comparingItemUUID: (COUUID *)aUUID
 {
     COItem *my = [self itemForUUID: aUUID];

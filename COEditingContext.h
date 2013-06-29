@@ -1,8 +1,8 @@
 #import <Foundation/Foundation.h>
-#import "COItemTree.h"
+#import "COItemGraph.h"
 
 @class COUUID;
-@class COItemTree;
+@class COItemGraph;
 @class COObject;
 @class COItem;
 @class COSchemaRegistry;

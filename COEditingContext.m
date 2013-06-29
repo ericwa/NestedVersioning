@@ -1,6 +1,6 @@
 #import "COEditingContext.h"
 #import "COEditingContextPrivate.h"
-#import "COItemTree.h"
+#import "COItemGraph.h"
 #import "COMacros.h"
 #import "CORelationshipCache.h"
 

@@ -5,7 +5,7 @@
 
 @class COUUID;
 @class COMutableItem;
-@class COItemTree;
+@class COItemGraph;
 @class COSubtreeEdit;
 @class COItemTreeConflict;
 @class COItemTreeDiff;
@@ -68,11 +68,11 @@
 	NSMutableSet *valueConflicts; // e.g. set attr to "x" and set attr to "y"
 }
 
-+ (COItemTreeDiff *) diffItemTree: (COItemTree *)a
-					withItemTree: (COItemTree *)b
-                sourceIdentifier: (id)aSource;
++ (COItemTreeDiff *) diffItemTree: (id <COItemGraph>)a
+                     withItemTree: (id <COItemGraph>)b
+                 sourceIdentifier: (id)aSource;
 
-- (COItemTree *) itemTreeWithDiffAppliedToItemTree: (COItemTree *)aSubtree;
+- (COItemGraph *) itemTreeWithDiffAppliedToItemTree: (COItemGraph *)aSubtree;
 
 - (COItemTreeDiff *)itemTreeDiffByMergingWithDiff: (COItemTreeDiff *)other;
 

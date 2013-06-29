@@ -1,8 +1,8 @@
 #import <Foundation/Foundation.h>
-#import "COItemTree.h"
+#import "COItemGraph.h"
 
 @class FMDatabase;
-@class COItemTree;
+@class COItemGraph;
 @class CORevision;
 @class CORevisionID;
 
@@ -31,17 +31,17 @@
 
 - (CORevision *) revisionForID: (CORevisionID *)aToken;
 
-- (COItemTree *) itemTreeForRevid: (int64_t)revid;
+- (COItemGraph *) itemTreeForRevid: (int64_t)revid;
 
-- (COItemTree *) itemTreeForRevid: (int64_t)revid restrictToItemUUIDs: (NSSet *)itemSet;
+- (COItemGraph *) itemTreeForRevid: (int64_t)revid restrictToItemUUIDs: (NSSet *)itemSet;
 
 /**
  * baseRevid must be < finalRevid.
  * returns nil if baseRevid or finalRevid are not valid revisions.
  */
-- (COItemTree *) partialItemTreeFromRevid: (int64_t)baseRevid toRevid: (int64_t)finalRevid;
+- (COItemGraph *) partialItemTreeFromRevid: (int64_t)baseRevid toRevid: (int64_t)finalRevid;
 
-- (COItemTree *) partialItemTreeFromRevid: (int64_t)baseRevid
+- (COItemGraph *) partialItemTreeFromRevid: (int64_t)baseRevid
                                   toRevid: (int64_t)revid
                       restrictToItemUUIDs: (NSSet *)itemSet;
 
@@ -49,7 +49,7 @@
  * 
  * @returns 0 for the first commit on an empty backing store
  */
-- (int64_t) writeItemTree: (COItemTree *)anItemTree
+- (int64_t) writeItemTree: (COItemGraph *)anItemTree
              withMetadata: (NSDictionary *)metadata
                withParent: (int64_t)aParent
             modifiedItems: (NSArray*)modifiedItems; // array of COUUID
