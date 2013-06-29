@@ -2,25 +2,26 @@
 
 #import "COArrayDiff.h"
 #import "COType.h"
+#import "COItemGraph.h"
 
 @class COUUID;
 @class COMutableItem;
 @class COItemGraph;
-@class COSubtreeEdit;
-@class COItemTreeConflict;
-@class COItemTreeDiff;
+@class COItemGraphEdit;
+@class COItemGraphConflict;
+@class COItemGraphDiff;
 @class COSetDiff, COArrayDiff;
 
 @class CODiffDictionary;
 
-@interface COItemTreeConflict : NSObject // not publically copyable.
+@interface COItemGraphConflict : NSObject // not publically copyable.
 {
 	@public
-	COItemTreeDiff *parentDiff; /* weak reference */
+	COItemGraphDiff *parentDiff; /* weak reference */
 	NSMutableDictionary *editsForSourceIdentifier; /* id => NSMutableSet of COSubtreeEdit*/
 }
 
-- (COItemTreeDiff *) parentDiff;
+- (COItemGraphDiff *) parentDiff;
 
 - (NSSet *) sourceIdentifiers;
 
@@ -37,8 +38,8 @@
 
 // private
 
-- (void) removeEdit: (COSubtreeEdit *)anEdit;
-- (void) addEdit: (COSubtreeEdit *)anEdit;
+- (void) removeEdit: (COItemGraphEdit *)anEdit;
+- (void) addEdit: (COItemGraphEdit *)anEdit;
 
 @end
 
@@ -50,7 +51,7 @@
  * - conflicts arise when the same subtree is inserted in multiple places.
  * - note that a _COSubtree_ cannot exist in an inconsistent state.
  */
-@interface COItemTreeDiff : NSObject <NSCopying, CODiffArraysDelegate>
+@interface COItemGraphDiff : NSObject <NSCopying, CODiffArraysDelegate>
 {
 	COUUID *oldRoot;
 	COUUID *newRoot;
@@ -68,13 +69,13 @@
 	NSMutableSet *valueConflicts; // e.g. set attr to "x" and set attr to "y"
 }
 
-+ (COItemTreeDiff *) diffItemTree: (id <COItemGraph>)a
++ (COItemGraphDiff *) diffItemTree: (id <COItemGraph>)a
                      withItemTree: (id <COItemGraph>)b
                  sourceIdentifier: (id)aSource;
 
 - (COItemGraph *) itemTreeWithDiffAppliedToItemTree: (COItemGraph *)aSubtree;
 
-- (COItemTreeDiff *)itemTreeDiffByMergingWithDiff: (COItemTreeDiff *)other;
+- (COItemGraphDiff *)itemTreeDiffByMergingWithDiff: (COItemGraphDiff *)other;
 
 - (BOOL) hasConflicts;
 
@@ -107,9 +108,9 @@
  * caller should subsequently insert or update edits to reflect the
  * resolution of the conflict.
  */
-- (void) removeConflict: (COItemTreeConflict *)aConflict;
-- (void) addEdit: (COSubtreeEdit *)anEdit;
-- (void) removeEdit: (COSubtreeEdit *)anEdit;
+- (void) removeConflict: (COItemGraphConflict *)aConflict;
+- (void) addEdit: (COItemGraphEdit *)anEdit;
+- (void) removeEdit: (COItemGraphEdit *)anEdit;
 
 @end
 

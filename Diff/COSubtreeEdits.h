@@ -6,7 +6,7 @@
 
 #pragma mark base class
 
-@interface COSubtreeEdit : NSObject <NSCopying>
+@interface COItemGraphEdit : NSObject <NSCopying>
 {
 	COUUID *UUID;
 	NSString *attribute;
@@ -30,13 +30,13 @@
 
 - (NSSet *) insertedEmbeddedItemUUIDs;
 
-- (BOOL) isSameKindOfEdit: (COSubtreeEdit*)anEdit;
+- (BOOL) isSameKindOfEdit: (COItemGraphEdit*)anEdit;
 
 @end
 
 #pragma mark set, delete attribute
 
-@interface COSetAttribute : COSubtreeEdit 
+@interface COSetAttribute : COItemGraphEdit 
 {
 	COType type;
 	id value;
@@ -53,13 +53,13 @@
 @end
 
 
-@interface CODeleteAttribute : COSubtreeEdit
+@interface CODeleteAttribute : COItemGraphEdit
 @end
 
 
 #pragma mark editing set multivalueds
 
-@interface COSetInsertion : COSubtreeEdit
+@interface COSetInsertion : COItemGraphEdit
 {
 	COType type;
 	id object;
@@ -83,7 +83,7 @@
 #pragma mark editing array multivalueds
 
 
-@interface COSequenceEdit : COSubtreeEdit
+@interface COSequenceEdit : COItemGraphEdit
 {
 	NSRange range;
 }

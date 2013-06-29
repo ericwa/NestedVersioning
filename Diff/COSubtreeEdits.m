@@ -6,7 +6,7 @@
 
 #pragma mark base class
 
-@implementation COSubtreeEdit
+@implementation COItemGraphEdit
 
 @synthesize UUID;
 @synthesize attribute;
@@ -42,8 +42,8 @@
 - (BOOL) isEqualIgnoringSourceIdentifier: (id)other
 {
 	return [other isKindOfClass: [self class]]
-		&&	[UUID isEqual: ((COSubtreeEdit*)other).UUID]
-		&&	[attribute isEqual: ((COSubtreeEdit*)other).attribute];
+		&&	[UUID isEqual: ((COItemGraphEdit*)other).UUID]
+		&&	[attribute isEqual: ((COItemGraphEdit*)other).attribute];
 }
 
 - (NSUInteger) hash
@@ -54,7 +54,7 @@
 - (BOOL) isEqual: (id)other
 {
 	return [self isEqualIgnoringSourceIdentifier: other]
-		&& [sourceIdentifier isEqual: ((COSubtreeEdit*)other).sourceIdentifier];
+		&& [sourceIdentifier isEqual: ((COItemGraphEdit*)other).sourceIdentifier];
 }
 
 - (NSSet *) insertedEmbeddedItemUUIDs
@@ -62,7 +62,7 @@
 	return [NSSet set];
 }
 
-- (BOOL) isSameKindOfEdit: (COSubtreeEdit*)anEdit
+- (BOOL) isSameKindOfEdit: (COItemGraphEdit*)anEdit
 {
 	return [anEdit isMemberOfClass: [self class]];
 }
@@ -212,7 +212,7 @@
 	}
 }
 
-- (BOOL) isSameKindOfEdit: (COSubtreeEdit*)anEdit
+- (BOOL) isSameKindOfEdit: (COItemGraphEdit*)anEdit
 {
 	return [anEdit isKindOfClass: [COSetInsertion class]]; // COSetDeletion is a subclass
 }
@@ -289,7 +289,7 @@
 	return 9723954873297612448ULL ^ [super hash] ^ range.location ^ range.length;
 }
 
-- (BOOL) isSameKindOfEdit: (COSubtreeEdit*)anEdit
+- (BOOL) isSameKindOfEdit: (COItemGraphEdit*)anEdit
 {
 	return [anEdit isKindOfClass: [COSequenceEdit class]];
 }
