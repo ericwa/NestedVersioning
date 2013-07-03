@@ -9,7 +9,7 @@
 {
     EWUndoManager *undoManager_;
     COStore *store_;
-    COPersistentRootState *persistentRoot_;
+    COPersistentRootInfo *persistentRoot_;
     
     COUUID *editingBranch_;
 }
@@ -22,7 +22,7 @@
 
 - (void) recordNewState: (COSubtree*)aState;
 
-- (COPersistentRootState *) currentPersistentRoot;
+- (COPersistentRootInfo *) currentPersistentRoot;
 - (COStore *) store;
 
 - (COUUID *) editingBranch;

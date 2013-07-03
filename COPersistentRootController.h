@@ -12,7 +12,7 @@
 @interface COPersistentRootController : NSObject
 {
     COSQLiteStore *store_;
-    COPersistentRootState *savedState_;
+    COPersistentRootInfo *savedState_;
     COEditingContext *editingContext_;
 }
 
@@ -22,7 +22,7 @@
 - (COUUID *) UUID;
 
 // FIXME: Shouldn't give mutable access
-- (COPersistentRootState *) state;
+- (COPersistentRootInfo *) state;
 
 - (COUUID *) editingBranchUUID;
 /**

@@ -7,7 +7,7 @@
 
 static NSString *kCOBranch = @"COBranch";
 
-- (id) initWithBranchPlist: (COBranchState *)aBranch
+- (id) initWithBranchPlist: (COBranchInfo *)aBranch
                       UUID: (COUUID*)aUUID
                       date: (NSDate*)aDate
                displayName: (NSString*)aName
@@ -22,7 +22,7 @@ static NSString *kCOBranch = @"COBranch";
 - (id) initWithPlist: (id)plist
 {
     self = [super initWithPlist: plist];    
-    branch_ = [[COBranchState alloc] initWithPlist: [plist objectForKey: kCOBranch]];
+    branch_ = [[COBranchInfo alloc] initWithPlist: [plist objectForKey: kCOBranch]];
     return self;
 }
 

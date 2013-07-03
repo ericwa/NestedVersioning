@@ -1,16 +1,16 @@
 #import "COEdit.h"
 
-@class COBranchState;
+@class COBranchInfo;
 
 /**
  * action which can undo the creation of a branch
  */
 @interface COEditDeleteBranch : COEdit
 {
-    COBranchState *branch_;
+    COBranchInfo *branch_;
 }
 
-- (id) initWithBranchPlist: (COBranchState *)aBranch
+- (id) initWithBranchPlist: (COBranchInfo *)aBranch
                       UUID: (COUUID*)aUUID
                       date: (NSDate*)aDate
                displayName: (NSString*)aName;

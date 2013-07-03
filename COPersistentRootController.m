@@ -58,7 +58,7 @@
 
 - (void) resetToRevisionIDNoCommit: (CORevisionID *)aState
 {
-    CORevisionID *revid = [[savedState_ currentBranchState] currentRevisionID];
+    CORevisionID *revid = [[savedState_ currentBranchInfo] currentRevisionID];
     COItemGraph *tree = [store_ contentsForRevisionID: revid];
     [editingContext_ setItemTree: tree];
 }
@@ -69,7 +69,7 @@
 {
     CORevisionID *revId = [store_ writeContents: editingContext_
                                    withMetadata: metadata
-                               parentRevisionID: [[savedState_ currentBranchState] currentRevisionID]
+                               parentRevisionID: [[savedState_ currentBranchInfo] currentRevisionID]
                                   modifiedItems: [[editingContext_ insertedOrModifiedObjectUUIDs] allObjects]];
     [editingContext_ clearChangeTracking];
     
@@ -87,7 +87,7 @@
 }
 - (void) discardChanges
 {
-    CORevisionID *revid = [[savedState_ currentBranchState] currentRevisionID];
+    CORevisionID *revid = [[savedState_ currentBranchInfo] currentRevisionID];
     [self resetToRevisionIDNoCommit: revid];
 }
 - (BOOL) hasChanges

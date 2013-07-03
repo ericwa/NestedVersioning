@@ -174,7 +174,7 @@
     }
 }
 
-- (void) setPersistentRoot: (COPersistentRootState*) aMetadata
+- (void) setPersistentRoot: (COPersistentRootInfo*) aMetadata
 {
     assert(aMetadata != nil);
     
@@ -211,7 +211,7 @@
     return editingBranch_;
 }
 
-- (COPersistentRootState *) currentPersistentRoot
+- (COPersistentRootInfo *) currentPersistentRoot
 {
     return persistentRoot_;
 }

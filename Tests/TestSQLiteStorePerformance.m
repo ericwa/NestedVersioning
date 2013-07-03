@@ -103,12 +103,12 @@ static int itemChangedAtCommit(int i)
     
     // Commit them to a persistet root
     
-    COPersistentRootState *proot = [store createPersistentRootWithInitialContents: initialTree
+    COPersistentRootInfo *proot = [store createPersistentRootWithInitialContents: initialTree
                                                                          metadata: nil];
     
     // Commit a change to each object
     
-    CORevisionID *lastCommitId = [[proot currentBranchState] currentRevisionID];
+    CORevisionID *lastCommitId = [[proot currentBranchInfo] currentRevisionID];
     for (int commit=1; commit<NUM_COMMITS; commit++)
     {
         int i = itemChangedAtCommit(commit);
@@ -131,7 +131,7 @@ static int itemChangedAtCommit(int i)
     
     [store setCurrentRevision: lastCommitId
                  headRevision: lastCommitId
-                 tailRevision: [[proot currentBranchState] currentRevisionID]
+                 tailRevision: [[proot currentBranchInfo] currentRevisionID]
                     forBranch: [proot currentBranchUUID]
              ofPersistentRoot: [proot UUID]];
     
@@ -181,9 +181,9 @@ static int itemChangedAtCommit(int i)
 
     NSDate *startDate = [NSDate date];
     
-    COPersistentRootState *proot = [store persistentRootWithUUID: prootUUID];
+    COPersistentRootInfo *proot = [store persistentRootWithUUID: prootUUID];
     
-    CORevisionID *lastCommitId = [[proot currentBranchState] currentRevisionID];
+    CORevisionID *lastCommitId = [[proot currentBranchInfo] currentRevisionID];
     
     // Now traverse them in reverse order and test that the items are as expected.
     // There are NUM_CHILDREN + 1 commits (the initial one made by creating the persistent roots)
@@ -219,9 +219,9 @@ static int itemChangedAtCommit(int i)
     
     NSDate *startDate = [NSDate date];
 
-    COPersistentRootState *proot = [store persistentRootWithUUID: prootUUID];
+    COPersistentRootInfo *proot = [store persistentRootWithUUID: prootUUID];
     
-    CORevisionID *lastCommitId = [[proot currentBranchState] currentRevisionID];
+    CORevisionID *lastCommitId = [[proot currentBranchInfo] currentRevisionID];
     
     int iters = 0;
     for (int rev=NUM_COMMITS-1; rev>=0; rev--)
@@ -259,7 +259,7 @@ static int itemChangedAtCommit(int i)
 - (void) testFTS
 {
     COUUID *prootUUID = [self makeDemoPersistentRoot];
-    COPersistentRootState *proot = [store persistentRootWithUUID: prootUUID];
+    COPersistentRootInfo *proot = [store persistentRootWithUUID: prootUUID];
     
     int itemIndex = itemChangedAtCommit(32);
     
@@ -289,7 +289,7 @@ static int itemChangedAtCommit(int i)
     [store beginTransaction];
     for (int i =0; i<NUM_PERSISTENT_ROOTS; i++)
     {
-        COPersistentRootState *proot = [store createPersistentRootWithInitialContents: it
+        COPersistentRootInfo *proot = [store createPersistentRootWithInitialContents: it
                                                                              metadata: nil];
     }
     [store commitTransaction];
@@ -306,12 +306,12 @@ static int itemChangedAtCommit(int i)
     COItemGraph *it = [self makeItemTreeWithChildCount: NUM_CHILDREN_PER_PERSISTENT_ROOT];
 
     [store beginTransaction];
-    COPersistentRootState *proot = [store createPersistentRootWithInitialContents: it
+    COPersistentRootInfo *proot = [store createPersistentRootWithInitialContents: it
                                                                          metadata: nil];
     
     for (int i =0; i<NUM_PERSISTENT_ROOT_COPIES; i++)
     {
-        [store createPersistentRootWithInitialRevision: [[proot currentBranchState] currentRevisionID]
+        [store createPersistentRootWithInitialRevision: [[proot currentBranchInfo] currentRevisionID]
                                               metadata: nil];
     }
     [store commitTransaction];

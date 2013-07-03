@@ -45,7 +45,7 @@
                     store:[(EWDocument *)aDoc store]];
 }
 
-- (void) updateWithProot: (COPersistentRootState *)proot
+- (void) updateWithProot: (COPersistentRootInfo *)proot
                    store: (COStore *)store
 {
     COBranch *branch = [proot currentBranch];
@@ -69,7 +69,7 @@
     
     COStore *store = [notif object];
     COUUID *aUUID = [[notif userInfo] objectForKey: COStoreNotificationUUID];
-    COPersistentRootState *proot = [store persistentRootWithUUID: aUUID];
+    COPersistentRootInfo *proot = [store persistentRootWithUUID: aUUID];
     
     [self updateWithProot: proot store: store];
 }

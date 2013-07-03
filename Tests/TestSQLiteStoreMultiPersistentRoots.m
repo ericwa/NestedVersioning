@@ -2,8 +2,8 @@
 
 @interface TestSQLiteStoreMultiPersistentRoots : COSQLiteStoreTestCase <UKTest>
 {
-    COPersistentRootState *docProot;
-    COPersistentRootState *tagProot;
+    COPersistentRootInfo *docProot;
+    COPersistentRootInfo *tagProot;
 }
 @end
 
@@ -63,7 +63,7 @@ static COUUID *tagUUID;
     NSArray *results = [store referencesToPersistentRoot: [docProot UUID]];
     
     COSearchResult *result = [results objectAtIndex: 0];
-    UKObjectsEqual([[tagProot currentBranchState] currentRevisionID], [result revision]);
+    UKObjectsEqual([[tagProot currentBranchInfo] currentRevisionID], [result revision]);
     UKObjectsEqual(tagUUID, [result embeddedObjectUUID]);
 }
 

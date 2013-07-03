@@ -19,7 +19,7 @@
 #import "FMDatabase.h"
 #import "FMDatabaseAdditions.h"
 
-@implementation COPersistentRootState
+@implementation COPersistentRootInfo
 
 @synthesize UUID = uuid_;
 @synthesize currentBranchUUID = currentBranch_;
@@ -40,18 +40,18 @@
     return [NSSet setWithArray: [branchForUUID_ allKeys]];
 }
 
-- (COBranchState *)branchPlistForUUID: (COUUID *)aUUID
+- (COBranchInfo *)branchInfoForUUID: (COUUID *)aUUID
 {
     return [branchForUUID_ objectForKey: aUUID];
 }
-- (COBranchState *)currentBranchState
+- (COBranchInfo *)currentBranchInfo
 {
-    return [self branchPlistForUUID: [self currentBranchUUID]];
+    return [self branchInfoForUUID: [self currentBranchUUID]];
 }
 
 @end
 
-@implementation COBranchState
+@implementation COBranchInfo
 
 @synthesize UUID = uuid_;
 @synthesize headRevisionID = headRevisionId_;
@@ -523,7 +523,7 @@
     return result;
 }
 
-- (COPersistentRootState *) persistentRootWithUUID: (COUUID *)aUUID
+- (COPersistentRootInfo *) persistentRootWithUUID: (COUUID *)aUUID
 {
     COUUID *currBranch = nil;
     COUUID *mainBranch = nil;
@@ -571,7 +571,7 @@
                                                                      revisionIndex: [rs int64ForColumnIndex: 3]];
             id branchMeta = [self readMetadata: [rs dataForColumnIndex: 4]];            
             
-            COBranchState *state = [[[COBranchState alloc] init] autorelease];
+            COBranchInfo *state = [[[COBranchInfo alloc] init] autorelease];
             state.UUID = branch;
             state.headRevisionID = headRevid;
             state.tailRevisionID = tailRevid;
@@ -586,7 +586,7 @@
     
     [db_ commit];
 
-    COPersistentRootState *result = [[[COPersistentRootState alloc] init] autorelease];
+    COPersistentRootInfo *result = [[[COPersistentRootInfo alloc] init] autorelease];
     result.UUID = aUUID;
     result.branchForUUID = branchDict;
     result.currentBranchUUID = currBranch;
@@ -620,7 +620,7 @@
     return nil;
 }
 
-- (COPersistentRootState *) createPersistentRootWithUUID: (COUUID *)uuid
+- (COPersistentRootInfo *) createPersistentRootWithUUID: (COUUID *)uuid
                                          initialRevision: (CORevisionID *)revId
                                                 metadata: (NSDictionary *)metadata
 {
@@ -655,7 +655,7 @@
     
     // Return info
     
-    COBranchState *branch = [[[COBranchState alloc] init] autorelease];
+    COBranchInfo *branch = [[[COBranchInfo alloc] init] autorelease];
     branch.UUID = branchUUID;
     branch.headRevisionID = revId;
     branch.tailRevisionID = revId;
@@ -663,7 +663,7 @@
     branch.metadata = nil;
     branch.deleted = NO;
                                   
-    COPersistentRootState *plist = [[[COPersistentRootState alloc] init] autorelease];
+    COPersistentRootInfo *plist = [[[COPersistentRootInfo alloc] init] autorelease];
     plist.UUID = uuid;
     plist.branchForUUID = D(branch, branchUUID);
     plist.currentBranchUUID = branchUUID;
@@ -672,7 +672,7 @@
     return plist;
 }
 
-- (COPersistentRootState *) createPersistentRootWithInitialContents: (COItemGraph *)contents
+- (COPersistentRootInfo *) createPersistentRootWithInitialContents: (COItemGraph *)contents
                                                            metadata: (NSDictionary *)metadata
 {
     COUUID *uuid = [COUUID UUID];
@@ -687,7 +687,7 @@
 }
 
 
-- (COPersistentRootState *) createPersistentRootWithInitialRevision: (CORevisionID *)revId
+- (COPersistentRootInfo *) createPersistentRootWithInitialRevision: (CORevisionID *)revId
                                                            metadata: (NSDictionary *)metadata
 {
     COUUID *uuid = [COUUID UUID];

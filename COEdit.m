@@ -94,13 +94,13 @@ static NSString *kCOActionDisplayName = @"COActionDisplayName";
 {
     return displayName_;
 }
-- (COEdit *) inverseForApplicationTo: (COPersistentRootState *)aProot
+- (COEdit *) inverseForApplicationTo: (COPersistentRootInfo *)aProot
 {
     [NSException raise: NSGenericException format: @"unimplemented"];
     return nil;
 }
 
-- (void) applyToPersistentRoot: (COPersistentRootState *)aProot
+- (void) applyToPersistentRoot: (COPersistentRootInfo *)aProot
 {
     [NSException raise: NSGenericException format: @"unimplemented"];
 }

@@ -34,9 +34,9 @@ NSString *kCOUndoAction;
  * Caller should prepend "Undo " or "Redo "
  */
 - (NSString*) menuTitle;
-- (COEdit *) inverseForApplicationTo: (COPersistentRootState *)aProot;
+- (COEdit *) inverseForApplicationTo: (COPersistentRootInfo *)aProot;
 
-- (void) applyToPersistentRoot: (COPersistentRootState *)aProot;
+- (void) applyToPersistentRoot: (COPersistentRootInfo *)aProot;
 
 + (BOOL) isUndoable;
 

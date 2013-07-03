@@ -5,7 +5,7 @@
 @interface EWBranchesWindowController : EWUtilityWindowController <NSTableViewDelegate, NSTableViewDataSource>
 {
 	IBOutlet NSTableView *table;
-    COPersistentRootState *proot_;
+    COPersistentRootInfo *proot_;
 }
 
 + (EWBranchesWindowController *) sharedController;

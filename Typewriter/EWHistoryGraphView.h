@@ -1,7 +1,7 @@
 #import <Cocoa/Cocoa.h>
 
 @class EWGraphRenderer;
-@class COPersistentRootState;
+@class COPersistentRootInfo;
 @class CORevisionID;
 
 @interface EWHistoryGraphView : NSView
@@ -13,7 +13,7 @@
     CORevisionID *mouseoverCommit;
 }
 
-- (void)  setPersistentRoot: (COPersistentRootState *)proot
+- (void)  setPersistentRoot: (COPersistentRootInfo *)proot
                      branch: (COBranch*)aBranch
                       store: (COStore*)aStore;
 

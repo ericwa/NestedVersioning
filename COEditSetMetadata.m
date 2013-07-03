@@ -41,7 +41,7 @@ static NSString *kCONewMetadata = @"CONewMetadata";
     return result;
 }
 
-- (COEdit *) inverseForApplicationTo: (COPersistentRootState *)aProot
+- (COEdit *) inverseForApplicationTo: (COPersistentRootInfo *)aProot
 {
     return [[[[self class] alloc] initWithOldMetadata: new_
                                           newMetadata: old_
@@ -50,7 +50,7 @@ static NSString *kCONewMetadata = @"CONewMetadata";
                                           displayName: displayName_] autorelease];
 }
 
-- (void) applyToPersistentRoot: (COPersistentRootState *)aProot
+- (void) applyToPersistentRoot: (COPersistentRootInfo *)aProot
 {
     [aProot setMetadata: new_];
 }

@@ -23,7 +23,7 @@
     [super dealloc];
 }
  
-- (void) setPersistentRoot: (COPersistentRootState *)proot
+- (void) setPersistentRoot: (COPersistentRootInfo *)proot
                     branch: (COBranch*)aBranch
                      store: (COStore*)aStore
 {

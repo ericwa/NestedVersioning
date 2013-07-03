@@ -21,7 +21,7 @@
 {
     COStore *rootStore_; // weak
     
-    COPersistentRootState *savedState_;
+    COPersistentRootInfo *savedState_;
 
     /**
      * if the user has called -contextForEditingCurrentBranch,

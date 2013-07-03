@@ -47,7 +47,7 @@ static NSString *kCONewVersionToken = @"CONewVersionToken";
     return result;
 }
 
-- (COEdit *) inverseForApplicationTo: (COPersistentRootState *)aProot
+- (COEdit *) inverseForApplicationTo: (COPersistentRootInfo *)aProot
 {
     return [[[[self class] alloc] initWithBranch: branch_
                                         oldToken: newToken_
@@ -57,9 +57,9 @@ static NSString *kCONewVersionToken = @"CONewVersionToken";
                                      displayName: displayName_] autorelease];
 }
 
-- (void) applyToPersistentRoot: (COPersistentRootState *)aProot
+- (void) applyToPersistentRoot: (COPersistentRootInfo *)aProot
 {
-    [[aProot branchPlistForUUID: branch_] setCurrentRevisionID: newToken_];
+    [[aProot branchInfoForUUID: branch_] setCurrentRevisionID: newToken_];
 }
 
 + (BOOL) isUndoable

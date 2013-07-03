@@ -6,9 +6,9 @@
 @class CORevision;
 @class COItemGraph;
 @class FMDatabase;
-@class COPersistentRootState;
+@class COPersistentRootInfo;
 
-@interface COBranchState : NSObject
+@interface COBranchInfo : NSObject
 {
 @private
     COUUID *uuid_;
@@ -28,7 +28,7 @@
 
 @end
 
-@interface COPersistentRootState : NSObject
+@interface COPersistentRootInfo : NSObject
 {
 @private
     COUUID *uuid_;
@@ -39,8 +39,8 @@
 
 - (NSSet *) branchUUIDs;
 
-- (COBranchState *)branchPlistForUUID: (COUUID *)aUUID;
-- (COBranchState *)currentBranchState;
+- (COBranchInfo *)branchInfoForUUID: (COUUID *)aUUID;
+- (COBranchInfo *)currentBranchInfo;
 
 @property (readwrite, nonatomic, retain) COUUID *UUID;
 @property (readwrite, nonatomic, retain) COUUID *currentBranchUUID;
@@ -331,7 +331,7 @@
  * persistent root. If the new persistent root is likely going to have content in common with another
  * persistent root, use -createPersistentRootWithInitialRevision:metadata: instead.
  */
-- (COPersistentRootState *) createPersistentRootWithInitialContents: (COItemGraph *)contents
+- (COPersistentRootInfo *) createPersistentRootWithInitialContents: (COItemGraph *)contents
                                                            metadata: (NSDictionary *)metadata;
 
 /**
@@ -348,7 +348,7 @@
  * the behaviour of -finalizeDeletionsForPersistentRoot:. It will garbage collect all unreferenced
  * revisions in the backing store of the passed in persistent root)
  */
-- (COPersistentRootState *) createPersistentRootWithInitialRevision: (CORevisionID *)aRevision
+- (COPersistentRootInfo *) createPersistentRootWithInitialRevision: (CORevisionID *)aRevision
                                                            metadata: (NSDictionary *)metadata;
 
 
@@ -366,7 +366,7 @@
  * @return  a snapshot of the state of a persistent root, or nil if
  *          the persistent root does not exist.
  */
-- (COPersistentRootState *) persistentRootWithUUID: (COUUID *)aUUID;
+- (COPersistentRootInfo *) persistentRootWithUUID: (COUUID *)aUUID;
 
 
 

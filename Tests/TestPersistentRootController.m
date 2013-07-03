@@ -20,7 +20,7 @@
 
 - (void) testBasic
 {
-    COPersistentRootState *proot = [store createPersistentRootWithInitialContents: [self initialContents]
+    COPersistentRootInfo *proot = [store createPersistentRootWithInitialContents: [self initialContents]
                                                                          metadata: [NSDictionary dictionary]];
     
     // Verify that the new persistent root is saved
@@ -37,9 +37,9 @@
     
     UKTrue([controller commitChangesWithMetadata: nil]);
     
-    CORevisionID *newRev = [[[store persistentRootWithUUID: [controller UUID]] currentBranchState] currentRevisionID];
+    CORevisionID *newRev = [[[store persistentRootWithUUID: [controller UUID]] currentBranchInfo] currentRevisionID];
     
-    UKObjectsNotEqual([[proot currentBranchState] currentRevisionID], newRev);
+    UKObjectsNotEqual([[proot currentBranchInfo] currentRevisionID], newRev);
     
 //    
 //    

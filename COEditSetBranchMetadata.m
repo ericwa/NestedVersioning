@@ -48,7 +48,7 @@ static NSString *kCOBranch = @"COBranch";
     return result;
 }
 
-- (COEdit *) inverseForApplicationTo: (COPersistentRootState *)aProot
+- (COEdit *) inverseForApplicationTo: (COPersistentRootInfo *)aProot
 {
     return [[[[self class] alloc] initWithOldMetadata: new_
                                           newMetadata: old_
@@ -58,7 +58,7 @@ static NSString *kCOBranch = @"COBranch";
                                           displayName: displayName_] autorelease];
 }
 
-- (void) applyToPersistentRoot: (COPersistentRootState *)aProot
+- (void) applyToPersistentRoot: (COPersistentRootInfo *)aProot
 {
     [aProot setMetadata: new_];
 }

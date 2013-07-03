@@ -51,13 +51,13 @@ static NSString *kCOSetCurrent = @"COSetCurrent";
     return result;
 }
 
-- (COEdit *) inverseForApplicationTo: (COPersistentRootState *)aProot
+- (COEdit *) inverseForApplicationTo: (COPersistentRootInfo *)aProot
 {
     assert(0);
     return nil;
 }
 
-- (void) applyToPersistentRoot: (COPersistentRootState *)aProot
+- (void) applyToPersistentRoot: (COPersistentRootInfo *)aProot
 {
     assert(0);
 }
