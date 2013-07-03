@@ -10,7 +10,7 @@
 @class CORelationshipCache;
 
 
-@interface COEditingContext : NSObject <COItemGraph, NSCopying>
+@interface COObjectGraphContext : NSObject <COItemGraph, NSCopying>
 {
     COUUID *rootObjectUUID_;
     NSMutableDictionary *objectsByUUID_;
@@ -30,9 +30,9 @@
 
 - (id) initWithSchemaRegistry: (COSchemaRegistry *)aRegistry;
 
-+ (COEditingContext *) editingContext;
++ (COObjectGraphContext *) editingContext;
 
-+ (COEditingContext *) editingContextWithSchemaRegistry: (COSchemaRegistry *)aRegistry;
++ (COObjectGraphContext *) editingContextWithSchemaRegistry: (COSchemaRegistry *)aRegistry;
 
 #pragma mark Schema
 

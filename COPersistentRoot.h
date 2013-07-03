@@ -7,7 +7,7 @@
 
 @class COBranch;
 @class COStore;
-@class COEditingContext;
+@class COObjectGraphContext;
 
 /**
  * goals:
@@ -90,6 +90,6 @@
 
 - (void) removeBranch: (COBranch *)aBranch;
 
-- (COEditingContext *) readonlyContextForViewingRevision: (CORevisionID *)aRevision;
+- (COObjectGraphContext *) readonlyContextForViewingRevision: (CORevisionID *)aRevision;
 
 @end

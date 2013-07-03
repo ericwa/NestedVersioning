@@ -1,4 +1,4 @@
-#import "COEditingContext.h"
+#import "COObjectGraphContext.h"
 #import "COEditingContextPrivate.h"
 #import "COItemGraph.h"
 #import "COMacros.h"
@@ -30,7 +30,7 @@
  *  - maintain relationship cache, for all edits
  *  - post notifications
  */
-@implementation COEditingContext
+@implementation COObjectGraphContext
 
 #pragma mark Creation
 
@@ -50,12 +50,12 @@
     return [self initWithSchemaRegistry: nil];
 }
 
-+ (COEditingContext *) editingContext
++ (COObjectGraphContext *) editingContext
 {
     return [[[self alloc] init] autorelease];
 }
 
-+ (COEditingContext *) editingContextWithSchemaRegistry: (COSchemaRegistry *)aRegistry
++ (COObjectGraphContext *) editingContextWithSchemaRegistry: (COSchemaRegistry *)aRegistry
 {
     return [[[self alloc] initWithSchemaRegistry: aRegistry] autorelease];
 }
@@ -341,7 +341,7 @@
  */
 - (id) copyWithZone: (NSZone *)aZone
 {
-    COEditingContext *aCopy = [COEditingContext editingContextWithSchemaRegistry: schemaRegistry_];
+    COObjectGraphContext *aCopy = [COObjectGraphContext editingContextWithSchemaRegistry: schemaRegistry_];
     [aCopy setItemTree: self];
     return aCopy;
 }
@@ -357,7 +357,7 @@
 		return NO;
 	}
     
-    COEditingContext *otherContext = (COEditingContext *)object;
+    COObjectGraphContext *otherContext = (COObjectGraphContext *)object;
     
     if (!((rootObjectUUID_ == nil && otherContext->rootObjectUUID_ == nil)
           || [rootObjectUUID_ isEqual: otherContext->rootObjectUUID_]))

@@ -7,13 +7,13 @@
 
 @class COBranch;
 @class COStore;
-@class COEditingContext;
+@class COObjectGraphContext;
 
 @interface COPersistentRootController : NSObject
 {
     COSQLiteStore *store_;
     COPersistentRootInfo *savedState_;
-    COEditingContext *editingContext_;
+    COObjectGraphContext *editingContext_;
 }
 
 - (id) initWithStore: (COSQLiteStore *)aStore
@@ -42,6 +42,6 @@
 - (void) discardChanges;
 - (BOOL) hasChanges;
 
-- (COEditingContext *) editingContext;
+- (COObjectGraphContext *) editingContext;
 
 @end

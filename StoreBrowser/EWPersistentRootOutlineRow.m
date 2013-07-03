@@ -9,7 +9,7 @@
 	return parent;
 }
 
-- (id) initWithContext: (COEditingContext *)aContext
+- (id) initWithContext: (COObjectGraphContext *)aContext
 			  itemUUID: (COUUID *)aUUID
 			 attribute: (NSString*)anAttribute
 isPrimitiveInContainer: (BOOL)aFlag
@@ -45,7 +45,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 	return attribute == nil;
 }
 
-- (id) initWithContext: (COEditingContext *)aContext
+- (id) initWithContext: (COObjectGraphContext *)aContext
 			  itemUUID: (COUUID *)aUUID
 			 attribute: (NSString*)anAttribute
 				parent: (EWPersistentRootOutlineRow *)aParent
@@ -60,7 +60,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 				windowController: aController];
 }
 
-- (id) initWithContext: (COEditingContext *)aContext
+- (id) initWithContext: (COObjectGraphContext *)aContext
 			  itemUUID: (COUUID *)aUUID
 				parent: (EWPersistentRootOutlineRow *)aParent
 	  windowController: (EWPersistentRootWindowController *)aController
@@ -74,7 +74,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 				windowController: aController];
 }
 
-- (id)initWithContext: (COEditingContext *)aContext
+- (id)initWithContext: (COObjectGraphContext *)aContext
 			   parent: (EWPersistentRootOutlineRow *)aParent
 	 windowController: (EWPersistentRootWindowController *)aController
 {
@@ -481,7 +481,7 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 
 - (COObject *) itemWithLabel: (NSString *)label
 {
-	COEditingContext *ctx = [[[COEditingContext alloc] init] autorelease];
+	COObjectGraphContext *ctx = [[[COObjectGraphContext alloc] init] autorelease];
     [[ctx rootObject] setValue: label
                   forAttribute: @"label"
                           type: kCOStringType];

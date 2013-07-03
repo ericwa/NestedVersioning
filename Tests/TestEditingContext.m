@@ -2,7 +2,7 @@
 
 @interface TestEditingContext : NSObject <UKTest> {
     COCopier *copier;
-    COEditingContext *ctx1;
+    COObjectGraphContext *ctx1;
     COObject *root1;
 }
 
@@ -20,7 +20,7 @@ static NSString *kCOReferences = @"references";
     self = [super init];
     copier = [[COCopier alloc] init];
     
-    ctx1 = [[COEditingContext alloc] init];
+    ctx1 = [[COObjectGraphContext alloc] init];
     root1 = [self addObjectWithLabel: @"root1" toContext: ctx1];
     [ctx1 setRootObject: root1];
     
@@ -38,12 +38,12 @@ static NSString *kCOReferences = @"references";
 
 - (void)testCreate
 {
-	COEditingContext *ctx = [COEditingContext editingContext];
+	COObjectGraphContext *ctx = [COObjectGraphContext editingContext];
 	UKNotNil(ctx);    
     UKNil([ctx rootObject]);
 }
 
-- (COObject *) addObjectWithLabel: (NSString *)label toContext: (COEditingContext *)ctx
+- (COObject *) addObjectWithLabel: (NSString *)label toContext: (COObjectGraphContext *)ctx
 {
     COObject *obj = [ctx insertObject];
     [obj setValue: label
@@ -82,7 +82,7 @@ static NSString *kCOReferences = @"references";
 
 - (void)testCopyingBetweenContextsWithNoStoreAdvanced
 {
-	COEditingContext *ctx2 = [COEditingContext editingContext];
+	COObjectGraphContext *ctx2 = [COObjectGraphContext editingContext];
    
     COObject *root2 = [self addObjectWithLabel: @"root2" toContext: ctx2];
     [ctx2 setRootObject: root2];
@@ -114,7 +114,7 @@ static NSString *kCOReferences = @"references";
 
 - (void)testCopyingBetweenContextsCornerCases
 {
-	COEditingContext *ctx2 = [COEditingContext editingContext];
+	COObjectGraphContext *ctx2 = [COObjectGraphContext editingContext];
    
     COObject *root2 = [self addObjectWithLabel: @"root2" toContext: ctx2];
     [ctx2 setRootObject: root2];
@@ -204,7 +204,7 @@ static NSString *kCOReferences = @"references";
     COObject *itemA = [self addObjectWithLabel: @"ItemA" toObject: list1];
     COObject *itemA1 = [self addObjectWithLabel: @"ItemA1" toObject: itemA];
     
-    COEditingContext *ctx2 = [ctx1 copy];
+    COObjectGraphContext *ctx2 = [ctx1 copy];
     
     UKObjectsEqual(ctx1, ctx2);
     UKObjectsEqual([ctx1 rootObject], [ctx2 rootObject]);
@@ -253,7 +253,7 @@ static NSString *kCOReferences = @"references";
 
 - (void)testCopyingBetweenContextsWithManyToMany
 {
-	COEditingContext *ctx2 = [[COEditingContext alloc] init];
+	COObjectGraphContext *ctx2 = [[COObjectGraphContext alloc] init];
     
 	COObject *tag1 = [self addObjectWithLabel: @"tag1" toObject: root1];
 	COObject *child = [self addObjectWithLabel: @"OutlineItem" toObject: root1];
@@ -283,7 +283,7 @@ static NSString *kCOReferences = @"references";
 
 - (void)testChangeTrackingBasic
 {
-	COEditingContext *ctx2 = [COEditingContext editingContext];
+	COObjectGraphContext *ctx2 = [COObjectGraphContext editingContext];
 	
     UKObjectsEqual([NSSet set], [ctx2 insertedObjectUUIDs]);
     UKObjectsEqual([NSSet set], [ctx2 modifiedObjectUUIDs]);

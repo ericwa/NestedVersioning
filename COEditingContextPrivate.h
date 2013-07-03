@@ -1,12 +1,12 @@
 #import <Foundation/Foundation.h>
 
-#import "COEditingContext.h"
+#import "COObjectGraphContext.h"
 #import "COObject.h"
 
 @class COObject;
 @class COItemPath;
 
-@interface  COEditingContext (Private)
+@interface  COObjectGraphContext (Private)
 
 - (void) updateRelationshipIntegrityWithOldValue: (id)oldVal
                                          oldType: (COType)oldType
@@ -19,7 +19,7 @@
 @interface COObject (Private)
 
 - (id) initWithItem: (COItem *)anItem
-      parentContext: (COEditingContext *)aContext;
+      parentContext: (COObjectGraphContext *)aContext;
 - (void) setItem: (COItem *)anItem;
 - (void) markAsRemovedFromContext;
 

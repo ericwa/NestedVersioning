@@ -9,7 +9,7 @@
 {
     COPersistentRoot *root;
     COBranch *branch;	
-	COEditingContext *ctx;
+	COObjectGraphContext *ctx;
     
 	EWPersistentRootOutlineRow *outlineModel;
 	IBOutlet NSOutlineView *outlineView;

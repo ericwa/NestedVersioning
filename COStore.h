@@ -4,7 +4,7 @@
 #import "COPersistentRoot.h"
 #import "COSQLiteStore.h"
 
-@class COEditingContext;
+@class COObjectGraphContext;
 
 /**
  * High-level store API which provides access to COPersistentRootEditQueue objects,
@@ -31,7 +31,7 @@
 /**
  * Commits immediately.
  */
-- (COPersistentRoot *) createPersistentRootWithInitialContents: (COEditingContext *)contents
+- (COPersistentRoot *) createPersistentRootWithInitialContents: (COObjectGraphContext *)contents
                                                       metadata: (NSDictionary *)metadata;
 
 // does a cheap copy

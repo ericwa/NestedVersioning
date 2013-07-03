@@ -5,7 +5,7 @@
 
 @interface EWPersistentRootOutlineRow : NSObject
 {
-	COEditingContext *ctx;
+	COObjectGraphContext *ctx;
 	
 	EWPersistentRootWindowController *windowController;
 	
@@ -29,7 +29,7 @@
 - (NSString *)attribute;
 - (BOOL) isPrimitiveInContainer;
 
-- (id)initWithContext: (COEditingContext *)aContext
+- (id)initWithContext: (COObjectGraphContext *)aContext
 			   parent: (EWPersistentRootOutlineRow *)aParent
 	 windowController: (EWPersistentRootWindowController *)aController;
 

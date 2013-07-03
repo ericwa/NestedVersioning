@@ -529,7 +529,7 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
     EWPersistentRootOutlineRow *row = [[self selectedItem] parent];
     if (row != nil)
     {
-        [[row rowSubtree] addObjectToContents: [[COEditingContext editingContextWithItem: [COMutableItem item]] rootObject]];
+        [[row rowSubtree] addObjectToContents: [[COObjectGraphContext editingContextWithItem: [COMutableItem item]] rootObject]];
         
         [branch commitChangesWithMetadata: nil];
         [self reloadBrowser];

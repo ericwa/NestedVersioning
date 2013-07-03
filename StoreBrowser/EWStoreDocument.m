@@ -8,7 +8,7 @@
 
 static COObject *makeTree(NSString *label)
 {
-    COEditingContext *ctx = [[[COEditingContext alloc] init] autorelease];
+    COObjectGraphContext *ctx = [[[COObjectGraphContext alloc] init] autorelease];
     [[ctx rootObject] setValue: label
                   forAttribute: @"label"
                           type: kCOStringType];

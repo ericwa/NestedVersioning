@@ -11,7 +11,7 @@
 
 - (id<COItemGraph>) initialContents
 {
-    COEditingContext *ctx = [COEditingContext editingContext];
+    COObjectGraphContext *ctx = [COObjectGraphContext editingContext];
     COObject *obj = [ctx insertObject];
     [obj setValue: @"root" forAttribute: @"label" type: kCOStringType];
     [ctx setRootObject: obj];

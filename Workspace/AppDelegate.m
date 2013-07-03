@@ -12,7 +12,7 @@
 
 - (COObject *) itemWithLabel: (NSString *)label
 {
-	COEditingContext *ctx = [[[COEditingContext alloc] init] autorelease];
+	COObjectGraphContext *ctx = [[[COObjectGraphContext alloc] init] autorelease];
     [[ctx rootObject] setValue: label
                   forAttribute: @"name"
                           type: kCOStringType];
@@ -29,10 +29,10 @@
     
     if (count == 0)
     {
-        COEditingContext *workspace = [COEditingContext editingContext];
+        COObjectGraphContext *workspace = [COObjectGraphContext editingContext];
         [[workspace rootObject] setValue: @"Default Workspace" forAttribute: @"name" type: kCOStringType];
         
-        COEditingContext *workspaces = [COEditingContext editingContext];
+        COObjectGraphContext *workspaces = [COObjectGraphContext editingContext];
         [[workspaces rootObject] setValue: A([workspace rootObject])
                       forAttribute: @"orderedContents"
                               type: kCOEmbeddedItemType | kCOArrayType];
@@ -53,7 +53,7 @@
     
     
     // Populate menu
-    COEditingContext *worksapceCtx = [[workspaces_ currentBranch] editingContext];
+    COObjectGraphContext *worksapceCtx = [[workspaces_ currentBranch] editingContext];
     NSUInteger i=0;
     for (COObject *workspace in [[worksapceCtx rootObject] valueForAttribute: @"orderedContents"])
     {

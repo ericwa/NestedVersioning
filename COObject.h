@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "COItem.h"
 
-@class COEditingContext;
+@class COObjectGraphContext;
 @class COItemGraph;
 @class COItemPath;
 @class COSchema;
@@ -11,14 +11,14 @@ NSString *kCOSchemaName;
 @interface COObject : NSObject
 {
     @package
-    COEditingContext *parentContext_; // weak
+    COObjectGraphContext *parentContext_; // weak
     COMutableItem *item_;
 }
 
 #pragma mark Access to the receivers attributes/values
 
 
-- (COEditingContext *) editingContext;
+- (COObjectGraphContext *) editingContext;
 
 - (COUUID *) UUID;
 

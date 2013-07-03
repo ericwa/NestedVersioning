@@ -4,7 +4,7 @@
 
 @class COPersistentRoot;
 @class CORevisionID;
-@class COEditingContext;
+@class COObjectGraphContext;
 
 @interface COBranch : NSObject
 {
@@ -14,7 +14,7 @@
     
 	// -- in-memory mutable state:
 
-	COEditingContext *editingContext_;
+	COObjectGraphContext *editingContext_;
 }
 
 - (COPersistentRoot *) persistentRoot;
@@ -43,6 +43,6 @@
 - (void) discardChanges;
 - (BOOL) hasChanges;
 
-- (COEditingContext *) editingContext;
+- (COObjectGraphContext *) editingContext;
 
 @end

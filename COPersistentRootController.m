@@ -1,6 +1,6 @@
 #import "COPersistentRootController.h"
 #import "COMacros.h"
-#import "COEditingContext.h"
+#import "COObjectGraphContext.h"
 #import "COSQLiteStore.h"
 
 
@@ -12,7 +12,7 @@
     SUPERINIT;
     ASSIGN(store_, aStore);
     ASSIGN(savedState_, [store_ persistentRootWithUUID: aUUID]);
-    editingContext_ = [[COEditingContext alloc] init];
+    editingContext_ = [[COObjectGraphContext alloc] init];
     [self discardChanges];
     
     return self;
@@ -96,7 +96,7 @@
         || [[editingContext_ modifiedObjectUUIDs] count] > 0;
 }
 
-- (COEditingContext *) editingContext
+- (COObjectGraphContext *) editingContext
 {
     return editingContext_;
 }

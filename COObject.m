@@ -2,7 +2,7 @@
 #import "COType.h"
 #import "COItem.h"
 #import "COItemGraph.h"
-#import "COEditingContext.h"
+#import "COObjectGraphContext.h"
 #import "COEditingContextPrivate.h"
 #import "COItemPath.h"
 #import "COMacros.h"
@@ -14,7 +14,7 @@ NSString *kCOSchemaName = @"COSchemaName";
 @implementation COObject (Private)
 
 - (id) initWithItem: (COItem *)anItem
-      parentContext: (COEditingContext *)aContext
+      parentContext: (COObjectGraphContext *)aContext
 {
     SUPERINIT;
     item_ = [anItem mutableCopy]; // Important
@@ -55,7 +55,7 @@ NSString *kCOSchemaName = @"COSchemaName";
 #pragma mark Access to the receivers attributes/values
 
 
-- (COEditingContext *) editingContext
+- (COObjectGraphContext *) editingContext
 {
     return parentContext_;
 }

@@ -16,7 +16,7 @@
 
 #import "COItemGraph.h"
 #import "COItemPath.h"
-#import "COEditingContext.h"
+#import "COObjectGraphContext.h"
 #import "COObject.h"
 
 #import "COEdit.h"
