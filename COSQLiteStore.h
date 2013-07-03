@@ -8,6 +8,47 @@
 @class FMDatabase;
 @class COPersistentRootState;
 
+@interface COBranchState : NSObject
+{
+@private
+    COUUID *uuid_;
+    CORevisionID *headRevisionId_;
+    CORevisionID *tailRevisionId_;
+    CORevisionID *currentState_;
+    NSDictionary *metadata_;
+    BOOL deleted_;
+}
+
+@property (readwrite, nonatomic, retain) COUUID *UUID;
+@property (readwrite, nonatomic, retain) CORevisionID *headRevisionID;
+@property (readwrite, nonatomic, retain) CORevisionID *tailRevisionID;
+@property (readwrite, nonatomic, retain) CORevisionID *currentRevisionID;
+@property (readwrite, nonatomic, retain) NSDictionary *metadata;
+@property (readwrite, nonatomic, getter=isDeleted, setter=setDeleted:) BOOL deleted;
+
+@end
+
+@interface COPersistentRootState : NSObject
+{
+@private
+    COUUID *uuid_;
+    COUUID *currentBranch_;
+    COUUID *mainBranch_;
+    NSMutableDictionary *branchForUUID_; // COUUID : COBranchPlist
+}
+
+- (NSSet *) branchUUIDs;
+
+- (COBranchState *)branchPlistForUUID: (COUUID *)aUUID;
+- (COBranchState *)currentBranchState;
+
+@property (readwrite, nonatomic, retain) COUUID *UUID;
+@property (readwrite, nonatomic, retain) COUUID *currentBranchUUID;
+@property (readwrite, nonatomic, retain) COUUID *mainBranchUUID;
+@property (readwrite, nonatomic, retain) NSDictionary *branchForUUID;
+
+@end
+
 /**
  * This class implements a Core Object store using SQLite databases.
  *

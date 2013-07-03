@@ -1,6 +1,6 @@
 #import "COEditSetCurrentVersionForBranch.h"
 #import "COMacros.h"
-#import "COBranchState.h"
+#import "COSQLiteStore.h"
 
 @implementation COEditSetCurrentVersionForBranch : COEdit
 

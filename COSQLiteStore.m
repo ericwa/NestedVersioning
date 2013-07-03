@@ -4,7 +4,7 @@
 #import "CORevision.h"
 #import "COMacros.h"
 #import "COUUID.h"
-#import "COBranchState.h"
+
 #import "COEdit.h"
 #import "COEditCreateBranch.h"
 #import "COEditDeleteBranch.h"
@@ -18,6 +18,59 @@
 
 #import "FMDatabase.h"
 #import "FMDatabaseAdditions.h"
+
+@implementation COPersistentRootState
+
+@synthesize UUID = uuid_;
+@synthesize currentBranchUUID = currentBranch_;
+@synthesize mainBranchUUID = mainBranch_;
+@synthesize branchForUUID = branchForUUID_;
+
+- (void) dealloc
+{
+    [uuid_ release];
+    [branchForUUID_ release];
+    [currentBranch_ release];
+    [mainBranch_ release];
+    [super dealloc];
+}
+
+- (NSSet *) branchUUIDs
+{
+    return [NSSet setWithArray: [branchForUUID_ allKeys]];
+}
+
+- (COBranchState *)branchPlistForUUID: (COUUID *)aUUID
+{
+    return [branchForUUID_ objectForKey: aUUID];
+}
+- (COBranchState *)currentBranchState
+{
+    return [self branchPlistForUUID: [self currentBranchUUID]];
+}
+
+@end
+
+@implementation COBranchState
+
+@synthesize UUID = uuid_;
+@synthesize headRevisionID = headRevisionId_;
+@synthesize tailRevisionID = tailRevisionId_;
+@synthesize currentRevisionID = currentState_;
+@synthesize deleted = deleted_;
+
+- (void) dealloc
+{
+    [uuid_ release];
+    [headRevisionId_ release];
+    [tailRevisionId_ release];
+    [currentState_ release];
+    [metadata_ release];
+    [super dealloc];
+}
+
+@end
+
 
 @interface COSQLiteStore (AttachmentsPrivate)
 
@@ -518,11 +571,12 @@
                                                                      revisionIndex: [rs int64ForColumnIndex: 3]];
             id branchMeta = [self readMetadata: [rs dataForColumnIndex: 4]];            
             
-            COBranchState *state = [[[COBranchState alloc] initWithUUID: branch
-                                                        headRevisionId: headRevid
-                                                        tailRevisionId: tailRevid
-                                                          currentState: currentRevid
-                                                               metadata: branchMeta] autorelease];
+            COBranchState *state = [[[COBranchState alloc] init] autorelease];
+            state.UUID = branch;
+            state.headRevisionID = headRevid;
+            state.tailRevisionID = tailRevid;
+            state.currentRevisionID = currentRevid;
+            state.metadata = branchMeta;
             state.deleted = [rs boolForColumnIndex: 5];
             
             [branchDict setObject: state forKey: branch];
@@ -532,11 +586,12 @@
     
     [db_ commit];
 
-    COPersistentRootState *result = [[[COPersistentRootState alloc] initWithUUID: aUUID
-                                                                   branchForUUID: branchDict
-                                                               currentBranchUUID: currBranch
-                                                                  mainBranchUUID: mainBranch
-                                                                        metadata: meta] autorelease];
+    COPersistentRootState *result = [[[COPersistentRootState alloc] init] autorelease];
+    result.UUID = aUUID;
+    result.branchForUUID = branchDict;
+    result.currentBranchUUID = currBranch;
+    result.mainBranchUUID = mainBranch;
+    
     return result;
 }
 
@@ -600,18 +655,20 @@
     
     // Return info
     
-    COBranchState *branch = [[[COBranchState alloc] initWithUUID: branchUUID
-                                                  headRevisionId: revId
-                                                  tailRevisionId: revId
-                                                    currentState: revId
-                                                        metadata: nil] autorelease];
-    
-    COPersistentRootState *plist = [[[COPersistentRootState alloc] initWithUUID: uuid
-                                                                  branchForUUID: D(branch, branchUUID)
-                                                              currentBranchUUID: branchUUID
-                                                                 mainBranchUUID: branchUUID
-                                                                       metadata: metadata] autorelease];
-    
+    COBranchState *branch = [[[COBranchState alloc] init] autorelease];
+    branch.UUID = branchUUID;
+    branch.headRevisionID = revId;
+    branch.tailRevisionID = revId;
+    branch.currentRevisionID = revId;
+    branch.metadata = nil;
+    branch.deleted = NO;
+                                  
+    COPersistentRootState *plist = [[[COPersistentRootState alloc] init] autorelease];
+    plist.UUID = uuid;
+    plist.branchForUUID = D(branch, branchUUID);
+    plist.currentBranchUUID = branchUUID;
+    plist.mainBranchUUID = branchUUID;
+
     return plist;
 }
 

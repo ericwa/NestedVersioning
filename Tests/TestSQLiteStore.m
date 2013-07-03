@@ -213,7 +213,7 @@ static COUUID *childUUID2;
     {
         COBranchState *branchObj = [[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branchAUUID];
         UKFalse([branchObj isDeleted]);
-        UKObjectsEqual(initialState, branchObj);
+        UKObjectsEqual(initialState.currentRevisionID, branchObj.currentRevisionID);
     }
 
     // Should have no effect
@@ -222,7 +222,7 @@ static COUUID *childUUID2;
     // Verify the branch is still there
     {
         COBranchState *branchObj = [[store persistentRootWithUUID: prootUUID] branchPlistForUUID: branchAUUID];
-        UKObjectsEqual(initialState, branchObj);
+        UKObjectsEqual(initialState.currentRevisionID, branchObj.currentRevisionID);
     }
     
     // Really delete it
@@ -264,26 +264,6 @@ static COUUID *childUUID2;
              ofPersistentRoot: prootUUID]);
     
     UKNil([[[store persistentRootWithUUID: prootUUID] currentBranchState] metadata]);
-}
-
-- (void) testPersistentRootMetadata
-{
-    UKObjectsEqual([self initialMetadata], [[store persistentRootWithUUID: prootUUID] metadata]);
-    
-    UKTrue([store setMetadata: D(@"hello world", @"name")
-            forPersistentRoot: prootUUID]);
-    
-    UKObjectsEqual(D(@"hello world", @"name"), [[store persistentRootWithUUID: prootUUID] metadata]);
-    
-    UKTrue([store setMetadata: nil
-             forPersistentRoot: prootUUID]);
-    
-    UKNil([[store persistentRootWithUUID: prootUUID] metadata]);
-    
-    UKTrue([store setMetadata: D(@"hello 2", @"name")
-            forPersistentRoot: prootUUID]);
-    
-    UKObjectsEqual(D(@"hello 2", @"name"), [[store persistentRootWithUUID: prootUUID] metadata]);
 }
 
 - (void) testSetCurrentBranch
@@ -548,9 +528,6 @@ static COUUID *childUUID2;
     UKObjectsNotEqual([proot branchUUIDs], [copy branchUUIDs]);
     UKIntsEqual(1,  [[copy branchUUIDs] count]);
     
-    // Make sure metadata was read out properly
-    UKObjectsEqual(D(@"test2", @"name"), [copy metadata]);
-    
     // Check that the current branch is set correctly
     UKObjectsEqual([[copy branchUUIDs] anyObject], [copy currentBranchUUID]);
     
@@ -565,7 +542,8 @@ static COUUID *childUUID2;
     // Make sure the persistent root state returned from createPersistentRoot matches what the store
     // gives us when we read it back.
 
-    UKObjectsEqual(copy, [store persistentRootWithUUID: [copy UUID]]);
+    UKObjectsEqual(copy.branchUUIDs, [store persistentRootWithUUID: [copy UUID]].branchUUIDs);
+    UKObjectsEqual([[copy currentBranchState] currentRevisionID], [[store persistentRootWithUUID: [copy UUID]] currentBranchState].currentRevisionID);
     
     // 2. try changing. Verify that proot and copy are totally independent
 

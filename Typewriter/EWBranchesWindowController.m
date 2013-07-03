@@ -1,7 +1,7 @@
 #import "EWBranchesWindowController.h"
 #import "COStore.h"
 #import "COMacros.h"
-#import "COPersistentRootState.h"
+
 #import "EWDocument.h"
 
 @implementation EWBranchesWindowController

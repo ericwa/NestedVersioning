@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 
 #import "COUUID.h"
-#import "COPersistentRootState.h"
+#import "COSQLiteStore.h"
 
 NSString *kCOEditSetCurrentVersionForBranch;
 NSString *kCOEditCreateBranch;

@@ -1,5 +1,5 @@
 #import <Cocoa/Cocoa.h>
-#import "COPersistentRootState.h"
+
 #import "EWUtilityWindowController.h"
 
 @interface EWBranchesWindowController : EWUtilityWindowController <NSTableViewDelegate, NSTableViewDataSource>

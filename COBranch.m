@@ -2,7 +2,7 @@
 #import "COMacros.h"
 #import "COPersistentRoot.h"
 #import "COPersistentRootPrivate.h"
-#import "COBranchState.h"
+
 #import "COItemTree.h"
 #import "COSQLiteStore.h"
 #import "COEditingContext.h"

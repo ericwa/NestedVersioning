@@ -1,7 +1,7 @@
 #import "COEditDeleteBranch.h"
 #import "COEditCreateBranch.h"
 #import "COMacros.h"
-#import "COBranchState.h"
+
 
 @implementation COEditDeleteBranch : COEdit
 

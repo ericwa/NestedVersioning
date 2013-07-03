@@ -3,7 +3,7 @@
 #import "COUUID.h"
 #import "CORevisionID.h"
 #import "COSQLiteStore.h"
-#import "COPersistentRootState.h"
+
 
 @class COBranch;
 @class COStore;
