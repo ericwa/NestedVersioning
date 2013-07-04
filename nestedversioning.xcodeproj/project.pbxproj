@@ -212,6 +212,41 @@
 			remoteGlobalIDString = 66E7785014E6062100D5DFFF;
 			remoteInfo = NestedVersioning;
 		};
+		6675F8D01785C165001E5622 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6675F8C81785C164001E5622 /* EtoileFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60073EAD10074D26007272E6;
+			remoteInfo = EtoileXML;
+		};
+		6675F8D21785C165001E5622 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6675F8C81785C164001E5622 /* EtoileFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 603647AC0E409244003377E0;
+			remoteInfo = EtoileFoundation;
+		};
+		6675F8D41785C165001E5622 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6675F8C81785C164001E5622 /* EtoileFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 609B66D70FEE80CE0007F842;
+			remoteInfo = TestEtoileFoundation;
+		};
+		6675F8D61785C165001E5622 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6675F8C81785C164001E5622 /* EtoileFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6072CF691360E144003256C5;
+			remoteInfo = PlugInExample;
+		};
+		6675F8D81785C174001E5622 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6675F8C81785C164001E5622 /* EtoileFoundation.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 603647AB0E409244003377E0;
+			remoteInfo = EtoileFoundation;
+		};
 		66E778A714E607D400D5DFFF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 662811ED13F8B5000075BBC2 /* Project object */;
@@ -412,6 +447,7 @@
 		6675C91917016D44007C8DB6 /* CORelationshipCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CORelationshipCache.h; sourceTree = "<group>"; };
 		6675C91A17016D44007C8DB6 /* CORelationshipCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CORelationshipCache.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		6675C9211702C6FB007C8DB6 /* TestRelationshipCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestRelationshipCache.m; sourceTree = "<group>"; };
+		6675F8C81785C164001E5622 /* EtoileFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = EtoileFoundation.xcodeproj; path = EtoileFoundation/EtoileFoundation.xcodeproj; sourceTree = "<group>"; };
 		66816C50166343B200BC5F40 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		66816C701663562300BC5F40 /* CORevision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CORevision.h; sourceTree = "<group>"; };
 		66816C711663562300BC5F40 /* CORevision.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CORevision.m; sourceTree = "<group>"; };
@@ -646,6 +682,7 @@
 		662811EB13F8B5000075BBC2 = {
 			isa = PBXGroup;
 			children = (
+				6675F8C81785C164001E5622 /* EtoileFoundation.xcodeproj */,
 				66C9E91E1754707600D9BE1A /* Scraps or Deprecated */,
 				66EDAF3816B4B53900B06DB2 /* libssl.dylib */,
 				66816C50166343B200BC5F40 /* libsqlite3.dylib */,
@@ -942,6 +979,17 @@
 				666CB0321663433E0066BC77 /* FMResultSet.m */,
 			);
 			name = fmdb;
+			sourceTree = "<group>";
+		};
+		6675F8C91785C164001E5622 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6675F8D11785C165001E5622 /* EtoileXML.framework */,
+				6675F8D31785C165001E5622 /* EtoileFoundation.framework */,
+				6675F8D51785C165001E5622 /* TestEtoileFoundation.bundle */,
+				6675F8D71785C165001E5622 /* PlugInExample.plugin */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		667E4B11176981770083E69D /* WIP */ = {
@@ -1354,6 +1402,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				6675F8D91785C174001E5622 /* PBXTargetDependency */,
 			);
 			name = NestedVersioning;
 			productName = NestedVersioning;
@@ -1379,6 +1428,12 @@
 			mainGroup = 662811EB13F8B5000075BBC2;
 			productRefGroup = 662811F713F8B5010075BBC2 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 6675F8C91785C164001E5622 /* Products */;
+					ProjectRef = 6675F8C81785C164001E5622 /* EtoileFoundation.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				66E22EC51421D47100C00A98 /* test */,
@@ -1390,6 +1445,37 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		6675F8D11785C165001E5622 /* EtoileXML.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = EtoileXML.framework;
+			remoteRef = 6675F8D01785C165001E5622 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6675F8D31785C165001E5622 /* EtoileFoundation.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = EtoileFoundation.framework;
+			remoteRef = 6675F8D21785C165001E5622 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6675F8D51785C165001E5622 /* TestEtoileFoundation.bundle */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = TestEtoileFoundation.bundle;
+			remoteRef = 6675F8D41785C165001E5622 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6675F8D71785C165001E5622 /* PlugInExample.plugin */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = PlugInExample.plugin;
+			remoteRef = 6675F8D61785C165001E5622 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		660ED2E316D3475800BF6BB8 /* Resources */ = {
@@ -1604,6 +1690,11 @@
 			isa = PBXTargetDependency;
 			target = 66E7785014E6062100D5DFFF /* NestedVersioning */;
 			targetProxy = 662C1E07168FACF2002157F3 /* PBXContainerItemProxy */;
+		};
+		6675F8D91785C174001E5622 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = EtoileFoundation;
+			targetProxy = 6675F8D81785C174001E5622 /* PBXContainerItemProxy */;
 		};
 		66E778A814E607D400D5DFFF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
