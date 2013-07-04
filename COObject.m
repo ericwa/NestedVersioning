@@ -27,11 +27,17 @@ NSString *kCOSchemaName = @"COSchemaName";
  */
 - (void) setItem: (COItem *)anItem
 {
+    // TODO:
+    //[self discardState];
+    
     if (item_ != anItem)
     {
         [item_ release];
         item_ = [anItem mutableCopy]; // Important
     }
+    
+    // TODO:
+    //[self reloadStateFromNewItem: item_];
 }
 
 - (void) markAsRemovedFromContext
