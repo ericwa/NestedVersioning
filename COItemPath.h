@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "ETUUID.h"
+#import <EtoileFoundation/ETUUID.h>
 #import "COType.h"
 
 @class COMutableItem;

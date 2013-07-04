@@ -1,5 +1,5 @@
 #import "EWIconTextFieldCell.h"
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 
 @implementation EWIconTextFieldCell
 

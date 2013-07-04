@@ -1,5 +1,5 @@
 #import "COCopier.h"
-#import "ETUUID.h"
+#import <EtoileFoundation/ETUUID.h>
 
 @implementation COCopier
 

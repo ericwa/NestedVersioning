@@ -2,8 +2,8 @@
 #import "COSQLiteStorePersistentRootBackingStore.h"
 #import "CORevisionID.h"
 #import "CORevision.h"
-#import "COMacros.h"
-#import "ETUUID.h"
+#import <EtoileFoundation/Macros.h>
+#import <EtoileFoundation/ETUUID.h>
 
 #import "COEdit.h"
 #import "COEditCreateBranch.h"
@@ -247,7 +247,7 @@
       
         assert(dataSize == 16);
         
-        ETUUID *uuid = [[ETUUID alloc] initWithBytes: data];
+        ETUUID *uuid = [[ETUUID alloc] initWithUUID: data];
         [result addObject: uuid];
         [uuid release];
     }

@@ -1,6 +1,6 @@
 #import "CORelationshipCache.h"
-#import "ETUUID.h"
-#import "COMacros.h"
+#import <EtoileFoundation/ETUUID.h>
+#import <EtoileFoundation/Macros.h>
 #import "COType.h"
 #import "COItem.h"
 
@@ -26,14 +26,16 @@
 
 - (NSUInteger)hash
 {
-    return *(NSUInteger *)(uuid_->uuid);
+    // TODO: Benchmark, access UUID bytes directly via a pointer?
+    return *(NSUInteger *)([uuid_ UUIDValue]);
 }
 
 - (BOOL)isEqual:(id)object
 {
+    // TODO: Benchmark, access UUID bytes directly via a pointer?
 	CORelationshipRecord *other = object;
     return [property_ isEqualToString: other->property_]
-        && (0 == memcmp(uuid_->uuid, other->uuid_->uuid, 16));
+        && (0 == memcmp([uuid_ UUIDValue], [other->uuid_ UUIDValue], 16));
 }
 
 @end

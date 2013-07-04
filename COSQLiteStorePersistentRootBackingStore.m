@@ -1,8 +1,8 @@
 #import "COSQLiteStorePersistentRootBackingStore.h"
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 #import "COItemGraph.h"
 #import "COItem.h"
-#import "ETUUID.h"
+#import <EtoileFoundation/ETUUID.h>
 #import "FMDatabase.h"
 #import "FMDatabaseAdditions.h"
 #import "COSQLiteStorePersistentRootBackingStoreBinaryFormats.h"

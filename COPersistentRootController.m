@@ -1,5 +1,5 @@
 #import "COPersistentRootController.h"
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 #import "COObjectGraphContext.h"
 #import "COSQLiteStore.h"
 

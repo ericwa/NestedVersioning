@@ -1,5 +1,5 @@
 #import "AppDelegate.h"
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 #import "EWStoreWindowController.h"
 
 @implementation AppDelegate

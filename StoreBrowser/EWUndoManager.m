@@ -2,7 +2,7 @@
 #import "COStore.h"
 #import "COSubtree.h"
 #import "COSubtreeFactory+Undo.h"
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 
 @implementation EWUndoManager
 

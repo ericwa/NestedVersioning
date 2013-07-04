@@ -1,5 +1,5 @@
 #import "COBranch.h"
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 #import "COPersistentRoot.h"
 #import "COPersistentRootPrivate.h"
 

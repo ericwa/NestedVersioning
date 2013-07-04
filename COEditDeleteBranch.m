@@ -1,6 +1,6 @@
 #import "COEditDeleteBranch.h"
 #import "COEditCreateBranch.h"
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 
 
 @implementation COEditDeleteBranch : COEdit

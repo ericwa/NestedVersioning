@@ -1,6 +1,6 @@
 #import "COSchemaRegistry.h"
 
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 #import "COSchemaTemplate.h"
 #import "COSchema.h"
 

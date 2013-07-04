@@ -2,7 +2,7 @@
 #import "COBinaryWriter.h"
 #import "COBinaryReader.h"
 #import "COPath.h"
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 
 typedef enum {
     co_reader_expect_object_uuid,

@@ -1,5 +1,5 @@
 #import "COSQLiteStorePersistentRootBackingStoreBinaryFormats.h"
-#import "ETUUID.h"
+#import <EtoileFoundation/ETUUID.h>
 
 void ParseCombinedCommitDataInToUUIDToItemDataDictionary(NSMutableDictionary *dest, NSData *commitData, BOOL replaceExisting, NSSet *restrictToItemUUIDs)
 {
@@ -16,7 +16,7 @@ void ParseCombinedCommitDataInToUUIDToItemDataDictionary(NSMutableDictionary *de
     
     while (offset < len)
     {
-        ETUUID *uuid = [[ETUUID alloc] initWithBytes: bytes + offset];
+        ETUUID *uuid = [[ETUUID alloc] initWithUUID: bytes + offset];
         offset += 16;
         
         uint32_t length;
@@ -41,7 +41,8 @@ void ParseCombinedCommitDataInToUUIDToItemDataDictionary(NSMutableDictionary *de
 
 void AddCommitUUIDAndDataToCombinedCommitData(NSMutableData *combinedCommitData, ETUUID *uuidToAdd, NSData *dataToAdd)
 {
-    [combinedCommitData appendBytes: uuidToAdd->uuid length: 16];
+    // TODO: Benchmark, access UUID bytes directly via a pointer?
+    [combinedCommitData appendBytes: [uuidToAdd UUIDValue] length: 16];
     
     const NSUInteger len = [dataToAdd length];
     if (len > UINT32_MAX)

@@ -5,7 +5,7 @@
 #import "COItem.h"
 
 #import "CORevisionID.h"
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 #import "COStore.h"
 #import "COPersistentRoot.h"
 #import "COBranch.h"

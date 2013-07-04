@@ -1,5 +1,5 @@
 #import "CORevision.h"
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 
 @implementation CORevision
 

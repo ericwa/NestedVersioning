@@ -1,5 +1,5 @@
 #import <Cocoa/Cocoa.h>
-#import "ETUUID.h"
+#import <EtoileFoundation/ETUUID.h>
 #import <NestedVersioning/COSubtree.h>
 
 @interface EWTextStorage : NSTextStorage

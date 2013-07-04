@@ -1,6 +1,6 @@
 #import "EWPersistentRootOutlineRow.h"
 #import "EWPersistentRootWindowController.h"
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 
 @implementation EWPersistentRootOutlineRow
 

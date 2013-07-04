@@ -1,6 +1,6 @@
 #import "EWBranchesWindowController.h"
 #import "COStore.h"
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 
 #import "EWDocument.h"
 

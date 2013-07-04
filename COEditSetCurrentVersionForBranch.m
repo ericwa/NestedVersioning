@@ -1,5 +1,5 @@
 #import "COEditSetCurrentVersionForBranch.h"
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 #import "COSQLiteStore.h"
 
 @implementation COEditSetCurrentVersionForBranch : COEdit

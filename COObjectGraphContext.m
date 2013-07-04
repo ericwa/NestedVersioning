@@ -1,7 +1,7 @@
 #import "COObjectGraphContext.h"
 #import "COEditingContextPrivate.h"
 #import "COItemGraph.h"
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 #import "CORelationshipCache.h"
 
 

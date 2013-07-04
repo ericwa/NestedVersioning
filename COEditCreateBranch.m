@@ -1,5 +1,5 @@
 #import "COEditCreateBranch.h"
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 
 @implementation COEditCreateBranch : COEdit
 

@@ -1,5 +1,5 @@
 #import "COPath.h"
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 
 @implementation COPath
 

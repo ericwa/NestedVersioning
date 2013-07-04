@@ -1,5 +1,5 @@
 #import "COBinaryReader.h"
-#import "ETUUID.h"
+#import <EtoileFoundation/ETUUID.h>
 
 static inline uint8_t readUint8(const unsigned char *bytes)
 {
@@ -107,7 +107,7 @@ void co_reader_read(const unsigned char *bytes, size_t length, void *context, co
             }
             case '#':
             {
-                ETUUID *uuid = [[ETUUID alloc] initWithBytes: bytes + pos];
+                ETUUID *uuid = [[ETUUID alloc] initWithUUID: bytes + pos];
                 callbacks.co_read_uuid(context, uuid);
                 [uuid release];
                 pos += 16;

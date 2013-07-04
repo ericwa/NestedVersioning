@@ -1,5 +1,5 @@
-#import "ETUUID.h"
-#import "COMacros.h"
+#import <EtoileFoundation/ETUUID.h>
+#import <EtoileFoundation/Macros.h>
 #import "COSubtreeEdits.h"
 #import "COType.h"
 #import "COSequenceMerge.h"

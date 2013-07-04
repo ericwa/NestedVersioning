@@ -5,7 +5,7 @@
 #import "COEditSetCurrentVersionForBranch.h"
 #import "COEditSetMetadata.h"
 #import "COEditSetBranchMetadata.h"
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 
 @interface COEdit (Private)
 - (id) initWithPlist: (id)plist;

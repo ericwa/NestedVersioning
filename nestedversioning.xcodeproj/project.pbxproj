@@ -105,6 +105,8 @@
 		6675C91B17016D44007C8DB6 /* CORelationshipCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 6675C91917016D44007C8DB6 /* CORelationshipCache.h */; };
 		6675C91C17016D44007C8DB6 /* CORelationshipCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6675C91A17016D44007C8DB6 /* CORelationshipCache.m */; };
 		6675C9221702C6FB007C8DB6 /* TestRelationshipCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6675C9211702C6FB007C8DB6 /* TestRelationshipCache.m */; };
+		6675F8DA1785CDD9001E5622 /* EtoileFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6675F8D31785C165001E5622 /* EtoileFoundation.framework */; };
+		6675F8DB1785D0D3001E5622 /* EtoileFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6675F8D31785C165001E5622 /* EtoileFoundation.framework */; };
 		667CD1D416B7B3EC00C50906 /* EWIconTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 662C1DE0168FACC9002157F3 /* EWIconTextFieldCell.m */; };
 		667CD1D516B7B3EC00C50906 /* EWOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 662C1DE2168FACC9002157F3 /* EWOutlineView.m */; };
 		667CD1D616B7B3EC00C50906 /* EWPersistentRootOutlineRow.m in Sources */ = {isa = PBXBuildFile; fileRef = 662C1DE4168FACC9002157F3 /* EWPersistentRootOutlineRow.m */; };
@@ -156,12 +158,10 @@
 		66E7784914E604ED00D5DFFF /* UKTest.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E7782414E6041900D5DFFF /* UKTest.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7784A14E604ED00D5DFFF /* UKTestHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E7782514E6041900D5DFFF /* UKTestHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7784B14E604ED00D5DFFF /* UnitKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E7782714E6041900D5DFFF /* UnitKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		66E7786014E6073100D5DFFF /* ETUUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E8776A1455FE67006CBE7E /* ETUUID.m */; };
 		66E7786114E6073100D5DFFF /* COPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EE5D3914637418008AA95B /* COPath.m */; };
 		66E7786614E6073100D5DFFF /* COItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 66EADD68147345B9003181FC /* COItem.m */; };
 		66E7786714E6073100D5DFFF /* COItemPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 668DA35E14E0E41A0062E6C2 /* COItemPath.m */; };
 		66E7787914E6075B00D5DFFF /* COMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 66DFAEC4142A726100623060 /* COMacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		66E7787A14E6075B00D5DFFF /* ETUUID.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E877691455FE5B006CBE7E /* ETUUID.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7787B14E6075B00D5DFFF /* COPath.h in Headers */ = {isa = PBXBuildFile; fileRef = 66EE5D3814637418008AA95B /* COPath.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7787C14E6075B00D5DFFF /* COType.h in Headers */ = {isa = PBXBuildFile; fileRef = 66EDFD94148EF73200D0DC0B /* COType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		66E7788114E6075B00D5DFFF /* COItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 66EADD67147345B9003181FC /* COItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -510,8 +510,6 @@
 		66E778B614E60E3C00D5DFFF /* Icon-Pass.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "Icon-Pass.tiff"; sourceTree = "<group>"; };
 		66E778BB14E60ED900D5DFFF /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = InfoPlist.strings; sourceTree = "<group>"; };
 		66E778BD14E60ED900D5DFFF /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = UKTestHandler.strings; sourceTree = "<group>"; };
-		66E877691455FE5B006CBE7E /* ETUUID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETUUID.h; sourceTree = "<group>"; };
-		66E8776A1455FE67006CBE7E /* ETUUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETUUID.m; sourceTree = "<group>"; };
 		66EA0D57163E04E30023A12A /* EWUtilityWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWUtilityWindowController.h; sourceTree = "<group>"; };
 		66EA0D58163E04E30023A12A /* EWUtilityWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWUtilityWindowController.m; sourceTree = "<group>"; };
 		66EADD6414732AEE003181FC /* TestUndo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestUndo.m; sourceTree = "<group>"; wrapsLines = 1; };
@@ -593,6 +591,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6675F8DB1785D0D3001E5622 /* EtoileFoundation.framework in Frameworks */,
 				66E7789F14E607BD00D5DFFF /* NestedVersioning.framework in Frameworks */,
 				66E778A014E607BD00D5DFFF /* UnitKit.framework in Frameworks */,
 				66E22EC91421D47100C00A98 /* Foundation.framework in Frameworks */,
@@ -611,6 +610,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6675F8DA1785CDD9001E5622 /* EtoileFoundation.framework in Frameworks */,
 				66EDAF3A16B4B55400B06DB2 /* libcrypto.dylib in Frameworks */,
 				66816C53166343C100BC5F40 /* Foundation.framework in Frameworks */,
 				66816C51166343B200BC5F40 /* libsqlite3.dylib in Frameworks */,
@@ -1024,8 +1024,6 @@
 		669CADED1491C14300D0CF5F /* UUID, Path, etc */ = {
 			isa = PBXGroup;
 			children = (
-				66E877691455FE5B006CBE7E /* ETUUID.h */,
-				66E8776A1455FE67006CBE7E /* ETUUID.m */,
 				66EE5D3814637418008AA95B /* COPath.h */,
 				66EE5D3914637418008AA95B /* COPath.m */,
 				66C6F62C15E764FE0079B7FB /* CORevisionID.h */,
@@ -1245,7 +1243,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				66E7787914E6075B00D5DFFF /* COMacros.h in Headers */,
-				66E7787A14E6075B00D5DFFF /* ETUUID.h in Headers */,
 				66E7787B14E6075B00D5DFFF /* COPath.h in Headers */,
 				66E7787C14E6075B00D5DFFF /* COType.h in Headers */,
 				66FCDBE41645DEF800E24A67 /* COBranch.h in Headers */,
@@ -1642,7 +1639,6 @@
 				66D6FA7716B2558300D9AF11 /* COArrayDiff.m in Sources */,
 				66D6FA7816B2558300D9AF11 /* COItemGraphDiff.m in Sources */,
 				66D6FA7916B2558300D9AF11 /* COSubtreeEdits.m in Sources */,
-				66E7786014E6073100D5DFFF /* ETUUID.m in Sources */,
 				66E7786114E6073100D5DFFF /* COPath.m in Sources */,
 				66E7786614E6073100D5DFFF /* COItem.m in Sources */,
 				66E7786714E6073100D5DFFF /* COItemPath.m in Sources */,

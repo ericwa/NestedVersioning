@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "ETUUID.h"
+#import <EtoileFoundation/ETUUID.h>
 
 
 typedef struct {
@@ -220,7 +220,9 @@ co_buffer_store_uuid(co_buffer_t *dest, ETUUID *uuid)
     }
     
     WRTITE_TYPE("#");
-    co_buffer_write(dest, (char *)uuid->uuid, 16);
+
+    // TODO: Benchmark, access UUID bytes directly via a pointer?
+    co_buffer_write(dest, [uuid UUIDValue], 16);
 }
 
 static inline

@@ -4,7 +4,7 @@
 #import "EWBranchesWindowController.h"
 #import "EWPickboardWindowController.h"
 #import "EWHistoryWindowController.h"
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 
 #import <NestedVersioning/CORevisionID.h>
 #import <NestedVersioning/COBranch.h>

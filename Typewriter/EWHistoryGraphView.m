@@ -1,6 +1,6 @@
 #import "EWHistoryGraphView.h"
 #import "EWGraphRenderer.h"
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 #import "COStore.h"
 #import "COBranch.h"
 

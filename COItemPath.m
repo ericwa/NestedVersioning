@@ -1,6 +1,6 @@
 #import "COItemPath.h"
 #import "COItem.h"
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 #import "COType.h"
 
 @interface COItemPath (InternalPrivate)

@@ -1,7 +1,7 @@
 #import "COArrayDiff.h"
 #include "diff.h"
 
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 #import "COSequenceMerge.h"
 #import "COSubtreeEdits.h"
 

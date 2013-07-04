@@ -5,7 +5,7 @@
 #import "COObjectGraphContext.h"
 #import "COEditingContextPrivate.h"
 #import "COItemPath.h"
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 #import "COSchemaRegistry.h"
 #import "COSchema.h"
 

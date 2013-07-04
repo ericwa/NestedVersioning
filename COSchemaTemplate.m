@@ -1,6 +1,6 @@
 #import "COSchemaTemplate.h"
 #import "COType.h"
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 
 @implementation COSchemaTemplate
 

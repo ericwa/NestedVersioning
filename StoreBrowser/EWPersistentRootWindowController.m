@@ -1,5 +1,5 @@
 #import "EWPersistentRootWindowController.h"
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 #import "AppDelegate.h"
 #import "EWIconTextFieldCell.h"
 

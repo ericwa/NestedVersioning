@@ -1,5 +1,5 @@
 #import "EWGraphRenderer.h"
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 #import "COStorePrivate.h"
 #import "COSubtreeFactory+Undo.h"
 

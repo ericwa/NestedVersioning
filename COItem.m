@@ -1,5 +1,5 @@
 #import "COItem.h"
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 #import "COPath.h"
 #import "COType.h"
 

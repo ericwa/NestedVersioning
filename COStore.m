@@ -1,5 +1,5 @@
 #import "COStore.h"
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 #import "COPersistentRootPrivate.h"
 #import "COSQLiteStore.h"
 

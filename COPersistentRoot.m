@@ -1,7 +1,7 @@
 #import "COPersistentRoot.h"
 #import "COStore.h"
 #import "COBranch.h"
-#import "COMacros.h"
+#import <EtoileFoundation/Macros.h>
 
 #import "COPersistentRootPrivate.h"
 #import "COSQLiteStore.h"
