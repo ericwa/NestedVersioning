@@ -1,6 +1,9 @@
 #import <Foundation/Foundation.h>
 #import "COUUID.h"
 
+/**
+ *
+ */
 @interface COPath : NSObject <NSCopying>
 {
 @private

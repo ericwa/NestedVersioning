@@ -18,16 +18,28 @@
  */
 typedef int32_t COType;
 
+/**
+ 
+ 
+ 
+ */
 enum {
     kCOInt64Type = 1,
     kCODoubleType = 2,
     kCOStringType = 3,
     kCOBlobType = 4,
     kCOCommitUUIDType = 5,
-    kCOPathType = 6,
+
+    // Internal references (within a persistent root)
     kCOEmbeddedItemType = 7,
-    kCOAttachmentType = 8,
     kCOReferenceType = 9,
+    
+    // References across persistent roots
+    kCOPathType = 6,
+    
+    
+    kCOAttachmentType = 8,
+    
     
     kCOSetType = 16,
     kCOArrayType = 32,

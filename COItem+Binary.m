@@ -66,7 +66,7 @@ static void writePrimitiveValue(co_buffer_t *dest, id aValue, COType aType)
             co_buffer_store_string(dest, aValue);
             break;
         case kCOBlobType:
-            co_buffer_store_bytes(dest, [aValue bytes], [aValue length]);
+            co_buffer_store_bytes(dest, [aValue UUIDValue], [aValue length]);
             break;
         case kCOReferenceType:
         case kCOEmbeddedItemType:
@@ -77,7 +77,7 @@ static void writePrimitiveValue(co_buffer_t *dest, id aValue, COType aType)
             co_buffer_store_string(dest, [(COPath *)aValue stringValue]);
             break;
         case kCOAttachmentType:
-            co_buffer_store_bytes(dest, [aValue bytes], [aValue length]);
+            co_buffer_store_bytes(dest, [aValue UUIDValue], [aValue length]);
             break;
         default:
             [NSException raise: NSInvalidArgumentException format: @"unknown type %d", aType];

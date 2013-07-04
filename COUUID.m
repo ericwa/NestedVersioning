@@ -169,7 +169,7 @@ static Class COUUIDClass;
 	}
     else if ([anObject isKindOfClass: [self class]])
     {
-        return (0 == memcmp(uuid, [(COUUID *)anObject bytes], 16));
+        return (0 == memcmp(uuid, [(COUUID *)anObject UUIDValue], 16));
     }
 	return NO;
 }
@@ -191,7 +191,7 @@ static Class COUUIDClass;
 		   NODE(uuid)[5]];
 }
 
-- (const unsigned char *) bytes
+- (const unsigned char *) UUIDValue
 {
 	return uuid;
 }

@@ -74,7 +74,7 @@
 /**
  * Returns a 128-bit binary value representation of the receiver.
  */
-- (const unsigned char *) bytes;
+- (const unsigned char *) UUIDValue;
 
 - (NSData *) dataValue;
 
