@@ -5,7 +5,7 @@
 
 @interface COItemPath (InternalPrivate)
 
-- (id) initWithItemUUID: (COUUID *)aUUID
+- (id) initWithItemUUID: (ETUUID *)aUUID
 			  valueName: (NSString *)aName
 				   type: (COType)aType;
 
@@ -20,7 +20,7 @@
 	NSUInteger index;
 }
 
-- (id) initWithItemUUID: (COUUID *)aUUID
+- (id) initWithItemUUID: (ETUUID *)aUUID
 			  arrayName: (NSString *)collection
 		 insertionIndex: (NSUInteger)anIndex
 				   type: (COType)aType;
@@ -34,7 +34,7 @@
 
 @implementation COItemPath
 
-- (id) initWithItemUUID: (COUUID *)aUUID
+- (id) initWithItemUUID: (ETUUID *)aUUID
 		  attributeName: (NSString *)aName
 				   type: (COType)aType
 {
@@ -45,7 +45,7 @@
 	return self;
 }
 
-+ (COItemPath *) pathWithItemUUID: (COUUID *)aUUID
++ (COItemPath *) pathWithItemUUID: (ETUUID *)aUUID
 		  unorderedCollectionName: (NSString *)collection
 							 type: (COType)aType
 {
@@ -54,7 +54,7 @@
 																type: aType] autorelease];
 }
 
-+ (COItemPath *) pathWithItemUUID: (COUUID *)aUUID
++ (COItemPath *) pathWithItemUUID: (ETUUID *)aUUID
 						arrayName: (NSString *)collection
 				   insertionIndex: (NSUInteger)index
 							 type: (COType)aType
@@ -65,7 +65,7 @@
 															  type: aType] autorelease];	
 }
 
-+ (COItemPath *) pathWithItemUUID: (COUUID *)aUUID
++ (COItemPath *) pathWithItemUUID: (ETUUID *)aUUID
 						valueName: (NSString *)aName
 							 type: (COType)aType
 {
@@ -109,7 +109,7 @@
 			[attribute isEqual: other->attribute]);
 }
 
-- (COUUID *)UUID
+- (ETUUID *)UUID
 {
 	return uuid;
 }
@@ -120,7 +120,7 @@
 
 @implementation COItemPathToOrderedContainer
 
-- (id) initWithItemUUID: (COUUID *)aUUID
+- (id) initWithItemUUID: (ETUUID *)aUUID
 			  arrayName: (NSString *)collection
 		 insertionIndex: (NSUInteger)anIndex
 				   type: (COType)aType

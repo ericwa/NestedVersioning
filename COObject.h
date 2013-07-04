@@ -20,7 +20,7 @@ NSString *kCOSchemaName;
 
 - (COObjectGraphContext *) editingContext;
 
-- (COUUID *) UUID;
+- (ETUUID *) UUID;
 
 - (NSArray *) attributeNames;
 
@@ -52,9 +52,9 @@ NSString *kCOSchemaName;
  * Searches the receiver for the Object with the givent UUID.
  * Returns nil if not present
  */
-- (COObject *) descendentObjectForUUID: (COUUID *)aUUID;
+- (COObject *) descendentObjectForUUID: (ETUUID *)aUUID;
 
-- (COItemPath *) itemPathOfDescendentObjectWithUUID: (COUUID *)aUUID;
+- (COItemPath *) itemPathOfDescendentObjectWithUUID: (ETUUID *)aUUID;
 
 #pragma mark Mutation
 

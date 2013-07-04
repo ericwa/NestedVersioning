@@ -1,5 +1,5 @@
 #import <Cocoa/Cocoa.h>
-#import "COUUID.h"
+#import "ETUUID.h"
 #import <NestedVersioning/COSubtree.h>
 
 @interface EWTextStorage : NSTextStorage
@@ -11,7 +11,7 @@
 
 - (BOOL) setTypewriterDocument: (COSubtree *)aTree;
 - (COSubtree *) typewriterDocument;
-- (COSubtree *) paragraphTreeForUUID: (COUUID *)aUUID;
+- (COSubtree *) paragraphTreeForUUID: (ETUUID *)aUUID;
 
 // FIXME: we will need the ability to incrementally update an EWTextStorage
 // by writing a new root node and supplying the relevant added/modified paragraph
@@ -20,9 +20,9 @@
 
 - (NSArray *) paragraphUUIDs;
 
-- (NSRange) rangeForParagraphWithUUID: (COUUID *)aUUID;
+- (NSRange) rangeForParagraphWithUUID: (ETUUID *)aUUID;
 
-- (NSAttributedString *) attributedStringForParagraphWithUUID: (COUUID *)aUUID;
+- (NSAttributedString *) attributedStringForParagraphWithUUID: (ETUUID *)aUUID;
 
 - (NSArray *) paragraphUUIDsChangedDuringEditing;
 

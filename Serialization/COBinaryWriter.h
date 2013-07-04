@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "COUUID.h"
+#import "ETUUID.h"
 
 
 typedef struct {
@@ -211,7 +211,7 @@ co_buffer_store_bytes(co_buffer_t *dest, const char *bytes, size_t length)
 
 static inline
 void
-co_buffer_store_uuid(co_buffer_t *dest, COUUID *uuid)
+co_buffer_store_uuid(co_buffer_t *dest, ETUUID *uuid)
 {
     if (uuid == nil)
     {

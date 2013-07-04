@@ -1,5 +1,5 @@
 #import "COSQLiteStorePersistentRootBackingStoreBinaryFormats.h"
-#import "COUUID.h"
+#import "ETUUID.h"
 
 void ParseCombinedCommitDataInToUUIDToItemDataDictionary(NSMutableDictionary *dest, NSData *commitData, BOOL replaceExisting, NSSet *restrictToItemUUIDs)
 {
@@ -16,7 +16,7 @@ void ParseCombinedCommitDataInToUUIDToItemDataDictionary(NSMutableDictionary *de
     
     while (offset < len)
     {
-        COUUID *uuid = [[COUUID alloc] initWithBytes: bytes + offset];
+        ETUUID *uuid = [[ETUUID alloc] initWithBytes: bytes + offset];
         offset += 16;
         
         uint32_t length;
@@ -39,7 +39,7 @@ void ParseCombinedCommitDataInToUUIDToItemDataDictionary(NSMutableDictionary *de
     }
 }
 
-void AddCommitUUIDAndDataToCombinedCommitData(NSMutableData *combinedCommitData, COUUID *uuidToAdd, NSData *dataToAdd)
+void AddCommitUUIDAndDataToCombinedCommitData(NSMutableData *combinedCommitData, ETUUID *uuidToAdd, NSData *dataToAdd)
 {
     [combinedCommitData appendBytes: uuidToAdd->uuid length: 16];
     

@@ -11,7 +11,7 @@
 	
 	EWPersistentRootOutlineRow *parent;
 	
-	COUUID *UUID;
+	ETUUID *UUID;
 	NSString *attribute;
 	BOOL isPrimitiveInContainer;
 	NSUInteger index;
@@ -19,13 +19,13 @@
 	NSMutableArray *contents;
 }
 
-+ (NSComparisonResult) compareUUID: (COUUID*)uuid1 withUUID: (COUUID *)uuid2;
++ (NSComparisonResult) compareUUID: (ETUUID*)uuid1 withUUID: (ETUUID *)uuid2;
 
 - (EWPersistentRootOutlineRow *) parent;
 
 - (COObject *)rowSubtree;
 
-- (COUUID *)UUID;
+- (ETUUID *)UUID;
 - (NSString *)attribute;
 - (BOOL) isPrimitiveInContainer;
 

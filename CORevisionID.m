@@ -1,10 +1,10 @@
 #import "CORevisionID.h"
 
-#import "COUUID.h"
+#import "ETUUID.h"
 
 @implementation CORevisionID
 
-- (id) initWithPersistentRootBackingStoreUUID: (COUUID *)aUUID
+- (id) initWithPersistentRootBackingStoreUUID: (ETUUID *)aUUID
                                 revisionIndex: (int64_t)anIndex
 {
     self = [super init];
@@ -16,7 +16,7 @@
     return self;
 }
 
-+ (CORevisionID *) revisionWithBackinStoreUUID: (COUUID *)aUUID
++ (CORevisionID *) revisionWithBackinStoreUUID: (ETUUID *)aUUID
                                  revisionIndex: (int64_t)anIndex
 {
     return [[[self alloc] initWithPersistentRootBackingStoreUUID: aUUID revisionIndex: anIndex] autorelease];
@@ -42,7 +42,7 @@
 {
     return revisionIndex_ ^ [backingStoreUUID_ hash];
 }
-- (COUUID *) backingStoreUUID
+- (ETUUID *) backingStoreUUID
 {
     return backingStoreUUID_;
 }
@@ -68,7 +68,7 @@
     
     CORevisionID *result = [[[CORevisionID alloc] init] autorelease];
     
-    result->backingStoreUUID_ = [[COUUID UUIDWithString: [comps objectAtIndex: 0]] retain];
+    result->backingStoreUUID_ = [[ETUUID UUIDWithString: [comps objectAtIndex: 0]] retain];
     result->revisionIndex_ = [(NSString *)[comps objectAtIndex: 1] longLongValue];
     
     return result;

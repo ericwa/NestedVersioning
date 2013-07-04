@@ -80,7 +80,7 @@
 
 #pragma mark begin COItemGraph protocol
 
-- (COUUID *) rootItemUUID
+- (ETUUID *) rootItemUUID
 {
     return rootObjectUUID_;
 }
@@ -88,7 +88,7 @@
 /**
  * Returns immutable item
  */
-- (COItem *) itemForUUID: (COUUID *)aUUID
+- (COItem *) itemForUUID: (ETUUID *)aUUID
 {
     COObject *object = [objectsByUUID_ objectForKey: aUUID];
     if (nil != object)
@@ -111,7 +111,7 @@
 {
     NSParameterAssert(item != nil);
     
-    COUUID *uuid = [item UUID];
+    ETUUID *uuid = [item UUID];
     COObject *currentObject = [objectsByUUID_ objectForKey: uuid];
     
     if (currentObject == nil)
@@ -158,7 +158,7 @@
     
     ASSIGN(rootObjectUUID_, [aTree rootItemUUID]);
     
-    for (COUUID *uuid in [aTree itemUUIDs])
+    for (ETUUID *uuid in [aTree itemUUIDs])
     {
         [self addItem: [aTree itemForUUID: uuid] markAsInserted: NO];
     }
@@ -227,7 +227,7 @@
 
 #pragma mark access
 
-- (COObject *) objectForUUID: (COUUID *)aUUID
+- (COObject *) objectForUUID: (ETUUID *)aUUID
 {
     return [objectsByUUID_ objectForKey: aUUID];
 }
@@ -250,7 +250,7 @@
                                        propertyInParent: anAttribute];
     
     NSMutableSet *objs = [NSMutableSet setWithCapacity: [uuids count]];
-    for (COUUID *uuid in uuids)
+    for (ETUUID *uuid in uuids)
     {
         [objs addObject: [objectsByUUID_ objectForKey: uuid]];
     }
@@ -272,7 +272,7 @@
  *    and the COEditingContext will release it, so it will be deallocated if
  *    no user code holds a reference to it.
  */
-- (void) removeSingleObject_: (COUUID *)uuid
+- (void) removeSingleObject_: (ETUUID *)uuid
 {
     COObject *anObject = [objectsByUUID_ objectForKey: uuid];
     COItem *item = anObject->item_;
@@ -298,7 +298,7 @@
 
 - (void) gcDeadObjects: (NSSet *)dead
 {
-    for (COUUID *deadUUID in dead)
+    for (ETUUID *deadUUID in dead)
     {
         [self removeSingleObject_: deadUUID];
     }
@@ -306,7 +306,7 @@
 
 - (void) gcDfs_: (COObject *)anObject uuids: (NSMutableSet *)set
 {
-    COUUID *uuid = anObject->item_->uuid;
+    ETUUID *uuid = anObject->item_->uuid;
     if ([set containsObject: uuid])
     {
         return;
@@ -371,7 +371,7 @@
         return NO;
     }
     
-    for (COUUID *aUUID in [self itemUUIDs])
+    for (ETUUID *aUUID in [self itemUUIDs])
     {
         COItem *selfItem = [self objectForUUID: aUUID]->item_;
         COItem *otherItem = [otherContext objectForUUID: aUUID]->item_;
@@ -395,7 +395,7 @@
                                         newValue: (id)newVal
                                          newType: (COType)newType
                                      forProperty: (NSString *)aProperty
-                                        ofObject: (COUUID *)anObject
+                                        ofObject: (ETUUID *)anObject
 {
     [relationshipCache_ updateRelationshipCacheWithOldValue: oldVal
                                                     oldType: oldType

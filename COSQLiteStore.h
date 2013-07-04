@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-@class COUUID;
+@class ETUUID;
 @class COItem;
 @class CORevisionID;
 @class CORevision;
@@ -11,7 +11,7 @@
 @interface COBranchInfo : NSObject
 {
 @private
-    COUUID *uuid_;
+    ETUUID *uuid_;
     CORevisionID *headRevisionId_;
     CORevisionID *tailRevisionId_;
     CORevisionID *currentState_;
@@ -19,7 +19,7 @@
     BOOL deleted_;
 }
 
-@property (readwrite, nonatomic, retain) COUUID *UUID;
+@property (readwrite, nonatomic, retain) ETUUID *UUID;
 @property (readwrite, nonatomic, retain) CORevisionID *headRevisionID;
 @property (readwrite, nonatomic, retain) CORevisionID *tailRevisionID;
 @property (readwrite, nonatomic, retain) CORevisionID *currentRevisionID;
@@ -31,20 +31,20 @@
 @interface COPersistentRootInfo : NSObject
 {
 @private
-    COUUID *uuid_;
-    COUUID *currentBranch_;
-    COUUID *mainBranch_;
+    ETUUID *uuid_;
+    ETUUID *currentBranch_;
+    ETUUID *mainBranch_;
     NSMutableDictionary *branchForUUID_; // COUUID : COBranchPlist
 }
 
 - (NSSet *) branchUUIDs;
 
-- (COBranchInfo *)branchInfoForUUID: (COUUID *)aUUID;
+- (COBranchInfo *)branchInfoForUUID: (ETUUID *)aUUID;
 - (COBranchInfo *)currentBranchInfo;
 
-@property (readwrite, nonatomic, retain) COUUID *UUID;
-@property (readwrite, nonatomic, retain) COUUID *currentBranchUUID;
-@property (readwrite, nonatomic, retain) COUUID *mainBranchUUID;
+@property (readwrite, nonatomic, retain) ETUUID *UUID;
+@property (readwrite, nonatomic, retain) ETUUID *currentBranchUUID;
+@property (readwrite, nonatomic, retain) ETUUID *mainBranchUUID;
 @property (readwrite, nonatomic, retain) NSDictionary *branchForUUID;
 
 @end
@@ -294,7 +294,7 @@
 /**
  * Returns the state of a single embedded object at a given revision.
  */
-- (COItem *) item: (COUUID *)anitem atRevisionID: (CORevisionID *)aToken;
+- (COItem *) item: (ETUUID *)anitem atRevisionID: (CORevisionID *)aToken;
 
 
 
@@ -366,7 +366,7 @@
  * @return  a snapshot of the state of a persistent root, or nil if
  *          the persistent root does not exist.
  */
-- (COPersistentRootInfo *) persistentRootWithUUID: (COUUID *)aUUID;
+- (COPersistentRootInfo *) persistentRootWithUUID: (ETUUID *)aUUID;
 
 
 
@@ -380,8 +380,8 @@
  *
  * Returns NO if the branch does not exist, or is deleted (finalized or not).
  */
-- (BOOL) setCurrentBranch: (COUUID *)aBranch
-		forPersistentRoot: (COUUID *)aRoot;
+- (BOOL) setCurrentBranch: (ETUUID *)aBranch
+		forPersistentRoot: (ETUUID *)aRoot;
 
 /**
  * Sets the main branch. The main branch is used to resolve inter-persistent-root references
@@ -389,12 +389,12 @@
  *
  * Returns NO if the branch does not exist, or is deleted (finalized or not).
  */
-- (BOOL) setMainBranch: (COUUID *)aBranch
-     forPersistentRoot: (COUUID *)aRoot;
+- (BOOL) setMainBranch: (ETUUID *)aBranch
+     forPersistentRoot: (ETUUID *)aRoot;
 
-- (COUUID *) createBranchWithInitialRevision: (CORevisionID *)aToken
+- (ETUUID *) createBranchWithInitialRevision: (CORevisionID *)aToken
                                   setCurrent: (BOOL)setCurrent
-                           forPersistentRoot: (COUUID *)aRoot;
+                           forPersistentRoot: (ETUUID *)aRoot;
 
 /**
  * All-in-one method for updating the current revision of a persistent root.
@@ -404,16 +404,16 @@
 - (BOOL) setCurrentRevision: (CORevisionID*)currentRev
                headRevision: (CORevisionID*)headRev
                tailRevision: (CORevisionID*)tailRev
-                  forBranch: (COUUID *)aBranch
-           ofPersistentRoot: (COUUID *)aRoot;
+                  forBranch: (ETUUID *)aBranch
+           ofPersistentRoot: (ETUUID *)aRoot;
 
 
 - (BOOL) setMetadata: (NSDictionary *)metadata
-   forPersistentRoot: (COUUID *)aRoot;
+   forPersistentRoot: (ETUUID *)aRoot;
 
 - (BOOL) setMetadata: (NSDictionary *)metadata
-           forBranch: (COUUID *)aBranch
-    ofPersistentRoot: (COUUID *)aRoot;
+           forBranch: (ETUUID *)aBranch
+    ofPersistentRoot: (ETUUID *)aRoot;
 
 /** @taskunit Persistent Root Deletion */
 
@@ -421,32 +421,32 @@
  * Marks the given persistent root as deleted, can be reverted by -undeletePersistentRoot:.
  * Will be permanently removed when -finalizeDeletionsForPersistentRoot: is called.
  */
-- (BOOL) deletePersistentRoot: (COUUID *)aRoot;
+- (BOOL) deletePersistentRoot: (ETUUID *)aRoot;
 
 /**
  * Unmarks the given persistent root as deleted
  */
-- (BOOL) undeletePersistentRoot: (COUUID *)aRoot;
+- (BOOL) undeletePersistentRoot: (ETUUID *)aRoot;
 
 /**
  * Marks the given branch of the persistent root as deleted, can be reverted by -undeleteBranch:ofPersistentRoot:.
  * Will be permanently removed when -finalizeDeletionsForPersistentRoot: is called.
  */
-- (BOOL) deleteBranch: (COUUID *)aBranch
-     ofPersistentRoot: (COUUID *)aRoot;
+- (BOOL) deleteBranch: (ETUUID *)aBranch
+     ofPersistentRoot: (ETUUID *)aRoot;
 
 /**
  * Unmarks the given branch of a persistent root as deleted
  */
-- (BOOL) undeleteBranch: (COUUID *)aBranch
-       ofPersistentRoot: (COUUID *)aRoot;
+- (BOOL) undeleteBranch: (ETUUID *)aBranch
+       ofPersistentRoot: (ETUUID *)aRoot;
 
 /**
  * Finalizes the deletion of any unreachable commits (whether due to -setTailRevision:... moving the tail pointer,
  * or branches being deleted), any deleted branches, or the persistent root itself, as well as all unreachable
  * attachments.
  */
-- (BOOL) finalizeDeletionsForPersistentRoot: (COUUID *)aRoot;
+- (BOOL) finalizeDeletionsForPersistentRoot: (ETUUID *)aRoot;
 
 
 
@@ -461,7 +461,7 @@
 /**
  * @returns an array of COSearchResult
  */
-- (NSArray *) referencesToPersistentRoot: (COUUID *)aUUID;
+- (NSArray *) referencesToPersistentRoot: (ETUUID *)aUUID;
 
 
 /** @taskunit Transactions. API not final. */

@@ -4,7 +4,7 @@
 #import "COType.h"
 #import "COItemGraph.h"
 
-@class COUUID;
+@class ETUUID;
 @class COMutableItem;
 @class COItemGraph;
 @class COItemGraphEdit;
@@ -53,8 +53,8 @@
  */
 @interface COItemGraphDiff : NSObject <NSCopying, CODiffArraysDelegate>
 {
-	COUUID *oldRoot;
-	COUUID *newRoot;
+	ETUUID *oldRoot;
+	ETUUID *newRoot;
 	CODiffDictionary *diffDict;
 	
 	// right now, the conflicts are purely derived from the set of edits.
@@ -97,9 +97,9 @@
 
 - (NSSet *)modifiedItemUUIDs;
 
-- (NSSet *) modifiedAttributesForUUID: (COUUID *)aUUID;
-- (NSSet *) editsForUUID: (COUUID *)aUUID;
-- (NSSet *) editsForUUID: (COUUID *)aUUID attribute: (NSString *)aString;
+- (NSSet *) modifiedAttributesForUUID: (ETUUID *)aUUID;
+- (NSSet *) editsForUUID: (ETUUID *)aUUID;
+- (NSSet *) editsForUUID: (ETUUID *)aUUID attribute: (NSString *)aString;
 
 #pragma mark mutation
 

@@ -8,7 +8,7 @@
  *
  * Handles copying into the same context, or another one.
  */
-- (COUUID*) copyItemWithUUID: (COUUID*)aUUID
+- (ETUUID*) copyItemWithUUID: (ETUUID*)aUUID
                    fromGraph: (id<COItemGraph>)source
                      toGraph: (id<COItemGraph>)dest;
 @end

@@ -1,5 +1,5 @@
 #import "CORelationshipCache.h"
-#import "COUUID.h"
+#import "ETUUID.h"
 #import "COMacros.h"
 #import "COType.h"
 #import "COItem.h"
@@ -9,7 +9,7 @@
 @synthesize uuid = uuid_;
 @synthesize property = property_;
 
-+ (CORelationshipRecord *) recordWithUUID: (COUUID *)aUUID property: (NSString *)aProp
++ (CORelationshipRecord *) recordWithUUID: (ETUUID *)aUUID property: (NSString *)aProp
 {
     CORelationshipRecord *result = [[[self alloc] init] autorelease];
     result.uuid = aUUID;
@@ -60,13 +60,13 @@
     [super dealloc];
 }
 
-- (CORelationshipRecord *) parentForUUID: (COUUID *)anObject
+- (CORelationshipRecord *) parentForUUID: (ETUUID *)anObject
 {
     return [embeddedObjectParentUUIDForUUID_ objectForKey: anObject];
 }
 
-- (void) setParentUUID: (COUUID *)aParent
-               forUUID: (COUUID*)anObject
+- (void) setParentUUID: (ETUUID *)aParent
+               forUUID: (ETUUID*)anObject
            forProperty: (NSString *)aProperty
 {
     CORelationshipRecord *record = [[CORelationshipRecord alloc] init];
@@ -76,13 +76,13 @@
     [record release];
 }
 
-- (void) clearParentForUUID: (COUUID*)anObject
+- (void) clearParentForUUID: (ETUUID*)anObject
 {
     [embeddedObjectParentUUIDForUUID_ removeObjectForKey: anObject];
 }
 
-- (void) addReferrerUUID: (COUUID *)aReferrer
-                 forUUID: (COUUID*)anObject
+- (void) addReferrerUUID: (ETUUID *)aReferrer
+                 forUUID: (ETUUID*)anObject
              forProperty: (NSString *)aProperty
 {
     NSMutableSet *set = [referrerUUIDsForUUID_ objectForKey: anObject];
@@ -100,8 +100,8 @@
     [record release];
 }
 
-- (void) removeReferrerUUID: (COUUID *)aReferrer
-                    forUUID: (COUUID*)anObject
+- (void) removeReferrerUUID: (ETUUID *)aReferrer
+                    forUUID: (ETUUID*)anObject
                 forProperty: (NSString *)aProperty
 {
     tempRecord_.uuid = aReferrer;
@@ -109,12 +109,12 @@
     [(NSMutableSet *)[referrerUUIDsForUUID_ objectForKey: anObject] removeObject: tempRecord_];
 }
 
-- (NSSet *) referrersForUUID: (COUUID *)anObject
+- (NSSet *) referrersForUUID: (ETUUID *)anObject
 {
     return [referrerUUIDsForUUID_ objectForKey: anObject];
 }
 
-- (NSSet *) referrersForUUID: (COUUID *)anObject
+- (NSSet *) referrersForUUID: (ETUUID *)anObject
             propertyInParent: (NSString*)propInParent
 {
     NSMutableSet *results = [NSMutableSet set];
@@ -133,7 +133,7 @@
 - (void) clearOldValue: (id)oldVal
                oldType: (COType)oldType
            forProperty: (NSString *)aProperty
-              ofObject: (COUUID *)anObject
+              ofObject: (ETUUID *)anObject
 {
     if (oldVal != nil)
     {
@@ -171,7 +171,7 @@
 - (void) setNewValue: (id)newVal
              newType: (COType)newType
          forProperty: (NSString *)aProperty
-            ofObject: (COUUID *)anObject
+            ofObject: (ETUUID *)anObject
 {
     if (newVal != nil)
     {
@@ -211,7 +211,7 @@
                                     newValue: (id)newVal
                                      newType: (COType)newType
                                  forProperty: (NSString *)aProperty
-                                    ofObject: (COUUID *)anObject
+                                    ofObject: (ETUUID *)anObject
 {
     [self clearOldValue: oldVal
                 oldType: oldType
@@ -226,7 +226,7 @@
 
 - (void) addItem: (COItem *)anItem
 {
-    COUUID *uuid = [anItem UUID];
+    ETUUID *uuid = [anItem UUID];
     for (NSString *key in [anItem attributeNames])
     {
         [self setNewValue: [anItem valueForAttribute: key]
@@ -238,7 +238,7 @@
 
 - (void) removeItem: (COItem *)anItem
 {
-    COUUID *uuid = [anItem UUID];
+    ETUUID *uuid = [anItem UUID];
     for (NSString *key in [anItem attributeNames])
     {
         [self clearOldValue: [anItem valueForAttribute: key]

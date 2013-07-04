@@ -6,17 +6,17 @@
  */
 @interface COEditCreateBranch : COEdit
 {
-    COUUID *oldBranch_;
-    COUUID *branch_;
+    ETUUID *oldBranch_;
+    ETUUID *branch_;
     CORevisionID *newToken_;
     BOOL setCurrent_;
 }
 
-- (id) initWithOldBranchUUID: (COUUID*)aOldBranchUUID
-               newBranchUUID: (COUUID*)aNewBranchUUID
+- (id) initWithOldBranchUUID: (ETUUID*)aOldBranchUUID
+               newBranchUUID: (ETUUID*)aNewBranchUUID
                   setCurrent: (BOOL)setCurrent
                     newToken: (CORevisionID *)newToken
-                        UUID: (COUUID*)aUUID
+                        UUID: (ETUUID*)aUUID
                         date: (NSDate*)aDate
                  displayName: (NSString*)aName;
 

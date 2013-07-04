@@ -7,7 +7,7 @@
 @implementation COPersistentRootController
 
 - (id) initWithStore: (COSQLiteStore *)aStore
-  persistentRootUUID: (COUUID *)aUUID
+  persistentRootUUID: (ETUUID *)aUUID
 {
     SUPERINIT;
     ASSIGN(store_, aStore);
@@ -18,12 +18,12 @@
     return self;
 }
 
-- (COUUID *) UUID
+- (ETUUID *) UUID
 {
     return [savedState_ UUID];
 }
 
-- (COUUID *) editingBranchUUID
+- (ETUUID *) editingBranchUUID
 {
     return [savedState_ currentBranchUUID];
 }
@@ -31,7 +31,7 @@
 /**
  * Commits on change
  */
-- (void) setEditingBranchUUID: (COUUID*)aBranch
+- (void) setEditingBranchUUID: (ETUUID*)aBranch
 {
     assert([store_ setCurrentBranch: aBranch
                   forPersistentRoot: [savedState_ UUID]]);

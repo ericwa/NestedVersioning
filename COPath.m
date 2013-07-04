@@ -7,9 +7,9 @@
 @synthesize branch = branch_;
 @synthesize embeddedObject = embeddedObject_;
 
-- (COPath *) initWithPersistentRoot: (COUUID *)aRoot
-							 branch: (COUUID*)aBranch
-					embdeddedObject: (COUUID *)anObject
+- (COPath *) initWithPersistentRoot: (ETUUID *)aRoot
+							 branch: (ETUUID*)aBranch
+					embdeddedObject: (ETUUID *)anObject
 {	
 	SUPERINIT;
 	NILARG_EXCEPTION_TEST(aRoot);
@@ -27,20 +27,20 @@
 	[super dealloc];
 }
 
-+ (COPath *) pathWithPersistentRoot: (COUUID *)aRoot
++ (COPath *) pathWithPersistentRoot: (ETUUID *)aRoot
 {
 	return [self pathWithPersistentRoot:aRoot branch: nil];
 }
 
-+ (COPath *) pathWithPersistentRoot: (COUUID *)aRoot
-							 branch: (COUUID*)aBranch
++ (COPath *) pathWithPersistentRoot: (ETUUID *)aRoot
+							 branch: (ETUUID*)aBranch
 {
 	return [self pathWithPersistentRoot:aRoot branch:aBranch embdeddedObject:nil];
 }
 
-+ (COPath *) pathWithPersistentRoot: (COUUID *)aRoot
-							 branch: (COUUID*)aBranch
-					embdeddedObject: (COUUID *)anObject
++ (COPath *) pathWithPersistentRoot: (ETUUID *)aRoot
+							 branch: (ETUUID*)aBranch
+					embdeddedObject: (ETUUID *)anObject
 {
 	return [[[self alloc] initWithPersistentRoot: aRoot branch: aBranch embdeddedObject: anObject] autorelease];
 }
@@ -49,9 +49,9 @@
 {
 	NILARG_EXCEPTION_TEST(pathString);
 	
-	COUUID *embeddedObject = nil;
-	COUUID *branch = nil;
-	COUUID *persistentRoot = nil;
+	ETUUID *embeddedObject = nil;
+	ETUUID *branch = nil;
+	ETUUID *persistentRoot = nil;
 	
 	if ([pathString length] > 0)
 	{
@@ -60,11 +60,11 @@
 		switch ([components count])
 		{
 			case 3:
-				embeddedObject = [COUUID UUIDWithString: [components objectAtIndex: 2]];
+				embeddedObject = [ETUUID UUIDWithString: [components objectAtIndex: 2]];
 			case 2:
-				branch = [COUUID UUIDWithString: [components objectAtIndex: 1]];
+				branch = [ETUUID UUIDWithString: [components objectAtIndex: 1]];
 			case 1:
-				persistentRoot = [COUUID UUIDWithString: [components objectAtIndex: 0]];
+				persistentRoot = [ETUUID UUIDWithString: [components objectAtIndex: 0]];
 				break;
 			default:
 				[NSException raise: NSInvalidArgumentException format: @"unsupported COPath string '%@'", pathString];
@@ -75,9 +75,9 @@
 
 - (COPath *) pathWithNameMapping: (NSDictionary *)aMapping
 {
-	COUUID *embeddedObject = embeddedObject_;
-	COUUID *branch = branch_;
-	COUUID *persistentRoot = persistentRoot_;
+	ETUUID *embeddedObject = embeddedObject_;
+	ETUUID *branch = branch_;
+	ETUUID *persistentRoot = persistentRoot_;
     
     if (embeddedObject != nil
         && [aMapping objectForKey: embeddedObject])

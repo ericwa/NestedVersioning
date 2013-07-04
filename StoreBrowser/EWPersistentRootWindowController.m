@@ -56,7 +56,7 @@
     NSLog(@"reloaded data");
 }
 
-static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *start, COUUID *aUUID)
+static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *start, ETUUID *aUUID)
 {
 	if ([[start UUID] isEqual: aUUID] && [start attribute] == nil)
 	{
@@ -97,7 +97,7 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
 	}	
 }
 
-- (void) orderFrontAndHighlightItem: (COUUID*)aUUID
+- (void) orderFrontAndHighlightItem: (ETUUID*)aUUID
 {
 	[self showWindow: nil];	
 	

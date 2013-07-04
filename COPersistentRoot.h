@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-#import "COUUID.h"
+#import "ETUUID.h"
 #import "CORevisionID.h"
 #import "COSQLiteStore.h"
 
@@ -34,7 +34,7 @@
     NSMutableDictionary *branchForUUID_;
 }
 
-- (COUUID *) UUID;
+- (ETUUID *) UUID;
 
 // metadata & convenience
 

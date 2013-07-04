@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-@class COUUID;
+@class ETUUID;
 
 /**
  * Given an NSData produced by AddCommitUUIDAndDataToCombinedCommitData,
@@ -11,4 +11,4 @@ void ParseCombinedCommitDataInToUUIDToItemDataDictionary(NSMutableDictionary *de
 /**
  * Adds a COUUID : NSData pair to combinedCommitData
  */
-void AddCommitUUIDAndDataToCombinedCommitData(NSMutableData *combinedCommitData, COUUID *uuidToAdd, NSData *dataToAdd);
+void AddCommitUUIDAndDataToCombinedCommitData(NSMutableData *combinedCommitData, ETUUID *uuidToAdd, NSData *dataToAdd);

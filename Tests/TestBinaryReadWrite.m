@@ -21,7 +21,7 @@ static void co_read_string(void *ctx, NSString *val)
 {
     NSLog(@"read string '%@'", val);
 }
-static void co_read_uuid(void *ctx, COUUID *uuid)
+static void co_read_uuid(void *ctx, ETUUID *uuid)
 {
     NSLog(@"read uuid %@", uuid);
 }
@@ -52,7 +52,7 @@ static void co_read_null(void *ctx)
 
 - (void)testBasic
 {
-    COUUID *uuid = [COUUID UUID];
+    ETUUID *uuid = [ETUUID UUID];
     
     co_buffer_t buf;
     co_buffer_init(&buf);
@@ -104,7 +104,7 @@ static volatile char dest[2048];
 
 - (void) testWritePerf
 {
-    COUUID *uuid = [COUUID UUID];
+    ETUUID *uuid = [ETUUID UUID];
     NSDate *startDate = [NSDate date];
     int64_t iter = 0;
     for (int64_t i=0; i<WRITE_ITERATIONS; i++)

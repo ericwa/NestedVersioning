@@ -10,23 +10,23 @@
 
 @implementation TestCopier
 
-static COUUID *drawing;
-static COUUID *group1;
-static COUUID *shape1;
-static COUUID *style1;
+static ETUUID *drawing;
+static ETUUID *group1;
+static ETUUID *shape1;
+static ETUUID *style1;
 
-static COUUID *drawing2;
+static ETUUID *drawing2;
 
 + (void) initialize
 {
     if (self == [TestCopier class])
     {
-        drawing = [[COUUID alloc] init];
-        group1 = [[COUUID alloc] init];
-        shape1 = [[COUUID alloc] init];
-        style1 = [[COUUID alloc] init];
+        drawing = [[ETUUID alloc] init];
+        group1 = [[ETUUID alloc] init];
+        shape1 = [[ETUUID alloc] init];
+        style1 = [[ETUUID alloc] init];
         
-        drawing2 = [[COUUID alloc] init];
+        drawing2 = [[ETUUID alloc] init];
     }
 }
 
@@ -73,14 +73,14 @@ static COUUID *drawing2;
 {
     UKIntsEqual(4, [[initialGraph itemUUIDs] count]);
     
-    COUUID *group1Copy = [copier copyItemWithUUID: group1
+    ETUUID *group1Copy = [copier copyItemWithUUID: group1
                                         fromGraph: initialGraph
                                           toGraph: initialGraph];
     
     UKIntsEqual(6, [[initialGraph itemUUIDs] count]);
     
-    COUUID *shape1Copy = [[[initialGraph itemForUUID: group1Copy] valueForAttribute: @"contents"] objectAtIndex: 0];
-    COUUID *shape1CopyStyle = [[[initialGraph itemForUUID: shape1Copy] valueForAttribute: @"styles"] objectAtIndex: 0];
+    ETUUID *shape1Copy = [[[initialGraph itemForUUID: group1Copy] valueForAttribute: @"contents"] objectAtIndex: 0];
+    ETUUID *shape1CopyStyle = [[[initialGraph itemForUUID: shape1Copy] valueForAttribute: @"styles"] objectAtIndex: 0];
     
     UKObjectsEqual(style1, shape1CopyStyle);
 }
@@ -118,14 +118,14 @@ static COUUID *drawing2;
     
     UKIntsEqual(2, [[drawing2Graph itemUUIDs] count]);
     
-    COUUID *group1Copy = [copier copyItemWithUUID: group1
+    ETUUID *group1Copy = [copier copyItemWithUUID: group1
                                         fromGraph: initialGraph
                                           toGraph: drawing2Graph];
     
     UKIntsEqual(4, [[drawing2Graph itemUUIDs] count]);
     
-    COUUID *shape1Copy = [[[drawing2Graph itemForUUID: group1Copy] valueForAttribute: @"contents"] objectAtIndex: 0];
-    COUUID *shape1CopyStyle1 = [[[drawing2Graph itemForUUID: shape1Copy] valueForAttribute: @"styles"] objectAtIndex: 0];
+    ETUUID *shape1Copy = [[[drawing2Graph itemForUUID: group1Copy] valueForAttribute: @"contents"] objectAtIndex: 0];
+    ETUUID *shape1CopyStyle1 = [[[drawing2Graph itemForUUID: shape1Copy] valueForAttribute: @"styles"] objectAtIndex: 0];
     
     UKNotNil(shape1Copy);
     UKNotNil(shape1CopyStyle1);

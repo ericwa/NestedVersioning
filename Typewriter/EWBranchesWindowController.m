@@ -63,7 +63,7 @@
     
     COStore *store = [notif object];
     
-    COUUID *aUUID = [[notif userInfo] objectForKey: COStoreNotificationUUID];
+    ETUUID *aUUID = [[notif userInfo] objectForKey: COStoreNotificationUUID];
     [self setPersistentRoot: [store persistentRootWithUUID: aUUID]];
 }
 

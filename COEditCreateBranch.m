@@ -8,11 +8,11 @@ static NSString *kCOOldBranchUUID = @"COOldBranchUUID";
 static NSString *kCONewVersionToken = @"CONewVersionToken";
 static NSString *kCOSetCurrent = @"COSetCurrent";
 
-- (id) initWithOldBranchUUID: (COUUID*)aOldBranchUUID
-               newBranchUUID: (COUUID*)aNewBranchUUID
+- (id) initWithOldBranchUUID: (ETUUID*)aOldBranchUUID
+               newBranchUUID: (ETUUID*)aNewBranchUUID
                   setCurrent: (BOOL)setCurrent
                     newToken: (CORevisionID *)newToken
-                        UUID: (COUUID*)aUUID
+                        UUID: (ETUUID*)aUUID
                         date: (NSDate*)aDate
                  displayName: (NSString*)aName
 {
@@ -31,8 +31,8 @@ static NSString *kCOSetCurrent = @"COSetCurrent";
 {
     self = [super initWithPlist: plist];
 
-    ASSIGN(oldBranch_, [COUUID UUIDWithString: [plist objectForKey: kCOOldBranchUUID]]);
-    ASSIGN(branch_, [COUUID UUIDWithString: [plist objectForKey: kCOBranchUUID]]);
+    ASSIGN(oldBranch_, [ETUUID UUIDWithString: [plist objectForKey: kCOOldBranchUUID]]);
+    ASSIGN(branch_, [ETUUID UUIDWithString: [plist objectForKey: kCOBranchUUID]]);
     
     setCurrent_ = [[plist objectForKey: kCOSetCurrent] boolValue];
     ASSIGN(newToken_, [CORevisionID revisionIDWithPlist: [plist objectForKey: kCONewVersionToken]]);

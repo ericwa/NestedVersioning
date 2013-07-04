@@ -2,14 +2,14 @@
 
 @interface COEditSetCurrentBranch : COEdit
 {
-    COUUID *oldBranch_;
-    COUUID *newBranch_;
+    ETUUID *oldBranch_;
+    ETUUID *newBranch_;
 
 }
 
-- (id) initWithOldBranchUUID: (COUUID*)aOldBranchUUID
-               newBranchUUID: (COUUID*)aNewBranchUUID
-                        UUID: (COUUID*)aUUID
+- (id) initWithOldBranchUUID: (ETUUID*)aOldBranchUUID
+               newBranchUUID: (ETUUID*)aNewBranchUUID
+                        UUID: (ETUUID*)aUUID
                         date: (NSDate*)aDate
                  displayName: (NSString*)aName;
 @end

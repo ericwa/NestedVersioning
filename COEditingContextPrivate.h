@@ -13,7 +13,7 @@
                                         newValue: (id)newVal
                                          newType: (COType)newType
                                      forProperty: (NSString *)aProperty
-                                        ofObject: (COUUID *)anObject;
+                                        ofObject: (ETUUID *)anObject;
 @end
 
 @interface COObject (Private)

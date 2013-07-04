@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "COItemGraph.h"
 
-@class COUUID;
+@class ETUUID;
 @class COItemGraph;
 @class COObject;
 @class COItem;
@@ -12,7 +12,7 @@
 
 @interface COObjectGraphContext : NSObject <COItemGraph, NSCopying>
 {
-    COUUID *rootObjectUUID_;
+    ETUUID *rootObjectUUID_;
     NSMutableDictionary *objectsByUUID_;
     
     NSMutableSet *insertedObjects_;
@@ -40,12 +40,12 @@
 
 #pragma mark begin COItemGraph protocol
 
-- (COUUID *) rootItemUUID;
+- (ETUUID *) rootItemUUID;
 
 /**
  * Returns immutable item
  */
-- (COItem *) itemForUUID: (COUUID *)aUUID;
+- (COItem *) itemForUUID: (ETUUID *)aUUID;
 - (NSArray *) itemUUIDs;
 
 /**
@@ -96,7 +96,7 @@
 
 #pragma mark access
 
-- (COObject *) objectForUUID: (COUUID *)aUUID;
+- (COObject *) objectForUUID: (ETUUID *)aUUID;
 
 /**
  * @return If there exists an object which has a [COType embeddedObjectType] reference to

@@ -8,7 +8,7 @@ static NSString *kCONewMetadata = @"CONewMetadata";
 
 - (id) initWithOldMetadata: (NSDictionary *)oldMeta
                newMetadata: (NSDictionary *)newMeta
-                      UUID: (COUUID*)aUUID
+                      UUID: (ETUUID*)aUUID
                       date: (NSDate*)aDate
                displayName: (NSString*)aName
 {

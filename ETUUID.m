@@ -9,7 +9,7 @@
 
 #import <Foundation/Foundation.h>
 #import "COMacros.h"
-#import "COUUID.h"
+#import "ETUUID.h"
 #include <objc/runtime.h>
 
 // FIXME: these macros violate the C aliasing rules
@@ -56,29 +56,29 @@ static void COUUIDGet16RandomBytes(unsigned char bytes[16])
 #endif
 #endif
 
-@implementation COUUID
+@implementation ETUUID
 
 static Class COUUIDClass;
 
 + (void) initialize
 {
-    if (self == [COUUID class])
+    if (self == [ETUUID class])
     {
         COUUIDClass = self;
     }
 }
 
-+ (COUUID *) UUID
++ (ETUUID *) UUID
 {
 	return [[[self alloc] init] autorelease];
 }
 
-+ (COUUID *) UUIDWithString: (NSString *)aString
++ (ETUUID *) UUIDWithString: (NSString *)aString
 {
 	return [[[self alloc] initWithString: aString] autorelease];
 }
 
-+ (COUUID *) UUIDWithData: (NSData *)aData
++ (ETUUID *) UUIDWithData: (NSData *)aData
 {
     NSParameterAssert([aData length] == 16);
     return [[[self alloc] initWithBytes: [aData bytes]] autorelease];
@@ -165,11 +165,11 @@ static Class COUUIDClass;
 	}
 	else if (object_getClass(anObject) == COUUIDClass)
 	{
-		return (0 == memcmp(uuid, ((COUUID *)anObject)->uuid, 16));
+		return (0 == memcmp(uuid, ((ETUUID *)anObject)->uuid, 16));
 	}
     else if ([anObject isKindOfClass: [self class]])
     {
-        return (0 == memcmp(uuid, [(COUUID *)anObject UUIDValue], 16));
+        return (0 == memcmp(uuid, [(ETUUID *)anObject UUIDValue], 16));
     }
 	return NO;
 }

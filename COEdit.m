@@ -26,7 +26,7 @@ static NSString *kCOPersistentRootUUID = @"COPersistentRootUUID";
 static NSString *kCOActionDate = @"COActionDate";
 static NSString *kCOActionDisplayName = @"COActionDisplayName";
 
-- (id) initWithUUID: (COUUID*)aUUID
+- (id) initWithUUID: (ETUUID*)aUUID
                date: (NSDate*)aDate
         displayName: (NSString*)aName
 {
@@ -44,7 +44,7 @@ static NSString *kCOActionDisplayName = @"COActionDisplayName";
 {
     NSParameterAssert([self class] != [COEdit class]);
         
-    return [self initWithUUID: [COUUID UUIDWithString: [plist objectForKey: kCOPersistentRootUUID]]
+    return [self initWithUUID: [ETUUID UUIDWithString: [plist objectForKey: kCOPersistentRootUUID]]
                          date: [[[[NSDateFormatter alloc] init] autorelease] dateFromString: [plist objectForKey: kCOActionDate]]
                   displayName: [plist objectForKey: kCOActionDisplayName]];
 }
@@ -81,7 +81,7 @@ static NSString *kCOActionDisplayName = @"COActionDisplayName";
     return result;
 }
 
-- (COUUID*) persistentRootUUID
+- (ETUUID*) persistentRootUUID
 {
     return uuid_;
 }

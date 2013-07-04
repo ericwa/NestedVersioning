@@ -24,9 +24,9 @@
 {
     UKNil([cache parentForUUID: nil]);
     
-    COUUID *u1 = [COUUID UUID];
-    COUUID *u2 = [COUUID UUID];
-    COUUID *u3 = [COUUID UUID];
+    ETUUID *u1 = [ETUUID UUID];
+    ETUUID *u2 = [ETUUID UUID];
+    ETUUID *u3 = [ETUUID UUID];
     
     [cache updateRelationshipCacheWithOldValue: nil
                                        oldType: nil
@@ -59,12 +59,12 @@
 
 - (void) testParentWithEmbeddedItemSet
 {
-    COUUID *p1 = [COUUID UUID];
-    COUUID *p2 = [COUUID UUID];
+    ETUUID *p1 = [ETUUID UUID];
+    ETUUID *p2 = [ETUUID UUID];
     
-    COUUID *u2 = [COUUID UUID];
-    COUUID *u3 = [COUUID UUID];
-    COUUID *u4 = [COUUID UUID];
+    ETUUID *u2 = [ETUUID UUID];
+    ETUUID *u3 = [ETUUID UUID];
+    ETUUID *u4 = [ETUUID UUID];
     
     [cache updateRelationshipCacheWithOldValue: nil
                                        oldType: nil
@@ -104,9 +104,9 @@
 
 - (void) testReferences
 {
-    COUUID *u1 = [COUUID UUID];
-    COUUID *u2 = [COUUID UUID];
-    COUUID *u3 = [COUUID UUID];
+    ETUUID *u1 = [ETUUID UUID];
+    ETUUID *u2 = [ETUUID UUID];
+    ETUUID *u3 = [ETUUID UUID];
     
     [cache updateRelationshipCacheWithOldValue: nil
                                        oldType: nil
@@ -146,13 +146,13 @@
 
 - (void) testReferencesSet
 {
-    COUUID *g1 = [COUUID UUID];
-    COUUID *g2 = [COUUID UUID];
-    COUUID *t1 = [COUUID UUID];
+    ETUUID *g1 = [ETUUID UUID];
+    ETUUID *g2 = [ETUUID UUID];
+    ETUUID *t1 = [ETUUID UUID];
     
-    COUUID *u1 = [COUUID UUID];
-    COUUID *u2 = [COUUID UUID];
-    COUUID *u3 = [COUUID UUID];
+    ETUUID *u1 = [ETUUID UUID];
+    ETUUID *u2 = [ETUUID UUID];
+    ETUUID *u3 = [ETUUID UUID];
     
     [cache updateRelationshipCacheWithOldValue: nil
                                        oldType: nil

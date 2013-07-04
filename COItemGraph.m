@@ -1,12 +1,12 @@
 #import "COItemGraph.h"
 #import "COMacros.h"
-#import "COUUID.h"
+#import "ETUUID.h"
 #import "COItem.h"
 
 @implementation COItemGraph
 
 - (id) initWithItemForUUID: (NSDictionary *) itemForUUID
-              rootItemUUID: (COUUID *)root
+              rootItemUUID: (ETUUID *)root
 {
     SUPERINIT;
     itemForUUID_ = [itemForUUID mutableCopy];
@@ -15,7 +15,7 @@
 }
 
 - (id) initWithItems: (NSArray *)items
-        rootItemUUID: (COUUID *)root
+        rootItemUUID: (ETUUID *)root
 {
     SUPERINIT;
     itemForUUID_ = [[NSMutableDictionary alloc] init];
@@ -54,12 +54,12 @@
 }
 
 
-- (COUUID *) rootItemUUID
+- (ETUUID *) rootItemUUID
 {
     return rootItemUUID_;
 }
 
-- (COItem *) itemForUUID: (COUUID *)aUUID
+- (COItem *) itemForUUID: (ETUUID *)aUUID
 {
     return [itemForUUID_ objectForKey: aUUID];
 }
@@ -93,7 +93,7 @@
  * For debugging/testing only
  */
 - (BOOL) isEqualToItemTree: (COItemGraph *)aTree
-         comparingItemUUID: (COUUID *)aUUID
+         comparingItemUUID: (ETUUID *)aUUID
 {
     COItem *my = [self itemForUUID: aUUID];
     COItem *other = [aTree itemForUUID: aUUID];
@@ -107,7 +107,7 @@
         return NO;
     }
     
-    for (COUUID *aChild in [my embeddedItemUUIDs])
+    for (ETUUID *aChild in [my embeddedItemUUIDs])
     {
         if (![self isEqualToItemTree: aTree comparingItemUUID: aChild])
         {

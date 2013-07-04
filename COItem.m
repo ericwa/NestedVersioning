@@ -47,7 +47,7 @@ static NSDictionary *copyValueDictionary(NSDictionary *input, BOOL mutable)
 
 @synthesize schemaName;
 
-- (id) initWithUUID: (COUUID *)aUUID
+- (id) initWithUUID: (ETUUID *)aUUID
  typesForAttributes: (NSDictionary *)typesForAttributes
 valuesForAttributes: (NSDictionary *)valuesForAttributes
 {
@@ -74,12 +74,12 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 + (COItem *) itemWithTypesForAttributes: (NSDictionary *)typesForAttributes
 						 valuesForAttributes: (NSDictionary *)valuesForAttributes
 {
-	return [[[self alloc] initWithUUID: [COUUID UUID]
+	return [[[self alloc] initWithUUID: [ETUUID UUID]
 					typesForAttributes: typesForAttributes
 				   valuesForAttributes: valuesForAttributes] autorelease];
 }
 
-- (COUUID *)UUID
+- (ETUUID *)UUID
 {
 	return uuid;
 }
@@ -112,7 +112,7 @@ static id plistValueForPrimitiveValue(id aValue, COType aType)
         case kCOReferenceType:
         case kCOEmbeddedItemType:
         case kCOCommitUUIDType:
-            return [(COUUID *)aValue stringValue];
+            return [(ETUUID *)aValue stringValue];
         case kCOPathType: return [(COPath *)aValue stringValue];
         case kCOAttachmentType: return aValue;
         default:
@@ -149,7 +149,7 @@ static id valueForPrimitivePlistValue(id aValue, COType aType)
         case kCOReferenceType:
         case kCOEmbeddedItemType:
         case kCOCommitUUIDType:
-            return [COUUID UUIDWithString: aValue];
+            return [ETUUID UUIDWithString: aValue];
         case kCOPathType: return [COPath pathWithString: aValue];
         case kCOAttachmentType: return aValue;
         default:
@@ -228,7 +228,7 @@ static id importValueFromPlist(id aPlist)
 
 - (id) initWithPlist: (id)aPlist
 {
-	COUUID *aUUID = [COUUID UUIDWithString: [aPlist objectForKey: @"uuid"]];
+	ETUUID *aUUID = [ETUUID UUIDWithString: [aPlist objectForKey: @"uuid"]];
 		
 	NSMutableDictionary *importedValues = [NSMutableDictionary dictionary];
 	NSMutableDictionary *importedTypes = [NSMutableDictionary dictionary];
@@ -315,7 +315,7 @@ static id importValueFromPlist(id aPlist)
 		COType type = [self typeForAttribute: key];
 		if (COPrimitiveType(type) == kCOEmbeddedItemType)
 		{		
-			for (COUUID *embedded in [self allObjectsForAttribute: key])
+			for (ETUUID *embedded in [self allObjectsForAttribute: key])
 			{
 				[result addObject: embedded];
 			}
@@ -333,7 +333,7 @@ static id importValueFromPlist(id aPlist)
 		COType type = [self typeForAttribute: key];
 		if (COPrimitiveType(type) == kCOReferenceType)
 		{
-			for (COUUID *embedded in [self allObjectsForAttribute: key])
+			for (ETUUID *embedded in [self allObjectsForAttribute: key])
 			{
 				[result addObject: embedded];
 			}
@@ -432,7 +432,7 @@ static id importValueFromPlist(id aPlist)
 {
 	COMutableItem *aCopy = [self mutableCopy];
 	
-	COUUID *newUUIDForSelf = [aMapping objectForKey: [self UUID]];
+	ETUUID *newUUIDForSelf = [aMapping objectForKey: [self UUID]];
 	if (newUUIDForSelf != nil)
 	{
 		[aCopy setUUID: newUUIDForSelf];
@@ -447,7 +447,7 @@ static id importValueFromPlist(id aPlist)
 		{
 			if (COTypeIsPrimitive(type))
 			{
-				COUUID *UUIDValue = (COUUID*)value;
+				ETUUID *UUIDValue = (ETUUID*)value;
 				if ([aMapping objectForKey: UUIDValue] != nil)
 				{
 					[aCopy setValue: [aMapping objectForKey: UUIDValue]
@@ -460,9 +460,9 @@ static id importValueFromPlist(id aPlist)
 				id newCollection = [[value mutableCopy] autorelease];
 				[newCollection removeAllObjects];
 				
-				for (COUUID *UUIDValue in value)
+				for (ETUUID *UUIDValue in value)
 				{
-					COUUID *newUUIDValue = UUIDValue;
+					ETUUID *newUUIDValue = UUIDValue;
 					if ([aMapping objectForKey: UUIDValue] != nil)
 					{
 						newUUIDValue = [aMapping objectForKey: UUIDValue];
@@ -519,7 +519,7 @@ static id importValueFromPlist(id aPlist)
                                           valuesForAttributes: valuesForAttributes];
 }
 
-- (id) initWithUUID: (COUUID *)aUUID
+- (id) initWithUUID: (ETUUID *)aUUID
  typesForAttributes: (NSDictionary *)typesForAttributes
 valuesForAttributes: (NSDictionary *)valuesForAttributes
 {
@@ -535,7 +535,7 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 	return self;
 }
 
-- (id) initWithUUID: (COUUID*)aUUID
+- (id) initWithUUID: (ETUUID*)aUUID
 {
 	return [self initWithUUID: aUUID
 		   typesForAttributes: [NSDictionary dictionary]
@@ -544,7 +544,7 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 
 - (id) init
 {
-	return [self initWithUUID: [COUUID UUID]];
+	return [self initWithUUID: [ETUUID UUID]];
 }
 
 + (COMutableItem *) item
@@ -552,12 +552,12 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 	return [[[self alloc] init] autorelease];
 }
 
-+ (COMutableItem *) itemWithUUID: (COUUID *)aUUID
++ (COMutableItem *) itemWithUUID: (ETUUID *)aUUID
 {
 	return [[[self alloc] initWithUUID: aUUID] autorelease];
 }
 
-- (void) setUUID: (COUUID *)aUUID
+- (void) setUUID: (ETUUID *)aUUID
 {
 	NILARG_EXCEPTION_TEST(aUUID);
 	ASSIGN(uuid, aUUID);

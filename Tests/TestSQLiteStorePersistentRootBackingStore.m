@@ -9,17 +9,17 @@
 
 @implementation TestSQLiteStorePersistentRootBackingStore
 
-static COUUID *rootUUID;
-static COUUID *childUUID1;
-static COUUID *childUUID2;
+static ETUUID *rootUUID;
+static ETUUID *childUUID1;
+static ETUUID *childUUID2;
 
 + (void) initialize
 {
     if (self == [TestSQLiteStorePersistentRootBackingStore class])
     {
-        rootUUID = [[COUUID alloc] init];
-        childUUID1 = [[COUUID alloc] init];
-        childUUID2 = [[COUUID alloc] init];
+        rootUUID = [[ETUUID alloc] init];
+        childUUID1 = [[ETUUID alloc] init];
+        childUUID2 = [[ETUUID alloc] init];
     }
 }
 
@@ -51,7 +51,7 @@ static COUUID *childUUID2;
     return rootItem;
 }
 
-- (COItem *) initialChildItemForUUID: (COUUID*)aUUID
+- (COItem *) initialChildItemForUUID: (ETUUID*)aUUID
                                 name: (NSString *)name
 {
     COMutableItem *child = [[[COMutableItem alloc] initWithUUID: aUUID] autorelease];

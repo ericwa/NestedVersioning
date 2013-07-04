@@ -23,17 +23,17 @@ static const int NUM_PERSISTENT_ROOT_COPIES = 200;
 
 static const int LOTS_OF_EMBEDDED_ITEMS = 200;
 
-static COUUID *rootUUID;
-static COUUID *childUUIDs[NUM_CHILDREN];
+static ETUUID *rootUUID;
+static ETUUID *childUUIDs[NUM_CHILDREN];
 
 + (void) initialize
 {
     if (self == [TestSQLiteStorePerformance class])
     {
-        rootUUID = [[COUUID alloc] init];
+        rootUUID = [[ETUUID alloc] init];
         for (int i=0; i<NUM_CHILDREN; i++)
         {
-            childUUIDs[i] = [[COUUID alloc] init];
+            childUUIDs[i] = [[ETUUID alloc] init];
         }
     }
 }
@@ -95,7 +95,7 @@ static int itemChangedAtCommit(int i)
 }
 
 
-- (COUUID *) makeDemoPersistentRoot
+- (ETUUID *) makeDemoPersistentRoot
 {
     NSDate *startDate = [NSDate date];
     
@@ -177,7 +177,7 @@ static int itemChangedAtCommit(int i)
 
 - (void)testReadDelta
 {
-    COUUID *prootUUID = [self makeDemoPersistentRoot];
+    ETUUID *prootUUID = [self makeDemoPersistentRoot];
 
     NSDate *startDate = [NSDate date];
     
@@ -215,7 +215,7 @@ static int itemChangedAtCommit(int i)
 - (void) testReloadFullStates
 {
     COItemGraph *initialTree = [self makeInitialItemTree];
-    COUUID *prootUUID = [self makeDemoPersistentRoot];
+    ETUUID *prootUUID = [self makeDemoPersistentRoot];
     
     NSDate *startDate = [NSDate date];
 
@@ -258,7 +258,7 @@ static int itemChangedAtCommit(int i)
 
 - (void) testFTS
 {
-    COUUID *prootUUID = [self makeDemoPersistentRoot];
+    ETUUID *prootUUID = [self makeDemoPersistentRoot];
     COPersistentRootInfo *proot = [store persistentRootWithUUID: prootUUID];
     
     int itemIndex = itemChangedAtCommit(32);

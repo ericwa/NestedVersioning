@@ -1,14 +1,14 @@
 #import "COCopier.h"
-#import "COUUID.h"
+#import "ETUUID.h"
 
 @implementation COCopier
 
-- (void) collectItemAndAllDescendents: (COUUID *)aUUID
+- (void) collectItemAndAllDescendents: (ETUUID *)aUUID
                                 inSet: (NSMutableSet *)dest
                             fromGraph: (id<COItemGraph>)source
 {
     [dest addObject: aUUID];
-    for (COUUID *child in [[source itemForUUID: aUUID] embeddedItemUUIDs])
+    for (ETUUID *child in [[source itemForUUID: aUUID] embeddedItemUUIDs])
     {
         if (![dest containsObject: child])
         {
@@ -24,7 +24,7 @@
     }
 }
 
-- (NSSet*) itemAndAllDescendents: (COUUID *)aUUID
+- (NSSet*) itemAndAllDescendents: (ETUUID *)aUUID
                        fromGraph: (id<COItemGraph>)source
 {
     NSMutableSet *result = [NSMutableSet set];
@@ -34,7 +34,7 @@
 
 
 
-- (NSSet *) itemUUIDsToCopyForItemItemWithUUID: (COUUID*)aUUID
+- (NSSet *) itemUUIDsToCopyForItemItemWithUUID: (ETUUID*)aUUID
                                      fromGraph: (id<COItemGraph>)source
                                        toGraph: (id<COItemGraph>)dest
 {
@@ -42,9 +42,9 @@
  
     NSMutableSet *result = [NSMutableSet setWithSet: compositeObjectCopySet];
     
-    for (COUUID *uuid in compositeObjectCopySet)
+    for (ETUUID *uuid in compositeObjectCopySet)
     {
-        for (COUUID *referenced in [[source itemForUUID: uuid] referencedItemUUIDs])
+        for (ETUUID *referenced in [[source itemForUUID: uuid] referencedItemUUIDs])
         {
             if (![compositeObjectCopySet containsObject: referenced])
             {
@@ -60,7 +60,7 @@
 }
 
 
-- (COUUID*) copyItemWithUUID: (COUUID*)aUUID
+- (ETUUID*) copyItemWithUUID: (ETUUID*)aUUID
                    fromGraph: (id<COItemGraph>)source
                      toGraph: (id<COItemGraph>)dest
 {
@@ -69,13 +69,13 @@
                                                           toGraph: dest];
     
     NSMutableDictionary *mapping = [NSMutableDictionary dictionary];
-    for (COUUID *oldUUID in uuidsToCopy)
+    for (ETUUID *oldUUID in uuidsToCopy)
     {
-        [mapping setObject: [COUUID UUID]
+        [mapping setObject: [ETUUID UUID]
                     forKey: oldUUID];
     }
     
-    for (COUUID *uuid in uuidsToCopy)
+    for (ETUUID *uuid in uuidsToCopy)
     {
         COItem *oldItem = [source itemForUUID: uuid];
         COItem *newItem = [[oldItem mutableCopyWithNameMapping: mapping] autorelease];

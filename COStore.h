@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-#import "COUUID.h"
+#import "ETUUID.h"
 #import "COPersistentRoot.h"
 #import "COSQLiteStore.h"
 
@@ -24,7 +24,7 @@
 
 - (NSSet *) persistentRoots;
 
-- (COPersistentRoot *) persistentRootWithUUID: (COUUID *)aUUID;
+- (COPersistentRoot *) persistentRootWithUUID: (ETUUID *)aUUID;
 
 /** @taskunit writing */
 
@@ -41,6 +41,6 @@
 /**
  * Deletes the requested persistent root immediately
  */
-- (void) deletePersistentRootWithUUID: (COUUID *)aUUID;
+- (void) deletePersistentRootWithUUID: (ETUUID *)aUUID;
 
 @end

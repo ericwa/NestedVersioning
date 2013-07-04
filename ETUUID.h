@@ -30,7 +30,7 @@
  * 
  * COUUID does not have a designated initializer.
  */
-@interface COUUID : NSObject <NSCopying>
+@interface ETUUID : NSObject <NSCopying>
 {
 	@public
 	unsigned char uuid[16];
@@ -42,15 +42,15 @@
  * Returns a new autoreleased UUID object initialized with a random 128-bit 
  * binary value.
  */
-+ (COUUID *) UUID;
++ (ETUUID *) UUID;
 /**
  * Returns an autoreleased UUID object for the given UUID string representation. 
  */
-+ (COUUID *) UUIDWithString: (NSString *)aString;
++ (ETUUID *) UUIDWithString: (NSString *)aString;
 /**
  * Returns an autoreleased UUID object for the given 16-byte NSData.
  */
-+ (COUUID *) UUIDWithData: (NSData *)aData;
++ (ETUUID *) UUIDWithData: (NSData *)aData;
 
 /**
  * Initializes the UUID object with a 128-bit binary value.

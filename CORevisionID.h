@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-@class COUUID;
+@class ETUUID;
 
 /**
  * Store-global_ identifier for a COPersistentRootState.
@@ -16,17 +16,17 @@
  */
 @interface CORevisionID : NSObject <NSCopying>
 {
-    COUUID *backingStoreUUID_;
+    ETUUID *backingStoreUUID_;
     int64_t revisionIndex_;
 }
 
-+ (CORevisionID *) revisionWithBackinStoreUUID: (COUUID *)aUUID
++ (CORevisionID *) revisionWithBackinStoreUUID: (ETUUID *)aUUID
                                  revisionIndex: (int64_t)anIndex;
 
-- (id) initWithPersistentRootBackingStoreUUID: (COUUID *)aUUID
+- (id) initWithPersistentRootBackingStoreUUID: (ETUUID *)aUUID
                                 revisionIndex: (int64_t)anIndex;
 
-- (COUUID *) backingStoreUUID;
+- (ETUUID *) backingStoreUUID;
 - (int64_t) revisionIndex;
 /**
  * Returns a new CORevisionID with the stame backing store UUID but the given revid

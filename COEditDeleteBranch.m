@@ -8,7 +8,7 @@
 static NSString *kCOBranch = @"COBranch";
 
 - (id) initWithBranchPlist: (COBranchInfo *)aBranch
-                      UUID: (COUUID*)aUUID
+                      UUID: (ETUUID*)aUUID
                       date: (NSDate*)aDate
                displayName: (NSString*)aName
 {

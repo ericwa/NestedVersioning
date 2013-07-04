@@ -73,7 +73,7 @@
     return list;
 }
 
-- (COUUID *) paragraphUUIDAtIndex: (NSUInteger)index
+- (ETUUID *) paragraphUUIDAtIndex: (NSUInteger)index
 {
     return [backing_ attribute: kCOParagraphUUIDAttribute
                        atIndex: index
@@ -167,12 +167,12 @@ static NSRange paragraphRangeForLocationInString(NSString *aString, NSUInteger a
     // 1. if i is currently in the middle of a paragraph,
     // extend that paragraph's UUID up to the end of the paragraph.
     
-    COUUID *firstAssignedUUID = nil;
+    ETUUID *firstAssignedUUID = nil;
     
     NSRange firstPara = paragraphRangeForLocationInString(string, rangeAfterEdit.location);
     if (firstPara.location != i)
     {
-        COUUID *firstParaUUID = [self paragraphUUIDAtIndex: firstPara.location];
+        ETUUID *firstParaUUID = [self paragraphUUIDAtIndex: firstPara.location];
         firstAssignedUUID = firstParaUUID;
         
         [modifiedParagraphs addObject: firstParaUUID];
@@ -197,7 +197,7 @@ static NSRange paragraphRangeForLocationInString(NSString *aString, NSUInteger a
     
     while (i < [backing_ length])
     {
-        COUUID *paraUUID = [self paragraphUUIDAtIndex: i];
+        ETUUID *paraUUID = [self paragraphUUIDAtIndex: i];
         
         if (firstAssignedUUID == nil)
         {
@@ -210,7 +210,7 @@ static NSRange paragraphRangeForLocationInString(NSString *aString, NSUInteger a
         }
         
         NSRange para = paragraphRangeForLocationInString(string, i);  
-        COUUID *newUUID = [COUUID UUID];
+        ETUUID *newUUID = [ETUUID UUID];
         
         [modifiedParagraphs addObject: newUUID];
         
@@ -314,7 +314,7 @@ static NSRange paragraphRangeForLocationInString(NSString *aString, NSUInteger a
     COSubtree *result = [COSubtree subtree];
     
     NSLog(@"dumping typewriterDocument");
-    for (COUUID *paragraphUUID in [self paragraphUUIDs])
+    for (ETUUID *paragraphUUID in [self paragraphUUIDs])
     {
         NSLog(@"UUID: %@", paragraphUUID);
         COSubtree *paragraphTree = [self paragraphTreeForUUID: paragraphUUID];
@@ -327,7 +327,7 @@ static NSRange paragraphRangeForLocationInString(NSString *aString, NSUInteger a
     return result;
 }
 
-- (COSubtree *) paragraphTreeForUUID: (COUUID *)paragraphUUID
+- (COSubtree *) paragraphTreeForUUID: (ETUUID *)paragraphUUID
 {
     NSAttributedString *paragraphAttrString = [self attributedStringForParagraphWithUUID: paragraphUUID];
     NSData *paragraphAsRTF = [paragraphAttrString RTFFromRange: NSMakeRange(0, [paragraphAttrString length])

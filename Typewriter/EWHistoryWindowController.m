@@ -68,7 +68,7 @@
     NSLog(@"history window: view did change: %@", notif);
     
     COStore *store = [notif object];
-    COUUID *aUUID = [[notif userInfo] objectForKey: COStoreNotificationUUID];
+    ETUUID *aUUID = [[notif userInfo] objectForKey: COStoreNotificationUUID];
     COPersistentRootInfo *proot = [store persistentRootWithUUID: aUUID];
     
     [self updateWithProot: proot store: store];

@@ -10,7 +10,7 @@
 }
 
 - (id) initWithContext: (COObjectGraphContext *)aContext
-			  itemUUID: (COUUID *)aUUID
+			  itemUUID: (ETUUID *)aUUID
 			 attribute: (NSString*)anAttribute
 isPrimitiveInContainer: (BOOL)aFlag
 				 index: (NSUInteger)anIndex
@@ -46,7 +46,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 }
 
 - (id) initWithContext: (COObjectGraphContext *)aContext
-			  itemUUID: (COUUID *)aUUID
+			  itemUUID: (ETUUID *)aUUID
 			 attribute: (NSString*)anAttribute
 				parent: (EWPersistentRootOutlineRow *)aParent
 	  windowController: (EWPersistentRootWindowController *)aController
@@ -61,7 +61,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 }
 
 - (id) initWithContext: (COObjectGraphContext *)aContext
-			  itemUUID: (COUUID *)aUUID
+			  itemUUID: (ETUUID *)aUUID
 				parent: (EWPersistentRootOutlineRow *)aParent
 	  windowController: (EWPersistentRootWindowController *)aController
 {
@@ -93,7 +93,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 	[super dealloc];
 }
 
-- (COUUID *)UUID
+- (ETUUID *)UUID
 {
 	return UUID;
 }
@@ -151,7 +151,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 		{
 			NSMutableArray *result = [NSMutableArray array];
 			
-			for (COUUID *embeddedUUID in [[subtree item] allObjectsForAttribute: attribute])
+			for (ETUUID *embeddedUUID in [[subtree item] allObjectsForAttribute: attribute])
 			{
 				EWPersistentRootOutlineRow *obj = [[EWPersistentRootOutlineRow alloc] initWithContext: ctx
 																							 itemUUID: embeddedUUID
@@ -280,7 +280,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 	}
 }
 
-+ (NSComparisonResult) compareUUID: (COUUID*)uuid1 withUUID: (COUUID *)uuid2
++ (NSComparisonResult) compareUUID: (ETUUID*)uuid1 withUUID: (ETUUID *)uuid2
 {
 	int diff = memcmp([uuid1 UUIDValue], [uuid2 UUIDValue], 16);
 	
@@ -397,7 +397,7 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 	{
 		NSLog(@"Deleting embedded item %@", [self UUID]);
 		
-        COUUID *uuid = [[self rowSubtree] UUID];
+        ETUUID *uuid = [[self rowSubtree] UUID];
         
         [[[ctx objectForUUID: uuid] parentObject] removeDescendentObject: uuid];
 
@@ -407,7 +407,7 @@ static NSInteger subtreeSort(id subtree1, id subtree2, void *context)
 
 - (id)identifier
 {
-	COUUID *aUUID = [self UUID];
+	ETUUID *aUUID = [self UUID];
 	NSString *attr = [self attribute];
 	NSNumber *isPrimitiveInContainerObj = [NSNumber numberWithBool: [self isPrimitiveInContainer]];
 	

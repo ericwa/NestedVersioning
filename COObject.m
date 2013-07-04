@@ -60,7 +60,7 @@ NSString *kCOSchemaName = @"COSchemaName";
     return parentContext_;
 }
 
-- (COUUID *) UUID
+- (ETUUID *) UUID
 {
 	return [item_ UUID];
 }
@@ -157,7 +157,7 @@ NSString *kCOSchemaName = @"COSchemaName";
 - (NSSet *) objectSetForUUIDs_: (NSSet *)uuids
 {
 	NSMutableSet *result = [NSMutableSet setWithCapacity: [uuids count]];
-    for (COUUID *uuid in uuids)
+    for (ETUUID *uuid in uuids)
     {
         [result addObject: [parentContext_ objectForUUID: uuid]];
     }
@@ -180,7 +180,7 @@ NSString *kCOSchemaName = @"COSchemaName";
  * Searches the receiver for the Object with the givent UUID.
  * Returns nil if not present
  */
-- (COObject *) descendentObjectForUUID: (COUUID *)aUUID
+- (COObject *) descendentObjectForUUID: (ETUUID *)aUUID
 {
 	COObject *object = [parentContext_ objectForUUID: aUUID];
     if ([self containsObject: object])
@@ -193,7 +193,7 @@ NSString *kCOSchemaName = @"COSchemaName";
     }
 }
 
-- (COItemPath *) itemPathOfDescendentObjectWithUUID: (COUUID *)aUUID
+- (COItemPath *) itemPathOfDescendentObjectWithUUID: (ETUUID *)aUUID
 {
 	COObject *destObject = [self descendentObjectForUUID: aUUID];
 	
@@ -299,14 +299,14 @@ NSString *kCOSchemaName = @"COSchemaName";
         return aValue;
     }
     
-    if ([aValue isKindOfClass: [COUUID class]])
+    if ([aValue isKindOfClass: [ETUUID class]])
     {
         return [parentContext_ objectForUUID: aValue];
     }
     else if ([aValue isKindOfClass: [NSCountedSet class]])
     {
         NSCountedSet *replacement = [NSCountedSet set];
-        for (COUUID *object in aValue)
+        for (ETUUID *object in aValue)
         {
             [replacement addObject: [parentContext_ objectForUUID: object]];
         }
@@ -315,7 +315,7 @@ NSString *kCOSchemaName = @"COSchemaName";
     else if ([aValue isKindOfClass: [NSSet class]])
     {
         NSMutableSet *replacement = [NSMutableSet set];
-        for (COUUID *object in aValue)
+        for (ETUUID *object in aValue)
         {
             [replacement addObject: [parentContext_ objectForUUID: object]];
         }
@@ -324,7 +324,7 @@ NSString *kCOSchemaName = @"COSchemaName";
     else if ([aValue isKindOfClass: [NSArray class]])
     {
         NSMutableArray *replacement = [NSMutableArray array];
-        for (COUUID *object in aValue)
+        for (ETUUID *object in aValue)
         {
             [replacement addObject: [parentContext_ objectForUUID: object]];
         }
@@ -360,7 +360,7 @@ NSString *kCOSchemaName = @"COSchemaName";
     // FIXME: Ugly implementation
     if (COPrimitiveType(aType) == kCOEmbeddedItemType)
     {
-        for (COUUID *beingInserted in aValue)
+        for (ETUUID *beingInserted in aValue)
         {
             COObject *objectBeingInserted = [parentContext_ objectForUUID: beingInserted];
             COObject *objectBeingInsertedParent = [objectBeingInserted embeddedObjectParent];

@@ -2,7 +2,7 @@
 #import "COMacros.h"
 #import "COItemGraph.h"
 #import "COItem.h"
-#import "COUUID.h"
+#import "ETUUID.h"
 #import "FMDatabase.h"
 #import "FMDatabaseAdditions.h"
 #import "COSQLiteStorePersistentRootBackingStoreBinaryFormats.h"
@@ -148,13 +148,13 @@
 	return result;
 }
 
-- (COUUID *) rootUUIDForRevid: (int64_t)revid
+- (ETUUID *) rootUUIDForRevid: (int64_t)revid
 {
-    COUUID *result = nil;
+    ETUUID *result = nil;
     FMResultSet *rs = [db_ executeQuery: @"SELECT root FROM commits WHERE revid = ?", [NSNumber numberWithLongLong: revid]];
 	if ([rs next])
 	{
-        result = [COUUID UUIDWithData: [rs dataForColumnIndex: 0]];
+        result = [ETUUID UUIDWithData: [rs dataForColumnIndex: 0]];
 	}
     [rs close];
     
@@ -223,13 +223,13 @@
         return nil;
     }
     
-    COUUID *root = [self rootUUIDForRevid: revid];
+    ETUUID *root = [self rootUUIDForRevid: revid];
     
     // Convert dataForUUID to a UUID -> COItem mapping.
     // TODO: Eliminate this by giving COItem to be created with a serialized NSData of itself,
     // and lazily deserializing itself.
     NSMutableDictionary *resultDict = [NSMutableDictionary dictionary];
-    for (COUUID *uuid in dataForUUID)
+    for (ETUUID *uuid in dataForUUID)
     {        
         NSData *data = [dataForUUID objectForKey: uuid];
         COItem *item = [[COItem alloc] initWithData: data];
@@ -263,7 +263,7 @@ static NSData *contentsBLOBWithItemTree(COItemGraph *anItemTree, NSArray *modifi
 {
     NSMutableData *result = [NSMutableData dataWithCapacity: 64536];
     
-    for (COUUID *uuid in modifiedItems)
+    for (ETUUID *uuid in modifiedItems)
     {
         COItem *item = [anItemTree itemForUUID: uuid];
         NSData *itemJson = [item dataValue];

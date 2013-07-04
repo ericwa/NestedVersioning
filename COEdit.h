@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-#import "COUUID.h"
+#import "ETUUID.h"
 #import "COSQLiteStore.h"
 
 NSString *kCOEditSetCurrentVersionForBranch;
@@ -15,19 +15,19 @@ NSString *kCOUndoAction;
 
 @interface COEdit : NSObject
 {
-    COUUID *uuid_;
+    ETUUID *uuid_;
     NSDate *date_;
     NSString *displayName_;
 }
 - (id) initWithPlist: (id)plist;
-- (id) initWithUUID: (COUUID*)aUUID
+- (id) initWithUUID: (ETUUID*)aUUID
                date: (NSDate*)aDate
         displayName: (NSString*)aName;
 
 + (COEdit *) editWithPlist: (id)aPlist;
 - (id)plist;
 
-- (COUUID*) persistentRootUUID;
+- (ETUUID*) persistentRootUUID;
 
 - (NSDate*) date;
 /**

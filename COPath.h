@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "COUUID.h"
+#import "ETUUID.h"
 
 /**
  *
@@ -7,29 +7,29 @@
 @interface COPath : NSObject <NSCopying>
 {
 @private
-	COUUID *persistentRoot_;
-	COUUID *branch_;
-	COUUID *embeddedObject_;
+	ETUUID *persistentRoot_;
+	ETUUID *branch_;
+	ETUUID *embeddedObject_;
 }
 
-@property (readonly) COUUID *persistentRoot;
-@property (readonly) COUUID *branch;
-@property (readonly) COUUID *embeddedObject;
+@property (readonly) ETUUID *persistentRoot;
+@property (readonly) ETUUID *branch;
+@property (readonly) ETUUID *embeddedObject;
 
 /**
  * Implicitly points to the root object of the current branch
  */
-+ (COPath *) pathWithPersistentRoot: (COUUID *)aRoot;
++ (COPath *) pathWithPersistentRoot: (ETUUID *)aRoot;
 
 /**
  * Implicitly points to the root object
  */
-+ (COPath *) pathWithPersistentRoot: (COUUID *)aRoot
-							 branch: (COUUID*)aBranch;
++ (COPath *) pathWithPersistentRoot: (ETUUID *)aRoot
+							 branch: (ETUUID*)aBranch;
 
-+ (COPath *) pathWithPersistentRoot: (COUUID *)aRoot
-							 branch: (COUUID*)aBranch
-					embdeddedObject: (COUUID *)anObject;
++ (COPath *) pathWithPersistentRoot: (ETUUID *)aRoot
+							 branch: (ETUUID*)aBranch
+					embdeddedObject: (ETUUID *)anObject;
 
 - (COPath *) pathWithNameMapping: (NSDictionary *)aMapping;
 

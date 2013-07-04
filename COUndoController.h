@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "COUUID.h"
+#import "ETUUID.h"
 #import "COSQLiteStore.h"
 
 NSString *kCOIsUndo;
@@ -48,7 +48,7 @@ NSString *kCONewTailRev;
 //    CORevisionID *newTailRev;
 //    
 //}
-+ (COStoreStructureEdit *)undoCreatePersistentRoot: (COUUID*)aUUID;
++ (COStoreStructureEdit *)undoCreatePersistentRoot: (ETUUID*)aUUID;
 
 @end
 

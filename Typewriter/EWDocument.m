@@ -201,12 +201,12 @@
 {
     // Reads the UUID of persistentRoot_, and uses that to reload the rest of the metadata
     
-    COUUID *uuid = [self UUID];
+    ETUUID *uuid = [self UUID];
     
     [self setPersistentRoot: [store_ persistentRootWithUUID: uuid]];
 }
 
-- (COUUID *) editingBranch
+- (ETUUID *) editingBranch
 {
     return editingBranch_;
 }
@@ -216,7 +216,7 @@
     return persistentRoot_;
 }
 
-- (COUUID *) UUID
+- (ETUUID *) UUID
 {
     return [persistentRoot_ UUID];
 }
@@ -231,14 +231,14 @@
     NSLog(@"did change: %@", notif);
 }
 
-- (void) switchToBranch: (COUUID *)aBranchUUID
+- (void) switchToBranch: (ETUUID *)aBranchUUID
 {
     [store_ setCurrentBranch: aBranchUUID
            forPersistentRoot: [self UUID]];
     [self reloadFromStore];
 }
 
-- (void) deleteBranch: (COUUID *)aBranchUUID
+- (void) deleteBranch: (ETUUID *)aBranchUUID
 {
     [store_ deleteBranch: aBranchUUID
         ofPersistentRoot: [self UUID]];

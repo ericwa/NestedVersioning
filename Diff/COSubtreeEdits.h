@@ -1,19 +1,19 @@
 #import <Foundation/Foundation.h>
 #import "COType.h"
 
-@class COUUID;
+@class ETUUID;
 
 
 #pragma mark base class
 
 @interface COItemGraphEdit : NSObject <NSCopying>
 {
-	COUUID *UUID;
+	ETUUID *UUID;
 	NSString *attribute;
 	id sourceIdentifier;
 }
 
-@property (readonly, nonatomic) COUUID *UUID;
+@property (readonly, nonatomic) ETUUID *UUID;
 @property (readonly, nonatomic) NSString *attribute;
 @property (readonly, nonatomic) id sourceIdentifier;
 
@@ -22,7 +22,7 @@
 
 - (BOOL) isEqualIgnoringSourceIdentifier: (id)other;
 
-- (id) initWithUUID: (COUUID *)aUUID
+- (id) initWithUUID: (ETUUID *)aUUID
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier;
 
@@ -44,7 +44,7 @@
 @property (readonly, nonatomic) COType type;
 @property (readonly, nonatomic) id value;
 
-- (id) initWithUUID: (COUUID *)aUUID
+- (id) initWithUUID: (ETUUID *)aUUID
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier
 			   type: (COType)aType
@@ -67,7 +67,7 @@
 @property (readonly, nonatomic) COType type;
 @property (readonly, nonatomic) id object;
 
-- (id) initWithUUID: (COUUID *)aUUID
+- (id) initWithUUID: (ETUUID *)aUUID
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier
 			   type: (COType)aType
@@ -92,7 +92,7 @@
 - (NSComparisonResult) compare: (id)otherObject;
 - (BOOL) overlaps: (COSequenceEdit *)other;
 
-- (id) initWithUUID: (COUUID *)aUUID
+- (id) initWithUUID: (ETUUID *)aUUID
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier
 			  range: (NSRange)aRange;
@@ -107,7 +107,7 @@
 @property (readonly, nonatomic) COType type;
 @property (readonly, nonatomic) NSArray *objects;
 
-- (id) initWithUUID: (COUUID *)aUUID
+- (id) initWithUUID: (ETUUID *)aUUID
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier
 			  range: (NSRange)aRange
@@ -118,7 +118,7 @@
 
 @interface COSequenceInsertion : COSequenceModification 
 
-- (id) initWithUUID: (COUUID *)aUUID
+- (id) initWithUUID: (ETUUID *)aUUID
 		  attribute: (NSString *)anAttribute
    sourceIdentifier: (id)aSourceIdentifier
 		   location: (NSUInteger)aLocation

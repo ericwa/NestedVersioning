@@ -6,9 +6,9 @@
 static NSString *kCOOldBranchUUID = @"COOldBranchUUID";
 static NSString *kCONewBranchUUID = @"CONewBranchUUID";
 
-- (id) initWithOldBranchUUID: (COUUID*)aOldBranchUUID
-               newBranchUUID: (COUUID*)aNewBranchUUID
-                        UUID: (COUUID*)aUUID
+- (id) initWithOldBranchUUID: (ETUUID*)aOldBranchUUID
+               newBranchUUID: (ETUUID*)aNewBranchUUID
+                        UUID: (ETUUID*)aUUID
                         date: (NSDate*)aDate
                  displayName: (NSString*)aName
 {
@@ -26,8 +26,8 @@ static NSString *kCONewBranchUUID = @"CONewBranchUUID";
 {
     self = [super initWithPlist: plist];
     
-    ASSIGN(oldBranch_, [COUUID UUIDWithString: [plist objectForKey: kCOOldBranchUUID]]);
-    ASSIGN(newBranch_, [COUUID UUIDWithString: [plist objectForKey: kCONewBranchUUID]]);
+    ASSIGN(oldBranch_, [ETUUID UUIDWithString: [plist objectForKey: kCOOldBranchUUID]]);
+    ASSIGN(newBranch_, [ETUUID UUIDWithString: [plist objectForKey: kCONewBranchUUID]]);
     
     return self;
 }

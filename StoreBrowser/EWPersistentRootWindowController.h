@@ -25,14 +25,14 @@
 - (IBAction) insertItem: (id)sender;
 
 
-- (void) orderFrontAndHighlightItem: (COUUID*)aUUID;
+- (void) orderFrontAndHighlightItem: (ETUUID*)aUUID;
 
 /**
  * Temporary hack...
  */
 - (void) reloadBrowser;
 
-- (COUUID *) currentCommit;
+- (ETUUID *) currentCommit;
 
 - (NSArray *)selectedRows;
 

@@ -1,21 +1,21 @@
 #import <Foundation/Foundation.h>
 #import "COType.h"
 
-@class COUUID;
+@class ETUUID;
 @class COItem;
 
 
 @interface CORelationshipRecord : NSObject
 {
 @private
-    COUUID *uuid_;
+    ETUUID *uuid_;
     NSString *property_;
 }
 
-+ (CORelationshipRecord *) recordWithUUID: (COUUID *)aUUID property: (NSString *)aProp;
++ (CORelationshipRecord *) recordWithUUID: (ETUUID *)aUUID property: (NSString *)aProp;
 
 // FIXME: Make not mutable to the public
-@property (readwrite, nonatomic, retain) COUUID *uuid;
+@property (readwrite, nonatomic, retain) ETUUID *uuid;
 @property (readwrite, nonatomic, retain) NSString *property;
 @end
 
@@ -32,14 +32,14 @@
 /**
  * @returns a set of CORelationshipRecord
  */
-- (NSSet *) referrersForUUID: (COUUID *)anObject;
+- (NSSet *) referrersForUUID: (ETUUID *)anObject;
 
-- (CORelationshipRecord *) parentForUUID: (COUUID *)anObject;
+- (CORelationshipRecord *) parentForUUID: (ETUUID *)anObject;
 
 /**
  * @returns a set of COUUID
  */
-- (NSSet *) referrersForUUID: (COUUID *)anObject
+- (NSSet *) referrersForUUID: (ETUUID *)anObject
             propertyInParent: (NSString*)propInParent;
 
 #pragma mark modification
@@ -49,17 +49,17 @@
                                     newValue: (id)newVal
                                      newType: (COType)newType
                                  forProperty: (NSString *)aProperty
-                                    ofObject: (COUUID *)anObject;
+                                    ofObject: (ETUUID *)anObject;
 
 - (void) clearOldValue: (id)oldVal
                oldType: (COType)oldType
            forProperty: (NSString *)aProperty
-              ofObject: (COUUID *)anObject;
+              ofObject: (ETUUID *)anObject;
 
 - (void) setNewValue: (id)newVal
              newType: (COType)newType
          forProperty: (NSString *)aProperty
-            ofObject: (COUUID *)anObject;
+            ofObject: (ETUUID *)anObject;
 
 - (void) addItem: (COItem *)anItem;
 - (void) removeItem: (COItem *)anItem;

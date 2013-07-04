@@ -9,7 +9,7 @@
 @interface COBranch : NSObject
 {
 	COPersistentRoot *persistentRoot_; // weak
-    COUUID *branch_;
+    ETUUID *branch_;
     BOOL isTrackingCurrentBranch_;
     
 	// -- in-memory mutable state:
@@ -18,7 +18,7 @@
 }
 
 - (COPersistentRoot *) persistentRoot;
-- (COUUID *) UUID;
+- (ETUUID *) UUID;
 
 - (NSDictionary *) metadata;
 // commits immediately

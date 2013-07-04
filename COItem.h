@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "COUUID.h"
+#import "ETUUID.h"
 #import "COType.h"
 
 /**
@@ -22,7 +22,7 @@
 @interface COItem : NSObject <NSCopying, NSMutableCopying>
 {
     @package
-	COUUID *uuid;
+	ETUUID *uuid;
     
     @protected
 	NSMutableDictionary *types;
@@ -41,17 +41,17 @@
 /**
  * designated initializer.
  */
-- (id) initWithUUID: (COUUID *)aUUID
+- (id) initWithUUID: (ETUUID *)aUUID
  typesForAttributes: (NSDictionary *)typesForAttributes
 valuesForAttributes: (NSDictionary *)valuesForAttributes;
 
-- (id) initWithUUID: (COUUID *)aUUID;
+- (id) initWithUUID: (ETUUID *)aUUID;
 
 + (COItem *) itemWithTypesForAttributes: (NSDictionary *)typesForAttributes
 					valuesForAttributes: (NSDictionary *)valuesForAttributes;
-+ (COItem *) itemWithUUID: (COUUID *)aUUID;
++ (COItem *) itemWithUUID: (ETUUID *)aUUID;
 
-- (COUUID *) UUID;
+- (ETUUID *) UUID;
 
 - (NSArray *) attributeNames;
 
@@ -95,7 +95,7 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes;
 {
 }
 
-- (id) initWithUUID: (COUUID*)aUUID;
+- (id) initWithUUID: (ETUUID*)aUUID;
 
 + (COMutableItem *) itemWithTypesForAttributes: (NSDictionary *)typesForAttributes
 						   valuesForAttributes: (NSDictionary *)valuesForAttributes;
@@ -104,7 +104,7 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes;
  */
 + (COMutableItem *) item;
 
-- (void) setUUID: (COUUID *)aUUID;
+- (void) setUUID: (ETUUID *)aUUID;
 
 - (void) setValue: (id)aValue
 	 forAttribute: (NSString*)anAttribute

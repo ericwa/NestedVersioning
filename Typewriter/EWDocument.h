@@ -11,7 +11,7 @@
     COStore *store_;
     COPersistentRootInfo *persistentRoot_;
     
-    COUUID *editingBranch_;
+    ETUUID *editingBranch_;
 }
 
 
@@ -25,7 +25,7 @@
 - (COPersistentRootInfo *) currentPersistentRoot;
 - (COStore *) store;
 
-- (COUUID *) editingBranch;
+- (ETUUID *) editingBranch;
 
 /**
  * @param aToken
@@ -39,8 +39,8 @@
  */
 - (void) persistentSwitchToStateToken: (CORevisionID *)aToken;
 
-- (void) switchToBranch: (COUUID *)aBranchUUID;
+- (void) switchToBranch: (ETUUID *)aBranchUUID;
 
-- (void) deleteBranch: (COUUID *)aBranchUUID;
+- (void) deleteBranch: (ETUUID *)aBranchUUID;
 
 @end

@@ -9,8 +9,8 @@ static NSString *kCOBranch = @"COBranch";
 
 - (id) initWithOldMetadata: (NSDictionary *)oldMeta
                newMetadata: (NSDictionary *)newMeta
-                      UUID: (COUUID*)aUUID
-                branchUUID: (COUUID*)aBranch
+                      UUID: (ETUUID*)aUUID
+                branchUUID: (ETUUID*)aBranch
                       date: (NSDate*)aDate
                displayName: (NSString*)aName
 {
@@ -32,7 +32,7 @@ static NSString *kCOBranch = @"COBranch";
     
     ASSIGN(old_, [plist objectForKey: kCOOldMetadata]);
     ASSIGN(new_, [plist objectForKey: kCONewMetadata]);
-    ASSIGN(branch_, [COUUID UUIDWithString: [plist objectForKey: kCOBranch]]);
+    ASSIGN(branch_, [ETUUID UUIDWithString: [plist objectForKey: kCOBranch]]);
     
     return self;
 }

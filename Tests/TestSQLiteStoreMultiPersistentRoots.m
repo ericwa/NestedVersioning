@@ -9,19 +9,19 @@
 
 @implementation TestSQLiteStoreMultiPersistentRoots
 
-static COUUID *docUUID;
-static COUUID *tagUUID;
+static ETUUID *docUUID;
+static ETUUID *tagUUID;
 
 + (void) initialize
 {
     if (self == [TestSQLiteStoreMultiPersistentRoots class])
     {
-        docUUID = [[COUUID alloc] init];
-        tagUUID = [[COUUID alloc] init];
+        docUUID = [[ETUUID alloc] init];
+        tagUUID = [[ETUUID alloc] init];
     }
 }
 
-- (COItemGraph *) tagItemTreeWithDocProoUUID: (COUUID*)aUUID
+- (COItemGraph *) tagItemTreeWithDocProoUUID: (ETUUID*)aUUID
 {
     COMutableItem *rootItem = [[[COMutableItem alloc] initWithUUID: tagUUID] autorelease];
     [rootItem setValue: @"favourites" forAttribute: @"name" type: kCOStringType];

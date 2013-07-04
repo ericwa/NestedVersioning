@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-#import "COUUID.h"
+#import "ETUUID.h"
 #import "CORevisionID.h"
 #import "COSQLiteStore.h"
 
@@ -17,18 +17,18 @@
 }
 
 - (id) initWithStore: (COSQLiteStore *)aStore
-  persistentRootUUID: (COUUID *)aUUID;
+  persistentRootUUID: (ETUUID *)aUUID;
 
-- (COUUID *) UUID;
+- (ETUUID *) UUID;
 
 // FIXME: Shouldn't give mutable access
 - (COPersistentRootInfo *) state;
 
-- (COUUID *) editingBranchUUID;
+- (ETUUID *) editingBranchUUID;
 /**
  * Commits on change
  */
-- (void) setEditingBranchUUID: (COUUID*)aBranch;
+- (void) setEditingBranchUUID: (ETUUID*)aBranch;
 
 // commits immediately. discards any uncommitted edits.
 // moves the current state pointer of the branch.

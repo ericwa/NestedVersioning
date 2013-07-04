@@ -16,7 +16,7 @@ typedef enum {
 @interface COReaderState : NSObject
 {
 @public
-    COUUID *uuid;
+    ETUUID *uuid;
     NSString *schemaName;
     NSMutableDictionary *values;
     NSMutableDictionary *types;
@@ -199,7 +199,7 @@ static void co_read_string(void *ctx, NSString *val)
     }
 }
 
-static void co_read_uuid(void *ctx, COUUID *uuid)
+static void co_read_uuid(void *ctx, ETUUID *uuid)
 {
     COReaderState *state = (COReaderState *)ctx;
     switch (state->state)

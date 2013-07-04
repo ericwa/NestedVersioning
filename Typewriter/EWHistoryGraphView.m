@@ -120,7 +120,7 @@
 	}
 }
 
-- (void) setCurrentCommit: (COUUID *)aCommit
+- (void) setCurrentCommit: (ETUUID *)aCommit
 {
 	[self setNeedsDisplay: YES];
 }

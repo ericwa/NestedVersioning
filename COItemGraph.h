@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-@class COUUID;
+@class ETUUID;
 @class COItem;
 
 
@@ -16,11 +16,11 @@
  */
 @protocol COItemGraph <NSObject>
 
-- (COUUID *) rootItemUUID;
+- (ETUUID *) rootItemUUID;
 /**
  * Returns immutable item
  */
-- (COItem *) itemForUUID: (COUUID *)aUUID;
+- (COItem *) itemForUUID: (ETUUID *)aUUID;
 
 - (NSArray *) itemUUIDs;
 /**
@@ -42,19 +42,19 @@
  */
 @interface COItemGraph : NSObject <COItemGraph>
 {
-    COUUID *rootItemUUID_;
+    ETUUID *rootItemUUID_;
     NSMutableDictionary *itemForUUID_;
 }
 
 + (COItemGraph *)treeWithItemsRootFirst: (NSArray*)items;
 
 - (id) initWithItemForUUID: (NSDictionary *) itemForUUID
-              rootItemUUID: (COUUID *)root;
+              rootItemUUID: (ETUUID *)root;
 - (id) initWithItems: (NSArray *)items
-        rootItemUUID: (COUUID *)root;
+        rootItemUUID: (ETUUID *)root;
 
-- (COUUID *) rootItemUUID;
-- (COItem *) itemForUUID: (COUUID *)aUUID;
+- (ETUUID *) rootItemUUID;
+- (COItem *) itemForUUID: (ETUUID *)aUUID;
 
 - (NSArray *) itemUUIDs;
 

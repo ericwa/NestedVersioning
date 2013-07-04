@@ -99,7 +99,7 @@ static NSString *kCOReferences = @"references";
     
     // Do the copy
     
-    COUUID *parentCopyUUID = [copier copyItemWithUUID: [parent UUID]
+    ETUUID *parentCopyUUID = [copier copyItemWithUUID: [parent UUID]
                                             fromGraph: ctx1
                                               toGraph: ctx2];
 
@@ -123,11 +123,11 @@ static NSString *kCOReferences = @"references";
 	COObject *o2 = [self addObjectWithLabel: @"Gift" toObject: o1];
     UKNotNil(o1);
     
-    COUUID *o1copyUUID = [copier copyItemWithUUID: [o1 UUID]
+    ETUUID *o1copyUUID = [copier copyItemWithUUID: [o1 UUID]
                                             fromGraph: ctx1
                                               toGraph: ctx2];
 
-    COUUID *o1copy2UUID = [copier copyItemWithUUID: [o1 UUID]
+    ETUUID *o1copy2UUID = [copier copyItemWithUUID: [o1 UUID]
                                             fromGraph: ctx1
                                               toGraph: ctx2]; // copy o1 into ctx2 a second time
 
@@ -262,7 +262,7 @@ static NSString *kCOReferences = @"references";
     
 	// Copy the tag collection to ctx2.
 	
-    COUUID *tag1copyUUID = [copier copyItemWithUUID: [tag1 UUID]
+    ETUUID *tag1copyUUID = [copier copyItemWithUUID: [tag1 UUID]
                                           fromGraph: ctx1
                                             toGraph: ctx2];
     UKObjectsNotEqual(tag1copyUUID, [tag1 UUID]);
