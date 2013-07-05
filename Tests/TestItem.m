@@ -126,6 +126,18 @@
 	UKObjectsEqual(item1, [[[COItem alloc] initWithData: [item1 dataValue]] autorelease]);
 }
 
+- (void) testNullSerialization
+{
+    COMutableItem *item1 = [COMutableItem item];
+    [item1 setValue: [NSNull null] forAttribute:  @"name" type: kCOStringType];
+    [item1 setValue: A([NSNull null], [NSNull null]) forAttribute:  @"people" type: kCOArrayType | kCOStringType];
+    
+    COItem *item2 = [[[COItem alloc] initWithData: [item1 dataValue]] autorelease];
+    
+    UKObjectsEqual(item1, item2);
+    UKObjectsEqual([NSNull null], [item2 valueForAttribute: @"name"]);
+    UKObjectsEqual(A([NSNull null], [NSNull null]), [item2 valueForAttribute: @"people"]);
+}
 
 //- (void) testNamedType
 //{

@@ -52,8 +52,25 @@ typedef enum {
 
 @implementation COItem (Binary)
 
+
+static NSNull *NSNullCached;
+
++ (id) initialize
+{
+    if (self == [COItem class])
+    {
+        NSNullCached = [[NSNull null] retain];
+    }
+}
+
 static void writePrimitiveValue(co_buffer_t *dest, id aValue, COType aType)
 {
+    if (aValue == NSNullCached)
+    {
+        co_buffer_store_null(dest);
+        return;
+    }
+    
     switch (COPrimitiveType(aType))
     {
         case kCOInt64Type:
@@ -271,6 +288,9 @@ static void co_read_null(void *ctx)
     COReaderState *state = (COReaderState *)ctx;
     switch (state->state)
     {
+        case co_reader_expect_value:
+            co_read_object_value(state, NSNullCached);
+            break;            
         case co_reader_expect_object_schemaname:
             ASSIGN(state->schemaName, nil);
             state->state = co_reader_expect_property;
