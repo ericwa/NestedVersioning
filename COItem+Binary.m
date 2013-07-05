@@ -86,7 +86,7 @@ static void writePrimitiveValue(co_buffer_t *dest, id aValue, COType aType)
             co_buffer_store_bytes(dest, [aValue bytes], [aValue length]);
             break;
         case kCOReferenceType:
-        case kCOEmbeddedItemType:
+        case kCOCompositeReferenceType:
             co_buffer_store_uuid(dest, aValue);
             break;
         case kCOPathType:

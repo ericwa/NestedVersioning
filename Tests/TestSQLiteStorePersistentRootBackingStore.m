@@ -47,7 +47,7 @@ static ETUUID *childUUID2;
     [rootItem setValue: @"root" forAttribute: @"name" type: kCOStringType];
     [rootItem setValue: children
           forAttribute: @"children"
-                  type: kCOEmbeddedItemType | kCOArrayType];
+                  type: kCOCompositeReferenceType | kCOArrayType];
     return rootItem;
 }
 

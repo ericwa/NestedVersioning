@@ -35,11 +35,11 @@
         COObjectGraphContext *workspaces = [COObjectGraphContext editingContext];
         [[workspaces rootObject] setValue: A([workspace rootObject])
                       forAttribute: @"orderedContents"
-                              type: kCOEmbeddedItemType | kCOArrayType];
+                              type: kCOCompositeReferenceType | kCOArrayType];
         
         [[workspaces rootObject] addObject: [self itemWithLabel: @"My Phat Workspace"]
                         toOrderedAttribute: @"orderedContents"
-                                      type: kCOEmbeddedItemType | kCOArrayType];
+                                      type: kCOCompositeReferenceType | kCOArrayType];
         
         workspaces_ = [[store_ createPersistentRootWithInitialContents: [workspaces itemTree]
                                                               metadata: nil] retain];

@@ -36,7 +36,7 @@
       schemaName: (NSString *)aSchema
      forProperty: (NSString *)aProperty
 {
-    NSParameterAssert(COPrimitiveType(aType) == kCOEmbeddedItemType
+    NSParameterAssert(COPrimitiveType(aType) == kCOCompositeReferenceType
                        || COPrimitiveType(aType) == kCOReferenceType);
     [typeForAttribute_ setObject: aType forKey: aProperty];
     [schemaNameForAttribute_ setObject: [NSString stringWithString: aSchema] forKey: aProperty];

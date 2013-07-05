@@ -12,7 +12,7 @@
     COSchemaTemplate *schema = [COSchemaTemplate schemaWithName: @"OutlineItem"];
     [schema setType: kCOStringType forProperty: @"label"];
     
-    [schema setType: kCOEmbeddedItemType | kCOSetType
+    [schema setType: kCOCompositeReferenceType | kCOSetType
          schemaName: @"OutlineItem"
         forProperty: @"contents"];
     

@@ -13,7 +13,7 @@ static id plistValueForPrimitiveValue(id aValue, COType aType)
         case kCOStringType: return aValue;
         case kCOBlobType: return [aValue base64String];
         case kCOReferenceType:
-        case kCOEmbeddedItemType:
+        case kCOCompositeReferenceType:
             return [(ETUUID *)aValue stringValue];
         case kCOPathType: return [(COPath *)aValue stringValue];
         case kCOAttachmentType: return aValue;
@@ -49,7 +49,7 @@ static id valueForPrimitivePlistValue(id aValue, COType aType)
         case kCOStringType: return aValue;
         case kCOBlobType: return [aValue base64DecodedData];
         case kCOReferenceType:
-        case kCOEmbeddedItemType:
+        case kCOCompositeReferenceType:
             return [ETUUID UUIDWithString: aValue];
         case kCOPathType: return [COPath pathWithString: aValue];
         case kCOAttachmentType: return aValue;

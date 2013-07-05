@@ -9,17 +9,16 @@
 @private
 	ETUUID *persistentRoot_;
 	ETUUID *branch_;
-    /**
-     * Deprecated. COPath can only point at the root object.
-     */
 	ETUUID *embeddedObject_;
 }
 
+/**
+ * Returns YES if embeddedObject is set
+ */
+- (BOOL) isCrossPersistentRoot;
+
 @property (readonly) ETUUID *persistentRoot;
 @property (readonly) ETUUID *branch;
-/**
- * Deprecated. COPath can only point at the root object.
- */
 @property (readonly) ETUUID *embeddedObject;
 
 /**

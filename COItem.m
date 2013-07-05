@@ -161,7 +161,7 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 	for (NSString *key in [self attributeNames])
 	{
 		COType type = [self typeForAttribute: key];
-		if (COPrimitiveType(type) == kCOEmbeddedItemType)
+		if (COPrimitiveType(type) == kCOCompositeReferenceType)
 		{		
 			for (ETUUID *embedded in [self allObjectsForAttribute: key])
 			{
@@ -291,7 +291,7 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 		id value = [aCopy valueForAttribute: attr];
 		COType type = [aCopy typeForAttribute: attr];
 		
-		if (COPrimitiveType(type) == kCOEmbeddedItemType)
+		if (COPrimitiveType(type) == kCOCompositeReferenceType)
 		{
 			if (COTypeIsPrimitive(type))
 			{

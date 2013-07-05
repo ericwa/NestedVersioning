@@ -36,10 +36,10 @@ static ETUUID *drawing2;
     copier = [[COCopier alloc] init];
     
     COItem *drawingItem = [COMutableItem itemWithUUID: drawing];
-    [drawingItem setValue: A(group1) forAttribute: @"contents" type: kCOArrayType | kCOEmbeddedItemType];
+    [drawingItem setValue: A(group1) forAttribute: @"contents" type: kCOArrayType | kCOCompositeReferenceType];
     
     COItem *group1Item = [COMutableItem itemWithUUID: group1];
-    [group1Item setValue: A(shape1) forAttribute: @"contents" type: kCOArrayType | kCOEmbeddedItemType];
+    [group1Item setValue: A(shape1) forAttribute: @"contents" type: kCOArrayType | kCOCompositeReferenceType];
     
     COItem *shape1Item = [COMutableItem itemWithUUID: shape1];
     [shape1Item setValue: A(style1) forAttribute: @"styles" type: kCOArrayType | kCOReferenceType];

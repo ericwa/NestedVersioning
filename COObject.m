@@ -260,7 +260,7 @@ NSString *kCOSchemaName = @"COSchemaName";
 - (id) convertCOObjectValueToCOUUID: (id)aValue
                               type_: (COType)aType
 {
-    if (COPrimitiveType(aType) != kCOEmbeddedItemType
+    if (COPrimitiveType(aType) != kCOCompositeReferenceType
         && COPrimitiveType(aType) != kCOReferenceType)
     {
         return aValue;
@@ -304,7 +304,7 @@ NSString *kCOSchemaName = @"COSchemaName";
 - (id) convertCOUUIDValueToCOObject: (id)aValue
                               type_: (COType)aType
 {
-    if (COPrimitiveType(aType) != kCOEmbeddedItemType
+    if (COPrimitiveType(aType) != kCOCompositeReferenceType
         && COPrimitiveType(aType) != kCOReferenceType)
     {
         return aValue;
@@ -369,7 +369,7 @@ NSString *kCOSchemaName = @"COSchemaName";
     // as perscribed by the COEditingContext class docs
     
     // FIXME: Ugly implementation
-    if (COPrimitiveType(aType) == kCOEmbeddedItemType)
+    if (COPrimitiveType(aType) == kCOCompositeReferenceType)
     {
         for (ETUUID *beingInserted in aValue)
         {
@@ -417,7 +417,7 @@ NSString *kCOSchemaName = @"COSchemaName";
 //    COType aType = [self typeForAttribute: anAttribute];
 //    NSParameterAssert(aType != 0);
 //    
-//	if (COPrimitiveType(aType) == kCOEmbeddedItemType)
+//	if (COPrimitiveType(aType) == kCOCompositeReferenceType)
 //	{
 //		[self addObject:  aValue atItemPath: [COItemPath pathWithItemUUID: [self UUID]
 //												  unorderedCollectionName: anAttribute
@@ -449,7 +449,7 @@ NSString *kCOSchemaName = @"COSchemaName";
 //    COType aType = [self typeForAttribute: anAttribute];
 //    NSParameterAssert(aType != 0);
 //
-//	if (COPrimitiveType(aType) == kCOEmbeddedItemType)
+//	if (COPrimitiveType(aType) == kCOCompositeReferenceType)
 //	{
 //		[self addObject:  aValue atItemPath: [COItemPath pathWithItemUUID: [self UUID]
 //																arrayName: anAttribute
@@ -491,7 +491,7 @@ NSString *kCOSchemaName = @"COSchemaName";
 //
 //- (void) removeValueForAttribute: (NSString*)anAttribute
 //{
-//	if (COPrimitiveType([item_ typeForAttribute: anAttribute]) == kCOEmbeddedItemType)
+//	if (COPrimitiveType([item_ typeForAttribute: anAttribute]) == kCOCompositeReferenceType)
 //	{
 //		for (COUUID *uuidToRemove in [item_ allObjectsForAttribute: anAttribute])
 //		{

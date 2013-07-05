@@ -301,7 +301,7 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
 //	
 //	COSubtree *rowSubtree = [row rowSubtree];
 //	
-//	if (![[rowSubtree typeForAttribute: [row attribute]] isEqual: [COType setWithPrimitiveType: kCOEmbeddedItemType]])
+//	if (![[rowSubtree typeForAttribute: [row attribute]] isEqual: [COType setWithPrimitiveType: kCOCompositeReferenceType]])
 //	{
 //		NSLog(@"Dest row type is wrong");
 //		return;
@@ -378,7 +378,7 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
 //	}
 //	
 //	if ([item isEmbeddedObject]
-//		|| [[[item rowSubtree] typeForAttribute: [item attribute]] isEqual: [COType setWithPrimitiveType: kCOEmbeddedItemType]])
+//		|| [[[item rowSubtree] typeForAttribute: [item attribute]] isEqual: [COType setWithPrimitiveType: kCOCompositeReferenceType]])
 //	{
 //		NSDragOperation mask = NSDragOperationNone;
 //		if ([[[item rowSubtree] root] containsSubtreeWithUUID: [proposedSubtree UUID]])
@@ -494,7 +494,7 @@ static EWPersistentRootOutlineRow *searchForUUID(EWPersistentRootOutlineRow *sta
 //		EWPersistentRootOutlineRow *row = [rows objectAtIndex: 0];
 //		COSubtree *rowSubtree = [row rowSubtree];
 //		
-//		if (![[rowSubtree typeForAttribute: [row attribute]] isEqual: [COType setWithPrimitiveType: kCOEmbeddedItemType]])
+//		if (![[rowSubtree typeForAttribute: [row attribute]] isEqual: [COType setWithPrimitiveType: kCOCompositeReferenceType]])
 //		{
 //			return NO;
 //		}

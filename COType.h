@@ -24,9 +24,18 @@ typedef int32_t COType;
  
  */
 enum {
+    /**
+     * Represented as NSNumber
+     */
     kCOInt64Type = 1,
     kCODoubleType = 2,
+    /**
+     * Represented as NSString
+     */
     kCOStringType = 3,
+    /**
+     * Represented as NSData
+     */
     kCOBlobType = 4,
 
     // Internal references (within a persistent root). These could be lumped together
@@ -37,7 +46,7 @@ enum {
      * A composite reference from a parent to a child. The reference is stored
      * in the parent.
      */
-    kCOEmbeddedItemType = 7,
+    kCOCompositeReferenceType = 7,
     /**
      * A reference that does not necessairily model parent-child relationships -
      * could be graphs with cycles, etc.     

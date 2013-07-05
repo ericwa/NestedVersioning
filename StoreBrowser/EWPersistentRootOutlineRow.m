@@ -141,13 +141,13 @@ isPrimitiveInContainer: (BOOL)aFlag
 		COType type = [subtree typeForAttribute: attribute];
 		
 		if (COTypeIsPrimitive(type) &&
-			![type isEqual: kCOEmbeddedItemType])
+			![type isEqual: kCOCompositeReferenceType])
 		{
 			return [NSArray array];
 		}
 		
 		// if it contains embedded objects, just return their UUIDs.
-		if (COPrimitiveType(type) == kCOEmbeddedItemType)
+		if (COPrimitiveType(type) == kCOCompositeReferenceType)
 		{
 			NSMutableArray *result = [NSMutableArray array];
 			
@@ -252,7 +252,7 @@ isPrimitiveInContainer: (BOOL)aFlag
 		}
 		else
 		{
-			return [kCOEmbeddedItemType description];
+			return [kCOCompositeReferenceType description];
 		}
 	}
 	

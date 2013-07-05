@@ -31,7 +31,7 @@
     [cache updateRelationshipCacheWithOldValue: nil
                                        oldType: nil
                                       newValue: u2
-                                       newType: kCOEmbeddedItemType
+                                       newType: kCOCompositeReferenceType
                                    forProperty: @"child"
                                       ofObject: u1];
     
@@ -41,16 +41,16 @@
     [cache updateRelationshipCacheWithOldValue: nil
                                        oldType: nil
                                       newValue: u2
-                                       newType: kCOEmbeddedItemType
+                                       newType: kCOCompositeReferenceType
                                    forProperty: @"child"
                                       ofObject: u3];
     
     UKObjectsEqual([CORelationshipRecord recordWithUUID: u3 property: @"child"], [cache parentForUUID: u2]);
     
     [cache updateRelationshipCacheWithOldValue: u2
-                                       oldType: kCOEmbeddedItemType
+                                       oldType: kCOCompositeReferenceType
                                       newValue: nil
-                                       newType: kCOEmbeddedItemType
+                                       newType: kCOCompositeReferenceType
                                    forProperty: @"child"
                                       ofObject: u3];
     
@@ -69,7 +69,7 @@
     [cache updateRelationshipCacheWithOldValue: nil
                                        oldType: nil
                                       newValue: S(u2, u3)
-                                       newType: kCOEmbeddedItemType | kCOSetType
+                                       newType: kCOCompositeReferenceType | kCOSetType
                                    forProperty: @"children"
                                       ofObject: p1];
     
@@ -78,9 +78,9 @@
     UKNil([cache parentForUUID: u4]);
     
     [cache updateRelationshipCacheWithOldValue: S(u2, u3)
-                                       oldType: kCOEmbeddedItemType | kCOSetType
+                                       oldType: kCOCompositeReferenceType | kCOSetType
                                       newValue: S(u2, u4)
-                                       newType: kCOEmbeddedItemType | kCOSetType
+                                       newType: kCOCompositeReferenceType | kCOSetType
                                    forProperty: @"children"
                                       ofObject: p1];
     
@@ -93,7 +93,7 @@
     [cache updateRelationshipCacheWithOldValue: nil
                                        oldType: nil
                                       newValue: S(u2)
-                                       newType: kCOEmbeddedItemType | kCOSetType
+                                       newType: kCOCompositeReferenceType | kCOSetType
                                    forProperty: @"children"
                                       ofObject: p2];
 

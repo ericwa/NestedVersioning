@@ -115,7 +115,7 @@
 
 - (NSSet *) insertedEmbeddedItemUUIDs
 {
-	if (COPrimitiveType(type) == kCOEmbeddedItemType)
+	if (COPrimitiveType(type) == kCOCompositeReferenceType)
 	{
 		if (COTypeIsPrimitive(type))
 		{
@@ -202,7 +202,7 @@
 
 - (NSSet *) insertedEmbeddedItemUUIDs
 {
-	if (COPrimitiveType(type) == kCOEmbeddedItemType)
+	if (COPrimitiveType(type) == kCOCompositeReferenceType)
 	{
 		return [NSSet setWithObject: object];
 	}
@@ -340,7 +340,7 @@
 
 - (NSSet *) insertedEmbeddedItemUUIDs
 {
-	if (COPrimitiveType(type) == kCOEmbeddedItemType)
+	if (COPrimitiveType(type) == kCOCompositeReferenceType)
 	{
 		return [NSSet setWithArray: objects];
 	}

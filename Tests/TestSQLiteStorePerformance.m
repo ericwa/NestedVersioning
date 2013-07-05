@@ -44,7 +44,7 @@ static ETUUID *childUUIDs[NUM_CHILDREN];
     [rootItem setValue: @"root" forAttribute: @"name" type: kCOStringType];
     [rootItem setValue: A()
           forAttribute: @"children"
-                  type: kCOEmbeddedItemType | kCOArrayType];
+                  type: kCOCompositeReferenceType | kCOArrayType];
     
     for (int i=0; i<NUM_CHILDREN; i++)
     {
@@ -163,7 +163,7 @@ static int itemChangedAtCommit(int i)
     
     COMutableItem *rootItem = [COMutableItem item];
     [rootItem setValue: [dict allKeys]
-          forAttribute: @"children" type: kCOArrayType | kCOEmbeddedItemType];
+          forAttribute: @"children" type: kCOArrayType | kCOCompositeReferenceType];
     [dict setObject: rootItem forKey: [rootItem UUID]];
     
     COItemGraph *it = [[[COItemGraph alloc] initWithItemForUUID: dict

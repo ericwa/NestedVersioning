@@ -80,14 +80,14 @@
 	
 	[doc setValue: A(line1, circle1, square1, image1)
 	 forAttribute: @"contents"
-			 type: kCOEmbeddedItemType | kCOArrayType];
+			 type: kCOCompositeReferenceType | kCOArrayType];
 
 	// snapshot the state: (line1, circle1, square1, image1) into doc2
 	COSubtree *doc2 = [[doc copy] autorelease];
 	
 	COSubtree *group1 = [COSubtree subtree];
 	[group1 setValue: @"group1" forAttribute: @"name" type: kCOStringType];
-	doc addObject: group1 toOrderedAttribute: @"contents" atIndex: 1 type: [kCOEmbeddedItemType | kCOArrayType];
+	doc addObject: group1 toOrderedAttribute: @"contents" atIndex: 1 type: [kCOCompositeReferenceType | kCOArrayType];
 	[group1 addTree: circle1];
 	[group1 addTree: square1];
 	
@@ -96,7 +96,7 @@
 	
 	COSubtree *triangle1 = [COSubtree subtree];
 	[triangle1 setValue: @"triangle1" forAttribute: @"name" type: kCOStringType];
-	doc addObject: triangle1 toOrderedAttribute: @"contents" atIndex: 0 type: [kCOEmbeddedItemType | kCOArrayType];
+	doc addObject: triangle1 toOrderedAttribute: @"contents" atIndex: 0 type: [kCOCompositeReferenceType | kCOArrayType];
 	
 	
 	// doc state:  (triangl1, line1, group1=(circle1, square1), image1)
@@ -202,13 +202,13 @@
 	COSubtreeEdit *OAConflictingExpected = [[[COSetAttribute alloc] initWithUUID: [group1 UUID]
 																	   attribute: @"contents"
 																sourceIdentifier: @"OA"
-																			type: kCOEmbeddedItemType | kCOSetType
+																			type: kCOCompositeReferenceType | kCOSetType
 																		   value: S([shape1 UUID])] autorelease];
 	
 	COSubtreeEdit *OBConflictingExpected = [[[COSetAttribute alloc] initWithUUID: [group2 UUID]
 																	   attribute: @"contents"
 																sourceIdentifier: @"OB"
-																			type: kCOEmbeddedItemType | kCOSetType
+																			type: kCOCompositeReferenceType | kCOSetType
 																		   value: S([shape1 UUID])] autorelease];
 	
 	UKObjectsEqual(OAConflictingExpected, OAConflictingEdit);

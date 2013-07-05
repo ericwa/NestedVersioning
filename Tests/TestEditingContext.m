@@ -50,7 +50,7 @@ static NSString *kCOReferences = @"references";
      forAttribute: kCOLabel
              type: kCOStringType];
     
-    [obj setValue: S() forAttribute: kCOContents type: kCOEmbeddedItemType | kCOSetType];
+    [obj setValue: S() forAttribute: kCOContents type: kCOCompositeReferenceType | kCOSetType];
     [obj setValue: S() forAttribute: kCOReferences type: kCOReferenceType | kCOSetType];
     
     return obj;
@@ -356,8 +356,8 @@ static NSString *kCOReferences = @"references";
 {
 	COMutableItem *parent = [COMutableItem item];
 	COMutableItem *child = [COMutableItem item];
-	[parent setValue: [child UUID] forAttribute: @"cycle" type: kCOEmbeddedItemType];
-	[child setValue: [parent UUID] forAttribute: @"cycle" type: kCOEmbeddedItemType];
+	[parent setValue: [child UUID] forAttribute: @"cycle" type: kCOCompositeReferenceType];
+	[child setValue: [parent UUID] forAttribute: @"cycle" type: kCOCompositeReferenceType];
     
     UKRaisesException([COItemTree itemTreeWithItems: A(parent, child) rootItemUUID: [parent UUID]]);
 }
@@ -390,7 +390,7 @@ static NSString *kCOReferences = @"references";
 	UKTrue(t2 == [t1 descendentObjectForUUID: [t2 UUID]]);
 	UKObjectsEqual([COItemPath pathWithItemUUID: [t1 UUID]
                         unorderedCollectionName: kCOContents
-                                           type: kCOEmbeddedItemType | kCOSetType],
+                                           type: kCOCompositeReferenceType | kCOSetType],
                    [t1 itemPathOfDescendentObjectWithUUID: [t2 UUID]]);
 	
     COObject *t3 = [t2 addObjectToContents: [self itemWithLabel: @"t3"]];
@@ -405,7 +405,7 @@ static NSString *kCOReferences = @"references";
 	UKObjectsSame(t3, [t1 descendentObjectForUUID: [t3 UUID]]);
 	UKObjectsEqual([COItemPath pathWithItemUUID: [t2 UUID]
                         unorderedCollectionName: kCOContents
-                                           type: kCOEmbeddedItemType | kCOSetType],
+                                           type: kCOCompositeReferenceType | kCOSetType],
                    [t1 itemPathOfDescendentObjectWithUUID: [t3 UUID]]);
 }
 
@@ -435,9 +435,9 @@ static NSString *kCOReferences = @"references";
 	COMutableItem *child2 = [COMutableItem item];
 	COMutableItem *shared = [COMutableItem item];
 	
-	[parent setValue: S([child1 UUID], [child2 UUID]) forAttribute: kCOContents type: kCOEmbeddedItemType | kCOSetType];
-	[child1 setValue: [shared UUID] forAttribute: @"shared" type: kCOEmbeddedItemType];
-	[child2 setValue: [shared UUID] forAttribute: @"shared" type: kCOEmbeddedItemType];
+	[parent setValue: S([child1 UUID], [child2 UUID]) forAttribute: kCOContents type: kCOCompositeReferenceType | kCOSetType];
+	[child1 setValue: [shared UUID] forAttribute: @"shared" type: kCOCompositeReferenceType];
+	[child2 setValue: [shared UUID] forAttribute: @"shared" type: kCOCompositeReferenceType];
 	
 	// illegal, because "shared" is embedded in two places
 	

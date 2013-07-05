@@ -139,7 +139,7 @@
 {
     if (oldVal != nil)
     {
-        if (COPrimitiveType(oldType) == kCOEmbeddedItemType)
+        if (COPrimitiveType(oldType) == kCOCompositeReferenceType)
         {
             if (COTypeIsMultivalued(oldType))
             {
@@ -177,7 +177,7 @@
 {
     if (newVal != nil)
     {
-        if (COPrimitiveType(newType) == kCOEmbeddedItemType)
+        if (COPrimitiveType(newType) == kCOCompositeReferenceType)
         {
             if (COTypeIsMultivalued(newType))
             {

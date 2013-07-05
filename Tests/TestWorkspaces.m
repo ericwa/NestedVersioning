@@ -17,7 +17,7 @@
     COObject *o3 = [ctx insertObject];
     COObject *o4 = [ctx insertObject];
     
-    [o1 setValue: S(o2, o3) forAttribute: @"embeddedGroups" type: kCOEmbeddedItemType | kCOSetType];
+    [o1 setValue: S(o2, o3) forAttribute: @"embeddedGroups" type: kCOCompositeReferenceType | kCOSetType];
     [o2 setValue: S(o4) forAttribute: @"contents" type: kCOReferenceType | kCOSetType];
     [o3 setValue: S(o4) forAttribute: @"contents" type: kCOReferenceType | kCOSetType];
     
@@ -31,7 +31,7 @@
     
     COObject *t1 = [ctx insertObject];
     [ctx setRootObject: t1];
-    [t1 setValue: S(o1) forAttribute: @"embeddedGroups" type: kCOEmbeddedItemType | kCOSetType];
+    [t1 setValue: S(o1) forAttribute: @"embeddedGroups" type: kCOCompositeReferenceType | kCOSetType];
 
     UKIntsEqual(5, [[[ctx itemTree] itemUUIDs] count]);
 }
@@ -46,7 +46,7 @@
     
     COSchemaTemplate *groupSchema = [COSchemaTemplate schemaWithName: @"Group"];
     [groupSchema setParent: @"NamedObject"];
-    [groupSchema setType: kCOEmbeddedItemType | kCOSetType
+    [groupSchema setType: kCOCompositeReferenceType | kCOSetType
               schemaName: @"Group"
              forProperty: @"embeddedGroups"];
     [groupSchema setType: kCOReferenceType | kCOSetType

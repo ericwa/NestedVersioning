@@ -270,7 +270,7 @@ static NSRange paragraphRangeForLocationInString(NSString *aString, NSUInteger a
 
 - (BOOL) setTypewriterDocument: (COSubtree *)aTree
 {
-    if (![aTree typeForAttribute: @"paragraphs"] isEqual: [kCOEmbeddedItemType | kCOArrayType])
+    if (![aTree typeForAttribute: @"paragraphs"] isEqual: [kCOCompositeReferenceType | kCOArrayType])
     {
         return NO;
     }
@@ -321,7 +321,7 @@ static NSRange paragraphRangeForLocationInString(NSString *aString, NSUInteger a
         
         [result addObject: paragraphTree
        toOrderedAttribute: @"paragraphs"
-                     type: kCOEmbeddedItemType | kCOArrayType];
+                     type: kCOCompositeReferenceType | kCOArrayType];
     }
     
     return result;
