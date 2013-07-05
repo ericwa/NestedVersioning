@@ -28,7 +28,6 @@ enum {
     kCODoubleType = 2,
     kCOStringType = 3,
     kCOBlobType = 4,
-    kCOCommitUUIDType = 5,
 
     // Internal references (within a persistent root). These could be lumped together
     // and distinguished at the metamodel level only, but they are kept separate

@@ -111,7 +111,6 @@ static id plistValueForPrimitiveValue(id aValue, COType aType)
         case kCOBlobType: return aValue;
         case kCOReferenceType:
         case kCOEmbeddedItemType:
-        case kCOCommitUUIDType:
             return [(ETUUID *)aValue stringValue];
         case kCOPathType: return [(COPath *)aValue stringValue];
         case kCOAttachmentType: return aValue;
@@ -148,7 +147,6 @@ static id valueForPrimitivePlistValue(id aValue, COType aType)
         case kCOBlobType: return aValue;
         case kCOReferenceType:
         case kCOEmbeddedItemType:
-        case kCOCommitUUIDType:
             return [ETUUID UUIDWithString: aValue];
         case kCOPathType: return [COPath pathWithString: aValue];
         case kCOAttachmentType: return aValue;
