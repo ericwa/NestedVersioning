@@ -34,7 +34,8 @@ enum {
     kCOEmbeddedItemType = 7,
     kCOReferenceType = 9,
     
-    // References across persistent roots
+    // References across persistent roots. This is an explicit type so that when indexing the contents
+    // of a commit, 
     kCOPathType = 6,
     
     

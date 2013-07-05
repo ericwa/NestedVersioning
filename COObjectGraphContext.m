@@ -93,8 +93,7 @@
     COObject *object = [objectsByUUID_ objectForKey: aUUID];
     if (nil != object)
     {
-        // FIXME: return an immutable copy
-        return [object->item_ copy];
+        return [object serializedItem];
     }
     return nil;
 }
@@ -127,7 +126,7 @@
     }
     else
     {
-        [relationshipCache_ removeItem: currentObject->item_];
+        [relationshipCache_ removeItem: [currentObject seriailzedItem]];
         [currentObject setItem: item];
         [relationshipCache_ addItem: item];
         [modifiedObjects_ addObject: uuid];
@@ -275,7 +274,7 @@
 - (void) removeSingleObject_: (ETUUID *)uuid
 {
     COObject *anObject = [objectsByUUID_ objectForKey: uuid];
-    COItem *item = anObject->item_;
+    COItem *item = [anObject seriailzedItem];
     
     // Update relationship cache
     
@@ -306,7 +305,7 @@
 
 - (void) gcDfs_: (COObject *)anObject uuids: (NSMutableSet *)set
 {
-    ETUUID *uuid = anObject->item_->uuid;
+    ETUUID *uuid = [anObject UUID];
     if ([set containsObject: uuid])
     {
         return;
@@ -373,8 +372,8 @@
     
     for (ETUUID *aUUID in [self itemUUIDs])
     {
-        COItem *selfItem = [self objectForUUID: aUUID]->item_;
-        COItem *otherItem = [otherContext objectForUUID: aUUID]->item_;
+        COItem *selfItem = [[self objectForUUID: aUUID] seriailzedItem];
+        COItem *otherItem = [[otherContext objectForUUID: aUUID] seriailzedItem];
         if (![selfItem isEqual: otherItem])
         {
             return NO;

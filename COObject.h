@@ -15,6 +15,10 @@ NSString *kCOSchemaName;
     COMutableItem *item_;
 }
 
+#pragma mark Serialization / Deserialization
+
+@property (nonatomic, copy, readwrite) COItem *seriailzedItem;
+
 #pragma mark Access to the receivers attributes/values
 
 

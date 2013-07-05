@@ -22,10 +22,15 @@ NSString *kCOSchemaName = @"COSchemaName";
     return self;
 }
 
+- (COItem *) serializedItem
+{
+    return [item_ copy];
+}
+
 /**
  * Does not automatically update relationship cache in context
  */
-- (void) setItem: (COItem *)anItem
+- (void) setSeriailzedItem: (COItem *)anItem
 {
     // TODO:
     //[self discardState];

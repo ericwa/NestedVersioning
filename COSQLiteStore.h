@@ -1,5 +1,7 @@
 #import <Foundation/Foundation.h>
 
+#import "COItemGraph.h"
+
 @class ETUUID;
 @class COItem;
 @class CORevisionID;
@@ -314,10 +316,12 @@
  *     from disk or memory and compared to anItemTree to compute the modifiedItems set. Only problem is this
  *     requires comparing all items in the trees, which is fairly expensive.
  */
-- (CORevisionID *) writeContents: (COItemGraph *)anItemTree
+- (CORevisionID *) writeContents: (id<COItemGraph>)anItemTree
                     withMetadata: (NSDictionary *)metadata
                 parentRevisionID: (CORevisionID *)aParent
                    modifiedItems: (NSArray*)modifiedItems;
+// TODO:
+//  changedPropertiesForItemUUID: (NSDictionary*)changedProperties { uuidA : (propA, propB), uuidB : (propC) }
 
 
 
@@ -331,7 +335,7 @@
  * persistent root. If the new persistent root is likely going to have content in common with another
  * persistent root, use -createPersistentRootWithInitialRevision:metadata: instead.
  */
-- (COPersistentRootInfo *) createPersistentRootWithInitialContents: (COItemGraph *)contents
+- (COPersistentRootInfo *) createPersistentRootWithInitialContents: (id<COItemGraph>)contents
                                                            metadata: (NSDictionary *)metadata;
 
 /**
@@ -348,7 +352,7 @@
  * the behaviour of -finalizeDeletionsForPersistentRoot:. It will garbage collect all unreferenced
  * revisions in the backing store of the passed in persistent root)
  */
-- (COPersistentRootInfo *) createPersistentRootWithInitialRevision: (CORevisionID *)aRevision
+- (COPersistentRootInfo *) createPersistentRootWithInitialRevision: (id<COItemGraph>)aRevision
                                                            metadata: (NSDictionary *)metadata;
 
 
