@@ -35,6 +35,7 @@
 #import "COBinaryReader.h"
 #import "COBinaryWriter.h"
 #import "COItem+Binary.h"
+#import "COItem+JSON.h"
 #import "COSearchResult.h"
 #import "COCopier.h"
 

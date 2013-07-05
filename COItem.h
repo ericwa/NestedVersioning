@@ -58,11 +58,6 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes;
 - (COType) typeForAttribute: (NSString *)anAttribute;
 - (id) valueForAttribute: (NSString*)anAttribute;
 
-/** @taskunit plist import/export */
-
-- (id)plist;
-- (id)initWithPlist: (id)aPlist;
-
 /** @taskunit convenience */
 
 // allows treating primitive or container, unordered or ordered as NSArray

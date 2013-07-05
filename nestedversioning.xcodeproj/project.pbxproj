@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		66094837178741E10049468B /* COItem+JSON.h in Headers */ = {isa = PBXBuildFile; fileRef = 66094835178741E10049468B /* COItem+JSON.h */; };
+		66094838178741E10049468B /* COItem+JSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 66094836178741E10049468B /* COItem+JSON.m */; };
 		660ED2E616D3475800BF6BB8 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66EB756B148CA9D300C2114B /* Cocoa.framework */; };
 		660ED2EC16D3475900BF6BB8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 660ED2EA16D3475900BF6BB8 /* InfoPlist.strings */; };
 		660ED2EE16D3475900BF6BB8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 660ED2ED16D3475900BF6BB8 /* main.m */; };
@@ -275,6 +277,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		66094835178741E10049468B /* COItem+JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "COItem+JSON.h"; sourceTree = "<group>"; };
+		66094836178741E10049468B /* COItem+JSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "COItem+JSON.m"; sourceTree = "<group>"; };
 		660ED2E516D3475800BF6BB8 /* Workspace.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Workspace.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		660ED2E916D3475900BF6BB8 /* Workspace-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Workspace-Info.plist"; sourceTree = "<group>"; };
 		660ED2EB16D3475900BF6BB8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1126,11 +1130,15 @@
 			isa = PBXGroup;
 			children = (
 				66EADD67147345B9003181FC /* COItem.h */,
+				66EADD68147345B9003181FC /* COItem.m */,
 				668DA36114E0E4210062E6C2 /* COItemPath.h */,
+				668DA35E14E0E41A0062E6C2 /* COItemPath.m */,
 				66E4BB6D166B3D10009BFE7D /* COItemGraph.h */,
-				79999EAB14DE50CA00FFBC99 /* Implementation */,
+				66E4BB6E166B3D10009BFE7D /* COItemGraph.m */,
 				66C5B3BB1708FA0500AE0BCC /* COItem+Binary.h */,
 				66C5B3BC1708FA0500AE0BCC /* COItem+Binary.m */,
+				66094835178741E10049468B /* COItem+JSON.h */,
+				66094836178741E10049468B /* COItem+JSON.m */,
 			);
 			name = "In-Memory Item Tree";
 			sourceTree = "<group>";
@@ -1173,16 +1181,6 @@
 				6628FB9D142FA7840072767A /* Tests - old */,
 			);
 			path = Tests;
-			sourceTree = "<group>";
-		};
-		79999EAB14DE50CA00FFBC99 /* Implementation */ = {
-			isa = PBXGroup;
-			children = (
-				66EADD68147345B9003181FC /* COItem.m */,
-				668DA35E14E0E41A0062E6C2 /* COItemPath.m */,
-				66E4BB6E166B3D10009BFE7D /* COItemGraph.m */,
-			);
-			name = Implementation;
 			sourceTree = "<group>";
 		};
 		79E87A9414FA12C6005F6F70 /* Docs */ = {
@@ -1287,6 +1285,7 @@
 				66672D1117337A5D00E5739C /* COSearchResult.h in Headers */,
 				66672D1517363EED00E5739C /* COCopier.h in Headers */,
 				66F15AEE17793596004AA02B /* COPersistentRootController.h in Headers */,
+				66094837178741E10049468B /* COItem+JSON.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1667,6 +1666,7 @@
 				66672D1217337A5D00E5739C /* COSearchResult.m in Sources */,
 				66672D1617363EED00E5739C /* COCopier.m in Sources */,
 				66F15AF017793F34004AA02B /* COPersistentRootController.m in Sources */,
+				66094838178741E10049468B /* COItem+JSON.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

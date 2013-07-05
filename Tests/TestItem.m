@@ -17,22 +17,16 @@
 	forAttribute: @"contents"
 			type: kCOStringType | kCOSetType];
 	
-	// test round trip to plist
+	// test round trip to JSON
 	{
         NSString *err = nil;
-		id plist = [NSPropertyListSerialization propertyListFromData:
-					[NSPropertyListSerialization dataFromPropertyList: [i1 plist]
-															   format: NSPropertyListXMLFormat_v1_0
-													 errorDescription: &err]
-													mutabilityOption: NSPropertyListMutableContainersAndLeaves
-															  format: NULL
-													errorDescription:NULL];
+		id json = [i1 JSONData];
         
-		COMutableItem *i1clone = [[[COMutableItem alloc] initWithPlist: plist] autorelease];
+		COMutableItem *i1clone = [[[COMutableItem alloc] initWithJSONData: json] autorelease];
 		UKObjectsEqual(i1, i1clone);
 	}
     
-    // test round trip to NSData
+    // test round trip to the binary format
     {
 		COMutableItem *i1clone = [[[COMutableItem alloc] initWithData: [i1 dataValue]] autorelease];
 		UKObjectsEqual(i1, i1clone);        
@@ -137,6 +131,12 @@
     UKObjectsEqual(item1, item2);
     UKObjectsEqual([NSNull null], [item2 valueForAttribute: @"name"]);
     UKObjectsEqual(A([NSNull null], [NSNull null]), [item2 valueForAttribute: @"people"]);
+    
+    COItem *item3 = [[[COItem alloc] initWithJSONData: [item1 JSONData]] autorelease];
+    
+    UKObjectsEqual(item3, item1);
+    UKObjectsEqual([NSNull null], [item1 valueForAttribute: @"name"]);
+    UKObjectsEqual(A([NSNull null], [NSNull null]), [item1 valueForAttribute: @"people"]);
 }
 
 //- (void) testNamedType
