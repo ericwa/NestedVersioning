@@ -30,14 +30,28 @@ enum {
     kCOBlobType = 4,
     kCOCommitUUIDType = 5,
 
-    // Internal references (within a persistent root)
+    // Internal references (within a persistent root). These could be lumped together
+    // and distinguished at the metamodel level only, but they are kept separate
+    // to enhance support for loading data with no metamodel available.
+    
+    /**
+     * A composite reference from a parent to a child. The reference is stored
+     * in the parent.
+     */
     kCOEmbeddedItemType = 7,
+    /**
+     * A reference that does not necessairily model parent-child relationships -
+     * could be graphs with cycles, etc.     
+     */
     kCOReferenceType = 9,
+    
+    // Only exists in the metamodel: kCOCopyReference. This is a reference that
+    // lacks the parent/child constraint of kCOEmbeddedItemType, but the copier
+    // always copies (so it acts like kCOEmbeddedItemType for the copier.)
     
     // References across persistent roots. This is an explicit type so that when indexing the contents
     // of a commit, 
     kCOPathType = 6,
-    
     
     kCOAttachmentType = 8,
     

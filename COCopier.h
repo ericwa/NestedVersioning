@@ -1,3 +1,4 @@
+#import <EtoileFoundation/EtoileFoundation.h>
 #import <Foundation/Foundation.h>
 #import "COItemGraph.h"
 
@@ -5,8 +6,18 @@
 
 @interface COCopier : NSObject
 
+
 // TODO: Implement
-- (id) initWithDestinationGraph: (id<COItemGraph>)dest;
+/**
+ * Creates a copier to copy into the destination graph.
+ *
+ * The entity descriptions for COItems will be obtained from the given model
+ * description repository.
+ *
+ * We need to the model description for 
+ */
+- (id) initWithDestinationGraph: (id<COItemGraph>)dest
+     modelDescriptionRepository: (ETModelDescriptionRepository *)repository;
 
 /**
  * Basic copying method implementing the semantics in "copy semantics.key".
