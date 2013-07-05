@@ -12,10 +12,17 @@ static id plistValueForPrimitiveValue(id aValue, COType aType)
         case kCODoubleType: return aValue;
         case kCOStringType: return aValue;
         case kCOBlobType: return [aValue base64String];
-        case kCOReferenceType:
         case kCOCompositeReferenceType:
-            return [(ETUUID *)aValue stringValue];
-        case kCOPathType: return [(COPath *)aValue stringValue];
+            return [aValue stringValue];
+        case kCOReferenceType:
+            if ([aValue isKindOfClass: [COPath class]])
+            {
+                return [@"path:" stringByAppendingString: [aValue stringValue]];
+            }
+            else
+            {
+                return [aValue stringValue];
+            }
         case kCOAttachmentType: return aValue;
         default:
             [NSException raise: NSInvalidArgumentException format: @"unknown type %d", aType];
@@ -48,10 +55,17 @@ static id valueForPrimitivePlistValue(id aValue, COType aType)
         case kCODoubleType: return aValue;
         case kCOStringType: return aValue;
         case kCOBlobType: return [aValue base64DecodedData];
-        case kCOReferenceType:
         case kCOCompositeReferenceType:
             return [ETUUID UUIDWithString: aValue];
-        case kCOPathType: return [COPath pathWithString: aValue];
+        case kCOReferenceType:
+            if ([aValue hasPrefix: @"path:"])
+            {
+               return [COPath pathWithString: [aValue substringFromIndex: 5]];
+            }
+            else
+            {
+                return [ETUUID UUIDWithString: aValue];
+            }
         case kCOAttachmentType: return aValue;
         default:
             [NSException raise: NSInvalidArgumentException format: @"unknown type %d", aType];

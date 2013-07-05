@@ -27,7 +27,7 @@ static ETUUID *tagUUID;
     [rootItem setValue: @"favourites" forAttribute: @"name" type: kCOStringType];
     [rootItem setValue: S([COPath pathWithPersistentRoot: aUUID])
           forAttribute: @"taggedDocuments"
-                  type: kCOPathType | kCOSetType];
+                  type: kCOReferenceType | kCOSetType];
 
     return [COItemGraph treeWithItemsRootFirst: A(rootItem)];
 }

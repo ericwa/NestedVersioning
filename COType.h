@@ -1,5 +1,8 @@
 #import <Foundation/Foundation.h>
 
+// TODO: Rename all symbols in this file to follow the patern COTypeXXX
+// or kCOTypeXXX
+
 /**
  * Each key/value pair of a COItem has a COType associated with it.
  *
@@ -18,54 +21,70 @@
  */
 typedef int32_t COType;
 
-/**
- 
- 
- 
- */
 enum {
+#pragma mark Primitive types
+    
     /**
      * Represented as NSNumber
      */
-    kCOInt64Type = 1,
-    kCODoubleType = 2,
+    kCOInt64Type = 0x01,
+    
+    /**
+     * Represented as NSNumber
+     */
+    kCODoubleType = 0x02,
+    
     /**
      * Represented as NSString
      */
-    kCOStringType = 3,
+    kCOStringType = 0x03,
+    
     /**
-     * Represented as NSData
+     * A byte array. Represented as NSData
      */
-    kCOBlobType = 4,
+    kCOBlobType = 0x04,
 
-    // Internal references (within a persistent root). These could be lumped together
-    // and distinguished at the metamodel level only, but they are kept separate
-    // to enhance support for loading data with no metamodel available.
+    /**
+     * A reference that does not necessairily model parent-child relationships -
+     * could be graphs with cycles, etc.
+     *
+     * Represented as COUUID for inner references and COPath for references
+     * to other persistent roots.
+     */
+    kCOReferenceType = 0x05,
     
     /**
      * A composite reference from a parent to a child. The reference is stored
      * in the parent.
+     *
+     * N.B. this could be lumped together with kCOReferenceType and 
+     * distinguished at the metamodel level only, but they are kept separate
+     * to enhance support for loading data with no metamodel available, and ease
+     * debugging.
+     *
+     * Represented as COUUID.
      */
-    kCOCompositeReferenceType = 7,
+    kCOCompositeReferenceType = 0x06,
+
     /**
-     * A reference that does not necessairily model parent-child relationships -
-     * could be graphs with cycles, etc.     
+     * A token which can be given to COSQLiteStore to retrieve a local 
+     * filesystem path to an immutable attached file.
+     *
+     * Represented as NSData (a hash of the attached file's contents).
      */
-    kCOReferenceType = 9,
+    kCOAttachmentType = 0x07,
+   
+#pragma mark Multivalued types
     
-    // Only exists in the metamodel: kCOCopyReference. This is a reference that
-    // lacks the parent/child constraint of kCOEmbeddedItemType, but the copier
-    // always copies (so it acts like kCOEmbeddedItemType for the copier.)
+    /**
+     * Represented as NSSet.
+     */
+    kCOSetType = 0x10,
     
-    // References across persistent roots. This is an explicit type so that when indexing the contents
-    // of a commit, 
-    kCOPathType = 6,
-    
-    kCOAttachmentType = 8,
-    
-    
-    kCOSetType = 16,
-    kCOArrayType = 32,
+    /**
+     * Represented as NSArray
+     */
+    kCOArrayType = 0x20,
     
     kCOPrimitiveTypeMask = 0x0f,
     kCOMultivaluedTypeMask = 0xf0
@@ -93,4 +112,16 @@ static inline
 COType COPrimitiveType(COType type)
 {
     return type & kCOPrimitiveTypeMask;
+}
+
+static inline
+COType COSetOfType(COType type)
+{
+    return type | kCOSetType;
+}
+
+static inline
+COType COArrayOfType(COType type)
+{
+    return type | kCOArrayType;
 }

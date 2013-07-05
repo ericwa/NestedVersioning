@@ -218,11 +218,14 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 	for (NSString *key in [self attributeNames])
 	{
 		COType type = [self typeForAttribute: key];
-		if (COPrimitiveType(type) == kCOPathType)
+		if (COPrimitiveType(type) == kCOReferenceType)
 		{
-			for (COPath *path in [self allObjectsForAttribute: key])
+			for (id ref in [self allObjectsForAttribute: key])
 			{
-				[result addObject: [path persistentRoot]];
+                if ([ref isKindOfClass: [COPath class]] && [ref isCrossPersistentRoot])
+                {
+                    [result addObject: [ref persistentRoot]];
+                }
 			}
 		}
 	}
@@ -323,24 +326,34 @@ valuesForAttributes: (NSDictionary *)valuesForAttributes
 						   type: type];
 			}
 		}
-		else if (COPrimitiveType(type) == kCOPathType)
+		else if (COPrimitiveType(type) == kCOReferenceType)
 		{
 			if (COTypeIsPrimitive(type))
 			{
-				COPath *pathValue = (COPath*)value;
-				
-				[aCopy setValue: [pathValue pathWithNameMapping: aMapping]
-				   forAttribute: attr
-						   type: type];
+                if ([value isKindOfClass: [COPath class]])
+                {
+                    COPath *pathValue = (COPath*)value;
+                    
+                    [aCopy setValue: [pathValue pathWithNameMapping: aMapping]
+                       forAttribute: attr
+                               type: type];
+                }
 			}
 			else
 			{ 
 				id newCollection = [[value mutableCopy] autorelease];
 				[newCollection removeAllObjects];
 				
-				for (COPath *pathValue in value)
+				for (id primitiveValue in value)
 				{
-					[newCollection addObject: [pathValue pathWithNameMapping:aMapping]];
+                    if ([primitiveValue isKindOfClass: [COPath class]])
+                    {
+                        [newCollection addObject: [primitiveValue pathWithNameMapping:aMapping]];
+                    }
+                    else
+                    {
+                        [newCollection addObject: primitiveValue];
+                    }
 				}
 				
 				[aCopy setValue: newCollection

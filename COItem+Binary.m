@@ -85,12 +85,18 @@ static void writePrimitiveValue(co_buffer_t *dest, id aValue, COType aType)
         case kCOBlobType:
             co_buffer_store_bytes(dest, [aValue bytes], [aValue length]);
             break;
-        case kCOReferenceType:
         case kCOCompositeReferenceType:
             co_buffer_store_uuid(dest, aValue);
             break;
-        case kCOPathType:
-            co_buffer_store_string(dest, [(COPath *)aValue stringValue]);
+        case kCOReferenceType:
+            if ([aValue isKindOfClass: [COPath class]])
+            {
+                co_buffer_store_string(dest, [(COPath *)aValue stringValue]);
+            }
+            else
+            {
+                co_buffer_store_uuid(dest, aValue);
+            }
             break;
         case kCOAttachmentType:
             co_buffer_store_bytes(dest, [aValue bytes], [aValue length]);

@@ -41,7 +41,7 @@
 	SUPERINIT;
 	ASSIGN(uuid, aUUID);
 	ASSIGN(attribute, aName);
-	ASSIGN(type, aType);
+	type = aType;
 	return self;
 }
 
