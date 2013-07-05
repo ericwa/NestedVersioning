@@ -9,11 +9,17 @@
 @private
 	ETUUID *persistentRoot_;
 	ETUUID *branch_;
+    /**
+     * Deprecated. COPath can only point at the root object.
+     */
 	ETUUID *embeddedObject_;
 }
 
 @property (readonly) ETUUID *persistentRoot;
 @property (readonly) ETUUID *branch;
+/**
+ * Deprecated. COPath can only point at the root object.
+ */
 @property (readonly) ETUUID *embeddedObject;
 
 /**
@@ -27,6 +33,9 @@
 + (COPath *) pathWithPersistentRoot: (ETUUID *)aRoot
 							 branch: (ETUUID*)aBranch;
 
+/**
+ * Deprecated. COPath can only point at the root object.
+ */
 + (COPath *) pathWithPersistentRoot: (ETUUID *)aRoot
 							 branch: (ETUUID*)aBranch
 					embdeddedObject: (ETUUID *)anObject;
