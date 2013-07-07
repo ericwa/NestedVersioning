@@ -1,7 +1,7 @@
-#import "CORevision.h"
+#import "CORevisionInfo.h"
 #import <EtoileFoundation/Macros.h>
 
-@implementation CORevision
+@implementation CORevisionInfo
 
 NSString *kCORevisionID = @"CORevisionID";
 NSString *kCORevisionParentID = @"CORevisionParentID";
@@ -43,10 +43,10 @@ NSString *kCORevisionMetadata = @"CORevisionMetadata";
 
 - (BOOL) isEqual:(id)object
 {
-    if ([object isKindOfClass: [CORevision class]])
+    if ([object isKindOfClass: [CORevisionInfo class]])
     {
-        return [((CORevision *)object)->revisionID_ isEqual: revisionID_]
-            && [((CORevision *)object)->parentRevisionID_ isEqual: parentRevisionID_];
+        return [((CORevisionInfo *)object)->revisionID_ isEqual: revisionID_]
+            && [((CORevisionInfo *)object)->parentRevisionID_ isEqual: parentRevisionID_];
     }
     return NO;
 }
@@ -70,7 +70,7 @@ NSString *kCORevisionMetadata = @"CORevisionMetadata";
     }
     return d;
 }
-+ (CORevision *) revisionWithPlist: (id)plist
++ (CORevisionInfo *) revisionWithPlist: (id)plist
 {
     return [[[self alloc] initWithRevisionID: [plist objectForKey:kCORevisionID]
                             parentRevisionID: [plist objectForKey: kCORevisionParentID]

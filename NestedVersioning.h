@@ -10,7 +10,7 @@
 #import "COPersistentRoot.h"
 #import "COBranch.h"
 
-#import "CORevision.h"
+#import "CORevisionInfo.h"
 
 
 

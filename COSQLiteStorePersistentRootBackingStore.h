@@ -3,7 +3,7 @@
 
 @class FMDatabase;
 @class COItemGraph;
-@class CORevision;
+@class CORevisionInfo;
 @class CORevisionID;
 
 /**
@@ -29,7 +29,7 @@
 - (BOOL) beginTransaction;
 - (BOOL) commit;
 
-- (CORevision *) revisionForID: (CORevisionID *)aToken;
+- (CORevisionInfo *) revisionForID: (CORevisionID *)aToken;
 
 - (COItemGraph *) itemTreeForRevid: (int64_t)revid;
 

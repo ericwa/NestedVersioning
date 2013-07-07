@@ -5,7 +5,7 @@
 @class ETUUID;
 @class COItem;
 @class CORevisionID;
-@class CORevision;
+@class CORevisionInfo;
 @class COItemGraph;
 @class FMDatabase;
 @class COPersistentRootInfo;
@@ -274,7 +274,7 @@
  * 
  * Adding an in-memory cache for this will probably imporant.
  */
-- (CORevision *) revisionInfoForRevisionID: (CORevisionID *)aToken;
+- (CORevisionInfo *) revisionInfoForRevisionID: (CORevisionID *)aToken;
 
 /**
  * Returns a delta between the given revision IDs.

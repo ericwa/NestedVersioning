@@ -165,7 +165,7 @@ static ETUUID *childUUID2;
 
 // --- The tests themselves
 
-- (CORevision *) revisionForRevid: (int64_t)revid
+- (CORevisionInfo *) revisionForRevid: (int64_t)revid
 {
     return [store revisionForID: [CORevisionID revisionWithBackinStoreUUID: nil revisionIndex: revid]];
 }

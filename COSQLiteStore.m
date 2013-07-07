@@ -1,7 +1,7 @@
 #import "COSQLiteStore.h"
 #import "COSQLiteStorePersistentRootBackingStore.h"
 #import "CORevisionID.h"
-#import "CORevision.h"
+#import "CORevisionInfo.h"
 #import <EtoileFoundation/Macros.h>
 #import <EtoileFoundation/ETUUID.h>
 
@@ -320,7 +320,7 @@
 
 /** @taskunit reading states */
 
-- (CORevision *) revisionInfoForRevisionID: (CORevisionID *)aToken
+- (CORevisionInfo *) revisionInfoForRevisionID: (CORevisionID *)aToken
 {
     COSQLiteStorePersistentRootBackingStore *backing = [self backingStoreForRevisionID: aToken];
     return [backing revisionForID: aToken];

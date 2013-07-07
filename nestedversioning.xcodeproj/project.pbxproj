@@ -115,8 +115,8 @@
 		667CD1D716B7B3EC00C50906 /* EWPersistentRootWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 662C1DE6168FACC9002157F3 /* EWPersistentRootWindowController.m */; };
 		66816C51166343B200BC5F40 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 66816C50166343B200BC5F40 /* libsqlite3.dylib */; };
 		66816C53166343C100BC5F40 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66EB7570148CA9D300C2114B /* Foundation.framework */; };
-		66816C721663562300BC5F40 /* CORevision.h in Headers */ = {isa = PBXBuildFile; fileRef = 66816C701663562300BC5F40 /* CORevision.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		66816C731663562300BC5F40 /* CORevision.m in Sources */ = {isa = PBXBuildFile; fileRef = 66816C711663562300BC5F40 /* CORevision.m */; };
+		66816C721663562300BC5F40 /* CORevisionInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 66816C701663562300BC5F40 /* CORevisionInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		66816C731663562300BC5F40 /* CORevisionInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 66816C711663562300BC5F40 /* CORevisionInfo.m */; };
 		668641961696C208004772ED /* COEditDeleteBranch.m in Sources */ = {isa = PBXBuildFile; fileRef = 668641941696C208004772ED /* COEditDeleteBranch.m */; };
 		668641971696C208004772ED /* COEditDeleteBranch.h in Headers */ = {isa = PBXBuildFile; fileRef = 668641951696C208004772ED /* COEditDeleteBranch.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6686419A1696C26B004772ED /* NestedVersioning.h in Headers */ = {isa = PBXBuildFile; fileRef = 668641991696C26B004772ED /* NestedVersioning.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -452,8 +452,8 @@
 		6675C9211702C6FB007C8DB6 /* TestRelationshipCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestRelationshipCache.m; sourceTree = "<group>"; };
 		6675F8C81785C164001E5622 /* EtoileFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = EtoileFoundation.xcodeproj; path = EtoileFoundation/EtoileFoundation.xcodeproj; sourceTree = "<group>"; };
 		66816C50166343B200BC5F40 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		66816C701663562300BC5F40 /* CORevision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CORevision.h; sourceTree = "<group>"; };
-		66816C711663562300BC5F40 /* CORevision.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CORevision.m; sourceTree = "<group>"; };
+		66816C701663562300BC5F40 /* CORevisionInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CORevisionInfo.h; sourceTree = "<group>"; };
+		66816C711663562300BC5F40 /* CORevisionInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CORevisionInfo.m; sourceTree = "<group>"; };
 		668641941696C208004772ED /* COEditDeleteBranch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = COEditDeleteBranch.m; sourceTree = "<group>"; };
 		668641951696C208004772ED /* COEditDeleteBranch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = COEditDeleteBranch.h; sourceTree = "<group>"; };
 		668641991696C26B004772ED /* NestedVersioning.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NestedVersioning.h; sourceTree = "<group>"; };
@@ -962,8 +962,8 @@
 				666CB02A166342E50066BC77 /* COSQLiteStore.m */,
 				66C6F62C15E764FE0079B7FB /* CORevisionID.h */,
 				66C6F62D15E764FE0079B7FB /* CORevisionID.m */,
-				66816C701663562300BC5F40 /* CORevision.h */,
-				66816C711663562300BC5F40 /* CORevision.m */,
+				66816C701663562300BC5F40 /* CORevisionInfo.h */,
+				66816C711663562300BC5F40 /* CORevisionInfo.m */,
 				66EDFD94148EF73200D0DC0B /* COType.h */,
 				66EC2EB4171E594F00F27B2D /* COSQLiteStore+Attachments.h */,
 				66EC2EB5171E594F00F27B2D /* COSQLiteStore+Attachments.m */,
@@ -1260,7 +1260,7 @@
 				666CB033166343420066BC77 /* FMDatabase.h in Headers */,
 				666CB035166343420066BC77 /* FMDatabaseAdditions.h in Headers */,
 				666CB037166343420066BC77 /* FMResultSet.h in Headers */,
-				66816C721663562300BC5F40 /* CORevision.h in Headers */,
+				66816C721663562300BC5F40 /* CORevisionInfo.h in Headers */,
 				66E4BB65166A7B64009BFE7D /* COSQLiteStorePersistentRootBackingStore.h in Headers */,
 				66E4BB6F166B3D10009BFE7D /* COItemGraph.h in Headers */,
 				66C0EF421679857500D2D7CD /* COEditingContextPrivate.h in Headers */,
@@ -1646,7 +1646,7 @@
 				666CB034166343420066BC77 /* FMDatabase.m in Sources */,
 				666CB036166343420066BC77 /* FMDatabaseAdditions.m in Sources */,
 				666CB038166343420066BC77 /* FMResultSet.m in Sources */,
-				66816C731663562300BC5F40 /* CORevision.m in Sources */,
+				66816C731663562300BC5F40 /* CORevisionInfo.m in Sources */,
 				66E4BB66166A7B64009BFE7D /* COSQLiteStorePersistentRootBackingStore.m in Sources */,
 				66E4BB70166B3D10009BFE7D /* COItemGraph.m in Sources */,
 				668641961696C208004772ED /* COEditDeleteBranch.m in Sources */,

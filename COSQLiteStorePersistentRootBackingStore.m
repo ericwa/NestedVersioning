@@ -7,7 +7,7 @@
 #import "FMDatabaseAdditions.h"
 #import "COSQLiteStorePersistentRootBackingStoreBinaryFormats.h"
 #import "COItem+Binary.h"
-#import "CORevision.h"
+#import "CORevisionInfo.h"
 #import "CORevisionID.h"
 
 @implementation COSQLiteStorePersistentRootBackingStore
@@ -121,9 +121,9 @@
 
  */
 
-- (CORevision *) revisionForID: (CORevisionID *)aToken
+- (CORevisionInfo *) revisionForID: (CORevisionID *)aToken
 {
-    CORevision *result = nil;
+    CORevisionInfo *result = nil;
     FMResultSet *rs = [db_ executeQuery: @"SELECT parent, metadata FROM commits WHERE revid = ?",
                        [NSNumber numberWithLongLong: [aToken revisionIndex]]];
 	if ([rs next])
@@ -139,7 +139,7 @@
                                                          error: NULL];
         }
         
-        result = [[[CORevision alloc] initWithRevisionID: aToken
+        result = [[[CORevisionInfo alloc] initWithRevisionID: aToken
                                         parentRevisionID: [aToken revisionIDWithRevisionIndex: parent]
                                                 metadata: metadata] autorelease];
 	}
