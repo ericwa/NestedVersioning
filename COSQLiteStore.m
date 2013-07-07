@@ -56,7 +56,7 @@
 @synthesize UUID = uuid_;
 @synthesize headRevisionID = headRevisionId_;
 @synthesize tailRevisionID = tailRevisionId_;
-@synthesize currentRevisionID = currentState_;
+@synthesize currentRevisionID = currentRevisionID_;
 @synthesize deleted = deleted_;
 
 - (void) dealloc
@@ -64,7 +64,7 @@
     [uuid_ release];
     [headRevisionId_ release];
     [tailRevisionId_ release];
-    [currentState_ release];
+    [currentRevisionID_ release];
     [metadata_ release];
     [super dealloc];
 }

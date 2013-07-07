@@ -16,7 +16,7 @@
     ETUUID *uuid_;
     CORevisionID *headRevisionId_;
     CORevisionID *tailRevisionId_;
-    CORevisionID *currentState_;
+    CORevisionID *currentRevisionId_;
     NSDictionary *metadata_;
     BOOL deleted_;
 }
@@ -36,7 +36,7 @@
     ETUUID *uuid_;
     ETUUID *currentBranch_;
     ETUUID *mainBranch_;
-    NSMutableDictionary *branchForUUID_; // COUUID : COBranchPlist
+    NSMutableDictionary *branchForUUID_; // COUUID : COBranchInfo
 }
 
 - (NSSet *) branchUUIDs;
